@@ -1,5 +1,4 @@
 public with sharing class FogBugzAPI {
-	private static String user = 'jjackson@dimagi.com';	
 	private static String fogbugz_http_api = 'http://manage.dimagi.com/api.asp?';
 	public  static String token;
 	
