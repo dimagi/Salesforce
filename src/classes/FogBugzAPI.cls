@@ -16,7 +16,8 @@ public with sharing class FogBugzAPI {
     	
     	 //get cases
     	 req = new HttpRequest();
-    	 req.setEndpoint(fogbugz_http_api + '&cmd=search&cols=plugin,sTitle,sArea,tags,sPersonAssignedTo');
+    	 //sVersion corresponds to the FogBugz Field "External ID"
+    	 req.setEndpoint(fogbugz_http_api + '&cmd=search&cols=plugin,sTitle,sArea,tags,sPersonAssignedTo,sVersion');
     	 req.setMethod('GET');
     	 res = http.send(req);
     	 return res.getBody();
