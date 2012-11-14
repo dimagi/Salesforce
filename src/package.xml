@@ -4,5 +4,18 @@
         <members>*</members>
         <name>ApexClass</name>
     </types>
+    <types>
+        <members>*</members>
+        <name>ApexTrigger</name>
+    </types>
+    <types>
+        <members>Dimagi_Emails</members>
+        <members>Dimagi_Emails/New_Opportunity_FogBugz_integration</members>
+        <name>EmailTemplate</name>
+    </types>
+    <types>
+        <members>FogBugz</members>
+        <name>RemoteSiteSetting</name>
+    </types>
     <version>25.0</version>
 </Package>
