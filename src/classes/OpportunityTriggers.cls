@@ -30,13 +30,14 @@ public with sharing class OpportunityTriggers {
 	            EmailTemplate[] template = [select Id from EmailTemplate where Name = :NOTIFICATION_TEMPLATE];
 	            
 	            if (!template.isEmpty()) {
+	            	System.debug(LoggingLevel.INFO, 'FINDME::sending mail');
                     Messaging.SingleEmailMessage mail = new Messaging.SingleEmailMessage();
                 
                     mail.setTemplateId(template[0].Id);
-                    mail.setWhatId(o.Id);
+                    mail.setSaveAsActivity(false);
                     mail.setTargetObjectId(o.Owner.Id);
                 
-                    Messaging.sendEmail(new Messaging.Email[] { mail }, false);
+                    Messaging.sendEmail(new Messaging.Email[] { mail });
 	            	
 	            }
                 else {
@@ -56,6 +57,7 @@ public with sharing class OpportunityTriggers {
         Opportunity[] ops = [select Id,
                                     Name,
                                     Owner.Name,
+                                    Owner.Email,
                                     Owner.Id,
                                     StageName,
                                     Fogbugz_Ticket_Number__c
