@@ -29,5 +29,13 @@
         <members>FogBugz</members>
         <name>RemoteSiteSetting</name>
     </types>
+    <types>
+        <members>Opportunity.Email_owner_for_new_Opportunity</members>
+        <name>WorkflowAlert</name>
+    </types>
+    <types>
+        <members>Opportunity.Opportunity%3A Created in FogBugz</members>
+        <name>WorkflowRule</name>
+    </types>
     <version>25.0</version>
 </Package>

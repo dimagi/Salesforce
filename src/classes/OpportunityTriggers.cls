@@ -6,8 +6,6 @@
  */
 public with sharing class OpportunityTriggers {
 
-    private static final String     NOTIFICATION_TEMPLATE   = 'New Opportunity - FogBugz integration';
-    
     /**
      * We use @future here in order to perform HTTP callouts from within a trigger context
      */
@@ -26,23 +24,6 @@ public with sharing class OpportunityTriggers {
 	        if (fbCaseId != null) {
 	            o.Fogbugz_Ticket_Number__c = fbCaseId;
 	            update o;
-	            
-	            EmailTemplate[] template = [select Id from EmailTemplate where Name = :NOTIFICATION_TEMPLATE];
-	            
-	            if (!template.isEmpty()) {
-	            	System.debug(LoggingLevel.INFO, 'FINDME::sending mail');
-                    Messaging.SingleEmailMessage mail = new Messaging.SingleEmailMessage();
-                
-                    mail.setTemplateId(template[0].Id);
-                    mail.setSaveAsActivity(false);
-                    mail.setTargetObjectId(o.Owner.Id);
-                
-                    Messaging.sendEmail(new Messaging.Email[] { mail });
-	            	
-	            }
-                else {
-                	System.debug(LoggingLevel.WARN, 'OpportunityTriggers::createInFogbugz() - Notification mail template not found');
-                }
 	        }
 	        else {
 	            System.debug(LoggingLevel.ERROR, 'OpportunityTriggers::createInFogbugz() - Error while creating case');
