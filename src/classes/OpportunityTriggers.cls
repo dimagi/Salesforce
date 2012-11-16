@@ -12,7 +12,7 @@ public with sharing class OpportunityTriggers {
     @future(callout=true)
     public static void createInFogbugz(Id opportunityId) {
     	
-    	Opportunity o = fetchOpportunity(opportunityId);
+    	Opportunity o = FogBugzUtils.fetchOpportunity(opportunityId);
     	
     	if (o != null) {
     		
@@ -32,19 +32,5 @@ public with sharing class OpportunityTriggers {
     	else {
     		System.debug(LoggingLevel.WARN, 'OpportunityTriggers::createInFogbugz() - Could not find opportunity just created (???)');
     	}
-    }
-
-    private static Opportunity fetchOpportunity(Id opportunityId) {
-        Opportunity[] ops = [select Id,
-                                    Name,
-                                    Owner.Name,
-                                    Owner.Email,
-                                    Owner.Id,
-                                    StageName,
-                                    Fogbugz_Ticket_Number__c
-                             from Opportunity
-                             where Id = :opportunityId];
-    	
-    	return !ops.isEmpty() ? ops[0] : null;
     }
 }

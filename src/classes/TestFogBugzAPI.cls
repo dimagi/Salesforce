@@ -92,4 +92,12 @@ public class TestFogBugzAPI {
         System.assertEquals(TEST_FB_ID, api.updateCase(fbCase), 'FB case id does not match');
     }
 
+    static testMethod void testAddNote() {
+        FogBugzHTTPMock fakeHTTP = new FogBugzHTTPMock(UPSERT_CASE_RESPONSE);
+        Test.setMock(HttpCalloutMock.class, fakeHTTP);
+        
+        FogBugzAPI api = new FogBugzAPI();
+        System.assertEquals(TEST_FB_ID, api.addNote(TEST_FB_ID, 'Dummy text'), 'Something went wrong while adding notes');
+    }
+
 }

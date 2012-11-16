@@ -26,7 +26,21 @@ public with sharing class FogBugzUtils {
         
         return fbCase;
     }
-    
+
+    public static Opportunity fetchOpportunity(Id opportunityId) {
+        Opportunity[] ops = [select Id,
+                                    Name,
+                                    Owner.Name,
+                                    Owner.Email,
+                                    Owner.Id,
+                                    StageName,
+                                    Fogbugz_Ticket_Number__c
+                             from Opportunity
+                             where Id = :opportunityId];
+        
+        return !ops.isEmpty() ? ops[0] : null;
+    }
+
     public static Datetime parseRFC822UTCTime(String timeString) {
     	return Datetime.valueOfGmt(timeString.replace('T', ' ').removeEnd('Z'));
     }

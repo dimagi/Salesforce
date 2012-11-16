@@ -77,9 +77,26 @@ public with sharing class FogBugzAPI {
         HTTP connection = new HTTP();
         HTTPResponse res = connection.send(req);
         
-        return parseUpsertId(res.getBody());		
+        return parseUpsertId(res.getBody());
 	}
 
+    public String addNote(String caseId, String note) {
+        Map<String, String> params = new Map<String, String> {
+            'cmd' => 'edit',
+            'ixBug' => caseId,
+            'sEvent' => note
+        };
+
+        HTTPRequest req = new HttpRequest();
+        req.setEndpoint(FB_API_URL + 'token=' + FB_TOKEN + '&' + encodeParameters(params));
+        req.setMethod('GET');
+        
+        HTTP connection = new HTTP();
+        HTTPResponse res = connection.send(req);
+
+        return parseUpsertId(res.getBody());
+    }
+    
     /**
      * Encodes request parameters to be passed on GET URL or POST body
      */	

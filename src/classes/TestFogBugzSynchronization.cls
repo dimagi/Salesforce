@@ -31,13 +31,8 @@ public class TestFogBugzSynchronization {
 
         Test.startTest();
 
-        Opportunity o = new Opportunity(
-            Name = 'Test name',
-            StageName = 'Test stage',
-            CloseDate = Date.today()
-        );
+        Opportunity o = createTestOpportunity(null);
         
-        insert o;
         Test.stopTest();
         
         Opportunity refreshed = [select Id,
@@ -48,17 +43,23 @@ public class TestFogBugzSynchronization {
         System.assertEquals(TestFogBugzAPI.TEST_FB_ID, refreshed.Fogbugz_Ticket_Number__c, 'FogBugz id was not updated on Opportunity');
     }
     
-    static testMethod void testFB2SFSyncExistentCase() {
-    	
+    static Opportunity createTestOpportunity(String fbCaseId) {
         Opportunity o = new Opportunity(
             Name = 'Change me',
             StageName = 'Change me',
             CloseDate = Date.today(),
             Fogbugz_Assigned_To__c = 'Change me',
-            Fogbugz_Ticket_Number__c = TestFogBugzAPI.TEST_FB_ID
+            Fogbugz_Ticket_Number__c = fbCaseId
         );
         
         insert o;
+
+        return o;    	
+    }
+
+    static testMethod void testFB2SFSyncExistentCase() {
+    	
+    	Opportunity o = createTestOpportunity(TestFogBugzAPI.TEST_FB_ID);
         
         FogBugzSynchronizer synchronizer = new FogBugzSynchronizer();
         synchronizer.testMode = true;
@@ -94,5 +95,17 @@ public class TestFogBugzSynchronization {
     	FogBugzSynchronizer synchronizer = new FogBugzSynchronizer();
     	synchronizer.synchronize();
     	Test.stopTest();
+    }
+    
+    static testMethod void testFB2SFSyncNote() {
+    	
+    	// We can just do coverage here, as we cannot perform callouts to check the
+    	// note was created in SF
+    	Opportunity o = createTestOpportunity(TestFogBugzAPI.TEST_FB_ID);
+    	
+    	Task t = new Task(Description = 'Test',
+                          Priority = 'Normal',
+                          Status = 'Test',
+                          Subject = 'Test subject');
     }
 }
