@@ -15,4 +15,5 @@ public with sharing class FogBugzCase {
     public String externalBugID {get;set;}
     public String caseId {get; set;}
     public Datetime lastModifiedDate {get; set;}
+    public String latestEvent {get; set;}
 }

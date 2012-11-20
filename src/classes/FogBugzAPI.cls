@@ -8,7 +8,7 @@ public with sharing class FogBugzAPI {
 	
 	private static final String    FB_API_URL          = 'https://manage.dimagi.com/api.asp?';
 	private static final String    FB_TOKEN            = 'p0dcc843cnbkhart9mroa53qjlkb58';
-    private static final String    FB_CASE_COLS        = 'sTitle,sArea,sPersonAssignedTo,sVersion,dtLastUpdated,tags'; 
+    private static final String    FB_CASE_COLS        = 'sTitle,sArea,sPersonAssignedTo,sVersion,dtLastUpdated,latestEvent'; 
 
     public Map<String, FogBugzCase> getCases() {
 
@@ -180,7 +180,13 @@ public with sharing class FogBugzAPI {
   					system.debug(LoggingLevel.ERROR, 'ERROR - FogBugzAPI::parseCase() - ' + e.getMessage());  
 				}
 			}
-		}	
+		}
+		
+		XMLDom.Element[] events = caseNode.getElementsByTagName('event');
+		
+		if (!events.isEmpty()) {
+			fbCase.latestEvent = events[0].getElementByTagName('s').nodeValue;
+		}
 		
 		return fbCase;
 	}

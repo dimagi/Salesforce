@@ -52,6 +52,10 @@ global class FogBugzSynchronizer implements Schedulable {
 	            if (fbCase.lastModifiedDate != null) {
 	                o.Fogbugz_Last_Updated_Date__c = fbCase.lastModifiedDate.date();
 	            }
+	            
+	            if (fbCase.latestEvent != null) {
+	            	o.Description = fbCase.latestEvent;
+	            }
 	                
 	            if (o.Id == null) {
 	                o.CloseDate = Date.today();
