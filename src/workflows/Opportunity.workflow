@@ -17,7 +17,10 @@
             <type>Alert</type>
         </actions>
         <active>true</active>
-        <formula>1=1</formula>
-        <triggerType>onCreateOnly</triggerType>
+        <criteriaItems>
+            <field>Opportunity.Fogbugz_Ticket_Number__c</field>
+            <operation>notEqual</operation>
+        </criteriaItems>
+        <triggerType>onCreateOrTriggeringUpdate</triggerType>
     </rules>
 </Workflow>
