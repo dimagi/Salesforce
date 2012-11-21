@@ -5,6 +5,7 @@
         <name>ApexClass</name>
     </types>
     <types>
+        <members>FogBugz</members>
         <members>TestSync</members>
         <name>ApexPage</name>
     </types>
