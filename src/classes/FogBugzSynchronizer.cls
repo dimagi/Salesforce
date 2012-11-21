@@ -30,7 +30,7 @@ global class FogBugzSynchronizer implements Schedulable {
 
         if (fbIdToCaseMap.size() > 0) {
 	        Opportunity[] newOpportunities = new Opportunity[]{};
-	        Map<String, Opportunity> existentOpportunities = fetchExistentOpportunities(fbIdToCaseMap.keySet());
+	        Map<String, Opportunity> existentOpportunities = FogBugzUtils.fetchOpportunitiesByFBId(fbIdToCaseMap.keySet());
 	    
 	        for (String caseId:fbIdToCaseMap.keySet()) {
 	                
@@ -73,30 +73,4 @@ global class FogBugzSynchronizer implements Schedulable {
 	        }
         }
     }
-    
-    /**
-     * Returns cases that already exist as opportunities in SF, mapped by FB Id
-     */
-    private Map<String, Opportunity> fetchExistentOpportunities(Set<String> fbCaseIds) {
-        
-        Map<String, Opportunity> res = new Map<String, Opportunity>();
-        
-        for (Opportunity o:[select Id,
-                                   Name,
-                                   Owner.Name,
-                                   Owner.Id,
-                                   StageName,
-                                   Amount,
-                                   Probability,
-                                   Fogbugz_Ticket_Number__c,
-                                   Fogbugz_Assigned_To__c
-                            from Opportunity
-                            where Fogbugz_Ticket_Number__c in :fbCaseIds]) {
-            
-            res.put(o.Fogbugz_Ticket_Number__c, o);                     
-        }
-        
-        return res;
-    }
-
 }

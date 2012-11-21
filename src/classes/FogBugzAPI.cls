@@ -8,7 +8,7 @@ public with sharing class FogBugzAPI {
 	
 	private static final String    FB_API_URL          = 'https://manage.dimagi.com/api.asp?';
 	private static final String    FB_TOKEN            = 'p0dcc843cnbkhart9mroa53qjlkb58';
-    private static final String    FB_CASE_COLS        = 'sTitle,sArea,sPersonAssignedTo,sVersion,dtLastUpdated,latestEvent'; 
+    private static final String    FB_CASE_COLS        = 'sTitle,sArea,sPersonAssignedTo,sVersion,dtLastUpdated,latestEvent,tags'; 
 
     public Map<String, FogBugzCase> getCases() {
 
@@ -26,6 +26,26 @@ public with sharing class FogBugzAPI {
         else {
         	System.debug(LoggingLevel.ERROR, 'FogBugzAPI::getCases() - Error while retrieving cases');
         	return new Map<String, FogBugzCase>();
+        }
+    }
+    
+    public FogBugzCase getCase(String caseId) {
+
+        HTTPRequest req = new HTTPRequest();
+        req.setEndpoint(FB_API_URL + '&token=' + FB_TOKEN + '&cmd=search&cols=' + FB_CASE_COLS + '&q=' + caseId);
+        req.setMethod('GET');
+        
+        HTTP connection = new HTTP();
+
+        HTTPResponse res = connection.send(req);
+        
+        if (res.getBody() != null) {
+            Map<String,FogBugzCase> cases = parseCases(res.getBody());
+            return cases.size() > 0 ? cases.values()[0] : null;
+        }
+        else {
+            System.debug(LoggingLevel.ERROR, 'FogBugzAPI::getCase() - Error while retrieving case with Id ' + caseId);
+            return null;
         }
     }
     
