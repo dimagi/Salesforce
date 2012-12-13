@@ -10,6 +10,6 @@
 trigger OpportunityToCase on Opportunity (after insert) {
 
     if (Trigger.new[0].Fogbugz_Ticket_Number__c == null) {
-    	OpportunityTriggers.createInFogbugz(Trigger.new[0].Id);
+        OpportunityTriggers.createInFogbugz(Trigger.new[0].Id);
     }
 }

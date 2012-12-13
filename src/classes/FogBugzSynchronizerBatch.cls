@@ -5,7 +5,7 @@
  * @author  Antonio Grassi
  * @date    11/15/2012
  */
-global with sharing class FogBugzSynchronizerBatch implements Database.Batchable<Opportunity>, Database.AllowsCallouts {
+global without sharing class FogBugzSynchronizerBatch implements Database.Batchable<Opportunity>, Database.AllowsCallouts {
 
     /**
      * We define a custom iterator to traverse the new opportunities
@@ -59,19 +59,53 @@ global with sharing class FogBugzSynchronizerBatch implements Database.Batchable
         FogBugzAPI api = new FogBugzAPI();
         
         for (Opportunity o:scope) {
-            
-            // We update the externalBugId field in FB
-            FogBugzCase fbCase = FogBugzUtils.createFBCaseFromOpportunity(o);
-            
-            String res = Test.isRunningTest() ? 'testFBId' : api.updateCase(fbCase);
-            
-            if (res == null) {
-                System.debug(LoggingLevel.ERROR, 'FB2SFSynchronizer::execute() - Error while updating FB case #' + fbCase.caseId);
+
+            // Determine SF owner for new opportunities             
+            if (o.Fogbugz_Opened_By__c != null) {
+
+                Boolean ownerFound = false;
+                String userMail = Test.isRunningTest() ? 'do@not.exist.com' : api.getPersonEmail(o.Fogbugz_Opened_By__c);
+                            
+                if (userMail != null) {
+                    
+                    User[] us = [select Id from User where Email = :userMail];
+                    
+                    if (!us.isEmpty()) {
+                        System.debug(LoggingLevel.INFO, 'FogBugzSynchronizerBatch::execute() - Found user ' + userMail);
+                        o.OwnerId = us[0].Id;
+                        ownerFound = true;
+                    }
+                    else {
+                        System.debug(LoggingLevel.INFO, 'FogBugzSynchronizerBatch::execute() - User ' + userMail + 'does not exist in SF');
+                    }
+                }
+                else {
+                    System.debug(LoggingLevel.INFO,
+                                 'FogBugzSynchronizerBatch::execute() - Could not retrieve user email for ' + o.Fogbugz_Opened_By__c);
+                }
+                
+                if (!ownerFound) {
+                        
+                    User[] us = [select Id from User where Username = :FogBugz_Settings__c.getOrgDefaults().Default_Opportunity_Owner__c];
+                        
+                    if (!us.isEmpty()) {
+                        o.OwnerId = us[0].Id;
+                    }
+                    else {
+                        System.debug(LoggingLevel.WARN, 'FogBugzSynchronizerBatch::execute() - Cannot find default owner: ' +
+                                     FogBugz_Settings__c.getOrgDefaults().Default_Opportunity_Owner__c);
+                    }
+                }
             }
+            
+            // Now we fetch the latest case details from FB into the oppty
+            FogBugzUtils.syncOpportunityFromFB(o);
         }
     }
     
     global void finish(Database.BatchableContext bc) {
-        // Nothing to do here
+        FogBugz_Settings__c fbSettings = FogBugz_Settings__c.getOrgDefaults();
+        fbSettings.Sync_Script_Running__c = false;
+        update fbSettings;
     }
 }

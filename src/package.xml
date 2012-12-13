@@ -6,7 +6,8 @@
     </types>
     <types>
         <members>FogBugz</members>
-        <members>TestSync</members>
+        <members>RunFBSync</members>
+        <members>RunFBSyncSingle</members>
         <name>ApexPage</name>
     </types>
     <types>
@@ -14,6 +15,7 @@
         <name>ApexTrigger</name>
     </types>
     <types>
+        <members>FogBugz_Settings__c</members>
         <members>Opportunity</members>
         <name>CustomObject</name>
     </types>

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Layout xmlns="http://soap.sforce.com/2006/04/metadata">
+    <customButtons>Sync_with_FB_single</customButtons>
     <excludeButtons>Submit</excludeButtons>
     <headers>PersonalTagging</headers>
     <headers>PublicTagging</headers>
@@ -90,6 +91,14 @@
             <layoutItems>
                 <behavior>Readonly</behavior>
                 <field>Fogbugz_Last_Updated_Date__c</field>
+            </layoutItems>
+            <layoutItems>
+                <behavior>Edit</behavior>
+                <field>Fogbugz_Probability__c</field>
+            </layoutItems>
+            <layoutItems>
+                <behavior>Edit</behavior>
+                <field>Fogbugz_Most_Recent_Note__c</field>
             </layoutItems>
         </layoutColumns>
         <layoutColumns>

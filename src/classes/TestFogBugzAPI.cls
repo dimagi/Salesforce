@@ -21,6 +21,7 @@ public class TestFogBugzAPI {
                                                     '<sVersion><![CDATA[testSFId]]></sVersion>' +
                                                     '<dtLastUpdated>2012-1-1T00:00:00Z</dtLastUpdated>' +
                                                     '<tags><tag><![CDATA[[1/1]]]></tag></tags>' +
+                                                    '<ixPersonOpenedBy>1</ixPersonOpenedBy>' +
                                                     '</case></cases>' +
                                                     '</response>';
 
@@ -37,18 +38,30 @@ public class TestFogBugzAPI {
         System.assertEquals(SET_CURRENT_FILTER_RESPONSE, api.setCurrentFilter(1), 'setCurrentFilter failed');
     }
     
-    static testMethod void testGetCases() {
+    static testMethod void testListCases() {
+        FogBugzHTTPMock fakeHTTP = new FogBugzHTTPMock(GET_CASES_RESPONSE);
+        Test.setMock(HttpCalloutMock.class, fakeHTTP);
+        
+        FogBugzAPI api = new FogBugzAPI();
+        Map<String, FogBugzCase> cases = api.listCases();
+        
+        System.assertEquals(1, cases.size(), 'Number of cases do not match');
+
+        FogBugzCase fbCase = cases.values()[0];
+        
+        System.assertEquals(TEST_FB_ID, fbCase.caseId, 'FB case id does not match');
+        System.assertEquals('1', fbCase.ixPersonOpenedBy, 'FB person opened by does not match');
+    }
+
+    static testMethod void testGetCase() {
         
         FogBugzHTTPMock fakeHTTP = new FogBugzHTTPMock(GET_CASES_RESPONSE);
         Test.setMock(HttpCalloutMock.class, fakeHTTP);
         
         FogBugzAPI api = new FogBugzAPI();
-        Map<String, FogBugzCase> cases = api.getCases();
+        FogBugzCase fbCase = api.getCase(TEST_FB_ID);
         
-        System.assertEquals(1, cases.size(), 'Expected one case');
-        
-        FogBugzCase fbCase = cases.values()[0];
-        
+        System.assertNotEquals(null, fbCase, 'FB case was not retrieved');
         System.assertEquals(TEST_FB_ID, fbCase.caseId, 'FB case id does not match');
         System.assertEquals('Test title', fbCase.title, 'FB case title does not match');
         System.assertEquals('Test area', fbCase.area, 'FB case area does not match');
@@ -57,6 +70,7 @@ public class TestFogBugzAPI {
         System.assertEquals(Datetime.newInstanceGMT(2012, 1, 1, 0, 0, 0), fbCase.lastModifiedDate, 'FB case last modified date does not match');
         System.assertEquals(1, fbCase.probability, 'FB case probability does not match');
         System.assertEquals(1, fbCase.dealSize, 'FB case deal size does not match');
+        System.assertEquals('1', fbCase.ixPersonOpenedBy, 'FB person opened by does not match');
     }
     
     static testMethod void testCreateCase() {

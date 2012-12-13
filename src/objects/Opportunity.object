@@ -69,6 +69,36 @@
         <type>Date</type>
     </fields>
     <fields>
+        <fullName>Fogbugz_Most_Recent_Note__c</fullName>
+        <externalId>false</externalId>
+        <inlineHelpText>The most recent update to Fogbugz ticket.</inlineHelpText>
+        <label>Fogbugz Most Recent Note</label>
+        <length>32768</length>
+        <trackFeedHistory>false</trackFeedHistory>
+        <type>LongTextArea</type>
+        <visibleLines>5</visibleLines>
+    </fields>
+    <fields>
+        <fullName>Fogbugz_Opened_By__c</fullName>
+        <externalId>false</externalId>
+        <label>Fogbugz Opened By</label>
+        <length>50</length>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Fogbugz_Probability__c</fullName>
+        <externalId>false</externalId>
+        <label>Fogbugz Probability</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackFeedHistory>false</trackFeedHistory>
+        <type>Percent</type>
+    </fields>
+    <fields>
         <fullName>Fogbugz_Ticket_Number__c</fullName>
         <externalId>true</externalId>
         <inlineHelpText>The ticket number of the corresponding Fogbugz ticket.</inlineHelpText>
@@ -446,4 +476,27 @@
         </filters>
         <label>Won</label>
     </listViews>
+    <webLinks>
+        <fullName>Sync_with_FB_multi</fullName>
+        <availability>online</availability>
+        <displayType>massActionButton</displayType>
+        <height>600</height>
+        <linkType>page</linkType>
+        <masterLabel>Sync all with FogBugz</masterLabel>
+        <openType>sidebar</openType>
+        <page>RunFBSync</page>
+        <protected>false</protected>
+        <requireRowSelection>true</requireRowSelection>
+    </webLinks>
+    <webLinks>
+        <fullName>Sync_with_FB_single</fullName>
+        <availability>online</availability>
+        <displayType>button</displayType>
+        <height>600</height>
+        <linkType>page</linkType>
+        <masterLabel>Sync with FogBugz</masterLabel>
+        <openType>sidebar</openType>
+        <page>RunFBSyncSingle</page>
+        <protected>false</protected>
+    </webLinks>
 </CustomObject>

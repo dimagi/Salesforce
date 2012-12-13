@@ -22,11 +22,11 @@ trigger TaskToCaseNote on Task (after insert) {
                     and What.Type = 'Opportunity'];
 
     if (!tasks.isEmpty()) {
-    	
-    	Opportunity o = [select Fogbugz_Ticket_Number__c from Opportunity where Id = :tasks[0].WhatId];
-    	
-    	if (o.Fogbugz_Ticket_Number__c != null) {
+        
+        Opportunity o = [select Fogbugz_Ticket_Number__c from Opportunity where Id = :tasks[0].WhatId];
+        
+        if (o.Fogbugz_Ticket_Number__c != null) {
             TaskTriggers.addNoteInFogBugz(tasks[0].Id);
-    	}
+        }
     }
 }

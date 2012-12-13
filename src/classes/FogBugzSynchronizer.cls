@@ -4,73 +4,85 @@
  * @author  Antonio Grassi
  * @date    11/14/2012
  */
-global class FogBugzSynchronizer implements Schedulable {
+global without sharing class FogBugzSynchronizer implements Schedulable {
 
     public Boolean testMode = false;
     
-    private static final Integer    FB_BIZ_FILTER_ID    = 287;
-    // @fixme - This is the real filter, uncomment once tested
-    //private static final Integer   FB_BIZ_FILTER_ID    = 114;
-
     global void execute(SchedulableContext SC) {
-    	synchronize();
+    	FogBugz_Settings__c fbSettings = FogBugz_Settings__c.getOrgDefaults();
+    	
+    	if (!fbSettings.Sync_Script_Running__c) {
+            synchronize();
+    	}
     }
     
     public void synchronize() {
 
+        FogBugz_Settings__c fbSettings = FogBugz_Settings__c.getOrgDefaults();
+        fbSettings.Sync_Script_Running__c = true;
+        
         FogBugzAPI api = new FogBugzAPI();
 
         if (!testMode) {
-            api.setCurrentFilter(FB_BIZ_FILTER_ID);
+            api.setCurrentFilter(fbSettings.Sync_Filter__c.intValue());
         }
         
         Map<String, FogBugzCase> fbIdToCaseMap = testMode ?
                                                  api.parseCases(TestFogBugzAPI.GET_CASES_RESPONSE) :
-                                                 api.getCases();
+                                                 api.listCases();
+
+        // We delay a little this upsert to avoid the "uncommitted work pending" exception when performing the FB API HTTP requests
+        upsert fbSettings;
 
         if (fbIdToCaseMap.size() > 0) {
+        	
+	        Opportunity[] allOpportunities = new Opportunity[]{};
 	        Opportunity[] newOpportunities = new Opportunity[]{};
+	        
 	        Map<String, Opportunity> existentOpportunities = FogBugzUtils.fetchOpportunitiesByFBId(fbIdToCaseMap.keySet());
-	    
+            
 	        for (String caseId:fbIdToCaseMap.keySet()) {
-	                
-	            Opportunity o = existentOpportunities.containsKey(caseId) ?
-	                            existentOpportunities.get(caseId) :
-	                            new Opportunity();
-	                
-	            FogBugzCase fbCase = fbIdToCaseMap.get(caseId);
-	                
-	            o.StageName = fbCase.area;
-	            o.Fogbugz_Assigned_To__c = fbCase.assignedTo;
-	            // @fixme - Client field?
-	            // o.Fogbugz_Client__c = ???
-	            o.Fogbugz_Ticket_Number__c = fbCase.caseId;
-	            o.Name = fbCase.title;
-	            o.Amount = fbCase.dealSize;
-	            o.Probability = fbCase.probability;
-	
-	            if (fbCase.lastModifiedDate != null) {
-	                o.Fogbugz_Last_Updated_Date__c = fbCase.lastModifiedDate.date();
-	            }
-	            
-	            if (fbCase.latestEvent != null) {
-	            	o.Description = fbCase.latestEvent;
-	            }
-	                
-	            if (o.Id == null) {
-	                o.CloseDate = Date.today();
-	                newOpportunities.add(o);
-	            }
+
+                Opportunity o = null;
+                
+                if (existentOpportunities.containsKey(caseId)) {
+                	o = existentOpportunities.get(caseId);
+                }
+                else {
+                	FogBugzCase fbCase = fbIdToCaseMap.get(caseId);
+                	
+                	o = new Opportunity(
+                	    Name = 'Synchronizing',
+                        StageName = 'Synchronizing',
+                        Fogbugz_Ticket_Number__c = fbCase.caseId,
+                        Fogbugz_Opened_By__c = fbCase.ixPersonOpenedBy,
+                        CloseDate = Date.today()
+                	);
+                	
+                	newOpportunities.add(o);
+                }
+                
+                allOpportunities.add(o);
+
 	        }
-	            
-	        update existentOpportunities.values();
-	            
-	        if (!newOpportunities.isEmpty()) {
-	            insert newOpportunities;
-	            
-	            // We use a batch job to update the externalBugId field in FB, as this potentially requires more than 20 callouts
-	            Database.executeBatch(new FogBugzSynchronizerBatch(newOpportunities), 1);
+
+            if (!newOpportunities.isEmpty()) {
+            	insert newOpportunities;
+            }
+            
+	        if (!allOpportunities.isEmpty()) {
+	            // We use a batch job to finish the synchronization, to avoid hitting the max script statements &
+	            // max HTTP callouts limits
+	            Database.executeBatch(new FogBugzSynchronizerBatch(allOpportunities), 1);
 	        }
+	        else {
+	        	fbSettings.Sync_Script_Running__c = false;
+	        	update fbSettings;
+	        }
+        }
+        else {
+            fbSettings.Sync_Script_Running__c = false;
+            update fbSettings;
         }
     }
 }
