@@ -10,6 +10,8 @@ public with sharing class FogBugzAPI {
 	private static final String    FB_LIST_COLS        = 'ixPersonOpenedBy';
     private static final String    FB_CASE_COLS        = 'sTitle,sArea,sPersonAssignedTo,sVersion,dtLastUpdated,latestEvent,tags,ixPersonOpenedBy'; 
 
+    private static final Integer   FB_HTTP_TIMEOUT     = 60000;
+    
     /**
      * Retrieves list of cases on the current filter. For each case, we just get its
      * Id and last modified date. 
@@ -18,8 +20,9 @@ public with sharing class FogBugzAPI {
 
         HTTPRequest req = new HTTPRequest();
         req.setEndpoint(FB_API_URL + '&token=' + FogBugz_Settings__c.getOrgDefaults().Token__c + '&cmd=search&cols=' + FB_LIST_COLS);
+        req.setTimeout(FB_HTTP_TIMEOUT);
         req.setMethod('GET');
-        
+
         HTTP connection = new HTTP();
 
         HTTPResponse res = connection.send(req);
@@ -32,27 +35,6 @@ public with sharing class FogBugzAPI {
             return new Map<String, FogBugzCase>();
         }
     }
-
-    /*
-    public Map<String, FogBugzCase> getCases() {
-
-        HTTPRequest req = new HTTPRequest();
-        req.setEndpoint(FB_API_URL + '&token=' + FogBugz_Settings__c.getOrgDefaults().Token__c + '&cmd=search&cols=' + FB_CASE_COLS);
-        req.setMethod('GET');
-        
-        HTTP connection = new HTTP();
-
-        HTTPResponse res = connection.send(req);
-        
-        if (res.getBody() != null) {
-        	return parseCases(res.getBody());
-        }
-        else {
-        	System.debug(LoggingLevel.ERROR, 'FogBugzAPI::getCases() - Error while retrieving cases');
-        	return new Map<String, FogBugzCase>();
-        }
-    }
-    */
     
     public FogBugzCase getCase(String caseId) {
 
@@ -60,6 +42,7 @@ public with sharing class FogBugzAPI {
         req.setEndpoint(FB_API_URL + '&token=' + FogBugz_Settings__c.getOrgDefaults().Token__c +
                         '&cmd=search&cols=' + FB_CASE_COLS + '&q=' + caseId);
                         
+        req.setTimeout(FB_HTTP_TIMEOUT);
         req.setMethod('GET');
         
         HTTP connection = new HTTP();
@@ -81,6 +64,7 @@ public with sharing class FogBugzAPI {
         req.setEndpoint(FB_API_URL + 'token=' + FogBugz_Settings__c.getOrgDefaults().Token__c +
                         '&cmd=setCurrentFilter&sFilter=' + filterId.format());
                         
+        req.setTimeout(FB_HTTP_TIMEOUT);
         req.setMethod('GET');
         
         HTTP connection = new HTTP();
@@ -103,6 +87,7 @@ public with sharing class FogBugzAPI {
 		
 		HTTPRequest req = new HttpRequest();
 		req.setEndpoint(FB_API_URL + 'token=' + FogBugz_Settings__c.getOrgDefaults().Token__c + '&' + encodeParameters(params));
+        req.setTimeout(FB_HTTP_TIMEOUT);
 		req.setMethod('GET');
 		
 		HTTP connection = new HTTP();
@@ -121,6 +106,7 @@ public with sharing class FogBugzAPI {
         
         HTTPRequest req = new HttpRequest();
         req.setEndpoint(FB_API_URL + 'token=' + FogBugz_Settings__c.getOrgDefaults().Token__c + '&' + encodeParameters(params));
+        req.setTimeout(FB_HTTP_TIMEOUT);
         req.setMethod('GET');
         
         HTTP connection = new HTTP();
@@ -138,6 +124,7 @@ public with sharing class FogBugzAPI {
 
         HTTPRequest req = new HttpRequest();
         req.setEndpoint(FB_API_URL + 'token=' + FogBugz_Settings__c.getOrgDefaults().Token__c + '&' + encodeParameters(params));
+        req.setTimeout(FB_HTTP_TIMEOUT);
         req.setMethod('GET');
         
         HTTP connection = new HTTP();
@@ -154,6 +141,7 @@ public with sharing class FogBugzAPI {
 
         HTTPRequest req = new HttpRequest();
         req.setEndpoint(FB_API_URL + 'token=' + FogBugz_Settings__c.getOrgDefaults().Token__c + '&' + encodeParameters(params));
+        req.setTimeout(FB_HTTP_TIMEOUT);
         req.setMethod('GET');
         
         HTTP connection = new HTTP();
