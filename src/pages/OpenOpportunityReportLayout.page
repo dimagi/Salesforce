@@ -1,0 +1,65 @@
+<apex:page controller="OpenOpportunityReportUIController" action="{!initAction}"> 
+
+<apex:form >
+    <apex:pageBlock title="Open Opportunities">
+    
+        <apex:outputPanel layout="block" id="messages">
+            <apex:pageMessages ></apex:pageMessages>
+        </apex:outputPanel>
+             
+        <apex:pageBlockSection title="Mail Options" collapsible="false" columns="1">
+        
+            <apex:pageBlockSection columns="1">    
+
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="Run Report for the following users:"/>                 
+                </apex:pageBlockSectionItem>
+
+                <apex:pageBlockSectionItem >                
+                    <apex:selectList value="{!selectedUsers}" multiselect="true" size="3"> 
+                        <apex:selectOptions value="{!users}"></apex:selectOptions>
+                    </apex:selectList>
+                </apex:pageBlockSectionItem>
+
+                <apex:pageBlockSectionItem >    
+                    <apex:commandButton action="{!reload}" value="  Refresh  " rerender="mainPanelContainer,messages"></apex:commandButton>
+                </apex:pageBlockSectionItem>
+	            
+            </apex:pageBlockSection>
+
+        </apex:pageBlockSection>
+        
+        <apex:outputPanel layout="block" id="mainPanelContainer">
+        <apex:repeat value="{!stagedListData}" var="stage">
+            <apex:pageBlockSection title="{!stage.stageName}" columns="1" >        
+	            <c:OpenOpportunityReportTable stageComponent="{!stage}"></c:OpenOpportunityReportTable>
+	            <apex:outputLabel value="Comments"></apex:outputLabel>
+	            <apex:inputTextarea value="{!stagedComments[stage.stageName]}" style="width:100%" rows="5"></apex:inputTextarea>
+            </apex:pageBlockSection>	            
+        </apex:repeat>
+        </apex:outputPanel>
+        
+        <apex:pageBlockSection title="Send Report" collapsible="false" columns="1">
+        
+            <apex:pageBlockSection columns="1">
+
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="Recipients (separated by comma):"/>                 
+                </apex:pageBlockSectionItem>
+                
+                <apex:pageBlockSectionItem >
+                <apex:inputTextarea value="{!recipients}" rows="2" style="width:50%"/>
+                </apex:pageBlockSectionItem>
+
+                <apex:pageBlockSectionItem >    
+                    <apex:commandButton action="{!sendEmail}" value="  Email Report  "></apex:commandButton>
+                </apex:pageBlockSectionItem>
+                
+            </apex:pageBlockSection>
+
+        </apex:pageBlockSection>        
+        
+    </apex:pageBlock>     
+</apex:form>
+
+</apex:page>
