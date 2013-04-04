@@ -7,6 +7,8 @@
  */
 global without sharing class FogBugzSynchronizerBatch implements Database.Batchable<Opportunity>, Database.AllowsCallouts {
 
+    public final Boolean testMode;
+
     /**
      * We define a custom iterator to traverse the new opportunities
      */
@@ -45,14 +47,19 @@ global without sharing class FogBugzSynchronizerBatch implements Database.Batcha
      * The batch job code starts here
      */
 
-    final Opportunity[] newOpportunities;
+    //final Opportunity[] newOpportunities;
     
-    public FogBugzSynchronizerBatch(Opportunity[] newOpportunities) {
-        this.newOpportunities = newOpportunities;
+    public FogBugzSynchronizerBatch(Boolean testMode) {
+    	this.testMode = testMode;
     }
-    
+        
     global Iterable<Opportunity> start(Database.BatchableContext BC) {
-        return new OpportunityIterable(newOpportunities);
+    	FogBugz_Settings__c settings = FogBugz_Settings__c.getOrgDefaults();
+    	Datetime thisTime = Datetime.now();
+    	Opportunity[] modifiedOps = preFetchOpportunities(settings.Last_Time_Sync_Ran__c);
+        settings.Last_Time_Sync_Ran__c = thisTime;
+        upsert settings;
+        return new OpportunityIterable(modifiedOps);
     }
     
     global void execute(Database.BatchableContext bc, List<Opportunity> scope) {
@@ -101,6 +108,69 @@ global without sharing class FogBugzSynchronizerBatch implements Database.Batcha
             // Now we fetch the latest case details from FB into the oppty
             FogBugzUtils.syncOpportunityFromFB(o);
         }
+    }
+    
+    private Opportunity[] preFetchOpportunities(Datetime minTime) {
+
+        Opportunity[] allOpportunities = new Opportunity[]{};
+        Opportunity[] newOpportunities = new Opportunity[]{};
+
+        FogBugz_Settings__c fbSettings = FogBugz_Settings__c.getOrgDefaults();
+        fbSettings.Sync_Script_Running__c = true;
+        
+        FogBugzAPI api = new FogBugzAPI();
+
+        if (!testMode) {
+            api.setCurrentFilter(fbSettings.Sync_Filter__c.intValue());
+        }
+        
+        Map<String, FogBugzCase> fbIdToCaseMap = testMode ?
+                                                 api.parseCases(TestFogBugzAPI.GET_CASES_RESPONSE) :
+                                                 api.listCases();
+
+        // We delay a little this upsert to avoid the "uncommitted work pending" exception when performing the FB API HTTP requests
+        upsert fbSettings;
+
+        if (fbIdToCaseMap.size() > 0) {
+            
+            Map<String, Opportunity> existentOpportunities = FogBugzUtils.fetchOpportunitiesByFBId(fbIdToCaseMap.keySet());
+            
+            for (String caseId:fbIdToCaseMap.keySet()) {
+
+                if (existentOpportunities.containsKey(caseId)) {
+                	
+                    Opportunity o = existentOpportunities.get(caseId);
+                    FogBugzCase c = fbIdToCaseMap.get(caseId);
+                    
+                    System.debug(LoggingLevel.INFO, 'Processing existent opportunity::' + o.Id + '-' + minTime + '-' + c.lastModifiedDate);
+                    
+                    if (minTime == null || c.lastModifiedDate == null || c.lastModifiedDate > minTime) {
+                    	allOpportunities.add(o);
+                    }
+                }
+                else {
+                    FogBugzCase fbCase = fbIdToCaseMap.get(caseId);
+                    
+                    System.debug(LoggingLevel.INFO, 'Processing new opportunity::' + minTime + '-' + fbCase.lastModifiedDate);
+                    Opportunity o = new Opportunity(
+                        Name = 'Synchronizing',
+                        StageName = 'Synchronizing',
+                        Fogbugz_Ticket_Number__c = fbCase.caseId,
+                        Fogbugz_Opened_By__c = fbCase.ixPersonOpenedBy,
+                        CloseDate = Date.today()
+                    );
+                    
+                    newOpportunities.add(o);
+                    allOpportunities.add(o);
+                }
+            }
+
+            if (!newOpportunities.isEmpty()) {
+                insert newOpportunities;
+            }
+        }
+        
+        return allOpportunities;
     }
     
     global void finish(Database.BatchableContext bc) {

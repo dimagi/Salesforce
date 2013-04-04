@@ -20,8 +20,7 @@ public with sharing class SyncController {
 	                                                   'The synchronization script is currently running'));
     	}
     	else {
-	        FogBugzSynchronizer synchronizer = new FogBugzSynchronizer();
-	        synchronizer.synchronize();
+	        Database.executeBatch(new FogBugzSynchronizerBatch(false), 1);
 	        
 	        ApexPages.addMessage(new ApexPages.Message(ApexPages.Severity.INFO,
 	                                                   'Check the opportunities in SF to see if they were updated, ' +
@@ -36,16 +35,15 @@ public with sharing class SyncController {
                                                        'Opportunity does not have a FogBugz ticket number'));
     	}
     	else {
-    		Boolean success = FogBugzUtils.syncOpportunityFromFB(o);
+    		Boolean success = FogBugzUtils.syncOpportunityFromFB(o, true);
     		
     		if (success) {
     			ApexPages.addMessage(new ApexPages.Message(ApexPages.Severity.CONFIRM,
                                                            'Opportunity successfully updated with current FogBugz details'));
     		}
     		else {
-	            ApexPages.addMessage(new ApexPages.Message(ApexPages.Severity.ERROR,
-	                                                       'Error while updating opportunity with current FogBugz details. Please check ' +
-	                                                       'the debug logs with details'));
+	            ApexPages.addMessage(new ApexPages.Message(ApexPages.Severity.INFO,
+	                                                       'Opportunity not updated, because FB case has not beed edited since last sync'));
     		}
     	}
     }

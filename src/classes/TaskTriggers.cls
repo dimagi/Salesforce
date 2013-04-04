@@ -25,7 +25,9 @@ public with sharing class TaskTriggers {
     			if (o.Fogbugz_Ticket_Number__c != null) {
     				FogBugzAPI api = new FogBugzAPI();
     				
-    				String res = Test.isRunningTest() ? TestFogBugzAPI.TEST_FB_ID : api.addNote(o.Fogbugz_Ticket_Number__c, t.Description);
+    				String res = Test.isRunningTest() ?
+    				             TestFogBugzAPI.TEST_FB_ID :
+    				             api.addNote(o.Fogbugz_Ticket_Number__c, t.Description == null ? '' : t.Description);
     				
     				if (res == null) {
     					System.debug(LoggingLevel.ERROR, 'TaskTriggers::addNoteInFogBugz() - Error while adding note to case');

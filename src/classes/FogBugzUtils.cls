@@ -4,7 +4,7 @@
  * @author  Antonio Grassi
  * @date    11/15/2012
  */
-public with sharing class FogBugzUtils {
+public without sharing class FogBugzUtils {
 
     private static final String     FOGBUGZ_CASE_PROJECT    = 'Business Development';
     private static final String     FOGBUGZ_CASE_STATUS     = 'Active';
@@ -41,7 +41,8 @@ public with sharing class FogBugzUtils {
                                     Fogbugz_Probability__c,
                                     Fogbugz_Ticket_Number__c,
                                     Fogbugz_Assigned_To__c,
-                                    Fogbugz_Opened_By__c
+                                    Fogbugz_Opened_By__c,
+                                    Fogbugz_Last_Updated_Date__c
                              from Opportunity
                              where Id = :opportunityId];
         
@@ -67,7 +68,8 @@ public with sharing class FogBugzUtils {
                                    Fogbugz_Probability__c,
                                    Fogbugz_Ticket_Number__c,
                                    Fogbugz_Assigned_To__c,
-                                   Fogbugz_Opened_By__c
+                                   Fogbugz_Opened_By__c,
+                                   Fogbugz_Last_Updated_Date__c
                             from Opportunity
                             where Fogbugz_Ticket_Number__c in :fbCaseIds]) {
             
@@ -82,6 +84,10 @@ public with sharing class FogBugzUtils {
     }
 
     public static Boolean syncOpportunityFromFB(Opportunity o) {
+    	return syncOpportunityFromFB(o, false);
+    }
+    
+    public static Boolean syncOpportunityFromFB(Opportunity o, Boolean checkTimes) {
 
         Boolean success = true;
         
@@ -94,43 +100,57 @@ public with sharing class FogBugzUtils {
             
         if (fbCase != null) {
 
-            if (o.Fogbugz_Opened_By__c != null) {
-                // Update externalBugId in FB for new opportunities
-                fbCase.externalBugID = o.Id;
-                
-                String res = Test.isRunningTest() ? 'testFBId' : api.updateCase(fbCase);
-                
-                if (res == null) {
-                    System.debug(LoggingLevel.ERROR, 'FB2SFSynchronizer::execute() - Error while updating FB case #' + fbCase.caseId);
-                }
+            if (!checkTimes || o.Fogbugz_Last_Updated_Date__c == null || fbCase.lastModifiedDate == null ||
+                fbCase.lastModifiedDate > o.Fogbugz_Last_Updated_Date__c) {
+                	
+	            if (o.Fogbugz_Opened_By__c != null) {
+	                // Update externalBugId in FB for new opportunities
+	                fbCase.externalBugID = o.Id;
+	                
+	                String res = Test.isRunningTest() ? 'testFBId' : api.updateCase(fbCase);
+	                
+	                if (res == null) {
+	                    System.debug(LoggingLevel.ERROR, 'FB2SFSynchronizer::execute() - Error while updating FB case #' + fbCase.caseId);
+	                }
+	            }
+	                
+	            o.StageName = fbCase.area == null ? null : (fbCase.area.length() > 40 ? fbCase.area.substring(0, 40) : fbCase.area);
+	            o.Fogbugz_Assigned_To__c = fbCase.assignedTo;
+	            // @fixme - Client field?
+	            // o.Fogbugz_Client__c = ???
+	            o.Name = fbCase.title == null ? null : (fbCase.title.length() > 120 ? fbCase.title.substring(0, 120) : fbCase.title);
+	            o.Amount = fbCase.dealSize;
+	            o.Fogbugz_Probability__c = fbCase.probability;
+	            o.Fogbugz_Opened_By__c = null;
+	    
+	    		// Added by Nick
+	    		// This is where I should store the product name
+	    		//
+	    		//
+	    
+	            if (fbCase.lastModifiedDate != null) {
+	                o.Fogbugz_Last_Updated_Date__c = fbCase.lastModifiedDate;
+	            }
+	                
+	            if (fbCase.latestEvent != null) {
+	                o.Fogbugz_Most_Recent_Note__c = fbCase.latestEvent;
+	            }
+	                    
+	            if (o.Id == null) {
+	                o.CloseDate = Date.today();
+	            }
+	
+	            upsert o;
             }
-                
-            o.StageName = fbCase.area == null ? null : (fbCase.area.length() > 40 ? fbCase.area.substring(0, 40) : fbCase.area);
-            o.Fogbugz_Assigned_To__c = fbCase.assignedTo;
-            // @fixme - Client field?
-            // o.Fogbugz_Client__c = ???
-            o.Name = fbCase.title == null ? null : (fbCase.title.length() > 120 ? fbCase.title.substring(0, 120) : fbCase.title);
-            o.Amount = fbCase.dealSize;
-            o.Fogbugz_Probability__c = fbCase.probability;
-            o.Fogbugz_Opened_By__c = null;
-    
-            if (fbCase.lastModifiedDate != null) {
-                o.Fogbugz_Last_Updated_Date__c = fbCase.lastModifiedDate.date();
+            else {
+	            System.debug(LoggingLevel.INFO,
+	                         'FogBugzUtils::syncOpportunityFromFB() - Case not updated in FB, case #' + o.Fogbugz_Ticket_Number__c);
+	            success = false;
             }
-                
-            if (fbCase.latestEvent != null) {
-                o.Fogbugz_Most_Recent_Note__c = fbCase.latestEvent;
-            }
-                    
-            if (o.Id == null) {
-                o.CloseDate = Date.today();
-            }
-
-            upsert o;
         }
         else {
             System.debug(LoggingLevel.WARN,
-                         'FogBugzSynchronizerBatch::execute() - Could not retrieve details for FB case #' + o.Fogbugz_Ticket_Number__c);
+                         'FogBugzUtils::syncOpportunityFromFB() - Could not retrieve details for FB case #' + o.Fogbugz_Ticket_Number__c);
             success = false;
         }
         

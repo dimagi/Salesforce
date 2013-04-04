@@ -79,9 +79,9 @@ public class TestFogBugzSynchronization {
     	Opportunity o = createTestOpportunity(TestFogBugzAPI.TEST_FB_ID);
         
         Test.startTest();
-        FogBugzSynchronizer synchronizer = new FogBugzSynchronizer();
-        synchronizer.testMode = true;
-        synchronizer.synchronize();
+
+        Database.executeBatch(new FogBugzSynchronizerBatch(true), 1);
+        
         Test.stopTest();
         
         Opportunity refreshed = [select Id,
@@ -95,7 +95,7 @@ public class TestFogBugzSynchronization {
                                         Fogbugz_Probability__c
                                  from Opportunity
                                  where Id = :o.Id];
-                                 
+
         System.assertEquals('Test area', refreshed.StageName, 'Opportunity stage not updated');
         System.assertEquals('Test assignee', refreshed.Fogbugz_Assigned_To__c, 'Assignee not updated');
         System.assertEquals('Test title', refreshed.Name, 'Name not updated');
@@ -113,9 +113,8 @@ public class TestFogBugzSynchronization {
     	FogBugzHTTPMock fakeHTTP = new FogBugzHTTPMock(TestFogBugzAPI.GET_CASES_RESPONSE);
         Test.setMock(HttpCalloutMock.class, fakeHTTP);
     	
-    	FogBugzSynchronizer synchronizer = new FogBugzSynchronizer();
-    	synchronizer.testMode = true;
-    	synchronizer.synchronize();
+        Database.executeBatch(new FogBugzSynchronizerBatch(true), 1);
+
     	Test.stopTest();
     }
     
