@@ -1,92 +1,308 @@
+/**
+ * Client for the FogBugzAPI
+ *
+ * @author  Antonio Grassi
+ * @date    11/13/2012
+ */
 public with sharing class FogBugzAPI {
-	private static String fogbugz_http_api = 'http://manage.dimagi.com/api.asp?';
-	public  static String token;
 	
-	public String getBizDevCasesXML(){
-	 
+	private static final String    FB_API_URL          = 'http://manage.dimagi.com/api.asp?';
+	private static final String    FB_LIST_COLS        = 'ixPersonOpenedBy,dtLastUpdated';
+    private static final String    FB_CASE_COLS        = 'sTitle,sArea,sPersonAssignedTo,sVersion,dtLastUpdated,latestEvent,tags,ixPersonOpenedBy'; 
 
-		 HttpRequest req = new HttpRequest();
-		 Http http = new Http();
-		 
-		 //login and set to Biz Dev Filter
-		 String url_base = fogbugz_http_api + 'token=' + token;
-    	 req.setEndpoint(url_base + ' &cmd=setCurrentFilter&sFilter=114');
-    	 req.setMethod('GET');
-    	 HTTPResponse res = http.send(req);
-    	
-    	 //get cases
-    	 req = new HttpRequest();
-    	 //sVersion corresponds to the FogBugz Field "External ID"
-    	 req.setEndpoint(fogbugz_http_api + '&cmd=search&cols=plugin,sTitle,sArea,tags,sPersonAssignedTo,sVersion');
-    	 req.setMethod('GET');
-    	 res = http.send(req);
-    	 return res.getBody();
-	}
-	
-	public List<FogBugzCase> parseXMLtoCases(String xml_string)
-	{
-		XMLDom dom = new XMLDom(xml_string);
-		XMLDom.Element cases_node = dom.root.getElementByTagName('cases');
-		
-		List<FogBugzCase> cases = new List<FogBugzCase>();
-		for (XMLDom.Element case_node: cases_node.childNodes) {
-			cases.add(ParseCase(case_node));
-		}		
-		return cases;
-	}
-	
-		
-	public FogBugzCase ParseCase(XMLDom.Element case_node)
-	{
-		FogBugzCase fbcase = new FogBugzCase();
-		fbcase.title = case_node.getElementByTagName('sTitle').nodeValue;
-		fbcase.area = case_node.getElementByTagName('sArea').nodeValue;
-		fbcase.assignedTo = case_node.getElementByTagName('sPersonAssignedTo').nodeValue;
-		//TODO External Bug ID
-		
-		
-		//Do tags
-		for (XMLDom.Element node: case_node.getElementsByTagName('tag')) {
-			String s = node.nodeValue;
-			Integer slash_loc = s.indexOf('/');
-			if(slash_loc != -1)
-			{
-				try	{
-					fbcase.dealSize = Integer.valueOf(s.substring(1, slash_loc - 1));
-					fbcase.probability = Decimal.valueOf(s.substring(slash_loc + 1, s.length()-1));
-				}
-				catch (exception e){
-  					system.debug('Error: '+ e);  
-				}
-			}else if(s.equalsIgnoreCase('CommCare'))
-			{
-				fbcase.productType = 'CommCare';
-			}else if(s.equalsIgnoreCase('CommTrack'))
-			{
-				fbcase.productType = 'CommTrack';
-			}else if(s.equalsIgnoreCase('CommConnect'))
-			{
-				fbcase.productType = 'CommConnect';
-			}
-		}	
-		
-		
-		
-		/*
-		System.debug(fbcase.title);
-		System.debug(fbcase.area);
-		System.debug(fbcase.assignedTo);
-		System.debug(fbcase.probability);
-		System.debug(fbcase.dealSize);
-		*/
-		
-		return fbcase;
-	}
-	
-	 static testMethod void testParse() {
-        FogBugzAPI api = new FogBugzAPI();
-        String xml_string = '<?xml version="1.0" encoding="UTF-8"?><response><description><![CDATA[All open cases containing project:"Business Development"]]></description><sFilter><![CDATA[114]]></sFilter><cases count="91"><case ixBug="29253" operations="edit,assign,resolve,email,remind"><sTitle><![CDATA[NetHope - Facility Registry]]></sTitle><sArea><![CDATA[In Negotiations]]></sArea><sPersonAssignedTo><![CDATA[Rowena Luk]]></sPersonAssignedTo><tags><tag><![CDATA[CommCare]]></tag><tag><![CDATA[[35000/80]]]></tag></tags></case><case ixBug="34601" operations="edit,assign,resolve,email,remind"><sTitle><![CDATA[CommCare for MVP - Phase II (data hosting)]]></sTitle><sArea><![CDATA[In Negotiations]]></sArea><sPersonAssignedTo><![CDATA[Carter Powers]]></sPersonAssignedTo><tags><tag><![CDATA[CommCare]]></tag><tag><![CDATA[[16609/95]]]></tag></tags></case><case ixBug="34997" operations="edit,assign,resolve,email,remind"><sTitle><![CDATA[DRAPER DTRA Proposal]]></sTitle><sArea><![CDATA[In Negotiations]]></sArea><sPersonAssignedTo><![CDATA[Carter Powers]]></sPersonAssignedTo><tags><tag><![CDATA[CommCare]]></tag><tag><![CDATA[[344809/85]]]></tag></tags></case><case ixBug="41466" operations="edit,assign,resolve,email,remind"><sTitle><![CDATA[SSS - BWH transition]]></sTitle><sArea><![CDATA[In Negotiations]]></sArea><sPersonAssignedTo><![CDATA[Carter Powers]]></sPersonAssignedTo><tags></tags></case><case ixBug="34269" operations="edit,assign,resolve,email,remind"><sTitle><![CDATA[Gates / Grameen Phase III 2012]]></sTitle><sArea><![CDATA[In Negotiations]]></sArea><sPersonAssignedTo><![CDATA[Jonathan Jackson]]></sPersonAssignedTo><tags><tag><![CDATA[CommCare]]></tag><tag><![CDATA[[66000/80]]]></tag></tags></case><case ixBug="45017" operations="edit,assign,resolve,email,remind"><sTitle><![CDATA[Gates Mobile Money]]></sTitle><sArea><![CDATA[In Negotiations]]></sArea><sPersonAssignedTo><![CDATA[Jonathan Jackson]]></sPersonAssignedTo><tags><tag><![CDATA[[100000/50]]]></tag><tag><![CDATA[CommCare]]></tag></tags></case><case ixBug="28603" operations="edit,assign,resolve,reply,forward,remind"><sTitle><![CDATA[PHFI: mWellcare]]></sTitle><sArea><![CDATA[In Negotiations]]></sArea><sPersonAssignedTo><![CDATA[Matt Theis]]></sPersonAssignedTo><tags><tag><![CDATA[[450000/80]]]></tag><tag><![CDATA[DSI]]></tag><tag><![CDATA[CommCare]]></tag></tags></case><case ixBug="34273" operations="edit,assign,resolve,email,remind"><sTitle><![CDATA[MGH Center for Global Health]]></sTitle><sArea><![CDATA[In Negotiations]]></sArea><sPersonAssignedTo><![CDATA[Carter Powers]]></sPersonAssignedTo><tags><tag><![CDATA[CommCare]]></tag><tag><![CDATA[[100000/75]]]></tag></tags></case><case ixBug="38772" operations="edit,assign,resolve,email,remind"><sTitle><![CDATA[PSI - Merck CommCare India]]></sTitle><sArea><![CDATA[Lost]]></sArea><sPersonAssignedTo><![CDATA[Sheel Shah]]></sPersonAssignedTo><tags><tag><![CDATA[DSI]]></tag><tag><![CDATA[CommCare]]></tag><tag><![CDATA[cloudcare]]></tag><tag><![CDATA[[25000/5]]]></tag></tags></case><case ixBug="34272" operations="edit,assign,resolve,reactivate,close,email,remind"><sTitle><![CDATA[Marie Stopes Global SMS]]></sTitle><sArea><![CDATA[Pending other action]]></sArea><sPersonAssignedTo><![CDATA[Jonathan Jackson]]></sPersonAssignedTo><tags></tags></case><case ixBug="39624" operations="edit,assign,resolve,email,remind"><sTitle><![CDATA[[weekly] General Biz Dev Followup]]></sTitle><sArea><![CDATA[Pending other action]]></sArea><sPersonAssignedTo><![CDATA[Kieran Sharpey-Schafer]]></sPersonAssignedTo><tags><tag><![CDATA[weekly]]></tag><tag><![CDATA[DSA]]></tag></tags></case><case ixBug="40659" operations="edit,assign,resolve,email,remind"><sTitle><![CDATA[WB Funding in Nepal]]></sTitle><sArea><![CDATA[Pending other action]]></sArea><sPersonAssignedTo><![CDATA[Jonathan Jackson]]></sPersonAssignedTo><tags></tags></case><case ixBug="31183" operations="edit,assign,resolve,email,remind"><sTitle><![CDATA[UCLA: sms for msm]]></sTitle><sArea><![CDATA[Pending other action]]></sArea><sPersonAssignedTo><![CDATA[Rowena Luk]]></sPersonAssignedTo><tags><tag><![CDATA[[50000/50]]]></tag></tags></case><case ixBug="31591" operations="edit,assign,resolve,reply,forward,remind"><sTitle><![CDATA[CRS Enterprise Packages]]></sTitle><sArea><![CDATA[Proposal Development]]></sArea><sPersonAssignedTo><![CDATA[Carter Powers]]></sPersonAssignedTo><tags><tag><![CDATA[CommCare]]></tag></tags></case><case ixBug="41269" operations="edit,assign,resolve,email,remind"><sTitle><![CDATA[Akaza Patient Portal Phase 2]]></sTitle><sArea><![CDATA[Proposal Development]]></sArea><sPersonAssignedTo><![CDATA[Drew Roos]]></sPersonAssignedTo><tags><tag><![CDATA[CommCare]]></tag><tag><![CDATA[[50000/25]]]></tag></tags></case><case ixBug="40660" operations="edit,assign,resolve,email,remind"><sTitle><![CDATA[UCLA Mednet SMS - Acne]]></sTitle><sArea><![CDATA[Proposal Development]]></sArea><sPersonAssignedTo><![CDATA[Rowena Luk]]></sPersonAssignedTo><tags><tag><![CDATA[[25000/80]]]></tag></tags></case><case ixBug="43237" operations="edit,assign,resolve,email,remind"><sTitle><![CDATA[Millenium Innovation Award: Stage 2 for Mobile Money]]></sTitle><sArea><![CDATA[Proposal Development]]></sArea><sPersonAssignedTo><![CDATA[Neal Lesh]]></sPersonAssignedTo><tags></tags></case><case ixBug="44254" operations="edit,assign,resolve,email,remind"><sTitle><![CDATA[UNICEF/CARE Benin proposal ]]></sTitle><sArea><![CDATA[Proposal Development]]></sArea><sPersonAssignedTo><![CDATA[Neal Lesh]]></sPersonAssignedTo><tags><tag><![CDATA[CommCare]]></tag><tag><![CDATA[[190000/50]]]></tag></tags></case><case ixBug="45719" operations="edit,assign,resolve,email,remind"><sTitle><![CDATA[Sneha DFID Women and Children First]]></sTitle><sArea><![CDATA[Proposal Development]]></sArea><sPersonAssignedTo><![CDATA[Cory Zue]]></sPersonAssignedTo><tags><tag><![CDATA[DSI]]></tag><tag><![CDATA[CommCare]]></tag><tag><![CDATA[[70000/20]]]></tag></tags></case><case ixBug="36656" operations="edit,assign,resolve,email,remind"><sTitle><![CDATA[CDC Verbal Autopsy - CommCare Plus]]></sTitle><sArea><![CDATA[Proposal Development]]></sArea><sPersonAssignedTo><![CDATA[Neal Lesh]]></sPersonAssignedTo><tags><tag><![CDATA[CommCare]]></tag><tag><![CDATA[[25000/25]]]></tag></tags></case><case ixBug="39584" operations="edit,assign,resolve,email,remind"><sTitle><![CDATA[Futures Group Kenya]]></sTitle><sArea><![CDATA[Proposal Development]]></sArea><sPersonAssignedTo><![CDATA[Jonathan Jackson]]></sPersonAssignedTo><tags><tag><![CDATA[[50000/50]]]></tag></tags></case><case ixBug="42715" operations="edit,assign,resolve,email,remind"><sTitle><![CDATA[MIRA-Nepal]]></sTitle><sArea><![CDATA[Proposal Development]]></sArea><sPersonAssignedTo><![CDATA[Jeremy Wacksman]]></sPersonAssignedTo><tags><tag><![CDATA[DSI]]></tag><tag><![CDATA[CommCare]]></tag><tag><![CDATA[[15000/20]]]></tag></tags></case><case ixBug="43238" operations="edit,assign,resolve,email,remind"><sTitle><![CDATA[Millenium Innovation Award: Stage 1 CommCare CRM]]></sTitle><sArea><![CDATA[Proposal Development]]></sArea><sPersonAssignedTo><![CDATA[Nick Nestle]]></sPersonAssignedTo><tags></tags></case><case ixBug="45135" operations="edit,assign,resolve,email,remind"><sTitle><![CDATA[Plan - CommCare Benin]]></sTitle><sArea><![CDATA[Proposal Development]]></sArea><sPersonAssignedTo><![CDATA[Benjamin Lightburn]]></sPersonAssignedTo><tags><tag><![CDATA[CommCare]]></tag><tag><![CDATA[[25000/5]]]></tag></tags></case><case ixBug="38458" operations="edit,assign,resolve,email,remind"><sTitle><![CDATA[Nandos Ag Project - Proposal Development]]></sTitle><sArea><![CDATA[Proposal Development]]></sArea><sPersonAssignedTo><![CDATA[Kieran Sharpey-Schafer]]></sPersonAssignedTo><tags><tag><![CDATA[DSA]]></tag><tag><![CDATA[CommCare]]></tag><tag><![CDATA[[25000/20]]]></tag></tags></case><case ixBug="39934" operations="edit,assign,resolve,email,remind"><sTitle><![CDATA[Womens Refugee Commission - Philippines]]></sTitle><sArea><![CDATA[Proposal Development]]></sArea><sPersonAssignedTo><![CDATA[Rowena Luk]]></sPersonAssignedTo><tags><tag><![CDATA[CommConnect]]></tag><tag><![CDATA[[10000/10]]]></tag></tags></case><case ixBug="43235" operations="edit,assign,resolve,email,remind"><sTitle><![CDATA[Millenium Innovation Award: Stage 1 for Agriculture]]></sTitle><sArea><![CDATA[Proposal Development]]></sArea><sPersonAssignedTo><![CDATA[Sheel Shah]]></sPersonAssignedTo><tags></tags></case><case ixBug="44139" operations="edit,assign,resolve,email,remind"><sTitle><![CDATA[MVP: Ghana Bonsasso]]></sTitle><sArea><![CDATA[Proposal Development]]></sArea><sPersonAssignedTo><![CDATA[Nick Amland]]></sPersonAssignedTo><tags><tag><![CDATA[CommCare]]></tag><tag><![CDATA[[120000/75]]]></tag></tags></case><case ixBug="45255" operations="edit,assign,resolve,email,remind"><sTitle><![CDATA[WB EOI: Framework Agreement with International Experts in ICTs for WBG analytical and operational work, e­Government and emergi]]></sTitle><sArea><![CDATA[Proposal Development]]></sArea><sPersonAssignedTo><![CDATA[Ryan Hartford]]></sPersonAssignedTo><tags></tags></case><case ixBug="24950" operations="edit,assign,resolve,email,remind"><sTitle><![CDATA[AFRIMS Nepal Census/Health Indices MAL-ED Project]]></sTitle><sArea><![CDATA[Proposal Development]]></sArea><sPersonAssignedTo><![CDATA[Neal Lesh]]></sPersonAssignedTo><tags><tag><![CDATA[[30000/25]]]></tag><tag><![CDATA[CommCare]]></tag></tags></case><case ixBug="38644" operations="edit,assign,resolve,email,remind"><sTitle><![CDATA[ICMR Partograph]]></sTitle><sArea><![CDATA[Proposal Development]]></sArea><sPersonAssignedTo><![CDATA[Vikram Kumar]]></sPersonAssignedTo><tags><tag><![CDATA[DSI]]></tag><tag><![CDATA[[75000/50]]]></tag><tag><![CDATA[CommCare]]></tag></tags></case><case ixBug="39938" operations="edit,assign,resolve,email,remind"><sTitle><![CDATA[Jharkhand - Drinking Water & Sanitation]]></sTitle><sArea><![CDATA[Proposal Development]]></sArea><sPersonAssignedTo><![CDATA[Mohini Bhavsar]]></sPersonAssignedTo><tags><tag><![CDATA[DSI]]></tag><tag><![CDATA[CommCare]]></tag><tag><![CDATA[[10000/25]]]></tag></tags></case><case ixBug="43236" operations="edit,assign,resolve,email,remind"><sTitle><![CDATA[Millenium Innovation Award: Stage 1 CommCare for Urban Health]]></sTitle><sArea><![CDATA[Proposal Development]]></sArea><sPersonAssignedTo><![CDATA[Jeremy Wacksman]]></sPersonAssignedTo><tags></tags></case><case ixBug="45608" operations="edit,assign,resolve,email,remind"><sTitle><![CDATA[Popcouncil SA - PEP services strengthening]]></sTitle><sArea><![CDATA[Proposal Development]]></sArea><sPersonAssignedTo><![CDATA[Steve Snyder]]></sPersonAssignedTo><tags><tag><![CDATA[DSA]]></tag><tag><![CDATA[[19000/50]]]></tag></tags></case><case ixBug="45515" operations="edit,assign,resolve,email,remind"><sTitle><![CDATA[ADRA - Food for Peace Zimbabwe]]></sTitle><sArea><![CDATA[Proposal Development]]></sArea><sPersonAssignedTo><![CDATA[Nick Nestle]]></sPersonAssignedTo><tags><tag><![CDATA[[100000/5]]]></tag></tags></case><case ixBug="31900" operations="edit,assign,resolve,email,remind"><sTitle><![CDATA[Green Mountain Coffee Ag Proposal]]></sTitle><sArea><![CDATA[Prospect]]></sArea><sPersonAssignedTo><![CDATA[Neal Lesh]]></sPersonAssignedTo><tags><tag><![CDATA[CommCare]]></tag></tags></case><case ixBug="39196" operations="edit,assign,resolve,email,remind"><sTitle><![CDATA[South Sudan HMIS]]></sTitle><sArea><![CDATA[Prospect]]></sArea><sPersonAssignedTo><![CDATA[Matt Theis]]></sPersonAssignedTo><tags><tag><![CDATA[CommCare]]></tag></tags></case><case ixBug="41419" operations="edit,assign,resolve,email,remind"><sTitle><![CDATA[UNOPS-NIPI]]></sTitle><sArea><![CDATA[Prospect]]></sArea><sPersonAssignedTo><![CDATA[Matt Theis]]></sPersonAssignedTo><tags></tags></case><case ixBug="41431" operations="edit,assign,resolve,email,remind"><sTitle><![CDATA[Accenture / AMREF CommCare for mobile education]]></sTitle><sArea><![CDATA[Prospect]]></sArea><sPersonAssignedTo><![CDATA[Kieran Sharpey-Schafer]]></sPersonAssignedTo><tags><tag><![CDATA[DSA]]></tag></tags></case><case ixBug="42686" operations="edit,assign,resolve,email,remind"><sTitle><![CDATA[Seedco - Ag - Zambia]]></sTitle><sArea><![CDATA[Prospect]]></sArea><sPersonAssignedTo><![CDATA[Nick Nestle]]></sPersonAssignedTo><tags></tags></case><case ixBug="45014" operations="edit,assign,resolve,email,remind"><sTitle><![CDATA[CommConnect for Universität Witten/Herdecke ]]></sTitle><sArea><![CDATA[Prospect]]></sArea><sPersonAssignedTo><![CDATA[Rowena Luk]]></sPersonAssignedTo><tags><tag><![CDATA[[10000/40]]]></tag></tags></case><case ixBug="45611" operations="edit,assign,resolve,email,remind"><sTitle><![CDATA[Save the Children UK]]></sTitle><sArea><![CDATA[Prospect]]></sArea><sPersonAssignedTo><![CDATA[Kieran Sharpey-Schafer]]></sPersonAssignedTo><tags><tag><![CDATA[DSA]]></tag></tags></case><case ixBug="45649" operations="edit,assign,resolve,email,remind"><sTitle><![CDATA[CommTrack - JSI SC4CCM Ethiopia]]></sTitle><sArea><![CDATA[Prospect]]></sArea><sPersonAssignedTo><![CDATA[Rowena Luk]]></sPersonAssignedTo><tags><tag><![CDATA[[0/40]]]></tag></tags></case><case ixBug="34542" operations="edit,assign,resolve,email,remind"><sTitle><![CDATA[PSI - Ethiopia USAID]]></sTitle><sArea><![CDATA[Prospect]]></sArea><sPersonAssignedTo><![CDATA[Nick Nestle]]></sPersonAssignedTo><tags></tags></case><case ixBug="40132" operations="edit,assign,resolve,email,remind"><sTitle><![CDATA[Silk Route Training and Research Organization - Afghanistan]]></sTitle><sArea><![CDATA[Prospect]]></sArea><sPersonAssignedTo><![CDATA[Jonathan Jackson]]></sPersonAssignedTo><tags><tag><![CDATA[CommCare]]></tag></tags></case><case ixBug="41420" operations="edit,assign,resolve,email,remind"><sTitle><![CDATA[MSF India POC]]></sTitle><sArea><![CDATA[Prospect]]></sArea><sPersonAssignedTo><![CDATA[Matt Theis]]></sPersonAssignedTo><tags></tags></case><case ixBug="45725" operations="edit,assign,resolve,email,remind"><sTitle><![CDATA[AIHA - American International Health Alliance]]></sTitle><sArea><![CDATA[Prospect]]></sArea><sPersonAssignedTo><![CDATA[Kieran Sharpey-Schafer]]></sPersonAssignedTo><tags><tag><![CDATA[DSA]]></tag><tag><![CDATA[[5000/20]]]></tag></tags></case><case ixBug="42717" operations="edit,assign,resolve,email,remind"><sTitle><![CDATA[Center for Surgery and Public Health (Harvard)]]></sTitle><sArea><![CDATA[Prospect]]></sArea><sPersonAssignedTo><![CDATA[Nick Nestle]]></sPersonAssignedTo><tags></tags></case><case ixBug="45620" operations="edit,spam,assign,resolve,reply,forward,remind"><sTitle><![CDATA[PSI - Thailand - PSI - Thailand - USAID CAP 3d]]></sTitle><sArea><![CDATA[Prospect]]></sArea><sPersonAssignedTo><![CDATA[Nick Nestle]]></sPersonAssignedTo><tags></tags></case><case ixBug="45612" operations="edit,assign,resolve,email,remind"><sTitle><![CDATA[TOPSY]]></sTitle><sArea><![CDATA[Prospect]]></sArea><sPersonAssignedTo><![CDATA[Kieran Sharpey-Schafer]]></sPersonAssignedTo><tags><tag><![CDATA[DSA]]></tag></tags></case><case ixBug="45684" operations="edit,spam,assign,resolve,reply,forward,remind"><sTitle><![CDATA[MSH - South Africa - MSH - South Africa - SIAPS]]></sTitle><sArea><![CDATA[Prospect]]></sArea><sPersonAssignedTo><![CDATA[Nick Nestle]]></sPersonAssignedTo><tags></tags></case><case ixBug="38317" operations="edit,assign,resolve,email,remind"><sTitle><![CDATA[Freedom From Hunger India]]></sTitle><sArea><![CDATA[Prospect]]></sArea><sPersonAssignedTo><![CDATA[Matt Theis]]></sPersonAssignedTo><tags><tag><![CDATA[DSI]]></tag><tag><![CDATA[CommCare]]></tag><tag><![CDATA[[15000/10]]]></tag></tags></case><case ixBug="41423" operations="edit,assign,resolve,email,remind"><sTitle><![CDATA[PCI Global - India]]></sTitle><sArea><![CDATA[Prospect]]></sArea><sPersonAssignedTo><![CDATA[Devika Sarin]]></sPersonAssignedTo><tags></tags></case><case ixBug="41421" operations="edit,assign,resolve,email,remind"><sTitle><![CDATA[Population Council]]></sTitle><sArea><![CDATA[Prospect]]></sArea><sPersonAssignedTo><![CDATA[Matt Theis]]></sPersonAssignedTo><tags></tags></case><case ixBug="42226" operations="edit,assign,resolve,email,remind"><sTitle><![CDATA[VPUU Biz Dev ]]></sTitle><sArea><![CDATA[Prospect]]></sArea><sPersonAssignedTo><![CDATA[Steve Snyder]]></sPersonAssignedTo><tags><tag><![CDATA[DSA]]></tag></tags></case><case ixBug="43462" operations="edit,spam,assign,resolve,reply,forward,remind"><sTitle><![CDATA[iZulu Orphans Project]]></sTitle><sArea><![CDATA[Prospect]]></sArea><sPersonAssignedTo><![CDATA[Kieran Sharpey-Schafer]]></sPersonAssignedTo><tags><tag><![CDATA[DSA]]></tag></tags></case><case ixBug="45609" operations="edit,assign,resolve,email,remind"><sTitle><![CDATA[TNS South Africa]]></sTitle><sArea><![CDATA[Prospect]]></sArea><sPersonAssignedTo><![CDATA[Kieran Sharpey-Schafer]]></sPersonAssignedTo><tags><tag><![CDATA[DSA]]></tag></tags></case><case ixBug="45614" operations="edit,assign,resolve,email,remind"><sTitle><![CDATA[UCR TB Project - MDR TB]]></sTitle><sArea><![CDATA[Prospect]]></sArea><sPersonAssignedTo><![CDATA[Kieran Sharpey-Schafer]]></sPersonAssignedTo><tags><tag><![CDATA[DSA]]></tag></tags></case><case ixBug="45733" operations="edit,assign,resolve,email,remind"><sTitle><![CDATA[Broadreach]]></sTitle><sArea><![CDATA[Prospect]]></sArea><sPersonAssignedTo><![CDATA[Kieran Sharpey-Schafer]]></sPersonAssignedTo><tags></tags></case><case ixBug="38318" operations="edit,assign,resolve,email,remind"><sTitle><![CDATA[PepsiCo India]]></sTitle><sArea><![CDATA[Prospect]]></sArea><sPersonAssignedTo><![CDATA[Matt Theis]]></sPersonAssignedTo><tags></tags></case><case ixBug="41769" operations="edit,assign,resolve,email,remind"><sTitle><![CDATA[PSI Enterprise MSA]]></sTitle><sArea><![CDATA[Prospect]]></sArea><sPersonAssignedTo><![CDATA[Jonathan Jackson]]></sPersonAssignedTo><tags><tag><![CDATA[CommCare]]></tag></tags></case><case ixBug="41422" operations="edit,assign,resolve,email,remind"><sTitle><![CDATA[international finance corporation - india]]></sTitle><sArea><![CDATA[Prospect]]></sArea><sPersonAssignedTo><![CDATA[Matt Theis]]></sPersonAssignedTo><tags></tags></case><case ixBug="43485" operations="edit,spam,assign,resolve,reply,forward,remind"><sTitle><![CDATA[ADRA South Africa]]></sTitle><sArea><![CDATA[Prospect]]></sArea><sPersonAssignedTo><![CDATA[Kieran Sharpey-Schafer]]></sPersonAssignedTo><tags><tag><![CDATA[DSA]]></tag></tags></case><case ixBug="43611" operations="edit,assign,resolve,email,remind"><sTitle><![CDATA[Merck - Zambia ]]></sTitle><sArea><![CDATA[Prospect]]></sArea><sPersonAssignedTo><![CDATA[Jonathan Jackson]]></sPersonAssignedTo><tags></tags></case><case ixBug="45610" operations="edit,assign,resolve,email,remind"><sTitle><![CDATA[Jhpiego South Africa - MMC]]></sTitle><sArea><![CDATA[Prospect]]></sArea><sPersonAssignedTo><![CDATA[Kieran Sharpey-Schafer]]></sPersonAssignedTo><tags><tag><![CDATA[DSA]]></tag><tag><![CDATA[[19000/20]]]></tag></tags></case><case ixBug="45615" operations="edit,assign,resolve,email,remind"><sTitle><![CDATA[MSF Joburg]]></sTitle><sArea><![CDATA[Prospect]]></sArea><sPersonAssignedTo><![CDATA[Kieran Sharpey-Schafer]]></sPersonAssignedTo><tags><tag><![CDATA[DSA]]></tag></tags></case><case ixBug="29305" operations="edit,assign,resolve,email,remind"><sTitle><![CDATA[RTI Indoor Residual Spraying (IRS) Supply Chain Project in Uganda]]></sTitle><sArea><![CDATA[Submitted]]></sArea><sPersonAssignedTo><![CDATA[Ryan Hartford]]></sPersonAssignedTo><tags><tag><![CDATA[CommTrack]]></tag><tag><![CDATA[[650000/15]]]></tag></tags></case><case ixBug="34264" operations="edit,assign,resolve,email,remind"><sTitle><![CDATA[MOB @ UPenn]]></sTitle><sArea><![CDATA[Submitted]]></sArea><sPersonAssignedTo><![CDATA[Rowena Luk]]></sPersonAssignedTo><tags><tag><![CDATA[[200000/50]]]></tag></tags></case><case ixBug="39414" operations="edit,assign,resolve,email,remind"><sTitle><![CDATA[IDRC Search proposal]]></sTitle><sArea><![CDATA[Submitted]]></sArea><sPersonAssignedTo><![CDATA[Carter Powers]]></sPersonAssignedTo><tags><tag><![CDATA[CommCare]]></tag><tag><![CDATA[[400000/10]]]></tag></tags></case><case ixBug="40958" operations="edit,assign,resolve,email,remind"><sTitle><![CDATA[Technoserve - Zambia - Ag Pilot]]></sTitle><sArea><![CDATA[Submitted]]></sArea><sPersonAssignedTo><![CDATA[Nick Nestle]]></sPersonAssignedTo><tags><tag><![CDATA[[0000/10]]]></tag></tags></case><case ixBug="42289" operations="edit,spam,assign,resolve,reply,forward,remind"><sTitle><![CDATA[Re: VPUU- Concept Note for O&M case management]]></sTitle><sArea><![CDATA[Submitted]]></sArea><sPersonAssignedTo><![CDATA[Kieran Sharpey-Schafer]]></sPersonAssignedTo><tags><tag><![CDATA[[25000/30]]]></tag><tag><![CDATA[DSA]]></tag></tags></case><case ixBug="43641" operations="edit,assign,resolve,email,remind"><sTitle><![CDATA[Save The Children - CommCare Full]]></sTitle><sArea><![CDATA[Submitted]]></sArea><sPersonAssignedTo><![CDATA[Jonathan Jackson]]></sPersonAssignedTo><tags><tag><![CDATA[[100000/10]]]></tag><tag><![CDATA[CommCare]]></tag></tags></case><case ixBug="25314" operations="edit,assign,resolve,email,remind"><sTitle><![CDATA[USAID TASC 4 - ICT SOL-OAA-11-000018]]></sTitle><sArea><![CDATA[Submitted]]></sArea><sPersonAssignedTo><![CDATA[Ryan Hartford]]></sPersonAssignedTo><tags><tag><![CDATA[[0/0]]]></tag></tags></case><case ixBug="30887" operations="edit,assign,resolve,email,remind"><sTitle><![CDATA[UCLA Dept of Psychiatry: Integrated Substance Abuse Program NIDA Grant for addicted adults]]></sTitle><sArea><![CDATA[Submitted]]></sArea><sPersonAssignedTo><![CDATA[Ryan Hartford]]></sPersonAssignedTo><tags><tag><![CDATA[[20000/15]]]></tag><tag><![CDATA[CommConnect]]></tag></tags></case><case ixBug="35042" operations="edit,assign,resolve,email,remind"><sTitle><![CDATA[WRCommission ]]></sTitle><sArea><![CDATA[Submitted]]></sArea><sPersonAssignedTo><![CDATA[Jonathan Jackson]]></sPersonAssignedTo><tags><tag><![CDATA[[25000/10]]]></tag><tag><![CDATA[CommCare]]></tag></tags></case><case ixBug="39546" operations="edit,assign,resolve,email,remind"><sTitle><![CDATA[JSI Ghana Contract V]]></sTitle><sArea><![CDATA[Submitted]]></sArea><sPersonAssignedTo><![CDATA[Rowena Luk]]></sPersonAssignedTo><tags><tag><![CDATA[[60000/60]]]></tag></tags></case><case ixBug="40535" operations="edit,assign,resolve,email,remind"><sTitle><![CDATA[World Vision application to Gates for scale up]]></sTitle><sArea><![CDATA[Submitted]]></sArea><sPersonAssignedTo><![CDATA[Matt Theis]]></sPersonAssignedTo><tags><tag><![CDATA[DSI]]></tag><tag><![CDATA[CommCare]]></tag><tag><![CDATA[[85000/30]]]></tag></tags></case><case ixBug="43463" operations="edit,spam,assign,resolve,reply,forward,remind"><sTitle><![CDATA[Meta IT]]></sTitle><sArea><![CDATA[Submitted]]></sArea><sPersonAssignedTo><![CDATA[Kieran Sharpey-Schafer]]></sPersonAssignedTo><tags><tag><![CDATA[DSA]]></tag></tags></case><case ixBug="28924" operations="edit,assign,resolve,email,remind"><sTitle><![CDATA[UConn R01 w Dr. Skolnik]]></sTitle><sArea><![CDATA[Submitted]]></sArea><sPersonAssignedTo><![CDATA[Vikram Kumar]]></sPersonAssignedTo><tags><tag><![CDATA[CommConnect]]></tag><tag><![CDATA[[85000/25]]]></tag></tags></case><case ixBug="31857" operations="edit,assign,resolve,email,remind"><sTitle><![CDATA[MCHIP Concept Note]]></sTitle><sArea><![CDATA[Submitted]]></sArea><sPersonAssignedTo><![CDATA[Matt Theis]]></sPersonAssignedTo><tags><tag><![CDATA[CommTrack]]></tag><tag><![CDATA[DSI]]></tag><tag><![CDATA[[100000/10]]]></tag></tags></case><case ixBug="38273" operations="edit,assign,resolve,email,remind"><sTitle><![CDATA[PSI - FHI360 Contraceptive SMS Game]]></sTitle><sArea><![CDATA[Submitted]]></sArea><sPersonAssignedTo><![CDATA[Matt Theis]]></sPersonAssignedTo><tags><tag><![CDATA[CommConnect]]></tag><tag><![CDATA[[45000/30]]]></tag></tags></case><case ixBug="40281" operations="edit,assign,resolve,email,remind"><sTitle><![CDATA[FHI 360 ]]></sTitle><sArea><![CDATA[Submitted]]></sArea><sPersonAssignedTo><![CDATA[Sheel Shah]]></sPersonAssignedTo><tags><tag><![CDATA[CommCare]]></tag><tag><![CDATA[[75000/20]]]></tag></tags></case><case ixBug="41465" operations="edit,assign,resolve,email,remind"><sTitle><![CDATA[UNICEF WASP EOI]]></sTitle><sArea><![CDATA[Submitted]]></sArea><sPersonAssignedTo><![CDATA[Kieran Sharpey-Schafer]]></sPersonAssignedTo><tags><tag><![CDATA[[0/0]]]></tag><tag><![CDATA[DSA]]></tag></tags></case><case ixBug="43585" operations="edit,assign,resolve,email,remind"><sTitle><![CDATA[unfpa proposal]]></sTitle><sArea><![CDATA[Submitted]]></sArea><sPersonAssignedTo><![CDATA[Carter Powers]]></sPersonAssignedTo><tags></tags></case><case ixBug="29219" operations="edit,assign,resolve,email,remind"><sTitle><![CDATA[ARHQ SMS Reminder Project for ADHD tracking in low income populations UCLA]]></sTitle><sArea><![CDATA[Submitted]]></sArea><sPersonAssignedTo><![CDATA[Ryan Hartford]]></sPersonAssignedTo><tags><tag><![CDATA[CommConnect]]></tag><tag><![CDATA[[20000/15]]]></tag></tags></case><case ixBug="32518" operations="edit,assign,resolve,reactivate,close,email,remind"><sTitle><![CDATA[Sub to Baobob on Mobile Component]]></sTitle><sArea><![CDATA[Submitted]]></sArea><sPersonAssignedTo><![CDATA[Neal Lesh]]></sPersonAssignedTo><tags><tag><![CDATA[CommCare]]></tag><tag><![CDATA[[25000/30]]]></tag></tags></case><case ixBug="39217" operations="edit,assign,resolve,email,remind"><sTitle><![CDATA[ADRA - Discussions for Moz. Ag grant]]></sTitle><sArea><![CDATA[Submitted]]></sArea><sPersonAssignedTo><![CDATA[Nick Nestle]]></sPersonAssignedTo><tags><tag><![CDATA[CommCare]]></tag><tag><![CDATA[[150000/10]]]></tag></tags></case><case ixBug="40317" operations="edit,assign,resolve,email,remind"><sTitle><![CDATA[MI/JSI Output Budget for Gujarat CommTrack]]></sTitle><sArea><![CDATA[Submitted]]></sArea><sPersonAssignedTo><![CDATA[Matt Theis]]></sPersonAssignedTo><tags><tag><![CDATA[DSI]]></tag><tag><![CDATA[CommTrack]]></tag><tag><![CDATA[[85000/50]]]></tag></tags></case><case ixBug="41713" operations="edit,assign,resolve,email,remind"><sTitle><![CDATA[Oxford Policy Management CCT]]></sTitle><sArea><![CDATA[Submitted]]></sArea><sPersonAssignedTo><![CDATA[Matt Theis]]></sPersonAssignedTo><tags><tag><![CDATA[DSI]]></tag><tag><![CDATA[CommCare]]></tag><tag><![CDATA[[70000/70]]]></tag></tags></case><case ixBug="43563" operations="edit,spam,assign,resolve,reply,forward,remind"><sTitle><![CDATA[World Bank Sierra Leone - Waterpoint Monitoring]]></sTitle><sArea><![CDATA[Submitted]]></sArea><sPersonAssignedTo><![CDATA[Kieran Sharpey-Schafer]]></sPersonAssignedTo><tags><tag><![CDATA[DSA]]></tag></tags></case><case ixBug="40439" operations="edit,assign,resolve,reactivate,close,email,remind"><sTitle><![CDATA[IIPHD Anchul Project Data collection]]></sTitle><sArea><![CDATA[Won]]></sArea><sPersonAssignedTo><![CDATA[Matt Theis]]></sPersonAssignedTo><tags><tag><![CDATA[DSI]]></tag><tag><![CDATA[CommCare]]></tag><tag><![CDATA[[10000/90]]]></tag></tags></case></cases></response>';
-        api.parseXMLtoCases(xml_string);
+    private static final Integer   FB_HTTP_TIMEOUT     = 60000;
+    
+    /**
+     * Retrieves list of cases on the current filter. For each case, we just get its
+     * Id and last modified date. 
+     */
+    public Map<String, FogBugzCase> listCases() {
+
+        HTTPRequest req = new HTTPRequest();
+        req.setEndpoint(FB_API_URL);
+        req.setBody('token=' + FogBugz_Settings__c.getOrgDefaults().Token__c + '&cmd=search&cols=' + FB_LIST_COLS);
+        req.setTimeout(FB_HTTP_TIMEOUT);
+        req.setMethod('POST');
+
+        HTTP connection = new HTTP();
+
+        HTTPResponse res = connection.send(req);
         
+        if (res.getBody() != null) {
+            return parseCaseList(res.getBody());
+        }
+        else {
+            System.debug(LoggingLevel.ERROR, 'FogBugzAPI::listCases() - Error while retrieving cases');
+            return new Map<String, FogBugzCase>();
+        }
+    }
+    
+    public FogBugzCase getCase(String caseId) {
+
+        HTTPRequest req = new HTTPRequest();
+        req.setEndpoint(FB_API_URL);
+        req.setBody('token=' + FogBugz_Settings__c.getOrgDefaults().Token__c + '&cmd=search&cols=' + FB_CASE_COLS + '&q=' + caseId);
+        req.setTimeout(FB_HTTP_TIMEOUT);
+        req.setMethod('POST');
+        
+        HTTP connection = new HTTP();
+
+        HTTPResponse res = connection.send(req);
+        
+        if (res.getBody() != null) {
+            Map<String,FogBugzCase> cases = parseCases(res.getBody());
+            return cases.size() > 0 ? cases.values()[0] : null;
+        }
+        else {
+            System.debug(LoggingLevel.ERROR, 'FogBugzAPI::getCase() - Error while retrieving case with Id ' + caseId);
+            return null;
+        }
+    }
+    
+	public String setCurrentFilter(Integer filterId) {
+		HTTPRequest req = new HTTPRequest();
+        req.setEndpoint(FB_API_URL);
+        req.setBody('token=' + FogBugz_Settings__c.getOrgDefaults().Token__c + '&cmd=setCurrentFilter&sFilter=' + filterId.format());
+        req.setTimeout(FB_HTTP_TIMEOUT);
+        req.setMethod('POST');
+        
+        HTTP connection = new HTTP();
+        
+        return connection.send(req).getBody();
+	}
+	
+	public String createCase(FogBugzCase fbCase) {
+		
+		Map<String, String> params = new Map<String, String> {
+			'cmd' => 'new',
+			'sTitle' => fbCase.title,
+			'sVersion' => fbCase.externalBugID,
+			'sProject' => fbCase.project,
+			'sArea' => fbCase.area,
+			'sPersonAssignedTo' => fbCase.assignedTo,
+			'sStatus' => fbCase.status,
+			'ixPriority' => fbCase.priority.format()
+		};
+		
+		HTTPRequest req = new HttpRequest();
+		req.setEndpoint(FB_API_URL);
+		req.setBody('token=' + FogBugz_Settings__c.getOrgDefaults().Token__c + '&' + encodeParameters(params));
+        req.setTimeout(FB_HTTP_TIMEOUT);
+		req.setMethod('POST');
+		
+		HTTP connection = new HTTP();
+		HTTPResponse res = connection.send(req);
+		
+		fbCase.caseId = parseUpsertId(res.getBody());
+		return fbCase.caseId;
+	}
+	
+	public String updateCase(FogBugzCase fbCase) {
+        Map<String, String> params = new Map<String, String> {
+            'cmd' => 'edit',
+            'ixBug' => fbCase.caseId,
+            'sVersion' => fbCase.externalBugID
+        };
+        
+        HTTPRequest req = new HttpRequest();
+        req.setEndpoint(FB_API_URL);
+        req.setBody('token=' + FogBugz_Settings__c.getOrgDefaults().Token__c + '&' + encodeParameters(params));
+        req.setTimeout(FB_HTTP_TIMEOUT);
+        req.setMethod('POST');
+        
+        HTTP connection = new HTTP();
+        HTTPResponse res = connection.send(req);
+        
+        return parseUpsertId(res.getBody());
+	}
+
+    public String addNote(String caseId, String note) {
+        Map<String, String> params = new Map<String, String> {
+            'cmd' => 'edit',
+            'ixBug' => caseId,
+            'sEvent' => note
+        };
+
+        HTTPRequest req = new HttpRequest();
+        req.setEndpoint(FB_API_URL);
+        req.setBody('token=' + FogBugz_Settings__c.getOrgDefaults().Token__c + '&' + encodeParameters(params));
+        req.setTimeout(FB_HTTP_TIMEOUT);
+        req.setMethod('POST');
+        
+        HTTP connection = new HTTP();
+        HTTPResponse res = connection.send(req);
+
+        return parseUpsertId(res.getBody());
+    }
+    
+    public String getPersonEmail(String ixPerson) {
+        Map<String, String> params = new Map<String, String> {
+            'cmd' => 'viewPerson',
+            'ixPerson' => ixPerson
+        };
+
+        HTTPRequest req = new HttpRequest();
+        req.setEndpoint(FB_API_URL);
+        req.setBody('token=' + FogBugz_Settings__c.getOrgDefaults().Token__c + '&' + encodeParameters(params));
+        req.setTimeout(FB_HTTP_TIMEOUT);
+        req.setMethod('POST');
+        
+        HTTP connection = new HTTP();
+        HTTPResponse res = connection.send(req);
+
+        String email = null;
+        
+        if (res != null && res.getBody() != null) {
+        	XMLDom dom = new XMLDom(res.getBody());
+            XMLDom.Element responseNode = dom.root.getElementByTagName('response');
+
+	        if (responseNode != null) {
+	            XMLDom.Element personNode = responseNode.getElementByTagName('person');
+	            
+	            if (personNode != null) {
+	                email = personNode.getElementByTagName('sEmail').nodeValue;
+	            }
+	        }
+        }
+        
+        return email;
+    }
+        
+
+    /**
+     * Encodes request parameters to be passed on GET URL or POST body
+     */	
+    private String encodeParameters(Map<String, String> parameters) {
+        
+        String res = '';
+        
+        for (String name:parameters.keySet()) {
+            res += (res == '' ? '' : '&') + name + '=' + EncodingUtil.urlEncode(parameters.get(name), 'UTF-8');
+        }
+        
+        return res;
+    }
+
+	/**
+	 * XML Parsing
+	 */
+	private String parseUpsertId(String xmlString) {
+		
+		String res = null;
+		
+		XMLDom dom = new XMLDom(xmlString);
+        XMLDom.Element responseNode = dom.root.getElementByTagName('response');
+        
+        if (responseNode != null) {
+        	XMLDom.Element caseNode = responseNode.getElementByTagName('case');
+        	
+        	if (caseNode != null) {
+        		res = caseNode.getAttribute('ixBug');
+        	}
+        }
+        
+        return res;
+	}
+	
+	/**
+	 * Here we use SF's native DOM XML parser. We can parse a large case list,
+	 * but we cannot access CDATA fields
+	 */
+	public Map<String, fogBugzCase> parseCaseList(String xmlString) {
+        Dom.Document doc = new Dom.Document();
+        doc.load(xmlString);
+        
+        Dom.XmlNode responseNode = doc.getRootElement();
+        Dom.XmlNode casesNode = responseNode.getChildElement('cases', null);
+        
+        Map<String, FogBugzCase> cases = new Map<String, FogBugzCase>();
+
+        if (casesNode != null) {
+            
+            for (Dom.XmlNode caseNode:casesNode.getChildren()) {
+                FogBugzCase fbCase = parseListCase(caseNode);
+                cases.put(fbCase.caseId, fbCase);
+            }
+        }
+        
+        return cases;
+	}
+	
+    public FogBugzCase parseListCase(Dom.XmlNode caseNode) {
+
+        FogBugzCase fbCase = new FogBugzCase();
+        
+        fbCase.caseId = caseNode.getAttribute('ixBug', null);
+        fbCase.ixPersonOpenedBy = caseNode.getChildElement('ixPersonOpenedBy', null).getText();
+        String dtLastUpdatedValue = caseNode.getChildElement('dtLastUpdated', null).getText();
+        
+        if (dtLastUpdatedValue != null && dtLastUpdatedValue.length() > 0) {
+            fbCase.lastModifiedDate = FogBugzUtils.parseRFC822UTCTime(dtLastUpdatedValue);
+        }
+
+        return fbCase;    	
+    }
+
+    /**
+     * Here we use the custom XML parser (based on SF's native XMLReader)
+     * in order to access CDATA fields. Should be used with only one or a few
+     * cases in order to avoid the max script statements limit
+     */
+    public Map<String, FogBugzCase> parseCases(String xmlString) {
+        
+        XMLDom dom = new XMLDom(xmlString);
+        XMLDom.Element casesNode = dom.root.getElementByTagName('cases');
+        
+        Map<String, FogBugzCase> cases = new Map<String, FogBugzCase>();
+        
+        for (XMLDom.Element caseNode:casesNode.childNodes) {
+            FogBugzCase fbCase = parseCase(caseNode);
+            cases.put(fbCase.caseId, fbCase);
+        }
+
+        return cases;
+    }
+
+    public FogBugzCase parseCase(XMLDom.Element caseNode) {
+        
+        FogBugzCase fbCase = new FogBugzCase();
+        
+        fbCase.title = caseNode.getElementByTagName('sTitle').nodeValue;
+        fbCase.area = caseNode.getElementByTagName('sArea').nodeValue;
+        fbCase.assignedTo = caseNode.getElementByTagName('sPersonAssignedTo').nodeValue;
+        fbCase.externalBugID = caseNode.getElementByTagName('sVersion').nodeValue;
+        fbCase.caseId = caseNode.getAttribute('ixBug');
+        fbCase.ixPersonOpenedBy = caseNode.getElementByTagName('ixPersonOpenedBy').nodeValue;
+        String dtLastUpdatedValue = caseNode.getElementByTagName('dtLastUpdated').nodeValue;
+        
+        if (dtLastUpdatedValue != null && dtLastUpdatedValue.length() > 0) {
+            fbCase.lastModifiedDate = FogBugzUtils.parseRFC822UTCTime(dtLastUpdatedValue);
+        }
+        
+        // Search for deal size & probability
+        for (XMLDom.Element node:caseNode.getElementsByTagName('tag')) {
+            
+            String value = node.nodeValue;
+            Integer slashLoc = value.indexOf('/');
+            
+            if (slashLoc != -1) {
+                
+                try {
+                    fbCase.dealSize = Integer.valueOf(value.substring(1, slashLoc));
+                    fbCase.probability = Decimal.valueOf(value.substring(slashLoc + 1, value.length() - 1));
+                }
+                catch (Exception e) {
+                    system.debug(LoggingLevel.ERROR, 'ERROR - FogBugzAPI::parseCase() - ' + e.getMessage());  
+                }
+            }
+        }
+        
+        XMLDom.Element[] events = caseNode.getElementsByTagName('event');
+        
+        if (!events.isEmpty()) {
+            fbCase.latestEvent = events[0].getElementByTagName('s').nodeValue;
+        }
+        
+        return fbCase;
     }
 }

@@ -4,5 +4,21 @@
         <members>*</members>
         <name>ApexClass</name>
     </types>
-    <version>25.0</version>
+    <types>
+        <members>*</members>
+        <name>ApexComponent</name>
+    </types>
+    <types>
+        <members>*</members>
+        <name>ApexPage</name>
+    </types>
+    <types>
+        <members>*</members>
+        <name>ApexTrigger</name>
+    </types>
+    <types>
+        <members>*</members>
+        <name>CustomTab</name>
+    </types>
+    <version>27.0</version>
 </Package>

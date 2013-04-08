@@ -1,0 +1,244 @@
+<apex:page standardController="cazoomi__Marketing_List__c" extensions="cazoomi.marketingListMemberController" id="pageId">
+    <style>
+        .errorBlockClass {
+            color:#EA4424;
+        }
+        .actionLinkBlue {
+            font-weight: normal;
+            text-decoration: none;
+        }   
+
+    </style>
+    <head>
+        <apex:includeScript value="{!URLFOR($Resource.cazoomi__JQuery, 'js/jquery-1.7.2.min.js')}" />
+        <apex:includeScript value="{!URLFOR($Resource.cazoomi__JQuery, 'js/jquery-ui-1.8.20.custom.min.js')}" />
+        <apex:stylesheet value="{!URLFOR($Resource.cazoomi__JQuery, 'css/ui-lightness/jquery-ui-1.8.20.custom.css')}" />
+    </head>
+    
+    <apex:sectionHeader title="{!cazoomi__Marketing_List__c.Name}" subtitle="Add Members" />
+    
+    <apex:form id="formId">
+        <apex:pageBlock id="pageBlockId">
+            <apex:pageBlockSection title="Select Object" id="selectObjectSection">
+                <apex:pageBLockSectionItem >
+                    <apex:selectRadio value="{!objSelected}">
+                        <apex:selectOptions value="{!objects}"/> 
+                        <apex:actionSupport event="onclick" action="{!onObjSelectedChange}" reRender="selectFilterCriteriaSection" status="loadingStatus"/>
+                    </apex:selectRadio>
+                    <apex:actionStatus id="loadingStatus">
+                        <apex:facet name="start"><img src="{!$Resource.loading}" style="width:20px;height:20px" /></apex:facet>
+                    </apex:actionStatus>
+                </apex:pageBLockSectionItem>
+            </apex:pageBlockSection>
+            <apex:actionRegion >
+                <apex:pageBlockSection title="Specify filter Criteria" id="selectFilterCriteriaSection" columns="1">
+                    <apex:outputPanel id="errorBlock">
+                        <apex:outputPanel rendered="{!hasError}" styleClass="errorBlockClass">
+                            <apex:messages />
+                        </apex:outputPanel>
+                    </apex:outputPanel>
+                
+                    <apex:dataTable value="{!filterRows}" var="filterRow" id="filterTableId">
+                        <apex:column headerValue="Field">
+                            <apex:selectList value="{!filterRow.fieldSel}" multiselect="false" size="1">
+                                <apex:selectOptions value="{!fields}"/> 
+                                <apex:actionSupport event="onchange" rerender="filterTableId" />
+                            </apex:selectList>
+                        </apex:column>
+                        <apex:column headerValue="Operator">
+                            <apex:selectList value="{!filterRow.Operator}" multiselect="false" size="1">
+                                <apex:selectOptions value="{!filterRow.operators}"/> 
+                            </apex:selectList>
+                        </apex:column>
+                        <apex:column headerValue="Value">
+                            <apex:inputText value="{!filterRow.valueSel}" rendered="{!NOT(filterRow.isFieldPicklist)}"/>
+                            <apex:inputText value="{!filterRow.valueSel}" rendered="{!filterRow.isFieldPicklist}" >
+                                <apex:actionSupport event="onfocus" oncomplete="openDialog();" rerender="picklistSelectPanel">
+                                    <apex:param name="selectedRowNumber" value="{!filterRow.rowNumber}" assignTo="{!selectedRowNumber}" />
+                                    <apex:param name="fieldSel" value="{!filterRow.fieldSel}" assignTo="{!fieldSel}"/>
+                                </apex:actionSupport>
+                            </apex:inputText> 
+                        </apex:column>
+                        <apex:column >
+                            &nbsp;&nbsp;
+                            <apex:outputText value="AND" rendered="{!filterRow.rowNumber != 5}" />
+                        </apex:column>
+                    </apex:dataTable>
+                </apex:pageBlockSection>
+            </apex:actionRegion>
+            <apex:pageBlockButtons location="bottom">
+                <apex:commandButton value="Go!" action="{!searchMembers}" reRender="addMembersPanel,selectFilterCriteriaSection" status="searchingStatus"/>
+                <apex:actionStatus id="searchingStatus">
+                    <apex:facet name="start"><img src="{!$Resource.loading}" style="width:20px;height:20px" /></apex:facet>
+                </apex:actionStatus>
+                <apex:commandButton value="Back" action="{!cancel}" immediate="true" />
+            </apex:pageBlockButtons>
+        </apex:pageBlock>
+        
+        <apex:actionFunction name="updatePicklistValues" rerender="selectFilterCriteriaSection" action="{!updatePicklistValues}"   >
+            <apex:param name="firstParam" assignto="{!selpickvals}" value="" /> 
+        </apex:actionFunction>
+        <script type="text/javascript">
+            function updselpicks()
+            {
+                var pickval = document.getElementById('pageId:formId:noofpicvals').value;
+                var selpicks = '';
+                var i;
+                for(i=0; i<pickval; i++)
+                {
+                    var pick = document.getElementById('pageId:formId:selectedPicklistValuesId:' + i);
+                    
+                    if(pick.checked)
+                    {
+                         if(i==0 || selpicks  == '')
+                             selpicks += pick.value;
+                         else
+                            selpicks += ',' + pick.value;    
+                    }
+                    
+                }    
+                updatePicklistValues(selpicks );
+            }
+        </script>
+        <div id="dialog_box" >
+            <apex:outputPanel id="picklistSelectPanel" style="text-align:left;"> 
+                <apex:selectCheckBoxes layout="pageDirection" id="selectedPicklistValuesId">
+                    <apex:selectOptions value="{!picklistValues}" id="picklistOption"/>
+                </apex:selectCheckBoxes>
+                <apex:inputhidden value="{!noofpicvals}" id="noofpicvals" />
+            </apex:outputPanel>
+        </div>
+        <script>
+            openDialog = function() 
+            {
+                $('#dialog_box').click();
+            } 
+            
+            $(function() {
+                $( "#dialog_box" ).dialog({
+                    autoOpen: false,
+                    title: 'Select Picklist Values',
+                    modal: true,
+                    buttons: {
+                        "Save": function() 
+                        {
+                            updselpicks();
+                            $( this ).dialog( "close" );
+                        },
+                        Cancel: function() {
+                            $( this ).dialog( "close" );
+                        }
+                    },
+                    close: function() {
+                        
+                    }
+                });
+    
+                $( "#dialog_box" )
+                    .button()
+                    .click(function() {
+                        $( "#dialog_box" ).dialog( "open" );
+                });
+                
+            });
+        </script>
+        
+        <apex:outputPanel id="addMembersPanel">
+                
+            <apex:pageBlock id="addMembersBlock">
+                <apex:outputPanel id="afterSaveBlock">
+                    <apex:outputPanel rendered="{!saveError}" styleClass="errorBlockClass">
+                        <apex:messages />
+                    </apex:outputPanel>
+                    <apex:outputPanel rendered="{!NOT(saveError) && NOT(hasError)}">
+                        <apex:messages />
+                    </apex:outputPanel>
+                </apex:outputPanel>
+            
+                <apex:pageBlockTable value="{!members}" var="member"  >
+                    <apex:column >
+                        <apex:inputCheckbox value="{!member.isSelected}" />
+                    </apex:column>
+                    <apex:column headerValue="First Name">
+                        <apex:outputText value="{!member.leadRec.FirstName}" rendered="{!objSelected == 'Lead'}"/>
+                        <apex:outputText value="{!member.conRec.FirstName}" rendered="{!objSelected == 'Contact'}"/>                    
+                    </apex:column>
+                    <apex:column headerValue="Last Name">
+                        <apex:outputText value="{!member.leadRec.LastName}" rendered="{!objSelected == 'Lead'}"/>
+                        <apex:outputText value="{!member.conRec.LastName}" rendered="{!objSelected == 'Contact'}"/>                    
+                    </apex:column>
+                    <apex:column headerValue="Title">
+                        <apex:outputText value="{!member.leadRec.Title}" rendered="{!objSelected == 'Lead'}"/>
+                        <apex:outputText value="{!member.conRec.Title}" rendered="{!objSelected == 'Contact'}"/>                    
+                    </apex:column>
+                    <apex:column headerValue="Company">
+                        <apex:outputText value="{!member.leadRec.Company}" rendered="{!objSelected == 'Lead'}"/>
+                        <apex:outputText value="{!member.conRec.Account.Name}" rendered="{!objSelected == 'Contact'}"/>                    
+                    </apex:column>
+                    <apex:column headerValue="Email">
+                        <apex:outputText value="{!member.leadRec.Email}" rendered="{!objSelected == 'Lead'}"/>
+                        <apex:outputText value="{!member.conRec.Email}" rendered="{!objSelected == 'Contact'}"/>                    
+                    </apex:column>                
+                </apex:pageBlockTable>
+                <apex:outputLabel value="Select no. of rows " rendered="{!membersSize > 0}">
+                    <apex:selectList value="{!selectedRows}" multiselect="false" size="1">
+                        <apex:selectOption itemValue="5" itemLabel="5" />
+                        <apex:selectOption itemValue="10" itemLabel="10" />
+                        <apex:selectOption itemValue="20" itemLabel="20" />
+                        <apex:selectOption itemValue="50" itemLabel="50" />
+                        <apex:selectOption itemValue="100" itemLabel="100" />
+                        <apex:selectOption itemValue="1000" itemLabel="All" />
+                        <apex:actionSupport event="onchange" action="{!updpagesize}" rerender="addMembersPanel" status="rowsStatus"/>
+                        <apex:actionStatus id="rowsStatus">
+                            <apex:facet name="start"><img src="{!$Resource.loading}" style="width:20px;height:20px" /></apex:facet>
+                        </apex:actionStatus>
+                    </apex:selectList>
+                </apex:outputLabel><br/>
+                <apex:outputPanel id="paginationLinksPanelContact" rendered="{!objSelected == 'Contact'}">
+                    <apex:outputPanel rendered="{!membersSize > 0}" layout="block" styleClass="pSearchShowMore" id="otpNav1">
+                      <apex:outputText >Displaying page {!conSet.PageNumber} of {!CEILING(conSet.resultSize/conSet.PageSize)} | </apex:outputText>
+                          <apex:image url="/img/search_prevarrow_disabled.gif" styleClass="prevArrow" rendered="{!NOT(conSet.HasPrevious)}"/>
+                          <apex:image url="/img/search_prevarrow.gif" title="Previous Page" styleClass="prevArrow" rendered="{!conSet.HasPrevious}"/>
+                          <apex:commandLink action="{!Previous}" title="Previous Page" value="Previous Page" rendered="{!conSet.HasPrevious}"/>
+                          <apex:outputPanel styleClass="pShowLess noLink" style="color:grey" rendered="{!NOT(conSet.HasPrevious)}">Previous Page</apex:outputPanel>         
+                          &nbsp;({!IF(conSet.PageNumber == 1,1,((conSet.PageNumber -1) * conSet.PageSize)+1)}-{!IF(conSet.resultSize < conSet.PageSize,conSet.resultSize,conSet.PageNumber * conSet.pageSize)})&nbsp;
+                          <apex:outputPanel styleClass="pShowLess noLink" style="color:grey" rendered="{!NOT(conSet.HasNext)}">Next Page</apex:outputPanel>         
+                          <apex:commandLink title="Next Page" value="Next Page" rendered="{!conSet.HasNext}" action="{!Next}"/>&nbsp;
+                          <apex:image url="/img/search_nextarrow.gif" title="Next Page" styleClass="nextArrow" rendered="{!conSet.HasNext}"/>
+                          <apex:image url="/img/search_nextarrow_disabled.gif" rendered="{!NOT(conSet.HasNext)}"/>          
+                      </apex:outputPanel>                
+                </apex:outputPanel>
+                <apex:outputPanel id="paginationLinksPanelLead" rendered="{!objSelected == 'Lead'}">
+                    <apex:outputPanel rendered="{!membersSize > 0}" layout="block" styleClass="pSearchShowMore" id="otpNav2">
+                      <apex:outputText >Displaying page {!leadSet.PageNumber} of {!CEILING(leadSet.resultSize/leadSet.PageSize)} | </apex:outputText>
+                          <apex:image url="/img/search_prevarrow_disabled.gif" styleClass="prevArrow" rendered="{!NOT(leadSet.HasPrevious)}"/>
+                          <apex:image url="/img/search_prevarrow.gif" title="Previous Page" styleClass="prevArrow" rendered="{!leadSet.HasPrevious}"/>
+                          <apex:commandLink action="{!Previous}" title="Previous Page" value="Previous Page" rendered="{!leadSet.HasPrevious}"/>
+                          <apex:outputPanel styleClass="pShowLess noLink" style="color:grey" rendered="{!NOT(leadSet.HasPrevious)}">Previous Page</apex:outputPanel>         
+                          &nbsp;({!IF(leadSet.PageNumber == 1,1,((leadSet.PageNumber -1) * leadSet.PageSize)+1)}-{!IF(leadSet.resultSize < leadSet.PageSize,leadSet.resultSize,leadSet.PageNumber * leadSet.pageSize)})&nbsp;
+                          <apex:outputPanel styleClass="pShowLess noLink" style="color:grey" rendered="{!NOT(leadSet.HasNext)}">Next Page</apex:outputPanel>         
+                          <apex:commandLink title="Next Page" value="Next Page" rendered="{!leadSet.HasNext}" action="{!Next}"/>&nbsp;
+                          <apex:image url="/img/search_nextarrow.gif" title="Next Page" styleClass="nextArrow" rendered="{!leadSet.HasNext}"/>
+                          <apex:image url="/img/search_nextarrow_disabled.gif" rendered="{!NOT(leadSet.HasNext)}"/>          
+                      </apex:outputPanel>                
+                </apex:outputPanel>                
+                <apex:pageBlockButtons >
+                    <apex:commandButton action="{!addSelectedMembers}" 
+                            value="Add Selected members" rerender="addMembersPanel, pageBlockId"
+                            rendered="{!membersSize > 0}" status="addingselStatus"/>
+                    <apex:actionStatus id="addingselStatus">
+                        <apex:facet name="start"><img src="{!$Resource.loading}" style="width:20px;height:20px" /></apex:facet>
+                    </apex:actionStatus>
+                    <apex:commandButton action="{!addallMembers}" 
+                            value="Add all Search Result" rerender="addMembersPanel, pageBlockId"
+                            rendered="{!membersSize > 0}" status="addingallStatus"/>
+                    <apex:actionStatus id="addingallStatus">
+                        <apex:facet name="start"><img src="{!$Resource.loading}" style="width:20px;height:20px" /></apex:facet>
+                    </apex:actionStatus>
+                </apex:pageBlockButtons>
+                
+                <apex:outputText value="There are no members to display. Use the search options to find and add members" rendered="{!membersSize = 0}"/>
+            </apex:pageBlock>
+        </apex:outputPanel>
+    </apex:form>
+</apex:page>
