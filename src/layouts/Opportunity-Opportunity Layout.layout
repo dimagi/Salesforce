@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Layout xmlns="http://soap.sforce.com/2006/04/metadata">
     <customButtons>Sync_with_FB_single</customButtons>
-    <customButtons>Create_New_Contract</customButtons>
     <excludeButtons>Submit</excludeButtons>
     <headers>PersonalTagging</headers>
     <headers>PublicTagging</headers>
@@ -267,6 +266,7 @@
         <relatedList>RelatedLineItemList</relatedList>
     </relatedLists>
     <relatedLists>
+        <customButtons>Create_New_Contract</customButtons>
         <fields>DContract__c.NAME</fields>
         <fields>DContract__c.Account__c</fields>
         <fields>DContract__c.Contract_Start_Date__c</fields>
