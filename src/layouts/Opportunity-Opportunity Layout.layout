@@ -248,6 +248,7 @@
         <relatedList>OpportunityCountry__c.Opportunity__c</relatedList>
     </relatedLists>
     <relatedLists>
+        <customButtons>Create_New_Location</customButtons>
         <fields>Location__c.NAME</fields>
         <fields>Location__c.Country__c</fields>
         <fields>Location__c.State__c</fields>
