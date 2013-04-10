@@ -802,15 +802,4 @@
     <pluralLabel>Contracts</pluralLabel>
     <searchLayouts/>
     <sharingModel>ReadWrite</sharingModel>
-    <webLinks>
-        <fullName>Create_New_Deployment</fullName>
-        <availability>online</availability>
-        <displayType>button</displayType>
-        <height>600</height>
-        <linkType>page</linkType>
-        <masterLabel>Create New Deployment</masterLabel>
-        <openType>sidebar</openType>
-        <page>CreateNewDeployment</page>
-        <protected>false</protected>
-    </webLinks>
 </CustomObject>

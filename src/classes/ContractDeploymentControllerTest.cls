@@ -45,7 +45,8 @@ private class ContractDeploymentControllerTest {
                                         Implementing_Account__c, 
                                         Area__c, 
                                         Sub_Area__c,
-                                        (Select Product__c From Project_Products__r) 
+                                        (select Product__c from Project_Products__r),
+                                        (select Contract__c from Contract_Projects__r)
                                  from Project__c
                                  where Id =: deployId
                                  limit 1];
@@ -57,6 +58,8 @@ private class ContractDeploymentControllerTest {
         System.assertEquals(deployment.Sub_Area__c, contract.Sub_Area__c);
         System.assertEquals(deployment.Project_Products__r.size(), 1);
         System.assertEquals(deployment.Project_Products__r[0].Product__c, product.Id);
+        System.assertEquals(deployment.Contract_Projects__r.size(), 1);
+        System.assertEquals(deployment.Contract_Projects__r[0].Contract__c, contract.Id);
         
         Test.stopTest();
     }

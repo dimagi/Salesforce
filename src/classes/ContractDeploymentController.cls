@@ -46,6 +46,11 @@ public with sharing class ContractDeploymentController {
         
         insert projectProducts;
         
+        Contract_Project__c contrDeploy = new Contract_Project__c();
+        contrDeploy.Contract__c = c.Id;
+        contrDeploy.Project__c = deployment.Id;
+        insert contrDeploy;
+        
         PageReference deployPage = new ApexPages.StandardController(deployment).view();
         deployPage.setRedirect(true);
        

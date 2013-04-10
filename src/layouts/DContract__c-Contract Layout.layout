@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Layout xmlns="http://soap.sforce.com/2006/04/metadata">
-    <customButtons>Create_New_Deployment</customButtons>
     <excludeButtons>Submit</excludeButtons>
     <layoutSections>
         <customLabel>false</customLabel>
@@ -236,6 +235,7 @@
         <style>CustomLinks</style>
     </layoutSections>
     <relatedLists>
+        <customButtons>Create_New_Deployment</customButtons>
         <fields>Project__c.NAME</fields>
         <fields>Project__c.Short_Description__c</fields>
         <fields>Project__c.Status__c</fields>
