@@ -2,7 +2,7 @@
 Class Name: OpportunityContractControllerTest
 Class Description: Class for Contract creating from an Opportunity Testing and Coverage
 Author: Virginia Fernández (vfernandez@adooxen.com)
-Update Date: 2013-04-09
+Update Date: 2013-04-10
 Additional Comments: 
 **************************************************/
 @isTest(SeeAllData=true)
@@ -80,8 +80,9 @@ private class OpportunityContractControllerTest {
                                         Proposal_Dropbox_Location__c,
                                         Long_term_partnership_or_one_off__c,
                                         Major_Component_Risks__c,
-                                        (Select Product__c From Products__r),
-                                        (Select Country__c From Contract_Countries__r)
+                                        (select Product__c from Products__r),
+                                        (select Country__c from Contract_Countries__r),
+                                        (select Opportunity__c from Opportunity_Contract__r)
                                  from DContract__c
                                  where Id =: contrId
                                  limit 1];
@@ -99,6 +100,8 @@ private class OpportunityContractControllerTest {
         System.assertEquals(contract.Products__r[0].Product__c, product.Id);
         System.assertEquals(contract.Contract_Countries__r.size(), 1);
         System.assertEquals(contract.Contract_Countries__r[0].Country__c, country.Id);
+        System.assertEquals(contract.Opportunity_Contract__r.size(), 1);
+        System.assertEquals(contract.Opportunity_Contract__r[0].Opportunity__c, opp.Id);
         
         Test.stopTest();
     }
