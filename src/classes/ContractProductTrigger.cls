@@ -39,7 +39,7 @@ public with sharing class ContractProductTrigger {
         	contract.Product_Text__c = '';
         	
         	for (Contract_Product__c contrProd : contrProds) {
-        		if (!contract.Product_Text__c.equals('') && !contract.Product_Text__c.endsWith(',')) {
+        		if (!contract.Product_Text__c.equals('') && !contract.Product_Text__c.endsWith('; ')) {
         		  contract.Product_Text__c += '; ';
         		}
         		contract.Product_Text__c += productNameById.get(contrProd.Product__c);
