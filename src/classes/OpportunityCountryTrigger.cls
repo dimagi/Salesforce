@@ -44,6 +44,9 @@ public with sharing class OpportunityCountryTrigger {
             }
         }
         
-        update opps;
+        if (!opps.isEmpty()) {
+        	TriggerContext.runTrigger = false;
+            update opps;
+        }
     }
 }
