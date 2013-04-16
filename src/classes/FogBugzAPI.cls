@@ -153,6 +153,27 @@ public with sharing class FogBugzAPI {
         
         return parseUpsertId(res.getBody());
 	}
+	
+	public String updateCaseTitleStage(FogBugzCase fbCase) {
+        Map<String, String> params = new Map<String, String> {
+            'cmd' => 'edit',
+            'ixBug' => fbCase.caseId,
+            'sVersion' => fbCase.externalBugID,
+            'sTitle' => fbCase.title,
+            'sArea' => fbCase.area
+        };
+        
+        HTTPRequest req = new HttpRequest();
+        req.setEndpoint(FB_API_URL);
+        req.setBody('token=' + FogBugz_Settings__c.getOrgDefaults().Token__c + '&' + encodeParameters(params));
+        req.setTimeout(FB_HTTP_TIMEOUT);
+        req.setMethod('POST');
+        
+        HTTP connection = new HTTP();
+        HTTPResponse res = connection.send(req);
+        
+        return parseUpsertId(res.getBody());
+    }
 
     public String addNote(String caseId, String note) {
         Map<String, String> params = new Map<String, String> {

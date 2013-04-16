@@ -27,4 +27,28 @@ private class OpportunityTriggersTest {
         
         Test.stopTest();
     }
+    
+    static testMethod void updateOpportunityTest() {
+        Business_Unit__c bunit = new Business_Unit__c();
+        bunit.Name = 'Test';
+        insert bunit; 
+        
+        Opportunity opp = new Opportunity();
+        opp.Name = 'Test';
+        opp.StageName = 'Stage 1 - Connect';
+        opp.CloseDate = Date.newInstance(2013, 4, 9);
+        opp.Implementing_Business_Unit__c = bunit.Id;
+        opp.Fogbugz_Ticket_Number__c = TestFogBugzAPI.TEST_FB_ID;
+        insert opp;
+        
+        Test.startTest();
+        
+        opp.Name = 'Test 2';
+        update opp;
+        
+        opp.StageName = 'Stage 2 - Talking';
+        update opp;
+        
+        Test.stopTest();
+    }
 }

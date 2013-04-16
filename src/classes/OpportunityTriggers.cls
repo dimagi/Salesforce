@@ -52,4 +52,31 @@ public with sharing class OpportunityTriggers {
 		}
     	
     }
+    
+    public static void updateCaseInFogbugz(Opportunity oppNew, Opportunity oppOld) {
+    	if ((oppNew.Name != oppOld.Name) || (oppNew.StageName != oppOld.StageName)) {
+    		
+    		updateCase(oppNew.Id);
+    		
+    	}
+    }
+    
+    /**
+     * We use @future here in order to perform HTTP callouts from within a trigger context
+     */
+    @future(callout=true)
+    public static void updateCase(String opportunityId) {
+    	Opportunity o = FogBugzUtils.fetchOpportunity(opportunityId);
+        
+        if (o != null) {
+            
+            FogBugzCase fbCase = FogBugzUtils.createFBCaseFromOpportunity(o);
+            FogBugzAPI fbAPI = new FogBugzAPI();
+            String fbCaseId = Test.isRunningTest() ? TestFogBugzAPI.TEST_FB_ID : fbAPI.updateCaseTitleStage(fbCase);
+            
+        }
+        else {
+            System.debug(LoggingLevel.WARN, 'OpportunityTriggers::updateCase() - Could not find opportunity just created (???)');
+        }
+    }
 }
