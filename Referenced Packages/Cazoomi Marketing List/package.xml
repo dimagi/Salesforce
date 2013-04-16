@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Package xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Cazoomi Marketing List</fullName>
+    <apiAccessLevel>Unrestricted</apiAccessLevel>
+    <description>This application provides marketing list functionality inside Salesforce.com. The marketing lists can be synced to ESPs such as Act-On Software, Constant Contact, Delivra, ExactTarget, MailChimp &amp; others using Cazoomi SyncApps https://syncapps.cazoomi.com.</description>
+    <namespacePrefix>cazoomi</namespacePrefix>
+    <types>
+        <members>Utility</members>
+        <members>marketingListMemberController</members>
+        <members>marketingListMemberControllerTest</members>
+        <name>ApexClass</name>
+    </types>
+    <types>
+        <members>addMarketingMembers</members>
+        <name>ApexPage</name>
+    </types>
+    <types>
+        <members>List_Member_Contact__c.Contact__c</members>
+        <members>List_Member_Contact__c.Email__c</members>
+        <members>List_Member_Contact__c.Marketing_List__c</members>
+        <members>List_Members_Lead__c.Email__c</members>
+        <members>List_Members_Lead__c.Lead__c</members>
+        <members>List_Members_Lead__c.Marketing_List__c</members>
+        <members>Marketing_List__c.Sync_List__c</members>
+        <name>CustomField</name>
+    </types>
+    <types>
+        <members>List_Member_Contact__c</members>
+        <members>List_Members_Lead__c</members>
+        <members>Marketing_List__c</members>
+        <name>CustomObject</name>
+    </types>
+    <types>
+        <members>Marketing_List__c</members>
+        <name>CustomTab</name>
+    </types>
+    <types>
+        <members>List_Member_Contact__c-List Member Contact Layout</members>
+        <members>List_Members_Lead__c-List Members - Lead Layout</members>
+        <members>Marketing_List__c-Marketing List Layout</members>
+        <name>Layout</name>
+    </types>
+    <types>
+        <members>Marketing_List__c.All</members>
+        <name>ListView</name>
+    </types>
+    <types>
+        <members>JQuery</members>
+        <members>loading</members>
+        <name>StaticResource</name>
+    </types>
+    <types>
+        <members>List_Member_Contact__c.Add_Members</members>
+        <members>List_Members_Lead__c.Add_Members</members>
+        <name>WebLink</name>
+    </types>
+    <version>27.0</version>
+</Package>
