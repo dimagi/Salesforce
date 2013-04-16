@@ -36,6 +36,7 @@
     <deprecated>false</deprecated>
     <description>This custom object is used to store the contact members of marketing list</description>
     <enableActivities>false</enableActivities>
+    <enableEnhancedLookup>true</enableEnhancedLookup>
     <enableFeeds>false</enableFeeds>
     <enableHistory>false</enableHistory>
     <enableReports>false</enableReports>

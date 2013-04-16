@@ -232,6 +232,14 @@
         <type>Lookup</type>
     </fields>
     <fields>
+        <fullName>Country_Text__c</fullName>
+        <externalId>false</externalId>
+        <label>Country</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <type>TextArea</type>
+    </fields>
+    <fields>
         <fullName>Date_Signed__c</fullName>
         <externalId>false</externalId>
         <inlineHelpText>The date the contract was signed.</inlineHelpText>
