@@ -1,9 +1,11 @@
-/**
- *
- * @author  Fernando Rodriguez (frodriguez@adooxen.com)
- * @date    01/11/2012
- *
- */
+/**************************************************
+Class Name: OpenOpportunityMailer
+Class Description: Class in charge of encapsulating the filtering logic from the batches and send the notification emails  
+Author: Fernando Rodriguez (frodriguez@adooxen.com)
+Modified By: Fernando
+Update Date: 2013-03-04
+Additional Comments:    
+**************************************************/
 public class OpenOpportunityMailer {
     
     private static final String EMAIL_SUBJECT = '<Name of User> | <Date> | Biz Dev Report Out';

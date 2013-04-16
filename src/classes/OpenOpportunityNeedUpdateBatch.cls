@@ -1,9 +1,16 @@
-/**
- *
- * @author  Fernando Rodriguez (frodriguez@adooxen.com)
- * @date    01/22/2012
- *
- */
+/**************************************************
+Class Name: OpenOpportunityNeedUpdateBatch
+Class Description: Batch that fetches all Opportunities which needs update (Considered as RED OPPORTUNITIES)  
+Author: Fernando Rodriguez (frodriguez@adooxen.com)
+Modified By: Fernando
+Update Date: 2013-03-04
+Additional Comments: The batch only fetches the records.
+The class invokation flow would be: 
+1. OpenOpportunityNeedUpdateBatch gets the records
+2. OpenOpportunityMailer performs the filetering based on the report criteria (logic modularised in order to remove processing logic from the batch)
+3. OpenOpportunityEmailUtils class create the HTML content for the email
+4. OpenOpportunityMailer receives this and send it by email   
+**************************************************/
 global class OpenOpportunityNeedUpdateBatch implements Database.Batchable<sObject> {
 
     public OpenOpportunityNeedUpdateBatch(){}    

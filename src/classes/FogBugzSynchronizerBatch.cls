@@ -152,7 +152,7 @@ global without sharing class FogBugzSynchronizerBatch implements Database.Batcha
                     FogBugzCase fbCase = fbIdToCaseMap.get(caseId);
                     
                     System.debug(LoggingLevel.INFO, 'Processing new opportunity::' + minTime + '-' + fbCase.lastModifiedDate);
-                    
+
                     Opportunity o = new Opportunity(
                         Name = 'Synchronizing',
                         StageName = 'Synchronizing',

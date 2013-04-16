@@ -14,8 +14,8 @@ public without sharing class FogBugzUtils {
         FogBugzCase fbCase = new FogBugzCase();
         
         // Uncomment if testing
-        fbCase.assignedTo = 'Salesforce';
-        //fbCase.assignedTo = o.Owner.Name;
+        // fbCase.assignedTo = 'Salesforce';
+        fbCase.assignedTo = o.Owner.Name;
         fbCase.title = o.Name;
         fbCase.externalBugID = o.Id;
         fbCase.project = FOGBUGZ_CASE_PROJECT;
@@ -97,14 +97,21 @@ public without sharing class FogBugzUtils {
         FogBugzCase fbCase = Test.isRunningTest() ?
                              api.parseCases(TestFogBugzAPI.GET_CASES_RESPONSE).values()[0] :
                              api.getCase(o.Fogbugz_Ticket_Number__c);
+<<<<<<< HEAD
 
+=======
+            
+>>>>>>> dimagi/master
         if (fbCase != null) {
 
             if (!checkTimes || o.Fogbugz_Last_Updated_Date__c == null || fbCase.lastModifiedDate == null ||
                 fbCase.lastModifiedDate > o.Fogbugz_Last_Updated_Date__c) {
                 	
 	            if (o.Fogbugz_Opened_By__c != null) {
+<<<<<<< HEAD
 	            	
+=======
+>>>>>>> dimagi/master
 	                // Update externalBugId in FB for new opportunities
 	                fbCase.externalBugID = o.Id;
 	                
@@ -124,6 +131,14 @@ public without sharing class FogBugzUtils {
 	            o.Fogbugz_Probability__c = fbCase.probability;
 	            o.Fogbugz_Opened_By__c = null;
 	    
+<<<<<<< HEAD
+=======
+	    		// Added by Nick
+	    		// This is where I should store the product name
+	    		//
+	    		//
+	    
+>>>>>>> dimagi/master
 	            if (fbCase.lastModifiedDate != null) {
 	                o.Fogbugz_Last_Updated_Date__c = fbCase.lastModifiedDate;
 	            }
@@ -135,7 +150,11 @@ public without sharing class FogBugzUtils {
 	            if (o.Id == null) {
 	                o.CloseDate = Date.today();
 	            }
+<<<<<<< HEAD
 
+=======
+	
+>>>>>>> dimagi/master
 	            upsert o;
             }
             else {
