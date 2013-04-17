@@ -45,7 +45,7 @@ public with sharing class ProjectCountryTrigger {
             }
         }
         
-        if (!projects.isEmpty()) {
+        if (!projects.isEmpty() && TriggerContext.runTrigger) {
         	TriggerContext.runTrigger = false;
             update projects;
         }

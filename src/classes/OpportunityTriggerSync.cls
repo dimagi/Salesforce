@@ -202,6 +202,7 @@ public with sharing class OpportunityTriggerSync {
 		}
 		
 		if (!opptyCountries.isEmpty()) {
+			TriggerContext.runTrigger = false;
 			update opptyCountries;
 		}	
 	}

@@ -208,6 +208,7 @@ public with sharing class ProjectTriggerSync {
 		}
 		
 		if (!projectCountries.isEmpty()) {
+			TriggerContext.runTrigger = false;
 			update projectCountries;
 		}	
 	}
