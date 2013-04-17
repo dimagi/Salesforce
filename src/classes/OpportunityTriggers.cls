@@ -56,7 +56,9 @@ public with sharing class OpportunityTriggers {
     public static void updateCaseInFogbugz(Opportunity oppNew, Opportunity oppOld) {
     	if ((oppNew.Name != oppOld.Name) || (oppNew.StageName != oppOld.StageName)) {
     		
-    		updateCase(oppNew.Id);
+    		if (!System.isBatch()) {
+    		  updateCase(oppNew.Id);
+    		}
     		
     	}
     }
