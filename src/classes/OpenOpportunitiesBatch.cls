@@ -1,3 +1,4 @@
+
 /**************************************************
 Class Name: OpenOpportunitiesBatch
 Class Description: Batch that fetches all Opportunities which to be sent by weekly email  

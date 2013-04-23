@@ -1,0 +1,510 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <actionOverrides>
+        <actionName>Accept</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Clone</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Delete</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Edit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>List</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>New</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Tab</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>View</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <deploymentStatus>Deployed</deploymentStatus>
+    <description>A Dimagi Project</description>
+    <enableActivities>false</enableActivities>
+    <enableEnhancedLookup>true</enableEnhancedLookup>
+    <enableFeeds>false</enableFeeds>
+    <enableHistory>false</enableHistory>
+    <enableReports>false</enableReports>
+    <fields>
+        <fullName>Area_Text__c</fullName>
+        <externalId>false</externalId>
+        <inlineHelpText>For reporting on the multi-select area field.</inlineHelpText>
+        <label>Area</label>
+        <required>false</required>
+        <type>TextArea</type>
+    </fields>
+    <fields>
+        <fullName>Area__c</fullName>
+        <externalId>false</externalId>
+        <label>Area</label>
+        <picklist>
+            <picklistValues>
+                <fullName>Health</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Poverty and Economic Development</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Natural Resource Management</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Training &amp; Education Services</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Logistics</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Other</fullName>
+                <default>false</default>
+            </picklistValues>
+            <sorted>false</sorted>
+        </picklist>
+        <type>MultiselectPicklist</type>
+        <visibleLines>6</visibleLines>
+    </fields>
+    <fields>
+        <fullName>Backstop__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <externalId>false</externalId>
+        <inlineHelpText>Which Dimagi resource is supporting the project.</inlineHelpText>
+        <label>Backstop</label>
+        <referenceTo>Contact</referenceTo>
+        <relationshipName>Projects_backstop</relationshipName>
+        <required>false</required>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>Billable_Travel__c</fullName>
+        <externalId>false</externalId>
+        <label>Billable Travel</label>
+        <picklist>
+            <picklistValues>
+                <fullName>Yes</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>No</fullName>
+                <default>false</default>
+            </picklistValues>
+            <sorted>false</sorted>
+        </picklist>
+        <type>Picklist</type>
+    </fields>
+    <fields>
+        <fullName>Country__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <externalId>false</externalId>
+        <label>Implementing Country</label>
+        <referenceTo>Country__c</referenceTo>
+        <relationshipName>Projects</relationshipName>
+        <required>false</required>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>Funder_Account__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <externalId>false</externalId>
+        <inlineHelpText>Who is supplying the funding</inlineHelpText>
+        <label>Funding Source</label>
+        <referenceTo>Account</referenceTo>
+        <relationshipName>Funding_Projects</relationshipName>
+        <required>false</required>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>Implementing_Account__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <externalId>false</externalId>
+        <inlineHelpText>The organization that is implementing the project.</inlineHelpText>
+        <label>Implementing Account</label>
+        <referenceTo>Account</referenceTo>
+        <relationshipName>Projects</relationshipName>
+        <required>false</required>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>Implementing_Business_Unit__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <externalId>false</externalId>
+        <inlineHelpText>Which Dimagi Business Unit is running the project</inlineHelpText>
+        <label>Implementing Business Unit</label>
+        <referenceTo>Business_Unit__c</referenceTo>
+        <relationshipName>Projects</relationshipName>
+        <required>false</required>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>License_Edition__c</fullName>
+        <externalId>false</externalId>
+        <label>License Edition</label>
+        <picklist>
+            <picklistValues>
+                <fullName>Community</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Standard</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Plus</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Advanced</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Enterprise</fullName>
+                <default>false</default>
+            </picklistValues>
+            <sorted>false</sorted>
+        </picklist>
+        <type>Picklist</type>
+    </fields>
+    <fields>
+        <fullName>Product_Text__c</fullName>
+        <externalId>false</externalId>
+        <inlineHelpText>A text display of the attached products.</inlineHelpText>
+        <label>Products</label>
+        <required>false</required>
+        <type>TextArea</type>
+    </fields>
+    <fields>
+        <fullName>Project_Active_Date__c</fullName>
+        <description>The date the project was deemed &quot;active&quot;</description>
+        <externalId>false</externalId>
+        <label>Project Active Date</label>
+        <required>false</required>
+        <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>Project_Dropbox_Location__c</fullName>
+        <externalId>false</externalId>
+        <inlineHelpText>This should be in Dimagi - Projects</inlineHelpText>
+        <label>Project Dropbox Location</label>
+        <required>false</required>
+        <type>TextArea</type>
+    </fields>
+    <fields>
+        <fullName>Project_End_Date__c</fullName>
+        <externalId>false</externalId>
+        <inlineHelpText>The date the project ended</inlineHelpText>
+        <label>Project End Date</label>
+        <required>false</required>
+        <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>Project_Manager__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <externalId>false</externalId>
+        <inlineHelpText>Who is running the project from Dimagi.</inlineHelpText>
+        <label>Project Manager</label>
+        <referenceTo>Contact</referenceTo>
+        <relationshipName>Projects</relationshipName>
+        <required>false</required>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>Project_Space_Name__c</fullName>
+        <externalId>false</externalId>
+        <inlineHelpText>The name of the Project Space in HQ</inlineHelpText>
+        <label>HQ Project Space Name</label>
+        <required>false</required>
+        <type>TextArea</type>
+    </fields>
+    <fields>
+        <fullName>Project_Team__c</fullName>
+        <externalId>false</externalId>
+        <inlineHelpText>Who else is on the project team?</inlineHelpText>
+        <label>Project Team</label>
+        <required>false</required>
+        <type>TextArea</type>
+    </fields>
+    <fields>
+        <fullName>Project_Type__c</fullName>
+        <externalId>false</externalId>
+        <inlineHelpText>Most projects should be Implementation unless they are exclusively Consulting or Software Dev.</inlineHelpText>
+        <label>Project Type</label>
+        <picklist>
+            <picklistValues>
+                <fullName>Implementation</fullName>
+                <default>true</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Consulting</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Core Software Development</fullName>
+                <default>false</default>
+            </picklistValues>
+            <sorted>false</sorted>
+        </picklist>
+        <type>Picklist</type>
+    </fields>
+    <fields>
+        <fullName>Proposal_Dropbox_Location__c</fullName>
+        <externalId>false</externalId>
+        <inlineHelpText>This should be in Dimagi - Proposals</inlineHelpText>
+        <label>Proposal Dropbox Location</label>
+        <required>false</required>
+        <type>TextArea</type>
+    </fields>
+    <fields>
+        <fullName>Short_Description__c</fullName>
+        <externalId>false</externalId>
+        <inlineHelpText>A short description of the project.</inlineHelpText>
+        <label>Short Description</label>
+        <required>false</required>
+        <type>TextArea</type>
+    </fields>
+    <fields>
+        <fullName>Status__c</fullName>
+        <externalId>false</externalId>
+        <inlineHelpText>&quot;Inactive&quot; means either not started or on hold. &quot;Complete&quot; means the project is closed.</inlineHelpText>
+        <label>Status</label>
+        <picklist>
+            <picklistValues>
+                <fullName>Active</fullName>
+                <default>true</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Complete</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Inactive</fullName>
+                <default>false</default>
+            </picklistValues>
+            <sorted>false</sorted>
+        </picklist>
+        <type>Picklist</type>
+    </fields>
+    <fields>
+        <fullName>Sub_Area_Text__c</fullName>
+        <description>Populated by trigger.  For use on display in the related lists since it is a multiselect.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>For use on display in the related lists since it is a multiselect.</inlineHelpText>
+        <label>Sub Area</label>
+        <required>false</required>
+        <type>TextArea</type>
+    </fields>
+    <fields>
+        <fullName>Sub_Area__c</fullName>
+        <externalId>false</externalId>
+        <label>Sub Area</label>
+        <picklist>
+            <picklistValues>
+                <fullName>*** Health ***</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Maternal, Newborn, &amp; Child Health</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Family Planning</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>HIV/AIDS</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Malaria</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Respiratory Diseases</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Tuberculosis</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Polio</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Vaccinations</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Diarrhea</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Primary Care</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Non-Communicable Diseases</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Mental Health</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Nutrition</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>*** Poverty and Economic Development ***</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Gender Services</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Water, Sanitation, &amp; Hygiene</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Financial Services to the Poor</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Urban Development</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>*** Natural Resource Management ***</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Agriculture</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Food Security</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Environment</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>*** Training &amp; Education Services ***</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Adult Training</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Child Education</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Early Childhood Development</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>*** Logistics ***</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Human Resources</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Commodity Tracking/Procurement</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>*** Other ***</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Emergency Response</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Orphans and Vulnerable Children</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Possibly add: sex worker tag</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Telecommunications</fullName>
+                <default>false</default>
+            </picklistValues>
+            <sorted>false</sorted>
+        </picklist>
+        <type>MultiselectPicklist</type>
+        <visibleLines>6</visibleLines>
+    </fields>
+    <label>Deployment</label>
+    <listViews>
+        <fullName>All</fullName>
+        <columns>NAME</columns>
+        <columns>Project_Manager__c</columns>
+        <columns>Area__c</columns>
+        <columns>Sub_Area__c</columns>
+        <columns>Status__c</columns>
+        <columns>Project_Active_Date__c</columns>
+        <columns>Project_End_Date__c</columns>
+        <filterScope>Everything</filterScope>
+        <label>All</label>
+    </listViews>
+    <listViews>
+        <fullName>All_Active</fullName>
+        <columns>NAME</columns>
+        <columns>Area__c</columns>
+        <columns>Sub_Area__c</columns>
+        <columns>Project_Manager__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Status__c</field>
+            <operation>equals</operation>
+            <value>Active</value>
+        </filters>
+        <label>All Active</label>
+    </listViews>
+    <listViews>
+        <fullName>All_Projects</fullName>
+        <columns>NAME</columns>
+        <columns>Area__c</columns>
+        <columns>Sub_Area__c</columns>
+        <columns>Project_Manager__c</columns>
+        <filterScope>Everything</filterScope>
+        <label>All Projects</label>
+    </listViews>
+    <nameField>
+        <label>Deployment Name</label>
+        <type>Text</type>
+    </nameField>
+    <pluralLabel>Deployments</pluralLabel>
+    <searchLayouts>
+        <lookupDialogsAdditionalFields>Project_Manager__c</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>Status__c</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>Area__c</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>Sub_Area__c</lookupDialogsAdditionalFields>
+    </searchLayouts>
+    <sharingModel>ReadWrite</sharingModel>
+</CustomObject>

@@ -19,24 +19,35 @@
                 <field>Name</field>
             </layoutItems>
             <layoutItems>
-                <behavior>Required</behavior>
+                <behavior>Edit</behavior>
                 <field>AccountId</field>
             </layoutItems>
             <layoutItems>
                 <behavior>Edit</behavior>
-                <field>CampaignId</field>
-            </layoutItems>
-            <layoutItems>
-                <behavior>Readonly</behavior>
-                <field>Probability</field>
-            </layoutItems>
-            <layoutItems>
-                <behavior>Readonly</behavior>
-                <field>Fogbugz_Link__c</field>
+                <field>Funder_Account__c</field>
             </layoutItems>
             <layoutItems>
                 <behavior>Edit</behavior>
-                <field>Business_Unit_Owner__c</field>
+                <field>Country__c</field>
+            </layoutItems>
+            <layoutItems>
+                <behavior>Edit</behavior>
+                <field>Proposal_Dropbox_Location__c</field>
+            </layoutItems>
+            <layoutItems>
+                <emptySpace>true</emptySpace>
+            </layoutItems>
+            <layoutItems>
+                <behavior>Edit</behavior>
+                <field>Area__c</field>
+            </layoutItems>
+            <layoutItems>
+                <behavior>Edit</behavior>
+                <field>Sub_Area__c</field>
+            </layoutItems>
+            <layoutItems>
+                <behavior>Edit</behavior>
+                <field>Product_Text__c</field>
             </layoutItems>
         </layoutColumns>
         <layoutColumns>
@@ -45,20 +56,32 @@
                 <field>Salesforce_Opportunity_ID__c</field>
             </layoutItems>
             <layoutItems>
-                <behavior>Required</behavior>
-                <field>CloseDate</field>
+                <behavior>Readonly</behavior>
+                <field>Opp_Stage__c</field>
             </layoutItems>
             <layoutItems>
-                <behavior>Required</behavior>
-                <field>StageName</field>
-            </layoutItems>
-            <layoutItems>
-                <behavior>Edit</behavior>
-                <field>Industry__c</field>
+                <behavior>Readonly</behavior>
+                <field>Fogbugz_Probability__c</field>
             </layoutItems>
             <layoutItems>
                 <behavior>Readonly</behavior>
                 <field>Amount</field>
+            </layoutItems>
+            <layoutItems>
+                <behavior>Required</behavior>
+                <field>CloseDate</field>
+            </layoutItems>
+            <layoutItems>
+                <behavior>Edit</behavior>
+                <field>long_wait__c</field>
+            </layoutItems>
+            <layoutItems>
+                <behavior>Required</behavior>
+                <field>Opportunity_Owning_Entity__c</field>
+            </layoutItems>
+            <layoutItems>
+                <behavior>Edit</behavior>
+                <field>Implementing_Business_Unit__c</field>
             </layoutItems>
         </layoutColumns>
         <style>TwoColumnsTopToBottom</style>
@@ -68,22 +91,8 @@
         <detailHeading>true</detailHeading>
         <editHeading>true</editHeading>
         <label>Account Information</label>
-        <layoutColumns>
-            <layoutItems>
-                <behavior>Readonly</behavior>
-                <field>Account_Owning_Entity__c</field>
-            </layoutItems>
-            <layoutItems>
-                <behavior>Readonly</behavior>
-                <field>Account_Type__c</field>
-            </layoutItems>
-        </layoutColumns>
-        <layoutColumns>
-            <layoutItems>
-                <behavior>Readonly</behavior>
-                <field>Account_Country__c</field>
-            </layoutItems>
-        </layoutColumns>
+        <layoutColumns/>
+        <layoutColumns/>
         <style>TwoColumnsLeftToRight</style>
     </layoutSections>
     <layoutSections>
@@ -93,16 +102,12 @@
         <label>Fogbugz Information</label>
         <layoutColumns>
             <layoutItems>
-                <behavior>Edit</behavior>
+                <behavior>Readonly</behavior>
                 <field>Fogbugz_Ticket_Number__c</field>
             </layoutItems>
             <layoutItems>
                 <behavior>Readonly</behavior>
                 <field>Fogbugz_Last_Updated_Date__c</field>
-            </layoutItems>
-            <layoutItems>
-                <behavior>Edit</behavior>
-                <field>Fogbugz_Probability__c</field>
             </layoutItems>
             <layoutItems>
                 <behavior>Edit</behavior>
@@ -112,6 +117,10 @@
         <layoutColumns>
             <layoutItems>
                 <behavior>Readonly</behavior>
+                <field>Fogbugz_Link__c</field>
+            </layoutItems>
+            <layoutItems>
+                <behavior>Readonly</behavior>
                 <field>Fogbugz_Assigned_To__c</field>
             </layoutItems>
             <layoutItems>
@@ -119,15 +128,6 @@
                 <field>Fogbugz_Client__c</field>
             </layoutItems>
         </layoutColumns>
-        <style>TwoColumnsLeftToRight</style>
-    </layoutSections>
-    <layoutSections>
-        <customLabel>false</customLabel>
-        <detailHeading>true</detailHeading>
-        <editHeading>true</editHeading>
-        <label>Additional Information</label>
-        <layoutColumns/>
-        <layoutColumns/>
         <style>TwoColumnsLeftToRight</style>
     </layoutSections>
     <layoutSections>
@@ -190,6 +190,24 @@
     <layoutSections>
         <customLabel>false</customLabel>
         <detailHeading>false</detailHeading>
+        <editHeading>false</editHeading>
+        <label>Additional Information</label>
+        <layoutColumns>
+            <layoutItems>
+                <behavior>Readonly</behavior>
+                <field>Probability</field>
+            </layoutItems>
+            <layoutItems>
+                <behavior>Required</behavior>
+                <field>StageName</field>
+            </layoutItems>
+        </layoutColumns>
+        <layoutColumns/>
+        <style>TwoColumnsLeftToRight</style>
+    </layoutSections>
+    <layoutSections>
+        <customLabel>false</customLabel>
+        <detailHeading>false</detailHeading>
         <editHeading>true</editHeading>
         <label>Other Information</label>
         <layoutColumns/>
@@ -229,14 +247,38 @@
         <relatedList>RelatedContactRoleList</relatedList>
     </relatedLists>
     <relatedLists>
-        <fields>TASK.SUBJECT</fields>
-        <fields>TASK.WHO_NAME</fields>
-        <fields>ACTIVITY.TASK</fields>
-        <fields>TASK.DUE_DATE</fields>
-        <fields>TASK.STATUS</fields>
-        <fields>TASK.PRIORITY</fields>
-        <fields>CORE.USERS.FULL_NAME</fields>
-        <relatedList>RelatedActivityList</relatedList>
+        <fields>NAME</fields>
+        <relatedList>OpportunityCountry__c.Opportunity__c</relatedList>
+    </relatedLists>
+    <relatedLists>
+        <customButtons>Create_New_Location</customButtons>
+        <fields>Location__c.NAME</fields>
+        <fields>Location__c.Country__c</fields>
+        <fields>Location__c.State__c</fields>
+        <fields>Location__c.Sub_Location_1__c</fields>
+        <fields>Location__c.Sub_Location_2__c</fields>
+        <fields>Location__c.Geopoint__c</fields>
+        <fields>Location__c.Geopoint__c</fields>
+        <relatedList>Opportunity_Location__c.Opportunity__c</relatedList>
+    </relatedLists>
+    <relatedLists>
+        <fields>Product2</fields>
+        <fields>Description</fields>
+        <fields>Quantity</fields>
+        <fields>UnitPrice</fields>
+        <fields>TotalPrice</fields>
+        <relatedList>RelatedLineItemList</relatedList>
+    </relatedLists>
+    <relatedLists>
+        <customButtons>Create_New_Contract</customButtons>
+        <fields>DContract__c.NAME</fields>
+        <fields>DContract__c.Account__c</fields>
+        <fields>DContract__c.Contract_Start_Date__c</fields>
+        <fields>DContract__c.Contract_End_Date__c</fields>
+        <fields>DContract__c.Project_Manager__c</fields>
+        <fields>DContract__c.Status__c</fields>
+        <fields>DContract__c.Summary_Overview__c</fields>
+        <relatedList>Contract_Opportunity__c.Opportunity__c</relatedList>
     </relatedLists>
     <relatedLists>
         <fields>TASK.SUBJECT</fields>
@@ -246,12 +288,6 @@
         <fields>CORE.USERS.FULL_NAME</fields>
         <fields>TASK.LAST_UPDATE</fields>
         <relatedList>RelatedHistoryList</relatedList>
-    </relatedLists>
-    <relatedLists>
-        <relatedList>RelatedNoteList</relatedList>
-    </relatedLists>
-    <relatedLists>
-        <relatedList>RelatedOpportunityHistoryList</relatedList>
     </relatedLists>
     <relatedObjects>AccountId</relatedObjects>
     <showEmailCheckbox>false</showEmailCheckbox>

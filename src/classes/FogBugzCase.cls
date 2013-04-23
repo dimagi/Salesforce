@@ -17,6 +17,7 @@ public with sharing class FogBugzCase {
     public Datetime lastModifiedDate {get; set;}
     public String latestEvent {get; set;}
     public String ixPersonOpenedBy {get; set;}
+
  // added by Nick to track product
  //   public String product {get; set;}
 }

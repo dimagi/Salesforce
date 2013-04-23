@@ -68,7 +68,7 @@ public class OpenOpportunityReportController {
                 queryValues += ',StageName';
             }
             if(!queryValues.contains('long_wait__c')) {
-            	queryValues += 'long_wait__c';
+            	queryValues += ',long_wait__c';
             }
             
 	        /**************************************************

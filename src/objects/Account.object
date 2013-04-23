@@ -1,0 +1,1304 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <enableFeeds>true</enableFeeds>
+    <fields>
+        <fullName>AccountSource</fullName>
+        <picklist>
+            <picklistValues>
+                <fullName>Contact Us</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Referred to Us</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Other</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Conference</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Pulled from Website</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Publication - First Author</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Publication - Last Author</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Web Sign Up</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Workshop - Maputo</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Workshop - Dakar</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Workshop - Other</fullName>
+                <default>false</default>
+            </picklistValues>
+            <sorted>false</sorted>
+        </picklist>
+        <type>Picklist</type>
+    </fields>
+    <fields>
+        <fullName>Account_Owning_Entity__c</fullName>
+        <deleteConstraint>Restrict</deleteConstraint>
+        <externalId>false</externalId>
+        <inlineHelpText>Which Dimagi business unit owns this relationship.</inlineHelpText>
+        <label>Business Unit</label>
+        <referenceTo>Business_Unit__c</referenceTo>
+        <relationshipLabel>Accounts</relationshipLabel>
+        <relationshipName>Accounts</relationshipName>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>Account_Status__c</fullName>
+        <externalId>false</externalId>
+        <formula>CASE( Number_of_Open_Opps__c ,0, &apos;Passive&apos;,&apos;Active&apos;)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <inlineHelpText>If there are no open opportunities the status is Passive.</inlineHelpText>
+        <label>Account Status</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Address__c</fullName>
+        <externalId>false</externalId>
+        <label>Address</label>
+        <length>32768</length>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <type>LongTextArea</type>
+        <visibleLines>3</visibleLines>
+    </fields>
+    <fields>
+        <fullName>Annual_Budget__c</fullName>
+        <externalId>false</externalId>
+        <inlineHelpText>Used for multinational organizations to track their total budget per year.</inlineHelpText>
+        <label>Annual Budget</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>Area__c</fullName>
+        <externalId>false</externalId>
+        <inlineHelpText>What field is the account in.</inlineHelpText>
+        <label>Area</label>
+        <picklist>
+            <picklistValues>
+                <fullName>Health</fullName>
+                <default>true</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Poverty and Economic Development</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Natural Resource Management</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Education and Training</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Logistics</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Other</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Gender Equality and Women&apos;s Empowerment</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Water, Sanitation, &amp; Hygiene</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Financial Services for the Poor</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Economic Development</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Agriculture and Food Security</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Emergency Response</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Governance and Accountability</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Training &amp; Education Services</fullName>
+                <default>false</default>
+            </picklistValues>
+            <sorted>false</sorted>
+        </picklist>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <type>MultiselectPicklist</type>
+        <visibleLines>4</visibleLines>
+    </fields>
+    <fields>
+        <fullName>Country__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <externalId>false</externalId>
+        <inlineHelpText>Choose &quot;HQ&quot; if this is a generic headquarters account that isn&apos;t aligned to a specific country.</inlineHelpText>
+        <label>Account Country</label>
+        <referenceTo>Country__c</referenceTo>
+        <relationshipLabel>Accounts</relationshipLabel>
+        <relationshipName>Accounts</relationshipName>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>true</trackHistory>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>Email_Address__c</fullName>
+        <externalId>false</externalId>
+        <inlineHelpText>Should be a generic info email if applicable.</inlineHelpText>
+        <label>Email Address</label>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>true</trackHistory>
+        <type>Email</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Follow_up_Date__c</fullName>
+        <externalId>false</externalId>
+        <inlineHelpText>Use this field to mark a date you wish to be reminded to follow up with an account. Delete the field to turn off the reminder.</inlineHelpText>
+        <label>Follow-up Date</label>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>Industry</fullName>
+        <picklist>
+            <picklistValues>
+                <fullName>Agriculture</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Consulting</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Education</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Finance</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Health</fullName>
+                <default>true</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Nutrition</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Telecommunications</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Water &amp; Sanitation</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Other</fullName>
+                <default>false</default>
+            </picklistValues>
+            <sorted>false</sorted>
+        </picklist>
+        <type>Picklist</type>
+    </fields>
+    <fields>
+        <fullName>Last_Opportunity_Update__c</fullName>
+        <externalId>false</externalId>
+        <inlineHelpText>The last time an opportunity for this account was updated.</inlineHelpText>
+        <label>Last Opportunity Update</label>
+        <summarizedField>Opportunity.LastModifiedDate</summarizedField>
+        <summaryForeignKey>Opportunity.AccountId</summaryForeignKey>
+        <summaryOperation>max</summaryOperation>
+        <trackHistory>false</trackHistory>
+        <type>Summary</type>
+    </fields>
+    <fields>
+        <fullName>MSA__c</fullName>
+        <defaultValue>false</defaultValue>
+        <externalId>false</externalId>
+        <inlineHelpText>Do we have an MSA with this account?</inlineHelpText>
+        <label>MSA</label>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Memberships__c</fullName>
+        <externalId>false</externalId>
+        <inlineHelpText>A list of memberships HQ belongs to</inlineHelpText>
+        <label>Memberships</label>
+        <picklist>
+            <picklistValues>
+                <fullName>Core Group</fullName>
+                <default>false</default>
+            </picklistValues>
+            <sorted>false</sorted>
+        </picklist>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <type>MultiselectPicklist</type>
+        <visibleLines>4</visibleLines>
+    </fields>
+    <fields>
+        <fullName>Naming_Convention__c</fullName>
+        <externalId>false</externalId>
+        <formula>&apos;[Acronym] - [Full Name] - [Country/HQ]&apos;</formula>
+        <label>Naming Convention</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>No_Country_Office__c</fullName>
+        <externalId>false</externalId>
+        <inlineHelpText>Use to mark confirmed lack of an office</inlineHelpText>
+        <label>No Country Office</label>
+        <picklist>
+            <picklistValues>
+                <fullName>India</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Mozambique</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Senegal</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>South Africa</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Swaziland</fullName>
+                <default>false</default>
+            </picklistValues>
+            <sorted>false</sorted>
+        </picklist>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <type>MultiselectPicklist</type>
+        <visibleLines>4</visibleLines>
+    </fields>
+    <fields>
+        <fullName>Number_of_Active_Deployments__c</fullName>
+        <externalId>false</externalId>
+        <inlineHelpText>How many deployments are currently active.</inlineHelpText>
+        <label>Number of Active Deployments</label>
+        <summaryFilterItems>
+            <field>Project__c.Status__c</field>
+            <operation>equals</operation>
+            <value>Active</value>
+        </summaryFilterItems>
+        <summaryForeignKey>Project__c.Implementing_Account__c</summaryForeignKey>
+        <summaryOperation>count</summaryOperation>
+        <trackHistory>false</trackHistory>
+        <type>Summary</type>
+    </fields>
+    <fields>
+        <fullName>Number_of_Deployments__c</fullName>
+        <externalId>false</externalId>
+        <inlineHelpText>The total number of deployments (open and closed)</inlineHelpText>
+        <label>Number of Deployments</label>
+        <summaryForeignKey>Project__c.Implementing_Account__c</summaryForeignKey>
+        <summaryOperation>count</summaryOperation>
+        <trackHistory>false</trackHistory>
+        <type>Summary</type>
+    </fields>
+    <fields>
+        <fullName>Number_of_Open_Opps__c</fullName>
+        <externalId>false</externalId>
+        <label>Number of Open Opps</label>
+        <summaryFilterItems>
+            <field>Opportunity.IsClosed</field>
+            <operation>equals</operation>
+            <value>false</value>
+        </summaryFilterItems>
+        <summaryForeignKey>Opportunity.AccountId</summaryForeignKey>
+        <summaryOperation>count</summaryOperation>
+        <trackHistory>false</trackHistory>
+        <type>Summary</type>
+    </fields>
+    <fields>
+        <fullName>Number_of_non_Active_Deployments__c</fullName>
+        <externalId>false</externalId>
+        <inlineHelpText>Includes both Completed and Inactive deployments.</inlineHelpText>
+        <label>Number of non-Active Deployments</label>
+        <summaryFilterItems>
+            <field>Project__c.Status__c</field>
+            <operation>notEqual</operation>
+            <value>Active</value>
+        </summaryFilterItems>
+        <summaryForeignKey>Project__c.Implementing_Account__c</summaryForeignKey>
+        <summaryOperation>count</summaryOperation>
+        <trackHistory>false</trackHistory>
+        <type>Summary</type>
+    </fields>
+    <fields>
+        <fullName>Office_Type__c</fullName>
+        <externalId>false</externalId>
+        <inlineHelpText>If this is a Headquarters account choose &quot;HQ&quot;. If it is a country-specific office choose &quot;Country Office&quot;.</inlineHelpText>
+        <label>Office Type</label>
+        <picklist>
+            <picklistValues>
+                <fullName>Country Office</fullName>
+                <default>true</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>HQ</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Regional</fullName>
+                <default>false</default>
+            </picklistValues>
+            <sorted>false</sorted>
+        </picklist>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <type>Picklist</type>
+    </fields>
+    <fields>
+        <fullName>Ownership</fullName>
+        <picklist>
+            <picklistValues>
+                <fullName>Public</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Private</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Subsidiary</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Other</fullName>
+                <default>false</default>
+            </picklistValues>
+            <sorted>false</sorted>
+        </picklist>
+        <type>Picklist</type>
+    </fields>
+    <fields>
+        <fullName>Rating</fullName>
+        <picklist>
+            <picklistValues>
+                <fullName>Hot</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Warm</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Cold</fullName>
+                <default>false</default>
+            </picklistValues>
+            <sorted>false</sorted>
+        </picklist>
+        <type>Picklist</type>
+    </fields>
+    <fields>
+        <fullName>Salesforce_Account_ID__c</fullName>
+        <externalId>false</externalId>
+        <formula>Id</formula>
+        <label>Salesforce Account ID</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Status__c</fullName>
+        <externalId>false</externalId>
+        <inlineHelpText>Validate = Need to contact; 
+Connect = remind every 10 days; 
+Active = an active opportunity; 
+Passive = remind every 3 months.</inlineHelpText>
+        <label>Status_old</label>
+        <picklist>
+            <picklistValues>
+                <fullName>Validate</fullName>
+                <default>true</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Connect</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Active</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Passive</fullName>
+                <default>false</default>
+            </picklistValues>
+            <sorted>false</sorted>
+        </picklist>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>true</trackHistory>
+        <type>Picklist</type>
+    </fields>
+    <fields>
+        <fullName>Sub_Area__c</fullName>
+        <externalId>false</externalId>
+        <label>Sub-Area</label>
+        <picklist>
+            <picklistValues>
+                <fullName>*** Agriculture and Food Security ***</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Agriculture</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Food Security</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>*** Economic Development ***</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Rural Development</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Safety &amp; Security</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Urban Development</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>*** Education and Training ***</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Adult Training</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Child Education</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Early Childhood Development</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>*** Emergency Response ***</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Emergency Response</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>*** Financial Services for the Poor ***</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Conditional Cash Transfer</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Financial Services to the Poor</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Mobile Banking</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>*** Gender Equality and Women&apos;s Emp ***</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Gender Services</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Sex Workers</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>*** Governance and Accountability ***</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Governance</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Social Accountability</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>*** Health ***</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Cardiac Diseases</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Care coordination</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Cervical Cancer</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Diagnostics</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Diarrhea</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Family Planning</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>HIV/AIDS</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Infectious Diseases</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Informatics</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Malaria</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Maternal, Newborn, &amp; Child Health</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Medication adherence</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Mental Health</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Neglected Tropical Diseases</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Non-Communicable Diseases</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Nutrition</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Polio</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Primary Care</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Respiratory Diseases</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Surgery</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Surveillance</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Telemedicine</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Tuberculosis</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Vaccinations</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>*** Logistics ***</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Commodity Tracking/Procurement</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Human Resources</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>*** Other ***</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Environment</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Orphans and Vulnerable Children</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Telecommunications</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>*** Water, Sanitation, &amp; Hygiene ***</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Water, Sanitation, &amp; Hygiene</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>*** Poverty and Economic Development ***</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>*** Natural Resource Management ***</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>*** Training &amp; Education Services ***</fullName>
+                <default>false</default>
+            </picklistValues>
+            <sorted>false</sorted>
+        </picklist>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <type>MultiselectPicklist</type>
+        <visibleLines>4</visibleLines>
+    </fields>
+    <fields>
+        <fullName>Tag__c</fullName>
+        <externalId>false</externalId>
+        <inlineHelpText>Our own tag field since the normal tags suck so bad.  Don&apos;t delete other people&apos;s tags.</inlineHelpText>
+        <label>Tag</label>
+        <length>255</length>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Type</fullName>
+        <picklist>
+            <picklistValues>
+                <fullName>Academic</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Alliance</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Competitor</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Funder</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Hospital</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Implementer - Local</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Implementer - Multinational</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Investor</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Networking</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Other</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Partner</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Pharmaceutical</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Reseller</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Technology</fullName>
+                <default>false</default>
+            </picklistValues>
+            <sorted>false</sorted>
+        </picklist>
+        <type>Picklist</type>
+    </fields>
+    <listViews>
+        <fullName>Account_Status_Connect</fullName>
+        <columns>ACCOUNT.NAME</columns>
+        <columns>Status__c</columns>
+        <columns>CORE.USERS.ALIAS</columns>
+        <columns>CORE.USERS.LAST_NAME</columns>
+        <columns>Country__c</columns>
+        <columns>ACCOUNT.LAST_UPDATE</columns>
+        <columns>PARENT_NAME</columns>
+        <filterScope>Mine</filterScope>
+        <filters>
+            <field>Status__c</field>
+            <operation>equals</operation>
+            <value>Connect</value>
+        </filters>
+        <label>My Accounts: Connect</label>
+    </listViews>
+    <listViews>
+        <fullName>Accounts_60_days</fullName>
+        <columns>ACCOUNT.NAME</columns>
+        <columns>Account_Owning_Entity__c</columns>
+        <columns>CORE.USERS.ALIAS</columns>
+        <columns>Office_Type__c</columns>
+        <columns>Country__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>ACCOUNT.LAST_UPDATE</field>
+            <operation>equals</operation>
+            <value>LAST_N_DAYS:60</value>
+        </filters>
+        <label>Accounts &gt; 60 days</label>
+    </listViews>
+    <listViews>
+        <fullName>All_Accounts</fullName>
+        <columns>ACCOUNT.NAME</columns>
+        <columns>ACCOUNT.INDUSTRY</columns>
+        <columns>Area__c</columns>
+        <columns>Sub_Area__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>ACCOUNT.INDUSTRY</field>
+            <operation>equals</operation>
+            <value>Other</value>
+        </filters>
+        <label>All Accounts</label>
+    </listViews>
+    <listViews>
+        <fullName>All_Accounts_Validate</fullName>
+        <columns>ACCOUNT.NAME</columns>
+        <columns>Country__c</columns>
+        <columns>CORE.USERS.ALIAS</columns>
+        <columns>PARENT_NAME</columns>
+        <columns>ACCOUNT.TYPE</columns>
+        <columns>Status__c</columns>
+        <columns>Email_Address__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Status__c</field>
+            <operation>equals</operation>
+            <value>Validate</value>
+        </filters>
+        <label>All Accounts: Validate</label>
+    </listViews>
+    <listViews>
+        <fullName>All_Non_Validate_Accounts</fullName>
+        <columns>ACCOUNT.NAME</columns>
+        <columns>ACCOUNT.TYPE</columns>
+        <columns>PARENT_NAME</columns>
+        <columns>Country__c</columns>
+        <columns>Office_Type__c</columns>
+        <columns>Status__c</columns>
+        <columns>CORE.USERS.ALIAS</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Status__c</field>
+            <operation>notEqual</operation>
+            <value>Validate</value>
+        </filters>
+        <label>All Non Validate Accounts</label>
+    </listViews>
+    <listViews>
+        <fullName>Core_Group_Orgs</fullName>
+        <columns>ACCOUNT.NAME</columns>
+        <columns>ACCOUNT.TYPE</columns>
+        <columns>CORE.USERS.ALIAS</columns>
+        <columns>Memberships__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Memberships__c</field>
+            <operation>includes</operation>
+            <value>Core Group</value>
+        </filters>
+        <label>Core Group Orgs</label>
+    </listViews>
+    <listViews>
+        <fullName>Implementer_Multinational</fullName>
+        <columns>ACCOUNT.NAME</columns>
+        <columns>Annual_Budget__c</columns>
+        <columns>ACCOUNT.URL</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>ACCOUNT.TYPE</field>
+            <operation>equals</operation>
+            <value>Implementer - Multinational</value>
+        </filters>
+        <filters>
+            <field>PARENT_NAME</field>
+            <operation>equals</operation>
+        </filters>
+        <label>Implementer - Multinational</label>
+    </listViews>
+    <listViews>
+        <fullName>IndiaAccounts</fullName>
+        <columns>ACCOUNT.NAME</columns>
+        <columns>Country__c</columns>
+        <columns>ACCOUNT.TYPE</columns>
+        <columns>CORE.USERS.ALIAS</columns>
+        <columns>ACCOUNT_SOURCE</columns>
+        <columns>ACCOUNT.LAST_UPDATE</columns>
+        <columns>ACCOUNT.LAST_ACTIVITY</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Country__c</field>
+            <operation>equals</operation>
+            <value>India</value>
+        </filters>
+        <label>Country: India</label>
+    </listViews>
+    <listViews>
+        <fullName>India_Contact_Upload</fullName>
+        <columns>ACCOUNT.NAME</columns>
+        <columns>Country__c</columns>
+        <columns>ACCOUNT.TYPE</columns>
+        <columns>CORE.USERS.FIRST_NAME</columns>
+        <columns>Office_Type__c</columns>
+        <columns>Status__c</columns>
+        <columns>ACCOUNT_SOURCE</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>ACCOUNT_SOURCE</field>
+            <operation>equals</operation>
+            <value>Div2 India upload</value>
+        </filters>
+        <label>India Contact Upload</label>
+    </listViews>
+    <listViews>
+        <fullName>Mozambique_Accounts</fullName>
+        <columns>ACCOUNT.NAME</columns>
+        <columns>Country__c</columns>
+        <columns>Status__c</columns>
+        <columns>CORE.USERS.ALIAS</columns>
+        <columns>ACCOUNT.LAST_UPDATE</columns>
+        <columns>PARENT_NAME</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Country__c</field>
+            <operation>equals</operation>
+            <value>Mozambique</value>
+        </filters>
+        <label>Country: Mozambique</label>
+    </listViews>
+    <listViews>
+        <fullName>My_Accounts_Active</fullName>
+        <columns>ACCOUNT.NAME</columns>
+        <columns>Country__c</columns>
+        <columns>Status__c</columns>
+        <columns>ACCOUNT.LAST_UPDATE</columns>
+        <columns>PARENT_NAME</columns>
+        <filterScope>Mine</filterScope>
+        <filters>
+            <field>Status__c</field>
+            <operation>equals</operation>
+            <value>Active</value>
+        </filters>
+        <label>My Accounts: Active</label>
+    </listViews>
+    <listViews>
+        <fullName>My_Accounts_Passive</fullName>
+        <columns>ACCOUNT.NAME</columns>
+        <columns>Country__c</columns>
+        <columns>ACCOUNT.LAST_UPDATE</columns>
+        <columns>Status__c</columns>
+        <columns>PARENT_NAME</columns>
+        <filterScope>Mine</filterScope>
+        <filters>
+            <field>Status__c</field>
+            <operation>equals</operation>
+            <value>Passive</value>
+        </filters>
+        <label>My Accounts: Passive</label>
+    </listViews>
+    <listViews>
+        <fullName>My_Accounts_Validate</fullName>
+        <columns>ACCOUNT.NAME</columns>
+        <columns>CORE.USERS.ALIAS</columns>
+        <columns>Status__c</columns>
+        <columns>Country__c</columns>
+        <columns>ACCOUNT.TYPE</columns>
+        <filterScope>Mine</filterScope>
+        <filters>
+            <field>Status__c</field>
+            <operation>equals</operation>
+            <value>Validate</value>
+        </filters>
+        <label>My Accounts: Validate</label>
+    </listViews>
+    <listViews>
+        <fullName>NewThisWeek</fullName>
+        <columns>ACCOUNT.NAME</columns>
+        <columns>PARENT_NAME</columns>
+        <columns>ACCOUNT.TYPE</columns>
+        <columns>Status__c</columns>
+        <columns>Country__c</columns>
+        <columns>ACCOUNT.INDUSTRY</columns>
+        <columns>CORE.USERS.ALIAS</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>ACCOUNT.CREATED_DATE</field>
+            <operation>equals</operation>
+            <value>THIS_WEEK</value>
+        </filters>
+        <label>New This Week</label>
+    </listViews>
+    <listViews>
+        <fullName>Top_Level_Accounts</fullName>
+        <columns>ACCOUNT.NAME</columns>
+        <columns>ACCOUNT_SOURCE</columns>
+        <columns>Country__c</columns>
+        <columns>ACCOUNT.TYPE</columns>
+        <columns>Status__c</columns>
+        <columns>Memberships__c</columns>
+        <columns>CORE.USERS.ALIAS</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>PARENT_NAME</field>
+            <operation>equals</operation>
+        </filters>
+        <label>Top Level Accounts</label>
+    </listViews>
+    <listViews>
+        <fullName>Top_Level_Accounts1</fullName>
+        <columns>ACCOUNT.NAME</columns>
+        <columns>ACCOUNT_SOURCE</columns>
+        <columns>Country__c</columns>
+        <columns>ACCOUNT.TYPE</columns>
+        <columns>Status__c</columns>
+        <columns>Memberships__c</columns>
+        <columns>CORE.USERS.ALIAS</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>PARENT_NAME</field>
+            <operation>equals</operation>
+        </filters>
+        <filters>
+            <field>ACCOUNT.TYPE</field>
+            <operation>equals</operation>
+            <value>Implementer - Multinational</value>
+        </filters>
+        <label>Top Level Accounts_multinational</label>
+    </listViews>
+    <listViews>
+        <fullName>Validate_HQ</fullName>
+        <columns>ACCOUNT.NAME</columns>
+        <columns>CORE.USERS.ALIAS</columns>
+        <columns>Status__c</columns>
+        <columns>ACCOUNT.TYPE</columns>
+        <columns>Country__c</columns>
+        <columns>Office_Type__c</columns>
+        <columns>Memberships__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>ACCOUNT.NAME</field>
+            <operation>contains</operation>
+            <value>HQ</value>
+        </filters>
+        <filters>
+            <field>Status__c</field>
+            <operation>equals</operation>
+            <value>Validate</value>
+        </filters>
+        <label>Validate HQ Accounts</label>
+    </listViews>
+    <listViews>
+        <fullName>need_parent</fullName>
+        <columns>ACCOUNT.NAME</columns>
+        <columns>Country__c</columns>
+        <columns>Office_Type__c</columns>
+        <columns>ACCOUNT.TYPE</columns>
+        <columns>PARENT_NAME</columns>
+        <columns>Account_Status__c</columns>
+        <columns>CORE.USERS.ALIAS</columns>
+        <columns>ACCOUNT_SOURCE</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Office_Type__c</field>
+            <operation>notEqual</operation>
+            <value>HQ</value>
+        </filters>
+        <filters>
+            <field>PARENT_NAME</field>
+            <operation>equals</operation>
+        </filters>
+        <label>Accounts Needing Parent Accounts</label>
+    </listViews>
+    <listViews>
+        <fullName>not_validate_tops</fullName>
+        <columns>ACCOUNT.NAME</columns>
+        <columns>ACCOUNT.PHONE1</columns>
+        <columns>ACCOUNT.TYPE</columns>
+        <columns>CORE.USERS.ALIAS</columns>
+        <columns>Status__c</columns>
+        <columns>Office_Type__c</columns>
+        <columns>Country__c</columns>
+        <columns>Email_Address__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Status__c</field>
+            <operation>notEqual</operation>
+            <value>Validate</value>
+        </filters>
+        <filters>
+            <field>PARENT_NAME</field>
+            <operation>equals</operation>
+        </filters>
+        <label>not validate_tops</label>
+    </listViews>
+    <searchLayouts>
+        <customTabListAdditionalFields>ACCOUNT.NAME</customTabListAdditionalFields>
+        <customTabListAdditionalFields>Country__c</customTabListAdditionalFields>
+        <customTabListAdditionalFields>Status__c</customTabListAdditionalFields>
+        <customTabListAdditionalFields>CORE.USERS.ALIAS</customTabListAdditionalFields>
+        <customTabListAdditionalFields>ACCOUNT.LAST_UPDATE</customTabListAdditionalFields>
+        <customTabListAdditionalFields>PARENT_NAME</customTabListAdditionalFields>
+        <lookupDialogsAdditionalFields>ACCOUNT.NAME</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>Country__c</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>Status__c</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>CORE.USERS.ALIAS</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>ACCOUNT.LAST_UPDATE</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>PARENT_NAME</lookupDialogsAdditionalFields>
+        <lookupFilterFields>ACCOUNT.NAME</lookupFilterFields>
+        <lookupFilterFields>00Nb0000000jTAA</lookupFilterFields>
+        <lookupFilterFields>00Nb0000000jTAo</lookupFilterFields>
+        <lookupFilterFields>CORE.USERS.ALIAS</lookupFilterFields>
+        <lookupFilterFields>ACCOUNT.LAST_UPDATE</lookupFilterFields>
+        <lookupFilterFields>PARENT_NAME</lookupFilterFields>
+        <lookupPhoneDialogsAdditionalFields>ACCOUNT.NAME</lookupPhoneDialogsAdditionalFields>
+        <lookupPhoneDialogsAdditionalFields>Country__c</lookupPhoneDialogsAdditionalFields>
+        <lookupPhoneDialogsAdditionalFields>Status__c</lookupPhoneDialogsAdditionalFields>
+        <lookupPhoneDialogsAdditionalFields>CORE.USERS.ALIAS</lookupPhoneDialogsAdditionalFields>
+        <lookupPhoneDialogsAdditionalFields>ACCOUNT.LAST_UPDATE</lookupPhoneDialogsAdditionalFields>
+        <lookupPhoneDialogsAdditionalFields>PARENT_NAME</lookupPhoneDialogsAdditionalFields>
+        <searchFilterFields>ACCOUNT.NAME</searchFilterFields>
+        <searchFilterFields>Country__c</searchFilterFields>
+        <searchFilterFields>Status__c</searchFilterFields>
+        <searchFilterFields>CORE.USERS.ALIAS</searchFilterFields>
+        <searchFilterFields>ACCOUNT.LAST_UPDATE</searchFilterFields>
+        <searchFilterFields>PARENT_NAME</searchFilterFields>
+        <searchResultsAdditionalFields>ACCOUNT.NAME</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>Country__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>Status__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>CORE.USERS.ALIAS</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>ACCOUNT.LAST_UPDATE</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>PARENT_NAME</searchResultsAdditionalFields>
+    </searchLayouts>
+    <validationRules>
+        <fullName>Account_Add_Parents_Account</fullName>
+        <active>false</active>
+        <description>Force to add a parent account if Office Type isn&apos;t HQ</description>
+        <errorConditionFormula>ISPICKVAL(Office_Type__c, &apos;HQ&apos;)</errorConditionFormula>
+        <errorMessage>If this is not an HQ account you must select the parent account.  You may need to create an HQ account for this organization.</errorMessage>
+    </validationRules>
+    <webLinks>
+        <fullName>AltavistaNews</fullName>
+        <availability>online</availability>
+        <displayType>link</displayType>
+        <encodingKey>UTF-8</encodingKey>
+        <hasMenubar>true</hasMenubar>
+        <hasScrollbars>true</hasScrollbars>
+        <hasToolbar>true</hasToolbar>
+        <height>600</height>
+        <isResizable>true</isResizable>
+        <linkType>url</linkType>
+        <masterLabel>Altavista News</masterLabel>
+        <openType>newWindow</openType>
+        <position>none</position>
+        <protected>false</protected>
+        <showsLocation>true</showsLocation>
+        <showsStatus>true</showsStatus>
+        <url>http://news.altavista.com/search?nc=0&amp;q={!Account_Name}</url>
+    </webLinks>
+    <webLinks>
+        <fullName>GoogleMaps</fullName>
+        <availability>online</availability>
+        <displayType>link</displayType>
+        <encodingKey>UTF-8</encodingKey>
+        <hasMenubar>false</hasMenubar>
+        <hasScrollbars>true</hasScrollbars>
+        <hasToolbar>false</hasToolbar>
+        <height>600</height>
+        <isResizable>true</isResizable>
+        <linkType>url</linkType>
+        <masterLabel>Google Maps</masterLabel>
+        <openType>newWindow</openType>
+        <position>none</position>
+        <protected>false</protected>
+        <showsLocation>false</showsLocation>
+        <showsStatus>false</showsStatus>
+        <url>http://maps.google.com/maps?f=q&amp;hl=en&amp;q={!Account_BillingStreet}+{!Account_BillingCity}+{!Account_BillingState}&amp;om=1</url>
+    </webLinks>
+    <webLinks>
+        <fullName>GoogleNews</fullName>
+        <availability>online</availability>
+        <displayType>link</displayType>
+        <encodingKey>UTF-8</encodingKey>
+        <hasMenubar>false</hasMenubar>
+        <hasScrollbars>true</hasScrollbars>
+        <hasToolbar>false</hasToolbar>
+        <height>600</height>
+        <isResizable>true</isResizable>
+        <linkType>url</linkType>
+        <masterLabel>Google News</masterLabel>
+        <openType>newWindow</openType>
+        <position>none</position>
+        <protected>false</protected>
+        <showsLocation>false</showsLocation>
+        <showsStatus>false</showsStatus>
+        <url>http://www.google.com/news?&amp;q={!Account_Name}&amp;btnG=Search+News</url>
+    </webLinks>
+    <webLinks>
+        <fullName>GoogleSearch</fullName>
+        <availability>online</availability>
+        <displayType>link</displayType>
+        <encodingKey>UTF-8</encodingKey>
+        <hasMenubar>false</hasMenubar>
+        <hasScrollbars>true</hasScrollbars>
+        <hasToolbar>false</hasToolbar>
+        <height>600</height>
+        <isResizable>true</isResizable>
+        <linkType>url</linkType>
+        <masterLabel>Google Search</masterLabel>
+        <openType>newWindow</openType>
+        <position>none</position>
+        <protected>false</protected>
+        <showsLocation>false</showsLocation>
+        <showsStatus>false</showsStatus>
+        <url>http://www.google.com/search?q={!Account_Name}</url>
+    </webLinks>
+    <webLinks>
+        <fullName>HooversProfile</fullName>
+        <availability>online</availability>
+        <displayType>link</displayType>
+        <encodingKey>UTF-8</encodingKey>
+        <hasMenubar>false</hasMenubar>
+        <hasScrollbars>true</hasScrollbars>
+        <hasToolbar>false</hasToolbar>
+        <height>600</height>
+        <isResizable>true</isResizable>
+        <linkType>url</linkType>
+        <masterLabel>Hoovers Profile</masterLabel>
+        <openType>newWindow</openType>
+        <position>none</position>
+        <protected>false</protected>
+        <showsLocation>false</showsLocation>
+        <showsStatus>false</showsStatus>
+        <url>http://search.hoovers.com/cgi-bin/hol_search?which=company&amp;query_string={!Account_Name}</url>
+    </webLinks>
+    <webLinks>
+        <fullName>YahooMaps</fullName>
+        <availability>online</availability>
+        <displayType>link</displayType>
+        <encodingKey>UTF-8</encodingKey>
+        <hasMenubar>true</hasMenubar>
+        <hasScrollbars>true</hasScrollbars>
+        <hasToolbar>true</hasToolbar>
+        <height>600</height>
+        <isResizable>true</isResizable>
+        <linkType>url</linkType>
+        <masterLabel>Yahoo Maps</masterLabel>
+        <openType>newWindow</openType>
+        <position>none</position>
+        <protected>false</protected>
+        <showsLocation>true</showsLocation>
+        <showsStatus>true</showsStatus>
+        <url>http://maps.yahoo.com/py/maps.py?cn={!Account_BillingCountry}&amp;csz={!Account_BillingCity}+{!Account_BillingState}+{!Account_BillingPostalCode}+&amp;addr={!Account_BillingAddress}</url>
+    </webLinks>
+</CustomObject>
