@@ -2,7 +2,7 @@
 Class Name: OpportunityContractController
 Class Description: Class for Contract creating from an Opportunity
 Author: Virginia Fernández (vfernandez@adooxen.com)
-Update Date: 2013-04-09
+Update Date: 2013-04-10
 Additional Comments: 
 **************************************************/
 public with sharing class OpportunityContractController {
@@ -69,6 +69,11 @@ public with sharing class OpportunityContractController {
         	contractProducts.add(contractProduct);
         }
         insert contractProducts;
+        
+        Contract_Opportunity__c oppContract = new Contract_Opportunity__c();
+        oppContract.Opportunity__c = o.Id;
+        oppContract.Contract__c = contract.Id;
+        insert oppContract;
         
         PageReference contrPage = new ApexPages.StandardController(contract).view();
         contrPage.setRedirect(true);

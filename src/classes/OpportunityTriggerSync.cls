@@ -202,7 +202,40 @@ public with sharing class OpportunityTriggerSync {
 		}
 		
 		if (!opptyCountries.isEmpty()) {
+			TriggerContext.runTrigger = false;
 			update opptyCountries;
 		}	
+	}
+	
+	
+	
+	public static testmethod void unitTest() {
+		Opportunity o = new Opportunity();
+		o.Name = 'Test';
+		o.CloseDate = System.today();
+		o.StageName = 'Test';
+		insert o;
+		
+		Country__c c = new Country__c();
+		c.Name = 'United States';
+		insert c; 
+		 
+		Location__c l = new Location__c();
+		l.Country__c = c.Id;
+		l.Name = 'Los Angeles';
+		insert l;
+		
+		
+		Opportunity_Location__c ol = new Opportunity_Location__c();
+		ol.Opportunity__c = o.Id;
+		ol.Location__c = l.Id;
+		insert ol;
+		
+		Opportunity_Location__c ol2 = new Opportunity_Location__c();
+		ol2.Opportunity__c = o.Id;
+		ol2.Location__c = l.Id;
+		insert ol2;		
+		
+		delete ol;
 	}
 }

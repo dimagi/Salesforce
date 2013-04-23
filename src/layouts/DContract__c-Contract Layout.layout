@@ -23,6 +23,14 @@
                 <behavior>Edit</behavior>
                 <field>Funder_Account__c</field>
             </layoutItems>
+            <layoutItems>
+                <behavior>Readonly</behavior>
+                <field>Product_Text__c</field>
+            </layoutItems>
+            <layoutItems>
+                <behavior>Edit</behavior>
+                <field>Country_Text__c</field>
+            </layoutItems>
         </layoutColumns>
         <layoutColumns>
             <layoutItems>
@@ -245,6 +253,8 @@
         <relatedList>Contract_Project__c.Contract__c</relatedList>
     </relatedLists>
     <relatedLists>
+        <customButtons>Add_Existing_Opportunity</customButtons>
+        <excludeButtons>New</excludeButtons>
         <fields>Opportunity.NAME</fields>
         <fields>Opportunity.Fogbugz_Link__c</fields>
         <fields>User.OPP_OWNER_NAME</fields>

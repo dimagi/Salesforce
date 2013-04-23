@@ -232,6 +232,14 @@
         <type>Lookup</type>
     </fields>
     <fields>
+        <fullName>Country_Text__c</fullName>
+        <externalId>false</externalId>
+        <label>Country</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <type>TextArea</type>
+    </fields>
+    <fields>
         <fullName>Date_Signed__c</fullName>
         <externalId>false</externalId>
         <inlineHelpText>The date the contract was signed.</inlineHelpText>
@@ -361,6 +369,14 @@
         <required>false</required>
         <trackHistory>false</trackHistory>
         <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>Product_Text__c</fullName>
+        <externalId>false</externalId>
+        <label>Product</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <type>TextArea</type>
     </fields>
     <fields>
         <fullName>Project_Dropbox_Location__c</fullName>
@@ -802,4 +818,15 @@
     <pluralLabel>Contracts</pluralLabel>
     <searchLayouts/>
     <sharingModel>ReadWrite</sharingModel>
+    <webLinks>
+        <fullName>Create_New_Deployment</fullName>
+        <availability>online</availability>
+        <displayType>button</displayType>
+        <height>600</height>
+        <linkType>page</linkType>
+        <masterLabel>Create New Deployment</masterLabel>
+        <openType>sidebar</openType>
+        <page>CreateNewDeployment</page>
+        <protected>false</protected>
+    </webLinks>
 </CustomObject>

@@ -1,11 +1,3 @@
-/**************************************************
-Class Name: 
-Class Description: 
-Author: 
-Modified By: 
-Update Date:
-Additional Comments:
-**************************************************/
 public with sharing class OpenOpportunityUtils {
 
     public static void updateStageName(Opportunity[] opportunities) {

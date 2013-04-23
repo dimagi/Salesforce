@@ -72,7 +72,7 @@ global without sharing class FogBugzSynchronizerBatch implements Database.Batcha
 
                 Boolean ownerFound = false;
                 String userMail = Test.isRunningTest() ? 'do@not.exist.com' : api.getPersonEmail(o.Fogbugz_Opened_By__c);
-                            
+
                 if (userMail != null) {
                     
                     User[] us = [select Id from User where Email = :userMail];
@@ -90,9 +90,9 @@ global without sharing class FogBugzSynchronizerBatch implements Database.Batcha
                     System.debug(LoggingLevel.INFO,
                                  'FogBugzSynchronizerBatch::execute() - Could not retrieve user email for ' + o.Fogbugz_Opened_By__c);
                 }
-                
+
                 if (!ownerFound) {
-                        
+
                     User[] us = [select Id from User where Username = :FogBugz_Settings__c.getOrgDefaults().Default_Opportunity_Owner__c];
                         
                     if (!us.isEmpty()) {
@@ -152,6 +152,7 @@ global without sharing class FogBugzSynchronizerBatch implements Database.Batcha
                     FogBugzCase fbCase = fbIdToCaseMap.get(caseId);
                     
                     System.debug(LoggingLevel.INFO, 'Processing new opportunity::' + minTime + '-' + fbCase.lastModifiedDate);
+
                     Opportunity o = new Opportunity(
                         Name = 'Synchronizing',
                         StageName = 'Synchronizing',

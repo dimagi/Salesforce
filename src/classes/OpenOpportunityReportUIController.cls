@@ -1,11 +1,9 @@
-/**************************************************
-Class Name: OpenOpportunityTest
-Class Description: UI Controller for the Open Opportunity VF page. 
-Author: Fernando Rodriguez (frodriguez@adooxen.com)
-Modified By: Fernando
-Update Date: 2013-03-04
-Additional Comments: This class only handles event capture and delegates all heavy logic to OpenOpportunityReportController class
-**************************************************/
+/**
+ *
+ * @author  Fernando Rodriguez (frodriguez@adooxen.com)
+ * @date    01/11/2012
+ *
+ */
 public class OpenOpportunityReportUIController {
 
     public String[] selectedUsers {get;set;}
