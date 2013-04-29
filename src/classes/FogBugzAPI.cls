@@ -47,7 +47,7 @@ public with sharing class FogBugzAPI {
 
         HTTPResponse res = null;
         if (Test.isRunningTest()) {
-        	FogBugzHttpCalloutMock mock = new FogBugzHttpCalloutMock(FogBugzHttpCalloutMock.RESPONSE_SEARCH);
+        	FogBugzHttpCalloutMock mock = new FogBugzHttpCalloutMock();
         	res = mock.respond(req);
         }
         else {        
@@ -122,7 +122,7 @@ public with sharing class FogBugzAPI {
         
         HTTPResponse res = null;
         if (Test.isRunningTest()) {
-            FogBugzHttpCalloutMock mock = new FogBugzHttpCalloutMock(FogBugzHttpCalloutMock.RESPONSE_UPDATE);
+            FogBugzHttpCalloutMock mock = new FogBugzHttpCalloutMock();
             res = mock.respond(req);	
         }
         else {
@@ -149,7 +149,7 @@ public with sharing class FogBugzAPI {
         
         HTTPResponse res = null;
         if (Test.isRunningTest()) {
-        	FogBugzHttpCalloutMock mock = new FogBugzHttpCalloutMock(FogBugzHttpCalloutMock.RESPONSE_UPDATE);
+        	FogBugzHttpCalloutMock mock = new FogBugzHttpCalloutMock();
         	res = mock.respond(req);
         }
         else {
@@ -218,6 +218,7 @@ public with sharing class FogBugzAPI {
 	        }
 	        
 	        List<String> listTags = parseCaseTags(res.getBody());
+	        
 	        tags = '';
 	        for (String tag: listTags) {
 	        	
@@ -226,11 +227,17 @@ public with sharing class FogBugzAPI {
 	        	}
 	        }
 	        
-	        tags += '['+fbCase.dealSize+'/'+fbCase.probability+']';
+	        if (fbCase.probability != null) {
+	           tags += '['+fbCase.dealSize+'/'+fbCase.probability+']';
+	        }
+	        
+	        if (tags.equals('')) {
+	        	tags = ' ';
+	        }
+	        
 	        params.put('sTags', tags);
 		}
 		
-        
         HTTPRequest req = new HttpRequest();
         req.setEndpoint(FB_API_URL);
         req.setBody('token=' + FogBugz_Settings__c.getOrgDefaults().Token__c + '&' + encodeParameters(params));

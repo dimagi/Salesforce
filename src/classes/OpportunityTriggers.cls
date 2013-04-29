@@ -57,14 +57,14 @@ public with sharing class OpportunityTriggers {
     	
     	if ((oppNew.Name != oppOld.Name) || 
     	    (oppNew.StageName != oppOld.StageName) || 
+    	    (oppNew.Amount != oppOld.Amount) ||
     	    (oppOld.Fogbugz_Probability__c != oppNew.Fogbugz_Probability__c)) {
     		
     		if (!System.isBatch()) {
     			
     			FogBugzCase fbCase = FogBugzUtils.createFBCaseFromOpportunity(oppNew);
-    			
     			String tags = null;
-    			boolean editTags = oppOld.Fogbugz_Probability__c != oppNew.Fogbugz_Probability__c; 
+    			boolean editTags = (oppOld.Fogbugz_Probability__c != oppNew.Fogbugz_Probability__c) || (oppNew.Amount != oppOld.Amount);
     			updateCase(oppNew.Id, editTags);
     			                
     		}
@@ -77,6 +77,7 @@ public with sharing class OpportunityTriggers {
      */
     @future(callout=true)
     public static void updateCase(String opportunityId, boolean editTags) {
+    	
     	Opportunity o = FogBugzUtils.fetchOpportunity(opportunityId);
         
         if (o != null) {
