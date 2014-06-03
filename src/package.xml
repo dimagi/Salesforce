@@ -18,7 +18,23 @@
     </types>
     <types>
         <members>*</members>
+        <name>CustomObject</name>
+    </types>
+    <types>
+        <members>*</members>
+        <name>StaticResource</name>
+    </types>
+    <types>
+        <members>*</members>
+        <name>WorkflowFieldUpdate</name>
+    </types>
+    <types>
+        <members>*</members>
+        <name>WorkflowRule</name>
+    </types>
+    <types>
+        <members>*</members>
         <name>CustomTab</name>
     </types>
-    <version>27.0</version>
+    <version>29.0</version>
 </Package>

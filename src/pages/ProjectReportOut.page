@@ -1,0 +1,118 @@
+<apex:page title="Project Report Out" docType="html-5.0"
+    controller="ProjectReportOutController" action="{!initAction}">
+<head>
+    <apex:includeScript value="{!URLFOR($Resource.PROResources, 'js/jquery.min.js')}"/>
+    <apex:includeScript value="{!URLFOR($Resource.PROResources, 'js/main.js')}"/>
+</head>
+<body>
+    <apex:form >
+        <apex:pageBlock title="Project Report Out" rendered="{!isAuthenticated}">
+            <apex:pageBlockButtons >
+                <apex:commandButton action="{!save}" value="Submit"/>
+            </apex:pageBlockButtons>
+
+            <apex:outputPanel layout="block" id="messages">
+                <apex:pageMessages />
+            </apex:outputPanel>
+
+            <apex:pageBlockSection title="Report Out Information" collapsible="false" columns="1">
+                <apex:pageBlockSectionItem >
+                    Project Report Out Instructions
+                    <apex:outputLink target="_blank" value="https://confluence.dimagi.com/display/internal/Project+Report+Outs">https://confluence.dimagi.com/display/internal/Project+Report+Outs</apex:outputLink>            
+                </apex:pageBlockSectionItem>
+
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="PM Email Address" for="email"/>
+                    <apex:outputPanel styleClass="requiredInput" layout="block">
+                        <apex:outputPanel styleClass="requiredBlock" layout="block"/>
+                        <apex:inputField id="email" value="{!pro.PM_email__c}" required="true"/>
+                    </apex:outputPanel>
+                </apex:pageBlockSectionItem>
+
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="Report Out Date" for="date"/>
+                    <apex:outputPanel styleClass="requiredInput" layout="block">
+                        <apex:outputPanel styleClass="requiredBlock" layout="block"/>
+                        <apex:inputField id="date" required="true" value="{!pro.Report_Out_Date__c}"/>
+                        <!-- <apex:inputText id="Date" required="true" value="{!reportDate}" size="10" onclick="DatePicker.pickDate(false, this , false);" /> -->
+                    </apex:outputPanel>
+                </apex:pageBlockSectionItem>
+
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="Project" for="project"/>
+                    <apex:outputPanel styleClass="requiredInput" layout="block">
+                    <apex:outputPanel styleClass="requiredBlock" layout="block"/>
+                        <select id="project" class="requiredInput" multiselect="false" size="5">
+                            <apex:repeat value="{!contracts}" var="c">
+                                <option data-dev="{!c.Requires_Developer_Work__c}" value="{!c.Id}">{!c.Name}</option>
+                            </apex:repeat>
+                        </select>
+                        <!-- Hidden field with a reference to the apex variable -->
+                        <apex:inputHidden value="{!contractId}" id="selectedContract"/>
+                        <apex:inputHidden value="{!showDevWork}" id="showDevWork"/>
+                    </apex:outputPanel>
+                </apex:pageBlockSectionItem>
+
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="Last week's report out" for="email"/>
+                    <apex:outputLink target="_blank" value="https://confluence.dimagi.com/display/internal/Project+Report+Outs">https://confluence.dimagi.com/display/internal/Project+Report+Outs</apex:outputLink>
+                </apex:pageBlockSectionItem>
+
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="Status" for="status"/>
+                    <apex:outputPanel styleClass="requiredInput" layout="block">
+                        <apex:outputPanel styleClass="requiredBlock" layout="block"/>
+                        <apex:inputField id="status" required="true" value="{!pro.Status__c}"/>
+                    </apex:outputPanel>
+                </apex:pageBlockSectionItem>
+
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="Key Accomplishments (last 2 weeks)" for="keyAccomplishments"/>
+                    <apex:inputField id="keyAccomplishments" value="{!pro.Key_Accomplishments_Last_Two_Weeks__c}" style="width: 100%;"/>
+                </apex:pageBlockSectionItem>
+
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="Key Next Steps (next 2 weeks)" for="kns2w"/>
+                    <apex:inputField id="kns2w" value="{!pro.Key_Next_Steps_next_2_weeks__c}" style="width:100%"/>
+                </apex:pageBlockSectionItem>
+
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="Issues / Questions / Notables" for="issues"/>
+                    <apex:inputField id="issues" value="{!pro.Issues_Questions_Notables__c}" style="width:100%"/>
+                </apex:pageBlockSectionItem>  
+
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="Client Facing Deadlines" for="deadlines"/>
+                    <apex:inputField id="deadlines" value="{!pro.Client_Facing__c}" style="width:100%"/>
+                </apex:pageBlockSectionItem>
+
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel styleClass="devWorkLabel" value="Internal Developer Deadlines" for="requiresDevWork"/>
+                    <apex:inputField id="requiresDevWork" value="{!pro.Requires_Developer_Work__c}" styleClass="devTextarea" style="width: 100%;"/>
+                </apex:pageBlockSectionItem>
+
+            </apex:pageBlockSection>
+
+        </apex:pageBlock>
+
+        <apex:pageBlock title="Project Report Out" rendered="{!NOT(isAuthenticated)}">
+
+            <apex:pageBlockButtons >
+                <apex:commandButton value="Authenticate" action="{!authenticate}"/>
+            </apex:pageBlockButtons>
+
+            <apex:pageMessages />
+
+            <apex:pageBlockSection columns="1" showHeader="false">
+
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel for="password" value="Password"/>
+                    <apex:inputSecret value="{!password}"/>
+                </apex:pageBlockSectionItem>
+
+            </apex:pageBlockSection>
+
+        </apex:pageBlock>
+    </apex:form>
+</body>
+</apex:page>

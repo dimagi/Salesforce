@@ -1,0 +1,43 @@
+<apex:page title="Project report out" docType="html-5.0"
+    controller="ProjectReportOutController">
+<head>
+    <style type="text/css">
+        .pro-label {
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    Submission Successful!<br/><br/>
+    An email has been sent to you with the report out information. <br/><br/>
+    Please copy the text below or forward the email you received to the distribution list found on this page: <br/><br/>
+    <apex:outputLink target="_blank" value="https://confluence.dimagi.com/display/internal/Project+Report+Outs">https://confluence.dimagi.com/display/internal/Project+Report+Outs</apex:outputLink>
+    <br/><br/>
+    <apex:PageBlock >
+        <apex:form >
+            <apex:pageBlockSection >
+                <apex:pageBlockSectionItem >
+                    <apex:commandButton action="{!submitAnother}" value="  Submit Another One  "></apex:commandButton>
+                </apex:pageBlockSectionItem>
+            </apex:pageBlockSection>
+        </apex:form>
+    </apex:PageBlock>
+
+    <apex:PageBlock >
+        <b>Report Out Name:</b> {!pro.Name}<br/><br/>
+        <b>Status:</b> {!pro.Status__c}<br/><br/><br/>
+        <b>Key Accomplishments (last 2 weeks)</b><br/>
+        <apex:outputText escape="false" value="{!pro.Key_Accomplishments_Last_Two_Weeks__c}"/><br/><br/>
+        <b>Key Next Steps (next 2 weeks)</b><br/>
+        <apex:outputText escape="false" value="{!pro.Key_Next_Steps_next_2_weeks__c}"/><br/><br/>
+        <b>Issues / Questions / Notables</b><br/>
+        <apex:outputText escape="false" value="{!pro.Issues_Questions_Notables__c}"/><br/><br/>
+        <b>Client Facing Deadlines</b><br/>
+        <apex:outputText escape="false" value="{!pro.Client_Facing__c}"/><br/><br/>
+        <apex:outputPanel rendered="{!showDevWork}">
+            <b>Requires Developer Work</b><br/>
+            <apex:outputText escape="false" value="{!pro.Requires_Developer_Work__c}"/><br/><br/>
+        </apex:outputPanel>
+    </apex:PageBlock>
+</body>
+</apex:page>
