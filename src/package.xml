@@ -22,19 +22,23 @@
     </types>
     <types>
         <members>*</members>
+        <name>Layout</name>
+    </types>
+    <types>
+        <members>*</members>
         <name>StaticResource</name>
     </types>
     <types>
         <members>*</members>
-        <name>WorkflowFieldUpdate</name>
+        <name>Workflow</name>
     </types>
     <types>
         <members>*</members>
-        <name>WorkflowRule</name>
+        <name>EmailTemplate</name>
     </types>
     <types>
         <members>*</members>
         <name>CustomTab</name>
     </types>
-    <version>29.0</version>
+    <version>30.0</version>
 </Package>
