@@ -43,10 +43,10 @@ public with sharing class OpportunityTriggers {
     	if (ticket_number != null) {
 			 
 			 FogBugzAPI fbAPI = new FogBugzAPI();
-			 FogBugzCase fbCase = Test.isRunningTest() ? new FogBugzCase() : fbAPI.getCase(ticket_number);
-			 String fbCaseId = Test.isRunningTest() ? TestFogBugzAPI.TEST_FB_ID : fbAPI.resolveCase(fbCase);
+			 FogBugzCase fbCase = fbAPI.getCase(ticket_number);
+			 String fbCaseId = fbAPI.resolveCase(fbCase);
 			 if (fbCaseId != null) {
-			     fbCaseId = Test.isRunningTest() ? TestFogBugzAPI.TEST_FB_ID : fbAPI.closeCase(fbCase);
+			     fbCaseId = fbAPI.closeCase(fbCase);
 			 }
 			 
 		}
@@ -54,10 +54,19 @@ public with sharing class OpportunityTriggers {
     }
     
     public static void updateCaseInFogbugz(Opportunity oppNew, Opportunity oppOld) {
-    	if ((oppNew.Name != oppOld.Name) || (oppNew.StageName != oppOld.StageName)) {
+    	
+    	if ((oppNew.Name != oppOld.Name) || 
+    	    (oppNew.StageName != oppOld.StageName) || 
+    	    (oppNew.Amount != oppOld.Amount) ||
+    	    (oppOld.Fogbugz_Probability__c != oppNew.Fogbugz_Probability__c)) {
     		
     		if (!System.isBatch()) {
-    		  updateCase(oppNew.Id);
+    			
+    			FogBugzCase fbCase = FogBugzUtils.createFBCaseFromOpportunity(oppNew);
+    			String tags = null;
+    			boolean editTags = (oppOld.Fogbugz_Probability__c != oppNew.Fogbugz_Probability__c) || (oppNew.Amount != oppOld.Amount);
+    			updateCase(oppNew.Id, editTags);
+    			                
     		}
     		
     	}
@@ -67,14 +76,24 @@ public with sharing class OpportunityTriggers {
      * We use @future here in order to perform HTTP callouts from within a trigger context
      */
     @future(callout=true)
-    public static void updateCase(String opportunityId) {
+    public static void updateCase(String opportunityId, boolean editTags) {
+    	
     	Opportunity o = FogBugzUtils.fetchOpportunity(opportunityId);
         
         if (o != null) {
             
             FogBugzCase fbCase = FogBugzUtils.createFBCaseFromOpportunity(o);
             FogBugzAPI fbAPI = new FogBugzAPI();
-            String fbCaseId = Test.isRunningTest() ? TestFogBugzAPI.TEST_FB_ID : fbAPI.updateCaseTitleStage(fbCase);
+            
+            if (o.Amount != null) {
+                fbCase.dealSize = o.Amount.intValue();
+            }
+            else {
+            	fbCase.dealSize = 0;
+            }
+            fbCase.probability = o.Fogbugz_Probability__c;            
+            
+            String fbCaseId = fbAPI.updateCaseTitleStageTag(fbCase, editTags);
             
         }
         else {

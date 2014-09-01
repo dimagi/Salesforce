@@ -44,10 +44,16 @@ public with sharing class FogBugzAPI {
         req.setBody('token=' + FogBugz_Settings__c.getOrgDefaults().Token__c + '&cmd=search&cols=' + FB_CASE_COLS + '&q=' + caseId);
         req.setTimeout(FB_HTTP_TIMEOUT);
         req.setMethod('POST');
-        
-        HTTP connection = new HTTP();
 
-        HTTPResponse res = connection.send(req);
+        HTTPResponse res = null;
+        if (Test.isRunningTest()) {
+        	FogBugzHttpCalloutMock mock = new FogBugzHttpCalloutMock();
+        	res = mock.respond(req);
+        }
+        else {        
+	        HTTP connection = new HTTP();
+	        res = connection.send(req);
+        }
         
         if (res.getBody() != null) {
             Map<String,FogBugzCase> cases = parseCases(res.getBody());
@@ -84,6 +90,10 @@ public with sharing class FogBugzAPI {
 			'ixPriority' => fbCase.priority.format()
 		};
 		
+		if (fbCase.probability != null) {
+			params.put('sTags', '['+fbCase.dealSize+'/'+fbCase.probability+']');
+		}
+		
 		HTTPRequest req = new HttpRequest();
 		req.setEndpoint(FB_API_URL);
 		req.setBody('token=' + FogBugz_Settings__c.getOrgDefaults().Token__c + '&' + encodeParameters(params));
@@ -110,13 +120,21 @@ public with sharing class FogBugzAPI {
         req.setTimeout(FB_HTTP_TIMEOUT);
         req.setMethod('POST');
         
-        HTTP connection = new HTTP();
-        HTTPResponse res = connection.send(req);
+        HTTPResponse res = null;
+        if (Test.isRunningTest()) {
+            FogBugzHttpCalloutMock mock = new FogBugzHttpCalloutMock();
+            res = mock.respond(req);	
+        }
+        else {
+	        HTTP connection = new HTTP();
+	        res = connection.send(req);
+        }
         
         return parseUpsertId(res.getBody());
     }
     
     public String closeCase(FogBugzCase fbCase) {
+    	
         Map<String, String> params = new Map<String, String> {
             'cmd' => 'close',
             'ixBug' => fbCase.caseId,
@@ -129,8 +147,15 @@ public with sharing class FogBugzAPI {
         req.setTimeout(FB_HTTP_TIMEOUT);
         req.setMethod('POST');
         
-        HTTP connection = new HTTP();
-        HTTPResponse res = connection.send(req);
+        HTTPResponse res = null;
+        if (Test.isRunningTest()) {
+        	FogBugzHttpCalloutMock mock = new FogBugzHttpCalloutMock();
+        	res = mock.respond(req);
+        }
+        else {
+	        HTTP connection = new HTTP();
+	        res = connection.send(req);
+        }
         
         return parseUpsertId(res.getBody());
     }
@@ -154,8 +179,9 @@ public with sharing class FogBugzAPI {
         return parseUpsertId(res.getBody());
 	}
 	
-	public String updateCaseTitleStage(FogBugzCase fbCase) {
-        Map<String, String> params = new Map<String, String> {
+	public String updateCaseTitleStageTag(FogBugzCase fbCase, boolean editTags) {
+		
+		Map<String, String> params = new Map<String, String> {
             'cmd' => 'edit',
             'ixBug' => fbCase.caseId,
             'sVersion' => fbCase.externalBugID,
@@ -163,14 +189,72 @@ public with sharing class FogBugzAPI {
             'sArea' => fbCase.area
         };
         
+		String tags = null;
+		
+		if (editTags) {
+			
+	        Map<String, String> paramsTags = new Map<String, String> {
+	            'cmd' => 'search',
+	            'q' => fbCase.caseId,
+	            'cols' => 'tags'
+	        };
+	        
+	        HTTPRequest req = new HttpRequest();
+	        req.setEndpoint(FB_API_URL);
+	        req.setBody('token=' + FogBugz_Settings__c.getOrgDefaults().Token__c + '&' + encodeParameters(paramsTags));
+	        req.setTimeout(FB_HTTP_TIMEOUT);
+	        req.setMethod('POST');
+	        
+	        HTTPResponse res = null;
+	        
+	        if (Test.isRunningTest()) {
+	           	
+	           FogBugzHttpCalloutMock mock = new FogBugzHttpCalloutMock(FogBugzHttpCalloutMock.RESPONSE_TAGS);
+	           res = mock.respond(req);
+	        }
+	        else {
+	           HTTP connection = new HTTP();
+	           res = connection.send(req);
+	        }
+	        
+	        List<String> listTags = parseCaseTags(res.getBody());
+	        
+	        tags = '';
+	        for (String tag: listTags) {
+	        	
+	        	if (!tag.startsWith('[') || !tag.endsWith(']') || !Pattern.matches('\\d*/\\d*', tag.substring(1, tag.length()-1))) {
+	        		tags += tag+',';
+	        	}
+	        }
+	        
+	        if (fbCase.probability != null) {
+	           tags += '['+fbCase.dealSize+'/'+fbCase.probability+']';
+	        }
+	        
+	        if (tags.equals('')) {
+	        	tags = ' ';
+	        }
+	        
+	        params.put('sTags', tags);
+		}
+		
         HTTPRequest req = new HttpRequest();
         req.setEndpoint(FB_API_URL);
         req.setBody('token=' + FogBugz_Settings__c.getOrgDefaults().Token__c + '&' + encodeParameters(params));
         req.setTimeout(FB_HTTP_TIMEOUT);
         req.setMethod('POST');
         
-        HTTP connection = new HTTP();
-        HTTPResponse res = connection.send(req);
+        HTTPResponse res = null;
+            
+        if (Test.isRunningTest()) {
+            
+            FogBugzHttpCalloutMock mock = new FogBugzHttpCalloutMock(FogBugzHttpCalloutMock.RESPONSE_UPDATE);
+            res = mock.respond(req);
+        }
+        else {
+            HTTP connection = new HTTP();
+            res = connection.send(req);
+        }
         
         return parseUpsertId(res.getBody());
     }
@@ -236,6 +320,7 @@ public with sharing class FogBugzAPI {
         String res = '';
         
         for (String name:parameters.keySet()) {
+        	
             res += (res == '' ? '' : '&') + name + '=' + EncodingUtil.urlEncode(parameters.get(name), 'UTF-8');
         }
         
@@ -339,7 +424,7 @@ public with sharing class FogBugzAPI {
         }
         
         // Search for deal size & probability
-        for (XMLDom.Element node:caseNode.getElementsByTagName('tag')) {
+        /*for (XMLDom.Element node:caseNode.getElementsByTagName('tag')) {
             
             String value = node.nodeValue;
             Integer slashLoc = value.indexOf('/');
@@ -354,7 +439,7 @@ public with sharing class FogBugzAPI {
                     system.debug(LoggingLevel.ERROR, 'ERROR - FogBugzAPI::parseCase() - ' + e.getMessage());  
                 }
             }
-        }
+        }*/
         
         XMLDom.Element[] events = caseNode.getElementsByTagName('event');
         
@@ -363,5 +448,21 @@ public with sharing class FogBugzAPI {
         }
         
         return fbCase;
+    }
+    
+    public List<String> parseCaseTags(String xmlString) {
+    	
+        XMLDom dom = new XMLDom(xmlString);
+        XMLDom.Element casesNode = dom.root.getElementByTagName('tags');
+        
+        List<String> tags = new List<String>();
+        
+        for (XMLDom.Element node:casesNode.childNodes) {
+            
+            tags.add(node.nodeValue);
+            
+        }
+        
+        return tags;
     }
 }
