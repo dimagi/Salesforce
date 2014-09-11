@@ -6,7 +6,7 @@
  */
 public with sharing class ReportDeliveryUtility {
 	
-	private static final String REPORT_URL = 'https://dimagi--dsandbox.cs17.my.salesforce.com/';
+	private static final String REPORT_URL = 'https://' + URL.getSalesforceBaseUrl().getHost() + '/';
 	
 	private static String errorMsg = '';
 	
