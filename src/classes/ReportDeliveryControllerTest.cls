@@ -31,6 +31,7 @@ private class ReportDeliveryControllerTest {
 	 	controller.folderId = null;
 	 	controller.reportId = null;
 	 	controller.filterId = null;
+	 	controller.otherRecipient = 'incorrectEmail';
 	 	
 	 	//select a stanrdar report
 	 	Report report = [SELECT Id, DeveloperName, ownerId FROM Report limit 1];
@@ -50,6 +51,7 @@ private class ReportDeliveryControllerTest {
 		System.assertEquals(controller.errorMsgs.get(3), controller.REPORT_IS_REQUIRED_ERROR); 
 		System.assertEquals(controller.errorMsgs.get(4), controller.FILTER_IS_REQUIRED_ERROR);
 		System.assertEquals(controller.errorMsgs.get(5), controller.WEEKLY_FREQUENCY_REQUIRED_ERROR);
+		System.assertEquals(controller.errorMsgs.get(6), controller.OTHER_RECIPIENT_ERROR);
 		
 		//send the report with only job name of the required
 		controller.jobName = 'testJob1234567';
@@ -222,11 +224,5 @@ private class ReportDeliveryControllerTest {
 		ReportDeliveryController controller = new ReportDeliveryController();
 		controller.getFolderSelectList();
 	}
-	
-
-	
-	
-	
-	
 
 }

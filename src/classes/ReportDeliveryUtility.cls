@@ -4,7 +4,7 @@
  * @author Diego Febles <diego.febles@roundfusion.com>
  * @since 2014-08
  */
-public with sharing class ReportDeliveryUtility {
+public with sharing class ReportDeliveryUtility { 
 	
 	private static final String REPORT_URL = 'https://' + URL.getSalesforceBaseUrl().getHost() + '/';
 	
@@ -32,77 +32,93 @@ public with sharing class ReportDeliveryUtility {
 			}
 		}															  
 		
-		return reportDeliveryInfo;
+		return reportDeliveryInfo; 
 	}
 	 
 	/*
 	 * Send individual reports based on the filter 
 	 */
     private static void sendEmail(Id reportId, String filter, Map<String, String> options, String otherRecipients) {
-        
-        List<Messaging.SingleEmailMessage> mails = new List<Messaging.SingleEmailMessage>();
-        
-        ApexPages.PageReference report = null;
-        
-        Reports.ReportResults results = Reports.ReportManager.runReport(reportId, true);
-		Reports.ReportMetadata rm = results.getReportMetadata();
-		Reports.ReportExtendedMetadata rem = results.getReportExtendedMetadata();
-		List<Reports.ReportFilter> filters = rm.getReportFilters();
-		
-		Integer filterNumber = filters.size();
-		   		
-        try {
-            for (String ownerId : options.keySet()) {
-                
-                // Send an email with report as an attachment
-                
-                String urlForReport = reportId + '?pc' + filterNumber + '=' + filter + '&pn' + filterNumber + '=eq&pv' + filterNumber + '=';
-                urlForReport += EncodingUtil.urlEncode(options.get(ownerId), 'UTF-8');
-                
-                Messaging.SingleEmailMessage mail = new Messaging.SingleEmailMessage();
-                
-                mail.setUseSignature(false);
-                mail.setSubject('TEST Dimagi Report Delivery');
-                String emailBody = 'Hi ' + options.get(ownerId) + ',<br/><br/> Please use the following link to open the result: ';
-                emailBody += '<a href=' + REPORT_URL + urlForReport +'>Report</a>';
-				
-                mail.setHtmlBody(emailBody);
-                mail.setTargetObjectId(ownerId);
-                mail.setSenderDisplayName('Dimagi Reporter');
-                mail.setSaveAsActivity(false);
-
-				report = new ApexPages.PageReference('/' + urlForReport + '&excel=1&details=yes');
+    	
+    	if(options != null && options.size() > 0){
+	        
+	        List<Messaging.SingleEmailMessage> mails = new List<Messaging.SingleEmailMessage>();
+	        
+	        ApexPages.PageReference report = null;
+	        
+	        Reports.ReportResults results = Reports.ReportManager.runReport(reportId, true);
+			Reports.ReportMetadata rm = results.getReportMetadata();
+			Reports.ReportExtendedMetadata rem = results.getReportExtendedMetadata();
+			List<Reports.ReportFilter> filters = rm.getReportFilters();
 			
-                Messaging.EmailFileAttachment emailAttachment = new Messaging.EmailFileAttachment();
-                emailAttachment.setContentType('application/vnd.ms-excel');
-                emailAttachment.setFileName('report.xls');
-                emailAttachment.setInline(false);
-                 
-                if (!Test.isRunningTest()) {
-                	emailAttachment.Body = report.getContent();
-                }                
-
-                mail.setFileAttachments(new Messaging.EmailFileAttachment[] { emailAttachment });
-                
-                mails.add(mail);
-            }
-            
-            // generate a single email report for other recipients
-            if (otherRecipients != null && otherRecipients != '') {
-            	Messaging.SingleEmailMessage mail = generateEmailForOtherRecipients(otherRecipients, reportId);
-            	
-            	if (mail != null) {
-            		mails.add(mail);
-            	}
-            }
-            
-            // Send the emails
-            if (mails.size() > 0) {
-            	Messaging.sendEmail(mails);
-            }
-        } catch (Exception e) {
-            System.debug('### Exception while attempting to send an email attachment: ' + e.getMessage());               
-        }
+			Integer filterNumber = filters.size();
+			
+			Map<Id,Contact> contacts = new Map<Id, Contact>([SELECT Id, email FROM Contact WHERE Id =: options.keySet()]); 
+			Map<Id,User> users = new Map<Id,User>([SELECT Id, email FROM User WHERE Id =: options.keySet()]);
+		
+	        try {
+	            for (String ownerId : options.keySet()) {
+	            	
+	            	Boolean hasEmail = false;
+	            	if (contacts.containsKey(ownerId) && contacts.get(ownerId).Email != null){
+	        				hasEmail = true; 
+	            	}else if (users.containsKey(ownerId) && users.get(ownerId).Email != null){
+	            			hasEmail = true;
+	            	}
+	            	
+	            	if(hasEmail){
+	
+		                // Send an email with report as an attachment
+		                
+		                String urlForReport = reportId + '?pc' + filterNumber + '=' + filter + '&pn' + filterNumber + '=eq&pv' + filterNumber + '=';
+		                urlForReport += EncodingUtil.urlEncode(options.get(ownerId), 'UTF-8');
+		                
+		                Messaging.SingleEmailMessage mail = new Messaging.SingleEmailMessage();
+		                
+		                mail.setUseSignature(false);
+		                mail.setSubject('TEST Dimagi Report Delivery');
+		                String emailBody = 'Hi ' + options.get(ownerId) + ',<br/><br/> Please use the following link to open the result: ';
+		                emailBody += '<a href=' + REPORT_URL + urlForReport +'>Report</a>';
+						
+		                mail.setHtmlBody(emailBody);
+		                mail.setTargetObjectId(ownerId);
+		                mail.setSenderDisplayName('Dimagi Reporter');
+		                mail.setSaveAsActivity(false);
+		
+						report = new ApexPages.PageReference('/' + urlForReport + '&excel=1&details=yes');
+					
+		                Messaging.EmailFileAttachment emailAttachment = new Messaging.EmailFileAttachment();
+		                emailAttachment.setContentType('application/vnd.ms-excel');
+		                emailAttachment.setFileName('report.xls');
+		                emailAttachment.setInline(false);
+		                 
+		                if (!Test.isRunningTest()) {
+		                	emailAttachment.Body = report.getContent();
+		                }                
+		
+		                mail.setFileAttachments(new Messaging.EmailFileAttachment[] { emailAttachment });
+		                
+		                mails.add(mail); 
+	            	}
+	            }
+	            
+	            // generate a single email report for other recipients
+	            if (otherRecipients != null && otherRecipients != '') {
+	            	Messaging.SingleEmailMessage mail = generateEmailForOtherRecipients(otherRecipients, reportId);
+	            	
+	            	if (mail != null) {
+	            		mails.add(mail);
+	            	}
+	            }
+	            
+	            // Send the emails 
+	            if (mails.size() > 0) {
+	            	Messaging.sendEmail(mails);
+	            }
+	        } catch (Exception e) {
+	            System.debug('### Exception while attempting to send an email attachment: ' + e.getMessage());                
+	        }
+    	}
     }
     
     /*
@@ -154,7 +170,7 @@ public with sharing class ReportDeliveryUtility {
 	 * @return Boolean - true if record is created successfully
 	 */
 	public static Boolean createReportDeliveryInfo(Id jobId, Id reportId, String filter, String fieldId, String emailRecipients) {
-		
+
 		Boolean isSuccess = true;
 		
 		Report_Delivery_Info__c reportDeliveryInfo = new Report_Delivery_Info__c();
@@ -181,7 +197,7 @@ public with sharing class ReportDeliveryUtility {
 	public static void deliverReport(String jobId) {
 		// Get the report that is related with jobId
 		Report_Delivery_Info__c reportDeliveryInfo = getReportDeliveryInfo(jobId);
-		
+ 
 		if (reportDeliveryInfo != null) {
 			
 	        Map<String, String> groupingMap  = new Map<String, String>();
@@ -234,7 +250,7 @@ public with sharing class ReportDeliveryUtility {
 	            
 	            // hold information about where to send the report
 	            Map<String,String> recipients = new Map<String,String>();
-	            
+
 	        	if (isExist) {
 		            for (String s : factMapKeyList) {
 		            	factMapKey = s;
@@ -245,9 +261,7 @@ public with sharing class ReportDeliveryUtility {
 			            for(Reports.ReportDetailRow r : factDetails.getRows()) {
 			                Reports.ReportDataCell cell = r.getDataCells()[colIndex];
 			                if (cell.getValue() != null && !recipients.containsKey((String)cell.getValue())) {
-			                	if(cell.getLabel() != 'Nick Nestle') {
-			                    	recipients.put((String)cell.getValue(), cell.getLabel());
-			                	}
+								recipients.put((String)cell.getValue(), cell.getLabel());
 			                }
 			            }
 		        	}
@@ -259,13 +273,10 @@ public with sharing class ReportDeliveryUtility {
 	        		
 	        		for (Reports.GroupingValue s : groupingVals) {
 	                	if (s.getValue() != null && !recipients.containsKey((String)s.getValue())) {
-		                	if (s.getLabel() != 'Nick Nestle') {
-		                    	recipients.put((String)s.getValue(), s.getLabel());
-		                	}
+							recipients.put((String)s.getValue(), s.getLabel()); 
 			            }
 	                }
 	        	}
-	        	
 	        	sendEmail(reportDeliveryInfo.Report_Id__c, reportDeliveryInfo.Field_Id__c, recipients, reportDeliveryInfo.Email_Recipients__c);	
 	        }
 		}				 	 		

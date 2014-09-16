@@ -30,7 +30,8 @@ public with sharing class ReportDeliveryController {
     public String FOLDER_IS_REQUIRED_ERROR = 'Folder is required';
     public String REPORT_IS_REQUIRED_ERROR = 'Report is required';
     public String FILTER_IS_REQUIRED_ERROR = 'Filter is required';
-    public String WEEKLY_FREQUENCY_REQUIRED_ERROR = 'Weekly requency is required';
+    public String WEEKLY_FREQUENCY_REQUIRED_ERROR = 'Weekly frequency is required';
+    public String OTHER_RECIPIENT_ERROR = 'Other recipient emails are incorrect';
     
 
     public ReportDeliveryController() {
@@ -72,8 +73,31 @@ public with sharing class ReportDeliveryController {
 				errorMsgs.add(WEEKLY_FREQUENCY_REQUIRED_ERROR);
 			}
 		}	
+		if(otherRecipient != ''){
+			if(!validateEmail()){
+				errorMsgs.add(OTHER_RECIPIENT_ERROR);
+			}
+		}
 					      		  
 		return (errorMsgs.size() == 0);	      		  		   
+	}
+	
+	/*
+	 * Validate email
+	 *
+	 * @param - 
+	 * @return Boolean
+	 */
+	private Boolean validateEmail(){
+		Boolean correctEmail = true;
+		String pat = '[a-zA-Z0-9\\.\\!\\#\\$\\%\\&\\*\\/\\=\\?\\^\\_\\+\\-\\`\\{\\|\\}\\~\'._%+-]+@[a-zA-Z0-9\\-.-]+\\.[a-zA-Z]+';
+		List<String> otherRecipients = otherRecipient.split(';');
+		for (String recipient : otherRecipients) {
+			if(!Pattern.matches(pat, recipient)){
+				correctEmail = false;
+			}
+		}
+		return correctEmail;
 	}
     
     /*
@@ -142,6 +166,7 @@ public with sharing class ReportDeliveryController {
 			// if job is scheduled create a report delivery info records    	
 	    	if (jobId != null) {
 		    	// create report delivery info record
+		    	
 		    	Boolean isCreated = ReportDeliveryUtility.createReportDeliveryInfo(jobId, reportId, filterId, fieldId, otherRecipient);
 	    	}
 	    	
@@ -265,7 +290,6 @@ public with sharing class ReportDeliveryController {
         options.add(new SelectOption('', '-- Select Folder --',true));
 
         List<Folder> ff = [select Id, Name from Folder where (Type = 'Report' and Name != null) order by name];
-        System.debug(ff);
         for (Folder folder : ff) {
             if(folder.Name != null && folder.Name != '*') {
             options.add(new SelectOption(folder.Id, folder.Name));
