@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
     <customSettingsType>Hierarchy</customSettingsType>
-    <customSettingsVisibility>Public</customSettingsVisibility>
     <enableEnhancedLookup>false</enableEnhancedLookup>
     <enableFeeds>false</enableFeeds>
     <fields>
         <fullName>Default_Opportunity_Owner__c</fullName>
-        <description>This is the User Name (not Email) of the default SF owner for new cases created in FB, owned by users that do not exist in SF</description>
         <externalId>false</externalId>
+        <inlineHelpText>This is the User Name (not Email address) to be the detault Salesforce Opportunity Owner when a user without a Salesforce account creates a biz dev ticket in Fogbugz.</inlineHelpText>
         <label>Default Opportunity Owner</label>
         <required>false</required>
+        <trackTrending>false</trackTrending>
         <type>Email</type>
         <unique>false</unique>
     </fields>
@@ -18,6 +18,7 @@
         <externalId>false</externalId>
         <label>Last Time Sync Ran</label>
         <required>false</required>
+        <trackTrending>false</trackTrending>
         <type>DateTime</type>
     </fields>
     <fields>
@@ -27,6 +28,7 @@
         <precision>18</precision>
         <required>false</required>
         <scale>0</scale>
+        <trackTrending>false</trackTrending>
         <type>Number</type>
         <unique>false</unique>
     </fields>
@@ -35,6 +37,7 @@
         <defaultValue>false</defaultValue>
         <externalId>false</externalId>
         <label>Sync Script Running</label>
+        <trackTrending>false</trackTrending>
         <type>Checkbox</type>
     </fields>
     <fields>
@@ -43,8 +46,10 @@
         <label>Token</label>
         <length>255</length>
         <required>false</required>
+        <trackTrending>false</trackTrending>
         <type>Text</type>
         <unique>false</unique>
     </fields>
     <label>FogBugz Settings</label>
+    <visibility>Public</visibility>
 </CustomObject>

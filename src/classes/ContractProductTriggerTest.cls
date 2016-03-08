@@ -38,7 +38,9 @@ private class ContractProductTriggerTest {
         
         contract = [select Id, Product_Text__c from DContract__c where id =: contract.Id];
         
-        System.assertEquals(contract.Product_Text__c, 'Product2; Product1');
+        System.assert(contract.Product_Text__c != null &&
+                      contract.Product_Text__c.indexOf('Product2') != -1 &&
+                      contract.Product_Text__c.indexOf('Product1') != -1);
         
         Test.stopTest();   
     }
@@ -103,8 +105,10 @@ private class ContractProductTriggerTest {
         Test.startTest();
         
         contract = [select Id, Product_Text__c from DContract__c where id =: contract.Id];
-        System.assertEquals(contract.Product_Text__c, 'Product2; Product1');
-        
+        System.assert(contract.Product_Text__c != null &&
+              contract.Product_Text__c.indexOf('Product2') != -1 &&
+              contract.Product_Text__c.indexOf('Product1') != -1);
+
         delete contractProduct2;
         
         contract = [select Id, Product_Text__c from DContract__c where id =: contract.Id];

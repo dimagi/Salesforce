@@ -116,6 +116,28 @@
         <fields>NAME</fields>
         <relatedList>DContract__c.Prime_Contracting_Business_Unit__c</relatedList>
     </relatedLists>
+    <relatedLists>
+        <fields>OPPORTUNITY.NAME</fields>
+        <fields>ACCOUNT.NAME</fields>
+        <fields>OPPORTUNITY.CLOSE_DATE</fields>
+        <relatedList>Opportunity.Contract_Owner_BU__c</relatedList>
+    </relatedLists>
+    <relatedLists>
+        <fields>NAME</fields>
+        <relatedList>Pipeline_Snapshot__c.Owning_Entity__c</relatedList>
+    </relatedLists>
+    <relatedLists>
+        <fields>NAME</fields>
+        <fields>Title__c</fields>
+        <fields>Employee_ID__c</fields>
+        <fields>Hire_Date__c</fields>
+        <fields>Corp_Photo__c</fields>
+        <relatedList>SFDC_Employee__c.Business_Unit__c</relatedList>
+    </relatedLists>
+    <relatedLists>
+        <fields>NAME</fields>
+        <relatedList>DContract__c.Parent_Contract_Execution_Owner__c</relatedList>
+    </relatedLists>
     <showEmailCheckbox>false</showEmailCheckbox>
     <showHighlightsPanel>false</showHighlightsPanel>
     <showInteractionLogPanel>false</showInteractionLogPanel>

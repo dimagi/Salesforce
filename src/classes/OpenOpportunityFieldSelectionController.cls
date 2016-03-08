@@ -1,11 +1,9 @@
-/**************************************************
-Class Name: OpenOpportunityFieldSelectionController
-Class Description: UI controller for the Report column selection controller. 
-Author: Fernando Rodriguez (frodriguez@adooxen.com)
-Modified By: Fernando
-Update Date: 2013-03-04
-Additional Comments: This class performs the UI Event handling as well as the DB logic.    
-**************************************************/
+/**
+ *
+ * @author  Fernando Rodriguez (frodriguez@adooxen.com)
+ * @date    01/16/2012
+ *
+ */
 public with sharing class OpenOpportunityFieldSelectionController {
 
     public Selectoption[] availableFields {get; set;}

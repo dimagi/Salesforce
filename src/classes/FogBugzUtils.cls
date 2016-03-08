@@ -14,7 +14,7 @@ public without sharing class FogBugzUtils {
         FogBugzCase fbCase = new FogBugzCase();
         
         // Uncomment if testing
-        // fbCase.assignedTo = 'Salesforce';
+        //fbCase.assignedTo = 'Salesforce';
         fbCase.assignedTo = o.Owner.Name;
         fbCase.title = o.Name;
         fbCase.externalBugID = o.Id;
@@ -24,6 +24,14 @@ public without sharing class FogBugzUtils {
         fbCase.priority = FOGBUGZ_CASE_PRIORITY;
         fbCase.caseId = o.Fogbugz_Ticket_Number__c;
         fbCase.ixPersonOpenedBy = o.Fogbugz_Opened_By__c;
+        
+        if (o.Fogbugz_Probability__c != null) {
+        	fbCase.probability = o.Fogbugz_Probability__c;
+        	fbCase.dealSize = 0;
+        	if (o.Amount != null) {
+        		fbCase.dealSize = o.Amount.intValue();
+        	}
+        }
         
         return fbCase;
     }
@@ -42,7 +50,8 @@ public without sharing class FogBugzUtils {
                                     Fogbugz_Ticket_Number__c,
                                     Fogbugz_Assigned_To__c,
                                     Fogbugz_Opened_By__c,
-                                    Fogbugz_Last_Updated_Date__c
+                                    Fogbugz_Last_Updated_Date__c,
+                                    IsClosed
                              from Opportunity
                              where Id = :opportunityId];
         
@@ -97,21 +106,14 @@ public without sharing class FogBugzUtils {
         FogBugzCase fbCase = Test.isRunningTest() ?
                              api.parseCases(TestFogBugzAPI.GET_CASES_RESPONSE).values()[0] :
                              api.getCase(o.Fogbugz_Ticket_Number__c);
-<<<<<<< HEAD
 
-=======
-            
->>>>>>> dimagi/master
         if (fbCase != null) {
 
             if (!checkTimes || o.Fogbugz_Last_Updated_Date__c == null || fbCase.lastModifiedDate == null ||
                 fbCase.lastModifiedDate > o.Fogbugz_Last_Updated_Date__c) {
                 	
 	            if (o.Fogbugz_Opened_By__c != null) {
-<<<<<<< HEAD
 	            	
-=======
->>>>>>> dimagi/master
 	                // Update externalBugId in FB for new opportunities
 	                fbCase.externalBugID = o.Id;
 	                
@@ -119,6 +121,7 @@ public without sharing class FogBugzUtils {
 	                
 	                if (res == null) {
 	                    System.debug(LoggingLevel.ERROR, 'FB2SFSynchronizer::execute() - Error while updating FB case #' + fbCase.caseId);
+                        hqInt_BatchErrorLogger.logError(FogBugzSynchronizerBatch.batchId,'Fogbugz Error','FB2SFSynchronizer::execute() - Error while updating FB case #' + fbCase.caseId,'');
 	                }
 	            }
 	                
@@ -127,18 +130,10 @@ public without sharing class FogBugzUtils {
 	            // @fixme - Client field?
 	            // o.Fogbugz_Client__c = ???
 	            o.Name = fbCase.title == null ? null : (fbCase.title.length() > 120 ? fbCase.title.substring(0, 120) : fbCase.title);
-	            o.Amount = fbCase.dealSize;
-	            o.Fogbugz_Probability__c = fbCase.probability;
+	            //o.Amount = fbCase.dealSize;
+	            //o.Fogbugz_Probability__c = fbCase.probability;
 	            o.Fogbugz_Opened_By__c = null;
 	    
-<<<<<<< HEAD
-=======
-	    		// Added by Nick
-	    		// This is where I should store the product name
-	    		//
-	    		//
-	    
->>>>>>> dimagi/master
 	            if (fbCase.lastModifiedDate != null) {
 	                o.Fogbugz_Last_Updated_Date__c = fbCase.lastModifiedDate;
 	            }
@@ -150,25 +145,40 @@ public without sharing class FogBugzUtils {
 	            if (o.Id == null) {
 	                o.CloseDate = Date.today();
 	            }
-<<<<<<< HEAD
 
-=======
-	
->>>>>>> dimagi/master
 	            upsert o;
             }
             else {
 	            System.debug(LoggingLevel.INFO,
 	                         'FogBugzUtils::syncOpportunityFromFB() - Case not updated in FB, case #' + o.Fogbugz_Ticket_Number__c);
+                hqInt_BatchErrorLogger.logError(FogBugzSynchronizerBatch.batchId,'Fogbugz Error','FogBugzUtils::syncOpportunityFromFB() - Case not updated in FB, case #' + o.Fogbugz_Ticket_Number__c,'');
 	            success = false;
             }
         }
         else {
             System.debug(LoggingLevel.WARN,
                          'FogBugzUtils::syncOpportunityFromFB() - Could not retrieve details for FB case #' + o.Fogbugz_Ticket_Number__c);
+            hqInt_BatchErrorLogger.logError(FogBugzSynchronizerBatch.batchId,'Fogbugz Error','FogBugzUtils::syncOpportunityFromFB() - Could not retrieve details for FB case #' + o.Fogbugz_Ticket_Number__c,'');
             success = false;
         }
         
+        if(success==true)
+        {
+			hqInt_BatchErrorLogger.logError(FogBugzSynchronizerBatch.batchId,'Fogbugz Opp Successfully synced - FogBugz Ticket No - '+o.Fogbugz_Ticket_Number__c,'','');            
+        }
         return success;
+    }
+
+    public static Set<String> closedStages {
+        get {
+            if(closedStages == null) {
+                closedStages = new Set<String>();
+                for(OpportunityStage os : [Select MasterLabel From OpportunityStage Where IsClosed = true]) {
+                    closedStages.add(os.MasterLabel);           
+                }
+            }
+            return closedStages;
+        }
+        set;
     }
 }

@@ -45,7 +45,9 @@ private class OpportunityCountryTriggerTest {
         insert oppCountry2;
         
         opp = [select Id, Country_Text__c from Opportunity where id =: opp.Id];
-        System.assertEquals(opp.Country_Text__c, 'Country2; Country1');
+        System.assert(opp.Country_Text__c != null &&
+                      opp.Country_Text__c.indexOf('Country2') != -1 &&
+                      opp.Country_Text__c.indexOf('Country1') != -1);
         
         Test.stopTest();
         
@@ -87,7 +89,9 @@ private class OpportunityCountryTriggerTest {
         Test.startTest();
         
         opp = [select Id, Country_Text__c from Opportunity where id =: opp.Id];
-        System.assertEquals(opp.Country_Text__c, 'Country2; Country1');
+        System.assert(opp.Country_Text__c != null &&
+                      opp.Country_Text__c.indexOf('Country2') != -1 &&
+                      opp.Country_Text__c.indexOf('Country1') != -1);
         
         TriggerContext.runTrigger = true;
         delete oppCountry2;

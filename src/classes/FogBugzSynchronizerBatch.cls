@@ -8,6 +8,7 @@
 global without sharing class FogBugzSynchronizerBatch implements Database.Batchable<Opportunity>, Database.AllowsCallouts {
 
     public final Boolean testMode;
+    public static string batchId;
 
     /**
      * We define a custom iterator to traverse the new opportunities
@@ -54,15 +55,28 @@ global without sharing class FogBugzSynchronizerBatch implements Database.Batcha
     }
         
     global Iterable<Opportunity> start(Database.BatchableContext BC) {
-    	FogBugz_Settings__c settings = FogBugz_Settings__c.getOrgDefaults();
-    	Datetime thisTime = Datetime.now();
-    	Opportunity[] modifiedOps = preFetchOpportunities(settings.Last_Time_Sync_Ran__c);
-        settings.Last_Time_Sync_Ran__c = thisTime;
-        upsert settings;
-        return new OpportunityIterable(modifiedOps);
+    	batchId = BC.getJobId();	//Added For Emailing Errors
+    	try
+    	{
+	    	FogBugz_Settings__c settings = FogBugz_Settings__c.getOrgDefaults();
+	    	Datetime thisTime = Datetime.now();
+	    	Opportunity[] modifiedOps = preFetchOpportunities(settings.Last_Time_Sync_Ran__c);
+	        settings.Last_Time_Sync_Ran__c = thisTime;
+	        upsert settings;
+	        if(!test.isRunningTest() && hqInt_BatchErrorLogger.checkErrorsLogged(batchId))
+	        	hqInt_BatchErrorLogger.sendErrorEmails(batchId,'Fogbugz Success & Errors','Fogbugz Batch Run Results :');	
+	        return new OpportunityIterable(modifiedOps);
+    	}
+    	catch(exception e)
+    	{
+    		hqInt_BatchErrorLogger.logError(FogBugzSynchronizerBatch.batchId,'Fogbugz Error','Error in start method -- '+e.getMessage(),e.getStackTraceString());
+    		hqInt_BatchErrorLogger.sendErrorEmails(batchId,'Fogbugz Success & Errors','Fogbugz Batch Run Results :');
+    		return null;
+    	}
     }
     
     global void execute(Database.BatchableContext bc, List<Opportunity> scope) {
+    	batchId = BC.getJobId(); //Added For Emailing Errors
         FogBugzAPI api = new FogBugzAPI();
         
         for (Opportunity o:scope) {
@@ -152,7 +166,7 @@ global without sharing class FogBugzSynchronizerBatch implements Database.Batcha
                     FogBugzCase fbCase = fbIdToCaseMap.get(caseId);
                     
                     System.debug(LoggingLevel.INFO, 'Processing new opportunity::' + minTime + '-' + fbCase.lastModifiedDate);
-
+                    
                     Opportunity o = new Opportunity(
                         Name = 'Synchronizing',
                         StageName = 'Synchronizing',
@@ -178,5 +192,10 @@ global without sharing class FogBugzSynchronizerBatch implements Database.Batcha
         FogBugz_Settings__c fbSettings = FogBugz_Settings__c.getOrgDefaults();
         fbSettings.Sync_Script_Running__c = false;
         update fbSettings;
+        
+        if(!test.isRunningTest())
+        {
+            hqInt_BatchErrorLogger.sendErrorEmails(batchId,'Fogbugz Success & Errors','Fogbugz Batch Run Results :');
+        }
     }
 }

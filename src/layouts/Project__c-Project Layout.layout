@@ -35,6 +35,14 @@
                 <behavior>Edit</behavior>
                 <field>Sub_Area__c</field>
             </layoutItems>
+            <layoutItems>
+                <behavior>Edit</behavior>
+                <field>Summary_Overview__c</field>
+            </layoutItems>
+            <layoutItems>
+                <behavior>Edit</behavior>
+                <field>HIPAA_Compliant__c</field>
+            </layoutItems>
         </layoutColumns>
         <layoutColumns>
             <layoutItems>
@@ -99,6 +107,8 @@
         <style>CustomLinks</style>
     </layoutSections>
     <relatedLists>
+        <customButtons>Add_Product</customButtons>
+        <excludeButtons>New</excludeButtons>
         <fields>Product__c</fields>
         <fields>Line_Description__c</fields>
         <fields>Quantity__c</fields>
@@ -108,7 +118,7 @@
     </relatedLists>
     <relatedLists>
         <customButtons>Existing_Location</customButtons>
-        <customButtons>Create_New_Location</customButtons>
+        <customButtons>New_Location</customButtons>
         <excludeButtons>New</excludeButtons>
         <fields>Location__c.NAME</fields>
         <fields>Location__c.Country__c</fields>
@@ -120,6 +130,8 @@
         <relatedList>Project_Location__c.Project__c</relatedList>
     </relatedLists>
     <relatedLists>
+        <customButtons>Add_Existing_Contract</customButtons>
+        <excludeButtons>New</excludeButtons>
         <fields>DContract__c.NAME</fields>
         <fields>DContract__c.Status__c</fields>
         <fields>DContract__c.Short_Description__c</fields>
