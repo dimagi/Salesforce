@@ -1,17 +1,9 @@
-
-/**************************************************
-Class Name: OpenOpportunitiesBatch
-Class Description: Batch that fetches all Opportunities which to be sent by weekly email  
-Author: Fernando Rodriguez (frodriguez@adooxen.com)
-Modified By: Fernando
-Update Date: 2013-03-04
-Additional Comments: The batch only fetches the records.
-The class invokation flow would be: 
-1. OpenOpportunitiesBatch gets the records
-2. OpenOpportunityMailer performs the filetering based on the report criteria (logic modularised in order to remove processing logic from the batch)
-3. OpenOpportunityEmailUtils class create the HTML content for the email
-4. OpenOpportunityMailer receives this and send it by email   
-**************************************************/
+/**
+ *
+ * @author  Fernando Rodriguez (frodriguez@adooxen.com)
+ * @date    01/11/2012
+ *
+ */
 global class OpenOpportunitiesBatch implements Database.Batchable<sObject> {
 
     public OpenOpportunitiesBatch(){}    

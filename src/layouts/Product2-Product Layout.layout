@@ -61,9 +61,10 @@
         <style>TwoColumnsTopToBottom</style>
     </layoutSections>
     <layoutSections>
-        <customLabel>false</customLabel>
+        <customLabel>true</customLabel>
         <detailHeading>false</detailHeading>
         <editHeading>false</editHeading>
+        <label>Custom Links</label>
         <layoutColumns/>
         <layoutColumns/>
         <layoutColumns/>
@@ -77,10 +78,20 @@
     </relatedLists>
     <relatedLists>
         <fields>NAME</fields>
+        <fields>Contract__c</fields>
+        <fields>Description__c</fields>
+        <fields>Quantity__c</fields>
+        <fields>UnitPrice__c</fields>
+        <fields>TotalPrice__c</fields>
         <relatedList>Contract_Product__c.Product__c</relatedList>
     </relatedLists>
     <relatedLists>
         <fields>NAME</fields>
+        <fields>Project__c</fields>
+        <fields>Line_Description__c</fields>
+        <fields>Quantity__c</fields>
+        <fields>UnitPrice__c</fields>
+        <fields>TotalPrice__c</fields>
         <relatedList>Project_Product__c.Product__c</relatedList>
     </relatedLists>
     <showEmailCheckbox>false</showEmailCheckbox>

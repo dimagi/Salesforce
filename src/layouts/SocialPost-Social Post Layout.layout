@@ -12,7 +12,11 @@
             </layoutItems>
             <layoutItems>
                 <behavior>Required</behavior>
-                <field>Headline</field>
+                <field>Posted</field>
+            </layoutItems>
+            <layoutItems>
+                <behavior>Edit</behavior>
+                <field>Content</field>
             </layoutItems>
             <layoutItems>
                 <behavior>Edit</behavior>
@@ -20,7 +24,23 @@
             </layoutItems>
             <layoutItems>
                 <behavior>Edit</behavior>
-                <field>WhoId</field>
+                <field>ReplyToId</field>
+            </layoutItems>
+            <layoutItems>
+                <behavior>Edit</behavior>
+                <field>Provider</field>
+            </layoutItems>
+            <layoutItems>
+                <behavior>Edit</behavior>
+                <field>PostUrl</field>
+            </layoutItems>
+            <layoutItems>
+                <behavior>Edit</behavior>
+                <field>PersonaId</field>
+            </layoutItems>
+            <layoutItems>
+                <behavior>Edit</behavior>
+                <field>Handle</field>
             </layoutItems>
         </layoutColumns>
         <style>OneColumn</style>
@@ -37,9 +57,14 @@
     </layoutSections>
     <miniLayout>
         <fields>Name</fields>
-        <fields>Headline</fields>
+        <fields>Posted</fields>
+        <fields>Content</fields>
         <fields>ParentId</fields>
-        <fields>WhoId</fields>
+        <fields>ReplyToId</fields>
+        <fields>Provider</fields>
+        <fields>PostUrl</fields>
+        <fields>PersonaId</fields>
+        <fields>Handle</fields>
     </miniLayout>
     <showEmailCheckbox>false</showEmailCheckbox>
     <showRunAssignmentRulesCheckbox>false</showRunAssignmentRulesCheckbox>

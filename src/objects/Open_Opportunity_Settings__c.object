@@ -1,10 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
     <customSettingsType>Hierarchy</customSettingsType>
-    <customSettingsVisibility>Public</customSettingsVisibility>
     <description>Open Opportunity Settings</description>
     <enableEnhancedLookup>false</enableEnhancedLookup>
     <enableFeeds>false</enableFeeds>
+    <fields>
+        <fullName>Biz_Dev_Daily_Report_Emails__c</fullName>
+        <externalId>false</externalId>
+        <inlineHelpText>The email addresses the daily late reminders go to.</inlineHelpText>
+        <label>Biz Dev Daily Report Emails</label>
+        <length>255</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
     <fields>
         <fullName>Days_Not_Updated_Limit_Early_Stages__c</fullName>
         <defaultValue>10</defaultValue>
@@ -16,6 +26,7 @@ Applies for Stages 1&amp; 2</inlineHelpText>
         <precision>3</precision>
         <required>false</required>
         <scale>0</scale>
+        <trackTrending>false</trackTrending>
         <type>Number</type>
         <unique>false</unique>
     </fields>
@@ -30,6 +41,19 @@ Applies for Stages 3 +</inlineHelpText>
         <precision>3</precision>
         <required>false</required>
         <scale>0</scale>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Days_Since_Stage_Change__c</fullName>
+        <externalId>false</externalId>
+        <inlineHelpText>Turns the row green if the stage has changed in the past X days.</inlineHelpText>
+        <label>Days Since Stage Change</label>
+        <precision>3</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackTrending>false</trackTrending>
         <type>Number</type>
         <unique>false</unique>
     </fields>
@@ -39,8 +63,10 @@ Applies for Stages 3 +</inlineHelpText>
         <externalId>false</externalId>
         <label>Default Email Recipient</label>
         <required>true</required>
+        <trackTrending>false</trackTrending>
         <type>Email</type>
         <unique>false</unique>
     </fields>
     <label>Open Opportunity Settings</label>
+    <visibility>Public</visibility>
 </CustomObject>

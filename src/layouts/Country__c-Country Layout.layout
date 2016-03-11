@@ -18,6 +18,22 @@
                 <behavior>Edit</behavior>
                 <field>Entity__c</field>
             </layoutItems>
+            <layoutItems>
+                <behavior>Readonly</behavior>
+                <field>Area__c</field>
+            </layoutItems>
+            <layoutItems>
+                <behavior>Readonly</behavior>
+                <field>Sub_Area__c</field>
+            </layoutItems>
+            <layoutItems>
+                <behavior>Readonly</behavior>
+                <field>Active_Contracts__c</field>
+            </layoutItems>
+            <layoutItems>
+                <behavior>Edit</behavior>
+                <field>Country_Code__c</field>
+            </layoutItems>
         </layoutColumns>
         <layoutColumns>
             <layoutItems>
@@ -97,7 +113,12 @@
     </relatedLists>
     <relatedLists>
         <excludeButtons>New</excludeButtons>
-        <fields>NAME</fields>
+        <fields>DContract__c.NAME</fields>
+        <fields>DContract__c.Status__c</fields>
+        <fields>DContract__c.Contract_Start_Date__c</fields>
+        <fields>DContract__c.Contract_End_Date__c</fields>
+        <fields>DContract__c.Area__c</fields>
+        <fields>DContract__c.Sub_Area__c</fields>
         <relatedList>Contract_Country__c.Country__c</relatedList>
     </relatedLists>
     <relatedLists>
@@ -120,6 +141,17 @@
         <fields>Area__c</fields>
         <fields>Sub_Area__c</fields>
         <relatedList>ProjectCountry__c.Country_Closed__c</relatedList>
+    </relatedLists>
+    <relatedLists>
+        <fields>NAME</fields>
+        <fields>State__c</fields>
+        <fields>Sub_Location_1__c</fields>
+        <fields>Sub_Location_2__c</fields>
+        <relatedList>Location__c.Country__c</relatedList>
+    </relatedLists>
+    <relatedLists>
+        <fields>NAME</fields>
+        <relatedList>City__c.Country__c</relatedList>
     </relatedLists>
     <showEmailCheckbox>false</showEmailCheckbox>
     <showHighlightsPanel>false</showHighlightsPanel>

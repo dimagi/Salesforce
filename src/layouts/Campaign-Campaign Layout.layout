@@ -62,12 +62,7 @@
                 <field>EndDate</field>
             </layoutItems>
         </layoutColumns>
-        <layoutColumns>
-            <layoutItems>
-                <behavior>Edit</behavior>
-                <field>NumberSent</field>
-            </layoutItems>
-        </layoutColumns>
+        <layoutColumns/>
         <style>TwoColumnsLeftToRight</style>
     </layoutSections>
     <layoutSections>
@@ -79,6 +74,17 @@
             <layoutItems>
                 <behavior>Readonly</behavior>
                 <field>NumberOfResponses</field>
+            </layoutItems>
+            <layoutItems>
+                <reportChartComponent>
+                    <cacheData>true</cacheData>
+                    <contextFilterableField>CAMPAIGN_ID</contextFilterableField>
+                    <hideOnError>false</hideOnError>
+                    <includeContext>true</includeContext>
+                    <reportName>Campaign_Response_rate</reportName>
+                    <showTitle>false</showTitle>
+                    <size>SMALL</size>
+                </reportChartComponent>
             </layoutItems>
             <layoutItems>
                 <behavior>Readonly</behavior>
@@ -93,7 +99,55 @@
                 <field>NumberOfContacts</field>
             </layoutItems>
         </layoutColumns>
-        <layoutColumns/>
+        <layoutColumns>
+            <layoutItems>
+                <behavior>Readonly</behavior>
+                <field>HierarchyNumberSent</field>
+            </layoutItems>
+            <layoutItems>
+                <behavior>Readonly</behavior>
+                <field>HierarchyNumberOfResponses</field>
+            </layoutItems>
+            <layoutItems>
+                <reportChartComponent>
+                    <cacheData>true</cacheData>
+                    <contextFilterableField>CAMPAIGN_ID</contextFilterableField>
+                    <hideOnError>false</hideOnError>
+                    <includeContext>true</includeContext>
+                    <reportName>Lead_Status_Report_by_Campaign</reportName>
+                    <showTitle>false</showTitle>
+                    <size>SMALL</size>
+                </reportChartComponent>
+            </layoutItems>
+            <layoutItems>
+                <behavior>Readonly</behavior>
+                <field>HierarchyNumberOfLeads</field>
+            </layoutItems>
+            <layoutItems>
+                <behavior>Readonly</behavior>
+                <field>HierarchyNumberOfConvertedLeads</field>
+            </layoutItems>
+            <layoutItems>
+                <behavior>Readonly</behavior>
+                <field>HierarchyNumberOfContacts</field>
+            </layoutItems>
+            <layoutItems>
+                <behavior>Readonly</behavior>
+                <field>HierarchyNumberOfOpportunities</field>
+            </layoutItems>
+            <layoutItems>
+                <behavior>Readonly</behavior>
+                <field>HierarchyAmountAllOpportunities</field>
+            </layoutItems>
+            <layoutItems>
+                <behavior>Readonly</behavior>
+                <field>HierarchyExpectedRevenue</field>
+            </layoutItems>
+            <layoutItems>
+                <behavior>Readonly</behavior>
+                <field>HierarchyNumberOfWonOpportunities</field>
+            </layoutItems>
+        </layoutColumns>
         <style>TwoColumnsLeftToRight</style>
     </layoutSections>
     <layoutSections>
@@ -150,6 +204,14 @@
         <layoutColumns/>
         <style>TwoColumnsTopToBottom</style>
     </layoutSections>
+    <relatedContent>
+        <relatedContentItems>
+            <layoutItem>
+                <behavior>Readonly</behavior>
+                <field>ParentId</field>
+            </layoutItem>
+        </relatedContentItems>
+    </relatedContent>
     <relatedLists>
         <fields>MEMBER_TYPE</fields>
         <fields>STATUS</fields>

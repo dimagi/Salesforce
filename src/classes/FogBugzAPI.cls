@@ -2,6 +2,8 @@
  * Client for the FogBugzAPI
  *
  * @author  Antonio Grassi
+ * @modifiedBy Virginia Fernández
+ *
  * @date    11/13/2012
  */
 public with sharing class FogBugzAPI {
@@ -26,7 +28,15 @@ public with sharing class FogBugzAPI {
 
         HTTP connection = new HTTP();
 
-        HTTPResponse res = connection.send(req);
+        HTTPResponse res = null;
+        
+        if (!Test.isRunningTest()) { 
+            res = connection.send(req);
+        }
+        else {
+        	FogBugzHttpCalloutMock mock = new FogBugzHttpCalloutMock();
+        	res = mock.respond(req);
+        }
         
         if (res.getBody() != null) {
             return parseCaseList(res.getBody());
@@ -44,10 +54,16 @@ public with sharing class FogBugzAPI {
         req.setBody('token=' + FogBugz_Settings__c.getOrgDefaults().Token__c + '&cmd=search&cols=' + FB_CASE_COLS + '&q=' + caseId);
         req.setTimeout(FB_HTTP_TIMEOUT);
         req.setMethod('POST');
-        
         HTTP connection = new HTTP();
-
-        HTTPResponse res = connection.send(req);
+        HTTPResponse res = null;
+        
+        if (Test.isRunningTest()) {
+        	FogBugzHttpCalloutMock mock = new FogBugzHttpCalloutMock();
+        	res = mock.respond(req);
+        }
+        else {
+	        res = connection.send(req);
+        }
         
         if (res.getBody() != null) {
             Map<String,FogBugzCase> cases = parseCases(res.getBody());
@@ -68,10 +84,15 @@ public with sharing class FogBugzAPI {
         
         HTTP connection = new HTTP();
         
+        if (Test.isRunningTest()) {
+        	FogBugzHttpCalloutMock mock = new FogBugzHttpCalloutMock();
+        	return mock.respond(req).getBody();
+        }
+        
         return connection.send(req).getBody();
 	}
 	
-	public String createCase(FogBugzCase fbCase) {
+	public String createCase(FogBugzCase fbCase, boolean close) {
 		
 		Map<String, String> params = new Map<String, String> {
 			'cmd' => 'new',
@@ -84,6 +105,10 @@ public with sharing class FogBugzAPI {
 			'ixPriority' => fbCase.priority.format()
 		};
 		
+		if (fbCase.probability != null) {
+			params.put('sTags', '['+fbCase.dealSize+'/'+fbCase.probability+']');
+		}
+		
 		HTTPRequest req = new HttpRequest();
 		req.setEndpoint(FB_API_URL);
 		req.setBody('token=' + FogBugz_Settings__c.getOrgDefaults().Token__c + '&' + encodeParameters(params));
@@ -91,9 +116,24 @@ public with sharing class FogBugzAPI {
 		req.setMethod('POST');
 		
 		HTTP connection = new HTTP();
-		HTTPResponse res = connection.send(req);
+		HTTPResponse res = null;
+		
+		if (Test.isRunningTest()) {
+			FogBugzHttpCalloutMock mock = new FogBugzHttpCalloutMock();
+			res = mock.respond(req);
+		}
+		else {
+            res = connection.send(req);
+		}
+		
 		
 		fbCase.caseId = parseUpsertId(res.getBody());
+		
+		if (close) {
+            this.resolveCase(fbCase);
+            this.closeCase(fbCase);
+        }
+        
 		return fbCase.caseId;
 	}
 	
@@ -111,12 +151,49 @@ public with sharing class FogBugzAPI {
         req.setMethod('POST');
         
         HTTP connection = new HTTP();
-        HTTPResponse res = connection.send(req);
+        HTTPResponse res = null;
+        
+        if (Test.isRunningTest()) {
+            FogBugzHttpCalloutMock mock = new FogBugzHttpCalloutMock();
+            res = mock.respond(req);	
+        }
+        else {
+	        res = connection.send(req);
+        }
+        
+        return parseUpsertId(res.getBody());
+    }
+    
+    public String reopenCase(FogBugzCase fbCase) {
+    	
+        Map<String, String> params = new Map<String, String> {
+            'cmd' => 'reopen',
+            'ixBug' => fbCase.caseId,
+            'sVersion' => fbCase.externalBugID
+        };
+        
+        HTTPRequest req = new HttpRequest();
+        req.setEndpoint(FB_API_URL);
+        req.setBody('token=' + FogBugz_Settings__c.getOrgDefaults().Token__c + '&' + encodeParameters(params));
+        req.setTimeout(FB_HTTP_TIMEOUT);
+        req.setMethod('POST');
+        
+        HTTP connection = new HTTP();
+        HTTPResponse res = null;
+        
+        if (Test.isRunningTest()) {
+            FogBugzHttpCalloutMock mock = new FogBugzHttpCalloutMock();
+            res = mock.respond(req);    
+        }
+        else {
+            res = connection.send(req);
+        }
         
         return parseUpsertId(res.getBody());
     }
     
     public String closeCase(FogBugzCase fbCase) {
+    	
         Map<String, String> params = new Map<String, String> {
             'cmd' => 'close',
             'ixBug' => fbCase.caseId,
@@ -130,7 +207,15 @@ public with sharing class FogBugzAPI {
         req.setMethod('POST');
         
         HTTP connection = new HTTP();
-        HTTPResponse res = connection.send(req);
+        HTTPResponse res = null;
+        
+        if (Test.isRunningTest()) {
+        	FogBugzHttpCalloutMock mock = new FogBugzHttpCalloutMock();
+        	res = mock.respond(req);
+        }
+        else {
+	        res = connection.send(req);
+        }
         
         return parseUpsertId(res.getBody());
     }
@@ -149,13 +234,51 @@ public with sharing class FogBugzAPI {
         req.setMethod('POST');
         
         HTTP connection = new HTTP();
-        HTTPResponse res = connection.send(req);
+        HTTPResponse res = null;
+        
+        if (Test.isRunningTest()) {
+        	FogBugzHttpCalloutMock mock = new FogBugzHttpCalloutMock();
+        	res = mock.respond(req);
+        }
+        else {
+            res = connection.send(req);
+        }
         
         return parseUpsertId(res.getBody());
 	}
 	
-	public String updateCaseTitleStage(FogBugzCase fbCase) {
-        Map<String, String> params = new Map<String, String> {
+	private List<String> getCaseTags(FogBugzCase fbCase) {
+        Map<String, String> paramsTags = new Map<String, String> {
+            'cmd' => 'search',
+            'q' => fbCase.caseId,
+            'cols' => 'tags'
+        };
+        
+        HTTPRequest req = new HttpRequest();
+        req.setEndpoint(FB_API_URL);
+        req.setBody('token=' + FogBugz_Settings__c.getOrgDefaults().Token__c + '&' + encodeParameters(paramsTags));
+        req.setTimeout(FB_HTTP_TIMEOUT);
+        req.setMethod('POST');
+        
+        HTTP connection = new HTTP();
+        HTTPResponse res = null;
+        
+        if (Test.isRunningTest()) {
+            
+           FogBugzHttpCalloutMock mock = new FogBugzHttpCalloutMock();
+           res = mock.respond(req);
+        }
+        else {
+        	
+           res = connection.send(req);
+        }
+        
+        return parseCaseTags(res.getBody());
+	}
+	
+	public String updateCaseTitleStageTag(FogBugzCase fbCase, boolean editTags, Set<String> products, boolean close, boolean reopen) {
+		
+		Map<String, String> params = new Map<String, String> {
             'cmd' => 'edit',
             'ixBug' => fbCase.caseId,
             'sVersion' => fbCase.externalBugID,
@@ -163,6 +286,39 @@ public with sharing class FogBugzAPI {
             'sArea' => fbCase.area
         };
         
+		String tags = null;
+		
+		if (editTags) {
+			
+	        List<String> listTags = getCaseTags(fbCase);
+	        
+	        tags = '';
+	        
+	        for (String tag: listTags) {
+	        	
+	        	if ((!products.contains(tag)) && ((!tag.startsWith('[') || !tag.endsWith(']') || !Pattern.matches('\\d*/\\d*', tag.substring(1, tag.length()-1))))) {
+	        		tags += tag+',';
+	        	}
+	        	else {
+	        		products.remove(tag);
+	        	}
+	        }
+	        
+	        for (String product : products) {
+	        	tags += product + ',';
+	        }
+	        
+	        if (fbCase.probability != null) {
+	           tags += '['+fbCase.dealSize+'/'+fbCase.probability+']';
+	        }
+	        
+	        if (tags.equals('')) {
+	        	tags = ' ';
+	        }
+	        
+	        params.put('sTags', tags);
+		}
+		
         HTTPRequest req = new HttpRequest();
         req.setEndpoint(FB_API_URL);
         req.setBody('token=' + FogBugz_Settings__c.getOrgDefaults().Token__c + '&' + encodeParameters(params));
@@ -170,10 +326,27 @@ public with sharing class FogBugzAPI {
         req.setMethod('POST');
         
         HTTP connection = new HTTP();
-        HTTPResponse res = connection.send(req);
+        HTTPResponse res = null;
+            
+        if (Test.isRunningTest()) {            
+            FogBugzHttpCalloutMock mock = new FogBugzHttpCalloutMock();
+            res = mock.respond(req);
+        }
+        else {
+            res = connection.send(req);
+        }
+        
+        if (close) {
+        	this.resolveCase(fbCase);
+            return this.closeCase(fbCase);
+        }
+        else if (reopen) {
+        	this.reopenCase(fbCase);
+        }
         
         return parseUpsertId(res.getBody());
     }
+    
 
     public String addNote(String caseId, String note) {
         Map<String, String> params = new Map<String, String> {
@@ -189,7 +362,15 @@ public with sharing class FogBugzAPI {
         req.setMethod('POST');
         
         HTTP connection = new HTTP();
-        HTTPResponse res = connection.send(req);
+        HTTPResponse res = null;
+        
+        if (Test.isRunningTest()) {
+        	FogBugzHttpCalloutMock mock = new FogBugzHttpCalloutMock();
+            res = mock.respond(req);
+        } 
+        else {
+            res = connection.send(req);
+        }
 
         return parseUpsertId(res.getBody());
     }
@@ -207,7 +388,15 @@ public with sharing class FogBugzAPI {
         req.setMethod('POST');
         
         HTTP connection = new HTTP();
-        HTTPResponse res = connection.send(req);
+        HTTPResponse res = null;
+        
+        if (Test.isRunningTest()) {
+        	FogBugzHttpCalloutMock mock = new FogBugzHttpCalloutMock();
+            res = mock.respond(req);
+        }
+        else {
+            res = connection.send(req);
+        }
 
         String email = null;
         
@@ -236,6 +425,7 @@ public with sharing class FogBugzAPI {
         String res = '';
         
         for (String name:parameters.keySet()) {
+        	
             res += (res == '' ? '' : '&') + name + '=' + EncodingUtil.urlEncode(parameters.get(name), 'UTF-8');
         }
         
@@ -339,7 +529,7 @@ public with sharing class FogBugzAPI {
         }
         
         // Search for deal size & probability
-        for (XMLDom.Element node:caseNode.getElementsByTagName('tag')) {
+        /*for (XMLDom.Element node:caseNode.getElementsByTagName('tag')) {
             
             String value = node.nodeValue;
             Integer slashLoc = value.indexOf('/');
@@ -354,7 +544,7 @@ public with sharing class FogBugzAPI {
                     system.debug(LoggingLevel.ERROR, 'ERROR - FogBugzAPI::parseCase() - ' + e.getMessage());  
                 }
             }
-        }
+        }*/
         
         XMLDom.Element[] events = caseNode.getElementsByTagName('event');
         
@@ -363,5 +553,21 @@ public with sharing class FogBugzAPI {
         }
         
         return fbCase;
+    }
+    
+    public List<String> parseCaseTags(String xmlString) {
+    	
+        XMLDom dom = new XMLDom(xmlString);
+        XMLDom.Element casesNode = dom.root.getElementByTagName('tags');
+        
+        List<String> tags = new List<String>();
+        
+        for (XMLDom.Element node:casesNode.childNodes) {
+            
+            tags.add(node.nodeValue);
+            
+        }
+        
+        return tags;
     }
 }

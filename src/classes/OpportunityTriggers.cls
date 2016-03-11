@@ -5,7 +5,14 @@
  * @date    11/13/2012
  */
 public with sharing class OpportunityTriggers {
-
+    
+    private static final Set<String> PRODUCTS_AS_TAGS = new Set<String>{'CommCare', 
+                                                                        'CommConnect', 
+                                                                        'CommTrack'};
+                                                                        
+    //Commenting out as this is no more needed. We are doing this check dynamically
+    //private static final Set<String> CLOSED_STAGES = new Set<String>{'Closed', 'Closed - Won', 'Closed - Lost', 'Closed - No Go'} ;
+                                                                        
     /**
      * We use @future here in order to perform HTTP callouts from within a trigger context
      */
@@ -19,7 +26,9 @@ public with sharing class OpportunityTriggers {
 	        FogBugzCase fbCase = FogBugzUtils.createFBCaseFromOpportunity(o);
 	        FogBugzAPI fbAPI = new FogBugzAPI();
 	        
-	        String fbCaseId = Test.isRunningTest() ? TestFogBugzAPI.TEST_FB_ID : fbAPI.createCase(fbCase);
+	        boolean close = o.IsClosed;
+	        
+	        String fbCaseId = fbAPI.createCase(fbCase, close);
 	        
 	        if (fbCaseId != null) {
 	            o.Fogbugz_Ticket_Number__c = fbCaseId;
@@ -43,10 +52,10 @@ public with sharing class OpportunityTriggers {
     	if (ticket_number != null) {
 			 
 			 FogBugzAPI fbAPI = new FogBugzAPI();
-			 FogBugzCase fbCase = Test.isRunningTest() ? new FogBugzCase() : fbAPI.getCase(ticket_number);
-			 String fbCaseId = Test.isRunningTest() ? TestFogBugzAPI.TEST_FB_ID : fbAPI.resolveCase(fbCase);
+			 FogBugzCase fbCase = fbAPI.getCase(ticket_number);
+			 String fbCaseId = fbAPI.resolveCase(fbCase);
 			 if (fbCaseId != null) {
-			     fbCaseId = Test.isRunningTest() ? TestFogBugzAPI.TEST_FB_ID : fbAPI.closeCase(fbCase);
+			     fbCaseId = fbAPI.closeCase(fbCase);
 			 }
 			 
 		}
@@ -54,10 +63,22 @@ public with sharing class OpportunityTriggers {
     }
     
     public static void updateCaseInFogbugz(Opportunity oppNew, Opportunity oppOld) {
-    	if ((oppNew.Name != oppOld.Name) || (oppNew.StageName != oppOld.StageName)) {
+    	
+    	if ((oppNew.Name != oppOld.Name) || 
+    	    (oppNew.StageName != oppOld.StageName) || 
+    	    (oppOld.Fogbugz_Probability__c != oppNew.Fogbugz_Probability__c) ||
+    	    (oppOld.Product_Text__c != oppNew.Product_Text__c)) {
     		
     		if (!System.isBatch()) {
-    		  updateCase(oppNew.Id);
+    			
+    			FogBugzCase fbCase = FogBugzUtils.createFBCaseFromOpportunity(oppNew);
+    			String tags = null;
+    			boolean editTags = (oppOld.Fogbugz_Probability__c != oppNew.Fogbugz_Probability__c) || 
+    			                   (oppNew.Product_Text__c != oppOld.Product_Text__c);
+    			                   
+    			updateCase(oppNew.Id, editTags, oppNew.Product_Text__c, oppOld.Product_Text__c, oppOld.StageName);
+
+    			                
     		}
     		
     	}
@@ -67,14 +88,67 @@ public with sharing class OpportunityTriggers {
      * We use @future here in order to perform HTTP callouts from within a trigger context
      */
     @future(callout=true)
-    public static void updateCase(String opportunityId) {
+    public static void updateCase(String opportunityId, boolean editTags, String oldProds, String newProds, String oldStage) {
+    	
     	Opportunity o = FogBugzUtils.fetchOpportunity(opportunityId);
         
         if (o != null) {
             
             FogBugzCase fbCase = FogBugzUtils.createFBCaseFromOpportunity(o);
             FogBugzAPI fbAPI = new FogBugzAPI();
-            String fbCaseId = Test.isRunningTest() ? TestFogBugzAPI.TEST_FB_ID : fbAPI.updateCaseTitleStage(fbCase);
+            
+            if (o.Amount != null) {
+                fbCase.dealSize = o.Amount.intValue();
+            }
+            else {
+            	fbCase.dealSize = 0;
+            }
+            if (fbCase.probability != null) {
+                fbCase.probability = o.Fogbugz_Probability__c;
+            }
+            else {
+            	fbCase.probability = 0;
+            }            
+            
+            Set<String> tags = new Set<String>();
+            
+            if (((oldProds != null) && !oldProds.equals(newProds)) || ((newProds != null) && (!newProds.equals(oldProds)))) {
+            	
+            	Set<String> oldProducts = new Set<String>();
+            	if (oldProds != null) {
+                    oldProducts.addAll(oldProds.split('; '));
+            	}
+                Set<String> newProducts = new Set<String>();
+                if (newProds != null) {
+                    newProducts.addAll(newProds.split('; '));
+                }
+                
+                if (newProducts.size() >= oldProducts.size()) {
+                	
+                	for (String newProd : newProducts) {
+                		if ((PRODUCTS_AS_TAGS.contains(newProd)) && (!oldProducts.contains(newProd))) {
+                			tags.add(newProd);
+                		}
+                	}
+                	
+                }
+                else {
+                	
+                	for (String oldProd : oldProducts) {
+                        if ((PRODUCTS_AS_TAGS.contains(oldProd)) && (!newProducts.contains(oldProd))) {
+                            tags.add(oldProd);
+                        }
+                    }
+                    
+                }
+                
+            }
+            
+            boolean close = o.IsClosed;
+            
+            boolean reopen = FogBugzUtils.closedStages.contains(oldStage) && (!o.StageName.equals(oldStage));
+            
+            String fbCaseId = fbAPI.updateCaseTitleStageTag(fbCase, editTags, tags, close, reopen);
             
         }
         else {

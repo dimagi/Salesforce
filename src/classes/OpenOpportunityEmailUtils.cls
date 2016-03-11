@@ -19,7 +19,14 @@ public with sharing class OpenOpportunityEmailUtils {
     private static String TITLE = '<div><table border="0" cellpadding="0" cellspacing="0"><tr><td><h2>Open Opportunities</h2></td></tr></table></div>';
     private static String SUB_TITLE = '<tr><th style="background-color:#9bb1d9;color:white;text-align:left;padding-left:5px"><label>[SUB_TITLE]</label></th></tr>';
     private static String CONTAINER = '<div><table class="container-stage-table" style="width:100%">[SUB_CONTAINER]</table></div>';
-
+    // Color Key added by Nick
+    private static String RED_COLOR = '#E9967A';
+    private static String YELLOW_COLOR = '#F3F781';
+    private static String GREEN_COLOR = '#41A317';
+    private static String COLOR_KEY = '<table border="1"><tr style="background:' + GREEN_COLOR + '"><td>Opportunity has transitioned in the last week.</td></tr><tr style="background:' + YELLOW_COLOR + '"><td>Opportunity has no Account attached.</td></tr><tr style="background:' + RED_COLOR + '"><td>Opportunity is overdue for an update.<br><b>-- Stage 1,2,5:</b> 30 days.<br><b>-- Stage 3,4,6:</b> 10 days</td></tr></table><br><br>';
+	// End Color Key
+	// Instructions added by Nick
+	private static String INSTRUCTIONS = '<b>Keep Warm (<a href="https://confluence.dimagi.com/display/internal/Salesforce+Accounts+Keep+Warm">Instructions</a>)</b><br>"Keep Warm" functionality is used when you want to be reminded to follow-up with an account after a certain period of time. For instance, you had an opportunity with CRS - Tanzania that fizzled out but you want to remember to check on them in three months time.You should use this functionality instead of creating Opportunities in Stage 1 and/or Stage 2. Stage 1/2 opps should not be used as keep warm reminders.<br><br><b>Do not turn this red:</b><br>Each opportunity has a check box at the top to make it not show up on this report. You will NEVER be reminded of an opp if you use this.<br><br>';
     private static final String FOGBUGZ_LINK = 'http://manage.dimagi.com/default.asp?';
 
 	/**************************************************
@@ -53,6 +60,11 @@ public with sharing class OpenOpportunityEmailUtils {
             content += stageTable;                                  
         }       
         
+        // Added by Nick for the color key
+        TITLE += COLOR_KEY;
+        TITLE += INSTRUCTIONS;
+        // End added by Nick
+        
         result = result.replace('[TITLE]', TITLE);
         return result.replace('[CONTAINER]', CONTAINER.replace('[SUB_CONTAINER]', content));        
     }
@@ -74,12 +86,17 @@ public with sharing class OpenOpportunityEmailUtils {
                                        
         Integer daysNotUpdatedLimitEarlyStages = Open_Opportunity_Settings__c.getOrgDefaults().Days_Not_Updated_Limit_Early_Stages__c != null 
                                        ? Open_Opportunity_Settings__c.getOrgDefaults().Days_Not_Updated_Limit_Early_Stages__c.intValue()
-                                       : 10;        
+                                       : 10;   
+                                  
+        Integer daysSinceStageChange = Open_Opportunity_Settings__c.getOrgDefaults().Days_Since_Stage_Change__c != null
+        							   ? Open_Opportunity_Settings__c.getOrgDefaults().Days_Since_Stage_Change__c.intValue()
+        							   : 7;
+ 
         
         Set<String> earlyStagesSet = new Set<String>(earlyStages);
         
         for(Opportunity opp :opportunities) {
-            tbody += getEmailStageTableRow(opp, daysNotUpdatedLimit, daysNotUpdatedLimitEarlyStages, earlyStagesSet);
+            tbody += getEmailStageTableRow(opp, daysNotUpdatedLimit, daysNotUpdatedLimitEarlyStages, earlyStagesSet, daysSinceStageChange);
         }       
         result = result.replace('[TBODY]', tbody).replace('null', '');
         return result;
@@ -131,7 +148,7 @@ public with sharing class OpenOpportunityEmailUtils {
 	Method Name: getEmailStageTableRow
 	Method Comments: method called from buildEmailStageTable. For each opportunity this method is called. Renders the status of the opportunity and its data.    
 	**************************************************/
-    private static String getEmailStageTableRow(Opportunity opp, Integer daysNotUpdatedLimit, Integer daysNotUpdatedLimitEarlyStages, Set<String> earlyStagesSet) {
+    private static String getEmailStageTableRow(Opportunity opp, Integer daysNotUpdatedLimit, Integer daysNotUpdatedLimitEarlyStages, Set<String> earlyStagesSet, Integer daysSinceStageChange) {
         
         final String LEFT_STYLE = 'style="border-width:0 0 1px 0;vertical-align:middle;padding:4px 2px 4px 5px;border-bottom:1px solid #e3deb8;"';
         final String STYLE = 'style="border-width:0 0 1px 0;vertical-align:middle;padding:4px 2px 4px 5px;border-bottom:1px solid #e3deb8;text-align:right"'; 
@@ -140,16 +157,25 @@ public with sharing class OpenOpportunityEmailUtils {
         /**************************************************
         Comments: Filtering process in order to define the style of the Opportunity Row (red, yellow, etc)
         **************************************************/
+        // Default has no color
+        rowStart = '<tr>';
+        
+        // Turn green if stage changed in past week
+        if (opp.Stage_Duration__c <= daysSinceStageChange) {
+            rowStart = '<tr style="background:' + GREEN_COLOR + '">';
+        }
+        else rowStart = rowStart;
+        
+        // Turn yellow if there is no account
         if (opp.AccountId == null) {        	
-        	rowStart = '<tr style="background:#F3F781">';
+        	rowStart = '<tr style="background:' + YELLOW_COLOR + '">';
         }
         else {
-        	rowStart = '<tr>';
+        	rowStart = rowStart;
         }        
         
         // added by Nick - checking if it is a long wait after submission
-        
-		if (opp.StageName.contains('Submitted') && opp.long_wait__c) {
+        if (opp.long_wait__c) {
 			rowStart = rowStart;
 		}
 		else {
@@ -157,15 +183,16 @@ public with sharing class OpenOpportunityEmailUtils {
 			
         if (earlyStagesSet.contains(opp.StageName)) {            
             rowStart = opp.Total_Days_Not_Updated__c > daysNotUpdatedLimitEarlyStages 
-                                   ? '<tr style="background:#E9967A">' 
+                                   ? '<tr style="background:' + RED_COLOR + '">' 
                                    : rowStart;
         }
         else {
             rowStart = opp.Total_Days_Not_Updated__c > daysNotUpdatedLimit 
-                                   ? '<tr style="background:#E9967A">' 
+                                   ? '<tr style="background:' + RED_COLOR + '">' 
                                    : rowStart;
         }
         }
+        
         
         String href = URL.getSalesforceBaseUrl().toExternalForm() + '/' + String.valueOf(opp.Id);
         

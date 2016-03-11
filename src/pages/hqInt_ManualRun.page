@@ -1,0 +1,53 @@
+<apex:page showHeader="true" sidebar="true" controller="hqInt_ManualRunController">
+	<apex:form >
+		<apex:tabPanel switchType="server" selectedTab="name2" id="AccountTabPanel" tabClass="activeTab" inactiveTabClass="inactiveTab">
+	        <apex:tab label="Phase Two" name="name2" id="tabTwo">
+	        	<apex:pageBlock id="phase2Block">
+	        	<apex:actionPoller action="{!fetchRunningInstancesPhase2}" reRender="phase2Block" interval="10" status="status"/>
+	        		<apex:pageBlockButtons >
+	        			<apex:commandButton action="{!runBatchJobPhase2}" disabled="{!phase2Running}" value="Run Job Now"/>
+	        			<apex:commandButton action="{!fetchRunningInstancesPhase2}" value="Refresh Status"/>
+	        		</apex:pageBlockButtons>
+	        		<div style="height:20px;">
+	        			<apex:actionStatus startText="Refreshing..." id="status"/>
+	        		</div>
+	        		<apex:pageBlockTable value="{!phase2Jobs}" var="job">
+	        			<apex:column headerValue="Object Name">
+	        				{!job.jobName}
+	        			</apex:column>
+	        			<apex:column headerValue="Running Status">
+	        				<apex:image url="/img/loading32.gif" height="10px" rendered="{!job.isRunning}"/>
+	        				<apex:outputPanel rendered="{!job.isRunning}">
+	        				{!job.jobItemsProcessed}/{!job.totalJobItems}
+	        				</apex:outputPanel>
+	        				
+	        			</apex:column>
+	        			<apex:column headerValue="Submitted Date">
+	        				{!job.submittedDate}
+	        			</apex:column>
+	        			<apex:column headerValue="Completed Date">
+	        				{!job.completedDate}
+	        			</apex:column>
+	        		</apex:pageBlockTable>
+	        	</apex:pageBlock>
+	        </apex:tab>
+	        <apex:tab label="Phase One" name="name1" id="tabOne">
+	        	<apex:pageBlock title="CommcareHq Job Run - Domain, Internal Properties, Deployment">
+		        	<apex:outputPanel rendered="{!batchIsRunning}">
+						<apex:image url="/img/loading32.gif"/> 
+						<apex:commandButton action="{!fetchRunningInstances}" value="Refresh Status" rendered="{!batchIsRunning}"/>
+						<br/><br/>This Job is running ! 
+						<br/><br/><br/>	
+						<b>Job Submitted Date</b> :  <apex:outputField value="{!batchClassJob.CreatedDate}"/><br/>
+						<b>Batches Processed</b> : {!batchClassJob.JobItemsProcessed}/{!batchClassJob.TotalJobItems}
+						<br/><br/><br/>	
+						For more information on this job, please go to setup -> Monitoring -> Apex Jobs
+						<br/>NOTE : Only 1 instance of this job can run at a time. 
+					</apex:outputPanel>
+					<br/><br/>
+					<apex:commandButton action="{!runBatchJob}" value="Run Job Now" disabled="{!batchIsRunning}"/>
+				</apex:pageBlock>			
+	        </apex:tab>
+    	</apex:tabPanel>
+	</apex:form>
+</apex:page>

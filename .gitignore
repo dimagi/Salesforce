@@ -161,3 +161,17 @@ pip-log.txt
 
 # Mac crap
 .DS_Store
+
+# http://www.pavelslepenkov.info/?p=563
+.project
+.settings
+.metadata
+Referenced Packages
+*.sublime-project
+*.sublime-settings
+*.sublime-workspace
+apex-scripts/log
+build.properties
+config
+mm.log
+*~

@@ -8,8 +8,8 @@
  */
 public with sharing class OpportunityTriggerSync {
 	
-	// Set of Closed stages.
-	private static final Set<String> CLOSED_STAGES = new Set<String>{'Closed'};  
+	//We don't need this list anymore. We will check this dynamically.
+	//private static Set<String> CLOSED_STAGES = new Set<String>{'Closed', 'Closed - Won', 'Closed - Lost', 'Closed - No Go'};  
 	
 	
 	// Entry point from @insert trigger event.
@@ -30,7 +30,7 @@ public with sharing class OpportunityTriggerSync {
 			if (!existentOpptyCountries.contains(ol.Opportunity__c + '' + locationCountry.get(ol.Location__c))) {
 				oc.Opportunity__c = ol.Opportunity__c;
 				
-				if (CLOSED_STAGES.contains(opptyStages.get(ol.Opportunity__c))) {
+				if (FogBugzUtils.closedStages.contains(opptyStages.get(ol.Opportunity__c))) {
 					oc.Country_Closed__c = locationCountry.get(ol.Location__c);	
 				}
 				else {
@@ -155,7 +155,7 @@ public with sharing class OpportunityTriggerSync {
 				oc.Opportunity__c = oc.OpportunityId__c;
 				oc.OpportunityId__c = null;
 				
-				if (CLOSED_STAGES.contains(opptyStages.get(oc.Opportunity__c))) {
+				if (FogBugzUtils.closedStages.contains(opptyStages.get(oc.Opportunity__c))) {
 					oc.Country_Closed__c = oc.Country__c;	
 					oc.Country_Open__c = null;
 				}
@@ -189,7 +189,7 @@ public with sharing class OpportunityTriggerSync {
 										 FROM OpportunityCountry__c
 										 WHERE Opportunity__c IN :opptyStages.keySet()]) {
 			
-			if (CLOSED_STAGES.contains(opptyStages.get(oc.Opportunity__c))) {
+			if (FogBugzUtils.closedStages.contains(opptyStages.get(oc.Opportunity__c))) {
 				oc.Country_Closed__c = oc.Country__c;
 				oc.Country_Open__c = NULL;
 			}

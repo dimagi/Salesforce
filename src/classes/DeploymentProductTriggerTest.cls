@@ -47,7 +47,9 @@ private class DeploymentProductTriggerTest {
         
         project = [select Id, Product_Text__c from Project__c where id =: project.Id];
         
-        System.assertEquals(project.Product_Text__c, 'Product2; Product1');
+        System.assert(project.Product_Text__c != null &&
+                      project.Product_Text__c.indexOf('Product2') != -1 &&
+                      project.Product_Text__c.indexOf('Product1') != -1);
         
         Test.stopTest();   
     }
@@ -132,7 +134,9 @@ private class DeploymentProductTriggerTest {
         Test.startTest();
         
         project = [select Id, Product_Text__c from Project__c where id =: project.Id];
-        System.assertEquals(project.Product_Text__c, 'Product2; Product1');
+        System.assert(project.Product_Text__c != null &&
+                      project.Product_Text__c.indexOf('Product2') != -1 &&
+                      project.Product_Text__c.indexOf('Product1') != -1);
         
         delete projProduct2;
         

@@ -36,7 +36,9 @@ private class ContractCountryTriggerTest {
         insert contrCountry2;
         
         contract = [select Id, Country_Text__c from DContract__c where id =: contract.Id];
-        System.assertEquals(contract.Country_Text__c, 'Country2; Country1');
+        System.assert(contract.Country_Text__c != null &&
+                      contract.Country_Text__c.indexOf('Country2') != -1 &&
+                      contract.Country_Text__c.indexOf('Country1') != -1);
         
         Test.stopTest();
         
@@ -68,7 +70,9 @@ private class ContractCountryTriggerTest {
         Test.startTest();
         
         contract = [select Id, Country_Text__c from DContract__c where id =: contract.Id];
-        System.assertEquals(contract.Country_Text__c, 'Country2; Country1');
+        System.assert(contract.Country_Text__c != null &&
+                      contract.Country_Text__c.indexOf('Country2') != -1 &&
+                      contract.Country_Text__c.indexOf('Country1') != -1);
         
         delete contrCountry2;
         

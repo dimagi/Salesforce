@@ -22,7 +22,7 @@ public class OpenOpportunityReportUIController {
                     ? Apexpages.currentPage().getParameters().get('uid') 
                     : Userinfo.getUserId();
                     
-        selectedUsers = new String[] {userId};                    
+        selectedUsers = new String[] {userId};
     	stagedComments = new Map<String, String>();
     	stagedListData = new OpenOpportunityListData[] {};
     	Map<String, Opportunity[]> stagedOpportunities = OpenOpportunityReportController.getInstance().getOpenOpportunitiesOrderByStage(userId);
@@ -44,7 +44,7 @@ public class OpenOpportunityReportUIController {
     public void reload() {
     	
     	try {
-    	
+	    	
 	    	Id[] usersId = selectedUsers;
 	
 	        if (usersId != null && !usersId.isEmpty()) {    	    	    	
@@ -106,8 +106,14 @@ public class OpenOpportunityReportUIController {
     
     public Selectoption[] getUsers() {
     
-        User[] users = [SELECT Id, Name FROM User ORDER BY Name];
+        User[] users = [SELECT Id, Name FROM User WHERE isActive = true ORDER BY Name];
+        Business_Unit__c[] bus = [SELECT Id, Name FROM Business_Unit__c ORDER BY Name];
+        
         Selectoption[] result = new Selectoption[] {};
+       
+    	for (Business_Unit__c bu :bus) {
+    		result.add(new Selectoption(bu.Id, '--- ' + bu.Name + ' ---'));
+    	}
         
         for (User user :users) {        	
             result.add(new Selectoption(user.Id, user.Name));	
@@ -115,4 +121,5 @@ public class OpenOpportunityReportUIController {
         
         return result;    
     }
+    
 }

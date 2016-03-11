@@ -5,6 +5,10 @@
         <type>Default</type>
     </actionOverrides>
     <actionOverrides>
+        <actionName>CancelEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
         <actionName>Clone</actionName>
         <type>Default</type>
     </actionOverrides>
@@ -17,11 +21,19 @@
         <type>Default</type>
     </actionOverrides>
     <actionOverrides>
+        <actionName>Follow</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
         <actionName>List</actionName>
         <type>Default</type>
     </actionOverrides>
     <actionOverrides>
         <actionName>New</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>SaveEdit</actionName>
         <type>Default</type>
     </actionOverrides>
     <actionOverrides>
@@ -32,13 +44,50 @@
         <actionName>View</actionName>
         <type>Default</type>
     </actionOverrides>
+    <allowInChatterGroups>false</allowInChatterGroups>
+    <compactLayoutAssignment>SYSTEM</compactLayoutAssignment>
     <deploymentStatus>Deployed</deploymentStatus>
     <description>The different countries we work in</description>
     <enableActivities>true</enableActivities>
+    <enableBulkApi>true</enableBulkApi>
     <enableEnhancedLookup>true</enableEnhancedLookup>
     <enableFeeds>false</enableFeeds>
     <enableHistory>true</enableHistory>
     <enableReports>true</enableReports>
+    <enableSearch>true</enableSearch>
+    <enableSharing>true</enableSharing>
+    <enableStreamingApi>true</enableStreamingApi>
+    <fields>
+        <fullName>Active_Contracts__c</fullName>
+        <externalId>false</externalId>
+        <inlineHelpText>How many Active Contracts are there.</inlineHelpText>
+        <label>Active Contracts</label>
+        <summaryForeignKey>Contract_Country__c.Country__c</summaryForeignKey>
+        <summaryOperation>count</summaryOperation>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Summary</type>
+    </fields>
+    <fields>
+        <fullName>Area__c</fullName>
+        <externalId>false</externalId>
+        <inlineHelpText>Auto-populated to show all sectors for deployments in this country.</inlineHelpText>
+        <label>Sector</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>TextArea</type>
+    </fields>
+    <fields>
+        <fullName>Country_Code__c</fullName>
+        <externalId>false</externalId>
+        <inlineHelpText>Corresponding country code (always 2 characters)</inlineHelpText>
+        <label>Country Code</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>TextArea</type>
+    </fields>
     <fields>
         <fullName>Entity__c</fullName>
         <externalId>false</externalId>
@@ -57,19 +106,41 @@
                 <default>false</default>
             </picklistValues>
             <picklistValues>
-                <fullName>Moz</fullName>
+                <fullName>DWA</fullName>
                 <default>false</default>
             </picklistValues>
             <sorted>false</sorted>
         </picklist>
         <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
         <type>Picklist</type>
+    </fields>
+    <fields>
+        <fullName>Sub_Area__c</fullName>
+        <externalId>false</externalId>
+        <inlineHelpText>Stores a concatenation of all sub sectors that a deployment in this country have.</inlineHelpText>
+        <label>Sub Sector</label>
+        <length>32768</length>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>LongTextArea</type>
+        <visibleLines>3</visibleLines>
     </fields>
     <label>Country</label>
     <listViews>
         <fullName>All</fullName>
         <columns>NAME</columns>
-        <columns>Entity__c</columns>
+        <columns>Area__c</columns>
+        <columns>Sub_Area__c</columns>
+        <columns>OBJECT_ID</columns>
+        <filterScope>Everything</filterScope>
+        <label>All</label>
+    </listViews>
+    <listViews>
+        <fullName>All1</fullName>
+        <columns>NAME</columns>
+        <columns>Area__c</columns>
+        <columns>Sub_Area__c</columns>
         <columns>OBJECT_ID</columns>
         <filterScope>Everything</filterScope>
         <label>All</label>
