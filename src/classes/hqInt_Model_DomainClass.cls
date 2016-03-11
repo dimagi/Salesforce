@@ -1,5 +1,5 @@
-public class hqInt_Model_DomainClass
-{
+public class hqInt_Model_DomainClass {
+
     public Boolean case_sharing;
     public Boolean commconnect_enabled;
     public Boolean commtrack_enabled;
@@ -78,9 +78,8 @@ public class hqInt_Model_DomainClass
     public hqInt_Model_InternalPropClass internal;
     public hqInt_Model_Billing_address billing_address;
     public hqInt_Model_CdaClass cda;
-    
-    public Domain__c createDbObject()
-    {
+
+    public Domain__c createDbObject(HqIntModelCalculatedProperties calculatedProperties) {
         Domain__c domainObj = new Domain__c();
         domainObj.case_sharing__c = this.case_sharing==null?false:this.case_sharing;
         domainObj.commconnect_enabled__c = this.commconnect_enabled==null?false:this.commconnect_enabled;
@@ -131,7 +130,7 @@ public class hqInt_Model_DomainClass
         domainObj.default_sms_backend_id__c = this.default_sms_backend_id;
         domainObj.default_timezone__c = this.default_timezone;
         domainObj.description__c = this.description;
-        
+
         domainObj.hr_name__c = this.hr_name;
         domainObj.image_path__c = this.image_path;
         domainObj.image_type__c = this.image_type;
@@ -154,8 +153,6 @@ public class hqInt_Model_DomainClass
         domainObj.billable_client__c = this.billable_client;
         domainObj.billing_number__c = this.billing_number;
 
-		
-
         // 2 options: 1 - field is and can be true or false, 2 - there is no field so we put false 
         if (this.hipaa_compliant != null) {
             domainObj.hipaa_compliant__c = this.hipaa_compliant;
@@ -163,8 +160,7 @@ public class hqInt_Model_DomainClass
             domainObj.hipaa_compliant__c = false;
         }
 
-        if(this.billing_address != null)
-        {
+        if(this.billing_address != null) {
             domainObj.billing_address_city__c = this.billing_address.city;
             domainObj.billing_address_country__c = this.billing_address.country;
             domainObj.billing_address_doc_type__c = this.billing_address.doc_type;
@@ -172,9 +168,8 @@ public class hqInt_Model_DomainClass
             domainObj.billing_address_postal_code__c = this.billing_address.postal_code;
             domainObj.billing_address_state_province__c = this.billing_address.state_province;        
         }
-        
-        if(this.cda != null)
-        {
+
+        if(this.cda != null) {
             domainObj.cda_date__c = this.cda.x_date;
             domainObj.cda_doc_type__c = this.cda.doc_type;
             domainObj.cda_signed__c = this.cda.signed == null?false: this.cda.signed;
@@ -185,6 +180,38 @@ public class hqInt_Model_DomainClass
             domainObj.currency_code__c = this.currency_code;
             domainObj.is_sms_billable__c = this.is_sms_billable==null?false:this.is_sms_billable;
         }
+
+        if (calculatedProperties != null) {
+            domainObj.cpIsActive__c = calculatedProperties.cp_is_active;
+            domainObj.cpAllActiveCases__c = calculatedProperties.cp_n_active_cases;
+            domainObj.cpAllSms__c = calculatedProperties.cp_n_sms_ever;
+            domainObj.cpAllCases__c = calculatedProperties.cp_n_cases;
+            domainObj.cpAllForms__c = calculatedProperties.cp_n_forms;
+            domainObj.cpAllSmsIn30Days__c = calculatedProperties.cp_n_sms_30_d;
+            domainObj.cpAllSmsIn60Days__c = calculatedProperties.cp_n_sms_60_d;
+            domainObj.cpAllSmsIn90Days__c = calculatedProperties.cp_n_sms_90_d;
+            domainObj.cpIncomingSmsIn30Days__c = calculatedProperties.cp_n_sms_in_30_d;
+            domainObj.cpIncomingSmsIn60Days__c = calculatedProperties.cp_n_sms_in_60_d;
+            domainObj.cpIncomingSmsIn90Days__c = calculatedProperties.cp_n_sms_in_90_d;
+            domainObj.cpOutgoingSmsIn30Days__c = calculatedProperties.cp_n_sms_out_30_d;
+            domainObj.cpOutgoingSmsIn60Days__c = calculatedProperties.cp_n_sms_out_60_d;
+            domainObj.cpOutgoingSmsIn90Days__c = calculatedProperties.cp_n_sms_out_90_d;
+            domainObj.cpAllIncomingSms__c = calculatedProperties.cp_n_in_sms;
+            domainObj.cpAllOutgoingSms__c = calculatedProperties.cp_n_out_sms;
+            domainObj.cpAllWebUsers__c = calculatedProperties.cp_n_web_users;
+            domainObj.cpAllMobileUsers__c = calculatedProperties.cp_n_cc_users;
+            domainObj.cpFirstFormSubmissionDate__c = calculatedProperties.cp_first_form;
+            domainObj.cpLastFormSubmissionDate__c = calculatedProperties.cp_last_form;
+            domainObj.cpAllInactiveCases__c = calculatedProperties.cp_n_inactive_cases;
+            domainObj.cpCasesIn30Days__c = calculatedProperties.cp_n_30_day_cases;
+            domainObj.cpCasesIn60Days__c = calculatedProperties.cp_n_60_day_cases;
+            domainObj.cpCasesIn90Days__c = calculatedProperties.cp_n_90_day_cases;
+            domainObj.cpFormsIn30Days__c = calculatedProperties.cp_n_forms_30_d;
+            domainObj.cpFormsIn60Days__c = calculatedProperties.cp_n_forms_60_d;
+            domainObj.cpFormsIn90Days__c = calculatedProperties.cp_n_forms_90_d;
+            domainObj.cpHasApp__c = calculatedProperties.cp_has_app;
+        }
+
         return domainobj;
     }
 }
