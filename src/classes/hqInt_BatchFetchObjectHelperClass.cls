@@ -1031,9 +1031,9 @@ public class hqInt_BatchFetchObjectHelperClass {
         } else if (batchToBeRun == 4) {
             Database.executeBatch(new hqInt_BatchFetchObjectFeatureRate(batchToBeRun),1);
         } else if (batchToBeRun == 5) {
-            Database.executeBatch(new hqInt_BatchFetchObjectSoftwarePlanVer(batchToBeRun),1);
-        } else if (batchToBeRun == 6) {
             Database.executeBatch(new hqInt_BatchFetchObjectProductRate(batchToBeRun),1);
+        } else if (batchToBeRun == 6) {
+            Database.executeBatch(new hqInt_BatchFetchObjectSoftwarePlanVer(batchToBeRun),1);
         } else if (batchToBeRun == 7) {
             Database.executeBatch(new hqInt_BatchFetchObjectPaymentMethod(batchToBeRun),1);
         } else if (batchToBeRun == 8) {
