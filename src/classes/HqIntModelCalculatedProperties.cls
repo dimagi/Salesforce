@@ -18,6 +18,7 @@ public class HqIntModelCalculatedProperties {
     public Integer cp_n_out_sms;
     public Integer cp_n_web_users;
     public Integer cp_n_cc_users;
+    public Integer cp_n_active_cc_users;
     public DateTime cp_first_form;
     public DateTime cp_last_form;
     public Integer cp_n_inactive_cases;

@@ -50,85 +50,46 @@
     <enableActivities>false</enableActivities>
     <enableBulkApi>true</enableBulkApi>
     <enableFeeds>false</enableFeeds>
-    <enableHistory>true</enableHistory>
-    <enableReports>true</enableReports>
-    <enableSearch>true</enableSearch>
+    <enableHistory>false</enableHistory>
+    <enableReports>false</enableReports>
+    <enableSearch>false</enableSearch>
     <enableSharing>true</enableSharing>
     <enableStreamingApi>true</enableStreamingApi>
-    <fields>
-        <fullName>Accounting_SoftwarePlan__c</fullName>
-        <deleteConstraint>SetNull</deleteConstraint>
-        <externalId>false</externalId>
-        <label>Accounting_SoftwarePlan</label>
-        <referenceTo>Accounting_Softwareplan__c</referenceTo>
-        <relationshipLabel>Accounting_SoftwarePlanVersion</relationshipLabel>
-        <relationshipName>Accounting_SoftwarePlanVersion</relationshipName>
-        <required>false</required>
-        <trackHistory>false</trackHistory>
-        <trackTrending>false</trackTrending>
-        <type>Lookup</type>
-    </fields>
-    <fields>
-        <fullName>FeatureRates__c</fullName>
-        <externalId>false</externalId>
-        <label>FeatureRates</label>
-        <length>255</length>
-        <required>false</required>
-        <trackHistory>false</trackHistory>
-        <trackTrending>false</trackTrending>
-        <type>Text</type>
-        <unique>false</unique>
-    </fields>
-    <fields>
-        <fullName>Software_Product_Rate__c</fullName>
-        <deleteConstraint>SetNull</deleteConstraint>
-        <externalId>false</externalId>
-        <label>Accounting_SoftwareProductRate</label>
-        <referenceTo>Accounting_SoftwareProductRate__c</referenceTo>
-        <relationshipLabel>Accounting_SoftwarePlanVersion</relationshipLabel>
-        <relationshipName>Accounting_SoftwarePlanVersion</relationshipName>
-        <required>false</required>
-        <trackHistory>false</trackHistory>
-        <trackTrending>false</trackTrending>
-        <type>Lookup</type>
-    </fields>
-    <fields>
-        <fullName>date_created__c</fullName>
-        <externalId>false</externalId>
-        <label>date_created</label>
-        <required>false</required>
-        <trackHistory>false</trackHistory>
-        <trackTrending>false</trackTrending>
-        <type>DateTime</type>
-    </fields>
     <fields>
         <fullName>id__c</fullName>
         <externalId>true</externalId>
         <label>id</label>
         <length>255</length>
         <required>false</required>
-        <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Text</type>
         <unique>false</unique>
     </fields>
     <fields>
         <fullName>is_active__c</fullName>
-        <defaultValue>true</defaultValue>
+        <defaultValue>false</defaultValue>
         <externalId>false</externalId>
         <label>is_active</label>
-        <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Checkbox</type>
     </fields>
-    <label>Accounting_SoftwarePlanVersion</label>
+    <fields>
+        <fullName>monthly_fee__c</fullName>
+        <externalId>false</externalId>
+        <label>Monthly Fee</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <label>Accounting_SoftwareProductRate</label>
     <nameField>
-        <displayFormat>SoftPlanVersion-{00000}</displayFormat>
-        <label>accounting_softwareplanversion Name</label>
-        <trackHistory>false</trackHistory>
+        <displayFormat>SoftwareProductRate-{00000}</displayFormat>
+        <label>accounting_softwareproductrate Name</label>
         <type>AutoNumber</type>
     </nameField>
-    <pluralLabel>Accounting_SoftwarePlanVersion</pluralLabel>
+    <pluralLabel>Accounting_SoftwareProductRate</pluralLabel>
     <searchLayouts/>
     <sharingModel>ReadWrite</sharingModel>
 </CustomObject>
