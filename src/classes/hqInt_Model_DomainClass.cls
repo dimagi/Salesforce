@@ -200,6 +200,7 @@ public class hqInt_Model_DomainClass {
             domainObj.cpAllOutgoingSms__c = calculatedProperties.cp_n_out_sms;
             domainObj.cpAllWebUsers__c = calculatedProperties.cp_n_web_users;
             domainObj.cpAllMobileUsers__c = calculatedProperties.cp_n_cc_users;
+            domainObj.cpActiveMobileUsers__c = calculatedProperties.cp_n_active_cc_users;
             domainObj.cpFirstFormSubmissionDate__c = calculatedProperties.cp_first_form;
             domainObj.cpLastFormSubmissionDate__c = calculatedProperties.cp_last_form;
             domainObj.cpAllInactiveCases__c = calculatedProperties.cp_n_inactive_cases;
