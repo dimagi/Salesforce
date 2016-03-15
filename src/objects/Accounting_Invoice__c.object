@@ -587,6 +587,19 @@ YEAR(DATEVALUE(accounting_billingaccount_date_created__c)) == YEAR(DATEVALUE(dat
         <unique>false</unique>
     </fields>
     <fields>
+        <fullName>accounting_software_monthly_feename__c</fullName>
+        <externalId>false</externalId>
+        <formula>Accounting_Subscription__r.plan_version__r.Software_Product_Rate__r.monthly_fee__c</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Monthly fee</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
         <fullName>accounting_softwareplan_description__c</fullName>
         <externalId>false</externalId>
         <formula>Accounting_Subscription__r.plan_version__r.Accounting_SoftwarePlan__r.description__c</formula>

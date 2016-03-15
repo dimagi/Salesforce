@@ -233,6 +233,10 @@
         <layoutColumns>
             <layoutItems>
                 <behavior>Readonly</behavior>
+                <field>accounting_software_monthly_fee__c</field>
+            </layoutItems>
+            <layoutItems>
+                <behavior>Readonly</behavior>
                 <field>accounting_softwareplan_id__c</field>
             </layoutItems>
             <layoutItems>
