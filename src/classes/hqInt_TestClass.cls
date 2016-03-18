@@ -112,46 +112,6 @@ private class hqInt_TestClass {
             Test.stopTest();
     }
 
-    @isTest
-    static void hqInt_TestMethodPhase2_Subscription() {
-        Test.startTest();
-
-        //Test.setMock(HttpCalloutMock.class, myMultiMockObject); // setup of multiMockObject omitted for clarity
-        Test.setMock(HttpCalloutMock.class, new hqInt_HttpMock());
-        Database.BatchableContext     bc;
-        hqInt_BatchFetchObjectSubscription bClass = new hqInt_BatchFetchObjectSubscription(1);
-
-        Integer[]  itrbl = (Integer[])bClass.start(bc);  //start() returns an iterable, in my case, a custom iterable.
-
-        Integer[] aScopeList = new Integer[]{};
-        aScopeList.add(0);
-        bClass.execute(bc,aScopeList);
-
-        // Finally, invoke finish()
-        bClass.finish(bc);
-        Test.stopTest();
-    }
-
-    @isTest
-    static void hqInt_TestMethodPhase2_BillingAccount() {
-
-        Test.startTest();
-
-        //Test.setMock(HttpCalloutMock.class, myMultiMockObject); // setup of multiMockObject omitted for clarity
-        Test.setMock(HttpCalloutMock.class, new hqInt_HttpMock());
-        Database.BatchableContext     bc;
-        hqInt_BatchFetchObjectBillingAccount bClass = new hqInt_BatchFetchObjectBillingAccount(1);
-
-        Integer[]  itrbl = (Integer[])bClass.start(bc);  //start() returns an iterable, in my case, a custom iterable. 
-        Integer[] aScopeList = new Integer[]{};
-        aScopeList.add(0);
-        bClass.execute(bc,aScopeList);
-
-        // Finally, invoke finish()
-        bClass.finish(bc);
-        Test.stopTest();
-    }
-
     @isTest 
     static void hqInt_TestMethodPhase2_Invoice() {
         Test.startTest();
@@ -204,6 +164,82 @@ private class hqInt_TestClass {
     static void hqInt_TestSubsAdjTrigger() {
         Accounting_SubscriptionAdjustment__c obj = new Accounting_SubscriptionAdjustment__c();
         insert obj;
+    }
+
+    @isTest
+    static void hqIntTestSubscription() {
+        Test.startTest();
+
+        Test.setMock(HttpCalloutMock.class, new hqInt_HttpMock());
+        Database.BatchableContext     bc;
+        hqInt_BatchFetchObjectSubscription bClass = new hqInt_BatchFetchObjectSubscription(1);
+
+        Integer[]  itrbl = (Integer[])bClass.start(bc);
+
+        Integer[] aScopeList = new Integer[]{};
+        aScopeList.add(0);
+        bClass.execute(bc,aScopeList);
+
+        List<Accounting_Subscription__c> subscriptions = [SELECT id__c FROM Accounting_Subscription__c];
+        System.assertEquals(4, subscriptions.size());
+
+        Accounting_Subscription__c subscription = [SELECT id__c, service_type__c, pro_bono_status__c, funding_source__c FROM Accounting_Subscription__c WHERE id__c = '1'];
+        System.assertEquals('NOT_SET', subscription.service_type__c);
+        System.assertEquals('NOT_SET', subscription.pro_bono_status__c);
+        System.assertEquals('CLIENT', subscription.funding_source__c);
+
+        subscription = [SELECT id__c, service_type__c, pro_bono_status__c, funding_source__c  FROM Accounting_Subscription__c
+                            WHERE id__c = '2'];
+        System.assertEquals('NOT_SET', subscription.service_type__c);
+        System.assertEquals('NOT_SET', subscription.pro_bono_status__c);
+        System.assertEquals('CLIENT', subscription.funding_source__c);
+
+        subscription = [SELECT id__c, service_type__c, pro_bono_status__c, funding_source__c  FROM Accounting_Subscription__c
+                            WHERE id__c = '3'];
+        System.assertEquals('TRIAL', subscription.service_type__c);
+        System.assertEquals('NOT_SET', subscription.pro_bono_status__c);
+        System.assertEquals('CLIENT', subscription.funding_source__c);
+
+        subscription = [SELECT id__c, service_type__c, pro_bono_status__c, funding_source__c  FROM Accounting_Subscription__c
+                            WHERE id__c = '4'];
+        System.assertEquals('PRODUCT', subscription.service_type__c);
+        System.assertEquals('FULL_PRICE', subscription.pro_bono_status__c);
+        System.assertEquals('CLIENT', subscription.funding_source__c);
+
+        bClass.finish(bc);
+        Test.stopTest();
+    }
+
+    @isTest
+    static void hqIntTestBillingAccount() {
+        Test.startTest();
+
+        Test.setMock(HttpCalloutMock.class, new hqInt_HttpMock());
+        Database.BatchableContext bc;
+        hqInt_BatchFetchObjectBillingAccount bClass = new hqInt_BatchFetchObjectBillingAccount(1);
+
+        Integer[]  itrbl = (Integer[])bClass.start(bc);
+        Integer[] aScopeList = new Integer[]{};
+        aScopeList.add(0);
+        bClass.execute(bc,aScopeList);
+
+        List<Accounting_BillingAccount__c> billings = [SELECT id__c FROM Accounting_BillingAccount__c];
+        System.assertEquals(3, billings.size());
+
+        Accounting_BillingAccount__c billing = [SELECT id__c, last_payment_method__c, pre_or_post_pay__c FROM Accounting_BillingAccount__c WHERE id__c = '1'];
+        System.assertEquals('CC_ONE_TIME', billing.last_payment_method__c);
+        System.assertEquals('PREPAY', billing.pre_or_post_pay__c);
+
+        billing = [SELECT id__c, last_payment_method__c, pre_or_post_pay__c FROM Accounting_BillingAccount__c WHERE id__c = '2'];
+        System.assertEquals('CC_AUTO', billing.last_payment_method__c);
+        System.assertEquals('NOT_SET', billing.pre_or_post_pay__c);
+
+        billing = [SELECT id__c, last_payment_method__c, pre_or_post_pay__c FROM Accounting_BillingAccount__c WHERE id__c = '3'];
+        System.assertEquals('NONE', billing.last_payment_method__c);
+        System.assertEquals('POSTPAY', billing.pre_or_post_pay__c);
+
+        bClass.finish(bc);
+        Test.stopTest();
     }
 
     @isTest

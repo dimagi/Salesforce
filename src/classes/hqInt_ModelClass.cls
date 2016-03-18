@@ -57,6 +57,7 @@ public class hqInt_ModelClass {
         public Boolean is_trial;
         public String service_type;
         public String pro_bono_status;
+        public String funding_source;
         public String subscriber;
 
         public Accounting_Subscription__c createDbObject(id billingAccountId,id softPlanVerId,id subscriberId) {
@@ -73,6 +74,7 @@ public class hqInt_ModelClass {
             accountingSubscriptionObj.is_trial__c = this.is_trial;
             accountingSubscriptionObj.service_type__c = this.service_type;
             accountingSubscriptionObj.pro_bono_status__c = this.pro_bono_status;
+            accountingSubscriptionObj.funding_source__c = this.funding_source;
             accountingSubscriptionObj.account__c = billingAccountId;
             accountingSubscriptionObj.plan_version__c = softPlanVerId;
             accountingSubscriptionObj.Accounting_Subscriber__c = subscriberId;
@@ -115,6 +117,8 @@ public class hqInt_ModelClass {
         public Boolean is_active;
         public String dimagi_contact;
         public String entry_point;
+        public String last_payment_method;
+        public String pre_or_post_pay;
         //public String billing_admins;
 
         public Accounting_BillingAccount__c createDbObject(id billingContactId) {
@@ -132,6 +136,8 @@ public class hqInt_ModelClass {
             accountingBillingAccount.dimagi_contact__c = this.dimagi_contact;
             accountingBillingAccount.entry_point__c = this.entry_point;
             accountingBillingAccount.BillingContact__c = billingContactId;
+            accountingBillingAccount.last_payment_method__c = this.last_payment_method;
+            accountingBillingAccount.pre_or_post_pay__c = this.pre_or_post_pay;
 
             return accountingBillingAccount;
         }

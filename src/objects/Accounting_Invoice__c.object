@@ -450,6 +450,28 @@ YEAR(DATEVALUE(accounting_billingaccount_date_created__c)) == YEAR(DATEVALUE(dat
         <unique>false</unique>
     </fields>
     <fields>
+        <fullName>accounting_billingacLastPaymentMeth__c</fullName>
+        <externalId>false</externalId>
+        <formula>Accounting_Subscription__r.account__r.last_payment_method__c</formula>
+        <label>Last payment method</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>accounting_billingacPreOrPostPay__c</fullName>
+        <externalId>false</externalId>
+        <formula>Accounting_Subscription__r.account__r.pre_or_post_pay__c</formula>
+        <label>Prepay or postpay</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
         <fullName>accounting_billingaccount_account_type__c</fullName>
         <externalId>false</externalId>
         <formula>Accounting_Subscription__r.account__r.account_type__c</formula>
@@ -587,7 +609,7 @@ YEAR(DATEVALUE(accounting_billingaccount_date_created__c)) == YEAR(DATEVALUE(dat
         <unique>false</unique>
     </fields>
     <fields>
-        <fullName>accounting_software_monthly_feename__c</fullName>
+        <fullName>accounting_software_monthly_fee__c</fullName>
         <externalId>false</externalId>
         <formula>Accounting_Subscription__r.plan_version__r.Software_Product_Rate__r.monthly_fee__c</formula>
         <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
@@ -734,6 +756,18 @@ YEAR(DATEVALUE(accounting_billingaccount_date_created__c)) == YEAR(DATEVALUE(dat
         <formula>Accounting_Subscription__r.Accounting_Subscriber__r.organization__c</formula>
         <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
         <label>subscriber_organization</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>accounting_subscriptionFundingSource__c</fullName>
+        <externalId>false</externalId>
+        <formula>Accounting_Subscription__r.funding_source__c</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Funding source</label>
         <required>false</required>
         <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
