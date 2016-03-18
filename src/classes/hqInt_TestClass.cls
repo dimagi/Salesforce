@@ -207,6 +207,94 @@ private class hqInt_TestClass {
     }
 
     @isTest
+    static void hqIntTestBillingContact() {
+
+        hqInt_ModelClass.Accounting_BillingContactInfo newContact = new hqInt_ModelClass.Accounting_BillingContactInfo();
+        newContact.account = '1';
+        newContact.emails = 'emails@old.com';
+
+        insert newContact.createDbObject();
+
+        Test.startTest();
+
+        Test.setMock(HttpCalloutMock.class, new hqInt_HttpMock());
+        Database.BatchableContext bc;
+        hqInt_BatchFetchObjectBillingContactInfo billingContactInfoBatch = new hqInt_BatchFetchObjectBillingContactInfo(1);
+
+        Integer[]  itrbl = (Integer[]) billingContactInfoBatch.start(bc);
+        Integer[] aScopeList = new Integer[]{};
+        aScopeList.add(0);
+        billingContactInfoBatch.execute(bc, aScopeList);
+
+        List<Accounting_BillingContactInfo__c> billingContacts = [SELECT accountid__c FROM Accounting_BillingContactInfo__c];
+        System.assertEquals(4, billingContacts.size());
+
+        Accounting_BillingContactInfo__c contact = [SELECT accountid__c, city__c, company_name__c, country__c, emails__c, first_line__c, first_name__c,
+                                                        last_name__c , phone_number__c, postal_code__c, second_line__c, state_province_region__c
+                                                        FROM Accounting_BillingContactInfo__c WHERE accountid__c = '1'];
+        System.assertEquals('1', contact.accountid__c);
+        System.assertEquals('City_1', contact.city__c);
+        System.assertEquals('Company_1', contact.company_name__c);
+        System.assertEquals('US', contact.country__c);
+        System.assertEquals('email_updated@gmail.com', contact.emails__c);
+        System.assertEquals('first_line_1', contact.first_line__c);
+        System.assertEquals('Name_1', contact.first_name__c);
+        System.assertEquals('Last_name_1', contact.last_name__c);
+        System.assertEquals('+48123123', contact.phone_number__c);
+        System.assertEquals('123123', contact.postal_code__c);
+        System.assertEquals('Second_1', contact.second_line__c);
+        System.assertEquals('XD', contact.state_province_region__c);
+
+        contact = [SELECT accountid__c, city__c, company_name__c, country__c, emails__c, first_line__c, first_name__c, last_name__c , phone_number__c,
+                    postal_code__c, second_line__c, state_province_region__c FROM Accounting_BillingContactInfo__c WHERE accountid__c = '2'];
+        System.assertEquals('2', contact.accountid__c);
+        System.assertEquals('empty data', contact.city__c);
+        System.assertEquals(null, contact.company_name__c);
+        System.assertEquals(null, contact.country__c);
+        System.assertEquals(null, contact.emails__c);
+        System.assertEquals(null, contact.first_line__c);
+        System.assertEquals(null, contact.first_name__c);
+        System.assertEquals(null, contact.last_name__c);
+        System.assertEquals(null, contact.phone_number__c);
+        System.assertEquals('11', contact.postal_code__c);
+        System.assertEquals(null, contact.second_line__c);
+        System.assertEquals(null, contact.state_province_region__c);
+
+        contact = [SELECT accountid__c, city__c, company_name__c, country__c, emails__c, first_line__c, first_name__c, last_name__c , phone_number__c,
+                    postal_code__c, second_line__c, state_province_region__c FROM Accounting_BillingContactInfo__c WHERE accountid__c = '3'];
+        System.assertEquals('3', contact.accountid__c);
+        System.assertEquals('City_3', contact.city__c);
+        System.assertEquals('Company_3', contact.company_name__c);
+        System.assertEquals('US', contact.country__c);
+        System.assertEquals('em31@gmail.com,em32@gmail.com', contact.emails__c);
+        System.assertEquals('first_line_3', contact.first_line__c);
+        System.assertEquals('Name_3', contact.first_name__c);
+        System.assertEquals('Last_name_3', contact.last_name__c);
+        System.assertEquals('+483123123', contact.phone_number__c);
+        System.assertEquals('113', contact.postal_code__c);
+        System.assertEquals('Second_3', contact.second_line__c);
+        System.assertEquals('T_3', contact.state_province_region__c);
+
+        contact = [SELECT accountid__c, city__c, company_name__c, country__c, emails__c, first_line__c, first_name__c, last_name__c , phone_number__c,
+                    postal_code__c, second_line__c, state_province_region__c FROM Accounting_BillingContactInfo__c WHERE accountid__c = '4'];
+        System.assertEquals('4', contact.accountid__c);
+        System.assertEquals('City_4', contact.city__c);
+        System.assertEquals('Company_4', contact.company_name__c);
+        System.assertEquals('US', contact.country__c);
+        System.assertEquals('qwe1@gmail.com', contact.emails__c);
+        System.assertEquals('first_line_4', contact.first_line__c);
+        System.assertEquals('Name_4', contact.first_name__c);
+        System.assertEquals('Last_name_4', contact.last_name__c);
+        System.assertEquals('+483444123', contact.phone_number__c);
+        System.assertEquals('11443', contact.postal_code__c);
+        System.assertEquals('Second_4', contact.second_line__c);
+        System.assertEquals('T_4', contact.state_province_region__c);
+
+        billingContactInfoBatch.finish(bc);
+        Test.stopTest();
+    }
+
+    @isTest
     static void hqIntTestCalculationProperties() {
         Test.startTest();
 
@@ -280,6 +368,7 @@ private class hqInt_TestClass {
         Database.BatchableContext bc;
         hqInt_BatchFetchObjectSoftwarePlanVer softwarePlanBatch = new hqInt_BatchFetchObjectSoftwarePlanVer(1);
 
+        Integer[]  itrbl = (Integer[]) softwarePlanBatch.start(bc);
         Integer[] aScopeList = new Integer[]{};
         aScopeList.add(0);
         softwarePlanBatch.execute(bc, aScopeList);
