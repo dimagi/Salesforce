@@ -174,6 +174,10 @@
             </layoutItems>
             <layoutItems>
                 <behavior>Readonly</behavior>
+                <field>accounting_subscriptionFundingSource__c</field>
+            </layoutItems>
+            <layoutItems>
+                <behavior>Readonly</behavior>
                 <field>Do_Not_Invoice1__c</field>
             </layoutItems>
             <layoutItems>
@@ -233,6 +237,10 @@
         <layoutColumns>
             <layoutItems>
                 <behavior>Readonly</behavior>
+                <field>accounting_software_monthly_fee__c</field>
+            </layoutItems>
+            <layoutItems>
+                <behavior>Readonly</behavior>
                 <field>accounting_softwareplan_id__c</field>
             </layoutItems>
             <layoutItems>
@@ -288,6 +296,14 @@
             <layoutItems>
                 <behavior>Readonly</behavior>
                 <field>accounting_billingaccount_created_by_dom__c</field>
+            </layoutItems>
+            <layoutItems>
+                <behavior>Readonly</behavior>
+                <field>accounting_billingacPreOrPostPay__c</field>
+            </layoutItems>
+            <layoutItems>
+                <behavior>Readonly</behavior>
+                <field>accounting_billingacLastPaymentMeth__c</field>
             </layoutItems>
         </layoutColumns>
         <layoutColumns>

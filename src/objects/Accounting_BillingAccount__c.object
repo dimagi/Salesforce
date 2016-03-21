@@ -172,6 +172,28 @@
         <type>Checkbox</type>
     </fields>
     <fields>
+        <fullName>last_payment_method__c</fullName>
+        <externalId>false</externalId>
+        <label>Last payment method</label>
+        <length>255</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>pre_or_post_pay__c</fullName>
+        <externalId>false</externalId>
+        <label>Pre or post pay</label>
+        <length>255</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
         <fullName>salesforce_account_id__c</fullName>
         <externalId>false</externalId>
         <label>Salesforce Account ID</label>
