@@ -60,7 +60,7 @@ public class hqInt_ModelClass {
         public String funding_source;
         public String subscriber;
 
-        public Accounting_Subscription__c createDbObject(id billingAccountId,id softPlanVerId,id subscriberId) {
+        public Accounting_Subscription__c createDbObject(Id billingAccountId, Id softPlanVerId, Id subscriberId, Id domainId) {
             Accounting_Subscription__c accountingSubscriptionObj = new Accounting_Subscription__c();
             accountingSubscriptionObj.id__c = this.id;
             accountingSubscriptionObj.salesforce_contract_id__c = this.salesforce_contract_id;
@@ -78,6 +78,7 @@ public class hqInt_ModelClass {
             accountingSubscriptionObj.account__c = billingAccountId;
             accountingSubscriptionObj.plan_version__c = softPlanVerId;
             accountingSubscriptionObj.Accounting_Subscriber__c = subscriberId;
+            accountingSubscriptionObj.Accounting_subscriber_domain__c = domainId;
 
             return accountingSubscriptionObj;
         }

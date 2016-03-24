@@ -349,9 +349,9 @@ public class hqInt_BatchFetchObjectHelperClass {
             mapJsonIdToSfIdForPlanVer.put(parentObj.id__c,parentObj.Id);
         }
 
-        Map <String, Id> mapJsonIdToSfIdForSubscriber = new Map<String, Id>();
-        for (Accounting_Subscriber__c parentObj : [Select Id,id__c From Accounting_Subscriber__c Where id__c in :parentObjectSubscriberIdSet]) {
-            mapJsonIdToSfIdForSubscriber.put(parentObj.id__c,parentObj.Id);
+        Map <String, Accounting_Subscriber__c> mapJsonIdToSfIdForSubscriber = new Map<String, Accounting_Subscriber__c>();
+        for (Accounting_Subscriber__c parentObj : [Select Id,id__c, domain_lookup__c From Accounting_Subscriber__c Where id__c in :parentObjectSubscriberIdSet]) {
+            mapJsonIdToSfIdForSubscriber.put(parentObj.id__c, parentObj);
         }
 
         for (hqInt_ModelClass.Accounting_Subscription subscription  : listModelObj) {
@@ -359,6 +359,7 @@ public class hqInt_BatchFetchObjectHelperClass {
             Id parentObjectAccountId;
             Id parentObjectPlanVerId;
             Id parentObjectSubscriberId;
+            Id domainId;
 
             if (mapJsonIdToSfIdForAccount.containsKey(subscription.account)) {
                 parentObjectAccountId = mapJsonIdToSfIdForAccount.get(subscription.account);
@@ -367,10 +368,11 @@ public class hqInt_BatchFetchObjectHelperClass {
                 parentObjectPlanVerId = mapJsonIdToSfIdForPlanVer.get(subscription.plan_version);
             }
             if (mapJsonIdToSfIdForSubscriber.containsKey(subscription.subscriber)) {
-                parentObjectSubscriberId = mapJsonIdToSfIdForSubscriber.get(subscription.subscriber);
+                parentObjectSubscriberId = mapJsonIdToSfIdForSubscriber.get(subscription.subscriber).Id;
+                domainId = mapJsonIdToSfIdForSubscriber.get(subscription.subscriber).domain_lookup__c;
             }
 
-            Accounting_Subscription__c sobj = subscription.createDbObject(parentObjectAccountId, parentObjectPlanVerId, parentObjectSubscriberId);
+            Accounting_Subscription__c sobj = subscription.createDbObject(parentObjectAccountId, parentObjectPlanVerId, parentObjectSubscriberId, domainId);
             listSobject.add(sobj);
         }
 
