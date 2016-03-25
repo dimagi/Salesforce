@@ -573,7 +573,7 @@ private class hqInt_TestClass {
         a.do_not_invoice = true;
         a.auto_generate_credits = false;
         a.is_trial = true;
-        Accounting_Subscription__c aFromDB  = a.createDbObject(null, null, subscriberId);
+        Accounting_Subscription__c aFromDB  = a.createDbObject(null, null, subscriberId, null);
         insert aFromDb;
         return aFromDb;
     }
