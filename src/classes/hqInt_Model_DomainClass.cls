@@ -182,7 +182,7 @@ public class hqInt_Model_DomainClass {
         }
 
         if (calculatedProperties != null) {
-            domainObj.cpIsActive__c = calculatedProperties.cp_is_active;
+            domainObj.cpIsActive__c = calculatedProperties.cp_is_active == null ? false : calculatedProperties.cp_is_active;
             domainObj.cpAllActiveCases__c = calculatedProperties.cp_n_active_cases;
             domainObj.cpAllSms__c = calculatedProperties.cp_n_sms_ever;
             domainObj.cpAllCases__c = calculatedProperties.cp_n_cases;
@@ -210,7 +210,7 @@ public class hqInt_Model_DomainClass {
             domainObj.cpFormsIn30Days__c = calculatedProperties.cp_n_forms_30_d;
             domainObj.cpFormsIn60Days__c = calculatedProperties.cp_n_forms_60_d;
             domainObj.cpFormsIn90Days__c = calculatedProperties.cp_n_forms_90_d;
-            domainObj.cpHasApp__c = calculatedProperties.cp_has_app;
+            domainObj.cpHasApp__c = calculatedProperties.cp_has_app == null ? false : calculatedProperties.cp_has_app;
         }
 
         return domainobj;
