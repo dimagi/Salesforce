@@ -153,6 +153,10 @@ public class hqInt_Model_DomainClass {
         domainObj.billable_client__c = this.billable_client;
         domainObj.billing_number__c = this.billing_number;
 
+        if (this.deployment != null && this.deployment.countries != null) {
+            domainObj.Deployment_Countries__c = String.join(this.deployment.countries,',');
+        }
+
         // 2 options: 1 - field is and can be true or false, 2 - there is no field so we put false 
         if (this.hipaa_compliant != null) {
             domainObj.hipaa_compliant__c = this.hipaa_compliant;
