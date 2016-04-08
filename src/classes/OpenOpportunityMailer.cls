@@ -121,7 +121,7 @@ public class OpenOpportunityMailer {
         	sendRedOpenOpportunitiesUsers(users, stagedOpportunities, 'individual');
 
     }
-    
+
     public static void sendRedOpenOpportunitiesUsers(User[] users, Map<String, Opportunity[]> stagedOpportunities, String message_type) {
         
         Map<String, Opportunity[]> redStagedOpportunities = getRedStagedOpportunities(stagedOpportunities); 
@@ -145,7 +145,28 @@ public class OpenOpportunityMailer {
             }
         }
     }
-    
+
+    public static void sendRedOpenOpportunitiesUsers(List<String> emails, Map<String, Opportunity[]> stagedOpportunities, String message_type) {
+        Map<String, Opportunity[]> redStagedOpportunities = getRedStagedOpportunities(stagedOpportunities);
+
+        // Only send Mail if there are opportunities
+        if (!redStagedOpportunities.isEmpty()) {
+
+            Map<String, String> stageComments = new Map<String, String>();
+            for (String stageComment :redStagedOpportunities.keySet()) {
+                stageComments.put(stageComment, '');
+            }
+
+            String content = OpenOpportunityEmailUtils.buildEmailContent(redStagedOpportunities, false, stageComments);
+
+            if(message_type == 'global') {
+                sendEmails(content, emails, GLOBAL_RED_EMAIL_SUBJECT);
+            } else {
+                sendEmails(content, emails, RED_EMAIL_SUBJECT);
+            }
+        }
+    }
+
     private static void sendEmail(String content, String[] recipients, String subjectTemplate, String userName) {
         
         String subject = subjectTemplate.replace('<Name of User>', userName).replace('<Date>', Date.today().format());
@@ -187,5 +208,26 @@ public class OpenOpportunityMailer {
         }
         Messaging.sendEmail(mails);
     }
-    
+
+    private static void sendEmails(String content, List<String> emails, String subject) {
+
+        Messaging.Email[] mails = new Messaging.Email[]{};
+        OrgWideEmailAddress wideAddress = OpenOpportunityReportController.getOrganizationWideAddressMail();
+
+        for (String email: emails) {
+            Messaging.Singleemailmessage mail = new Messaging.Singleemailmessage();
+
+            if (wideAddress != null) {
+                mail.setOrgWideEmailAddressId(wideAddress.Id);
+            }
+
+            mail.setToAddresses(new String[] {email});
+            mail.setHtmlBody(content);
+            mail.setSubject(subject);
+            mail.setSaveAsActivity(false);
+            mails.add(mail);
+        }
+
+        Messaging.sendEmail(mails);
+    }
 }
