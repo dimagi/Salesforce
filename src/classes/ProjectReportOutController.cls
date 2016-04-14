@@ -406,7 +406,7 @@ public with sharing class ProjectReportOutController{
             pro.User_Name__C = currentLoginUser;
             pro.Last_Report_ID__C = lastProjectId;
 
-            DContract__c dcontract = [SELECT id, Last_Report_Out_Status__c, Percent_through_SOW_deliverables__c, Budget_Used__c, of_Services_budget_for_GS__c, Total_Costs__c, Services_Spend__c,
+            DContract__c dcontract = [SELECT Id, Name, Last_Report_Out_Status__c, Percent_through_SOW_deliverables__c, Budget_Used__c, of_Services_budget_for_GS__c, Total_Costs__c, Services_Spend__c,
                                         Buffer_by_SOW_Completed__c, Execution_Efficiency__c, Expected_Buffer__c, Direct_Costs_Total_Expenses__c, Net_Income_based_on_SOW_Completed__c, Product_Spend__c
                                         FROM DContract__c WHERE Id =: contractId];
 
@@ -425,6 +425,9 @@ public with sharing class ProjectReportOutController{
             proContractSnapshot.Product_Spend__c = dcontract.Product_Spend__c;
             proContractSnapshot.Services_Spend__c = dcontract.Services_Spend__c;
             proContractSnapshot.Total_Calculated_Costs__c = dcontract.Total_Costs__c;
+            proContractSnapshot.Contract__c = dcontract.Id;
+            proContractSnapshot.Name = dcontract.Name;
+            proContractSnapshot.Snapshot_Date__c = Date.today();
 
             try {
                 snoozeHelper.ResetEmailRemindar(contractId);

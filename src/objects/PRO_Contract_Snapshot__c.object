@@ -76,6 +76,18 @@
         <type>Percent</type>
     </fields>
     <fields>
+        <fullName>Contract__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <externalId>false</externalId>
+        <label>Contract</label>
+        <referenceTo>DContract__c</referenceTo>
+        <relationshipLabel>PRO Contract Snapshot</relationshipLabel>
+        <relationshipName>PRO_Contract_Snapshot</relationshipName>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
         <fullName>Execution_Efficiency__c</fullName>
         <externalId>false</externalId>
         <label>Execution Efficiency</label>
@@ -154,6 +166,14 @@
         <scale>2</scale>
         <trackTrending>false</trackTrending>
         <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>Snapshot_Date__c</fullName>
+        <externalId>false</externalId>
+        <label>Snapshot Date</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Date</type>
     </fields>
     <fields>
         <fullName>Total_Calculated_Costs__c</fullName>
