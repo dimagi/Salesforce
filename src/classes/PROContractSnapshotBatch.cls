@@ -44,7 +44,7 @@ global class PROContractSnapshotBatch implements Database.Batchable<DContract__c
             if (!insertResults.get(i).isSuccess()){
                 Database.Error error = insertResults.get(i).getErrors().get(0);
                 System.debug('DML error ' + error.getMessage());
-                System.debug('Failed to create snapshot for Contract: ' + insertResults.get(i).Contract__c);
+                System.debug('Failed to create snapshot for Contract: ' + insertList.get(i).Contract__c);
                 failedReocrds.add(insertList.get(i));
             }
         }
@@ -63,11 +63,10 @@ global class PROContractSnapshotBatch implements Database.Batchable<DContract__c
                 Messaging.SingleEmailMessage mail = new Messaging.SingleEmailMessage();
                 mail.setToAddresses(toAddresses);
                 mail.setSenderDisplayName('');
-                mail.setSubject('Contract Snapshot Errors ' + Date.today());
+                mail.setSubject('Contract Snapshot Errors ' + Date.today().format());
                 String htmlBody = 'Failed to save snapshopts for following contracts: <br/>';
 
                 for(PRO_Contract_Snapshot__c snp : failedReocrds) {
-                    // TODO
                     htmlBody +=  '<b>Id:</b> ' + snp.Contract__c + '<br/>';
                 }
 
