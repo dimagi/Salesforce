@@ -5,6 +5,10 @@
         <type>Default</type>
     </actionOverrides>
     <actionOverrides>
+        <actionName>Clone</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
         <actionName>Delete</actionName>
         <type>Default</type>
     </actionOverrides>
@@ -13,7 +17,15 @@
         <type>Default</type>
     </actionOverrides>
     <actionOverrides>
+        <actionName>Follow</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
         <actionName>List</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>New</actionName>
         <type>Default</type>
     </actionOverrides>
     <actionOverrides>
@@ -30,32 +42,12 @@
     </actionOverrides>
     <compactLayoutAssignment>SYSTEM</compactLayoutAssignment>
     <enableFeeds>false</enableFeeds>
-    <enableHistory>false</enableHistory>
     <fields>
-        <fullName>ExternalId</fullName>
+        <fullName>DuplicateRuleId</fullName>
+        <type>Lookup</type>
     </fields>
     <fields>
-        <fullName>ExternalPictureURL</fullName>
+        <fullName>RecordCount</fullName>
     </fields>
-    <fields>
-        <fullName>Name</fullName>
-    </fields>
-    <fields>
-        <fullName>ParentId</fullName>
-        <type>MasterDetail</type>
-    </fields>
-    <fields>
-        <fullName>ProfileUrl</fullName>
-    </fields>
-    <fields>
-        <fullName>Provider</fullName>
-    </fields>
-    <fields>
-        <fullName>SourceApp</fullName>
-    </fields>
-    <searchLayouts>
-        <customTabListAdditionalFields>Provider</customTabListAdditionalFields>
-        <searchResultsAdditionalFields>Provider</searchResultsAdditionalFields>
-    </searchLayouts>
-    <sharingModel>ControlledByParent</sharingModel>
+    <sharingModel>ReadWrite</sharingModel>
 </CustomObject>
