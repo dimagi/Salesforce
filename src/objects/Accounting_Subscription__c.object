@@ -93,6 +93,18 @@
         <unique>false</unique>
     </fields>
     <fields>
+        <fullName>Software_Plan_Edition__c</fullName>
+        <externalId>false</externalId>
+        <formula>plan_version__r.Accounting_SoftwarePlan__r.edition__c</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Software Plan Edition</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
         <fullName>account__c</fullName>
         <deleteConstraint>SetNull</deleteConstraint>
         <externalId>false</externalId>
