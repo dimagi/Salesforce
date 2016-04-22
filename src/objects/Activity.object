@@ -1,6 +1,299 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <actionOverrides>
+        <actionName>CancelEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>ComposeGmail</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>LogCall</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>MailMerge</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>RequestUpdate</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>SaveEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>SendEmail</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>ViewAll</actionName>
+        <type>Default</type>
+    </actionOverrides>
     <enableFeeds>false</enableFeeds>
+    <fields>
+        <fullName>ActivitySubtype__c</fullName>
+        <externalId>false</externalId>
+        <label>ActivitySubtype</label>
+        <picklist>
+            <picklistValues>
+                <fullName>Call - exploratory</fullName>
+                <default>true</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Call - follow-up</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Call - no-show</fullName>
+                <default>false</default>
+            </picklistValues>
+            <sorted>false</sorted>
+        </picklist>
+        <type>Picklist</type>
+    </fields>
+    <fields>
+        <fullName>Activity_Count__c</fullName>
+        <externalId>false</externalId>
+        <formula>IF(
+    OR(
+        CONTAINS(
+            LOWER(Subject),
+            &quot;e-mail&quot;
+        ),
+        CONTAINS(
+            LOWER(Subject),
+            &quot;email&quot;
+        )
+    ),
+
+    1, 
+
+    NULL
+)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Email Count</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Meeting_Count__c</fullName>
+        <externalId>false</externalId>
+        <formula>IF(
+    OR(
+        CONTAINS(
+            LOWER(Subject),
+            &quot;call&quot;
+        ),
+        CONTAINS(
+            LOWER(Subject),
+            &quot;meeting&quot;
+        )
+    ),
+
+    1, 
+
+    NULL
+)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Meeting Count</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Snooze_Activity__c</fullName>
+        <description>Equals today&apos;s date</description>
+        <externalId>false</externalId>
+        <formula>Today()</formula>
+        <label>Snooze Activity</label>
+        <required>false</required>
+        <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>cirrusadv__Created_by_Cirrus_Insight__c</fullName>
+        <defaultValue>false</defaultValue>
+        <deprecated>false</deprecated>
+        <description>Indicates that this record was created by Cirrus Insight. This checkbox does not have to be included on the page layout, except with Contact Manager, Group, and Professional Edition organizations.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Indicates that this record was created by Cirrus Insight.</inlineHelpText>
+        <label>Created by Cirrus Insight</label>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>cirrusadv__Email_Opened__c</fullName>
+        <defaultValue>false</defaultValue>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>Whether or not this email has been opened by a recipient.</inlineHelpText>
+        <label>Email Opened</label>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>cirrusadv__First_Clicked__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>First time a link in this email was opened.</inlineHelpText>
+        <label>First Clicked</label>
+        <required>false</required>
+        <type>DateTime</type>
+    </fields>
+    <fields>
+        <fullName>cirrusadv__First_Opened__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>The date this email was first opened by one of the recipients.</inlineHelpText>
+        <label>First Opened</label>
+        <required>false</required>
+        <type>DateTime</type>
+    </fields>
+    <fields>
+        <fullName>cirrusadv__First_Reply__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>The date this email was first replied to by one of the recipients.</inlineHelpText>
+        <label>First Reply</label>
+        <required>false</required>
+        <type>DateTime</type>
+    </fields>
+    <fields>
+        <fullName>cirrusadv__Hour_Sent__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <formula>FLOOR ( MOD( CreatedDate - ($System.OriginDateTime),1) *24)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <inlineHelpText>The hour of the day that the email was sent. (in UTC)</inlineHelpText>
+        <label>Hour Sent (UTC)</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>cirrusadv__Last_Clicked__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>Last time a link in this email was opened.</inlineHelpText>
+        <label>Last Clicked</label>
+        <required>false</required>
+        <type>DateTime</type>
+    </fields>
+    <fields>
+        <fullName>cirrusadv__Last_Opened__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>The date the email was most recently opened.</inlineHelpText>
+        <label>Last Opened</label>
+        <required>false</required>
+        <type>DateTime</type>
+    </fields>
+    <fields>
+        <fullName>cirrusadv__Last_Reply__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>The date the email was most recently replied to.</inlineHelpText>
+        <label>Last Reply</label>
+        <required>false</required>
+        <type>DateTime</type>
+    </fields>
+    <fields>
+        <fullName>cirrusadv__Links_Clicked__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <formula>cirrusadv__Num_of_Clicks__c &gt; 0</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <inlineHelpText>Whether or not any links in this email were opened by a recipient.</inlineHelpText>
+        <label>Links Clicked</label>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>cirrusadv__Num_of_Clicks__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>Number of times links in this email were opened.</inlineHelpText>
+        <label># of Clicks</label>
+        <precision>4</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>cirrusadv__Num_of_Opens__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>Number of times this tracked email has been opened.</inlineHelpText>
+        <label># of Opens</label>
+        <precision>4</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>cirrusadv__Num_of_Replies__c</fullName>
+        <defaultValue>0</defaultValue>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>Number of times this email has been replied to.</inlineHelpText>
+        <label># of Replies</label>
+        <precision>3</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>cirrusadv__Reply_Received__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <formula>cirrusadv__Num_of_Replies__c &gt; 0</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Reply Received</label>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>cirrusadv__Template_Name__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>The email template used.</inlineHelpText>
+        <label>Template Name</label>
+        <length>180</length>
+        <required>false</required>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>cirrusadv__Time_to_Open__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <formula>(cirrusadv__First_Opened__c - CreatedDate) * 24 * 60</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <inlineHelpText>How long did this email take to open? (in minutes)</inlineHelpText>
+        <label>Time to Open</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>cirrusadv__isTracked__c</fullName>
+        <defaultValue>false</defaultValue>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>Indicates that opens of this email will be tracked and reported by Cirrus Insight.</inlineHelpText>
+        <label>Tracked</label>
+        <type>Checkbox</type>
+    </fields>
     <listViews>
         <fullName>MyActivities</fullName>
         <filterScope>Mine</filterScope>
@@ -58,4 +351,5 @@
         <searchResultsAdditionalFields>TASK.DUE_DATE</searchResultsAdditionalFields>
         <searchResultsAdditionalFields>CORE.USERS.ALIAS</searchResultsAdditionalFields>
     </searchLayouts>
+    <sharingModel>ControlledByParent</sharingModel>
 </CustomObject>

@@ -1,5 +1,58 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <actionOverrides>
+        <actionName>Activate</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>CancelEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>ChangeStatus</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Clone</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Delete</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Edit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Follow</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>List</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>New</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>SaveEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Tab</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Terminate</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>View</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <compactLayoutAssignment>SYSTEM</compactLayoutAssignment>
     <enableFeeds>false</enableFeeds>
     <fields>
         <fullName>ALL_TIME_Income__c</fullName>
@@ -8,8 +61,13 @@
         <precision>17</precision>
         <required>false</required>
         <scale>2</scale>
-        <trackHistory>false</trackHistory>
+        <trackHistory>true</trackHistory>
         <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>AccountId</fullName>
+        <trackHistory>true</trackHistory>
+        <type>Lookup</type>
     </fields>
     <fields>
         <fullName>Account__c</fullName>
@@ -23,6 +81,15 @@
         <required>false</required>
         <trackHistory>false</trackHistory>
         <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>ActivatedById</fullName>
+        <trackHistory>false</trackHistory>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>ActivatedDate</fullName>
+        <trackHistory>false</trackHistory>
     </fields>
     <fields>
         <fullName>Active__c</fullName>
@@ -79,7 +146,7 @@
         <precision>16</precision>
         <required>false</required>
         <scale>2</scale>
-        <trackHistory>false</trackHistory>
+        <trackHistory>true</trackHistory>
         <type>Currency</type>
     </fields>
     <fields>
@@ -101,14 +168,31 @@
         <type>Picklist</type>
     </fields>
     <fields>
+        <fullName>BillingAddress</fullName>
+        <trackHistory>false</trackHistory>
+    </fields>
+    <fields>
         <fullName>Burdened_Income_BUDGET__c</fullName>
         <externalId>false</externalId>
         <label>Burdened Income BUDGET</label>
         <precision>17</precision>
         <required>false</required>
         <scale>2</scale>
-        <trackHistory>false</trackHistory>
+        <trackHistory>true</trackHistory>
         <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>CompanySignedDate</fullName>
+        <trackHistory>false</trackHistory>
+    </fields>
+    <fields>
+        <fullName>CompanySignedId</fullName>
+        <trackHistory>false</trackHistory>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>ContractTerm</fullName>
+        <trackHistory>true</trackHistory>
     </fields>
     <fields>
         <fullName>Contract_End_Date__c</fullName>
@@ -116,7 +200,7 @@
         <inlineHelpText>The date the project actually ends</inlineHelpText>
         <label>Contract End Date</label>
         <required>false</required>
-        <trackHistory>false</trackHistory>
+        <trackHistory>true</trackHistory>
         <type>Date</type>
     </fields>
     <fields>
@@ -147,7 +231,7 @@
             </picklistValues>
             <sorted>false</sorted>
         </picklist>
-        <trackHistory>false</trackHistory>
+        <trackHistory>true</trackHistory>
         <type>Picklist</type>
     </fields>
     <fields>
@@ -164,13 +248,21 @@
         <type>Lookup</type>
     </fields>
     <fields>
-        <fullName>Date_Signed__c</fullName>
-        <externalId>false</externalId>
-        <inlineHelpText>The date the contract was signed.</inlineHelpText>
-        <label>Date Signed</label>
-        <required>false</required>
+        <fullName>CustomerSignedDate</fullName>
         <trackHistory>false</trackHistory>
-        <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>CustomerSignedId</fullName>
+        <trackHistory>false</trackHistory>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>CustomerSignedTitle</fullName>
+        <trackHistory>false</trackHistory>
+    </fields>
+    <fields>
+        <fullName>Description</fullName>
+        <trackHistory>false</trackHistory>
     </fields>
     <fields>
         <fullName>Dimagi_Prime_Contracting_Entity__c</fullName>
@@ -187,7 +279,7 @@
     <fields>
         <fullName>Direct_Costs_Sub_Contract_BUDGET__c</fullName>
         <externalId>false</externalId>
-        <label>Direct Costs:Sub-Contract BUDGET</label>
+        <label>Sub-Contract BUDGET</label>
         <precision>17</precision>
         <required>false</required>
         <scale>2</scale>
@@ -197,17 +289,17 @@
     <fields>
         <fullName>Direct_Costs_Sub_contract_Expenses__c</fullName>
         <externalId>false</externalId>
-        <label>Direct Costs:Sub-contract Expenses</label>
+        <label>Sub-contract SPEND</label>
         <precision>16</precision>
         <required>false</required>
         <scale>2</scale>
-        <trackHistory>false</trackHistory>
+        <trackHistory>true</trackHistory>
         <type>Currency</type>
     </fields>
     <fields>
         <fullName>Direct_Costs_Travel_BUDGET__c</fullName>
         <externalId>false</externalId>
-        <label>Direct Costs:Travel BUDGET</label>
+        <label>Travel BUDGET</label>
         <precision>17</precision>
         <required>false</required>
         <scale>2</scale>
@@ -217,17 +309,21 @@
     <fields>
         <fullName>Direct_Costs_Travel_Expenses__c</fullName>
         <externalId>false</externalId>
-        <label>Direct Costs:Travel Expenses</label>
+        <label>Travel SPEND</label>
         <precision>16</precision>
         <required>false</required>
         <scale>2</scale>
-        <trackHistory>false</trackHistory>
+        <trackHistory>true</trackHistory>
         <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>EndDate</fullName>
+        <trackHistory>true</trackHistory>
     </fields>
     <fields>
         <fullName>Execution_Date__c</fullName>
         <externalId>false</externalId>
-        <label>Date of Contract Execution</label>
+        <label>Contract Execution Date</label>
         <required>false</required>
         <trackHistory>false</trackHistory>
         <type>Date</type>
@@ -278,6 +374,19 @@
         <type>Picklist</type>
     </fields>
     <fields>
+        <fullName>Name</fullName>
+        <trackHistory>true</trackHistory>
+    </fields>
+    <fields>
+        <fullName>OwnerExpirationNotice</fullName>
+        <trackHistory>false</trackHistory>
+    </fields>
+    <fields>
+        <fullName>OwnerId</fullName>
+        <trackHistory>false</trackHistory>
+        <type>Lookup</type>
+    </fields>
+    <fields>
         <fullName>Project_Dropbox_Location__c</fullName>
         <externalId>false</externalId>
         <inlineHelpText>This should be in Dimagi - Projects</inlineHelpText>
@@ -324,8 +433,12 @@
         <precision>16</precision>
         <required>false</required>
         <scale>2</scale>
-        <trackHistory>false</trackHistory>
+        <trackHistory>true</trackHistory>
         <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>ShippingAddress</fullName>
+        <trackHistory>false</trackHistory>
     </fields>
     <fields>
         <fullName>Short_Description__c</fullName>
@@ -335,6 +448,14 @@
         <required>false</required>
         <trackHistory>false</trackHistory>
         <type>TextArea</type>
+    </fields>
+    <fields>
+        <fullName>SpecialTerms</fullName>
+        <trackHistory>false</trackHistory>
+    </fields>
+    <fields>
+        <fullName>StartDate</fullName>
+        <trackHistory>false</trackHistory>
     </fields>
     <fields>
         <fullName>Status</fullName>
@@ -358,6 +479,7 @@
             <restrictedPicklist>true</restrictedPicklist>
             <sorted>false</sorted>
         </picklist>
+        <trackHistory>true</trackHistory>
         <type>Picklist</type>
     </fields>
     <fields>
@@ -535,7 +657,7 @@
         <precision>17</precision>
         <required>false</required>
         <scale>2</scale>
-        <trackHistory>false</trackHistory>
+        <trackHistory>true</trackHistory>
         <type>Currency</type>
     </fields>
     <fields>
@@ -551,21 +673,21 @@
     <fields>
         <fullName>Total_Direct_Costs_Expenses__c</fullName>
         <externalId>false</externalId>
-        <label>Total Direct Costs Expenses</label>
+        <label>Total Direct Costs Expense SPEND</label>
         <precision>16</precision>
         <required>false</required>
         <scale>2</scale>
-        <trackHistory>false</trackHistory>
+        <trackHistory>true</trackHistory>
         <type>Currency</type>
     </fields>
     <fields>
         <fullName>Total_Labor_Expenses__c</fullName>
         <externalId>false</externalId>
-        <label>Total Labor Expenses</label>
+        <label>Labor SPEND</label>
         <precision>16</precision>
         <required>false</required>
         <scale>2</scale>
-        <trackHistory>false</trackHistory>
+        <trackHistory>true</trackHistory>
         <type>Currency</type>
     </fields>
     <fields>
@@ -593,7 +715,7 @@
         <precision>17</precision>
         <required>false</required>
         <scale>2</scale>
-        <trackHistory>false</trackHistory>
+        <trackHistory>true</trackHistory>
         <type>Currency</type>
     </fields>
     <listViews>
@@ -730,4 +852,5 @@
         <searchResultsAdditionalFields>CONTRACT.CONTRACT_NUMBER</searchResultsAdditionalFields>
         <searchResultsAdditionalFields>CONTRACT.NAME</searchResultsAdditionalFields>
     </searchLayouts>
+    <sharingModel>ReadWrite</sharingModel>
 </CustomObject>
