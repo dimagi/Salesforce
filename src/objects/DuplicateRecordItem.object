@@ -9,10 +9,6 @@
         <type>Default</type>
     </actionOverrides>
     <actionOverrides>
-        <actionName>CreateOppCompetitor</actionName>
-        <type>Default</type>
-    </actionOverrides>
-    <actionOverrides>
         <actionName>Delete</actionName>
         <type>Default</type>
     </actionOverrides>
@@ -21,15 +17,34 @@
         <type>Default</type>
     </actionOverrides>
     <actionOverrides>
+        <actionName>Follow</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>List</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>New</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
         <actionName>SaveEdit</actionName>
         <type>Default</type>
     </actionOverrides>
+    <actionOverrides>
+        <actionName>View</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <compactLayoutAssignment>SYSTEM</compactLayoutAssignment>
     <enableFeeds>false</enableFeeds>
     <fields>
-        <fullName>CompetitorName</fullName>
-        <picklist>
-            <sorted>false</sorted>
-        </picklist>
-        <type>Picklist</type>
+        <fullName>DuplicateRecordSetId</fullName>
+        <type>MasterDetail</type>
     </fields>
+    <fields>
+        <fullName>RecordId</fullName>
+        <type>Lookup</type>
+    </fields>
+    <sharingModel>ControlledByParent</sharingModel>
 </CustomObject>

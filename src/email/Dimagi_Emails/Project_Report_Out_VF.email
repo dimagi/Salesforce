@@ -44,7 +44,7 @@ recipientType="Contact" relatedToType="Project_Report_Out__c" >
 </table>
 <br/>
 <b>Project Dashboard: </b>{!RelatedTo.Project_Dashboard__c}<br/>
-<b>% Deliverables Completed: </b><apex:outputText value="{!FLOOR(RelatedTo.Deliverables_Completed__c)}%"/><br/>
+<b>% of Work Completed: </b><apex:outputText value="{!FLOOR(RelatedTo.Deliverables_Completed__c)}%"/><br/>
 <b>Execution Efficiency: </b><apex:outputText value="{!FLOOR(RelatedTo.Execution_Efficiency__c)}%"/><br/>
 <b>Resource Planning: </b>{!RelatedTo.Resource_Planning__c}<br/><br/>
 
