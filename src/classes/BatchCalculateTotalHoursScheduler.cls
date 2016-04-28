@@ -1,10 +1,9 @@
 global class BatchCalculateTotalHoursScheduler implements Schedulable {
-    
+
     public BatchCalculateTotalHoursScheduler  () {}
-    
+
     global void execute(SchedulableContext sc) {
-    
-       Database.executeBatch(new BatchCalculateTotalHoursOfTimeCard());
+       Database.executeBatch(new BatchCalculateTotalHoursOfTimeCard(), 10);
     }
 
 }
