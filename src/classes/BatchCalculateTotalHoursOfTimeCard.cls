@@ -4,50 +4,57 @@ global class BatchCalculateTotalHoursOfTimeCard implements Database.Batchable<sO
     global string contractId;
 
     global BatchCalculateTotalHoursOfTimeCard(){
-        query = 'SELECT Name,Services_Spend__c, (select client__c,labor_cost__c from Time_Cards__r) FROM DContract__c';
+        query = 'SELECT Name,Services_Spend__c, (SELECT client__c,labor_cost__c FROM Time_Cards__r), (SELECT Id FROM Contracts__r) FROM DContract__c WHERE Parent_Contract__c = \'\'';
     }
-    
+
     global BatchCalculateTotalHoursOfTimeCard(String contrctId){
         contractId = contrctId;
-        query = 'SELECT Name,Services_Spend__c, (select client__c,labor_cost__c from Time_Cards__r) FROM DContract__c Where Id = :contractId ';
+        query = 'SELECT Name,Services_Spend__c, (SELECT client__c,labor_cost__c FROM Time_Cards__r), (SELECT Id FROM Contracts__r) FROM DContract__c Where Id = :contractId ';
     }
 
     global Database.QueryLocator start(Database.BatchableContext BC){
         return Database.getQueryLocator(query);
     }
 
-    global void execute(Database.BatchableContext BC,List<sObject> scope){
+    global void execute(Database.BatchableContext BC, List<sObject> scope){
         List<DContract__c> contractsToUpdate = new List<DContract__c>();
         Map<Id, Decimal> resultsBycontractId = new Map<Id, Decimal>();
+        Map<Id, DContract__c> contractIdContractMap = new Map<Id, DContract__c>();
+        Set<Id> childs = new Set<Id>();
 
-        Map<Id,DContract__c> contractIdContractMap = new Map<Id,DContract__c>();
-        List<Time_Card__c> timeCardList = new List<Time_Card__c>();
-        System.debug('1');
         for (sObject s : scope) {
             DContract__c obj = (DContract__c) s;
-                for (Time_Card__c ch : obj.Time_Cards__r) {
-                    timeCardList.add(ch);
+            Decimal parentTotal = calculateTotal(obj.Time_Cards__r);
+            if (obj.Contracts__r != null && obj.Contracts__r.size() > 0) {
+                for (DContract__c child : obj.Contracts__r) {
+                    childs.add(child.Id);
                 }
-                contractIdContractMap.put(obj.id,obj);
-        }
-        System.debug('2');
-
-        for(Time_Card__c timeCard : timeCardList) {
-            if(resultsBycontractId.containsKey(timeCard.Client__c)) {
-                Decimal laborCost = resultsBycontractId.get(timeCard.Client__c);
-                laborCost += timeCard.labor_cost__c != null ? timeCard.labor_cost__c : 0;
-                resultsBycontractId.put(timeCard.Client__c, laborCost);
-            }else {
-                resultsBycontractId.put(timeCard.Client__c,  timeCard.labor_cost__c != null ? timeCard.labor_cost__c : 0);
             }
+
+            resultsBycontractId.put(obj.Id, parentTotal);
+            contractIdContractMap.put(obj.Id, obj);
         }
 
+        List<DContract__c> childContracts = [SELECT Name,Services_Spend__c, (SELECT client__c,labor_cost__c FROM Time_Cards__r), (SELECT Id FROM Contracts__r) FROM DContract__c WHERE Id IN :childs];
+        for (DContract__c dc : childContracts) {
+            Decimal total = calculateTotal(dc.Time_Cards__r);
+            resultsBycontractId.put(dc.Id, total);
+            contractIdContractMap.put(dc.Id, dc);
+        }
 
         for (DContract__c contract : contractIdContractMap.values()) {
             Integer total = 0;
 
             if (resultsBycontractId.containsKey(contract.Id)) {
-                total = Integer.valueOf(resultsBycontractId.get(contract.Id));
+                total = resultsBycontractId.get(contract.Id).intValue();
+            }
+
+            if (contract.Contracts__r != null && contract.Contracts__r.size() > 0) {
+                for (DContract__c child : contract.Contracts__r) {
+                    if (resultsBycontractId.containsKey(child.Id)) {
+                        total += resultsBycontractId.get(child.Id).intValue();
+                    }
+                }
             }
 
             if (contract.Services_Spend__c != total) {
@@ -56,18 +63,32 @@ global class BatchCalculateTotalHoursOfTimeCard implements Database.Batchable<sO
             }
         }
 
-        system.debug('contractsToUpdate: '+contractsToUpdate);
+        System.debug('contractsToUpdate: ' + contractsToUpdate);
+
         try{
             if(contractsToUpdate.isEmpty() == false) {
                 Database.SaveResult[] saveResults = Database.update(contractsToUpdate, false);
                 System.debug(saveResults);
             }
         }catch (Exception e) {
-            System.debug(LoggingLevel.WARN,'Error occured.'+ e.getMessage()+' - '+ e.getLineNumber() );
+            System.debug(LoggingLevel.WARN, 'Error occured.' + e.getMessage() + ' - ' +  e.getLineNumber());
         }
     }
 
     global void finish(Database.BatchableContext BC){
         System.debug(LoggingLevel.WARN,'Batch Job Complete');
+    }
+
+    private Decimal calculateTotal(List<Time_Card__c> cards) {
+        Decimal total = 0;
+        if (cards != null) {
+            for (Time_Card__c ch : cards) {
+                if (ch.labor_cost__c != null) {
+                    total += ch.labor_cost__c;
+                }
+            }
+        }
+
+        return total;
     }
 }
