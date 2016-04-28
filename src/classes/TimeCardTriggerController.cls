@@ -51,8 +51,9 @@ public class TimeCardTriggerController {
         for (AggregateResult result : results) {
             Id contractId = (Id) result.get('Client__c');
             Integer total = Integer.valueOf((decimal) result.get('Total'));
-
-            resultsBycontractId.put(contractId, total);
+            if (total != null) {
+                resultsBycontractId.put(contractId, total);
+            }
         }
 
         List<DContract__c> contractsToUpdate = new List<DContract__c>();

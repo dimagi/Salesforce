@@ -30,7 +30,7 @@ public class TimeCardTriggerControllerTest {
         Test.stopTest();
 
         DContract__c dcontractFromDB = [SELECT Id, Name, Services_Spend__c FROM DContract__c WHERE Id =: dcontract.Id];
-        System.assertEquals(239, dcontractFromDB.Services_Spend__c);
+        System.assertEquals(230, dcontractFromDB.Services_Spend__c);
     }
 
     static testMethod void shouldUpdateParentServicesSpend() {
@@ -88,13 +88,13 @@ public class TimeCardTriggerControllerTest {
         Test.stopTest();
 
         DContract__c dcontractFromDB = [SELECT Id, Name, Services_Spend__c FROM DContract__c WHERE Id =: parent.Id];
-        System.assertEquals(716, dcontractFromDB.Services_Spend__c);
+        System.assertEquals(690, dcontractFromDB.Services_Spend__c);
 
         dcontractFromDB = [SELECT Id, Name, Services_Spend__c FROM DContract__c WHERE Id =: child1.Id];
-        System.assertEquals(239, dcontractFromDB.Services_Spend__c);
+        System.assertEquals(230, dcontractFromDB.Services_Spend__c);
 
         dcontractFromDB = [SELECT Id, Name, Services_Spend__c FROM DContract__c WHERE Id =: child2.Id];
-        System.assertEquals(477, dcontractFromDB.Services_Spend__c);
+        System.assertEquals(460, dcontractFromDB.Services_Spend__c);
     }
 
     static testMethod void shouldUpdateServicesSpendInManyContracts() {
@@ -199,21 +199,21 @@ public class TimeCardTriggerControllerTest {
         Test.stopTest();
 
         DContract__c dcontractFromDB = [SELECT Id, Name, Services_Spend__c FROM DContract__c WHERE Id =: parent1.Id];
-        System.assertEquals(716, dcontractFromDB.Services_Spend__c);
+        System.assertEquals(690, dcontractFromDB.Services_Spend__c);
 
         dcontractFromDB = [SELECT Id, Name, Services_Spend__c FROM DContract__c WHERE Id =: child1.Id];
-        System.assertEquals(477, dcontractFromDB.Services_Spend__c);
+        System.assertEquals(460, dcontractFromDB.Services_Spend__c);
 
         dcontractFromDB = [SELECT Id, Name, Services_Spend__c FROM DContract__c WHERE Id =: child2.Id];
         System.assertEquals(null, dcontractFromDB.Services_Spend__c);
 
         dcontractFromDB = [SELECT Id, Name, Services_Spend__c FROM DContract__c WHERE Id =: parent2.Id];
-        System.assertEquals(1074, dcontractFromDB.Services_Spend__c);
+        System.assertEquals(1035, dcontractFromDB.Services_Spend__c);
 
         dcontractFromDB = [SELECT Id, Name, Services_Spend__c FROM DContract__c WHERE Id =: child3.Id];
-        System.assertEquals(597, dcontractFromDB.Services_Spend__c);
+        System.assertEquals(575, dcontractFromDB.Services_Spend__c);
 
         dcontractFromDB = [SELECT Id, Name, Services_Spend__c FROM DContract__c WHERE Id =: child4.Id];
-        System.assertEquals(477, dcontractFromDB.Services_Spend__c);
+        System.assertEquals(460, dcontractFromDB.Services_Spend__c);
     }
 }
