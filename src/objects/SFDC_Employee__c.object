@@ -121,6 +121,26 @@
         <unique>false</unique>
     </fields>
     <fields>
+        <fullName>At_Will_Employment_Agreement__c</fullName>
+        <externalId>false</externalId>
+        <inlineHelpText>Has the employee signed an At-Will Employment Agreement (as opposed to another type of contractual agreement)?</inlineHelpText>
+        <label>At-Will Employment Agreement</label>
+        <picklist>
+            <picklistValues>
+                <fullName>No</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Yes</fullName>
+                <default>false</default>
+            </picklistValues>
+            <sorted>false</sorted>
+        </picklist>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+    </fields>
+    <fields>
         <fullName>BU_Description__c</fullName>
         <externalId>false</externalId>
         <label>BU Description</label>
@@ -380,6 +400,10 @@
                 <default>false</default>
             </picklistValues>
             <picklistValues>
+                <fullName>Tanzania</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
                 <fullName>Thailand</fullName>
                 <default>false</default>
             </picklistValues>
@@ -595,6 +619,10 @@
                 <default>false</default>
             </picklistValues>
             <picklistValues>
+                <fullName>Tanzania</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
                 <fullName>Thailand</fullName>
                 <default>false</default>
             </picklistValues>
@@ -627,6 +655,16 @@
         <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Picklist</type>
+    </fields>
+    <fields>
+        <fullName>Consented_to_share_salary__c</fullName>
+        <defaultValue>false</defaultValue>
+        <externalId>false</externalId>
+        <inlineHelpText>Has the employee given written consent for Dimagi to share his or her salary information externally (e.g. to a new employer doing a background check)?</inlineHelpText>
+        <label>Consented to Share Salary</label>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
     </fields>
     <fields>
         <fullName>Contact__c</fullName>
@@ -2270,7 +2308,7 @@
         <externalId>false</externalId>
         <label>Annual Salary (local)</label>
         <precision>12</precision>
-        <required>true</required>
+        <required>false</required>
         <scale>2</scale>
         <trackHistory>true</trackHistory>
         <trackTrending>false</trackTrending>

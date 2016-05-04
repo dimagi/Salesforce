@@ -599,7 +599,7 @@ Contracts: End Date - Start Date</inlineHelpText>
         <externalId>false</externalId>
         <formula>Opportunity__r.Name</formula>
         <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
-        <label>Opportunity Name</label>
+        <label>Opportunity_Name</label>
         <required>false</required>
         <trackTrending>false</trackTrending>
         <type>Text</type>

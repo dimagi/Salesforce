@@ -909,47 +909,23 @@ This should probably be edited only rarely, as this integration is automated. Th
         <fullName>LeadSource</fullName>
         <picklist>
             <picklistValues>
-                <fullName>Inbound - Emailed us directly</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Referred to Us</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Other</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
                 <fullName>Conference</fullName>
                 <default>false</default>
             </picklistValues>
             <picklistValues>
-                <fullName>LinkedIn</fullName>
+                <fullName>Outbound - Pulled from Forum</fullName>
                 <default>false</default>
             </picklistValues>
             <picklistValues>
-                <fullName>Outbound - Pulled from Website</fullName>
+                <fullName>Inbound - Called us directly</fullName>
                 <default>false</default>
             </picklistValues>
             <picklistValues>
-                <fullName>Publication - First Author</fullName>
+                <fullName>Inbound - Consultation</fullName>
                 <default>false</default>
             </picklistValues>
             <picklistValues>
-                <fullName>Publication - Last Author</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Web Sign Up</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Workshop</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Webinar Sign Up</fullName>
+                <fullName>Inbound - Emailed us directly</fullName>
                 <default>false</default>
             </picklistValues>
             <picklistValues>
@@ -961,23 +937,39 @@ This should probably be edited only rarely, as this integration is automated. Th
                 <default>false</default>
             </picklistValues>
             <picklistValues>
-                <fullName>Inbound - called us</fullName>
+                <fullName>Outbound - Membership or Coalition List</fullName>
                 <default>false</default>
             </picklistValues>
             <picklistValues>
-                <fullName>Inbound - Consultation</fullName>
+                <fullName>Other</fullName>
                 <default>false</default>
             </picklistValues>
             <picklistValues>
-                <fullName>Membership or Coalition List</fullName>
+                <fullName>Outbound - Pulled from Social Media</fullName>
                 <default>false</default>
             </picklistValues>
             <picklistValues>
-                <fullName>Forum</fullName>
+                <fullName>Outbound - Pulled from Website</fullName>
                 <default>false</default>
             </picklistValues>
             <picklistValues>
-                <fullName>Inbound - Called us directly</fullName>
+                <fullName>Inbound - Referral</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Webinar Sign Up</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Web Sign Up</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Workshop</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Inbound - Contacted Through Social Media</fullName>
                 <default>false</default>
             </picklistValues>
             <sorted>false</sorted>
@@ -1072,17 +1064,17 @@ This should probably be edited only rarely, as this integration is automated. Th
             <controllingField>LeadSource</controllingField>
             <picklistValues>
                 <fullName>Internal referral (within the same organization)</fullName>
-                <controllingFieldValues>Referred to Us</controllingFieldValues>
+                <controllingFieldValues>Inbound - Referral</controllingFieldValues>
                 <default>false</default>
             </picklistValues>
             <picklistValues>
                 <fullName>External referral (to a different organization)</fullName>
-                <controllingFieldValues>Referred to Us</controllingFieldValues>
+                <controllingFieldValues>Inbound - Referral</controllingFieldValues>
                 <default>false</default>
             </picklistValues>
             <picklistValues>
                 <fullName>Dimagi referral (someone from Dimagi referred this lead)</fullName>
-                <controllingFieldValues>Referred to Us</controllingFieldValues>
+                <controllingFieldValues>Inbound - Referral</controllingFieldValues>
                 <default>false</default>
             </picklistValues>
             <sorted>false</sorted>
@@ -1417,25 +1409,34 @@ This should probably be edited only rarely, as this integration is automated. Th
         <externalId>false</externalId>
         <formula>If(ispickval(Lead_Status_Reason__c, &quot;Invited user&quot;), &quot;Excluded&quot;,
 CASE(Status, 
-&quot;Working - Talking&quot;, &quot;Very Good&quot;,
+&quot;Working - Talking&quot;, &quot;Contacted / Still in process&quot;,
 &quot;Converted&quot;, &quot;Very Good&quot;,
+&quot;Converting to contact - not an opp&quot;, &quot;Excluded&quot;,
 &quot;Passive &amp; Friendly&quot;, 
     CASE(Lead_Status_Reason__c,
          &quot;Opportunity identified but timeline &gt; 6 months out&quot;, &quot;Very Good&quot;,
          &quot;No opportunity identified yet&quot;, &quot;Very Good&quot;,
          &quot;Former Dimagier&quot;, &quot;Very Good&quot;,
          &quot;Stopped responding&quot;, 
-           IF( Hubspot__c &gt; 250, &quot;Very Good&quot;, &quot;Not So Good&quot;),
+           IF( Hubspot__c &gt; 250, &quot;OK&quot;, &quot;Weak&quot;),
          &quot;Self-start on Community Edition&quot;, 
-           IF( Hubspot__c &gt; 250, &quot;Very Good&quot;, &quot;Not So Good&quot;),
+           IF( Hubspot__c &gt; 250, &quot;OK&quot;, &quot;Weak&quot;),
          &quot;No response&quot;, 
-           IF( Hubspot__c &gt; 250, &quot;Very Good&quot;, &quot;Not So Good&quot;),
+           IF( Hubspot__c &gt; 250, &quot;OK&quot;, &quot;Weak&quot;),
          &quot;Partner program&quot;, &quot;OK&quot;,
-         &quot;Bad&quot;
+         &quot;Decided to use another solution&quot;, &quot;OK&quot;,
+         &quot;Recruiting / Hiring&quot;, &quot;Bad&quot;,
+         &quot;Speaking request / research&quot;, &quot;Bad&quot;,
+         &quot;Contact information request&quot;, &quot;Bad&quot;,
+         &quot;Request for sponsorship&quot;, &quot;Bad&quot;,
+         &quot;Existing client / project&quot;, &quot;Excluded&quot;,
+         &quot;Existing opportunity (temporary)&quot;, &quot;Excluded&quot;,
+         &quot;Uncategorized&quot;
          ),
 &quot;Working - Contacted&quot;, &quot;Contacted / Still in process&quot;,
 &quot;Pending - Qualified&quot;, &quot;Not yet contacted&quot;,
-&quot;Bad&quot;
+&quot;Archived - Not Interested&quot;, &quot;Bad&quot;,
+&quot;Uncategorized&quot;
 ))</formula>
         <label>Quality</label>
         <required>false</required>
@@ -2041,6 +2042,22 @@ IF(
         <label>Amy&apos;s Leads</label>
     </listViews>
     <listViews>
+        <fullName>BD_Lead_Management_View</fullName>
+        <columns>FULL_NAME</columns>
+        <columns>LEAD.TITLE</columns>
+        <columns>LEAD.COMPANY</columns>
+        <columns>LEAD.EMAIL</columns>
+        <columns>LEAD.LAST_ACTIVITY</columns>
+        <columns>LEAD.STATUS</columns>
+        <columns>LEAD.LEAD_SOURCE</columns>
+        <columns>Country__c</columns>
+        <columns>city_of_residence__c</columns>
+        <columns>LEAD.CREATED_DATE</columns>
+        <columns>UPDATEDBY_USER.ALIAS</columns>
+        <filterScope>Mine</filterScope>
+        <label>BD Lead Management View</label>
+    </listViews>
+    <listViews>
         <fullName>CRS_Conference_Follow_Up_2015</fullName>
         <columns>LEAD.FIRST_NAME</columns>
         <columns>LEAD.LAST_NAME</columns>
@@ -2065,30 +2082,6 @@ IF(
         <columns>CAMPAIGN_MEMBER.STATUS</columns>
         <filterScope>Everything</filterScope>
         <label>CRS May15</label>
-    </listViews>
-    <listViews>
-        <fullName>Christina_Leads_for_BD</fullName>
-        <columns>FULL_NAME</columns>
-        <columns>LEAD.COMPANY</columns>
-        <columns>LEAD.EMAIL</columns>
-        <columns>LEAD.STATUS</columns>
-        <columns>Country__c</columns>
-        <columns>LEAD.LAST_ACTIVITY</columns>
-        <columns>UPDATEDBY_USER.ALIAS</columns>
-        <columns>city_of_residence__c</columns>
-        <columns>LEAD.CREATED_DATE</columns>
-        <filterScope>Mine</filterScope>
-        <filters>
-            <field>CORE.USERS.FIRST_NAME</field>
-            <operation>equals</operation>
-            <value>Christina</value>
-        </filters>
-        <filters>
-            <field>CORE.USERS.LAST_NAME</field>
-            <operation>equals</operation>
-            <value>Jeffrey</value>
-        </filters>
-        <label>Christina Leads for BD</label>
     </listViews>
     <listViews>
         <fullName>Colombia_Leads_MS</fullName>
@@ -2565,24 +2558,6 @@ IF(
         <label>Mexico</label>
     </listViews>
     <listViews>
-        <fullName>Mexico_Leads_MS</fullName>
-        <columns>FULL_NAME</columns>
-        <columns>LEAD.COMPANY</columns>
-        <columns>Country__c</columns>
-        <columns>LEAD.EMAIL</columns>
-        <columns>LEAD.STATUS</columns>
-        <columns>LEAD.CREATED_DATE</columns>
-        <columns>CORE.USERS.ALIAS</columns>
-        <columns>LEAD.UNREAD</columns>
-        <filterScope>Everything</filterScope>
-        <filters>
-            <field>Country__c</field>
-            <operation>equals</operation>
-            <value>Mexico</value>
-        </filters>
-        <label>Mexico Leads MS</label>
-    </listViews>
-    <listViews>
         <fullName>Mexico_MH</fullName>
         <columns>FULL_NAME</columns>
         <columns>LEAD.COMPANY</columns>
@@ -2986,9 +2961,9 @@ IF(
     <listViews>
         <fullName>christina_s_leads_for_ongoing_outreach</fullName>
         <booleanFilter>1 OR 2</booleanFilter>
-        <columns>LEAD.UNREAD</columns>
         <columns>FULL_NAME</columns>
         <columns>LEAD.COMPANY</columns>
+        <columns>LEAD.LEAD_SOURCE</columns>
         <columns>LEAD.LAST_ACTIVITY</columns>
         <columns>LEAD.STATUS</columns>
         <columns>LEAD.LAST_UPDATE</columns>
@@ -2998,6 +2973,7 @@ IF(
         <columns>LEAD.CREATED_DATE</columns>
         <columns>CORE.USERS.ALIAS</columns>
         <columns>CREATEDBY_USER.ALIAS</columns>
+        <columns>LEAD.UNREAD</columns>
         <filterScope>Everything</filterScope>
         <filters>
             <field>CORE.USERS.FIRST_NAME</field>
@@ -3127,6 +3103,29 @@ IF(
             <value>Sent</value>
         </filters>
         <label>lead status check - sent</label>
+    </listViews>
+    <listViews>
+        <fullName>leads_with_no_email_or_phone</fullName>
+        <columns>FULL_NAME</columns>
+        <columns>LEAD.COMPANY</columns>
+        <columns>LEAD.STATE</columns>
+        <columns>LEAD.EMAIL</columns>
+        <columns>LEAD.COUNTRY</columns>
+        <columns>LEAD.STATUS</columns>
+        <columns>LEAD.LAST_ACTIVITY</columns>
+        <columns>LEAD.CREATED_DATE</columns>
+        <columns>CORE.USERS.ALIAS</columns>
+        <columns>LEAD.UNREAD</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>LEAD.EMAIL</field>
+            <operation>equals</operation>
+        </filters>
+        <filters>
+            <field>LEAD.PHONE</field>
+            <operation>equals</operation>
+        </filters>
+        <label>leads with no email or phone</label>
     </listViews>
     <listViews>
         <fullName>mohini</fullName>

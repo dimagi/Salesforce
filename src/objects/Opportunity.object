@@ -988,6 +988,10 @@ Services_EV__c ,
                 <fullName>Self Service</fullName>
                 <default>false</default>
             </picklistValues>
+            <picklistValues>
+                <fullName>Managed server</fullName>
+                <default>false</default>
+            </picklistValues>
             <sorted>false</sorted>
         </picklist>
         <trackFeedHistory>false</trackFeedHistory>
@@ -1098,47 +1102,23 @@ Services_EV__c ,
         <fullName>LeadSource</fullName>
         <picklist>
             <picklistValues>
-                <fullName>Inbound - Emailed us directly</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Referred to Us</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Other</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
                 <fullName>Conference</fullName>
                 <default>false</default>
             </picklistValues>
             <picklistValues>
-                <fullName>LinkedIn</fullName>
+                <fullName>Outbound - Pulled from Forum</fullName>
                 <default>false</default>
             </picklistValues>
             <picklistValues>
-                <fullName>Outbound - Pulled from Website</fullName>
+                <fullName>Inbound - Called us directly</fullName>
                 <default>false</default>
             </picklistValues>
             <picklistValues>
-                <fullName>Publication - First Author</fullName>
+                <fullName>Inbound - Consultation</fullName>
                 <default>false</default>
             </picklistValues>
             <picklistValues>
-                <fullName>Publication - Last Author</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Web Sign Up</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Workshop</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Webinar Sign Up</fullName>
+                <fullName>Inbound - Emailed us directly</fullName>
                 <default>false</default>
             </picklistValues>
             <picklistValues>
@@ -1150,23 +1130,39 @@ Services_EV__c ,
                 <default>false</default>
             </picklistValues>
             <picklistValues>
-                <fullName>Inbound - called us</fullName>
+                <fullName>Outbound - Membership or Coalition List</fullName>
                 <default>false</default>
             </picklistValues>
             <picklistValues>
-                <fullName>Inbound - Consultation</fullName>
+                <fullName>Other</fullName>
                 <default>false</default>
             </picklistValues>
             <picklistValues>
-                <fullName>Membership or Coalition List</fullName>
+                <fullName>Outbound - Pulled from Social Media</fullName>
                 <default>false</default>
             </picklistValues>
             <picklistValues>
-                <fullName>Forum</fullName>
+                <fullName>Outbound - Pulled from Website</fullName>
                 <default>false</default>
             </picklistValues>
             <picklistValues>
-                <fullName>Inbound - Called us directly</fullName>
+                <fullName>Inbound - Referral</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Webinar Sign Up</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Web Sign Up</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Workshop</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Inbound - Contacted Through Social Media</fullName>
                 <default>false</default>
             </picklistValues>
             <sorted>false</sorted>
@@ -2857,23 +2853,23 @@ Expected_Value_Minus_Income__c ,
     </listViews>
     <listViews>
         <fullName>CJ_Opp_View</fullName>
-        <booleanFilter>(1 OR 2) AND 3</booleanFilter>
+        <booleanFilter>1 or 2</booleanFilter>
         <columns>OPPORTUNITY.NAME</columns>
-        <columns>CORE.USERS.FIRST_NAME</columns>
         <columns>ACCOUNT.NAME</columns>
-        <columns>Opportunity_Owning_Entity__c</columns>
         <columns>Channel_Response__c</columns>
+        <columns>OPPORTUNITY.CLOSE_DATE</columns>
+        <columns>Duration_months__c</columns>
+        <columns>Country__c</columns>
         <columns>Contract_Owner_BU__c</columns>
         <columns>Implementing_Business_Unit__c</columns>
-        <columns>Country__c</columns>
+        <columns>Opportunity_Owning_Entity__c</columns>
         <columns>OPPORTUNITY.STAGE_NAME</columns>
-        <columns>OPPORTUNITY.CLOSE_DATE</columns>
         <columns>Tag__c</columns>
         <columns>Fogbugz_Probability__c</columns>
         <columns>OPPORTUNITY.AMOUNT</columns>
         <columns>Product_Text__c</columns>
         <columns>Implementation_Type__c</columns>
-        <filterScope>Everything</filterScope>
+        <filterScope>Mine</filterScope>
         <filters>
             <field>OPPORTUNITY.STAGE_NAME</field>
             <operation>equals</operation>
@@ -2883,11 +2879,6 @@ Expected_Value_Minus_Income__c ,
             <field>OPPORTUNITY.STAGE_NAME</field>
             <operation>equals</operation>
             <value>Stage 6 - In Negotiations</value>
-        </filters>
-        <filters>
-            <field>Implementing_Business_Unit__c</field>
-            <operation>equals</operation>
-            <value>INC,DLAC</value>
         </filters>
         <label>CJ Opp View</label>
     </listViews>

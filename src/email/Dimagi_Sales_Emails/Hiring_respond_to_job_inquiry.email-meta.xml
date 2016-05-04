@@ -2,7 +2,7 @@
 <EmailTemplate xmlns="http://soap.sforce.com/2006/04/metadata">
     <available>true</available>
     <description>A response for general job inquiries on info@dimagi.com</description>
-    <encodingKey>ISO-8859-1</encodingKey>
+    <encodingKey>UTF-8</encodingKey>
     <name>Hiring - respond to job inquiry</name>
     <style>none</style>
     <subject>Thank you for your interest in Dimagi</subject>

@@ -1382,17 +1382,17 @@
             <controllingField>LeadSource</controllingField>
             <picklistValues>
                 <fullName>Internal referral (within the same organization)</fullName>
-                <controllingFieldValues>Referred to Us</controllingFieldValues>
+                <controllingFieldValues>Inbound - Referral</controllingFieldValues>
                 <default>false</default>
             </picklistValues>
             <picklistValues>
                 <fullName>External referral (to a different organization)</fullName>
-                <controllingFieldValues>Referred to Us</controllingFieldValues>
+                <controllingFieldValues>Inbound - Referral</controllingFieldValues>
                 <default>false</default>
             </picklistValues>
             <picklistValues>
                 <fullName>Dimagi referral (someone from Dimagi referred this lead)</fullName>
-                <controllingFieldValues>Referred to Us</controllingFieldValues>
+                <controllingFieldValues>Inbound - Referral</controllingFieldValues>
                 <default>false</default>
             </picklistValues>
             <sorted>false</sorted>
@@ -1681,47 +1681,23 @@
         <fullName>LeadSource</fullName>
         <picklist>
             <picklistValues>
-                <fullName>Inbound - Emailed us directly</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Referred to Us</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Other</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
                 <fullName>Conference</fullName>
                 <default>false</default>
             </picklistValues>
             <picklistValues>
-                <fullName>LinkedIn</fullName>
+                <fullName>Outbound - Pulled from Forum</fullName>
                 <default>false</default>
             </picklistValues>
             <picklistValues>
-                <fullName>Outbound - Pulled from Website</fullName>
+                <fullName>Inbound - Called us directly</fullName>
                 <default>false</default>
             </picklistValues>
             <picklistValues>
-                <fullName>Publication - First Author</fullName>
+                <fullName>Inbound - Consultation</fullName>
                 <default>false</default>
             </picklistValues>
             <picklistValues>
-                <fullName>Publication - Last Author</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Web Sign Up</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Workshop</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Webinar Sign Up</fullName>
+                <fullName>Inbound - Emailed us directly</fullName>
                 <default>false</default>
             </picklistValues>
             <picklistValues>
@@ -1733,23 +1709,39 @@
                 <default>false</default>
             </picklistValues>
             <picklistValues>
-                <fullName>Inbound - called us</fullName>
+                <fullName>Outbound - Membership or Coalition List</fullName>
                 <default>false</default>
             </picklistValues>
             <picklistValues>
-                <fullName>Inbound - Consultation</fullName>
+                <fullName>Other</fullName>
                 <default>false</default>
             </picklistValues>
             <picklistValues>
-                <fullName>Membership or Coalition List</fullName>
+                <fullName>Outbound - Pulled from Social Media</fullName>
                 <default>false</default>
             </picklistValues>
             <picklistValues>
-                <fullName>Forum</fullName>
+                <fullName>Outbound - Pulled from Website</fullName>
                 <default>false</default>
             </picklistValues>
             <picklistValues>
-                <fullName>Inbound - Called us directly</fullName>
+                <fullName>Inbound - Referral</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Webinar Sign Up</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Web Sign Up</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Workshop</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Inbound - Contacted Through Social Media</fullName>
                 <default>false</default>
             </picklistValues>
             <sorted>false</sorted>
@@ -2615,6 +2607,24 @@
             <value>Michelle</value>
         </filters>
         <label>MS Contacts</label>
+    </listViews>
+    <listViews>
+        <fullName>Marco_Contact_View</fullName>
+        <columns>FULL_NAME</columns>
+        <columns>ACCOUNT.NAME</columns>
+        <columns>CONTACT.LAST_ACTIVITY</columns>
+        <columns>Country__c</columns>
+        <columns>Status__c</columns>
+        <columns>CONTACT.PHONE1</columns>
+        <columns>CONTACT.EMAIL</columns>
+        <columns>UPDATEDBY_USER.ALIAS</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>CORE.USERS.FIRST_NAME</field>
+            <operation>equals</operation>
+            <value>Marco</value>
+        </filters>
+        <label>Marco Contact View</label>
     </listViews>
     <listViews>
         <fullName>Michelle_Contacts_View_for_BD_2016</fullName>

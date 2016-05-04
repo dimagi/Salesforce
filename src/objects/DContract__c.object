@@ -269,11 +269,11 @@
     </fields>
     <fields>
         <fullName>Buffer_by_SOW_Completed__c</fullName>
-        <description>% Deliverables Completed (populated by PM in PRO) minus % of Budget Used</description>
+        <description>% of Work Completed (populated by PM in PRO) minus % of Budget Used</description>
         <externalId>false</externalId>
         <formula>Percent_through_SOW_deliverables__c - Budget_Used__c</formula>
-        <inlineHelpText>% Deliverables Completed (populated by PM in PRO) minus % of Budget Used</inlineHelpText>
-        <label>Buffer % by Deliverables Completed</label>
+        <inlineHelpText>% of Work Completed (populated by PM in PRO) minus % of Budget Used</inlineHelpText>
+        <label>Buffer % by Work Completed</label>
         <precision>18</precision>
         <required>false</required>
         <scale>0</scale>
@@ -780,11 +780,11 @@ See https://confluence.dimagi.com/display/BD/BD+Channels</inlineHelpText>
     </fields>
     <fields>
         <fullName>Execution_Efficiency__c</fullName>
-        <description>(Services Budget * % Deliverables Completed) / Services Spend
+        <description>(Services Budget * % of Work Completed) / Services Spend
 If any blanks in variables is set to 100%.</description>
         <externalId>false</externalId>
         <formula>if(and(Services_Budget__c  &gt; 0, Services_Spend__c &gt;0),(Services_Budget__c *  Percent_through_SOW_deliverables__c )/ Services_Spend__c, 1)</formula>
-        <inlineHelpText>(Services Budget * % Deliverables Completed) / Services Spend
+        <inlineHelpText>(Services Budget * % of Work Completed) / Services Spend
 If any blanks in variables is set to 100%.</inlineHelpText>
         <label>Execution Efficiency</label>
         <precision>18</precision>
@@ -944,11 +944,11 @@ If any blanks in variables is set to 100%.</inlineHelpText>
     </fields>
     <fields>
         <fullName>GS_Execution_Budget__c</fullName>
-        <description>Execution Budget * % of Execution Budget for GS</description>
+        <description>Services Budget * % of Services Budget for GS</description>
         <externalId>false</externalId>
         <formula>Services_Budget__c *  of_Services_budget_for_GS__c</formula>
         <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
-        <inlineHelpText>Execution Budget * % of Execution Budget for GS</inlineHelpText>
+        <inlineHelpText>Services Budget * % of Serivces Budget for GS</inlineHelpText>
         <label>GS Services Budget</label>
         <precision>18</precision>
         <required>false</required>
@@ -956,6 +956,133 @@ If any blanks in variables is set to 100%.</inlineHelpText>
         <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>GS_Services_Completed__c</fullName>
+        <description>% Work Completed * GS Services Budget</description>
+        <externalId>false</externalId>
+        <formula>Percent_through_SOW_deliverables__c *  GS_Execution_Budget__c</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <inlineHelpText>% Work Completed * GS Services Budget</inlineHelpText>
+        <label>GS Services Completed</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>GS_Services_Work_12_month__c</fullName>
+        <description>Calculated based on Contract Dates and Total GS Services Remaining</description>
+        <externalId>false</externalId>
+        <formula>if ( MONTH(Contract_End_Date__c) + 12*YEAR(Contract_End_Date__c) &lt; (MONTH(today()) + 12*YEAR(today()) + 12), Total_Services_Work_Remaining__c , 
+Total_Services_Work_Remaining__c * (12 / (MONTH(Contract_End_Date__c) + 12*YEAR(Contract_End_Date__c) - MONTH(today()) - 12*YEAR(today()))))</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <inlineHelpText>Calculated based on Contract Dates and Total GS Services Remaining</inlineHelpText>
+        <label>GS Services Work (12 month)</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>GS_Services_Work_18_month__c</fullName>
+        <description>Calculated based on Contract Dates and Total GS Services Remaining</description>
+        <externalId>false</externalId>
+        <formula>if ( MONTH(Contract_End_Date__c) + 12*YEAR(Contract_End_Date__c) &lt; (MONTH(today()) + 12*YEAR(today()) + 18), 
+Total_Services_Work_Remaining__c , 
+Total_Services_Work_Remaining__c * (18 / (MONTH(Contract_End_Date__c) + 12*YEAR(Contract_End_Date__c) - MONTH(today()) - 12*YEAR(today()))))</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <inlineHelpText>Calculated based on Contract Dates and Total GS Services Remaining</inlineHelpText>
+        <label>GS Services Work (18 month)</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>GS_Services_Work_24_month__c</fullName>
+        <description>Calculated based on Contract Dates and Total GS Services Remaining</description>
+        <externalId>false</externalId>
+        <formula>if ( MONTH(Contract_End_Date__c) + 12*YEAR(Contract_End_Date__c) &lt; (MONTH(today()) + 12*YEAR(today()) + 24), 
+Total_Services_Work_Remaining__c , 
+Total_Services_Work_Remaining__c * (24 / (MONTH(Contract_End_Date__c) + 12*YEAR(Contract_End_Date__c) - MONTH(today()) - 12*YEAR(today()))))</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <inlineHelpText>Calculated based on Contract Dates and Total GS Services Remaining</inlineHelpText>
+        <label>GS Services Work (24 month)</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>GS_Services_Work_3_month__c</fullName>
+        <description>Calculated based on Contract Dates and Total GS Services Remaining</description>
+        <externalId>false</externalId>
+        <formula>if ( MONTH(Contract_End_Date__c) + 12*YEAR(Contract_End_Date__c) &lt; (MONTH(today()) + 12*YEAR(today()) + 3),  Total_Services_Work_Remaining__c , 
+ Total_Services_Work_Remaining__c * (3 / (MONTH(Contract_End_Date__c) + 12*YEAR(Contract_End_Date__c) - MONTH(today()) - 12*YEAR(today()))))</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <inlineHelpText>Calculated based on Contract Dates and Total GS Services Remaining</inlineHelpText>
+        <label>GS Services Work (3 month)</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>GS_Services_Work_6_month__c</fullName>
+        <description>Calculated based on Contract Dates and Total GS Services Remaining</description>
+        <externalId>false</externalId>
+        <formula>if ( MONTH(Contract_End_Date__c) + 12*YEAR(Contract_End_Date__c) &lt; (MONTH(today()) + 12*YEAR(today()) + 6), Total_Services_Work_Remaining__c , 
+Total_Services_Work_Remaining__c * (6 / (MONTH(Contract_End_Date__c) + 12*YEAR(Contract_End_Date__c) - MONTH(today()) - 12*YEAR(today()))))</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <inlineHelpText>Calculated based on Contract Dates and Total GS Services Remaining</inlineHelpText>
+        <label>GS Services Work (6 month)</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>GS_Services_Work_9_month__c</fullName>
+        <description>Calculated based on Contract Dates and Total GS Services Remaining</description>
+        <externalId>false</externalId>
+        <formula>if ( MONTH(Contract_End_Date__c) + 12*YEAR(Contract_End_Date__c) &lt; (MONTH(today()) + 12*YEAR(today()) + 9), Total_Services_Work_Remaining__c , 
+Total_Services_Work_Remaining__c * (9 / (MONTH(Contract_End_Date__c) + 12*YEAR(Contract_End_Date__c) - MONTH(today()) - 12*YEAR(today()))))</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <inlineHelpText>Calculated based on Contract Dates and Total GS Services Remaining</inlineHelpText>
+        <label>GS Services Work (9 month)</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>GS_of_Non_Expense_Budget__c</fullName>
+        <description>GS Services Budget /  Total_Non_Expense_Income_BUDGET</description>
+        <externalId>false</externalId>
+        <formula>GS_Execution_Budget__c /  Total_Non_Expense_Income_BUDGET__c</formula>
+        <inlineHelpText>GS Services Budget /  Total_Non_Expense_Income_BUDGET</inlineHelpText>
+        <label>% GS of Non-Expense Budget</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Percent</type>
     </fields>
     <fields>
         <fullName>INC_Custom_Services_Income__c</fullName>
@@ -1262,11 +1389,11 @@ If any blanks in variables is set to 100%.</inlineHelpText>
     </fields>
     <fields>
         <fullName>Margin_by_SOW_Completed__c</fullName>
-        <description>% by Deliverables Completed (populated by PM in PRO) minus % of Budget Used</description>
+        <description>% of Work Completed (populated by PM in PRO) minus % of Budget Used</description>
         <externalId>false</externalId>
         <formula>Percent_through_SOW_deliverables__c - Budget_Used__c</formula>
-        <inlineHelpText>% by Deliverables Completed (populated by PM in PRO) minus % of Budget Used</inlineHelpText>
-        <label>Buffer % by Deliverables (Mustafa)</label>
+        <inlineHelpText>% of Work Completed (populated by PM in PRO) minus % of Budget Used</inlineHelpText>
+        <label>Buffer % by Work Completed (Mustafa)</label>
         <precision>18</precision>
         <required>false</required>
         <scale>0</scale>
@@ -1300,12 +1427,12 @@ If any blanks in variables is set to 100%.</inlineHelpText>
     </fields>
     <fields>
         <fullName>Net_Income_based_on_SOW_Completed__c</fullName>
-        <description>(% Deliverables Completed  * Total Contract Amount) - Total Calculated Costs (Labor &amp; External Expenses)</description>
+        <description>(% of Work Completed * Total Contract Amount) - Total Calculated Costs (Labor &amp; External Expenses)</description>
         <externalId>false</externalId>
         <formula>(Percent_through_SOW_deliverables__c *  Total_Amount_of_Contract__c ) -  Total_Costs__c</formula>
         <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
-        <inlineHelpText>(% Deliverables Completed  * Total Contract Amount) - Total Calculated Costs (Labor &amp; External Expenses)</inlineHelpText>
-        <label>Net Income by Deliverables Completed</label>
+        <inlineHelpText>(% of Work Completed  * Total Contract Amount) - Total Calculated Costs (Labor &amp; External Expenses)</inlineHelpText>
+        <label>Net Income based on % Work Completed</label>
         <precision>18</precision>
         <required>false</required>
         <scale>0</scale>
@@ -2459,6 +2586,21 @@ If any blanks in variables is set to 100%.</inlineHelpText>
         <type>Currency</type>
     </fields>
     <fields>
+        <fullName>Total_Services_Work_Remaining__c</fullName>
+        <description>Services Budget * (1 - % Work Complete) * % Services budget for GS</description>
+        <externalId>false</externalId>
+        <formula>(1-  Percent_through_SOW_deliverables__c ) *  Services_Budget__c *  of_Services_budget_for_GS__c</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <inlineHelpText>Services Budget * (1 - % Work Complete) * % Services budget for GS</inlineHelpText>
+        <label>Total GS Services Work Remaining</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
         <fullName>Twelve_Month_Cash_Minus_Income_EV__c</fullName>
         <description>Calculated based on Contract Dates and Total Non Expense Income Remaining</description>
         <externalId>false</externalId>
@@ -2922,10 +3064,6 @@ Total_Non_Expense_Income_Remaining__c * (9 / (MONTH(Contract_End_Date__c) + 12*Y
             <operation>equals</operation>
             <value>DSA</value>
         </filters>
-        <filters>
-            <field>Parent_Contract__c</field>
-            <operation>equals</operation>
-        </filters>
         <label>DSA Contracts</label>
     </listViews>
     <listViews>
@@ -2997,26 +3135,6 @@ Total_Non_Expense_Income_Remaining__c * (9 / (MONTH(Contract_End_Date__c) + 12*Y
             <value>LAST_N_MONTHS:2</value>
         </filters>
         <label>Execution Dates</label>
-    </listViews>
-    <listViews>
-        <fullName>Require_Report_Out</fullName>
-        <columns>NAME</columns>
-        <columns>Parent_Contract__c</columns>
-        <columns>Project_Manager__c</columns>
-        <columns>Requires_Report_Out__c</columns>
-        <columns>Last_Report_Out_Date__c</columns>
-        <filterScope>Everything</filterScope>
-        <filters>
-            <field>Status__c</field>
-            <operation>equals</operation>
-            <value>Active</value>
-        </filters>
-        <filters>
-            <field>Requires_Report_Out__c</field>
-            <operation>equals</operation>
-            <value>Yes</value>
-        </filters>
-        <label>Require Report Out</label>
     </listViews>
     <listViews>
         <fullName>Summaries</fullName>

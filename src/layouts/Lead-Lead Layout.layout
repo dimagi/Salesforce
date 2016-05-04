@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Layout xmlns="http://soap.sforce.com/2006/04/metadata">
     <customButtons>Test_emails</customButtons>
+    <excludeButtons>DataDotComClean</excludeButtons>
     <excludeButtons>Submit</excludeButtons>
     <headers>PersonalTagging</headers>
     <headers>PublicTagging</headers>
@@ -27,8 +28,16 @@
                 <field>Title</field>
             </layoutItems>
             <layoutItems>
+                <behavior>Required</behavior>
+                <field>Email</field>
+            </layoutItems>
+            <layoutItems>
                 <behavior>Edit</behavior>
-                <field>Industry</field>
+                <field>secondary_email__c</field>
+            </layoutItems>
+            <layoutItems>
+                <behavior>Readonly</behavior>
+                <field>Email_is_generic__c</field>
             </layoutItems>
             <layoutItems>
                 <behavior>Edit</behavior>
@@ -36,23 +45,7 @@
             </layoutItems>
             <layoutItems>
                 <behavior>Edit</behavior>
-                <field>country_unverified__c</field>
-            </layoutItems>
-            <layoutItems>
-                <behavior>Edit</behavior>
-                <field>LeadSource</field>
-            </layoutItems>
-            <layoutItems>
-                <behavior>Edit</behavior>
                 <field>account_name__c</field>
-            </layoutItems>
-            <layoutItems>
-                <behavior>Edit</behavior>
-                <field>Lead_Gen_Initiative__c</field>
-            </layoutItems>
-            <layoutItems>
-                <behavior>Edit</behavior>
-                <field>State__c</field>
             </layoutItems>
             <layoutItems>
                 <behavior>Edit</behavior>
@@ -60,7 +53,11 @@
             </layoutItems>
             <layoutItems>
                 <behavior>Edit</behavior>
-                <field>secondary_email__c</field>
+                <field>State__c</field>
+            </layoutItems>
+            <layoutItems>
+                <behavior>Edit</behavior>
+                <field>LeadSource</field>
             </layoutItems>
             <layoutItems>
                 <behavior>Readonly</behavior>
@@ -94,14 +91,6 @@
             </layoutItems>
             <layoutItems>
                 <behavior>Edit</behavior>
-                <field>Email</field>
-            </layoutItems>
-            <layoutItems>
-                <behavior>Readonly</behavior>
-                <field>Email_is_generic__c</field>
-            </layoutItems>
-            <layoutItems>
-                <behavior>Edit</behavior>
                 <field>Website</field>
             </layoutItems>
             <layoutItems>
@@ -119,6 +108,18 @@
             <layoutItems>
                 <behavior>Edit</behavior>
                 <field>Follow_up_Date__c</field>
+            </layoutItems>
+            <layoutItems>
+                <behavior>Edit</behavior>
+                <field>Lead_Gen_Initiative__c</field>
+            </layoutItems>
+            <layoutItems>
+                <behavior>Edit</behavior>
+                <field>Industry</field>
+            </layoutItems>
+            <layoutItems>
+                <behavior>Edit</behavior>
+                <field>country_unverified__c</field>
             </layoutItems>
         </layoutColumns>
         <style>TwoColumnsTopToBottom</style>
@@ -329,6 +330,14 @@
                 <field>Hubspot_First_conversion__c</field>
             </layoutItems>
             <layoutItems>
+                <behavior>Edit</behavior>
+                <field>Hubspot_First_Conversion_Clustered__c</field>
+            </layoutItems>
+            <layoutItems>
+                <behavior>Edit</behavior>
+                <field>Hubspot_Last_reborn_SQL_date__c</field>
+            </layoutItems>
+            <layoutItems>
                 <height>200</height>
                 <page>HubSpot_Inc__HubSpotLeadIntel</page>
                 <showLabel>false</showLabel>
@@ -371,7 +380,7 @@
             </layoutItems>
             <layoutItems>
                 <behavior>Edit</behavior>
-                <field>Hubspot_HQ_sign_up_date__c</field>
+                <field>Hubspot_HQ_created_account_date__c</field>
             </layoutItems>
             <layoutItems>
                 <behavior>Edit</behavior>
@@ -384,6 +393,14 @@
             <layoutItems>
                 <behavior>Edit</behavior>
                 <field>Hubspot_SQL_qualifying_actions__c</field>
+            </layoutItems>
+            <layoutItems>
+                <behavior>Edit</behavior>
+                <field>Hubspot_A_B__c</field>
+            </layoutItems>
+            <layoutItems>
+                <behavior>Edit</behavior>
+                <field>Hubspot_Max_Edition_of_Paying_Plan__c</field>
             </layoutItems>
         </layoutColumns>
         <style>TwoColumnsTopToBottom</style>
