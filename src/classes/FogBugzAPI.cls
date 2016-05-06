@@ -90,54 +90,72 @@ public with sharing class FogBugzAPI {
         }
         
         return connection.send(req).getBody();
-	}
-	
-	public String createCase(FogBugzCase fbCase, boolean close) {
-		
-		Map<String, String> params = new Map<String, String> {
-			'cmd' => 'new',
-			'sTitle' => fbCase.title,
-			'sVersion' => fbCase.externalBugID,
-			'sProject' => fbCase.project,
-			'sArea' => fbCase.area,
-			'sPersonAssignedTo' => fbCase.assignedTo,
-			'sStatus' => fbCase.status,
-			'ixPriority' => fbCase.priority.format()
-		};
-		
-		if (fbCase.probability != null) {
-			params.put('sTags', '['+fbCase.dealSize+'/'+fbCase.probability+']');
-		}
-		
-		HTTPRequest req = new HttpRequest();
-		req.setEndpoint(FB_API_URL);
-		req.setBody('token=' + FogBugz_Settings__c.getOrgDefaults().Token__c + '&' + encodeParameters(params));
+    }
+
+    public String createCase(FogBugzCase fbCase, boolean close) {
+        Map<String, String> params = new Map<String, String> {
+            'cmd' => 'new',
+            'sTitle' => fbCase.title,
+            'sVersion' => fbCase.externalBugID,
+            'sProject' => fbCase.project,
+            'sArea' => fbCase.area,
+            'sPersonAssignedTo' => fbCase.assignedTo,
+            'sStatus' => fbCase.status,
+            'ixPriority' => fbCase.priority.format()
+        };
+
+        if (fbCase.probability != null) {
+            params.put('sTags', '['+fbCase.dealSize+'/'+fbCase.probability+']');
+        }
+
+        HTTPRequest req = new HttpRequest();
+        req.setEndpoint(FB_API_URL);
+        req.setBody('token=' + FogBugz_Settings__c.getOrgDefaults().Token__c + '&' + encodeParameters(params));
         req.setTimeout(FB_HTTP_TIMEOUT);
-		req.setMethod('POST');
-		
-		HTTP connection = new HTTP();
-		HTTPResponse res = null;
-		
-		if (Test.isRunningTest()) {
-			FogBugzHttpCalloutMock mock = new FogBugzHttpCalloutMock();
-			res = mock.respond(req);
-		}
-		else {
+        req.setMethod('POST');
+
+        HTTP connection = new HTTP();
+        HTTPResponse res = null;
+
+        if (Test.isRunningTest()) {
+            FogBugzHttpCalloutMock mock = new FogBugzHttpCalloutMock();
+            res = mock.respond(req);
+        }
+        else {
             res = connection.send(req);
-		}
-		
-		
-		fbCase.caseId = parseUpsertId(res.getBody());
-		
-		if (close) {
+        }
+
+        fbCase.caseId = parseUpsertId(res.getBody());
+
+        if (close) {
             this.resolveCase(fbCase);
             this.closeCase(fbCase);
         }
-        
-		return fbCase.caseId;
-	}
-	
-	public String resolveCase(FogBugzCase fbCase) {
+
+        if (String.isBlank(fbCase.caseId)) {
+            sendErrorEmail(res.getBody());
+        }
+
+        return fbCase.caseId;
+    }
+
+    private void sendErrorEmail(String response) {
+        if(Test.IsRunningTest()) {
+            return;
+        }
+
+        Messaging.SingleEmailMessage email = new Messaging.SingleEmailMessage(); 
+        String adress = FogBugz_Settings__c.getOrgDefaults().Error_Email__c;
+
+        email.setSubject('Cannot create FogBugz case');
+        email.setToAddresses(new String[] {adress});
+        String emailBody = 'Cannot create FogbBugz case for Oppurtinity<br/> Response:<br/>' + response;
+        email.setHtmlBody(emailBody);
+
+        Messaging.sendEmail(new Messaging.SingleEmailMessage[] {email});
+    }
+
+    public String resolveCase(FogBugzCase fbCase) {
         Map<String, String> params = new Map<String, String> {
             'cmd' => 'resolve',
             'ixBug' => fbCase.caseId,
@@ -158,20 +176,19 @@ public with sharing class FogBugzAPI {
             res = mock.respond(req);	
         }
         else {
-	        res = connection.send(req);
+            res = connection.send(req);
         }
         
         return parseUpsertId(res.getBody());
     }
-    
+
     public String reopenCase(FogBugzCase fbCase) {
-    	
         Map<String, String> params = new Map<String, String> {
             'cmd' => 'reopen',
             'ixBug' => fbCase.caseId,
             'sVersion' => fbCase.externalBugID
         };
-        
+
         HTTPRequest req = new HttpRequest();
         req.setEndpoint(FB_API_URL);
         req.setBody('token=' + FogBugz_Settings__c.getOrgDefaults().Token__c + '&' + encodeParameters(params));

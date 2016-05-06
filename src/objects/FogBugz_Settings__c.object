@@ -14,6 +14,15 @@
         <unique>false</unique>
     </fields>
     <fields>
+        <fullName>Error_Email__c</fullName>
+        <externalId>false</externalId>
+        <label>Error Email</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Email</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
         <fullName>Last_Time_Sync_Ran__c</fullName>
         <externalId>false</externalId>
         <label>Last Time Sync Ran</label>
