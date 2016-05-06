@@ -366,6 +366,16 @@
         <type>Lookup</type>
     </fields>
     <fields>
+        <fullName>Likely_Real__c</fullName>
+        <description>over 300 forms</description>
+        <externalId>false</externalId>
+        <formula>cpAllForms__c &gt;= 300</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Likely Real</label>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
         <fullName>Name__c</fullName>
         <externalId>false</externalId>
         <label>domain_Name</label>
@@ -1398,6 +1408,15 @@
         <required>false</required>
         <trackTrending>false</trackTrending>
         <type>DateTime</type>
+    </fields>
+    <fields>
+        <fullName>submitted_form__c</fullName>
+        <externalId>false</externalId>
+        <formula>cpAllForms__c &gt; 0</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>submitted form</label>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
     </fields>
     <fields>
         <fullName>supports_multiple_locations_per_user__c</fullName>

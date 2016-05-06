@@ -142,7 +142,7 @@
                 </div>
             </apex:facet>
         </apex:actionstatus>
-        <apex:tabPanel switchType="client"  value="{!selectedTab}" id="theTabPanel" rendered="{!isAuthenticated}">
+        <apex:tabPanel switchType="client"  value="{!selectedTab}" id="theTabPanel"><!-- rendered="{!isAuthenticated}"-->
             <apex:tab label="Report Out" name="reportTab" id="tabOne">
             <input type="text" style="width:0;opacity:0;height:0" />
             <apex:pageBlock title="Project Report Out" >
@@ -503,10 +503,6 @@
                                    </apex:column>
 
                                    <apex:column headerValue="% Budget Used" value="{!obj.prcntgUsed}%" style = "{!if(obj.prcntgUsed > 100,'background-color: red;', if(obj.prcntgUsed > 85,'background-color: yellow;',''))};{!if(obj.categoryName='Total Costs (not including subcontracts)' || obj.categoryName='Total Costs (including subcontracts)','font-weight: bold', '')}" />
-
-                                    <!--<apex:column headerValue="% Deliverables Completed">
-                                        <apex:outputText value="{!obj.throughSOWDeliverable}%" rendered="{!if(obj.categoryName='Total Costs (not including subcontracts)' || obj.categoryName='Total Costs (including subcontracts)',false, true)}"></apex:outputText>
-                                    </apex:column>-->
 
                                 </apex:pageBlockTable>
                             </apex:outputPanel>

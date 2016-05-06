@@ -34,11 +34,11 @@ public with sharing class TriggerFactory
      */ 
     private static void execute(ITrigger handler)
     {
-    	if(handler.skipExecution())
-    	{
-    		return;
-    	}
-    	
+        if(handler.skipExecution())
+        {
+            return;
+        }
+        
         // Before Trigger
         if (Trigger.isBefore)
         {

@@ -121,6 +121,19 @@
         <visibleLines>10</visibleLines>
     </fields>
     <fields>
+        <fullName>Contract_Snapshot__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <externalId>false</externalId>
+        <label>Contract Snapshot</label>
+        <referenceTo>PRO_Contract_Snapshot__c</referenceTo>
+        <relationshipLabel>Project Report Outs</relationshipLabel>
+        <relationshipName>Project_Report_Outs</relationshipName>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
         <fullName>Contract__c</fullName>
         <externalId>false</externalId>
         <label>Contract</label>

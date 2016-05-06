@@ -128,6 +128,17 @@
         <type>Checkbox</type>
     </fields>
     <fields>
+        <fullName>cirrusadv__Day_Activity_Created__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <formula>CASE( MOD(  DATEVALUE(CreatedDate)  - DATE(1900, 1, 7), 7), 0, &quot;1 Sunday&quot;, 1, &quot;2 Monday&quot;, 2, &quot;3 Tuesday&quot;, 3,&quot;4 Wednesday&quot;, 4, &quot;5 Thursday&quot;, 5, &quot;6 Friday&quot;, 6, &quot;7 Saturday&quot;,&quot;Error&quot;)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Day Activity Created</label>
+        <required>false</required>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
         <fullName>cirrusadv__Email_Opened__c</fullName>
         <defaultValue>false</defaultValue>
         <deprecated>false</deprecated>
@@ -171,6 +182,19 @@
         <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
         <inlineHelpText>The hour of the day that the email was sent. (in UTC)</inlineHelpText>
         <label>Hour Sent (UTC)</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>cirrusadv__Hour__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <formula>FLOOR ( MOD( CreatedDate - ($System.OriginDateTime + 5/24),1) *24)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Hour</label>
         <precision>18</precision>
         <required>false</required>
         <scale>0</scale>

@@ -128,6 +128,17 @@ YEAR(DATEVALUE(accounting_billingaccount_date_created__c)) == YEAR(DATEVALUE(dat
         <type>Checkbox</type>
     </fields>
     <fields>
+        <fullName>Ops_Override__c</fullName>
+        <defaultValue>false</defaultValue>
+        <description>This field is used by ops to remove certain invoices that we do not think should be counted toward the Product revenue (at least not yet). For most of these, we are not yet confident they are real paying customers, and they haven&apos;t been responsive to payment requests. We aren&apos;t sure yet so don&apos;t want to permanently update yet in HQ. (e.g. this was created for the World Vision projects)</description>
+        <externalId>false</externalId>
+        <inlineHelpText>This field is used by ops to remove certain invoices that we do not think should be counted toward the Product revenue (at least not yet). We are not yet confident they are real paying customers, and they haven&apos;t been responsive to payment requests.</inlineHelpText>
+        <label>Ops Override</label>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
         <fullName>Payment_Status__c</fullName>
         <externalId>false</externalId>
         <formula>if( ISBLANK(date_paid__c ),&quot;Not Paid&quot;,&quot;Paid&quot;)</formula>

@@ -226,6 +226,10 @@
                 <behavior>Readonly</behavior>
                 <field>accounting_subscription_do_not_invoice__c</field>
             </layoutItems>
+            <layoutItems>
+                <behavior>Edit</behavior>
+                <field>Ops_Override__c</field>
+            </layoutItems>
         </layoutColumns>
         <style>TwoColumnsLeftToRight</style>
     </layoutSections>
