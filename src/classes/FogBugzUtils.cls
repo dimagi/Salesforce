@@ -174,7 +174,7 @@ public without sharing class FogBugzUtils {
             if(closedStages == null) {
                 closedStages = new Set<String>();
                 for(OpportunityStage os : [Select MasterLabel From OpportunityStage Where IsClosed = true]) {
-                    closedStages.add(os.MasterLabel);           
+                    closedStages.add(os.MasterLabel);
                 }
             }
             return closedStages;
