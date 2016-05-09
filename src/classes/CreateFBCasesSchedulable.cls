@@ -4,6 +4,6 @@
 global class CreateFBCasesSchedulable implements Schedulable {
 
     global void execute(SchedulableContext sc) {
-        Database.executeBatch(new CreateFBCasesBatch(), 50);
+        Database.executeBatch(new CreateFBCasesBatch(), 10);
     }
 }
