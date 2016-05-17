@@ -395,8 +395,9 @@ public with sharing class ProjectReportOutController{
         PageReference page = null;
 
         // Check all required fields are set, otherwise returns an error message.
-        if (validData()) {
-            List<Project_Report_Out__c> proList = new list<Project_Report_Out__c>([SELECT Id, Name, Last_Report_ID__C, Contract_Snapshot__c, Contract__c,
+        try {
+            if (validData()) {
+                List<Project_Report_Out__c> proList = new list<Project_Report_Out__c>([SELECT Id, Name, Last_Report_ID__C, Contract_Snapshot__c, Contract__c,
                                                                                     Status__c, Ability_to_meet_Schedule__c, Ability_to_stay_within_Scope__c,
                                                                                     Current_System_Usage__c, Partner_Relationship__c, User_Name__C,
                                                                                     Key_Accomplishments_Last_Two_Weeks__c, Key_Next_Steps_next_2_weeks__c,
@@ -405,17 +406,17 @@ public with sharing class ProjectReportOutController{
                                                                                     FROM Project_Report_Out__c
                                                                                     WHERE Contract__c =: contractid AND Report_Out_Date__c =: pro.Report_Out_Date__c LIMIT 1]);
 
-            Project_Report_Out__c proToUpdate = createPROToUpdate(proList.isEmpty() ? null : proList[0]);
-            DContract__c dcontract = [SELECT Id, Name, Last_Report_Out_Status__c, Percent_through_SOW_deliverables__c, Budget_Used__c, of_Services_budget_for_GS__c, Total_Costs__c, Services_Spend__c,
+                Project_Report_Out__c proToUpdate = createPROToUpdate(proList.isEmpty() ? null : proList[0]);
+                DContract__c dcontract = [SELECT Id, Name, Last_Report_Out_Status__c, Percent_through_SOW_deliverables__c, Budget_Used__c, of_Services_budget_for_GS__c, Total_Costs__c, Services_Spend__c,
                                         Buffer_by_SOW_Completed__c, Execution_Efficiency__c, Expected_Buffer__c, Direct_Costs_Total_Expenses__c, Net_Income_based_on_SOW_Completed__c, Product_Spend__c
                                         FROM DContract__c WHERE Id =: contractId];
 
-            dcontract.Last_Report_Out_Status__c = status;
-            dcontract.Percent_through_SOW_deliverables__c = proTabContractPercntgethroughSOW;
+                dcontract.Last_Report_Out_Status__c = status;
+                dcontract.Percent_through_SOW_deliverables__c = proTabContractPercntgethroughSOW;
 
-            PRO_Contract_Snapshot__c proContractSnapshot = createProSnapshot(proToUpdate.Contract_Snapshot__c == null ? null : proList[0].Contract_Snapshot__c, dcontract);
+                PRO_Contract_Snapshot__c proContractSnapshot = createProSnapshot(proToUpdate.Contract_Snapshot__c == null ? null : proList[0].Contract_Snapshot__c, dcontract);
 
-            try {
+            
                 snoozeHelper.ResetEmailRemindar(contractId);
                 upsert proContractSnapshot Id;
                 proToUpdate.Contract_Snapshot__c = proContractSnapshot.Id;
@@ -423,16 +424,50 @@ public with sharing class ProjectReportOutController{
                 update dcontract;
                 SendEmail(proToUpdate.id);
                 page = new PageReference('/apex/ProjectReportOutSubmitted?id='+proToUpdate.id);
-            } catch(DmlException ex) {
-                 ApexPages.addMessage(new ApexPages.message(ApexPages.severity.ERROR,ex.getDmlMessage(0)));
-            } catch (Exception e) {
-                System.debug(e);
-                ApexPages.addMessage(new ApexPages.message(ApexPages.severity.ERROR,'There was an error trying to save. Please try again.'));
-                //ApexPages.addMessage(new ApexPages.message(ApexPages.severity.ERROR,e.getMessage()));
             }
+        } catch(DmlException ex) {
+             ApexPages.addMessage(new ApexPages.message(ApexPages.severity.ERROR,ex.getDmlMessage(0)));
+             sendErrorMail(ex);
+        } catch (Exception e) {
+            System.debug(e);
+            ApexPages.addMessage(new ApexPages.message(ApexPages.severity.ERROR,'There was an error trying to save. Please try again.'));
+            sendErrorMail(e);
+            //ApexPages.addMessage(new ApexPages.message(ApexPages.severity.ERROR,e.getMessage()));
+        }
+        return page;
+    }
+
+    public void sendErrorMail(Exception ex) {
+        if (Test.isRunningTest()) {
+            return; 
         }
 
-        return page;
+        try {
+            Messaging.Email[] mails = new Messaging.Email[]{};
+            OrgWideEmailAddress wideAddress = OpenOpportunityReportController.getOrganizationWideAddressMail();
+
+            Messaging.Singleemailmessage mail = new Messaging.Singleemailmessage();
+
+            if (wideAddress != null) {
+                mail.setOrgWideEmailAddressId(wideAddress.Id);
+            }
+
+            String content = 'Line: ' + ex.getLineNumber() + '<br />' +
+                            'Type: ' + ex.getTypeName() + '<br />' +
+                            'Message: ' + ex.getMessage() + '<br />' + 
+                            'Stack Trace: ' + ex.getStackTraceString() + '<br />' +
+                            'Cause by: ' + ex.getCause() + '<br />';
+
+            mail.setToAddresses(new String[] {'tstalka@soldevelo.com'});
+            mail.setHtmlBody(content);
+            mail.setSubject('PRO errors');
+            mail.setSaveAsActivity(false);
+            mails.add(mail);
+
+            Messaging.sendEmail(mails);
+        } catch (Exception e) {
+            System.debug(Logginglevel.ERROR, 'Cannot send email with errors');
+        }
     }
 
     private Project_Report_Out__c createPROToUpdate(Project_Report_Out__c currentPRO) {
