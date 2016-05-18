@@ -414,7 +414,7 @@ public with sharing class ProjectReportOutController{
                 dcontract.Last_Report_Out_Status__c = status;
                 dcontract.Percent_through_SOW_deliverables__c = proTabContractPercntgethroughSOW;
 
-                PRO_Contract_Snapshot__c proContractSnapshot = createProSnapshot(proToUpdate.Contract_Snapshot__c == null ? null : proList[0].Contract_Snapshot__c, dcontract);
+                PRO_Contract_Snapshot__c proContractSnapshot = createProSnapshot(proToUpdate.Contract_Snapshot__c == null ? null : proToUpdate.Contract_Snapshot__c, dcontract);
 
             
                 snoozeHelper.ResetEmailRemindar(contractId);
