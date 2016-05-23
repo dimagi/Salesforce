@@ -39,7 +39,8 @@ trigger ContractTrigger on DContract__c (after insert,after update,before insert
 
         if (!String.isBlank(globalServicesBackstop)) {
             VPOfGlobalServices = [SELECT Id FROM Contact WHERE Email =: globalServicesBackstop];
-        } else if (VPOfGlobalServices == null || VPOfGlobalServices.size() == 0) {
+        }
+        if (VPOfGlobalServices == null || VPOfGlobalServices.size() == 0) {
             VPOfGlobalServices = [SELECT Id FROM Contact WHERE Title = 'VP of Global services'];
         }
 
