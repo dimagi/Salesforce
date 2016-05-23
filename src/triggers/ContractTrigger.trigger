@@ -26,20 +26,33 @@ trigger ContractTrigger on DContract__c (after insert,after update,before insert
     if(Trigger.IsAfter){
         List<Contract_Contact__c> upsertList=new List<Contract_Contact__c>();
         List<Contract_Contact__c> deleteList=new List<Contract_Contact__c>();
-        
+
+        List<PRO_Email_Remindar_Settings__c> settingList = PRO_Email_Remindar_Settings__c.getALL().values();
+        String globalServicesBackstop;
+        if (settingList != null && settingList.size() > 0) {
+            PRO_Email_Remindar_Settings__c settings = settingList[0];
+            globalServicesBackstop = settings.Global_Services_Backstop__c;
+        }
+
         List<Contact> contactList=[select id from contact where email in('ltse@dimagi.com','czue@dimagi.com')];
-        List<Contact> VPOfGlobalServices=[select id from contact where Title='VP of Global services'];
-        
+        List<Contact> VPOfGlobalServices;
+
+        if (!String.isBlank(globalServicesBackstop)) {
+            VPOfGlobalServices = [SELECT Id FROM Contact WHERE Email =: globalServicesBackstop];
+        }
+        if (VPOfGlobalServices == null || VPOfGlobalServices.size() == 0) {
+            VPOfGlobalServices = [SELECT Id FROM Contact WHERE Title = 'VP of Global services'];
+        }
+
         List<SFDC_Employee__c> chkEmpList=[select id,Contact__C,Employee_Status__c from 
                                           SFDC_Employee__c where Employee_Status__c='Terminated' and Contact__C!=null ]; 
-                                          
+
         set<id> inactiveContactList=new set<id>();
         
         for(SFDC_Employee__c emp: chkEmpList){
             inactiveContactList.add(emp.Contact__c);
         }
-        
-        
+
         if(Trigger.IsInsert){
             for(DContract__c cont : Trigger.New){
                 
@@ -169,8 +182,8 @@ trigger ContractTrigger on DContract__c (after insert,after update,before insert
                     //Add VP and Country Director if status is Yellow.
                     if(cont.Last_Report_Out_Status__c=='Yellow'){
                         //add VP
-                        if(VPOfGlobalServices!=null && VPOfGlobalServices.size()>0){
-                            upsertList.add(new Contract_Contact__c(Type__c='VP',Contract__c=cont.id,Contact__c=VPOfGlobalServices[0].id));
+                        if(VPOfGlobalServices != null && VPOfGlobalServices.size() > 0){
+                            upsertList.add(new Contract_Contact__c(Type__c = 'VP', Contract__c = cont.id, Contact__c = VPOfGlobalServices[0].Id));
                         }
                         //Add Country director.
                         if(cont.Prime_Contracting_Business_Unit__c!=null){

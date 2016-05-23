@@ -35,6 +35,15 @@
         <unique>false</unique>
     </fields>
     <fields>
+        <fullName>Global_Services_Backstop__c</fullName>
+        <externalId>false</externalId>
+        <label>Global Services Backstop</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Email</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
         <fullName>Management_Team_Email__c</fullName>
         <externalId>false</externalId>
         <label>Management Team Email</label>
