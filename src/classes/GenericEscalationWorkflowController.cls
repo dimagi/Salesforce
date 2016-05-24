@@ -5,13 +5,14 @@ public class GenericEscalationWorkflowController {
 
     private String genericReminderId;
     private List<Generic_Escalation_Workflow__c> genericReminders;
-	private Generic_Escalation_Workflow__c genericReminder;
+    private Generic_Escalation_Workflow__c genericReminder;
 
     private List<SelectOption> emailTemplates;
     private String selectedTemplate;
 
+    private Map<String, Schema.SObjectType> sObjectTypes;
     private List<SelectOption> customObjects;
-	private String selectedCustomObject;
+    private String selectedCustomObject;
 
     public GenericEscalationWorkflowController() {
         this.genericReminders = [SELECT Id, Name, Custom_Object__c, Email_Template__c FROM Generic_Escalation_Workflow__c];
@@ -28,6 +29,16 @@ public class GenericEscalationWorkflowController {
         return null;
     }
 
+    public PageReference clearGenericTrigger() {
+        this.genericReminder = new Generic_Escalation_Workflow__c();
+        return null;
+    }
+
+    public PageReference saveGenericTrigger() {
+        clearGenericTrigger();
+        return null;
+    }
+
     private void loadTemplatesAndObjects() {
         customObjects = new List<SelectOption>(); 
         emailTemplates = new List<SelectOption>();
@@ -38,17 +49,22 @@ public class GenericEscalationWorkflowController {
             for (EmailTemplate t : templates) {
                 emailTemplates.add(new SelectOption(t.Id, t.Name));
             }
+
             emailTemplates.add(new SelectOption('Test value 1', 'Templ Test 1'));
             emailTemplates.add(new SelectOption('Test value 2', 'Templ Test 2'));
-            customObjects.add(new SelectOption('Test value 1', 'Test 1'));
-            customObjects.add(new SelectOption('Test value 2', 'Test 2'));
-            customObjects.add(new SelectOption('Test value 3', 'Test 3'));
-            customObjects.add(new SelectOption('Test value 4', 'Test 4'));
-            customObjects.add(new SelectOption('Test value 5', 'Test 5'));
-            customObjects.add(new SelectOption('Test value 6', 'Test 6'));
-        }       
+        }
+
+        sObjectTypes = new Map<String, Schema.SObjectType>();
+        Map<String, Schema.SObjectType> globalDescribe = Schema.getGlobalDescribe();
+        for (Schema.SObjectType objectType : globalDescribe.values()) {
+            Schema.DescribeSObjectResult objectDescribe = objectType.getDescribe();
+            if (objectDescribe.isCustom() && !objectDescribe.isCustomSetting()) {
+                customObjects.add(new SelectOption(objectDescribe.getName(), objectDescribe.getLabel()));
+                sObjectTypes.put(objectDescribe.getName(), objectType);
+            }
+        }
     }
-    
+
     public List<Generic_Escalation_Workflow__c> getGenericReminders() {
         return this.genericReminders;
     }
@@ -58,11 +74,11 @@ public class GenericEscalationWorkflowController {
     }    
     
     public String getGenericReminderId() {
-    	return this.genericReminderId;
+        return this.genericReminderId;
     }
 
     public void setGenericReminderId(String newId) {
-    	this.genericReminderId = newId;
+        this.genericReminderId = newId;
     }
     
     public List<SelectOption> getEmailTemplates() {

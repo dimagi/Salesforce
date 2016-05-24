@@ -12,16 +12,16 @@
                             <apex:column headerValue="Email Template" onclick="chooseReminder('{!reminder.Id}');" value="{!reminder.Email_Template__c}"/>
                         </apex:pageBlockTable>
                     </apex:outputPanel>
-            	</apex:pageBlockSectionItem>
+                </apex:pageBlockSectionItem>
                 <apex:pageBlockSectionItem >
                     <apex:outputField id="reminderName" value="{!genericReminder.Name}"/>
                 </apex:pageBlockSectionItem>
 
-		        <apex:pageBlockSectionItem >
+                <apex:pageBlockSectionItem >
                     <apex:outputLabel value="Email Template" for="emailTemplate"/>
                     <apex:selectList id="emailTemplate" value="{!selectedTemplate}" multiselect="false" size="1">
                         <apex:selectOptions value="{!emailTemplates}"/>
-                    </apex:selectList>                        
+                    </apex:selectList>
                 </apex:pageBlockSectionItem>
 
                 <apex:pageBlockSectionItem >
@@ -31,10 +31,14 @@
                     </apex:selectList>                        
                 </apex:pageBlockSectionItem>
 
-				<!-- Action Functions -->
-    			<apex:actionFunction action="{!chooseGenericReminder}" name="chooseReminder" reRender="reminderName">
-    				<apex:param name="reminderId" assignTo="{!genericReminderId}" value=""/>
-    			</apex:actionFunction>
+                <!-- Action Functions -->
+                <apex:actionFunction action="{!chooseGenericReminder}" name="chooseReminder" reRender="reminderName">
+                    <apex:param name="reminderId" assignTo="{!genericReminderId}" value=""/>
+                </apex:actionFunction>
+
+                <apex:commandButton action="{!clearGenericTrigger}" value="Clear"/>
+                <apex:commandButton action="{!saveGenericTrigger}" value="Save"/>
+
             </apex:form>
 
         </apex:pageBlockSection>
