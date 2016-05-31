@@ -1,46 +1,126 @@
 <apex:page controller="GenericEscalationWorkflowController">
-
     <apex:pageBlock title="Generic Escalation Workflow">
-        <apex:pageBlockSection title="Reminders" collapsible="false" columns="1">
-            <apex:form >
+        <apex:form >
+            <apex:pageBlockSection title="Reminder Triggers" collapsible="true" columns="1">
                 <apex:pageBlockSectionItem >
                     <apex:outputPanel >
-                        <apex:pageBlockTable id="genericRemindersTable" value="{!genericReminders}" var="reminder">
-                            <apex:column headerValue="Reminder Id" onclick="chooseReminder('{!reminder.Id}');" value="{!reminder.Id}"/>
-                            <apex:column headerValue="Reminder Name" onclick="chooseReminder('{!reminder.Id}');" value="{!reminder.Name}"/>
-                            <apex:column headerValue="Custom Object" onclick="chooseReminder('{!reminder.Id}');" value="{!reminder.Custom_Object__c}"/>
-                            <apex:column headerValue="Email Template" onclick="chooseReminder('{!reminder.Id}');" value="{!reminder.Email_Template__c}"/>
+                        <apex:pageBlockTable id="genericTriggersTable" value="{!genericTriggers}" var="genericTrigger">
+                            <apex:column headerValue="Reminder Id" onclick="chooseTrigger('{!genericTrigger.Id}');" value="{!genericTrigger.Id}"/>
+                            <apex:column headerValue="Reminder Name" onclick="chooseTrigger('{!genericTrigger.Id}');" value="{!genericTrigger.Name}"/>
+                            <apex:column headerValue="Custom Object" onclick="chooseTrigger('{!genericTrigger.Id}');" value="{!genericTrigger.Custom_Object__c}"/>
+                            <apex:column headerValue="Email Template" onclick="chooseTrigger('{!genericTrigger.Id}');" value="{!genericTrigger.Email_Template__c}"/>
                         </apex:pageBlockTable>
                     </apex:outputPanel>
                 </apex:pageBlockSectionItem>
+            </apex:pageBlockSection>
+            <apex:pageBlockSection title="{!if(genericTrigger.Name != '', genericTrigger.Name, 'New Trigger')}" id="selectedTriggerBlock" columns="1">
                 <apex:pageBlockSectionItem >
-                    <apex:outputField id="reminderName" value="{!genericReminder.Name}"/>
+                    <apex:outputLabel value="Trigger Name" for="triggerName"/>
+                    <apex:inputField id="triggerName" value="{!genericTrigger.Name}"/>
                 </apex:pageBlockSectionItem>
 
                 <apex:pageBlockSectionItem >
-                    <apex:outputLabel value="Email Template" for="emailTemplate"/>
-                    <apex:selectList id="emailTemplate" value="{!selectedTemplate}" multiselect="false" size="1">
-                        <apex:selectOptions value="{!emailTemplates}"/>
-                    </apex:selectList>
+                    <apex:outputLabel value="Global Start Date" for="globalStartDate"/>
+                        <apex:inputField id="globalStartDate" value="{!genericTrigger.Global_Start_Date__c}"/>                        
+                </apex:pageBlockSectionItem>
+
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="Trigger Enabled" for="triggerEnabled"/>
+                    <apex:inputCheckbox id="triggerEnabled" value="{!genericTrigger.Enabled__c}"/>
                 </apex:pageBlockSectionItem>
 
                 <apex:pageBlockSectionItem >
                     <apex:outputLabel value="Custom Object" for="customObject"/>
-                    <apex:selectList id="customObject" value="{!selectedCustomObject}" multiselect="false" size="1">
+                    <apex:selectList id="customObject" value="{!genericTrigger.Custom_Object__c}" multiselect="false" size="1" onchange="loadCustomFields();">
                         <apex:selectOptions value="{!customObjects}"/>
                     </apex:selectList>                        
                 </apex:pageBlockSectionItem>
 
+                <apex:pageBlockSection id="reminderCollapsibleSection" title="Reminders" collapsible="true" columns="1">
+                    <apex:repeat value="{!triggerReminders}" var="triggerReminder" >
+                        <apex:pageBlockSection title="Reminder #{!triggerReminder.Reminder_Index__c}" collapsible="true" columns="1">
+                            <apex:pageBlockSectionItem >
+                                <apex:outputLabel value="Days" for="reminderDays"/>
+                                <apex:inputField id="reminderDays" value="{!triggerReminder.Days__c}"/>
+                            </apex:pageBlockSectionItem>
+                            <apex:pageBlockSectionItem >
+                                <apex:outputLabel value="Email Template" for="emailTemplate"/>
+                                <apex:selectList id="emailTemplate" value="{!triggerReminder.Email_Template__c}" multiselect="false" size="1">
+                                    <apex:selectOptions value="{!emailTemplates}"/>
+                                </apex:selectList>
+                            </apex:pageBlockSectionItem>
+                            
+                            <!-- Filters -->
+                            <apex:variable value="0" var="filterIndex"/>
+                            <apex:pageBlockSectionItem >
+                                <apex:repeat value="{!reminderFiltersMap[triggerReminder.Reminder_Index__c]}" var="remFilter">
+                                    <apex:pageBlockSection title="Filter #{!VALUE(filterIndex) + 1}" collapsible="false" columns="5">
+                                        <apex:pageBlockSectionItem >
+                                            <apex:outputLabel value="Field Name" for="filterFieldName"/>
+                                            <apex:selectList id="filterOperator" value="{!remFilter.Field_Name__c}" multiselect="false" size="1">
+                                                <apex:selectOptions value="{!customObjectFields}"/>
+                                            </apex:selectList>
+                                        </apex:pageBlockSectionItem>
+                                        <apex:pageBlockSectionItem >
+                                            <apex:outputLabel value="Operator" for="filterOperator"/>
+                                            <apex:selectList id="filterOperator" value="{!remFilter.Operator__c}" multiselect="false" size="1">
+                                                <apex:selectOptions value="{!operators}"/>
+                                            </apex:selectList>
+                                        </apex:pageBlockSectionItem>
+                                        <apex:pageBlockSectionItem >
+                                            <apex:outputLabel value="Value" for="filterFieldValue"/>
+                                            <apex:inputField id="filterFieldValue" value="{!remFilter.Value__c}"/>
+                                        </apex:pageBlockSectionItem>
+                                        <apex:pageBlockSectionItem >
+                                            <apex:outputLabel value="" for="delReminderFilterButton"/>
+                                            <apex:commandButton id="delReminderFilterButton" onclick="delReminderFilter('{!triggerReminder.Reminder_Index__c}', '{!VALUE(filterIndex)}'); return false;" value="Remove Filter"/>
+                                        </apex:pageBlockSectionItem>
+                                        <apex:pageBlockSectionItem >
+                                            <apex:outputLabel value="" for="filterIndexF"/>
+                                            <apex:variable id="filterIndexF" var="filterIndex" value="{!VALUE(filterIndex) + 1}"/>
+                                        </apex:pageBlockSectionItem>                                        
+                                    </apex:pageBlockSection>
+                                </apex:repeat>
+                            </apex:pageBlockSectionItem>
+
+                            <apex:pageBlockSectionItem >
+                                <apex:outputLabel value="" for="addReminderFilterButton"/>
+                                <apex:commandButton id="addReminderFilterButton" onclick="addReminderFilter('{!triggerReminder.Reminder_Index__c}'); return false;" value="Add Filter" />
+                            </apex:pageBlockSectionItem>
+                            <apex:pageBlockSectionItem >
+                                <apex:outputLabel value="" for="delReminderButton"/>
+                                <apex:commandButton id="delReminderButton" onclick="delTriggerReminder('{!triggerReminder.Reminder_Index__c}'); return false;" value="Remove Reminder" />
+                            </apex:pageBlockSectionItem>
+                        </apex:pageBlockSection>
+                    </apex:repeat> 
+
+                    <apex:pageBlockSectionItem >
+                        <apex:commandButton action="{!addNewTriggerReminder}" value="Add New Reminder" reRender="reminderCollapsibleSection"/>
+                    </apex:pageBlockSectionItem>
+                </apex:pageBlockSection>
+
+                <apex:pageBlockSectionItem >
+                    <apex:commandButton action="{!clearGenericTrigger}" value="Clear" reRender="selectedTriggerBlock"/>
+                    <apex:commandButton action="{!saveGenericTrigger}" value="Save" reRender="genericTriggersTable,selectedTriggerBlock"/>
+                </apex:pageBlockSectionItem>
+
                 <!-- Action Functions -->
-                <apex:actionFunction action="{!chooseGenericReminder}" name="chooseReminder" reRender="reminderName">
-                    <apex:param name="reminderId" assignTo="{!genericReminderId}" value=""/>
+                <apex:actionFunction action="{!chooseGenericTrigger}" name="chooseTrigger" reRender="selectedTriggerBlock">
+                    <apex:param name="genericTriggerId" assignTo="{!genericTriggerId}" value=""/>
                 </apex:actionFunction>
-
-                <apex:commandButton action="{!clearGenericTrigger}" value="Clear"/>
-                <apex:commandButton action="{!saveGenericTrigger}" value="Save"/>
-
-            </apex:form>
-
-        </apex:pageBlockSection>
+                <apex:actionFunction action="{!removeTriggerReminder}" name="delTriggerReminder" reRender="reminderCollapsibleSection">
+                    <apex:param name="reminderIndex" assignTo="{!reminderIndex}" value=""/>
+                </apex:actionFunction>
+                <apex:actionFunction action="{!addNewFilter}" name="addReminderFilter" reRender="reminderCollapsibleSection">
+                    <apex:param name="reminderIndex" assignTo="{!reminderIndex}" value=""/>
+                </apex:actionFunction>
+                <apex:actionFunction action="{!removeReminderFilter}" name="delReminderFilter" reRender="reminderCollapsibleSection">
+                    <apex:param name="reminderIndex" assignTo="{!reminderIndex}" value=""/>
+                    <apex:param name="selectedFilter" assignTo="{!selectedFilterIndex}" value=""/>
+                </apex:actionFunction>
+                <apex:actionFunction action="{!loadCustomObjectFields}" name="loadCustomFields" reRender="selectedTriggerBlock" />
+                
+            </apex:pageBlockSection>
+        </apex:form>
     </apex:pageBlock>
 </apex:page>
