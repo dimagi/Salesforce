@@ -61,7 +61,7 @@
         <label>date_created</label>
         <required>false</required>
         <trackTrending>false</trackTrending>
-        <type>Date</type>
+        <type>DateTime</type>
     </fields>
     <fields>
         <fullName>id__c</fullName>

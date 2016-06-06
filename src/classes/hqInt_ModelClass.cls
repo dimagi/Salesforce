@@ -55,6 +55,7 @@ public class hqInt_ModelClass {
         public Boolean do_not_invoice;
         public Boolean auto_generate_credits;
         public Boolean is_trial;
+        public Boolean is_hidden_to_ops;
         public String service_type;
         public String pro_bono_status;
         public String funding_source;
@@ -72,6 +73,7 @@ public class hqInt_ModelClass {
             accountingSubscriptionObj.do_not_invoice__c = this.do_not_invoice;
             accountingSubscriptionObj.auto_generate_credits__c = this.auto_generate_credits;
             accountingSubscriptionObj.is_trial__c = this.is_trial;
+            accountingSubscriptionObj.is_hidden_to_ops__c = this.is_hidden_to_ops;
             accountingSubscriptionObj.service_type__c = this.service_type;
             accountingSubscriptionObj.pro_bono_status__c = this.pro_bono_status;
             accountingSubscriptionObj.funding_source__c = this.funding_source;
@@ -398,7 +400,7 @@ public class hqInt_ModelClass {
         public String method;
         public String note;
         public String web_user;
-        public Date date_created;
+        public DateTime date_created;
         public Date new_date_start;
         public Date new_date_end;
         public Date new_date_delay_invoicing;

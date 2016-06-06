@@ -228,6 +228,15 @@
         <type>Checkbox</type>
     </fields>
     <fields>
+        <fullName>is_hidden_to_ops__c</fullName>
+        <defaultValue>false</defaultValue>
+        <externalId>false</externalId>
+        <label>Is hidden to ops</label>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
         <fullName>is_trial__c</fullName>
         <defaultValue>false</defaultValue>
         <externalId>false</externalId>
