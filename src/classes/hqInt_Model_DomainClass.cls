@@ -207,7 +207,7 @@ public class hqInt_Model_DomainClass {
             domainObj.cpActiveMobileUsers__c = calculatedProperties.cp_n_active_cc_users;
             domainObj.cpFirstFormSubmissionDate__c = calculatedProperties.cp_first_form;
             domainObj.cpLastFormSubmissionDate__c = calculatedProperties.cp_last_form;
-            domainObj.cp300thFormSubmission__c = calculatedProperties.cp_300th_form_submission;
+            domainObj.cp300thFormSubmission__c = calculatedProperties.cp_300th_form;
             domainObj.cpAllInactiveCases__c = calculatedProperties.cp_n_inactive_cases;
             domainObj.cpCasesIn30Days__c = calculatedProperties.cp_n_30_day_cases;
             domainObj.cpCasesIn60Days__c = calculatedProperties.cp_n_60_day_cases;

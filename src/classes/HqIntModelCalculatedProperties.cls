@@ -21,7 +21,7 @@ public class HqIntModelCalculatedProperties {
     public Integer cp_n_active_cc_users;
     public DateTime cp_first_form;
     public DateTime cp_last_form;
-    public DateTime cp_300th_form_submission;
+    public DateTime cp_300th_form;
     public Integer cp_n_inactive_cases;
     public Integer cp_n_30_day_cases;
     public Integer cp_n_60_day_cases;
