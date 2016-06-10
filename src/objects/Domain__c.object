@@ -615,6 +615,14 @@
         <type>Checkbox</type>
     </fields>
     <fields>
+        <fullName>cp300thFormSubmission__c</fullName>
+        <externalId>false</externalId>
+        <label>Domain_cp_300th_form_submission</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>DateTime</type>
+    </fields>
+    <fields>
         <fullName>cpActiveMobileUsers__c</fullName>
         <externalId>false</externalId>
         <label>Domain_cp_active_mobile_users</label>
