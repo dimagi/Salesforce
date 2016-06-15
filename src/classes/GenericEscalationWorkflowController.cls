@@ -92,6 +92,16 @@ public class GenericEscalationWorkflowController {
         return null;
     }
 
+    public PageReference removeGenericTrigger() {
+        if (String.isEmpty(this.genericTrigger.Id)) {
+            return clearGenericTrigger();
+        }
+        delete this.genericTrigger;
+        clearGenericTrigger();
+        loadGenericTriggers();
+        return null;
+    }
+
     public PageReference addNewTriggerReminder() {
         if (this.triggerReminders == null) {
             this.triggerReminders = new List<Generic_Reminder__c>();
@@ -183,7 +193,7 @@ public class GenericEscalationWorkflowController {
     }
 
     private void loadGenericTriggers() {
-        this.genericTriggers = [SELECT Id, Name, Custom_Object__c, Email_Template__c, Enabled__c, Global_Start_Date__c FROM Generic_Escalation_Workflow__c];
+        this.genericTriggers = [SELECT Id, Name, Custom_Object__c, Enabled__c, Global_Start_Date__c FROM Generic_Escalation_Workflow__c];
     }
 
     private void loadTemplatesAndObjects() {

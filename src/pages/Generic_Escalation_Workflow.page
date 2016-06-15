@@ -1,19 +1,40 @@
 <apex:page controller="GenericEscalationWorkflowController">
+    <script>
+        /**
+         * Confirmation for removing generic trigger.
+        */
+        function confirmDelete() {
+            var c =  confirm("Do you want delete this Trigger?");
+            if (c == true) {
+                removeGenericTrig();
+            }
+        }
+    </script>
     <apex:pageBlock title="Generic Escalation Workflow">
         <apex:form >
             <apex:pageBlockSection title="Reminder Triggers" collapsible="true" columns="1">
                 <apex:pageBlockSectionItem >
                     <apex:outputPanel >
                         <apex:pageBlockTable id="genericTriggersTable" value="{!genericTriggers}" var="genericTrigger">
-                            <apex:column headerValue="Reminder Id" onclick="chooseTrigger('{!genericTrigger.Id}');" value="{!genericTrigger.Id}"/>
-                            <apex:column headerValue="Reminder Name" onclick="chooseTrigger('{!genericTrigger.Id}');" value="{!genericTrigger.Name}"/>
+                            <apex:column headerValue="Trigger Id" onclick="chooseTrigger('{!genericTrigger.Id}');" value="{!genericTrigger.Id}"/>
+                            <apex:column headerValue="Trigger Name" onclick="chooseTrigger('{!genericTrigger.Id}');" value="{!genericTrigger.Name}"/>
                             <apex:column headerValue="Custom Object" onclick="chooseTrigger('{!genericTrigger.Id}');" value="{!genericTrigger.Custom_Object__c}"/>
-                            <apex:column headerValue="Email Template" onclick="chooseTrigger('{!genericTrigger.Id}');" value="{!genericTrigger.Email_Template__c}"/>
                         </apex:pageBlockTable>
                     </apex:outputPanel>
                 </apex:pageBlockSectionItem>
             </apex:pageBlockSection>
             <apex:pageBlockSection title="{!if(genericTrigger.Name != '', genericTrigger.Name, 'New Trigger')}" id="selectedTriggerBlock" columns="1">
+                <apex:pageBlockSection columns="3">
+                    <apex:pageBlockSectionItem>
+                        <apex:commandButton action="{!clearGenericTrigger}" value="Clear" reRender="selectedTriggerBlock"/>
+                    </apex:pageBlockSectionItem>
+                    <apex:pageBlockSectionItem>
+                        <apex:commandButton action="{!saveGenericTrigger}" value="Save" reRender="genericTriggersTable,selectedTriggerBlock"/>
+                    </apex:pageBlockSectionItem>
+                    <apex:pageBlockSectionItem>
+                        <apex:commandButton immediate="true" disabled="{!if(genericTrigger.Id=='', true, false)}" onclick="confirmDelete();" value="Delete" reRender="genericTriggersTable,selectedTriggerBlock"/> 
+                    </apex:pageBlockSectionItem>
+                </apex:pageBlockSection>
                 <apex:pageBlockSectionItem >
                     <apex:outputLabel value="Trigger Name" for="triggerName"/>
                     <apex:inputField id="triggerName" value="{!genericTrigger.Name}"/>
@@ -119,6 +140,7 @@
                     <apex:param name="selectedFilter" assignTo="{!selectedFilterIndex}" value=""/>
                 </apex:actionFunction>
                 <apex:actionFunction action="{!loadCustomObjectFields}" name="loadCustomFields" reRender="selectedTriggerBlock" />
+                <apex:actionFunction action="{!removeGenericTrigger}" name="removeGenericTrig" reRender="genericTriggersTable,selectedTriggerBlock"/>
                 
             </apex:pageBlockSection>
         </apex:form>
