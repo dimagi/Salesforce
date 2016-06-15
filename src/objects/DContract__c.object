@@ -770,6 +770,21 @@ See https://confluence.dimagi.com/display/BD/BD+Channels</inlineHelpText>
         <type>Currency</type>
     </fields>
     <fields>
+        <fullName>Efficiency_Owner_BU__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <description>This field is for the Aggregate Weighted Execution Efficiency by BU. Sometimes the Execution Owner (BU) field doesn&apos;t represent the right BU for evaluating Efficiency, so we update this field for exceptions</description>
+        <externalId>false</externalId>
+        <inlineHelpText>This field is for the Aggregate Weighted Execution Efficiency by BU. Sometimes the Execution Owner (BU) field doesn&apos;t represent the right BU for evaluating Efficiency, so we update this field for exceptions</inlineHelpText>
+        <label>Efficiency Owner (BU)</label>
+        <referenceTo>Business_Unit__c</referenceTo>
+        <relationshipLabel>Contracts (Execution Owner)</relationshipLabel>
+        <relationshipName>Contracts2</relationshipName>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
         <fullName>Exclude_from_Monthly_Upload__c</fullName>
         <defaultValue>false</defaultValue>
         <externalId>false</externalId>
