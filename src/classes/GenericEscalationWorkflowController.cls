@@ -180,6 +180,7 @@ public class GenericEscalationWorkflowController {
         }
         
         //TODO delete filters!!!!!
+        // TODO CHANGE Last_Report_Date_Field__c, Requires_Report_Field__c 
     }
 
     private void loadReminderFilters() {
@@ -193,7 +194,9 @@ public class GenericEscalationWorkflowController {
     }
 
     private void loadGenericTriggers() {
-        this.genericTriggers = [SELECT Id, Name, Custom_Object__c, Enabled__c, Global_Start_Date__c FROM Generic_Escalation_Workflow__c];
+        this.genericTriggers = [SELECT Id, Name, Custom_Object__c, Enabled__c, Global_Start_Date__c, Last_Report_Date_Field__c, Requires_Report_Field__c,
+                                From_Numeral__c, From_Day_of_Week__c, To_Numeral__c, To_Day_of_Week__c
+                                FROM Generic_Escalation_Workflow__c];
     }
 
     private void loadTemplatesAndObjects() {

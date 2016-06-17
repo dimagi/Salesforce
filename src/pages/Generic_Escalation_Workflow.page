@@ -2,7 +2,7 @@
     <script>
         /**
          * Confirmation for removing generic trigger.
-        */
+         */
         function confirmDelete() {
             var c =  confirm("Do you want delete this Trigger?");
             if (c == true) {
@@ -19,19 +19,21 @@
                             <apex:column headerValue="Trigger Id" onclick="chooseTrigger('{!genericTrigger.Id}');" value="{!genericTrigger.Id}"/>
                             <apex:column headerValue="Trigger Name" onclick="chooseTrigger('{!genericTrigger.Id}');" value="{!genericTrigger.Name}"/>
                             <apex:column headerValue="Custom Object" onclick="chooseTrigger('{!genericTrigger.Id}');" value="{!genericTrigger.Custom_Object__c}"/>
+                            <apex:column headerValue="Requires Report Field Name" onclick="chooseTrigger('{!genericTrigger.Id}');" value="{!genericTrigger.Requires_Report_Field__c}"/>
+                            <apex:column headerValue="Last Report Date Field Name" onclick="chooseTrigger('{!genericTrigger.Id}');" value="{!genericTrigger.Last_Report_Date_Field__c}"/>
                         </apex:pageBlockTable>
                     </apex:outputPanel>
                 </apex:pageBlockSectionItem>
             </apex:pageBlockSection>
             <apex:pageBlockSection title="{!if(genericTrigger.Name != '', genericTrigger.Name, 'New Trigger')}" id="selectedTriggerBlock" columns="1">
                 <apex:pageBlockSection columns="3">
-                    <apex:pageBlockSectionItem>
+                    <apex:pageBlockSectionItem >
                         <apex:commandButton action="{!clearGenericTrigger}" value="Clear" reRender="selectedTriggerBlock"/>
                     </apex:pageBlockSectionItem>
-                    <apex:pageBlockSectionItem>
+                    <apex:pageBlockSectionItem >
                         <apex:commandButton action="{!saveGenericTrigger}" value="Save" reRender="genericTriggersTable,selectedTriggerBlock"/>
                     </apex:pageBlockSectionItem>
-                    <apex:pageBlockSectionItem>
+                    <apex:pageBlockSectionItem >
                         <apex:commandButton immediate="true" disabled="{!if(genericTrigger.Id=='', true, false)}" onclick="confirmDelete();" value="Delete" reRender="genericTriggersTable,selectedTriggerBlock"/> 
                     </apex:pageBlockSectionItem>
                 </apex:pageBlockSection>
@@ -51,10 +53,44 @@
                 </apex:pageBlockSectionItem>
 
                 <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="Due Date From" for="fromNumeral"/>
+                    <apex:inputField id="fromNumeral" value="{!genericTrigger.From_Numeral__c}"/>
+                </apex:pageBlockSectionItem>
+
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="" for="fromDay"/>
+                    <apex:inputField id="fromDay" value="{!genericTrigger.From_Day_of_Week__c}"/>
+                </apex:pageBlockSectionItem>
+
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="Due Date To" for="toNumeral"/>
+                    <apex:inputField id="toNumeral" value="{!genericTrigger.To_Numeral__c}"/>
+                </apex:pageBlockSectionItem>
+
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="" for="toDay"/>
+                    <apex:inputField id="toDay" value="{!genericTrigger.To_Day_of_Week__c}"/>
+                </apex:pageBlockSectionItem>
+
+                <apex:pageBlockSectionItem >
                     <apex:outputLabel value="Custom Object" for="customObject"/>
                     <apex:selectList id="customObject" value="{!genericTrigger.Custom_Object__c}" multiselect="false" size="1" onchange="loadCustomFields();">
                         <apex:selectOptions value="{!customObjects}"/>
-                    </apex:selectList>                        
+                    </apex:selectList>
+                </apex:pageBlockSectionItem>
+
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="Requires Report Field Name" for="requiresReportFieldName"/>
+                    <apex:selectList id="requiresReportFieldName" value="{!genericTrigger.Requires_Report_Field__c}" multiselect="false" size="1">
+                        <apex:selectOptions value="{!customObjectFields}"/>
+                    </apex:selectList>
+                </apex:pageBlockSectionItem>
+
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="Last Report Date Field Name" for="lastReportDateFieldName"/>
+                    <apex:selectList id="lastReportDateFieldName" value="{!genericTrigger.Last_Report_Date_Field__c}" multiselect="false" size="1">
+                        <apex:selectOptions value="{!customObjectFields}"/>
+                    </apex:selectList>
                 </apex:pageBlockSectionItem>
 
                 <apex:pageBlockSection id="reminderCollapsibleSection" title="Reminders" collapsible="true" columns="1">
@@ -70,7 +106,7 @@
                                     <apex:selectOptions value="{!emailTemplates}"/>
                                 </apex:selectList>
                             </apex:pageBlockSectionItem>
-                            
+
                             <!-- Filters -->
                             <apex:variable value="0" var="filterIndex"/>
                             <apex:pageBlockSectionItem >
@@ -141,7 +177,7 @@
                 </apex:actionFunction>
                 <apex:actionFunction action="{!loadCustomObjectFields}" name="loadCustomFields" reRender="selectedTriggerBlock" />
                 <apex:actionFunction action="{!removeGenericTrigger}" name="removeGenericTrig" reRender="genericTriggersTable,selectedTriggerBlock"/>
-                
+
             </apex:pageBlockSection>
         </apex:form>
     </apex:pageBlock>
