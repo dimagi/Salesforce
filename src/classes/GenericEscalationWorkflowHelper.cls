@@ -8,7 +8,7 @@ public class GenericEscalationWorkflowHelper {
 
         DateTime lastDueDate = getLastDueDate(genericTrigger, Date.today());
         for (sObject record : sourceList) {
-            if (checkFilter(record, genericTrigger, genericReminder, Date.today())) {
+            if (checkFilters(record, genericTrigger, genericReminder, Date.today(), genericReminder.Generic_Reminder_Filters__r)) {
                 filteredList.add(record);
             }
         }
@@ -50,15 +50,15 @@ public class GenericEscalationWorkflowHelper {
         }
     }
 
-    public static Boolean checkFilter(sObject record, Generic_Escalation_Workflow__c genericTrigger, Generic_Reminder__c genericReminder, Date referenceDate) {
+    public static Boolean checkFilters(sObject record, Generic_Escalation_Workflow__c genericTrigger, Generic_Reminder__c genericReminder, Date referenceDate, List<Generic_Reminder_Filter__c> filters) {
         if (genericReminder.Reminder_Index__c == 1) {
-            return processFirstReminader(record, genericTrigger, genericReminder, referenceDate);
+            return processFirstRemainders(record, genericTrigger, genericReminder, referenceDate, filters);
         } else {
-            return processOtherReminaders(record, genericTrigger, genericReminder, referenceDate);
+            return processOtherRemainder(record, genericTrigger, genericReminder, referenceDate, filters);
         }
     }
 
-    private static Boolean processFirstReminader(sObject record, Generic_Escalation_Workflow__c genericTrigger, Generic_Reminder__c genericReminder, Date referenceDate) {
+    private static Boolean processFirstRemainders(sObject record, Generic_Escalation_Workflow__c genericTrigger, Generic_Reminder__c genericReminder, Date referenceDate, List<Generic_Reminder_Filter__c> filters) {
         Object dateVal = record.get(genericTrigger.Last_Report_Date_Field__c);
         Date lastReportDate = null;
 
@@ -66,18 +66,29 @@ public class GenericEscalationWorkflowHelper {
             lastReportDate = (Date) dateVal;
         }
 
+        Object dateValSent = record.get(genericTrigger.First_Reminder_Date_Field__c);
+        Date firstSentDate = null;
+
+        if (dateValSent != null) {
+            firstSentDate = (Date) dateValSent;
+        }
+
         Date latestDueDate = getLastDueDate(genericTrigger, referenceDate);
         Date lastAllowedDate = latestDueDate.addDays(Integer.valueOf(genericReminder.Days__c));
 
-        if (referenceDate >= lastAllowedDate &&
-            ((lastReportDate != null && lastReportDate < latestDueDate) || (lastReportDate == null && ((Date) record.get('CreatedDate')) < latestDueDate))
-            ) {
+        if (firstSentDate == null && referenceDate >= lastAllowedDate &&
+            ((lastReportDate != null && lastReportDate < latestDueDate) || (lastReportDate == null && ((Date) record.get('CreatedDate')) < latestDueDate))) {
+            for (Generic_Reminder_Filter__c filter : filters) {
+                if (!invokeStringFilter(record, filter)) {
+                    return false;
+                }
+            }
             return true;
         }
         return false;
     }
 
-    private static Boolean processOtherReminaders(sObject record, Generic_Escalation_Workflow__c genericTrigger, Generic_Reminder__c genericReminder, Date referenceDate) {
+    private static Boolean processOtherRemainder(sObject record, Generic_Escalation_Workflow__c genericTrigger, Generic_Reminder__c genericReminder, Date referenceDate, List<Generic_Reminder_Filter__c> filters) {
         Object dateVal = record.get(genericTrigger.First_Reminder_Date_Field__c);
         Date firstSentDate = null;
 
@@ -89,7 +100,25 @@ public class GenericEscalationWorkflowHelper {
         Date lastAllowedDate = latestDueDate.addDays(Integer.valueOf(genericReminder.Days__c));
 
         if (firstSentDate != null && firstSentDate.addDays(Integer.valueOf(genericReminder.Days__c)) == referenceDate) {
+            for (Generic_Reminder_Filter__c filter : filters) {
+                if (!invokeStringFilter(record, filter)) {
+                    return false;
+                }
+            }
             return true;
+        }
+        return false;
+    }
+
+    private static Boolean invokeStringFilter(sObject record, Generic_Reminder_Filter__c filter) {
+        if (filter.Operator__c == '=') {
+            if (filter.Value__c == (String) record.get(filter.Field_Name__c)) {
+                return true;
+            }
+        } else if (filter.Operator__c == '!=') {
+            if (filter.Value__c != (String) record.get(filter.Field_Name__c)) {
+                return true;
+            }
         }
         return false;
     }

@@ -16,7 +16,7 @@ global class GenericEscalationWorkflowBatch implements Database.Batchable<Generi
         System.debug('Elements : ' + scope.size());
         for (Generic_Escalation_Workflow__c genericTrigger : scope) {
 
-            List<Generic_Reminder__c> triggerReminders = [SELECT Id, Name, Email_Template__c, Reminder_Index__c, Days__c
+            List<Generic_Reminder__c> triggerReminders = [SELECT Id, Name, Email_Template__c, Reminder_Index__c, Days__c, (SELECT Id, Field_Name__c, Operator__c, Value__c  FROM Generic_Reminder_Filters__r)
                                                             FROM Generic_Reminder__c
                                                             WHERE Generic_Escalation_Workflow__c =: genericTrigger.Id ORDER BY Reminder_Index__c];
 

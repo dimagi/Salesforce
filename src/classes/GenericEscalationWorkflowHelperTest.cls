@@ -24,4 +24,35 @@ public class GenericEscalationWorkflowHelperTest {
             referenceDate3);
         System.assertEquals(Date.newInstance(2016, 5, 20), dueDate);
     }
+
+    @isTest
+    public static void shouldFilter() {
+        // First Reminder Test without filters
+        Date referenceDate = Date.newInstance(2016, 6, 12);
+        Generic_Escalation_Workflow__c testWorkflow = new Generic_Escalation_Workflow__c(Last_Report_Date_Field__c = 'Snooze_Date__c', First_Reminder_Date_Field__c = 'Third_Nag_Sent_Date__c',
+                                                                                         From_Day_of_Week__c = 'Friday', From_Numeral__c = 'First',
+                                                                                         To_Day_of_Week__c = 'Friday', To_Numeral__c = 'Second');
+        Generic_Reminder__c reminder = new Generic_Reminder__c(Reminder_Index__c = 1, Days__c = 2);
+
+        sObject dimagiContract = (sObject) new DContract__c(Third_Nag_Sent_Date__c = null, Snooze_Date__c = Date.newInstance(2016, 6, 1));
+        Boolean result = GenericEscalationWorkflowHelper.checkFilters(dimagiContract, testWorkflow, reminder, referenceDate, new List<Generic_Reminder_Filter__c>());
+        System.assertEquals(true, result);
+
+        dimagiContract = (sObject) new DContract__c(Third_Nag_Sent_Date__c = Date.newInstance(2016, 6, 9), Snooze_Date__c = Date.newInstance(2016, 6, 1));
+        result = GenericEscalationWorkflowHelper.checkFilters(dimagiContract, testWorkflow, reminder, referenceDate, new List<Generic_Reminder_Filter__c>());
+        System.assertEquals(false, result);
+
+        referenceDate = Date.newInstance(2016, 6, 11);
+        dimagiContract = (sObject) new DContract__c(Third_Nag_Sent_Date__c = null, Snooze_Date__c = Date.newInstance(2016, 6, 1));
+        result = GenericEscalationWorkflowHelper.checkFilters(dimagiContract, testWorkflow, reminder, referenceDate, new List<Generic_Reminder_Filter__c>());
+        System.assertEquals(false, result);
+
+        // Second Reminder Test
+    }
+
+    @isTest
+    public static void shouldFilterByStringType() {
+
+    }
+
 }
