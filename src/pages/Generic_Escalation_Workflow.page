@@ -93,6 +93,13 @@
                     </apex:selectList>
                 </apex:pageBlockSectionItem>
 
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="Firts Reminder Sent Date Field Name" for="firstReminderDateField"/>
+                    <apex:selectList id="firstReminderDateField" value="{!genericTrigger.First_Reminder_Date_Field__c}" multiselect="false" size="1">
+                        <apex:selectOptions value="{!customObjectFields}"/>
+                    </apex:selectList>
+                </apex:pageBlockSectionItem>
+
                 <apex:pageBlockSection id="reminderCollapsibleSection" title="Reminders" collapsible="true" columns="1">
                     <apex:repeat value="{!triggerReminders}" var="triggerReminder" >
                         <apex:pageBlockSection title="Reminder #{!triggerReminder.Reminder_Index__c}" collapsible="true" columns="1">
