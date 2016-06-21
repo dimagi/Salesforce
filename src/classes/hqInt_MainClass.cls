@@ -1,34 +1,26 @@
 global class hqInt_MainClass {
 
-    /**
-     *
-     *
-     * MAIN METHOD
-     *
-     **/
-    public integer offsetParam;
+    public Integer offsetParam;
+
     global void mainMethod(integer offsetParameter) {
         offsetParam = offsetParameter;
-
         HTTPResponse res = requestMethod(Integer.valueOf(CommcareToSalesforceSettings__c.getInstance('ApiLimitParameter').Value__c),offsetParameter);
 
         String response = res.getBody();
-        System.debug('---res---'+ response);
+        System.debug('--- res --- ' + response);
         response = ReplaceReservedWords(response);
 
         processJson(response);
     }
 
     /**
-     *
      * Method Name : requestMethod
      * Purpose : Http Callout to CommCareHQ
-     *
      **/
     public HTTPResponse requestMethod(integer limitParameter,integer offsetParameter) {
 
         HttpRequest req = new HttpRequest();
-        req.setEndpoint('https://www.commcarehq.org/hq/admin/api/global/project_space_metadata/?limit='+ String.valueOf(limitParameter) +'&offset='+ String.valueOf(offsetParameter));
+        req.setEndpoint('https://www.commcarehq.org/hq/admin/api/global/project_space_metadata/?limit='+ String.valueOf(limitParameter) + '&offset=' + String.valueOf(offsetParameter));
         req.setMethod('GET');
 
         // Specify the required user name and password to access the endpoint
@@ -47,26 +39,26 @@ global class hqInt_MainClass {
 
         Http http = new Http();
         HTTPResponse res = http.send(req);
-        system.debug('---status--'+res.getStatusCode());
+        system.debug('--- status --' + res.getStatusCode());
         if(res.getStatusCode() != 200) {
-            throw new CustomException();
+            Exception e = new CalloutException();
+            e.setMessage('Http request error, cannot fetch Domains data. Http status : ' + res.getStatusCode() + ' Body : ' + res.getBody());
+            throw e;
         }
 
         return res;
     }
 
     /**
-     * 
      * Method Name : processJson
      * Purpose : Process Json response and perform DML 
-     *
      **/
-    private string processJson(String jsonString) {
-        list <HqIntModelProjectSpaceMetadata> projectSpaceMetadataList = new list <HqIntModelProjectSpaceMetadata>();
-        list <Domain__c> listDomainRec = new list <Domain__c>();
-        list <hqInt_Model_DeploymentClass> listDeploymentObj = new list <hqInt_Model_DeploymentClass>();
-        list <Deployment__c> listDeploymentRec = new list <Deployment__c>();
-        list <Internal_Properties__c> listInternalPropRec = new list <Internal_Properties__c>();
+    private String processJson(String jsonString) {
+        List <HqIntModelProjectSpaceMetadata> projectSpaceMetadataList = new List <HqIntModelProjectSpaceMetadata>();
+        List <Domain__c> listDomainRec = new List <Domain__c>();
+        List <hqInt_Model_DeploymentClass> listDeploymentObj = new List <hqInt_Model_DeploymentClass>();
+        List <Deployment__c> listDeploymentRec = new List <Deployment__c>();
+        List <Internal_Properties__c> listInternalPropRec = new List <Internal_Properties__c>();
 
         //Process Response
         JSONParser parser = JSON.createParser(jsonString);
@@ -88,7 +80,7 @@ global class hqInt_MainClass {
         }
 
         //Set for holding the external id field for domain object. It is used to fetch existing internal prop & deployment rec & delete those.
-        set <String> setDomainId = new set <String>();
+        Set <String> setDomainId = new Set <String>();
 
         //Below for loop is used to create sobject out of model object
         for (HqIntModelProjectSpaceMetadata projectSpaceMetadata : projectSpaceMetadataList) {
@@ -104,13 +96,13 @@ global class hqInt_MainClass {
             listDeploymentRec.add(deploymentRec);
                
         }
-        system.debug('----offsetParam---'+offsetParam);
+        System.debug('----offsetParam---'+offsetParam);
         //insert the sobjects except domain sobject
         insert listInternalPropRec;
         insert listDeploymentRec;
 
-        list <Internal_Properties__c> listInternalPropToBeDeleted = new list <Internal_Properties__c>();
-        list <Deployment__c> listDeploymentToBeDeleted = new list <Deployment__c>();
+        List <Internal_Properties__c> listInternalPropToBeDeleted = new List <Internal_Properties__c>();
+        List <Deployment__c> listDeploymentToBeDeleted = new List <Deployment__c>();
 
         //fetch exisiting sf id of deployment and internal prop for deletion.
         for (Domain__c domain : [SELECT id,Internal_Properties__c,Deployment__c from Domain__c WHERE id__c in :setDomainId]) {
@@ -140,10 +132,8 @@ global class hqInt_MainClass {
     }
 
     /**
-     * 
      * Method Name : ReplaceReservedWords
      * Purpose : In json string, some fields will be reserved / not allowed keywords. This method will replace those with alternate names
-     * 
      **/
     private string ReplaceReservedWords(string myString) {
        myString = myString.replaceAll('"_id"\\s*:', '"x_id":');
