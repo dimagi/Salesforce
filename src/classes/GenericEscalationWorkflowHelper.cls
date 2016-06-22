@@ -6,7 +6,6 @@ public class GenericEscalationWorkflowHelper {
     public static List<sObject> filterObjects(List<sObject> sourceList, Generic_Escalation_Workflow__c genericTrigger, Generic_Reminder__c genericReminder) {
         List<sObject> filteredList = new List<sObject>();
 
-        DateTime lastDueDate = getLastDueDate(genericTrigger, Date.today());
         for (sObject record : sourceList) {
             if (checkFilters(record, genericTrigger, genericReminder, Date.today(), genericReminder.Generic_Reminder_Filters__r)) {
                 filteredList.add(record);
@@ -95,9 +94,6 @@ public class GenericEscalationWorkflowHelper {
         if (dateVal != null) {
             firstSentDate = (Date) dateVal;
         }
-
-        Date latestDueDate = getLastDueDate(genericTrigger, referenceDate);
-        Date lastAllowedDate = latestDueDate.addDays(Integer.valueOf(genericReminder.Days__c));
 
         if (firstSentDate != null && firstSentDate.addDays(Integer.valueOf(genericReminder.Days__c)) == referenceDate) {
             for (Generic_Reminder_Filter__c filter : filters) {
