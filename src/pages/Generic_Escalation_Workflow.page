@@ -44,7 +44,7 @@
 
                 <apex:pageBlockSectionItem >
                     <apex:outputLabel value="Global Start Date" for="globalStartDate"/>
-                        <apex:inputField id="globalStartDate" value="{!genericTrigger.Global_Start_Date__c}"/>                        
+                        <apex:inputField id="globalStartDate" value="{!genericTrigger.Global_Start_Date__c}"/>
                 </apex:pageBlockSectionItem>
 
                 <apex:pageBlockSectionItem >
@@ -114,6 +114,31 @@
                                 </apex:selectList>
                             </apex:pageBlockSectionItem>
 
+                            <!-- Recipients -->
+                            <apex:variable value="0" var="recipientIndex"/>
+                            <apex:repeat value="{!recipientsMap[triggerReminder.Reminder_Index__c]}" var="recipient">
+                                <apex:pageBlockSection title="Recipient #{!VALUE(recipientIndex) + 1}" collapsible="false" columns="2">
+                                    <apex:pageBlockSectionItem >
+                                            <apex:outputLabel value="Recipient Field Name" for="recipientsFieldName"/>
+                                            <apex:selectList id="recipientsFieldName" value="{!recipient.Value}" multiselect="false" size="1">
+                                                <apex:selectOptions value="{!customObjectFields}"/>
+                                            </apex:selectList>
+                                    </apex:pageBlockSectionItem>
+                                    <apex:pageBlockSectionItem >
+                                        <apex:outputLabel value="" for="removeRecipientButton"/>
+                                        <apex:commandButton id="removeRecipientButton" onclick="removeRecipient('{!triggerReminder.Reminder_Index__c}'); return false;" value="X" />
+                                    </apex:pageBlockSectionItem>
+                                </apex:pageBlockSection>
+                                <apex:pageBlockSectionItem >
+                                    <apex:outputLabel value="" for="recipientIndexF"/>
+                                    <apex:variable id="recipientIndexF" var="recipientIndex" value="{!VALUE(recipientIndex) + 1}"/>
+                                </apex:pageBlockSectionItem>
+                            </apex:repeat>
+                            <apex:pageBlockSectionItem >
+                                <apex:outputLabel value="" for="addRecipientButton"/>
+                                <apex:commandButton id="addRecipientButton" onclick="addNewRecipient('{!triggerReminder.Reminder_Index__c}', '{!VALUE(recipientIndex)}'); return false;" value="Add recipient" />
+                            </apex:pageBlockSectionItem>
+
                             <!-- Filters -->
                             <apex:variable value="0" var="filterIndex"/>
                             <apex:pageBlockSectionItem >
@@ -121,7 +146,7 @@
                                     <apex:pageBlockSection title="Filter #{!VALUE(filterIndex) + 1}" collapsible="false" columns="5">
                                         <apex:pageBlockSectionItem >
                                             <apex:outputLabel value="Field Name" for="filterFieldName"/>
-                                            <apex:selectList id="filterOperator" value="{!remFilter.Field_Name__c}" multiselect="false" size="1">
+                                            <apex:selectList id="filterFieldName" value="{!remFilter.Field_Name__c}" multiselect="false" size="1">
                                                 <apex:selectOptions value="{!customObjectFields}"/>
                                             </apex:selectList>
                                         </apex:pageBlockSectionItem>
@@ -142,7 +167,7 @@
                                         <apex:pageBlockSectionItem >
                                             <apex:outputLabel value="" for="filterIndexF"/>
                                             <apex:variable id="filterIndexF" var="filterIndex" value="{!VALUE(filterIndex) + 1}"/>
-                                        </apex:pageBlockSectionItem>                                        
+                                        </apex:pageBlockSectionItem>
                                     </apex:pageBlockSection>
                                 </apex:repeat>
                             </apex:pageBlockSectionItem>
@@ -181,6 +206,13 @@
                 <apex:actionFunction action="{!removeReminderFilter}" name="delReminderFilter" reRender="reminderCollapsibleSection">
                     <apex:param name="reminderIndex" assignTo="{!reminderIndex}" value=""/>
                     <apex:param name="selectedFilter" assignTo="{!selectedFilterIndex}" value=""/>
+                </apex:actionFunction>
+                <apex:actionFunction action="{!addRecipient}" name="addNewRecipient" reRender="reminderCollapsibleSection">
+                    <apex:param name="reminderIndex" assignTo="{!reminderIndex}" value=""/>
+                </apex:actionFunction>
+                <apex:actionFunction action="{!removeRecipient}" name="removeRecipient" reRender="reminderCollapsibleSection">
+                    <apex:param name="reminderIndex" assignTo="{!reminderIndex}" value=""/>
+                    <apex:param name="selectedRecipientIndex" assignTo="{!selectedRecipientIndex}" value=""/>
                 </apex:actionFunction>
                 <apex:actionFunction action="{!loadCustomObjectFields}" name="loadCustomFields" reRender="selectedTriggerBlock" />
                 <apex:actionFunction action="{!removeGenericTrigger}" name="removeGenericTrig" reRender="genericTriggersTable,selectedTriggerBlock"/>
