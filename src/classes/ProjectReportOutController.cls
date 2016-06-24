@@ -183,101 +183,106 @@ public with sharing class ProjectReportOutController{
         }
         
     }
-    
+
     Map<Id,List<Time_Card__c>> contractIdTimeCardsMap;
-    public List<PROProject> getProjectList3(){
-        List<PROProject> proList=new List<PROProject>();
+
+    public List<PROProject> getProjectList3() {
+        List<PROProject> proList = new List<PROProject>();
         Set<Id> customContractsIdsToAddInList = new Set<Id>();
         excludeContractFromSearch.clear();
 
-        for(PRO_Searched_Contract__c obj : [Select id,Contract__c from PRO_Searched_Contract__c where Email__c = :CurrentLoginEmail]){//change static email to 'CurrentLoginEmail'
+        for (PRO_Searched_Contract__c obj : [SELECT id,Contract__c FROM PRO_Searched_Contract__c WHERE Email__c = :CurrentLoginEmail]) {
             customContractsIdsToAddInList.add(obj.Contract__c);
         }
-        childContractMap = new Map<Id,List<DContract__c>>();
-        contractMap = new Map<Id,DContract__c>([SELECT Id, Name, Requires_Developer_Work__c,Last_Report_Out_Date__c,Last_Report_Out_Status__c, Percent_through_SOW_deliverables__c,
-                                            Burdened_Income_Budget__c, Direct_Costs_Travel_BUDGET__c, Direct_Costs_Total_Expenses__c ,Percent_through_Contract__c,
-                                            Product_Income_Budget__c, Services_Income__c,Product_Spend__c, Total_Amount_of_Contract__c,Direct_Costs_Sub_Contract_BUDGET__c,
-                                            Internal_Sub_contract_BUDGET__c,Project_Other_BUDGET__c,Direct_Costs_Travel_Expenses__c,Direct_Costs_Sub_contract_Expenses__c,
-                                            Internal_Sub_contract_Spend__c,Project_Other_Spent__c, Expected_Margin__c,Budget_Used__c ,Margin_by_SOW_Completed__c,
-                                            Margin_by_Contract_Dates__c,Execution_Efficiency__c,Buffer_by_SOW_Completed__c,Contract_Expense_BUDGET__c, 
-                                            (Select Id, Name, Requires_Developer_Work__c,Last_Report_Out_Date__c,Last_Report_Out_Status__c, Percent_through_SOW_deliverables__c,
-                                            Burdened_Income_Budget__c, Direct_Costs_Travel_BUDGET__c, Direct_Costs_Total_Expenses__c ,Percent_through_Contract__c,
-                                            Product_Income_Budget__c, Services_Income__c,Product_Spend__c, Total_Amount_of_Contract__c,Direct_Costs_Sub_Contract_BUDGET__c,
-                                            Internal_Sub_contract_BUDGET__c,Project_Other_BUDGET__c,Direct_Costs_Travel_Expenses__c,Direct_Costs_Sub_contract_Expenses__c,
-                                            Internal_Sub_contract_Spend__c,Project_Other_Spent__c, Expected_Margin__c,Budget_Used__c ,Margin_by_SOW_Completed__c,
-                                            Margin_by_Contract_Dates__c,Execution_Efficiency__c,Buffer_by_SOW_Completed__c,Contract_Expense_BUDGET__c from Contracts__r)
-                                           FROM DContract__c 
-                                           //WHERE Name = 'USAID:CommCare for Ebola'
-                                           //Where Id = 'a0Nb000000SqF30'
-                                           WHERE Id IN : customContractsIdsToAddInList Or
-                                                (In_Charge_Of_Report_Out__c='Project Manager' and  Project_Manager__r.Email=:CurrentLoginEmail) or 
-                                                (In_Charge_Of_Report_Out__c='Field Manager' and  Field_Manager__r.Email=:CurrentLoginEmail) or 
-                                                (In_Charge_Of_Report_Out__c='Backstop' and  Backstop__r.Email=:CurrentLoginEmail)
-                                       ORDER BY Name]);
 
-        if(contractMap.values().size()>0 && contractid2==null){
+        childContractMap = new Map<Id,List<DContract__c>>();
+        contractMap = new Map<Id,DContract__c>([SELECT Id, Name, Requires_Developer_Work__c, Last_Report_Out_Date__c, Last_Report_Out_Status__c, Percent_through_SOW_deliverables__c,
+                                            Burdened_Income_Budget__c, Direct_Costs_Travel_BUDGET__c, Direct_Costs_Total_Expenses__c, Percent_through_Contract__c,
+                                            Product_Income_Budget__c, Services_Income__c, Product_Spend__c, Total_Amount_of_Contract__c, Direct_Costs_Sub_Contract_BUDGET__c,
+                                            Internal_Sub_contract_BUDGET__c, Project_Other_BUDGET__c, Direct_Costs_Travel_Expenses__c, Direct_Costs_Sub_contract_Expenses__c,
+                                            Internal_Sub_contract_Spend__c, Project_Other_Spent__c, Expected_Margin__c,Budget_Used__c, Margin_by_SOW_Completed__c,
+                                            Margin_by_Contract_Dates__c, Execution_Efficiency__c, Buffer_by_SOW_Completed__c, Contract_Expense_BUDGET__c,
+                                            (SELECT Id, Name, Requires_Developer_Work__c, Last_Report_Out_Date__c, Last_Report_Out_Status__c, Percent_through_SOW_deliverables__c,
+                                            Burdened_Income_Budget__c, Direct_Costs_Travel_BUDGET__c, Direct_Costs_Total_Expenses__c, Percent_through_Contract__c,
+                                            Product_Income_Budget__c, Services_Income__c, Product_Spend__c, Total_Amount_of_Contract__c, Direct_Costs_Sub_Contract_BUDGET__c,
+                                            Internal_Sub_contract_BUDGET__c, Project_Other_BUDGET__c, Direct_Costs_Travel_Expenses__c, Direct_Costs_Sub_contract_Expenses__c,
+                                            Internal_Sub_contract_Spend__c, Project_Other_Spent__c, Expected_Margin__c, Budget_Used__c ,Margin_by_SOW_Completed__c,
+                                            Margin_by_Contract_Dates__c, Execution_Efficiency__c, Buffer_by_SOW_Completed__c, Contract_Expense_BUDGET__c FROM Contracts__r)
+                                            FROM DContract__c
+                                            WHERE Id IN : customContractsIdsToAddInList OR
+                                                (In_Charge_Of_Report_Out__c='Project Manager' AND  Project_Manager__r.Email=:CurrentLoginEmail) OR
+                                                (In_Charge_Of_Report_Out__c='Field Manager' AND  Field_Manager__r.Email=:CurrentLoginEmail) OR
+                                                (In_Charge_Of_Report_Out__c='Backstop' AND  Backstop__r.Email=:CurrentLoginEmail)
+                                            ORDER BY Name]);
+
+        for (DContract__c dc : contractMap.values()) {
+            if (dc.Contracts__r.size() > 0) {
+                childContractMap.put(dc.Id,dc.Contracts__r);
+            }
+        }
+
+        if (contractMap.values().size() > 0 && contractid2 == null) {
             contractid2 = contractMap.values()[0].id;
             loadContractBudgetAndSpentData();
         }
 
         for(DContract__c dc:contractMap.values()){
-            //contractIdName.put(dc.Id, dc);
-            
+
             excludeContractFromSearch.add(dc.Id);
-            PROProject prObj=new PROProject();
-            prObj.Contract=dc;
-            if(contractid2!=null && contractid2!=''){
-                prObj.cssClass=dc.id==contractid2?'bgColorCls':'';
+            PROProject prObj = new PROProject();
+            prObj.Contract = dc;
+
+            if (contractid2 != null && contractid2 != '') {
+                prObj.cssClass = dc.id == contractid2 ? 'bgColorCls' : '';
             }
-            if(customContractsIdsToAddInList.contains(dc.Id)) {
+
+            if (customContractsIdsToAddInList.contains(dc.Id)) {
                 prObj.customAdded = true;
             }
             proList.add(prObj);
-
-            if(dc.Contracts__r.size() > 0) {
-                childContractMap.put(dc.Id,dc.Contracts__r);
-            }
-
         }
+
         return proList;
     }
 
-    public List<PROProject> getProjectList2(){
-        List<PROProject> proList=new List<PROProject>();
+    public List<PROProject> getProjectList2() {
+        List<PROProject> proList = new List<PROProject>();
 
-        DContract__c[] contracts = [SELECT Id, Name, Requires_Developer_Work__c,Last_Report_Out_Date__c,Last_Report_Out_Status__c,
+        DContract__c[] contracts = [SELECT Id, Name, Requires_Developer_Work__c, Last_Report_Out_Date__c, Last_Report_Out_Status__c,
                                     Percent_through_SOW_deliverables__c , Percent_through_Contract__c, Margin_by_Contract_Dates__c,
                                     Margin_by_SOW_Completed__c, Expected_Margin__c, Execution_Efficiency__c
-                                           FROM DContract__c 
-                                           WHERE Requires_Report_Out__c = 'Yes' and(
-                                                (In_Charge_Of_Report_Out__c='Project Manager' and  Project_Manager__r.Email=:CurrentLoginEmail) or 
-                                                (In_Charge_Of_Report_Out__c='Field Manager' and  Field_Manager__r.Email=:CurrentLoginEmail) or 
-                                                (In_Charge_Of_Report_Out__c='Backstop' and  Backstop__r.Email=:CurrentLoginEmail) 
-                                                or Owner.Email=:CurrentLoginEmail
-                                            )
-                                       ORDER BY Name];
-                                       
-        if(contracts.size()>0 && contractid==null){
+                                    FROM DContract__c
+                                    WHERE Requires_Report_Out__c = 'Yes' AND (
+                                        (In_Charge_Of_Report_Out__c = 'Project Manager' AND Project_Manager__r.Email =: CurrentLoginEmail) OR
+                                        (In_Charge_Of_Report_Out__c = 'Field Manager' AND Field_Manager__r.Email =: CurrentLoginEmail) OR
+                                        (In_Charge_Of_Report_Out__c = 'Backstop' AND Backstop__r.Email =: CurrentLoginEmail)
+                                        OR Owner.Email =: CurrentLoginEmail)
+                                   ORDER BY Name];
+
+        if (contracts.size() > 0 && contractid == null) {
             contractid= contracts[0].id;
             proTabContract = contracts[0];
             //proTabContractPercntgethroughSOW = Integer.valueOf(contracts[0].Percent_through_Contract__c);
             proTabContractPercntgethroughSOW = contracts[0].Percent_through_SOW_deliverables__c != null ? Integer.valueOf(contracts[0].Percent_through_SOW_deliverables__c): Integer.valueOf(contracts[0].Percent_through_Contract__c);
-            for(DContract__c dc:contracts)
+            for(DContract__c dc:contracts) {
                 contractIdName.put(dc.Id, dc);
+            }
 
             loadProjectReport();
         }
 
-        for(DContract__c dc:contracts){
-            PROProject prObj=new PROProject();
-            prObj.Contract=dc;
-            if(contractId!=null && contractId!=''){
-                prObj.cssClass=dc.id==contractId?'bgColorCls':'';
+        for (DContract__c dc:contracts) {
+            PROProject prObj = new PROProject();
+            prObj.Contract = dc;
+            if(contractId != null && contractId != ''){
+                prObj.cssClass = dc.id == contractId ? 'bgColorCls' : '';
             }
+
             proList.add(prObj);
         }
         return proList;
     }
+
     public List<PROProject> getAllProjectList1(){
         List<PROProject> proList=new List<PROProject>();
         DContract__c[] contracts = [SELECT Id, Name, Requires_Developer_Work__c,Last_Report_Out_Date__c,Last_Report_Out_Status__c,Percent_through_Contract__c,Percent_through_SOW_deliverables__c
