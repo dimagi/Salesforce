@@ -15,23 +15,6 @@ public class GenericEscalationWorkflowHelper {
         return filteredList;
     }
 
-    public static List<Messaging.SingleEmailMessage> processWorkflowEmails(List<sObject> records, Generic_Reminder__c reminder, OrgWideEmailAddress orgWideAddress) {
-        List<Messaging.SingleEmailMessage> messages = new List<Messaging.SingleEmailMessage>();
-        for (sObject record : records) {
-            Messaging.SingleEmailMessage msg = new Messaging.SingleEmailMessage();
-            msg.setTemplateId(reminder.Email_Template__c);
-            // TODO load contacts
-            //msg.setTargetObjectId(contactList[0].Id);
-            msg.setToAddresses(new String[] {'tstalka@soldevelo.com'});
-            msg.setWhatId((Id) record.get('Id'));
-            msg.setSaveAsActivity(false);
-            msg.setOrgWideEmailAddressId(orgWideAddress.id);
-            messages.add(msg);
-        }
-
-        return messages;
-    }
-
     public static Date getLastDueDate(Generic_Escalation_Workflow__c genericTrigger, Date referenceDate) {
         Date fromDate = getProperDate(genericTrigger.From_Day_of_Week__c, genericTrigger.From_Numeral__c, referenceDate);
         Date toDate = getProperDate(genericTrigger.To_Day_of_Week__c, genericTrigger.To_Numeral__c, referenceDate);
