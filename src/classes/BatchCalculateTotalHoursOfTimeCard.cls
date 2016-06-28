@@ -1,7 +1,7 @@
 /**
  * Calculates Services Spend field value for each contracts, runs BatchUpdateContractServicesSpend job.
  */
-global class BatchCalculateTotalHoursOfTimeCard implements Database.Batchable<Time_Card__c> {
+global class BatchCalculateTotalHoursOfTimeCard implements Database.Batchable<sObject> {
 
     private String contractId;
     private Map<Id, Integer> servicesSpendMap;
@@ -15,15 +15,20 @@ global class BatchCalculateTotalHoursOfTimeCard implements Database.Batchable<Ti
         this.servicesSpendMap = new Map<Id, Integer>();
     }
 
-    global List<Time_Card__c> start(Database.BatchableContext context) {
+    global Database.QueryLocator start(Database.BatchableContext context) {
+        String query;
         if (String.isEmpty(contractId)) {
-            return [SELECT Client__c, labor_cost__c FROM Time_Card__c WHERE Client__c != ''];
+            query = 'SELECT Client__c, labor_cost__c FROM Time_Card__c';
+        } else {
+            query = 'SELECT Client__c, labor_cost__c FROM Time_Card__c WHERE Client__c =: contractId';
         }
-        return [SELECT Client__c, labor_cost__c FROM Time_Card__c WHERE Client__c =: contractId];
+
+        return Database.getQueryLocator(query);
     }
 
-    global void execute(Database.BatchableContext BC, List<Time_Card__c> scope){
-        for (Time_Card__c tc : scope) {
+    global void execute(Database.BatchableContext BC, List<sObject> scope){
+        for (sObject obj : scope) {
+            Time_Card__c tc = (Time_Card__c) obj;
             if (tc.labor_cost__c != null) {
                 if (servicesSpendMap.containsKey(tc.Client__c)) {
                     servicesSpendMap.put(tc.Client__c, servicesSpendMap.get(tc.Client__c) + tc.labor_cost__c.intValue());

@@ -1,66 +1,249 @@
 @isTest
-public class BatchUpdateContractServicesSpendTest {
+public class BatchCalculateTotalHoursOfTimeCardTest {
 
-    @isTest
-    public static void shouldUpdateServicesSpendFieldValue() {
-        DContract__c dcontract1 = new DContract__c(
-            Name = 'Sample Test Name 1 ',
+    static testMethod void shouldUpdateServicesSpend() {
+        SFDC_Employee__c employeeObj = new SFDC_Employee__c(
+            name = 'Sample Employee',
+            Salary__c = 50000,
+            Exchange_Rate__c = 1
+        );
+        insert employeeObj;
+
+        DContract__c dcontract = new DContract__c(
+            Name = 'Sample Test Name',
             Status__c = 'Active',
             Requires_Report_Out__c = 'No',
             Intracompany_Sub_contract__c = 'No'
         );
-        insert dcontract1;
-        DContract__c dcontract2 = new DContract__c(
-            Name = 'Sample Test Name 2',
-            Status__c = 'Active',
-            Requires_Report_Out__c = 'No',
-            Intracompany_Sub_contract__c = 'No'
-        );
-        insert dcontract2;
-        DContract__c dcontract3 = new DContract__c(
-            Name = 'Sample Test Name 3 ',
-            Status__c = 'Active',
-            Requires_Report_Out__c = 'No',
-            Intracompany_Sub_contract__c = 'Yes',
-            Parent_Contract__c = dcontract2.Id
-        );
-        insert dcontract3;
-        DContract__c dcontract4 = new DContract__c(
-            Name = 'Sample Test Name 4',
-            Status__c = 'Active',
-            Requires_Report_Out__c = 'No',
-            Intracompany_Sub_contract__c = 'Yes',
-            Parent_Contract__c = dcontract2.Id
-        );
-        insert dcontract4;
-        DContract__c dcontract5 = new DContract__c(
-            Name = 'Sample Test Name 5',
-            Status__c = 'Active',
-            Requires_Report_Out__c = 'No',
-            Intracompany_Sub_contract__c = 'Yes',
-            Parent_Contract__c = dcontract2.Id
-        );
-        insert dcontract5;
-
-        Map<Id, Integer> batchData = new Map<Id, Integer> { dcontract1.Id => 100, dcontract2.Id => 200, dcontract3.Id => 10, dcontract4.Id => 35};
+        insert dcontract;
 
         Test.startTest();
-        BatchUpdateContractServicesSpend obj = new BatchUpdateContractServicesSpend(batchData);
-        Database.executeBatch(obj, 200);
+
+        Time_Card__c timeCardObj = new Time_Card__c(
+            Total__c = 4,
+            Date__c = Date.today().addMonths(-2),
+            Employee__c = employeeObj.Id,
+            Client__c = dcontract.Id
+        );
+        insert timeCardObj;
+
+        BatchCalculateTotalHoursOfTimeCard batch1 = new BatchCalculateTotalHoursOfTimeCard();
+        Database.QueryLocatorIterator iter = batch1.start(null).iterator();
+        List<sObject> testData = new List<sObject>();
+        while (iter.hasNext()) {
+            testData.add(iter.next());
+        }
+
+        batch1.execute(null, testData);
+        BatchUpdateContractServicesSpend batch2 = new BatchUpdateContractServicesSpend(batch1.getServicesSpendMap());
+        batch2.execute(null, batch2.start(null));
         Test.stopTest();
 
-        List<DContract__c> contracts = [SELECT Name, Services_Spend__c FROM DContract__c ORDER BY Name];
-
-        System.assertEquals('Sample Test Name 1', contracts.get(0).Name);
-        System.assertEquals('Sample Test Name 2', contracts.get(1).Name);
-        System.assertEquals('Sample Test Name 3', contracts.get(2).Name);
-        System.assertEquals('Sample Test Name 4', contracts.get(3).Name);
-        System.assertEquals('Sample Test Name 5', contracts.get(4).Name);
-
-        System.assertEquals(100, contracts.get(0).Services_Spend__c);
-        System.assertEquals(245, contracts.get(1).Services_Spend__c);
-        System.assertEquals(10, contracts.get(2).Services_Spend__c);
-        System.assertEquals(35, contracts.get(3).Services_Spend__c);
-        System.assertEquals(null, contracts.get(4).Services_Spend__c);
+        DContract__c dcontractFromDB = [SELECT Id, Name, Services_Spend__c FROM DContract__c WHERE Id =: dcontract.Id];
+        System.assertEquals(230, dcontractFromDB.Services_Spend__c);
     }
+
+    static testMethod void shouldUpdateParentServicesSpend() {
+        SFDC_Employee__c employeeObj = new SFDC_Employee__c(
+            name = 'Sample Employee',
+            Salary__c = 50000,
+            Exchange_Rate__c = 1
+        );
+        insert employeeObj;
+
+        DContract__c parent = new DContract__c(
+            Name = 'Sample Parent',
+            Status__c = 'Active',
+            Requires_Report_Out__c = 'No',
+            Intracompany_Sub_contract__c = 'No'
+        );
+        insert parent;
+
+        DContract__c child1 = new DContract__c(
+            Name = 'Sample Child 1',
+            Status__c = 'Active',
+            Requires_Report_Out__c = 'No',
+            Intracompany_Sub_contract__c = 'Yes',
+            Parent_Contract__c = parent.Id
+        );
+        insert child1;
+
+        DContract__c child2 = new DContract__c(
+            Name = 'Sample Child 2',
+            Status__c = 'Active',
+            Requires_Report_Out__c = 'No',
+            Intracompany_Sub_contract__c = 'Yes',
+            Parent_Contract__c = parent.Id
+        );
+        insert child2;
+
+        Test.startTest();
+
+        Time_Card__c timeCardObj1 = new Time_Card__c(
+            Total__c = 4,
+            Date__c = Date.today().addMonths(-2),
+            Employee__c = employeeObj.Id,
+            Client__c = child1.Id
+        );
+        insert timeCardObj1;
+
+        Time_Card__c timeCardObj2 = new Time_Card__c(
+            Total__c = 8,
+            Date__c = Date.today().addMonths(-2),
+            Employee__c = employeeObj.Id,
+            Client__c = child2.Id
+        );
+        insert timeCardObj2;
+
+        BatchCalculateTotalHoursOfTimeCard batch1 = new BatchCalculateTotalHoursOfTimeCard();
+        Database.QueryLocatorIterator iter = batch1.start(null).iterator();
+        List<sObject> testData = new List<sObject>();
+        while (iter.hasNext()) {
+            testData.add(iter.next());
+        }
+
+        batch1.execute(null, testData);
+        BatchUpdateContractServicesSpend batch2 = new BatchUpdateContractServicesSpend(batch1.getServicesSpendMap());
+        batch2.execute(null, batch2.start(null));
+        Test.stopTest();
+
+        DContract__c dcontractFromDB = [SELECT Id, Name, Services_Spend__c FROM DContract__c WHERE Id =: parent.Id];
+        System.assertEquals(690, dcontractFromDB.Services_Spend__c);
+
+        dcontractFromDB = [SELECT Id, Name, Services_Spend__c FROM DContract__c WHERE Id =: child1.Id];
+        System.assertEquals(230, dcontractFromDB.Services_Spend__c);
+
+        dcontractFromDB = [SELECT Id, Name, Services_Spend__c FROM DContract__c WHERE Id =: child2.Id];
+        System.assertEquals(460, dcontractFromDB.Services_Spend__c);
+    }
+
+    static testMethod void shouldUpdateServicesSpendInManyContracts() {
+        SFDC_Employee__c employeeObj = new SFDC_Employee__c(
+            name = 'Sample Employee',
+            Salary__c = 50000,
+            Exchange_Rate__c = 1
+        );
+        insert employeeObj;
+
+        DContract__c parent1 = new DContract__c(
+            Name = 'Sample Parent',
+            Status__c = 'Active',
+            Requires_Report_Out__c = 'No',
+            Intracompany_Sub_contract__c = 'No'
+        );
+        insert parent1;
+
+        DContract__c child1 = new DContract__c(
+            Name = 'Sample Child 1',
+            Status__c = 'Active',
+            Requires_Report_Out__c = 'No',
+            Intracompany_Sub_contract__c = 'Yes',
+            Parent_Contract__c = parent1.Id
+        );
+        insert child1;
+
+        DContract__c child2 = new DContract__c(
+            Name = 'Sample Child 2',
+            Status__c = 'Active',
+            Requires_Report_Out__c = 'No',
+            Intracompany_Sub_contract__c = 'Yes',
+            Parent_Contract__c = parent1.Id
+        );
+        insert child2;
+
+        DContract__c parent2 = new DContract__c(
+            Name = 'Sample Parent',
+            Status__c = 'Active',
+            Requires_Report_Out__c = 'No',
+            Intracompany_Sub_contract__c = 'No'
+        );
+        insert parent2;
+
+        DContract__c child3 = new DContract__c(
+            Name = 'Sample Child 1',
+            Status__c = 'Active',
+            Requires_Report_Out__c = 'No',
+            Intracompany_Sub_contract__c = 'Yes',
+            Parent_Contract__c = parent2.Id
+        );
+        insert child3;
+
+        DContract__c child4 = new DContract__c(
+            Name = 'Sample Child 2',
+            Status__c = 'Active',
+            Requires_Report_Out__c = 'No',
+            Intracompany_Sub_contract__c = 'Yes',
+            Parent_Contract__c = parent2.Id
+        );
+        insert child4;
+
+        Test.startTest();
+
+        Time_Card__c timeCardObj1 = new Time_Card__c(
+            Total__c = 8,
+            Date__c = Date.today().addMonths(-2),
+            Employee__c = employeeObj.Id,
+            Client__c = child1.Id
+        );
+        insert timeCardObj1;
+
+        Time_Card__c timeCardObj2 = new Time_Card__c(
+            Total__c = 4,
+            Date__c = Date.today().addMonths(-2),
+            Employee__c = employeeObj.Id,
+            Client__c = parent1.Id
+        );
+        insert timeCardObj2;
+
+        Time_Card__c timeCardObj3 = new Time_Card__c(
+            Total__c = 10,
+            Date__c = Date.today().addMonths(-2),
+            Employee__c = employeeObj.Id,
+            Client__c = child3.Id
+        );
+        insert timeCardObj3;
+
+        Time_Card__c timeCardObj4 = new Time_Card__c(
+            Total__c = 8,
+            Date__c = Date.today().addMonths(-2),
+            Employee__c = employeeObj.Id,
+            Client__c = child4.Id
+        );
+        insert timeCardObj4;
+
+        Set<Id> ids = new Set<Id>();
+        ids.add(child4.Id);
+        ids.add(parent1.Id);
+
+        BatchCalculateTotalHoursOfTimeCard batch1 = new BatchCalculateTotalHoursOfTimeCard();
+        Database.QueryLocatorIterator iter = batch1.start(null).iterator();
+        List<sObject> testData = new List<sObject>();
+        while (iter.hasNext()) {
+            testData.add(iter.next());
+        }
+
+        batch1.execute(null, testData);
+        BatchUpdateContractServicesSpend batch2 = new BatchUpdateContractServicesSpend(batch1.getServicesSpendMap());
+        batch2.execute(null, batch2.start(null));
+        Test.stopTest();
+
+        DContract__c dcontractFromDB = [SELECT Id, Name, Services_Spend__c FROM DContract__c WHERE Id =: parent1.Id];
+        System.assertEquals(690, dcontractFromDB.Services_Spend__c);
+
+        dcontractFromDB = [SELECT Id, Name, Services_Spend__c FROM DContract__c WHERE Id =: child1.Id];
+        System.assertEquals(460, dcontractFromDB.Services_Spend__c);
+
+        dcontractFromDB = [SELECT Id, Name, Services_Spend__c FROM DContract__c WHERE Id =: child2.Id];
+        System.assertEquals(null, dcontractFromDB.Services_Spend__c);
+
+        dcontractFromDB = [SELECT Id, Name, Services_Spend__c FROM DContract__c WHERE Id =: parent2.Id];
+        System.assertEquals(1035, dcontractFromDB.Services_Spend__c);
+
+        dcontractFromDB = [SELECT Id, Name, Services_Spend__c FROM DContract__c WHERE Id =: child3.Id];
+        System.assertEquals(575, dcontractFromDB.Services_Spend__c);
+
+        dcontractFromDB = [SELECT Id, Name, Services_Spend__c FROM DContract__c WHERE Id =: child4.Id];
+        System.assertEquals(460, dcontractFromDB.Services_Spend__c);
+    }
+
 }
