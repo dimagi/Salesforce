@@ -27,8 +27,10 @@ public class BatchCalculateTotalHoursOfTimeCardTest {
         );
         insert timeCardObj;
 
-        BatchCalculateTotalHoursOfTimeCard obj = new BatchCalculateTotalHoursOfTimeCard();
-        Database.executeBatch(obj, 200);
+        BatchCalculateTotalHoursOfTimeCard batch1 = new BatchCalculateTotalHoursOfTimeCard();
+        batch1.execute(null, batch1.start(null));
+        BatchUpdateContractServicesSpend batch2 = new BatchUpdateContractServicesSpend(batch1.getServicesSpendMap());
+        batch2.execute(null, batch2.start(null));
         Test.stopTest();
 
         DContract__c dcontractFromDB = [SELECT Id, Name, Services_Spend__c FROM DContract__c WHERE Id =: dcontract.Id];
@@ -87,8 +89,10 @@ public class BatchCalculateTotalHoursOfTimeCardTest {
         );
         insert timeCardObj2;
 
-        BatchCalculateTotalHoursOfTimeCard obj = new BatchCalculateTotalHoursOfTimeCard();
-        Database.executeBatch(obj, 200);
+        BatchCalculateTotalHoursOfTimeCard batch1 = new BatchCalculateTotalHoursOfTimeCard();
+        batch1.execute(null, batch1.start(null));
+        BatchUpdateContractServicesSpend batch2 = new BatchUpdateContractServicesSpend(batch1.getServicesSpendMap());
+        batch2.execute(null, batch2.start(null));
         Test.stopTest();
 
         DContract__c dcontractFromDB = [SELECT Id, Name, Services_Spend__c FROM DContract__c WHERE Id =: parent.Id];
@@ -199,8 +203,10 @@ public class BatchCalculateTotalHoursOfTimeCardTest {
         ids.add(child4.Id);
         ids.add(parent1.Id);
 
-        BatchCalculateTotalHoursOfTimeCard obj = new BatchCalculateTotalHoursOfTimeCard();
-        Database.executeBatch(obj, 200);
+        BatchCalculateTotalHoursOfTimeCard batch1 = new BatchCalculateTotalHoursOfTimeCard();
+        batch1.execute(null, batch1.start(null));
+        BatchUpdateContractServicesSpend batch2 = new BatchUpdateContractServicesSpend(batch1.getServicesSpendMap());
+        batch2.execute(null, batch2.start(null));
         Test.stopTest();
 
         DContract__c dcontractFromDB = [SELECT Id, Name, Services_Spend__c FROM DContract__c WHERE Id =: parent1.Id];
@@ -210,7 +216,7 @@ public class BatchCalculateTotalHoursOfTimeCardTest {
         System.assertEquals(460, dcontractFromDB.Services_Spend__c);
 
         dcontractFromDB = [SELECT Id, Name, Services_Spend__c FROM DContract__c WHERE Id =: child2.Id];
-        System.assertEquals(0, dcontractFromDB.Services_Spend__c);
+        System.assertEquals(null, dcontractFromDB.Services_Spend__c);
 
         dcontractFromDB = [SELECT Id, Name, Services_Spend__c FROM DContract__c WHERE Id =: parent2.Id];
         System.assertEquals(1035, dcontractFromDB.Services_Spend__c);
