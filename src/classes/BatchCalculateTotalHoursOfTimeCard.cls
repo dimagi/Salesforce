@@ -1,81 +1,54 @@
-global class BatchCalculateTotalHoursOfTimeCard implements Database.Batchable<sObject>{
+/**
+ * Calculates Services Spend field value for each contracts, runs BatchUpdateContractServicesSpend job.
+ */
+global class BatchCalculateTotalHoursOfTimeCard implements Database.Batchable<sObject> {
 
-    global final string query;
-    global string contractId;
+    private String contractId;
+    private Map<Id, Integer> servicesSpendMap;
 
     global BatchCalculateTotalHoursOfTimeCard(){
-        query = 'SELECT Name, Services_Spend__c FROM DContract__c WHERE Parent_Contract__c = \'\'';
+        this.servicesSpendMap = new Map<Id, Integer>();
     }
 
-    global BatchCalculateTotalHoursOfTimeCard(String contrctId){
-        contractId = contrctId;
-        query = 'SELECT Name, Services_Spend__c FROM DContract__c Where Id = :contractId ';
+    global BatchCalculateTotalHoursOfTimeCard(String contractId){
+        this.contractId = contractId;
+        this.servicesSpendMap = new Map<Id, Integer>();
     }
 
-    global Database.QueryLocator start(Database.BatchableContext BC){
+    global Database.QueryLocator start(Database.BatchableContext context) {
+        String query;
+        if (String.isEmpty(contractId)) {
+            query = 'SELECT Client__c, labor_cost__c FROM Time_Card__c';
+        } else {
+            query = 'SELECT Client__c, labor_cost__c FROM Time_Card__c WHERE Client__c =: contractId';
+        }
+
         return Database.getQueryLocator(query);
     }
 
     global void execute(Database.BatchableContext BC, List<sObject> scope){
-        List<DContract__c> contractsToUpdate = new List<DContract__c>();
-        Map<Id, Decimal> resultsBycontractId = new Map<Id, Decimal>();
-        Map<Id, DContract__c> contractIdContractMap = new Map<Id, DContract__c>();
-
-        for (sObject s : scope) {
-            DContract__c obj = (DContract__c) s;
-            Decimal parentTotal = calculateTotal(obj.Id);
-            resultsBycontractId.put(obj.Id, parentTotal);
-            contractIdContractMap.put(obj.Id, obj);
-        }
-
-        List<DContract__c> childContracts = [SELECT Name, Parent_Contract__c, Services_Spend__c FROM DContract__c WHERE Parent_Contract__c IN :contractIdContractMap.keySet()];
-        for (DContract__c dc : childContracts) {
-            Decimal total = calculateTotal(dc.Id);
-            resultsBycontractId.put(dc.Id, total);
-            contractIdContractMap.put(dc.Id, dc);
-
-            if (resultsBycontractId.containsKey(dc.Parent_Contract__c)) {
-                resultsBycontractId.put(dc.Parent_Contract__c, resultsBycontractId.get(dc.Parent_Contract__c) + total);
+        for (sObject obj : scope) {
+            Time_Card__c tc = (Time_Card__c) obj;
+            if (tc.labor_cost__c != null) {
+                if (servicesSpendMap.containsKey(tc.Client__c)) {
+                    servicesSpendMap.put(tc.Client__c, servicesSpendMap.get(tc.Client__c) + tc.labor_cost__c.intValue());
+                } else {
+                    servicesSpendMap.put(tc.Client__c, tc.labor_cost__c.intValue());
+                }
             }
         }
 
-        for (DContract__c contract : contractIdContractMap.values()) {
-            Integer total = 0;
+    }
 
-            if (resultsBycontractId.containsKey(contract.Id)) {
-                total = resultsBycontractId.get(contract.Id).intValue();
-            }
-
-            if (contract.Services_Spend__c != total) {
-                contract.Services_Spend__c = total;
-                contractsToUpdate.add(contract);
-            }
-        }
-
-        System.debug('contractsToUpdate: ' + contractsToUpdate);
-
-        try{
-            if(contractsToUpdate.isEmpty() == false) {
-                Database.SaveResult[] saveResults = Database.update(contractsToUpdate, false);
-                System.debug(saveResults);
-            }
-        }catch (Exception e) {
-            System.debug(LoggingLevel.WARN, 'Error occured.' + e.getMessage() + ' - ' +  e.getLineNumber());
+    global void finish(Database.BatchableContext context){
+        // We must update values in contracts
+        if (!Test.isRunningTest()) {
+            BatchUpdateContractServicesSpend obj = new BatchUpdateContractServicesSpend(servicesSpendMap);
+            Database.executeBatch(obj, 50);
         }
     }
 
-    global void finish(Database.BatchableContext BC){
-        System.debug(LoggingLevel.WARN,'Batch Job Complete');
-    }
-
-    private Integer calculateTotal(Id contractId) {
-        Decimal total = 0;
-        for (Time_Card__c ch : [SELECT labor_cost__c FROM Time_Card__c WHERE Client__c =: contractId]) {
-            if (ch.labor_cost__c != null) {
-                total += ch.labor_cost__c;
-            }
-        }
-
-        return total.intValue();
+    public Map<Id, Integer> getServicesSpendMap() {
+        return this.servicesSpendMap;
     }
 }

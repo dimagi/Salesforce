@@ -724,6 +724,19 @@ See https://confluence.dimagi.com/display/BD/BD+Channels</inlineHelpText>
         <type>Currency</type>
     </fields>
     <fields>
+        <fullName>Domain__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <externalId>false</externalId>
+        <label>Domain</label>
+        <referenceTo>Domain__c</referenceTo>
+        <relationshipLabel>Contracts</relationshipLabel>
+        <relationshipName>Contracts</relationshipName>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
         <fullName>Duration_months__c</fullName>
         <description>Calculated based on start and end dates in the contract object</description>
         <externalId>false</externalId>

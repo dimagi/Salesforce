@@ -28,7 +28,13 @@ public class BatchCalculateTotalHoursOfTimeCardTest {
         insert timeCardObj;
 
         BatchCalculateTotalHoursOfTimeCard batch1 = new BatchCalculateTotalHoursOfTimeCard();
-        batch1.execute(null, batch1.start(null));
+        Database.QueryLocatorIterator iter = batch1.start(null).iterator();
+        List<sObject> testData = new List<sObject>();
+        while (iter.hasNext()) {
+            testData.add(iter.next());
+        }
+
+        batch1.execute(null, testData);
         BatchUpdateContractServicesSpend batch2 = new BatchUpdateContractServicesSpend(batch1.getServicesSpendMap());
         batch2.execute(null, batch2.start(null));
         Test.stopTest();
@@ -90,7 +96,13 @@ public class BatchCalculateTotalHoursOfTimeCardTest {
         insert timeCardObj2;
 
         BatchCalculateTotalHoursOfTimeCard batch1 = new BatchCalculateTotalHoursOfTimeCard();
-        batch1.execute(null, batch1.start(null));
+        Database.QueryLocatorIterator iter = batch1.start(null).iterator();
+        List<sObject> testData = new List<sObject>();
+        while (iter.hasNext()) {
+            testData.add(iter.next());
+        }
+
+        batch1.execute(null, testData);
         BatchUpdateContractServicesSpend batch2 = new BatchUpdateContractServicesSpend(batch1.getServicesSpendMap());
         batch2.execute(null, batch2.start(null));
         Test.stopTest();
@@ -204,7 +216,13 @@ public class BatchCalculateTotalHoursOfTimeCardTest {
         ids.add(parent1.Id);
 
         BatchCalculateTotalHoursOfTimeCard batch1 = new BatchCalculateTotalHoursOfTimeCard();
-        batch1.execute(null, batch1.start(null));
+        Database.QueryLocatorIterator iter = batch1.start(null).iterator();
+        List<sObject> testData = new List<sObject>();
+        while (iter.hasNext()) {
+            testData.add(iter.next());
+        }
+
+        batch1.execute(null, testData);
         BatchUpdateContractServicesSpend batch2 = new BatchUpdateContractServicesSpend(batch1.getServicesSpendMap());
         batch2.execute(null, batch2.start(null));
         Test.stopTest();
