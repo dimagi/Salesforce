@@ -90,6 +90,15 @@
         <writeRequiresMasterRead>false</writeRequiresMasterRead>
     </fields>
     <fields>
+        <fullName>Recipients__c</fullName>
+        <externalId>false</externalId>
+        <label>Recipients</label>
+        <length>750</length>
+        <trackTrending>false</trackTrending>
+        <type>LongTextArea</type>
+        <visibleLines>3</visibleLines>
+    </fields>
+    <fields>
         <fullName>Reminder_Index__c</fullName>
         <externalId>false</externalId>
         <label>Reminder Index</label>

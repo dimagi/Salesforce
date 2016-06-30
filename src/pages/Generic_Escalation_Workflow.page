@@ -1,4 +1,5 @@
-<apex:page controller="GenericEscalationWorkflowController">
+<apex:page controller="GenericEscalationWorkflowController" docType="html-5.0">
+
     <script>
         /**
          * Confirmation for removing generic trigger.
@@ -12,6 +13,19 @@
     </script>
     <apex:pageBlock title="Generic Escalation Workflow">
         <apex:form >
+
+            <!-- REMOVE AFTER TESTING-->
+            <apex:pageBlockSection columns="1">
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="Job Reference Date" for="jobRefDate"/>
+                    <apex:input id="jobRefDate" value="{!referenceDate.Value}" type="date"/>
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem >
+                    <apex:commandButton action="{!runJob}" value="Run Job" />
+                </apex:pageBlockSectionItem>
+            </apex:pageBlockSection>
+            <!-- REMOVE AFTER TESTING-->
+
             <apex:pageBlockSection title="Reminder Triggers" collapsible="true" columns="1">
                 <apex:pageBlockSectionItem >
                     <apex:outputPanel >

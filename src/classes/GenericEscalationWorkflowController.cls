@@ -29,6 +29,7 @@ public class GenericEscalationWorkflowController {
     private List<SelectOption> textOperators = new List<SelectOption> { new SelectOption('=', '='), new SelectOption('!=', '!=') };
 
     public GenericEscalationWorkflowController() {
+        this.referenceDate = new DateWrapper();
         this.genericTrigger = new Generic_Escalation_Workflow__c(Global_Start_Date__c = Date.today());
         this.triggerReminders = new List<Generic_Reminder__c>();
         this.remindersToDelete = new List<Generic_Reminder__c>();
@@ -41,6 +42,48 @@ public class GenericEscalationWorkflowController {
         this.genericTrigger.Custom_Object__c = customObjects.get(0).getValue();
         loadCustomObjectFields();
     }
+
+    ///////////////////////////////////////////// TODO REMOVE AFTER TESTING
+
+    private DateWrapper referenceDate;
+
+    public DateWrapper getReferenceDate() {
+        return this.referenceDate;
+    }
+
+    public void setreferenceDate(DateWrapper val) {
+        this.referenceDate = val;
+    }
+
+    public PageReference runJob() {
+        GenericEscalationWorkflowBatch bJob = new GenericEscalationWorkflowBatch();
+        List<Generic_Escalation_Workflow__c> scope = bJob.start(null);
+        bJob.setReferenceDate(this.referenceDate.getValue());
+        bJob.execute(null, scope);
+        return null;
+    }
+
+    public class DateWrapper {
+
+        private Date value;
+
+        public DateWrapper() {
+            this.value = Date.today();
+        }
+
+        public DateWrapper(Date v) {
+            this.value = v;
+        }
+
+        public Date getValue() {
+            return this.value;
+        }
+
+        public void setValue(Date v) {
+            this.value = v;
+        }
+    }
+    /////////////////////////////////////////////
 
     public PageReference chooseGenericTrigger() {
         for (Generic_Escalation_Workflow__c gew : genericTriggers) {
@@ -76,13 +119,6 @@ public class GenericEscalationWorkflowController {
 
         Id upsertedTriggerId = this.genericTrigger.Id;
         for (Generic_Reminder__c triggerRem : triggerReminders) {
-            if (String.isEmpty(triggerRem.Id)) {
-                triggerRem.Generic_Escalation_Workflow__c = upsertedTriggerId;
-            }
-        }
-        upsert triggerReminders;
-
-        for (Generic_Reminder__c triggerRem : triggerReminders) {
             String recipients = '';
             Boolean first = true;
             for (StringWrapper r : this.recipientsMap.get(triggerRem.Reminder_Index__c)) {
@@ -95,7 +131,13 @@ public class GenericEscalationWorkflowController {
                 }
             }
             triggerRem.Recipients__c = recipients;
+            if (String.isEmpty(triggerRem.Id)) {
+                triggerRem.Generic_Escalation_Workflow__c = upsertedTriggerId;
+            }
+        }
+        upsert triggerReminders;
 
+        for (Generic_Reminder__c triggerRem : triggerReminders) {
             List<Generic_Reminder_Filter__c>  filtersToUpsert = this.reminderFiltersMap.get(triggerRem.Reminder_Index__c);
             for (Generic_Reminder_Filter__c remFilter : filtersToUpsert) {
                 if (String.isEmpty(remFilter.Id)) {

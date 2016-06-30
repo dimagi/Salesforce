@@ -5,11 +5,17 @@ global class GenericEscalationWorkflowBatch implements Database.Batchable<Generi
 
     private OrgWideEmailAddress orgWideAddress;
     private Map<Id, Boolean> notUpdatedRecords;
+    private Date referenceDate;
 
     global List<Generic_Escalation_Workflow__c> start(Database.BatchableContext context) {
         this.orgWideAddress = [SELECT Id FROM OrgWideEmailAddress WHERE
                                Address = 'dimagi-salesforce@dimagi.com' LIMIT 1];
+        this.referenceDate = Date.today();
         return getGenericEscalationWorkflow();
+    }
+
+    public void setReferenceDate(Date refD) {
+        this.referenceDate = refD;
     }
 
     global void execute(Database.BatchableContext context, List<Generic_Escalation_Workflow__c> scope) {
@@ -17,6 +23,7 @@ global class GenericEscalationWorkflowBatch implements Database.Batchable<Generi
         System.debug('Elements : ' + scope.size());
         for (Generic_Escalation_Workflow__c genericTrigger : scope) {
             this.notUpdatedRecords = new Map<Id, Boolean>();
+            List<sObject> toUpdate = new List<sObject>();
             System.debug('Processing generic trigger : ' + genericTrigger.Name + ' ' + genericTrigger.Id);
 
             try {
@@ -25,22 +32,25 @@ global class GenericEscalationWorkflowBatch implements Database.Batchable<Generi
 
                 // Retrieve all objects for report
                 List<sObject> sobjList = Database.query(triggerQuery);
+                System.debug('sobjList Found : ' + sobjList.size());
                 List<Messaging.SingleEmailMessage> messages = new List<Messaging.SingleEmailMessage>();
 
                 for (Generic_Reminder__c reminder : reminders) {
-                    List<sObject> objectsForReminders = GenericEscalationWorkflowHelper.filterObjects(sobjList, genericTrigger, reminder);
-                    messages.addAll(GenericEscalationWorkflowHelper.processWorkflowEmails(objectsForReminders, reminder, this.orgWideAddress));
+                    List<sObject> objectsForReminders = GenericEscalationWorkflowHelper.filterObjects(sobjList, genericTrigger, reminder, referenceDate);
+                    System.debug('Found : ' + objectsForReminders.size());
+                    messages.addAll(processWorkflowEmails(objectsForReminders, reminder, this.orgWideAddress));
 
                     if (reminder.Reminder_Index__c == 1) {
                         for (sObject record : objectsForReminders) {
                             if (!this.notUpdatedRecords.containsKey((Id) record.get('Id'))) {
-                                record.put(genericTrigger.First_Reminder_Date_Field__c, Date.today());
+                                record.put(genericTrigger.First_Reminder_Date_Field__c, referenceDate);
+                                toUpdate.add(record);
                             }
                         }
                     }
                 }
 
-                update objectsForReminders;
+                update toUpdate;
                 if (!Test.isRunningTest()) {
                     Messaging.sendEmail(messages);
                 }
@@ -58,7 +68,7 @@ global class GenericEscalationWorkflowBatch implements Database.Batchable<Generi
 
     private List<Generic_Escalation_Workflow__c> getGenericEscalationWorkflow() {
         List<Generic_Escalation_Workflow__c> triggers = [SELECT Id, Name, Custom_Object__c, Requires_Report_Field__c, Last_Report_Date_Field__c,
-                                                         From_Numeral__c, From_Day_of_Week__c, To_Numeral__c, To_Day_of_Week__c
+                                                         From_Numeral__c, From_Day_of_Week__c, To_Numeral__c, To_Day_of_Week__c, First_Reminder_Date_Field__c
                                                          FROM Generic_Escalation_Workflow__c
                                                          WHERE Enabled__c = true];
         return triggers;
@@ -117,7 +127,7 @@ global class GenericEscalationWorkflowBatch implements Database.Batchable<Generi
         return triggerQuery;
     }
 
-    public static List<Messaging.SingleEmailMessage> processWorkflowEmails(List<sObject> records, Generic_Reminder__c reminder, OrgWideEmailAddress orgWideAddress) {
+    public List<Messaging.SingleEmailMessage> processWorkflowEmails(List<sObject> records, Generic_Reminder__c reminder, OrgWideEmailAddress orgWideAddress) {
         List<Messaging.SingleEmailMessage> messages = new List<Messaging.SingleEmailMessage>();
         for (sObject record : records) {
             Integer counter = 0;
@@ -125,7 +135,8 @@ global class GenericEscalationWorkflowBatch implements Database.Batchable<Generi
                 String[] contacts = reminder.Recipients__c.split(',');
                 for (String contactField : contacts) {
                     Id contactId = (Id) record.get(contactField);
-                    if (contactId != null && contactId != '') {
+                    System.debug('contactId ' + contactId);
+                    if (!String.isEmpty(contactId)) {
                         Messaging.SingleEmailMessage msg = new Messaging.SingleEmailMessage();
                         msg.setTemplateId(reminder.Email_Template__c);
                         msg.setTargetObjectId(contactId);

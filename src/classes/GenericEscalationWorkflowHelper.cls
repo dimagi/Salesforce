@@ -3,11 +3,11 @@
  */
 public class GenericEscalationWorkflowHelper {
 
-    public static List<sObject> filterObjects(List<sObject> sourceList, Generic_Escalation_Workflow__c genericTrigger, Generic_Reminder__c genericReminder) {
+    public static List<sObject> filterObjects(List<sObject> sourceList, Generic_Escalation_Workflow__c genericTrigger, Generic_Reminder__c genericReminder, Date referenceDate) {
         List<sObject> filteredList = new List<sObject>();
 
         for (sObject record : sourceList) {
-            if (checkFilters(record, genericTrigger, genericReminder, Date.today(), genericReminder.Generic_Reminder_Filters__r)) {
+            if (checkFilters(record, genericTrigger, genericReminder, referenceDate, genericReminder.Generic_Reminder_Filters__r)) {
                 filteredList.add(record);
             }
         }
@@ -41,6 +41,7 @@ public class GenericEscalationWorkflowHelper {
     }
 
     private static Boolean processFirstRemainders(sObject record, Generic_Escalation_Workflow__c genericTrigger, Generic_Reminder__c genericReminder, Date referenceDate, List<Generic_Reminder_Filter__c> filters) {
+        System.debug('Processing first reminder');
         Object dateVal = record.get(genericTrigger.Last_Report_Date_Field__c);
         Date lastReportDate = null;
 
@@ -57,9 +58,14 @@ public class GenericEscalationWorkflowHelper {
 
         Date latestDueDate = getLastDueDate(genericTrigger, referenceDate);
         Date lastAllowedDate = latestDueDate.addDays(Integer.valueOf(genericReminder.Days__c));
-
+		System.debug('latestDueDate ' + latestDueDate);
+        System.debug('lastAllowedDate ' + lastAllowedDate);
+        System.debug('firstSentDate ' + firstSentDate);
+        System.debug('referenceDate ' + referenceDate);
+        System.debug('lastReportDate ' + lastReportDate);
+        System.debug('CreatedDate' + (DateTime) record.get('CreatedDate'));
         if (firstSentDate == null && referenceDate >= lastAllowedDate &&
-            ((lastReportDate != null && lastReportDate < latestDueDate) || (lastReportDate == null && ((Date) record.get('CreatedDate')) < latestDueDate))) {
+            ((lastReportDate != null && lastReportDate < latestDueDate) || (lastReportDate == null))) {//} && ((DateTime) record.get('CreatedDate')) < latestDueDate))) {
             for (Generic_Reminder_Filter__c filter : filters) {
                 if (!invokeStringFilter(record, filter)) {
                     return false;
@@ -71,6 +77,7 @@ public class GenericEscalationWorkflowHelper {
     }
 
     private static Boolean processOtherRemainder(sObject record, Generic_Escalation_Workflow__c genericTrigger, Generic_Reminder__c genericReminder, Date referenceDate, List<Generic_Reminder_Filter__c> filters) {
+        System.debug('Processing other reminder');
         Object dateVal = record.get(genericTrigger.First_Reminder_Date_Field__c);
         Date firstSentDate = null;
 
@@ -92,13 +99,16 @@ public class GenericEscalationWorkflowHelper {
     private static Boolean invokeStringFilter(sObject record, Generic_Reminder_Filter__c filter) {
         if (filter.Operator__c == '=') {
             if (filter.Value__c == (String) record.get(filter.Field_Name__c)) {
+                System.debug('Fileter true');
                 return true;
             }
         } else if (filter.Operator__c == '!=') {
             if (filter.Value__c != (String) record.get(filter.Field_Name__c)) {
+                System.debug('Fileter true');
                 return true;
             }
         }
+        System.debug('Fileter false');
         return false;
     }
 
