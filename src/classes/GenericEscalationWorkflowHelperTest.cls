@@ -2,95 +2,186 @@
 public class GenericEscalationWorkflowHelperTest {
 
     @isTest
-    public static void shouldReturnProperDueDates() {
+    public static void shouldReturnProperDate() {
         Date referenceDate1 = Date.newInstance(2016, 6, 17);
-        Date dueDate = GenericEscalationWorkflowHelper.getLastDueDate(
-            new Generic_Escalation_Workflow__c(From_Day_of_Week__c = 'Friday', From_Numeral__c = 'First',
-            To_Day_of_Week__c = 'Friday', To_Numeral__c = 'Second'),
-            referenceDate1);
-        System.assertEquals(Date.newInstance(2016, 6, 10), dueDate);
+        Date result = GenericEscalationWorkflowHelper.getProperDate('Monday', 'First', referenceDate1);
+        System.assertEquals(Date.newInstance(2016, 6, 6), result);
 
         Date referenceDate2 = Date.newInstance(2016, 6, 9);
-        dueDate = GenericEscalationWorkflowHelper.getLastDueDate(
-            new Generic_Escalation_Workflow__c(From_Day_of_Week__c = 'Friday', From_Numeral__c = 'First',
-            To_Day_of_Week__c = 'Friday', To_Numeral__c = 'Second'),
-            referenceDate2);
-        System.assertEquals(Date.newInstance(2016, 6, 3), dueDate);
+        result = GenericEscalationWorkflowHelper.getProperDate('Friday', 'Second', referenceDate2);
+        System.assertEquals(Date.newInstance(2016, 6, 10), result);
 
-        Date referenceDate3 = Date.newInstance(2016, 6, 9);
-        dueDate = GenericEscalationWorkflowHelper.getLastDueDate(
-            new Generic_Escalation_Workflow__c(From_Day_of_Week__c = 'Friday', From_Numeral__c = 'Second',
-            To_Day_of_Week__c = 'Friday', To_Numeral__c = 'Third'),
-            referenceDate3);
-        System.assertEquals(Date.newInstance(2016, 5, 20), dueDate);
+        Date referenceDate3 = Date.newInstance(2016, 6, 11);
+        result = GenericEscalationWorkflowHelper.getProperDate('Wednesday', 'Third', referenceDate3);
+        System.assertEquals(Date.newInstance(2016, 6, 15), result);
     }
 
     @isTest
-    public static void shouldFilter() {
-        // First Reminder Test without filters
-        Date referenceDate = Date.newInstance(2016, 6, 12);
-        Generic_Escalation_Workflow__c testWorkflow = new Generic_Escalation_Workflow__c(Last_Report_Date_Field__c = 'Snooze_Date__c', First_Reminder_Date_Field__c = 'Third_Nag_Sent_Date__c',
-                                                                                         From_Day_of_Week__c = 'Friday', From_Numeral__c = 'First',
-                                                                                         To_Day_of_Week__c = 'Friday', To_Numeral__c = 'Second');
-        Generic_Reminder__c reminder = new Generic_Reminder__c(Reminder_Index__c = 1, Days__c = 2);
-
-        sObject dimagiContract = (sObject) new DContract__c(Third_Nag_Sent_Date__c = null, Snooze_Date__c = Date.newInstance(2016, 6, 1));
-        Boolean result = GenericEscalationWorkflowHelper.checkFilters(dimagiContract, testWorkflow, reminder, referenceDate, new List<Generic_Reminder_Filter__c>());
+    public static void shouldProcessWeeklyReminderDate() {
+        Generic_Reminder__c reminder = new Generic_Reminder__c(Frequency_type__c = 'Weekly', Week_days__c = 'Monday;Friday');
+        Boolean result = GenericEscalationWorkflowHelper.checkReminderDate(reminder, Date.newInstance(2016, 7, 1));
+        System.assertEquals(true, result);
+        result = GenericEscalationWorkflowHelper.checkReminderDate(reminder, Date.newInstance(2016, 7, 7));
+        System.assertEquals(false, result);
+        result = GenericEscalationWorkflowHelper.checkReminderDate(reminder, Date.newInstance(2016, 7, 9));
+        System.assertEquals(false, result);
+        result = GenericEscalationWorkflowHelper.checkReminderDate(reminder, Date.newInstance(2016, 7, 11));
         System.assertEquals(true, result);
 
-        dimagiContract = (sObject) new DContract__c(Third_Nag_Sent_Date__c = Date.newInstance(2016, 6, 9), Snooze_Date__c = Date.newInstance(2016, 6, 1));
-        result = GenericEscalationWorkflowHelper.checkFilters(dimagiContract, testWorkflow, reminder, referenceDate, new List<Generic_Reminder_Filter__c>());
-        System.assertEquals(false, result);
-
-        referenceDate = Date.newInstance(2016, 6, 11);
-        dimagiContract = (sObject) new DContract__c(Third_Nag_Sent_Date__c = null, Snooze_Date__c = Date.newInstance(2016, 6, 1));
-        result = GenericEscalationWorkflowHelper.checkFilters(dimagiContract, testWorkflow, reminder, referenceDate, new List<Generic_Reminder_Filter__c>());
-        System.assertEquals(false, result);
-
-        // Second Reminder Test
-        referenceDate = Date.newInstance(2016, 6, 11);
-        testWorkflow = new Generic_Escalation_Workflow__c(Last_Report_Date_Field__c = 'Snooze_Date__c', First_Reminder_Date_Field__c = 'Third_Nag_Sent_Date__c');
-        reminder = new Generic_Reminder__c(Reminder_Index__c = 2, Days__c = 2);
-
-        dimagiContract = (sObject) new DContract__c(Third_Nag_Sent_Date__c = null, Snooze_Date__c = Date.newInstance(2016, 6, 1));
-        result = GenericEscalationWorkflowHelper.checkFilters(dimagiContract, testWorkflow, reminder, referenceDate, new List<Generic_Reminder_Filter__c>());
-        System.assertEquals(false, result);
-
-        dimagiContract = (sObject) new DContract__c(Third_Nag_Sent_Date__c = Date.newInstance(2016, 6, 9), Snooze_Date__c = Date.newInstance(2016, 6, 1));
-        result = GenericEscalationWorkflowHelper.checkFilters(dimagiContract, testWorkflow, reminder, referenceDate, new List<Generic_Reminder_Filter__c>());
+        reminder = new Generic_Reminder__c(Frequency_type__c = 'Weekly', Week_days__c = 'Sunday;Thursday');
+        result = GenericEscalationWorkflowHelper.checkReminderDate(reminder, Date.newInstance(2016, 7, 3));
         System.assertEquals(true, result);
-
-        referenceDate = Date.newInstance(2016, 6, 13);
-        dimagiContract = (sObject) new DContract__c(Third_Nag_Sent_Date__c = null, Snooze_Date__c = Date.newInstance(2016, 6, 1));
-        result = GenericEscalationWorkflowHelper.checkFilters(dimagiContract, testWorkflow, reminder, referenceDate, new List<Generic_Reminder_Filter__c>());
+        result = GenericEscalationWorkflowHelper.checkReminderDate(reminder, Date.newInstance(2016, 7, 18));
         System.assertEquals(false, result);
+        result = GenericEscalationWorkflowHelper.checkReminderDate(reminder, Date.newInstance(2016, 7, 9));
+        System.assertEquals(false, result);
+        result = GenericEscalationWorkflowHelper.checkReminderDate(reminder, Date.newInstance(2016, 7, 28));
+        System.assertEquals(true, result);
     }
+
+    @isTest
+    public static void shouldProcessMonthlyReminderDate() {
+        Generic_Reminder__c reminder = new Generic_Reminder__c(Frequency_type__c = 'Monthly', Monthly_type__c = 'On day', Day_of_the_month__c = '3');
+        Boolean result = GenericEscalationWorkflowHelper.checkReminderDate(reminder, Date.newInstance(2016, 7, 3));
+        System.assertEquals(true, result);
+        result = GenericEscalationWorkflowHelper.checkReminderDate(reminder, Date.newInstance(2016, 6, 2));
+        System.assertEquals(false, result);
+        result = GenericEscalationWorkflowHelper.checkReminderDate(reminder, Date.newInstance(2016, 6, 3));
+        System.assertEquals(true, result);
+        result = GenericEscalationWorkflowHelper.checkReminderDate(reminder, Date.newInstance(2016, 7, 11));
+        System.assertEquals(false, result);
+
+        reminder = new Generic_Reminder__c(Frequency_type__c = 'Monthly', Monthly_type__c = 'On day', Day_of_the_month__c = 'Last day');
+        result = GenericEscalationWorkflowHelper.checkReminderDate(reminder, Date.newInstance(2016, 7, 3));
+        System.assertEquals(false, result);
+        result = GenericEscalationWorkflowHelper.checkReminderDate(reminder, Date.newInstance(2016, 7, 31));
+        System.assertEquals(true, result);
+        result = GenericEscalationWorkflowHelper.checkReminderDate(reminder, Date.newInstance(2016, 6, 3));
+        System.assertEquals(false, result);
+        result = GenericEscalationWorkflowHelper.checkReminderDate(reminder, Date.newInstance(2016, 2, 29));
+        System.assertEquals(true, result);
+
+        reminder = new Generic_Reminder__c(Frequency_type__c = 'Monthly', Monthly_type__c = 'On', Day_of_the_week__c = 'Thursday', Numeral_monthly__c = 'Second');
+        result = GenericEscalationWorkflowHelper.checkReminderDate(reminder, Date.newInstance(2016, 7, 13));
+        System.assertEquals(false, result);
+        result = GenericEscalationWorkflowHelper.checkReminderDate(reminder, Date.newInstance(2016, 7, 14));
+        System.assertEquals(true, result);
+        result = GenericEscalationWorkflowHelper.checkReminderDate(reminder, Date.newInstance(2016, 6, 3));
+        System.assertEquals(false, result);
+        result = GenericEscalationWorkflowHelper.checkReminderDate(reminder, Date.newInstance(2016, 2, 29));
+        System.assertEquals(false, result);
+
+        reminder = new Generic_Reminder__c(Frequency_type__c = 'Monthly', Monthly_type__c = 'On', Day_of_the_week__c = 'Monday', Numeral_monthly__c = 'Third');
+        result = GenericEscalationWorkflowHelper.checkReminderDate(reminder, Date.newInstance(2016, 7, 13));
+        System.assertEquals(false, result);
+        result = GenericEscalationWorkflowHelper.checkReminderDate(reminder, Date.newInstance(2016, 7, 14));
+        System.assertEquals(false, result);
+        result = GenericEscalationWorkflowHelper.checkReminderDate(reminder, Date.newInstance(2016, 7, 18));
+        System.assertEquals(true, result);
+        result = GenericEscalationWorkflowHelper.checkReminderDate(reminder, Date.newInstance(2016, 8, 15));
+        System.assertEquals(true, result);
+    }
+
 
     @isTest
     public static void shouldFilterByStringType() {
-        Date referenceDate = Date.newInstance(2016, 6, 12);
-        Generic_Escalation_Workflow__c testWorkflow = new Generic_Escalation_Workflow__c(Last_Report_Date_Field__c = 'Snooze_Date__c', First_Reminder_Date_Field__c = 'Third_Nag_Sent_Date__c',
-                                                                                         From_Day_of_Week__c = 'Friday', From_Numeral__c = 'First',
-                                                                                         To_Day_of_Week__c = 'Friday', To_Numeral__c = 'Second');
-        Generic_Reminder__c reminder = new Generic_Reminder__c(Reminder_Index__c = 1, Days__c = 2);
-
-        sObject dimagiContract = (sObject) new DContract__c(Third_Nag_Sent_Date__c = null, Snooze_Date__c = Date.newInstance(2016, 6, 1), Country_Text__c = 'USA');
+        sObject dimagiContract = (sObject) new DContract__c(Snooze_Date__c = Date.newInstance(2016, 6, 1), Country_Text__c = 'USA');
         List<Generic_Reminder_Filter__c> filters = new List<Generic_Reminder_Filter__c>();
-        filters.add(new Generic_Reminder_Filter__c( Field_Name__c = 'Country_Text__c', Operator__c = '=', Value__c = 'USA'));
-        Boolean result = GenericEscalationWorkflowHelper.checkFilters(dimagiContract, testWorkflow, reminder, referenceDate, filters);
+        filters.add(new Generic_Reminder_Filter__c(Data_Type__c = 'STRING', Field_Name__c = 'Country_Text__c', Operator__c = '=', Value__c = 'USA'));
+        Boolean result = GenericEscalationWorkflowHelper.checkFilters(dimagiContract, filters);
         System.assertEquals(true, result);
 
-        dimagiContract = (sObject) new DContract__c(Third_Nag_Sent_Date__c = null, Snooze_Date__c = Date.newInstance(2016, 6, 1), Country_Text__c = 'USA');
+        dimagiContract = (sObject) new DContract__c(Snooze_Date__c = Date.newInstance(2016, 6, 1), Country_Text__c = 'USA');
         filters = new List<Generic_Reminder_Filter__c>();
-        filters.add(new Generic_Reminder_Filter__c( Field_Name__c = 'Country_Text__c', Operator__c = '!=', Value__c = 'USA'));
-        result = GenericEscalationWorkflowHelper.checkFilters(dimagiContract, testWorkflow, reminder, referenceDate, filters);
+        filters.add(new Generic_Reminder_Filter__c(Data_Type__c = 'STRING', Field_Name__c = 'Country_Text__c', Operator__c = '!=', Value__c = 'USA'));
+        result = GenericEscalationWorkflowHelper.checkFilters(dimagiContract, filters);
+        System.assertEquals(false, result);
+    }
+
+    @isTest
+    public static void shouldFilterByBooleanType() {
+        sObject dimagiContract = (sObject) new DContract__c(Snooze_Date__c = Date.newInstance(2016, 6, 1),  Exclude_from_Monthly_Upload__c = false);
+        List<Generic_Reminder_Filter__c> filters = new List<Generic_Reminder_Filter__c>();
+        filters.add(new Generic_Reminder_Filter__c(Data_Type__c = 'BOOLEAN', Field_Name__c = 'Exclude_from_Monthly_Upload__c', Operator__c = '=', Checkbox_Value__c = false));
+        Boolean result = GenericEscalationWorkflowHelper.checkFilters(dimagiContract, filters);
+        System.assertEquals(true, result);
+
+        dimagiContract = (sObject) new DContract__c(Snooze_Date__c = Date.newInstance(2016, 6, 1),  Exclude_from_Monthly_Upload__c = true);
+        filters = new List<Generic_Reminder_Filter__c>();
+        filters.add(new Generic_Reminder_Filter__c(Data_Type__c = 'BOOLEAN', Field_Name__c = 'Exclude_from_Monthly_Upload__c', Operator__c = '!=', Checkbox_Value__c = false));
+        result = GenericEscalationWorkflowHelper.checkFilters(dimagiContract, filters);
+        System.assertEquals(true, result);
+
+        dimagiContract = (sObject) new DContract__c(Snooze_Date__c = Date.newInstance(2016, 6, 1),  Exclude_from_Monthly_Upload__c = true);
+        filters = new List<Generic_Reminder_Filter__c>();
+        filters.add(new Generic_Reminder_Filter__c(Data_Type__c = 'BOOLEAN', Field_Name__c = 'Exclude_from_Monthly_Upload__c', Operator__c = '=', Checkbox_Value__c = false));
+        result = GenericEscalationWorkflowHelper.checkFilters(dimagiContract, filters);
+        System.assertEquals(false, result);
+    }
+
+    @isTest
+    public static void shouldFilterByDateType() {
+        sObject dimagiContract = (sObject) new DContract__c(Snooze_Date__c = Date.newInstance(2016, 6, 1), Country_Text__c = 'USA');
+        List<Generic_Reminder_Filter__c> filters = new List<Generic_Reminder_Filter__c>();
+        filters.add(new Generic_Reminder_Filter__c(Data_Type__c = 'DATE', Field_Name__c = 'Snooze_Date__c', Operator__c = '=', Date_Value__c = Date.newInstance(2016, 6, 1)));
+        Boolean result = GenericEscalationWorkflowHelper.checkFilters(dimagiContract, filters);
+        System.assertEquals(true, result);
+
+        dimagiContract = (sObject) new DContract__c(Snooze_Date__c = Date.newInstance(2016, 6, 1), Country_Text__c = 'USA');
+        filters = new List<Generic_Reminder_Filter__c>();
+        filters.add(new Generic_Reminder_Filter__c(Data_Type__c = 'DATE', Field_Name__c = 'Snooze_Date__c', Operator__c = '!=', Date_Value__c = Date.newInstance(2016, 6, 1)));
+        result = GenericEscalationWorkflowHelper.checkFilters(dimagiContract, filters);
         System.assertEquals(false, result);
 
-        dimagiContract = (sObject) new DContract__c(Third_Nag_Sent_Date__c = null, Snooze_Date__c = Date.newInstance(2016, 6, 1), Country_Text__c = 'USA');
+        dimagiContract = (sObject) new DContract__c(Snooze_Date__c = Date.newInstance(2016, 6, 1), Country_Text__c = 'USA');
         filters = new List<Generic_Reminder_Filter__c>();
-        filters.add(new Generic_Reminder_Filter__c( Field_Name__c = 'Country_Text__c', Operator__c = '!=', Value__c = 'England'));
-        result = GenericEscalationWorkflowHelper.checkFilters(dimagiContract, testWorkflow, reminder, referenceDate, filters);
+        filters.add(new Generic_Reminder_Filter__c(Data_Type__c = 'DATE', Field_Name__c = 'Snooze_Date__c', Operator__c = '>', Date_Value__c = Date.newInstance(2016, 6, 1)));
+        result = GenericEscalationWorkflowHelper.checkFilters(dimagiContract, filters);
+        System.assertEquals(false, result);
+
+        dimagiContract = (sObject) new DContract__c(Snooze_Date__c = Date.newInstance(2016, 6, 11), Country_Text__c = 'USA');
+        filters = new List<Generic_Reminder_Filter__c>();
+        filters.add(new Generic_Reminder_Filter__c(Data_Type__c = 'DATE', Field_Name__c = 'Snooze_Date__c', Operator__c = '>=', Date_Value__c = Date.newInstance(2016, 6, 1)));
+        result = GenericEscalationWorkflowHelper.checkFilters(dimagiContract, filters);
+        System.assertEquals(true, result);
+
+        dimagiContract = (sObject) new DContract__c(Snooze_Date__c = Date.newInstance(2016, 5, 1), Country_Text__c = 'USA');
+        filters = new List<Generic_Reminder_Filter__c>();
+        filters.add(new Generic_Reminder_Filter__c(Data_Type__c = 'DATE', Field_Name__c = 'Snooze_Date__c', Operator__c = '<', Date_Value__c = Date.newInstance(2016, 6, 1)));
+        result = GenericEscalationWorkflowHelper.checkFilters(dimagiContract, filters);
         System.assertEquals(true, result);
     }
 
+    @isTest
+    public static void shouldFilterByDoubleType() {
+        sObject dimagiContract = (sObject) new DContract__c(Number_of_Users__c = 100);
+        List<Generic_Reminder_Filter__c> filters = new List<Generic_Reminder_Filter__c>();
+        filters.add(new Generic_Reminder_Filter__c(Data_Type__c = 'DOUBLE', Field_Name__c = 'Number_of_Users__c', Operator__c = '=', Number_Value__c = 100));
+        Boolean result = GenericEscalationWorkflowHelper.checkFilters(dimagiContract, filters);
+        System.assertEquals(true, result);
+
+        dimagiContract = (sObject) new DContract__c(Number_of_Users__c = 3);
+        filters = new List<Generic_Reminder_Filter__c>();
+        filters.add(new Generic_Reminder_Filter__c(Data_Type__c = 'DOUBLE', Field_Name__c = 'Number_of_Users__c', Operator__c = '!=', Number_Value__c = 4));
+        result = GenericEscalationWorkflowHelper.checkFilters(dimagiContract, filters);
+        System.assertEquals(true, result);
+
+        dimagiContract = (sObject) new DContract__c(Number_of_Users__c = 10);
+        filters = new List<Generic_Reminder_Filter__c>();
+        filters.add(new Generic_Reminder_Filter__c(Data_Type__c = 'DOUBLE', Field_Name__c = 'Number_of_Users__c', Operator__c = '>', Number_Value__c = 3));
+        result = GenericEscalationWorkflowHelper.checkFilters(dimagiContract, filters);
+        System.assertEquals(true, result);
+
+        dimagiContract = (sObject) new DContract__c(Number_of_Users__c = 1);
+        filters = new List<Generic_Reminder_Filter__c>();
+        filters.add(new Generic_Reminder_Filter__c(Data_Type__c = 'DOUBLE', Field_Name__c = 'Number_of_Users__c', Operator__c = '>=', Number_Value__c = 4));
+        result = GenericEscalationWorkflowHelper.checkFilters(dimagiContract, filters);
+        System.assertEquals(false, result);
+
+        dimagiContract = (sObject) new DContract__c(Number_of_Users__c = 10);
+        filters = new List<Generic_Reminder_Filter__c>();
+        filters.add(new Generic_Reminder_Filter__c(Data_Type__c = 'DOUBLE', Field_Name__c = 'Number_of_Users__c', Operator__c = '<', Number_Value__c = 3));
+        result = GenericEscalationWorkflowHelper.checkFilters(dimagiContract, filters);
+        System.assertEquals(false, result);
+    }
 }

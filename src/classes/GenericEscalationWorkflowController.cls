@@ -13,6 +13,8 @@ public class GenericEscalationWorkflowController {
     private List<SelectOption> customObjects;
     private Map<String, Schema.SObjectField> customObjectFieldsMap;
     private List<SelectOption> customObjectFields;
+    private List<SelectOption> customObjectFieldsText;
+    private List<SelectOption> customObjectFieldsReference;
 
     private Integer reminderIndex;
     private List<Generic_Reminder__c> triggerReminders;
@@ -25,12 +27,30 @@ public class GenericEscalationWorkflowController {
     private Integer selectedRecipientIndex;
     private Map<Decimal, List<StringWrapper>> recipientsMap;
 
-    private List<SelectOption> operators = new List<SelectOption> { new SelectOption('=', '='), new SelectOption('>=', '>='), new SelectOption('<=', '<='), new SelectOption('>', '>'), new SelectOption('<', '<'), new SelectOption('!=', '!=')};
+    private Map<String, String> fieldTypes;
+    private List<SelectOption> operators = new List<SelectOption> { new SelectOption('=', '='), new SelectOption('>=', '>='), new SelectOption('<=', '<='),
+                                                                    new SelectOption('>', '>'), new SelectOption('<', '<'), new SelectOption('!=', '!=')};
     private List<SelectOption> textOperators = new List<SelectOption> { new SelectOption('=', '='), new SelectOption('!=', '!=') };
+    private List<SelectOption> frequencyTypes = new List<SelectOption> { new SelectOption('Monthly', 'Monthly'), new SelectOption('Weekly', 'Weekly') };
+    private List<SelectOption> monthlyTypes = new List<SelectOption> { new SelectOption('On day', 'Choose date'), new SelectOption('On', 'Choose week day') };
+    private List<SelectOption> dayOfMonth;
+    private List<SelectOption> daysOfWeek = new List<SelectOption> { new SelectOption('Monday', 'Monday'), new SelectOption('Tuesday', 'Tuesday'),
+                                                                     new SelectOption('Wednesday', 'Wednesday'), new SelectOption('Thursday', 'Thursday'),
+                                                                     new SelectOption('Friday', 'Friday'), new SelectOption('Saturday', 'Saturday'),
+                                                                     new SelectOption('Sunday', 'Sunday') };
+    private List<SelectOption> daysNumeric = new List<SelectOption> { new SelectOption('First', 'First'), new SelectOption('Second', 'Second'),
+                                                                      new SelectOption('Third', 'Third'), new SelectOption('Fourth', 'Fourth') };
 
     public GenericEscalationWorkflowController() {
+        this.dayOfMonth = new List<SelectOption>();
+        Integer i;
+        for (i = 1; i < 32; i++) {
+            dayOfMonth.add(new SelectOption(String.valueOf(i), String.valueOf(i)));
+        }
+
+        dayOfMonth.add(new SelectOption('Last day', 'Last day'));
         this.referenceDate = new DateWrapper();
-        this.genericTrigger = new Generic_Escalation_Workflow__c(Global_Start_Date__c = Date.today());
+        this.genericTrigger = new Generic_Escalation_Workflow__c(Start_date__c = Date.today(), End_date__c = Date.today());
         this.triggerReminders = new List<Generic_Reminder__c>();
         this.remindersToDelete = new List<Generic_Reminder__c>();
         this.reminderFiltersMap = new Map<Decimal, List<Generic_Reminder_Filter__c>>();
@@ -99,7 +119,7 @@ public class GenericEscalationWorkflowController {
     }
 
     public PageReference clearGenericTrigger() {
-        this.genericTrigger = new Generic_Escalation_Workflow__c(Global_Start_Date__c = Date.today());
+        this.genericTrigger = new Generic_Escalation_Workflow__c(Start_date__c = Date.today(), End_date__c = Date.today());
         this.triggerReminders = new List<Generic_Reminder__c>();
         this.remindersToDelete = new List<Generic_Reminder__c>();
         this.reminderFiltersMap = new Map<Decimal, List<Generic_Reminder_Filter__c>>();
@@ -109,6 +129,7 @@ public class GenericEscalationWorkflowController {
         this.reminderIndex = -1;
         this.genericTrigger.Custom_Object__c = customObjects.get(0).getValue();
         loadCustomObjectFields();
+
         return null;
     }
 
@@ -140,6 +161,8 @@ public class GenericEscalationWorkflowController {
         for (Generic_Reminder__c triggerRem : triggerReminders) {
             List<Generic_Reminder_Filter__c>  filtersToUpsert = this.reminderFiltersMap.get(triggerRem.Reminder_Index__c);
             for (Generic_Reminder_Filter__c remFilter : filtersToUpsert) {
+                Schema.DisplayType fieldType = customObjectFieldsMap.get(remFilter.Field_Name__c).getDescribe().getType();
+                remFilter.Data_Type__c = fieldType.name();
                 if (String.isEmpty(remFilter.Id)) {
                     remFilter.Generic_Reminder__c = triggerRem.Id;
                 }
@@ -156,6 +179,7 @@ public class GenericEscalationWorkflowController {
         if (String.isEmpty(this.genericTrigger.Id)) {
             return clearGenericTrigger();
         }
+
         delete this.genericTrigger;
         clearGenericTrigger();
         loadGenericTriggers();
@@ -168,7 +192,7 @@ public class GenericEscalationWorkflowController {
         }
 
         Integer newIndex = this.triggerReminders.size() + 1;
-        Generic_Reminder__c newReminder = new Generic_Reminder__c(Reminder_Index__c = newIndex, Days__c = 5);
+        Generic_Reminder__c newReminder = new Generic_Reminder__c(Reminder_Index__c = newIndex, Frequency_type__c = 'Monthly', Monthly_type__c = 'On day');
         this.triggerReminders.add(newReminder);
         this.reminderFiltersMap.put(newIndex, new List<Generic_Reminder_Filter__c>());
         this.recipientsMap.put(newIndex, new List<StringWrapper>());
@@ -184,17 +208,19 @@ public class GenericEscalationWorkflowController {
         for (Integer i = this.reminderIndex; i < this.triggerReminders.size(); i++) {
             this.triggerReminders.get(i).Reminder_Index__c = this.triggerReminders.get(i).Reminder_Index__c - 1;
         }
+
         Generic_Reminder__c remToDelete = this.triggerReminders.get(this.reminderIndex - 1);
         if (!String.isEmpty(remToDelete.Id)) {
             remindersToDelete.add(remToDelete);
         }
         this.triggerReminders.remove(this.reminderIndex - 1);
-        
+
         for (Generic_Reminder_Filter__c grf : this.reminderFiltersMap.get(this.reminderIndex)) {
             if (!String.isEmpty(grf.Id)) {
-                filtersToDelete.add(grf);
+                this.filtersToDelete.add(grf);
             }
         }
+
         this.reminderFiltersMap.remove(this.reminderIndex);
         for (Integer i = this.reminderIndex + 1; i <= this.reminderFiltersMap.size() + 1; i++) {
             this.reminderFiltersMap.put(i - 1, this.reminderFiltersMap.get(i));
@@ -224,7 +250,10 @@ public class GenericEscalationWorkflowController {
 
     public PageReference removeReminderFilter() {
         if (this.selectedFilterIndex != null && this.selectedFilterIndex < this.reminderFiltersMap.get(this.reminderIndex).size()) {
-            this.filtersToDelete.add(this.reminderFiltersMap.get(this.reminderIndex).get(this.selectedFilterIndex));
+            Generic_Reminder_Filter__c filter = this.reminderFiltersMap.get(this.reminderIndex).get(this.selectedFilterIndex);
+            if (!String.isEmpty(filter.Id)) {
+                this.filtersToDelete.add(filter);
+            }
             this.reminderFiltersMap.get(this.reminderIndex).remove(this.selectedFilterIndex);
         }
 
@@ -253,27 +282,53 @@ public class GenericEscalationWorkflowController {
 
     public void loadCustomObjectFields() {
         this.customObjectFields = new List<SelectOption>();
+        this.customObjectFieldsReference = new List<SelectOption>();
+        this.customObjectFieldsText = new List<SelectOption>();
         Schema.SObjectType selectedCustomObj = sObjectTypes.get(this.genericTrigger.Custom_Object__c);
         this.customObjectFieldsMap = new Map<String, Schema.SObjectField>();
+        this.fieldTypes = new Map<String, String>();
         if (selectedCustomObj == null) {
             return;
         }
+
         Schema.DescribeSObjectResult descResultType = selectedCustomObj.getDescribe();
         this.customObjectFieldsMap = descResultType.fields.getMap();
 
         for (String key : customObjectFieldsMap.keySet()) {
             Schema.DescribeFieldResult objField = customObjectFieldsMap.get(key).getDescribe();
-            this.customObjectFields.add(new SelectOption(objField.getName(), objField.getLabel()));
+            String fType = objField.getType().name();
+            if (fType == 'STRING' || fType == 'PICKLIST') {
+                this.customObjectFieldsText.add(new SelectOption(objField.getName(), objField.getLabel()));
+            }
+            if (fType == 'STRING' || fType == 'PICKLIST' || fType == 'DATE' || fType == 'ID' || fType == 'BOOLEAN' || fType == 'EMAIL' || fType == 'DOUBLE' || fType == 'INTEGER') {
+                this.customObjectFields.add(new SelectOption(objField.getName(), objField.getLabel()));
+                this.fieldTypes.put(objField.getName(), objField.getType().name());
+            }
+            if (fType == 'REFERENCE') {
+                customObjectFieldsReference.add(new SelectOption(objField.getName(), objField.getLabel()));
+            }
         }
-        
-        //TODO delete filters!!!!!
-        // TODO CHANGE Last_Report_Date_Field__c, Requires_Report_Field__c 
-        // // TODO clear recipients
+        //ApexPages.addMessage(new ApexPages.message(ApexPages.severity.INFO, 'You changed custom object, all recipients and fillters was cleared.'));
+
+        //for (Generic_Reminder__c rem : this.triggerReminders) {
+        //    this.recipientsMap.get(rem.Reminder_Index__c).clear();
+        //    for (Generic_Reminder_Filter__c filter : this.reminderFiltersMap.get(rem.Reminder_Index__c)) {
+        //      if (!String.isEmpty(filter.Id)) {
+        //          this.filtersToDelete.add(filter);
+        //      }
+        //    }
+        //    this.reminderFiltersMap.get(rem.Reminder_Index__c).clear();
+        //}
+    }
+
+    public Boolean getFieldType(String fieldName) {
+        return true;
     }
 
     private void loadReminderFilters() {
         for (Generic_Reminder__c rem : this.triggerReminders) {
-            this.reminderFiltersMap.put(rem.Reminder_Index__c, [SELECT Id, Field_Name__c, Operator__c, Value__c FROM Generic_Reminder_Filter__c WHERE Generic_Reminder__c =: rem.Id]);
+            this.reminderFiltersMap.put(rem.Reminder_Index__c, [SELECT Id, Field_Name__c, Operator__c, Value__c, Data_Type__c, Number_Value__c, Checkbox_Value__c, Date_Value__c
+                                                                FROM Generic_Reminder_Filter__c WHERE Generic_Reminder__c =: rem.Id]);
 
             List<StringWrapper> values = new List<StringWrapper>();
             if (!String.isEmpty(rem.Recipients__c)) {
@@ -287,17 +342,17 @@ public class GenericEscalationWorkflowController {
     }
 
     private void loadTriggerReminders() {
-        this.triggerReminders = [SELECT Id, Name, Email_Template__c, Reminder_Index__c, Days__c, Recipients__c FROM Generic_Reminder__c WHERE Generic_Escalation_Workflow__c =: genericTriggerId ORDER BY Reminder_Index__c];
+        this.triggerReminders = [SELECT Id, Name, Email_Template__c, Reminder_Index__c, Recipients__c, Frequency_type__c, Week_days__c, Monthly_type__c, Numeral_monthly__c, Day_of_the_month__c, Day_of_the_week__c
+                                 FROM Generic_Reminder__c WHERE Generic_Escalation_Workflow__c =: genericTriggerId ORDER BY Reminder_Index__c];
     }
 
     private void loadGenericTriggers() {
-        this.genericTriggers = [SELECT Id, Name, Custom_Object__c, Enabled__c, Global_Start_Date__c, Last_Report_Date_Field__c, Requires_Report_Field__c,
-                                From_Numeral__c, From_Day_of_Week__c, To_Numeral__c, To_Day_of_Week__c, First_Reminder_Date_Field__c
+        this.genericTriggers = [SELECT Id, Name, Custom_Object__c, Enabled__c, Requires_Report_Field__c, Start_date__c, End_date__c
                                 FROM Generic_Escalation_Workflow__c];
     }
 
     private void loadTemplatesAndObjects() {
-        customObjects = new List<SelectOption>(); 
+        customObjects = new List<SelectOption>();
         emailTemplates = new List<SelectOption>();
 
         List<Folder> emailFolder = [SELECT Id, Name, Type FROM Folder WHERE Type = 'Email' AND Name = 'Generic Escalation Workflow'];
@@ -341,6 +396,14 @@ public class GenericEscalationWorkflowController {
 
     public List<SelectOption> getCustomObjectFields() {
         return this.customObjectFields;
+    }
+
+    public List<SelectOption> getCustomObjectFieldsText() {
+        return this.customObjectFieldsText;
+    }
+
+    public List<SelectOption> getCustomObjectFieldsReference() {
+        return this.customObjectFieldsReference;
     }
 
     public List<SelectOption> getCustomObjects() {
@@ -401,6 +464,30 @@ public class GenericEscalationWorkflowController {
 
     public List<SelectOption> getOperators() {
         return this.operators;
+    }
+
+    public List<SelectOption> getFrequencyTypes() {
+        return this.frequencyTypes;
+    }
+
+    public List<SelectOption> getMonthlyTypes() {
+        return this.monthlyTypes;
+    }
+
+    public List<SelectOption> getDaysNumeric() {
+        return this.daysNumeric;
+    }
+
+    public List<SelectOption> getDaysOfWeek() {
+        return this.daysOfWeek;
+    }
+
+    public List<SelectOption> getDayOfMonth() {
+        return this.dayOfMonth;
+    }
+
+    public Map<String, String> getFieldTypes() {
+        return this.fieldTypes;
     }
 
     public class StringWrapper {
