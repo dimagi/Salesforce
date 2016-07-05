@@ -66,16 +66,6 @@
         <unique>false</unique>
     </fields>
     <fields>
-        <fullName>Email_Template__c</fullName>
-        <externalId>false</externalId>
-        <label>Email Template</label>
-        <length>255</length>
-        <required>false</required>
-        <trackTrending>false</trackTrending>
-        <type>Text</type>
-        <unique>false</unique>
-    </fields>
-    <fields>
         <fullName>Enabled__c</fullName>
         <defaultValue>true</defaultValue>
         <externalId>false</externalId>
@@ -84,46 +74,24 @@
         <type>Checkbox</type>
     </fields>
     <fields>
-        <fullName>First_Reminder_Date_Field__c</fullName>
+        <fullName>End_date__c</fullName>
         <externalId>false</externalId>
-        <label>First Reminder Date Field</label>
-        <length>255</length>
+        <label>End date</label>
         <required>false</required>
         <trackTrending>false</trackTrending>
-        <type>Text</type>
-        <unique>false</unique>
+        <type>Date</type>
     </fields>
     <fields>
-        <fullName>From_Day_of_Week__c</fullName>
+        <fullName>Monthly_type__c</fullName>
         <externalId>false</externalId>
-        <label>From Day of Week</label>
+        <label>Monthly type</label>
         <picklist>
             <picklistValues>
-                <fullName>Monday</fullName>
-                <default>false</default>
+                <fullName>On day</fullName>
+                <default>true</default>
             </picklistValues>
             <picklistValues>
-                <fullName>Tuesday</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Wednesday</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Thursday</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Friday</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Saturday</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Sunday</fullName>
+                <fullName>On</fullName>
                 <default>false</default>
             </picklistValues>
             <restrictedPicklist>true</restrictedPicklist>
@@ -133,13 +101,13 @@
         <type>Picklist</type>
     </fields>
     <fields>
-        <fullName>From_Numeral__c</fullName>
+        <fullName>Numeral_monthly__c</fullName>
         <externalId>false</externalId>
-        <label>From  Numeral</label>
+        <label>Numeral monthly</label>
         <picklist>
             <picklistValues>
                 <fullName>First</fullName>
-                <default>false</default>
+                <default>true</default>
             </picklistValues>
             <picklistValues>
                 <fullName>Second</fullName>
@@ -158,24 +126,6 @@
         </picklist>
         <trackTrending>false</trackTrending>
         <type>Picklist</type>
-    </fields>
-    <fields>
-        <fullName>Global_Start_Date__c</fullName>
-        <externalId>false</externalId>
-        <label>Global Start Date</label>
-        <required>false</required>
-        <trackTrending>false</trackTrending>
-        <type>Date</type>
-    </fields>
-    <fields>
-        <fullName>Last_Report_Date_Field__c</fullName>
-        <externalId>false</externalId>
-        <label>Last Report Date Field</label>
-        <length>255</length>
-        <required>false</required>
-        <trackTrending>false</trackTrending>
-        <type>Text</type>
-        <unique>false</unique>
     </fields>
     <fields>
         <fullName>Requires_Report_Field__c</fullName>
@@ -188,70 +138,12 @@
         <unique>false</unique>
     </fields>
     <fields>
-        <fullName>To_Day_of_Week__c</fullName>
+        <fullName>Start_date__c</fullName>
         <externalId>false</externalId>
-        <label>To Day of Week</label>
-        <picklist>
-            <picklistValues>
-                <fullName>Monday</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Tuesday</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Wednesday</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Thursday</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Friday</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Saturday</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Sunday</fullName>
-                <default>false</default>
-            </picklistValues>
-            <restrictedPicklist>true</restrictedPicklist>
-            <sorted>false</sorted>
-        </picklist>
+        <label>Start date</label>
+        <required>false</required>
         <trackTrending>false</trackTrending>
-        <type>Picklist</type>
-    </fields>
-    <fields>
-        <fullName>To_Numeral__c</fullName>
-        <externalId>false</externalId>
-        <label>To Numeral</label>
-        <picklist>
-            <picklistValues>
-                <fullName>First</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Second</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Third</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Fourth</fullName>
-                <default>false</default>
-            </picklistValues>
-            <restrictedPicklist>true</restrictedPicklist>
-            <sorted>false</sorted>
-        </picklist>
-        <trackTrending>false</trackTrending>
-        <type>Picklist</type>
+        <type>Date</type>
     </fields>
     <label>Generic Escalation Workflow</label>
     <nameField>
