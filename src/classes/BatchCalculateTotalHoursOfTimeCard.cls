@@ -1,7 +1,7 @@
 /**
  * Calculates Services Spend field value for each contracts, runs BatchUpdateContractServicesSpend job.
  */
-global class BatchCalculateTotalHoursOfTimeCard implements Database.Batchable<sObject> {
+global class BatchCalculateTotalHoursOfTimeCard implements Database.Batchable<sObject>, Database.Stateful {
 
     private String contractId;
     private Map<Id, Integer> servicesSpendMap;
@@ -22,7 +22,6 @@ global class BatchCalculateTotalHoursOfTimeCard implements Database.Batchable<sO
         } else {
             query = 'SELECT Client__c, labor_cost__c FROM Time_Card__c WHERE Client__c =: contractId';
         }
-
         return Database.getQueryLocator(query);
     }
 
@@ -37,7 +36,6 @@ global class BatchCalculateTotalHoursOfTimeCard implements Database.Batchable<sO
                 }
             }
         }
-
     }
 
     global void finish(Database.BatchableContext context){

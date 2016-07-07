@@ -1,7 +1,7 @@
 /**
  * Updates Services Spend field value in Dimagi contracts.
  */
-public class BatchUpdateContractServicesSpend implements Database.Batchable<DContract__c> {
+public class BatchUpdateContractServicesSpend implements Database.Batchable<DContract__c>, Database.Stateful {
 
     private Map<Id, Integer> servicesSpendMap;
 
@@ -51,7 +51,6 @@ public class BatchUpdateContractServicesSpend implements Database.Batchable<DCon
             }
         }
 
-        System.debug('Data to update : ' + contractsToUpdate);
         update contractsToUpdate;
     }
 
