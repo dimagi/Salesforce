@@ -4,13 +4,16 @@
 global class GenericEscalationWorkflowBatch implements Database.Batchable<Generic_Escalation_Workflow__c>, Database.Stateful {
 
     private OrgWideEmailAddress orgWideAddress;
-    private Map<Id, Boolean> notUpdatedRecords;
     private Date referenceDate;
+    private List<String> triggerErrors;
+    private List<String> emailErrors;
 
     global List<Generic_Escalation_Workflow__c> start(Database.BatchableContext context) {
         this.orgWideAddress = [SELECT Id FROM OrgWideEmailAddress WHERE
                                Address = 'dimagi-salesforce@dimagi.com' LIMIT 1];
         this.referenceDate = Date.today();
+        this.triggerErrors = new List<String>();
+        this.emailErrors =  new List<String>();
         return getGenericEscalationWorkflow();
     }
 
@@ -20,8 +23,10 @@ global class GenericEscalationWorkflowBatch implements Database.Batchable<Generi
 
     global void execute(Database.BatchableContext context, List<Generic_Escalation_Workflow__c> scope) {
         // For each trigger we must check all reminders
+        List<Messaging.SingleEmailMessage> messages = new List<Messaging.SingleEmailMessage>();
         for (Generic_Escalation_Workflow__c genericTrigger : scope) {
             System.debug('Processing generic trigger : ' + genericTrigger.Name + ' ' + genericTrigger.Id);
+
             try {
                 List<Generic_Reminder__c> reminders = getReminders(genericTrigger);
                 String triggerQuery = buildTriggerQuery(genericTrigger, reminders);
@@ -29,7 +34,6 @@ global class GenericEscalationWorkflowBatch implements Database.Batchable<Generi
                 // Retrieve all objects for report
                 List<sObject> sobjList = Database.query(triggerQuery);
                 System.debug('sobjList Found : ' + sobjList.size());
-                List<Messaging.SingleEmailMessage> messages = new List<Messaging.SingleEmailMessage>();
 
                 for (Generic_Reminder__c reminder : reminders) {
                     if (GenericEscalationWorkflowHelper.checkReminderDate(reminder, this.referenceDate)) {
@@ -39,18 +43,50 @@ global class GenericEscalationWorkflowBatch implements Database.Batchable<Generi
                     }
                 }
 
-                if (!Test.isRunningTest()) {
-                    Messaging.sendEmail(messages);
-                }
             } catch (Exception e) {
                 System.debug('Cannot process Generic Trigger with Id : ' + genericTrigger.Id + ' with Name : ' + genericTrigger.Name);
                 System.debug('Error at Line : '+ e.getLineNumber() + ' Message : ' + e.getMessage() + ' Type : ' + e.getTypeName() + ' Stack Trace : ' + e.getStackTraceString());
+                triggerErrors.add(getBodyFromException('Cannot process trigger : ' + genericTrigger.Name, e));
+            }
+        }
+        if (!Test.isRunningTest()) {
+            Messaging.SendEmailResult[] emailResult = Messaging.sendEmail(messages, false);
+            for (Messaging.SendEmailResult emailRes : emailResult) {
+                if (!emailRes.isSuccess()) {
+                    String errorMessage = 'Cannot send email :<br />';
+                    for (Messaging.SendEmailError emailError : emailRes.getErrors()) {
+                        errorMessage += 'Message: ' + emailError.getMessage() + '<br />Fields: ' + emailError.getFields() + '<br />Code: ' + emailError.getStatusCode() + '<br />Target Id: ' + emailError.getTargetObjectId();
+                    }
+
+                    emailErrors.add(errorMessage);
+                }
             }
         }
     }
 
     global void finish(Database.BatchableContext context) {
-        // TODO SEND EMAILS
+        Generic_Workflow_Settings__c settings = Generic_Workflow_Settings__c.getOrgDefaults();
+        String emails = settings.Error_Email__c;
+
+        if (!String.isEmpty(emails)) {
+
+            if (emailErrors.size() > 0 || triggerErrors.size() > 0) {
+                String[] addressList = emails.split(',');
+                String emailBody = 'Trigger Exceptions :<br />';
+                for (String row : triggerErrors) {
+                    emailBody += '<br />';
+                    emailBody += row;
+                }
+
+                emailBody += '<br /><br />Email Exceptions :<br />';
+                for (String row : emailErrors) {
+                    emailBody += '<br />';
+                    emailBody += row;
+                }
+
+                EmailHelper.sendEmail(addressList, 'Generic Escalation Workflow Errors', emailBody);
+            }
+        }
     }
 
     public static String buildTriggerQuery(Generic_Escalation_Workflow__c genericTrigger, List<Generic_Reminder__c> reminders) {
@@ -113,6 +149,15 @@ global class GenericEscalationWorkflowBatch implements Database.Batchable<Generi
         }
 
         return messages;
+    }
+
+    private String getBodyFromException(String head, Exception ex) {
+        return head + '<br />' +
+                'Line: ' + ex.getLineNumber() + '<br />' +
+                'Type: ' + ex.getTypeName() + '<br />' +
+                'Message: ' + ex.getMessage() + '<br />' +
+                'Stack Trace: ' + ex.getStackTraceString() + '<br />' +
+                'Cause by: ' + ex.getCause() + '<br />';
     }
 
     private List<Generic_Escalation_Workflow__c> getGenericEscalationWorkflow() {
