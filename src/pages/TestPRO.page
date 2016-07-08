@@ -1,354 +1,307 @@
-<apex:page id="thePage" controller="ProjectReportOutController" action="{!initAction}">
-<head>
-    
-    
-    <style>
-    input[type=radio] { margin-left: 0px; margin-right:23px}
-    .radioClass { margin-left: -100px;}
-    .lablePadding{
-        padding-top:15px !important;
-    }
-    .clrClass{
-    color: #4a4a56 !important;
-     font-size: 91%;
-    font-weight:bold;
-    vertical-align: middle !important;
-    text-align:right !important;
-    }
-    fieldset{
-        padding-top:0px;
-        padding-bottom:0px;
-    }
-    .RadionRowCls{
-        width:18%;
-        padding-right: 18px;
-        padding-left: 2px; 
-        text-align: right;
+<apex:page id="projectReportOutPage" controller="ProjectReportOutController" action="{!initAction}">
 
-    }
-    .RadioCalssLeft{
-    }
-    .rich-tabpanel-content{
-        font-size:inherit;
-    }
-    .rich-tab-header{
-        font-size:14px;
-    }
-    .hedareClsNone{
-        display:none !important;
-    }
-    .bgColorCls{
-        background-color:#00FFAB !important;
-    }
-    .brandTertiaryBgr h3 {
-        color: #333 !important;
-    }
-</style>
-
-
-<apex:includeScript value="{!URLFOR($Resource.PROResources, 'js/jquery.min.js')}"/>
-<apex:includeScript value="{!URLFOR($Resource.PROResources, 'js/tablesorter.js')}"/>
-
-<apex:stylesheet value="{!URLFOR($Resource.PROResources, 'css/Tablestyle.css')}" />
-
-<script type="text/javascript">
-        $j = jQuery.noConflict();    
-        
-        $j(document).ready(function () {
-            $j("[id$=proTable]").tablesorter();
-            $j("[id$=proTable1]").tablesorter();
-            $j("[id$=proTable2]").tablesorter({
-                headers: { 
-                    3: { 
-                        sorter: false 
-                    }
-                }
-            });
-            $j("[id$=theaddrs]").tablesorter({
-                headers: { 
-                    // assign the secound column (we start counting zero) 
-                    3: { 
-                        // disable it by setting the property sorter to false 
-                        sorter: false 
-                    }
-                }
-            
-            });
-            
-            
-        });    
-        
-        function clickElem(elem){
-            var contractId=$j(elem).find(".accId").find('span').html();
-            $j('[id$=testId]').val(contractId); 
-            readCell();
-        }
-        function clickElem1(projectId){
-            console.log("contractId: "+ projectId);
-            $j('[id$=contractid2]').val(projectId); 
-            readPROBudget();
-        }
-        function clickElem2(elem){
-            var contractId=$j(elem).find(".accId").find('span').html();
-            $j('[id$=selectedProjectId]').val(contractId); 
-            readPROCell();
-        }
-        function clickElem3(elem){
-            var contractId=$j(elem).find(".accId").find('span').html();
-            $j('[id$=contractToAdd]').val(contractId); 
-            addProjectToUserList();
-        }
-        function clickElem4(elem){
-
-            var contractId=$j("a.accId2").parent().parent().find('span').html();
-            $j('[id$=contractToRemove]').val(contractId); 
-            removeProjectFromUserListAF();
-            alert("Function executed");
-        }
-
-        function replaceEnter(e){
-          if (e.keyCode == 13){
-            var allElements = document.getElementsByTagName('*');
-            for (var i = 0; i < allElements.length; i++){
-              if (allElements[i].id.indexOf("searchProjects") !=-1){
-                allElements[i].click();
-              }
+    <head>
+        <style>
+            input[type=radio] {
+                margin-left: 0px;
+                margin-right:23px;
             }
-            return false;
-          }else{
-            return true;
-          }
-        }
-        window.onkeypress = replaceEnter; 
-    
-        function ShowMessage(){
-            
-        }
-    </script>
+            .radioClass { margin-left: -100px; }
+            .lablePadding { padding-top:15px !important; }
+            .clrClass {
+                color: #4a4a56 !important;
+                font-size: 91%;
+                font-weight:bold;
+                vertical-align: middle !important;
+                text-align:right !important;
+            }
+            fieldset {
+                padding-top:0px;
+                padding-bottom:0px;
+            }
+            .RadionRowCls {
+                width:18%;
+                padding-right: 18px;
+                padding-left: 2px;
+                text-align: right;
+            }
+            .RadioCalssLeft {
+            }
+            .rich-tabpanel-content {
+                font-size:inherit;
+            }
+            .rich-tab-header {
+                font-size:14px;
+            }
+            .hedareClsNone {
+                display:none !important;
+            }
+            .bgColorCls {
+                background-color:#00FFAB !important;
+            }
+            .brandTertiaryBgr h3 {
+                color: #333 !important;
+            }
+        </style>
 
-</head>
+        <apex:includeScript value="{!URLFOR($Resource.PROResources, 'js/jquery.min.js')}"/>
+        <apex:includeScript value="{!URLFOR($Resource.PROResources, 'js/tablesorter.js')}"/>
+        <apex:stylesheet value="{!URLFOR($Resource.PROResources, 'css/Tablestyle.css')}" />
 
-<body>
+        <script type="text/javascript">
+            $j = jQuery.noConflict();
 
-    <apex:form >
-        <apex:inputHidden id="ProjectId" value="{!ProjectId}"/>
-        <apex:actionstatus id="counterStatus">
-            <apex:facet name="start">
-                <div class="waitingSearchDiv" id="el_loading" style="background-color: #fbfbfb; height:100%;opacity:0.65;width:100%;">
-                    <div class="waitingHolder" style="text-align:center; width: 91px;">
-                    <img class="waitingImage" src="{!$Resource.BrokenCircle}" title="Please Wait..." />
-                   
+            $j(document).ready(function() {
+                $j("[id$=proTable]").tablesorter();
+                $j("[id$=proTable1]").tablesorter();
+                $j("[id$=proTable2]").tablesorter({
+                    headers: {
+                        3: {
+                            sorter: false
+                        }
+                    }
+                });
+                $j("[id$=theaddrs]").tablesorter({
+                    headers: {
+                        // assign the secound column (we start counting zero)
+                        3: {
+                            // disable it by setting the property sorter to false
+                            sorter: false
+                        }
+                    }
+                });
+            });
+
+            function clickProProject(elem) {
+                var contractId = $j(elem).find(".accId").find('span').html();
+                $j('[id$=contractIdElement]').val(contractId);
+                readProCell();
+            }
+
+            function clickElem1(projectId) {
+                console.log("contractId: "+ projectId);
+                $j('[id$=contractid2]').val(projectId);
+                readPROBudget();
+            }
+
+            function clickElem2(elem) {
+                var contractId = $j(elem).find(".accId").find('span').html();
+                $j('[id$=selectedProjectId]').val(contractId);
+                readPROCell();
+            }
+
+            function clickElem3(elem) {
+                var contractId = $j(elem).find(".accId").find('span').html();
+                $j('[id$=contractToAdd]').val(contractId);
+                addProjectToUserList();
+            }
+
+            function clickElem4(elem) {
+                var contractId = $j("a.accId2").parent().parent().find('span').html();
+                $j('[id$=contractToRemove]').val(contractId);
+                removeProjectFromUserListAF();
+                alert("Function executed");
+            }
+
+            function replaceEnter(e) {
+                if (e.keyCode == 13) {
+                    var allElements = document.getElementsByTagName('*');
+                    for (var i = 0; i < allElements.length; i++) {
+                        if (allElements[i].id.indexOf("searchProjects") != -1) {
+                            allElements[i].click();
+                        }
+                    }
+                    return false;
+                } else {
+                    return true;
+                }
+            }
+
+            window.onkeypress = replaceEnter;
+
+            function ShowMessage() {
+            }
+        </script>
+    </head>
+
+    <body>
+        <apex:form >
+            <apex:inputHidden id="ProjectId" value="{!ProjectId}"/>
+
+            <apex:actionstatus id="loadingDiv">
+                <apex:facet name="start">
+                    <div class="waitingSearchDiv" id="el_loading" style="background-color: #fbfbfb; height:100%;opacity:0.65;width:100%;">
+                        <div class="waitingHolder" style="text-align:center; width: 91px;">
+                            <img class="waitingImage" src="{!$Resource.BrokenCircle}" title="Please Wait..." />
+                        </div>
                     </div>
-                </div>
-            </apex:facet>
-        </apex:actionstatus>
-        <apex:tabPanel switchType="client"  value="{!selectedTab}" id="theTabPanel"><!-- rendered="{!isAuthenticated}"-->
-            <apex:tab label="Report Out" name="reportTab" id="tabOne">
-            <input type="text" style="width:0;opacity:0;height:0" />
-            <apex:pageBlock title="Project Report Out" >
-            <apex:pageBlockButtons >
-                <apex:commandButton action="{!save}" value="Submit"/>
-            </apex:pageBlockButtons>
+                </apex:facet>
+            </apex:actionstatus>
 
-            <apex:outputPanel layout="block" id="messages">
-                <apex:pageMessages />
-            </apex:outputPanel>
-            
-             <apex:pageBlockSection title="Useful Project Report Out Links" collapsible="false" columns="1">
-            <apex:pageBlockSectionItem >
-                    <apex:outputLink target="_blank" value="https://confluence.dimagi.com/display/internal/Project+Report+Outs">Project Report Out Instructions</apex:outputLink>            
-                </apex:pageBlockSectionItem>
-                 <apex:pageBlockSectionItem >
-                    <apex:outputLink target="_blank" value="https://dimagi.my.salesforce.com/{!LastProjectId}">Last Project Report Out</apex:outputLink>
-                </apex:pageBlockSectionItem>
-              </apex:pageBlockSection>  
-            <apex:pageBlockSection title="Report Out Information" collapsible="false" columns="1">
-                
-                
+            <apex:tabPanel switchType="client"  value="{!selectedTab}" id="projectReportOutTabPanel"><!-- rendered="{!isAuthenticated}"> -->
+                <apex:tab label="Report Out" name="reportTab" id="reportTab">
+                <input type="text" style="width:0;opacity:0;height:0" />
+                <apex:pageBlock title="Project Report Out" >
+                    <apex:pageBlockButtons >
+                        <apex:commandButton action="{!save}" value="Submit" reRender="proCheckboxes" status="loadingDiv"/>
+                    </apex:pageBlockButtons>
 
-                
-                <apex:pageBlockSectionItem >
-                     <apex:outputLabel value="Project" />
-                     
-                     <apex:outputPanel >
-                         <apex:inputHidden value="{!contractId}" id="testId"/>
-                         <apex:actionFunction name="readCell" action="{!loadProjectReport}" >
-                         </apex:actionFunction>
-                         <apex:pageBlockTable value="{!ProjectList2}" var="acc" onRowClick="clickElem(this);" style="width:300px" id="proTable" styleClass="tablesorter" >   
-                                           
-                           <apex:column headerValue="" value="{!acc.Contract.Id}" styleClass="accId" style="display:none" headerClass="hedareClsNone"   />
-                           <apex:column headerValue="Project Name" value="{!acc.Contract.Name}"  styleClass="{!acc.CSSClass}"  />
-                           <apex:column headerValue="Last Report Out Date" value="{!acc.Contract.Last_Report_Out_Date__c}" styleClass="{!acc.CSSClass}"  />
-                          
-                         </apex:pageBlockTable>
+                    <apex:outputPanel layout="block" id="messages">
+                        <apex:pageMessages />
                     </apex:outputPanel>
-                </apex:pageBlockSectionItem>
-                
-                <apex:pageBlockSectionItem >
-                    <apex:outputLabel value="Report Out Date" for="date"/>
-                    <apex:outputPanel styleClass="requiredInput" layout="block">
-                        <apex:outputPanel styleClass="requiredBlock" layout="block"/>
-                        <apex:inputField id="date" value="{!pro.Report_Out_Date__c}"/>                        
-                    </apex:outputPanel>
-                </apex:pageBlockSectionItem>
 
-              
-                <apex:pageBlockSectionItem >
-                    <apex:outputLabel >Project Dashboard</apex:outputLabel>
-                    <apex:inputfield value="{!pro.Project_Dashboard__c}" style="width:500px"/>  
-                </apex:pageBlockSectionItem>
-                
-                <apex:pageBlockSectionItem >
-                    <apex:outputLabel >% of Work Completed </apex:outputLabel>
-                    <apex:outputPanel styleClass="requiredInput" layout="block">
-                        <apex:outputPanel styleClass="requiredBlock" layout="block"/>
-                        <apex:inputText value="{!proTabContractPercntgethroughSOW}"/>  
-                    </apex:outputPanel>
-                </apex:pageBlockSectionItem>
+                    <apex:pageBlockSection title="Useful Project Report Out Links" collapsible="false" columns="1">
+                        <apex:pageBlockSectionItem >
+                            <apex:outputLink target="_blank" value="https://confluence.dimagi.com/display/internal/Project+Report+Outs">Project Report Out Instructions</apex:outputLink>
+                        </apex:pageBlockSectionItem>
+                        <apex:pageBlockSectionItem >
+                            <apex:outputLink target="_blank" value="https://dimagi.my.salesforce.com/{!LastProjectId}">Last Project Report Out</apex:outputLink>
+                        </apex:pageBlockSectionItem>
+                    </apex:pageBlockSection>
 
-                <apex:pageBlockSectionItem >
-                    <apex:outputLabel >Execution Efficiency</apex:outputLabel>
-                    <apex:outputText value="{!proTabContract.Execution_Efficiency__c}"/>
-                </apex:pageBlockSectionItem>
-                
-                <!--
-                <apex:pageBlockSectionItem >
-                    <apex:outputLabel >Margin % by Contract Dates</apex:outputLabel>
-                    <apex:outputText value="{!proTabContract.Margin_by_Contract_Dates__c}"/>
-                </apex:pageBlockSectionItem>
+                    <apex:pageBlockSection title="Report Out Information" collapsible="false" columns="1">
+                        <apex:pageBlockSectionItem >
+                             <apex:outputLabel value="Project" />
+                             <apex:outputPanel >
+                                 <apex:inputHidden value="{!contractId}" id="contractIdElement"/>
+                                 <apex:actionFunction name="readProCell" action="{!loadProjectReport}" >
+                                 </apex:actionFunction>
 
-                <apex:pageBlockSectionItem >
-                    <apex:outputLabel >Margin % by SOW Completed</apex:outputLabel>
-                    <apex:outputField value="{!proTabContract.Margin_by_SOW_Completed__c}"/>  
-                </apex:pageBlockSectionItem>
+                                 <apex:pageBlockTable value="{!ProjectList2}" var="proProject" onRowClick="clickProProject(this);" style="width:300px" id="proTable" styleClass="tablesorter" >
+                                   <apex:column headerValue="" value="{!proProject.Contract.Id}" styleClass="accId" style="display:none" headerClass="hedareClsNone" />
+                                   <apex:column headerValue="Project Name" value="{!proProject.Contract.Name}"  styleClass="{!proProject.CSSClass}"  />
+                                   <apex:column headerValue="Last Report Out Date" value="{!proProject.Contract.Last_Report_Out_Date__c}" styleClass="{!proProject.CSSClass}" />
+                                 </apex:pageBlockTable>
+                            </apex:outputPanel>
+                        </apex:pageBlockSectionItem>
 
-                <apex:pageBlockSectionItem >
-                    <apex:outputLabel >Expected Margin (%) from Contract</apex:outputLabel>
-                    <apex:outputField value="{!proTabContract.Expected_Margin__c}"/>
-                </apex:pageBlockSectionItem>
+                        <apex:pageBlockSectionItem >
+                            <apex:outputLabel value="Report Out Date" for="proDate"/>
+                            <apex:outputPanel styleClass="requiredInput" layout="block">
+                                <apex:outputPanel styleClass="requiredBlock" layout="block"/>
+                                <apex:inputField id="proDate" value="{!pro.Report_Out_Date__c}"/>
+                            </apex:outputPanel>
+                        </apex:pageBlockSectionItem>
 
-                <apex:pageBlockSectionItem >
-                    <apex:outputLabel >Financial Dashboard</apex:outputLabel>
-                    <apex:outputLink target="_blank" value="http://dimagi.force.com/projectreportout/ProjectReportOut">Go to load Financial data</apex:outputLink>            
-                </apex:pageBlockSectionItem>
-                -->
-                
-                <apex:pageBlockSectionItem >
-                    <apex:outputLabel >Update Resource Planning<br/>
-                    In &nbsp;<apex:outputLink target="_blank" value="https://docs.google.com/a/dimagi.com/spreadsheets/d/1Sn3S8O9qG0WPkoMkmCcEUnuy7ihWbErSWvu4QShebD4/edit#gid=1470786190">Global Capacity Planner</apex:outputLink>            
-                    </apex:outputLabel>
-                    <apex:inputfield value="{!pro.Resource_Planning__c}"/>  
-                </apex:pageBlockSectionItem>
+                        <apex:pageBlockSectionItem >
+                            <apex:outputLabel >Project Dashboard</apex:outputLabel>
+                            <apex:inputfield value="{!pro.Project_Dashboard__c}" style="width:500px"/>
+                        </apex:pageBlockSectionItem>
 
-                <apex:pageBlockSectionItem >
-                    <apex:outputLabel ></apex:outputLabel>
-                </apex:pageBlockSectionItem>
-                
-                <apex:pageBlockSectionItem >
-                    
-                    <apex:outputPanel >
-                        <table width="100%"> 
-                            <tr>
-                                <td class="RadionRowCls">
-                                    &nbsp;
-                                </td>
-                                <td>
-                                    <table>
-                                        <tr>
-                                            <td style="color: #4a4a56;font-size: 91%;font-weight:bold">Green</td>
-                                            <td style="padding-left:10px;color: #4a4a56;font-size: 91%;font-weight:bold">Yellow</td>
-                                            <td style="padding-left:10px;color: #4a4a56;font-size: 91%;font-weight:bold">Red</td>
-                                             <td style="padding-left:10px;color: #4a4a56;font-size: 91%;font-weight:bold">N/A</td>
-                                        </tr>
-                                    </table>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td  class="RadionRowCls clrClass">
-                                    Overall Status
-                                </td>
-                                <td class="RadioCalssLeft">
-                                   <apex:selectRadio value="{!status}">
-                                        <apex:selectOptions value="{!StatusList}"/>
-                                    </apex:selectRadio>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td  class="RadionRowCls clrClass">
-                                    Detailed Status Information
-                                </td>
-                                <td class="RadioCalssLeft">
-                                   
-                                </td>
-                            </tr>
-                            <tr>
-                                <td class="RadionRowCls clrClass">
-                                    Ability to meet Schedule
-                                </td>
-                                <td class="RadioCalssLeft">
-                                    <apex:selectRadio value="{!ToMeetSchedule}">
-                                        <apex:selectOptions value="{!StatusList}"/>
-                                    </apex:selectRadio>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td class="RadionRowCls clrClass">
-                                    Ability to stay within Scope
-                                </td>
-                                <td class="RadioCalssLeft">
-                                     <apex:selectRadio value="{!StayWithinScope}">
-                                        <apex:selectOptions value="{!StatusList}"/>
-                                    </apex:selectRadio>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td class="RadionRowCls clrClass">
-                                    Current System Usage
-                                </td>
-                                <td class="RadioCalssLeft">
-                                     <apex:selectRadio value="{!CurrentSystemUsage}">
-                                        <apex:selectOptions value="{!StatusList}"/>
-                                    </apex:selectRadio>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td class="RadionRowCls clrClass">
-                                    Partner Relationship
-                                </td>
-                                <td class="RadioCalssLeft">
-                                    <apex:selectRadio value="{!PartnerRelationship}">
-                                        <apex:selectOptions value="{!StatusList}"/>
-                                    </apex:selectRadio>
-                                </td>
-                            </tr>
-                        </table>
-                        
-                    </apex:outputPanel>
-                </apex:pageBlockSectionItem>
-                <apex:pageBlockSectionItem >
-                    <apex:outputLabel value="Key Accomplishments (last 2 weeks)" for="keyAccomplishments"/>
-                    <apex:inputField id="keyAccomplishments" value="{!pro.Key_Accomplishments_Last_Two_Weeks__c}" style="width: 100%;"/>
-                </apex:pageBlockSectionItem>
+                        <apex:pageBlockSectionItem >
+                            <apex:outputLabel >% of Work Completed</apex:outputLabel>
+                            <apex:outputPanel styleClass="requiredInput" layout="block">
+                                <apex:outputPanel styleClass="requiredBlock" layout="block"/>
+                                <apex:inputText value="{!proTabContractPercntgethroughSOW}"/>
+                            </apex:outputPanel>
+                        </apex:pageBlockSectionItem>
 
-                <apex:pageBlockSectionItem >
-                    <apex:outputLabel value="Key Next Steps (next 2 weeks)" for="kns2w"/>
-                    <apex:inputField id="kns2w" value="{!pro.Key_Next_Steps_next_2_weeks__c}" style="width:100%"/>
-                </apex:pageBlockSectionItem>
- 
-                <apex:inputField id="issues" value="{!pro.Issues_Questions_Notables__c}" /> 
-                <apex:pageBlockSectionItem >
-                    <apex:outputLabel value="Upcoming Important Project / Invoicing Deadlines" for="deadlines"/>
-                    <apex:inputField id="deadlines" value="{!pro.Client_Facing__c}" style="width:100%"/>
-                </apex:pageBlockSectionItem> 
-                
-                <apex:pageBlockSectionItem rendered="{!showDevWork}">
-                        <apex:outputLabel value="Internal Developer Deadlines" for="requiresDevWork"/>
-                        <apex:inputField id="requiresDevWork" value="{!pro.Requires_Developer_Work__c}" style="width: 100%;"/>
-                   
-                </apex:pageBlockSectionItem>
-            </apex:pageBlockSection>
-            </apex:pageBlock>
-        
+                        <apex:pageBlockSectionItem >
+                            <apex:outputLabel >Execution Efficiency</apex:outputLabel>
+                            <apex:outputText value="{!proTabContract.Execution_Efficiency__c}"/>
+                        </apex:pageBlockSectionItem>
+
+                        <apex:pageBlockSectionItem >
+                            <apex:outputLabel >Update Resource Planning<br/>
+                            In &nbsp;<apex:outputLink target="_blank" value="https://docs.google.com/a/dimagi.com/spreadsheets/d/1Sn3S8O9qG0WPkoMkmCcEUnuy7ihWbErSWvu4QShebD4/edit#gid=1470786190">Global Capacity Planner</apex:outputLink>
+                            </apex:outputLabel>
+                            <apex:inputfield value="{!pro.Resource_Planning__c}"/>
+                        </apex:pageBlockSectionItem>
+
+                        <apex:pageBlockSectionItem >
+                            <apex:outputLabel ></apex:outputLabel>
+                        </apex:pageBlockSectionItem>
+
+                        <apex:pageBlockSectionItem  id="proCheckboxes">
+                            <apex:outputPanel >
+                                <table width="100%">
+                                    <tr>
+                                        <td class="RadionRowCls">&nbsp;</td>
+                                        <td>
+                                            <table>
+                                                <tr>
+                                                    <td style="color: #4a4a56;font-size: 91%;font-weight:bold">Green</td>
+                                                    <td style="padding-left:10px;color: #4a4a56;font-size: 91%;font-weight:bold">Yellow</td>
+                                                    <td style="padding-left:10px;color: #4a4a56;font-size: 91%;font-weight:bold">Red</td>
+                                                    <td style="padding-left:10px;color: #4a4a56;font-size: 91%;font-weight:bold">N/A</td>
+                                                </tr>
+                                            </table>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="RadionRowCls clrClass">Overall Status</td>
+                                        <td class="RadioCalssLeft">
+                                           <apex:selectRadio value="{!status}">
+                                                <apex:selectOptions value="{!StatusList}"/>
+                                            </apex:selectRadio>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td  class="RadionRowCls clrClass">Detailed Status Information</td>
+                                        <td class="RadioCalssLeft"></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="RadionRowCls clrClass">Ability to meet Schedule</td>
+                                        <td class="RadioCalssLeft">
+                                            <apex:selectRadio value="{!ToMeetSchedule}">
+                                                <apex:selectOptions value="{!StatusList}"/>
+                                            </apex:selectRadio>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="RadionRowCls clrClass">Ability to stay within Scope</td>
+                                        <td class="RadioCalssLeft">
+                                             <apex:selectRadio value="{!StayWithinScope}">
+                                                <apex:selectOptions value="{!StatusList}"/>
+                                            </apex:selectRadio>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="RadionRowCls clrClass">Current System Usage</td>
+                                        <td class="RadioCalssLeft">
+                                             <apex:selectRadio value="{!CurrentSystemUsage}">
+                                                <apex:selectOptions value="{!StatusList}"/>
+                                            </apex:selectRadio>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="RadionRowCls clrClass">Partner Relationship</td>
+                                        <td class="RadioCalssLeft">
+                                            <apex:selectRadio value="{!PartnerRelationship}">
+                                                <apex:selectOptions value="{!StatusList}"/>
+                                            </apex:selectRadio>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </apex:outputPanel>
+                        </apex:pageBlockSectionItem>
+
+                        <apex:pageBlockSectionItem >
+                            <apex:outputLabel value="Key Accomplishments (last 2 weeks)" for="keyAccomplishments"/>
+                            <apex:inputField id="keyAccomplishments" value="{!pro.Key_Accomplishments_Last_Two_Weeks__c}" style="width: 100%;"/>
+                        </apex:pageBlockSectionItem>
+
+                        <apex:pageBlockSectionItem >
+                            <apex:outputLabel value="Key Next Steps (next 2 weeks)" for="kns2w"/>
+                            <apex:inputField id="kns2w" value="{!pro.Key_Next_Steps_next_2_weeks__c}" style="width:100%"/>
+                        </apex:pageBlockSectionItem>
+
+                        <apex:pageBlockSectionItem>
+                            <apex:outputLabel value="Issues / Questions / Notables" for="issues"/>
+                            <apex:inputField id="issues" value="{!pro.Issues_Questions_Notables__c}" />
+                        </apex:pageBlockSectionItem>
+
+                        <apex:pageBlockSectionItem >
+                            <apex:outputLabel value="Upcoming Important Project / Invoicing Deadlines" for="deadlines"/>
+                            <apex:inputField id="deadlines" value="{!pro.Client_Facing__c}" style="width:100%"/>
+                        </apex:pageBlockSectionItem>
+
+                        <apex:pageBlockSectionItem rendered="{!showDevWork}">
+                                <apex:outputLabel value="Internal Developer Deadlines" for="requiresDevWork"/>
+                                <apex:inputField id="requiresDevWork" value="{!pro.Requires_Developer_Work__c}" style="width: 100%;"/>
+                        </apex:pageBlockSectionItem>
+                    </apex:pageBlockSection>
+                </apex:pageBlock>
             </apex:tab>
 
             <apex:tab label="Project Financial Data" name="projectData" id="tabTwo">
@@ -504,6 +457,10 @@
 
                                    <apex:column headerValue="% Budget Used" value="{!obj.prcntgUsed}%" style = "{!if(obj.prcntgUsed > 100,'background-color: red;', if(obj.prcntgUsed > 85,'background-color: yellow;',''))};{!if(obj.categoryName='Total Costs (not including subcontracts)' || obj.categoryName='Total Costs (including subcontracts)','font-weight: bold', '')}" />
 
+                                    <!--<apex:column headerValue="% Deliverables Completed">
+                                        <apex:outputText value="{!obj.throughSOWDeliverable}%" rendered="{!if(obj.categoryName='Total Costs (not including subcontracts)' || obj.categoryName='Total Costs (including subcontracts)',false, true)}"></apex:outputText>
+                                    </apex:column>-->
+
                                 </apex:pageBlockTable>
                             </apex:outputPanel>
                         </apex:pageBlockSectionItem>
@@ -617,7 +574,7 @@
                             <apex:outputLabel value="" />
                             <apex:commandButton action="{!saveProjectOnly}" value="Save Changes" 
                             disabled="{!!EnableAddButton}"/>
-                            <!-- reRender="PROEmailTab,messages"  status="counterStatus" />-->
+                            <!-- reRender="PROEmailTab,messages"  status="loadingDiv" />-->
                         </apex:pageBlockSectionItem>
                         
                     </apex:pageBlockSection>
@@ -642,7 +599,7 @@
                                         <apex:outputLabel value="{!cont.Type__c}"></apex:outputLabel>
                                       <apex:outputPanel >
                                         <apex:inputField id="Backstop" value="{!cont.Contact__c}" />
-                                        <apex:commandButton value="Remove" action="{!RemoveContact}" status="counterStatus" reRender="PROEmailTab">
+                                        <apex:commandButton value="Remove" action="{!RemoveContact}" status="loadingDiv" reRender="PROEmailTab">
                                             <apex:param name="removeContactId" value="{!cont.Contact__c}" assignTo="{!removeContactId}"/>
                                         </apex:commandButton>
                                       </apex:outputPanel>
@@ -652,7 +609,7 @@
                                         <apex:outputLabel value="{!cont.Type__c}"></apex:outputLabel>
                                       <apex:outputPanel >
                                         <apex:inputField id="Backstop" value="{!cont.Email__c}" />
-                                        <apex:commandButton value="Remove" action="{!RemoveEmail}" status="counterStatus" reRender="PROEmailTab">
+                                        <apex:commandButton value="Remove" action="{!RemoveEmail}" status="loadingDiv" reRender="PROEmailTab">
                                             <apex:param name="removeContactId" value="{!cont.Email__c}" assignTo="{!RemoveEmailId}"/>
                                         </apex:commandButton>
                                       </apex:outputPanel>
@@ -664,15 +621,15 @@
                         <apex:pageBlockSectionItem >
                           <apex:outputLabel value="" />
                           <apex:outputPanel >
-                            <apex:commandButton action="{!AddContact}" value="Add Person" reRender="PROEmailTab,messages" disabled="{!!EnableAddButton}" status="counterStatus" />
-                            <apex:commandButton action="{!AddEmail}" value="Add Email" reRender="PROEmailTab,messages" disabled="{!!EnableAddButton}" status="counterStatus" />
-                            <apex:commandButton action="{!AddMe}" value="Add Me" reRender="PROEmailTab,messages" disabled="{!!EnableAddButton}" status="counterStatus" />
+                            <apex:commandButton action="{!AddContact}" value="Add Person" reRender="PROEmailTab,messages" disabled="{!!EnableAddButton}" status="loadingDiv" />
+                            <apex:commandButton action="{!AddEmail}" value="Add Email" reRender="PROEmailTab,messages" disabled="{!!EnableAddButton}" status="loadingDiv" />
+                            <apex:commandButton action="{!AddMe}" value="Add Me" reRender="PROEmailTab,messages" disabled="{!!EnableAddButton}" status="loadingDiv" />
                           </apex:outputPanel>
                         </apex:pageBlockSectionItem>
                         
                         <apex:pageBlockSectionItem >
                             <apex:outputLabel value="" />
-                            <apex:commandButton action="{!SaveContact}" value="Save Changes" reRender="PROEmailTab" disabled="{!!EnableAddButton}" status="counterStatus" />
+                            <apex:commandButton action="{!SaveContact}" value="Save Changes" reRender="PROEmailTab" disabled="{!!EnableAddButton}" status="loadingDiv" />
                         </apex:pageBlockSectionItem>
                         
                     </apex:pageBlockSection>
