@@ -10,7 +10,7 @@ public class ContractSnapshotTest {
 
         DContract__c dcontract = addContract();
 
-        projectReportOutController.contractId = dcontract.Id;
+        projectReportOutController.reportContractId = dcontract.Id;
         projectReportOutController.contractIdName = new Map<Id, DContract__C> {};
         projectReportOutController.contractIdName.put(dcontract.Id, dcontract);
         projectReportOutController.status = 'Active';
