@@ -8,122 +8,102 @@
 global without sharing class FogBugzSynchronizerBatch implements Database.Batchable<Opportunity>, Database.AllowsCallouts {
 
     public final Boolean testMode;
-    public static string batchId;
 
     /**
      * We define a custom iterator to traverse the new opportunities
      */
     public class OpportunityIterator implements Iterator<Opportunity> {
-    
+
         Opportunity[] opportunities;
         Integer i = 0;
-        
+
         public OpportunityIterator(Opportunity[] opportunities) {
             this.opportunities = opportunities;
-            
         }
-        
+
         public Boolean hasNext() {
             return i < opportunities.size();
         }
-        
+
         public Opportunity next() {
             return opportunities[i++];
         }
     }
-    
+
     public class OpportunityIterable implements Iterable<Opportunity> {
-        
+
         Opportunity[] opportunities;
-        
+
         public OpportunityIterable(Opportunity[] opportunities) {
             this.opportunities = opportunities;
         }
+
         public Iterator<Opportunity> iterator() {
             return new OpportunityIterator(opportunities);
         }
     }
-    
+
     /**
      * The batch job code starts here
      */
-
-    //final Opportunity[] newOpportunities;
-    
     public FogBugzSynchronizerBatch(Boolean testMode) {
-    	this.testMode = testMode;
+        this.testMode = testMode;
     }
-        
+
     global Iterable<Opportunity> start(Database.BatchableContext BC) {
-    	batchId = BC.getJobId();	//Added For Emailing Errors
-    	try
-    	{
-	    	FogBugz_Settings__c settings = FogBugz_Settings__c.getOrgDefaults();
-	    	Datetime thisTime = Datetime.now();
-	    	Opportunity[] modifiedOps = preFetchOpportunities(settings.Last_Time_Sync_Ran__c);
-	        settings.Last_Time_Sync_Ran__c = thisTime;
-	        upsert settings;
-	        if(!test.isRunningTest() && hqInt_BatchErrorLogger.checkErrorsLogged(batchId))
-	        	hqInt_BatchErrorLogger.sendErrorEmails(batchId,'Fogbugz Success & Errors','Fogbugz Batch Run Results :');	
-	        return new OpportunityIterable(modifiedOps);
-    	}
-    	catch(exception e)
-    	{
-    		hqInt_BatchErrorLogger.logError(FogBugzSynchronizerBatch.batchId,'Fogbugz Error','Error in start method -- '+e.getMessage(),e.getStackTraceString());
-    		hqInt_BatchErrorLogger.sendErrorEmails(batchId,'Fogbugz Success & Errors','Fogbugz Batch Run Results :');
-    		return null;
-    	}
+        try {
+            FogBugz_Settings__c settings = FogBugz_Settings__c.getOrgDefaults();
+            Datetime thisTime = Datetime.now();
+            Opportunity[] modifiedOps = preFetchOpportunities(settings.Last_Time_Sync_Ran__c);
+            settings.Last_Time_Sync_Ran__c = thisTime;
+            upsert settings;
+
+            return new OpportunityIterable(modifiedOps);
+        } catch(exception e) {
+            hqInt_BatchErrorLogger.logError(BC.getJobId(),'Fogbugz Error','Error in start method -- ' + e.getMessage(), e.getStackTraceString());
+            hqInt_BatchErrorLogger.sendErrorEmails(BC.getJobId(), 'Fogbugz Success & Errors','Fogbugz Batch Run Results :');
+            return null;
+        }
     }
-    
+
     global void execute(Database.BatchableContext bc, List<Opportunity> scope) {
-    	batchId = BC.getJobId(); //Added For Emailing Errors
         FogBugzAPI api = new FogBugzAPI();
-        
+
         for (Opportunity o:scope) {
 
-            // Determine SF owner for new opportunities             
             if (o.Fogbugz_Opened_By__c != null) {
-
                 Boolean ownerFound = false;
                 String userMail = Test.isRunningTest() ? 'do@not.exist.com' : api.getPersonEmail(o.Fogbugz_Opened_By__c);
 
                 if (userMail != null) {
-                    
-                    User[] us = [select Id from User where Email = :userMail];
-                    
+                    User[] us = [SELECT Id FROM User WHERE Email = :userMail];
                     if (!us.isEmpty()) {
                         System.debug(LoggingLevel.INFO, 'FogBugzSynchronizerBatch::execute() - Found user ' + userMail);
                         o.OwnerId = us[0].Id;
                         ownerFound = true;
-                    }
-                    else {
+                    } else {
                         System.debug(LoggingLevel.INFO, 'FogBugzSynchronizerBatch::execute() - User ' + userMail + 'does not exist in SF');
                     }
-                }
-                else {
+                } else {
                     System.debug(LoggingLevel.INFO,
-                                 'FogBugzSynchronizerBatch::execute() - Could not retrieve user email for ' + o.Fogbugz_Opened_By__c);
+                         'FogBugzSynchronizerBatch::execute() - Could not retrieve user email for ' + o.Fogbugz_Opened_By__c);
                 }
 
                 if (!ownerFound) {
-
                     User[] us = [select Id from User where Username = :FogBugz_Settings__c.getOrgDefaults().Default_Opportunity_Owner__c];
-                        
                     if (!us.isEmpty()) {
                         o.OwnerId = us[0].Id;
-                    }
-                    else {
+                    } else {
                         System.debug(LoggingLevel.WARN, 'FogBugzSynchronizerBatch::execute() - Cannot find default owner: ' +
-                                     FogBugz_Settings__c.getOrgDefaults().Default_Opportunity_Owner__c);
+                             FogBugz_Settings__c.getOrgDefaults().Default_Opportunity_Owner__c);
                     }
                 }
             }
-            
-            // Now we fetch the latest case details from FB into the oppty
-            FogBugzUtils.syncOpportunityFromFB(o);
+
+            FogBugzUtils.syncOpportunityFromFB(o, BC.getJobId());
         }
     }
-    
+
     private Opportunity[] preFetchOpportunities(Datetime minTime) {
 
         Opportunity[] allOpportunities = new Opportunity[]{};
@@ -137,7 +117,7 @@ global without sharing class FogBugzSynchronizerBatch implements Database.Batcha
         if (!testMode) {
             api.setCurrentFilter(fbSettings.Sync_Filter__c.intValue());
         }
-        
+
         Map<String, FogBugzCase> fbIdToCaseMap = testMode ?
                                                  api.parseCases(TestFogBugzAPI.GET_CASES_RESPONSE) :
                                                  api.listCases();
@@ -146,27 +126,21 @@ global without sharing class FogBugzSynchronizerBatch implements Database.Batcha
         upsert fbSettings;
 
         if (fbIdToCaseMap.size() > 0) {
-            
             Map<String, Opportunity> existentOpportunities = FogBugzUtils.fetchOpportunitiesByFBId(fbIdToCaseMap.keySet());
-            
             for (String caseId:fbIdToCaseMap.keySet()) {
-
                 if (existentOpportunities.containsKey(caseId)) {
-                	
+
                     Opportunity o = existentOpportunities.get(caseId);
                     FogBugzCase c = fbIdToCaseMap.get(caseId);
-                    
                     System.debug(LoggingLevel.INFO, 'Processing existent opportunity::' + o.Id + '-' + minTime + '-' + c.lastModifiedDate);
-                    
+
                     if (minTime == null || c.lastModifiedDate == null || c.lastModifiedDate > minTime) {
-                    	allOpportunities.add(o);
+                        allOpportunities.add(o);
                     }
-                }
-                else {
+                } else {
                     FogBugzCase fbCase = fbIdToCaseMap.get(caseId);
-                    
                     System.debug(LoggingLevel.INFO, 'Processing new opportunity::' + minTime + '-' + fbCase.lastModifiedDate);
-                    
+
                     Opportunity o = new Opportunity(
                         Name = 'Synchronizing',
                         StageName = 'Synchronizing',
@@ -174,7 +148,7 @@ global without sharing class FogBugzSynchronizerBatch implements Database.Batcha
                         Fogbugz_Opened_By__c = fbCase.ixPersonOpenedBy,
                         CloseDate = Date.today()
                     );
-                    
+
                     newOpportunities.add(o);
                     allOpportunities.add(o);
                 }
@@ -184,18 +158,16 @@ global without sharing class FogBugzSynchronizerBatch implements Database.Batcha
                 insert newOpportunities;
             }
         }
-        
         return allOpportunities;
     }
-    
+
     global void finish(Database.BatchableContext bc) {
         FogBugz_Settings__c fbSettings = FogBugz_Settings__c.getOrgDefaults();
         fbSettings.Sync_Script_Running__c = false;
         update fbSettings;
-        
-        if(!test.isRunningTest())
-        {
-            hqInt_BatchErrorLogger.sendErrorEmails(batchId,'Fogbugz Success & Errors','Fogbugz Batch Run Results :');
+
+        if(!test.isRunningTest()) {
+            hqInt_BatchErrorLogger.sendErrorEmails(BC.getJobId(), 'Fogbugz Success & Errors', 'Fogbugz Batch Run Results :');
         }
     }
 }

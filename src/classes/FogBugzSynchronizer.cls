@@ -7,10 +7,10 @@
 global without sharing class FogBugzSynchronizer implements Schedulable {
 
     global void execute(SchedulableContext SC) {
-    	FogBugz_Settings__c fbSettings = FogBugz_Settings__c.getOrgDefaults();
-    	
-    	if (!fbSettings.Sync_Script_Running__c) {
+        FogBugz_Settings__c fbSettings = FogBugz_Settings__c.getOrgDefaults();
+
+        if (!fbSettings.Sync_Script_Running__c) {
             Database.executeBatch(new FogBugzSynchronizerBatch(false), 1);
-    	}
+        }
     }
 }
