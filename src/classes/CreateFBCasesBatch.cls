@@ -15,7 +15,7 @@ global class CreateFBCasesBatch implements Database.Batchable<sObject>, Database
             Opportunity o = (Opportunity) so;
             FogBugzCase fbCase = FogBugzUtils.createFBCaseFromOpportunity(o);
             System.debug('CreateFBCasesBatch caseId before update: ' + fbCase);
-            String fbCaseId = fbAPI.createCase(fbCase, o.IsClosed);            
+            String fbCaseId = fbAPI.createCase(fbCase, o.IsClosed);
             if (fbCaseId != null) {
                 o.Fogbugz_Ticket_Number__c = fbCaseId;
                 opps.add(o);
