@@ -20,18 +20,16 @@ public with sharing class ProjectReportOutController {
     public Map<Id,DContract__c> contractMap{get;set;}
     public Map<Id,List<DContract__c>> childContractMap;
 
-    public String searchError{ get; set;}
-    public Boolean showDevWork {get; set;}
+    public String searchError { get; set; }
+    public Boolean showDevWork { get; set; }
 
     //TODO only getter
-    public Boolean isAuthenticated {get; set;}
-    public String password {get; set;}
-       
-    public Project_Report_Out__c ProObj{get;set;}
+    public Boolean isAuthenticated { get; set;}
+    public String password { get; set;}
 
-    Map<string,integer> frequencyMap=new Map<string,integer>();
-    public string seachProjectName{get;set;}
-    public List<DContract__c> searchedProjects{get;set;}
+    Map<string,integer> frequencyMap = new Map<string,integer>();
+    public string seachProjectName { get; set; }
+    public List<DContract__c> searchedProjects { get; set; }
 
     public ProjectReportOutController() {
         List<PRO_OAuth_Settings__c> googleSettings = PRO_OAuth_Settings__c.getALL().values();
@@ -65,11 +63,15 @@ public with sharing class ProjectReportOutController {
         showDevWork = false;
     }
 
+
+
     /**
      *
      * Report Out Tab
      *
      */
+
+
 
     public String reportContractId {get; set;}
     public Project_Report_Out__c pro { get; set; }
@@ -82,6 +84,14 @@ public with sharing class ProjectReportOutController {
         }
         set;
     }
+    public string toMeetSchedule { get; set; }
+    public string stayWithinScope { get; set; }
+    public string currentSystemUsage { get; set; }
+    public string partnerRelationship { get; set; }
+    public string status{
+        get;set;
+    }
+
 
     // TODO test setter
     public Map<Id, DContract__C> contractIdName = new Map<Id, DContract__C> {};
@@ -240,7 +250,7 @@ public with sharing class ProjectReportOutController {
                 update dcontract;
 
                 sendReportEmail(proToUpdate.id);
-                page = new PageReference('/apex/ProjectReportOutSubmitted?id=' + proToUpdate.id);
+                page = new PageReference('/apex/ProjectReportOutSubmitted?id=' + proToUpdate.Id);
             }
         } catch(DmlException ex) {
              ApexPages.addMessage(new ApexPages.message(ApexPages.severity.ERROR,ex.getDmlMessage(0)));
@@ -296,10 +306,10 @@ public with sharing class ProjectReportOutController {
         if (currentPRO != null) { // we must update PRO
             currentPRO.Name = contractIdName.get(pro.Contract__c).Name + ' - [' + pro.Report_Out_Date__c.format() + ']';
             currentPRO.Status__c = status;
-            currentPRO.Ability_to_meet_Schedule__c = ToMeetSchedule;
-            currentPRO.Ability_to_stay_within_Scope__c = StayWithinScope;
-            currentPRO.Current_System_Usage__c = CurrentSystemUsage;
-            currentPRO.Partner_Relationship__c = PartnerRelationship;
+            currentPRO.Ability_to_meet_Schedule__c = toMeetSchedule;
+            currentPRO.Ability_to_stay_within_Scope__c = stayWithinScope;
+            currentPRO.Current_System_Usage__c = currentSystemUsage;
+            currentPRO.Partner_Relationship__c = partnerRelationship;
             currentPRO.User_Name__C = currentLoginUser;
             currentPRO.Report_Out_Date__c = pro.Report_Out_Date__c;
             currentPRO.Key_Accomplishments_Last_Two_Weeks__c = pro.Key_Accomplishments_Last_Two_Weeks__c;
@@ -317,10 +327,10 @@ public with sharing class ProjectReportOutController {
             pro.Last_Report_ID__C = lastProjectId;
             pro.Name = contractIdName.get(pro.Contract__c).Name + ' - [' + pro.Report_Out_Date__c.format() + ']';
             pro.Status__c = status;
-            pro.Ability_to_meet_Schedule__c = ToMeetSchedule;
-            pro.Ability_to_stay_within_Scope__c = StayWithinScope;
-            pro.Current_System_Usage__c = CurrentSystemUsage;
-            pro.Partner_Relationship__c = PartnerRelationship;
+            pro.Ability_to_meet_Schedule__c = toMeetSchedule;
+            pro.Ability_to_stay_within_Scope__c = stayWithinScope;
+            pro.Current_System_Usage__c = currentSystemUsage;
+            pro.Partner_Relationship__c = partnerRelationship;
             pro.User_Name__C = currentLoginUser;
 
             return pro;
@@ -384,6 +394,8 @@ public with sharing class ProjectReportOutController {
 
 
 
+    public Project_Report_Out__c submittedPro { get; set; }
+
     public PageReference submitAnother() {
         pro = new Project_Report_Out__c();
         deleteContactList.clear();
@@ -396,11 +408,11 @@ public with sharing class ProjectReportOutController {
         return newPage ;
     }
 
-// TODOD
-    public void getPRO() {
+    public void loadSubmittedPro() {
         String proId = ApexPages.currentPage().getParameters().get('id');
+
         if(proId != null) {
-            ProObj = [SELECT id,Name,Resource_Planning__c,Status__c,
+            submittedPro = [SELECT id,Name,Resource_Planning__c,Status__c,
                       Ability_to_meet_Schedule__c,Ability_to_stay_within_Scope__c,
                       Current_System_Usage__c,Partner_Relationship__c,
                       Key_Accomplishments_Last_Two_Weeks__c,
@@ -422,9 +434,13 @@ public with sharing class ProjectReportOutController {
 
 
     public String contractUrl{ get; set; }
-    public String financialContractId {get; set;}
-    public String contractToAdd {get; set;}
-    public String contractToRemove {get; set;}
+    public String financialContractId { get; set; }
+    public String contractToAdd { get; set; }
+    public String contractToRemove { get; set; }
+    public List<ProjectExecutionStatus> executionStatusList { get; set; }
+    public List<PROProjectTimeSpentHistory> timeSpendHistoryList { get; set; }
+    public List<PROProjectBudget> proExpenseSpendList { get; set; }
+    public List<PROProjectBudget> proBudgetList { get; set; }
 
     private Set<Id> excludeContractFromSearch = new Set<Id>();
 
@@ -548,6 +564,356 @@ public with sharing class ProjectReportOutController {
         }
     }
 
+   public void loadContractBudgetAndSpentData() {
+        proBudgetList = new List<PROProjectBudget>();
+
+        if( contractMap.containsKey(financialContractId)) {
+            contractUrl = 'https://'+sfInstanceName+'/'+financialContractId;
+            Set<Id> parentAndChildContractIds = new Set<Id>{financialContractId};
+            DContract__c contractObj = contractMap.get(financialContractId);
+            List<DContract__c> childContracts = childContractMap.containsKey(financialContractId) ? childContractMap.get(financialContractId) : null;
+            contractIdTimeCardsMap = new Map<Id,List<Time_Card__c>>();
+
+            Decimal Burdened_Income_Budget = contractObj.Burdened_Income_Budget__c!= null ? contractObj.Burdened_Income_Budget__c : 0;
+            Decimal LaborSpent = 0;
+            Decimal Contract_Expense_BUDGET = contractObj.Contract_Expense_BUDGET__c != null ? contractObj.Contract_Expense_BUDGET__c: 0 ;
+            Decimal Direct_Costs_Total_Expenses = contractObj.Direct_Costs_Total_Expenses__c != null ? contractObj.Direct_Costs_Total_Expenses__c: 0 ;
+            Decimal Product_Income_Budget = contractObj.Product_Income_Budget__c != null ? contractObj.Product_Income_Budget__c: 0 ;
+            Decimal Product_Spend = contractObj.Product_Spend__c != null ? contractObj.Product_Spend__c: 0 ;
+            Decimal Total_Amount_of_Contract = contractObj.Total_Amount_of_Contract__c != null ? contractObj.Total_Amount_of_Contract__c: 0 ;
+            Decimal Percent_through_Contract = contractObj.Percent_through_Contract__c != null ? contractObj.Percent_through_Contract__c: 0 ;
+            Decimal Percent_through_SOW_deliverables = contractObj.Percent_through_SOW_deliverables__c != null ? contractObj.Percent_through_SOW_deliverables__c: 0 ;
+            Decimal Expected_Margin = contractObj.Expected_Margin__c != null ? contractObj.Expected_Margin__c: 0 ;
+
+            if(childContracts != null && childContracts.size() > 0) {
+                for(DContract__c childContract : childContracts) {
+                    parentAndChildContractIds.add(childContract.Id);
+                    //TODO
+                    /*Contract_Expense_BUDGET += childContract.Contract_Expense_BUDGET__c != null ? childContract.Contract_Expense_BUDGET__c: 0 ;
+                    Direct_Costs_Total_Expenses += childContract.Direct_Costs_Total_Expenses__c != null ? contractObj.Direct_Costs_Total_Expenses__c: 0 ;
+                    Product_Income_Budget += childContract.Product_Income_Budget__c != null ? childContract.Product_Income_Budget__c: 0 ;
+                    Product_Spend += childContract.Product_Spend__c != null ? childContract.Product_Spend__c: 0 ;
+                    Total_Amount_of_Contract += childContract.Total_Amount_of_Contract__c != null ? childContract.Total_Amount_of_Contract__c: 0 ;
+                    Percent_through_Contract += childContract.Percent_through_Contract__c != null ? childContract.Percent_through_Contract__c: 0 ;
+                    Percent_through_SOW_deliverables += childContract.Percent_through_SOW_deliverables__c != null ? childContract.Percent_through_SOW_deliverables__c: 0 ;
+                    Expected_Margin += childContract.Expected_Margin__c != null ? childContract.Expected_Margin__c: 0 ;*/
+                }
+            }
+
+            for(Time_Card__c obj : [select Employee__r.Name,Date__c,Total__c,labor_cost__c,Client__c  from Time_Card__c where Client__c IN:parentAndChildContractIds]) {
+                if(contractIdTimeCardsMap.containsKey(obj.Client__c)){
+                    List<Time_Card__c> tempList = contractIdTimeCardsMap.get(obj.Client__c);
+                    tempList.add(obj);
+                    contractIdTimeCardsMap.put(obj.Client__c,tempList);
+                }else{
+                    contractIdTimeCardsMap.put(obj.Client__c,new List<Time_Card__c>{obj});
+                }
+            }
+
+            for(Id contractId : parentAndChildContractIds) {
+                List<Time_Card__c> timeEntries = contractIdTimeCardsMap.get(contractId);
+                if(timeEntries != null && timeEntries.size() > 0) {
+                    for(Time_Card__c obj : timeEntries) {
+                        if(obj.labor_cost__c != null) {
+                            LaborSpent += obj.labor_cost__c;
+                        }
+                    }
+                }
+            }
+
+            Decimal a = Product_Income_Budget;
+            Decimal b = Product_Spend;
+            PROProjectBudget prbjObj1 = new PROProjectBudget();
+            prbjObj1.categoryName = 'Product';
+            prbjObj1.contractamount = Integer.valueOf( Product_Income_Budget );
+            prbjObj1.spentAmount = Integer.valueOf( Product_Spend );
+            prbjObj1.amountRemaining = Integer.valueOf( Product_Income_Budget - Product_Spend );
+            prbjObj1.prcntgUsed = a != 0 ? Math.round((b/a) * 100) : 0;
+            proBudgetList.add(prbjObj1);
+
+            a = Burdened_Income_Budget;
+            b = LaborSpent;
+            PROProjectBudget prbjObj2 = new PROProjectBudget();
+            prbjObj2.categoryName = 'Services & Labor';
+            prbjObj2.contractamount = Integer.valueOf( Burdened_Income_Budget );
+            prbjObj2.spentAmount = Integer.valueOf( LaborSpent );
+            prbjObj2.amountRemaining = Integer.valueOf( Burdened_Income_Budget - LaborSpent );
+            prbjObj2.prcntgUsed = a != 0 ? Math.round((b/a) * 100) : 0;
+            proBudgetList.add(prbjObj2);
+
+            a = Contract_Expense_BUDGET;
+            b = Direct_Costs_Total_Expenses;
+            PROProjectBudget prbjObj3 = new PROProjectBudget();
+            prbjObj3.categoryName = 'Expense & Travel';
+            prbjObj3.contractamount = Integer.valueOf( Contract_Expense_BUDGET );
+            prbjObj3.spentAmount = Integer.valueOf( Direct_Costs_Total_Expenses );
+            prbjObj3.amountRemaining = Integer.valueOf( Contract_Expense_BUDGET - Direct_Costs_Total_Expenses );
+            prbjObj3.prcntgUsed = a != 0 ? Math.round((b/a) * 100) : 0;
+            proBudgetList.add(prbjObj3);
+
+            a = Total_Amount_of_Contract;
+            b = prbjObj1.spentAmount + prbjObj2.spentAmount + prbjObj3.spentAmount;//calculate manually
+            PROProjectBudget prbjObj4 = new PROProjectBudget();
+            prbjObj4.categoryName = 'Total';
+            prbjObj4.contractamount = Integer.valueOf( Total_Amount_of_Contract );
+            prbjObj4.spentAmount = Integer.valueOf( b );
+            prbjObj4.amountRemaining = Integer.valueOf( Total_Amount_of_Contract - b);
+            prbjObj4.prcntgUsed = a != 0 ? Math.round((b/a) * 100) : 0;
+            proBudgetList.add(prbjObj4);
+        }
+
+        loadProjectExecutionStatusList();
+        loadHistoryOfTimeSpend();
+        loadContractExpenseSpend();
+    }
+
+     public void loadContractExpenseSpend() {
+        proExpenseSpendList = new List<PROProjectBudget>();
+
+        if( contractMap.containsKey(financialContractId) ){
+            DContract__c contractObj = contractMap.get(financialContractId);
+            List<DContract__c> childContracts = childContractMap.containsKey(financialContractId) ? childContractMap.get(financialContractId) : null;
+
+            Decimal Direct_Costs_Travel_BUDGET = contractObj.Direct_Costs_Travel_BUDGET__c != null ? contractObj.Direct_Costs_Travel_BUDGET__c : 0 ;
+            Decimal Direct_Costs_Sub_Contract_BUDGET = contractObj.Direct_Costs_Sub_Contract_BUDGET__c != null ? contractObj.Direct_Costs_Sub_Contract_BUDGET__c : 0 ;
+            Decimal Internal_Sub_contract_BUDGET = contractObj.Internal_Sub_contract_BUDGET__c != null ? contractObj.Internal_Sub_contract_BUDGET__c : 0 ;
+            Decimal Project_Other_BUDGET = contractObj.Project_Other_BUDGET__c != null ? contractObj.Project_Other_BUDGET__c : 0 ;
+
+            Decimal Direct_Costs_Travel_Expenses = contractObj.Direct_Costs_Travel_Expenses__c != null ? contractObj.Direct_Costs_Travel_Expenses__c : 0 ;
+            Decimal Direct_Costs_Sub_contract_Expenses = contractObj.Direct_Costs_Sub_contract_Expenses__c != null ? contractObj.Direct_Costs_Sub_contract_Expenses__c : 0 ;
+            Decimal Internal_Sub_contract_Spend = contractObj.Internal_Sub_contract_Spend__c != null ? contractObj.Internal_Sub_contract_Spend__c : 0 ;
+            Decimal Project_Other_Spent = contractObj.Project_Other_Spent__c != null ? contractObj.Project_Other_Spent__c : 0 ;
+
+            Decimal Percent_through_SOW_deliverables = contractObj.Percent_through_SOW_deliverables__c != null ? contractObj.Percent_through_SOW_deliverables__c: 0 ;
+
+            if(childContracts != null) {
+                for(DContract__c childContract : childContracts) {
+                    Direct_Costs_Travel_BUDGET += childContract.Direct_Costs_Travel_BUDGET__c != null ? childContract.Direct_Costs_Travel_BUDGET__c : 0 ;
+                    Direct_Costs_Sub_Contract_BUDGET += childContract.Direct_Costs_Sub_Contract_BUDGET__c != null ? childContract.Direct_Costs_Sub_Contract_BUDGET__c : 0 ;
+                    Internal_Sub_contract_BUDGET += childContract.Internal_Sub_contract_BUDGET__c != null ? childContract.Internal_Sub_contract_BUDGET__c : 0 ;
+                    Project_Other_BUDGET += childContract.Project_Other_BUDGET__c != null ? childContract.Project_Other_BUDGET__c : 0 ;
+
+                    Direct_Costs_Travel_Expenses += childContract.Direct_Costs_Travel_Expenses__c != null ? childContract.Direct_Costs_Travel_Expenses__c : 0 ;
+                    Direct_Costs_Sub_contract_Expenses += childContract.Direct_Costs_Sub_contract_Expenses__c != null ? childContract.Direct_Costs_Sub_contract_Expenses__c : 0 ;
+                    Internal_Sub_contract_Spend += childContract.Internal_Sub_contract_Spend__c != null ? childContract.Internal_Sub_contract_Spend__c : 0 ;
+                    Project_Other_Spent += childContract.Project_Other_Spent__c != null ? childContract.Project_Other_Spent__c : 0 ;
+
+                    Percent_through_SOW_deliverables += childContract.Percent_through_SOW_deliverables__c != null ? childContract.Percent_through_SOW_deliverables__c: 0 ;
+                }
+            }
+
+            Decimal a = Direct_Costs_Travel_BUDGET;
+            Decimal b = Direct_Costs_Travel_Expenses;
+            PROProjectBudget prbjObj1 = new PROProjectBudget();
+            prbjObj1.categoryName = 'Expense Travel';
+            prbjObj1.contractamount = Integer.valueOf( Direct_Costs_Travel_BUDGET );
+            prbjObj1.spentAmount = Integer.valueOf( Direct_Costs_Travel_Expenses );
+            prbjObj1.throughSOWDeliverable = Integer.valueOf( Direct_Costs_Travel_BUDGET - Direct_Costs_Travel_Expenses );
+            prbjObj1.prcntgUsed = a != 0 ? Math.round((b/a) * 100) : 0;
+            proExpenseSpendList.add(prbjObj1);
+
+            a = Direct_Costs_Sub_Contract_BUDGET;
+            b = Direct_Costs_Sub_contract_Expenses;
+            PROProjectBudget prbjObj2 = new PROProjectBudget();
+            prbjObj2.categoryName = 'Expense External Subcontract';
+            prbjObj2.contractamount = Integer.valueOf( Direct_Costs_Sub_Contract_BUDGET );
+            prbjObj2.spentAmount = Integer.valueOf( Direct_Costs_Sub_contract_Expenses );
+            prbjObj2.throughSOWDeliverable = Integer.valueOf( Direct_Costs_Sub_Contract_BUDGET - Direct_Costs_Sub_contract_Expenses );
+            prbjObj2.prcntgUsed = a != 0 ? Math.round((b/a) * 100) : 0;
+            proExpenseSpendList.add(prbjObj2);
+
+            a = Project_Other_BUDGET;
+            b = Project_Other_Spent;//calculate manually
+            PROProjectBudget prbjObj3 = new PROProjectBudget();
+            prbjObj3.categoryName = 'Expense Other Direct Costs';
+            prbjObj3.contractamount = Integer.valueOf( Project_Other_BUDGET );
+            prbjObj3.spentAmount = Integer.valueOf( Project_Other_Spent );
+            prbjObj3.throughSOWDeliverable = Integer.valueOf( Project_Other_BUDGET - Project_Other_Spent );
+            prbjObj3.prcntgUsed = a != 0 ? Math.round((b/a) * 100) : 0;
+            proExpenseSpendList.add(prbjObj3);
+
+            a = Internal_Sub_contract_BUDGET;
+            b = Internal_Sub_contract_Spend;
+            PROProjectBudget prbjObj4 = new PROProjectBudget();
+            prbjObj4.categoryName = 'Expense Internal Subcontract';
+            prbjObj4.contractamount = Integer.valueOf( Internal_Sub_contract_BUDGET );
+            prbjObj4.spentAmount = Integer.valueOf( Internal_Sub_contract_Spend );
+            prbjObj4.throughSOWDeliverable = Integer.valueOf( Internal_Sub_contract_BUDGET - Internal_Sub_contract_Spend );
+            prbjObj4.prcntgUsed = a != 0 ? Math.round((b/a) * 100) : 0;
+            proExpenseSpendList.add(prbjObj4);
+
+            a = prbjObj1.contractamount + prbjObj2.contractamount + prbjObj3.contractamount;
+            b = prbjObj1.spentAmount + prbjObj2.spentAmount + prbjObj3.spentAmount;
+            PROProjectBudget prbjObj5 = new PROProjectBudget();
+            prbjObj5.categoryName = 'Total Costs (not including subcontracts)';
+            prbjObj5.contractamount = Integer.valueOf(a);
+            prbjObj5.spentAmount = Integer.valueOf(b);
+            prbjObj5.throughSOWDeliverable = Integer.valueOf( a - b );
+            prbjObj5.prcntgUsed = a != 0 ? Math.round((b/a) * 100) : 0;
+            proExpenseSpendList.add(prbjObj5);
+
+            a = prbjObj1.contractamount + prbjObj2.contractamount + prbjObj3.contractamount + prbjObj4.contractamount;
+            b = prbjObj1.spentAmount + prbjObj2.spentAmount + prbjObj3.spentAmount + prbjObj4.spentAmount;
+            PROProjectBudget prbjObj6 = new PROProjectBudget();
+            prbjObj6.categoryName = 'Total Costs (including subcontracts)';
+            prbjObj6.contractamount = Integer.valueOf(a);
+            prbjObj6.spentAmount = Integer.valueOf(b);
+            prbjObj6.throughSOWDeliverable = Integer.valueOf( a - b );
+            prbjObj6.prcntgUsed = a != 0 ? Math.round((b/a) * 100) : 0;
+            proExpenseSpendList.add(prbjObj6);
+        }
+    }
+
+    public void loadHistoryOfTimeSpend(){
+        PROProjectTimeSpentHistory projTmSpntHstryObj;
+        Map<String,PROProjectTimeSpentHistory> laborWithHours = new Map<String,PROProjectTimeSpentHistory>();
+
+        Date currentDate = Date.today();
+        Integer currentMonth = currentDate.month();
+        Integer currentYear = currentDate.year();
+        Integer oneMonthAgo = currentDate.addMonths(-1).month();
+        Integer oneMonthAgoYear = currentDate.addMonths(-1).year();
+        Integer twoMonthAgo = currentDate.addMonths(-2).month();
+        Integer twoMonthAgoYear = currentDate.addMonths(-2).year();
+
+        Integer threeMonthAgo = currentDate.addMonths(-3).month();
+        Integer threeMonthAgoYear = currentDate.addMonths(-3).year();
+
+        Date moreThanThreeMonthAgo = currentDate.addMonths(-3);
+
+        //System.debug('oneMonthAgoStartDate: '+oneMonthAgoStartDate + ' - oneMonthAgoEndDate: '+oneMonthAgoEndDate);
+
+        Decimal currentMonthTotalhours = 0;
+        Decimal firstMonthTotalhours = 0;
+        Decimal secondMonthTotalhours = 0;
+        Decimal thirdMonthTotalhours = 0;
+        Decimal moreThanThreeMonthTotalhours = 0;
+        Decimal totalHours = 0;
+        Integer totalCost = 0;
+
+        timeSpendHistoryList = new List<PROProjectTimeSpentHistory>();
+        if( contractMap.containsKey(financialContractId) ){
+            //List<Time_Card__c> timeEntries = contractMap.get(financialContractId).Time_Cards__r;
+            List<Time_Card__c> timeEntries = new List<Time_Card__c>();
+            if(contractIdTimeCardsMap.containsKey(financialContractId)) {
+                timeEntries.addAll(contractIdTimeCardsMap.get(financialContractId));
+            }
+
+            List<DContract__c> childContracts = childContractMap.containsKey(financialContractId) ? childContractMap.get(financialContractId) : null;
+
+            if(childContracts != null) {
+                for(DContract__c childContract : childContracts) {
+                    if(contractIdTimeCardsMap.containsKey(childContract.Id))
+                        timeEntries.addAll(contractIdTimeCardsMap.get(childContract.Id));
+                }
+            }
+
+            if(timeEntries != null && timeEntries.size() > 0) {
+
+                for(Time_Card__c  obj: timeEntries) {
+                    String employeeName = obj.Employee__r.Name;
+                    Date entryDate = obj.Date__c != null ? obj.Date__c : Date.today();
+                    Integer entryDateMonth = obj.Date__c != null ? obj.Date__c.month() : 0;
+                    Integer entryDateYear = obj.Date__c != null ? obj.Date__c.year() : 0;
+                    Decimal totalHoursPerMonth = obj.Total__c != null ? obj.Total__c: 0;
+                    Integer laborCost = obj.labor_cost__c != null ? Integer.valueOf(obj.labor_cost__c) : 0;
+
+                    if (laborWithHours.containsKey(employeeName)) {
+                        projTmSpntHstryObj = laborWithHours.get(employeeName);
+                        projTmSpntHstryObj.laborCost += laborCost;
+                    } else {
+                        projTmSpntHstryObj = new PROProjectTimeSpentHistory();
+                        projTmSpntHstryObj.laborName = employeeName;
+                        projTmSpntHstryObj.laborCost = laborCost;
+                    }
+
+                    totalHours += totalHoursPerMonth;
+                    totalCost += laborCost;
+
+                    if (entryDateMonth == currentMonth && entryDateYear == currentYear) {
+                        projTmSpntHstryObj.currentMonthHours += totalHoursPerMonth;
+                    } else if(entryDateMonth == oneMonthAgo && entryDateYear == oneMonthAgoYear ){
+                        projTmSpntHstryObj.firstMonthHours += totalHoursPerMonth;
+                    } else if(entryDateMonth == twoMonthAgo && entryDateYear == twoMonthAgoYear ) {
+                        projTmSpntHstryObj.secondMonthHours += totalHoursPerMonth;
+                    } else if(entryDateMonth == threeMonthAgo && entryDateYear == threeMonthAgoYear ) {
+                        projTmSpntHstryObj.thirdMonthHours += totalHoursPerMonth;
+                    }else if(entryDate < moreThanThreeMonthAgo) {
+                        projTmSpntHstryObj.moreThanThreeMonthAgoHours += totalHoursPerMonth;
+                    }
+
+                    projTmSpntHstryObj.totalHourstoDate = projTmSpntHstryObj.currentMonthHours + projTmSpntHstryObj.firstMonthHours + projTmSpntHstryObj.secondMonthHours + projTmSpntHstryObj.thirdMonthHours + projTmSpntHstryObj.moreThanThreeMonthAgoHours;
+
+                    laborWithHours.put(employeeName,projTmSpntHstryObj);
+                }
+
+                for (PROProjectTimeSpentHistory obj :laborWithHours.values()) {
+                    timeSpendHistoryList.add(obj);
+                    currentMonthTotalhours += obj.currentMonthHours;
+                    firstMonthTotalhours += obj.firstMonthHours;
+                    secondMonthTotalhours += obj.secondMonthHours;
+                    thirdMonthTotalhours += obj.thirdMonthHours;
+                    moreThanThreeMonthTotalhours += obj.moreThanThreeMonthAgoHours;
+                }
+
+
+            }
+        }
+
+        timeSpendHistoryList.sort();
+
+        projTmSpntHstryObj = new PROProjectTimeSpentHistory();
+        projTmSpntHstryObj.laborName = 'Total';
+        projTmSpntHstryObj.currentMonthHours = currentMonthTotalhours;
+        projTmSpntHstryObj.firstMonthHours = firstMonthTotalhours;
+        projTmSpntHstryObj.secondMonthHours = secondMonthTotalhours;
+        projTmSpntHstryObj.thirdMonthHours = thirdMonthTotalhours;
+        projTmSpntHstryObj.moreThanThreeMonthAgoHours = moreThanThreeMonthTotalhours;
+        projTmSpntHstryObj.totalHourstoDate = totalHours;
+        projTmSpntHstryObj.laborCost = totalCost;
+        timeSpendHistoryList.add(projTmSpntHstryObj);
+
+    }
+
+    public void loadProjectExecutionStatusList() {
+        if( contractMap.containsKey(financialContractId) ){
+            DContract__c contractObj = contractMap.get(financialContractId);
+            //List<DContract__c> childContracts = childContractMap.containsKey(financialContractId) ? childContractMap.get(financialContractId) : null;
+
+            ProjectExecutionStatus execStatus1 = new ProjectExecutionStatus();
+            execStatus1.FieldName = 'Execution Efficiency';
+            execStatus1.FieldValue = Integer.valueOf(contractObj.Execution_Efficiency__c);
+            
+            ProjectExecutionStatus execStatus2 = new ProjectExecutionStatus();
+            execStatus2.FieldName = '% Budget Used';
+            execStatus2.FieldValue = Integer.valueOf(contractObj.Budget_Used__c);
+
+            ProjectExecutionStatus execStatus3 = new ProjectExecutionStatus();
+            execStatus3.FieldName = '% of Work Completed';
+            execStatus3.FieldValue = Integer.valueOf(contractObj.Percent_through_SOW_deliverables__c);
+
+            ProjectExecutionStatus execStatus4 = new ProjectExecutionStatus();
+            execStatus4.FieldName = '% Time into Contract';
+            execStatus4.FieldValue = Integer.valueOf(contractObj.Percent_through_Contract__c);
+
+            ProjectExecutionStatus execStatus5 = new ProjectExecutionStatus();
+            execStatus5.FieldName = 'Buffer % by Work Completed';
+            execStatus5.FieldValue = Integer.valueOf(contractObj.Buffer_by_SOW_Completed__c);
+                        
+            /*if(childContracts != null) {
+                for(DContract__c childContract : childContracts) {
+                    execStatus1.FieldValue += Integer.valueOf(childContract.Execution_Efficiency__c);
+                    execStatus2.FieldValue += Integer.valueOf(childContract.Budget_Used__c);
+                    execStatus3.FieldValue += Integer.valueOf(childContract.Percent_through_SOW_deliverables__c);
+                    execStatus4.FieldValue += Integer.valueOf(childContract.Percent_through_Contract__c);
+                    execStatus5.FieldValue += Integer.valueOf(childContract.Buffer_by_SOW_Completed__c);
+                }
+            }*/
+            executionStatusList = new List<ProjectExecutionStatus>{execStatus1, execStatus2, execStatus3, execStatus4, execStatus5};
+            
+        }
+    }
+
 
 
     /**
@@ -558,14 +924,15 @@ public with sharing class ProjectReportOutController {
 
 
 
-    //TODO
     public String projectId { get;set; }
     public List<Contract_Contact__c> contractContacts { get; set; }
     public List<Contract_Contact__c> contractContactsProject { get; set; }
     public String removeEmailId { get; set; }
     public Id removeContactId { get; set; }
     public DContract__c project { get; set; }
-
+    public List<Project_Report_Out__c> LastRepotOuts { get; set; }
+    public boolean enableAddButton{ get; set; }
+    public string selectedProjectId { get; set; }
     private List<Contract_Contact__c> deleteContactList = new List<Contract_Contact__c>();
 
     public List<PROProject> getProjectsList() {
@@ -610,14 +977,14 @@ public with sharing class ProjectReportOutController {
 
         contractContactsProject = [SELECT Id, Contact__c, Contract__c, Type__c, Email__c FROM Contract_Contact__c WHERE Contract__c =: selectedProjectId AND Type__c NOT in('Person','Email')];
         contractContacts = [SELECT Id, Contact__c, Contract__c, Type__c, Email__c  FROM Contract_Contact__c WHERE Contract__c =: selectedProjectId AND Type__C in ('Person', 'Email') ORDER BY Type__c DESC];
-        lastRepotOuts = [SELECT id,Name,status__c,Contract__r.Name,Contract__r.Last_Report_Out_Date__c,Report_Out_Date__c  FROM Project_Report_Out__c 
+        lastRepotOuts = [SELECT id,Name,status__c,Contract__r.Name,Contract__r.Last_Report_Out_Date__c,Report_Out_Date__c  FROM Project_Report_Out__c
                          WHERE Contract__C =: selectedProjectId ORDER BY Report_Out_Date__c DESC];
         enableAddButton = true;
     }
 
     public PageReference saveProjectOnly() {
         PageReference page = null;
- 
+
         if (validateProject()) {
             try {
                 update project;
@@ -765,6 +1132,8 @@ public with sharing class ProjectReportOutController {
         contractContacts.add(contractContact);
     }
 
+
+
     /**
      *
      * Auth
@@ -905,437 +1274,14 @@ public with sharing class ProjectReportOutController {
 
 
 
+    /**
+     *
+     *
+     * Internal classes
+     *
+     *
+     **/
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    public string status{
-        get;set;
-    }
-    public string ToMeetSchedule{
-         get;set;
-    }
-    public string StayWithinScope{
-         get;set;
-    }
-    public string CurrentSystemUsage{
-         get;set;
-    }
-    public string PartnerRelationship{
-        get;set;
-    }
-
-    public string selectedProjectId{get;set;}
-    public string selectedProjectId2{get;set;}
-    public string InChangeOfReportOut{get;set;}
-    public string ProjectManager{get;set;}
-    public string FieldManager{get;set;}
-    public string Backstop{get;set;}
-
-    public boolean enableAddButton{ get; set; }
-
-
-    public List<Project_Report_Out__c> LastRepotOuts{
-        get;set;
-    }
-
-    public List<PROProjectBudget> proBudgetList{
-         get;set;
-     }
-
-    public void loadContractBudgetAndSpentData() {
-        proBudgetList = new List<PROProjectBudget>();
-
-        if( contractMap.containsKey(financialContractId) ){
-            contractUrl = 'https://'+sfInstanceName+'/'+financialContractId;
-            Set<Id> parentAndChildContractIds = new Set<Id>{financialContractId};
-            DContract__c contractObj = contractMap.get(financialContractId);
-            List<DContract__c> childContracts = childContractMap.containsKey(financialContractId) ? childContractMap.get(financialContractId) : null;
-            contractIdTimeCardsMap = new Map<Id,List<Time_Card__c>>();
-
-            Decimal Burdened_Income_Budget = contractObj.Burdened_Income_Budget__c!= null ? contractObj.Burdened_Income_Budget__c : 0;
-            //Decimal Services_Income = contractObj.Services_Income__c != null ? contractObj.Services_Income__c: 0 ;
-            Decimal LaborSpent = 0;
-            Decimal Contract_Expense_BUDGET = contractObj.Contract_Expense_BUDGET__c != null ? contractObj.Contract_Expense_BUDGET__c: 0 ;
-            Decimal Direct_Costs_Total_Expenses = contractObj.Direct_Costs_Total_Expenses__c != null ? contractObj.Direct_Costs_Total_Expenses__c: 0 ;
-            Decimal Product_Income_Budget = contractObj.Product_Income_Budget__c != null ? contractObj.Product_Income_Budget__c: 0 ;
-            Decimal Product_Spend = contractObj.Product_Spend__c != null ? contractObj.Product_Spend__c: 0 ;
-            Decimal Total_Amount_of_Contract = contractObj.Total_Amount_of_Contract__c != null ? contractObj.Total_Amount_of_Contract__c: 0 ;
-            Decimal Percent_through_Contract = contractObj.Percent_through_Contract__c != null ? contractObj.Percent_through_Contract__c: 0 ;
-            Decimal Percent_through_SOW_deliverables = contractObj.Percent_through_SOW_deliverables__c != null ? contractObj.Percent_through_SOW_deliverables__c: 0 ;
-            Decimal Expected_Margin = contractObj.Expected_Margin__c != null ? contractObj.Expected_Margin__c: 0 ;
-
-            if(childContracts != null && childContracts.size() > 0) {
-                for(DContract__c childContract : childContracts) {
-                    parentAndChildContractIds.add(childContract.Id);
-                    /*Contract_Expense_BUDGET += childContract.Contract_Expense_BUDGET__c != null ? childContract.Contract_Expense_BUDGET__c: 0 ;
-                    Direct_Costs_Total_Expenses += childContract.Direct_Costs_Total_Expenses__c != null ? contractObj.Direct_Costs_Total_Expenses__c: 0 ;
-                    Product_Income_Budget += childContract.Product_Income_Budget__c != null ? childContract.Product_Income_Budget__c: 0 ;
-                    Product_Spend += childContract.Product_Spend__c != null ? childContract.Product_Spend__c: 0 ;
-                    Total_Amount_of_Contract += childContract.Total_Amount_of_Contract__c != null ? childContract.Total_Amount_of_Contract__c: 0 ;
-                    Percent_through_Contract += childContract.Percent_through_Contract__c != null ? childContract.Percent_through_Contract__c: 0 ;
-                    Percent_through_SOW_deliverables += childContract.Percent_through_SOW_deliverables__c != null ? childContract.Percent_through_SOW_deliverables__c: 0 ;
-                    Expected_Margin += childContract.Expected_Margin__c != null ? childContract.Expected_Margin__c: 0 ;*/
-                }
-            }
-            
-            //List<Time_Card__c> timeEntries = contractMap.get(financialContractId).Time_Cards__r;
-            
-            for(Time_Card__c obj : [select Employee__r.Name,Date__c,Total__c,labor_cost__c,Client__c  from Time_Card__c where Client__c IN:parentAndChildContractIds]) {
-                if(contractIdTimeCardsMap.containsKey(obj.Client__c)){
-                    List<Time_Card__c> tempList = contractIdTimeCardsMap.get(obj.Client__c);
-                    tempList.add(obj);
-                    contractIdTimeCardsMap.put(obj.Client__c,tempList);
-                }else{
-                    contractIdTimeCardsMap.put(obj.Client__c,new List<Time_Card__c>{obj});
-                }
-                
-            }
-            
-            for(Id contractId : parentAndChildContractIds) {
-                List<Time_Card__c> timeEntries = contractIdTimeCardsMap.get(contractId);
-                
-                if(timeEntries != null && timeEntries.size() > 0) {
-                    for(Time_Card__c obj : timeEntries) {
-                        if(obj.labor_cost__c != null) {
-                            LaborSpent += obj.labor_cost__c;
-                        }
-
-                    }
-                }
-            }
-
-
-            Decimal a = Product_Income_Budget;
-            Decimal b = Product_Spend;
-            PROProjectBudget prbjObj1 = new PROProjectBudget();
-            prbjObj1.categoryName = 'Product';
-            prbjObj1.contractamount = Integer.valueOf( Product_Income_Budget );
-            prbjObj1.spentAmount = Integer.valueOf( Product_Spend );
-            prbjObj1.amountRemaining = Integer.valueOf( Product_Income_Budget - Product_Spend );
-            prbjObj1.prcntgUsed = a != 0 ? Math.round((b/a) * 100) : 0;
-            proBudgetList.add(prbjObj1);
-
-            a = Burdened_Income_Budget;
-            b = LaborSpent;
-            PROProjectBudget prbjObj2 = new PROProjectBudget();
-            prbjObj2.categoryName = 'Services & Labor';
-            prbjObj2.contractamount = Integer.valueOf( Burdened_Income_Budget );
-            prbjObj2.spentAmount = Integer.valueOf( LaborSpent );
-            prbjObj2.amountRemaining = Integer.valueOf( Burdened_Income_Budget - LaborSpent );
-            prbjObj2.prcntgUsed = a != 0 ? Math.round((b/a) * 100) : 0;
-            proBudgetList.add(prbjObj2);
-
-            a = Contract_Expense_BUDGET;
-            b = Direct_Costs_Total_Expenses;
-            PROProjectBudget prbjObj3 = new PROProjectBudget();
-            prbjObj3.categoryName = 'Expense & Travel';
-            prbjObj3.contractamount = Integer.valueOf( Contract_Expense_BUDGET );
-            prbjObj3.spentAmount = Integer.valueOf( Direct_Costs_Total_Expenses );
-            prbjObj3.amountRemaining = Integer.valueOf( Contract_Expense_BUDGET - Direct_Costs_Total_Expenses );
-            prbjObj3.prcntgUsed = a != 0 ? Math.round((b/a) * 100) : 0;
-            proBudgetList.add(prbjObj3);
-
-            a = Total_Amount_of_Contract;
-            b = prbjObj1.spentAmount + prbjObj2.spentAmount + prbjObj3.spentAmount;//calculate manually
-            PROProjectBudget prbjObj4 = new PROProjectBudget();
-            prbjObj4.categoryName = 'Total';
-            prbjObj4.contractamount = Integer.valueOf( Total_Amount_of_Contract );
-            prbjObj4.spentAmount = Integer.valueOf( b );
-            prbjObj4.amountRemaining = Integer.valueOf( Total_Amount_of_Contract - b);
-            prbjObj4.prcntgUsed = a != 0 ? Math.round((b/a) * 100) : 0;
-            proBudgetList.add(prbjObj4);
-
-        }
-        loadProjectExecutionStatusList();
-        loadHistoryOfTimeSpend();
-        loadContractExpenseSpend();
-    }
-
-    public List<ProjectExecutionStatus> executionStatusList{
-        get;set;
-    }
-
-    public void loadProjectExecutionStatusList() {
-        if( contractMap.containsKey(financialContractId) ){
-            DContract__c contractObj = contractMap.get(financialContractId);
-            //List<DContract__c> childContracts = childContractMap.containsKey(financialContractId) ? childContractMap.get(financialContractId) : null;
-
-            ProjectExecutionStatus execStatus1 = new ProjectExecutionStatus();
-            execStatus1.FieldName = 'Execution Efficiency';
-            execStatus1.FieldValue = Integer.valueOf(contractObj.Execution_Efficiency__c);
-            
-            ProjectExecutionStatus execStatus2 = new ProjectExecutionStatus();
-            execStatus2.FieldName = '% Budget Used';
-            execStatus2.FieldValue = Integer.valueOf(contractObj.Budget_Used__c);
-
-            ProjectExecutionStatus execStatus3 = new ProjectExecutionStatus();
-            execStatus3.FieldName = '% of Work Completed';
-            execStatus3.FieldValue = Integer.valueOf(contractObj.Percent_through_SOW_deliverables__c);
-
-            ProjectExecutionStatus execStatus4 = new ProjectExecutionStatus();
-            execStatus4.FieldName = '% Time into Contract';
-            execStatus4.FieldValue = Integer.valueOf(contractObj.Percent_through_Contract__c);
-
-            ProjectExecutionStatus execStatus5 = new ProjectExecutionStatus();
-            execStatus5.FieldName = 'Buffer % by Work Completed';
-            execStatus5.FieldValue = Integer.valueOf(contractObj.Buffer_by_SOW_Completed__c);
-                        
-            /*if(childContracts != null) {
-                for(DContract__c childContract : childContracts) {
-                    execStatus1.FieldValue += Integer.valueOf(childContract.Execution_Efficiency__c);
-                    execStatus2.FieldValue += Integer.valueOf(childContract.Budget_Used__c);
-                    execStatus3.FieldValue += Integer.valueOf(childContract.Percent_through_SOW_deliverables__c);
-                    execStatus4.FieldValue += Integer.valueOf(childContract.Percent_through_Contract__c);
-                    execStatus5.FieldValue += Integer.valueOf(childContract.Buffer_by_SOW_Completed__c);
-                }
-            }*/
-            executionStatusList = new List<ProjectExecutionStatus>{execStatus1, execStatus2, execStatus3, execStatus4, execStatus5};
-            
-        }
-    }
-
-
-    public List<PROProjectTimeSpentHistory> timeSpendHistoryList{
-        get;set;
-    }
-
-    public void loadHistoryOfTimeSpend(){
-        PROProjectTimeSpentHistory projTmSpntHstryObj;
-        Map<String,PROProjectTimeSpentHistory> laborWithHours = new Map<String,PROProjectTimeSpentHistory>();
-
-        Date currentDate = Date.today();
-        Integer currentMonth = currentDate.month();
-        Integer currentYear = currentDate.year();
-        Integer oneMonthAgo = currentDate.addMonths(-1).month();
-        Integer oneMonthAgoYear = currentDate.addMonths(-1).year();
-        Integer twoMonthAgo = currentDate.addMonths(-2).month();
-        Integer twoMonthAgoYear = currentDate.addMonths(-2).year();
-
-        Integer threeMonthAgo = currentDate.addMonths(-3).month();
-        Integer threeMonthAgoYear = currentDate.addMonths(-3).year();
-
-        Date moreThanThreeMonthAgo = currentDate.addMonths(-3);
-
-        //System.debug('oneMonthAgoStartDate: '+oneMonthAgoStartDate + ' - oneMonthAgoEndDate: '+oneMonthAgoEndDate);
-
-        Decimal currentMonthTotalhours = 0;
-        Decimal firstMonthTotalhours = 0;
-        Decimal secondMonthTotalhours = 0;
-        Decimal thirdMonthTotalhours = 0;
-        Decimal moreThanThreeMonthTotalhours = 0;
-        Decimal totalHours = 0;
-        Integer totalCost = 0;
-
-        timeSpendHistoryList = new List<PROProjectTimeSpentHistory>();
-        if( contractMap.containsKey(financialContractId) ){
-            //List<Time_Card__c> timeEntries = contractMap.get(financialContractId).Time_Cards__r;
-            List<Time_Card__c> timeEntries = new List<Time_Card__c>();
-            if(contractIdTimeCardsMap.containsKey(financialContractId)) {
-                timeEntries.addAll(contractIdTimeCardsMap.get(financialContractId));
-            }
-
-            List<DContract__c> childContracts = childContractMap.containsKey(financialContractId) ? childContractMap.get(financialContractId) : null;
-            
-            if(childContracts != null) {
-                for(DContract__c childContract : childContracts) {
-                    if(contractIdTimeCardsMap.containsKey(childContract.Id))
-                        timeEntries.addAll(contractIdTimeCardsMap.get(childContract.Id));
-                }
-            }
-            
-            
-            if(timeEntries != null && timeEntries.size() > 0) {
-
-                for(Time_Card__c  obj: timeEntries)  {
-                    String employeeName = obj.Employee__r.Name;
-                    Date entryDate = obj.Date__c != null ? obj.Date__c : Date.today();
-                    Integer entryDateMonth = obj.Date__c != null ? obj.Date__c.month() : 0;
-                    Integer entryDateYear = obj.Date__c != null ? obj.Date__c.year() : 0;
-                    Decimal totalHoursPerMonth = obj.Total__c != null ? obj.Total__c: 0;
-                    Integer laborCost = obj.labor_cost__c != null ? Integer.valueOf(obj.labor_cost__c) : 0;
-
-                    if(laborWithHours.containsKey(employeeName)) {
-                        projTmSpntHstryObj = laborWithHours.get(employeeName);
-                        projTmSpntHstryObj.laborCost += laborCost;
-                    }else{
-                        projTmSpntHstryObj = new PROProjectTimeSpentHistory();
-                        projTmSpntHstryObj.laborName = employeeName;
-                        projTmSpntHstryObj.laborCost = laborCost;
-                    }
-
-                    totalHours += totalHoursPerMonth;
-                    totalCost += laborCost;
-                    
-                    if(entryDateMonth == currentMonth && entryDateYear == currentYear){
-
-                        projTmSpntHstryObj.currentMonthHours += totalHoursPerMonth;
-
-                    } else if(entryDateMonth == oneMonthAgo && entryDateYear == oneMonthAgoYear ){
-
-                        projTmSpntHstryObj.firstMonthHours += totalHoursPerMonth;
-
-                    } else if(entryDateMonth == twoMonthAgo && entryDateYear == twoMonthAgoYear ) {
-                        
-                        projTmSpntHstryObj.secondMonthHours += totalHoursPerMonth;
-
-                    } else if(entryDateMonth == threeMonthAgo && entryDateYear == threeMonthAgoYear ) {
-                        
-                        projTmSpntHstryObj.thirdMonthHours += totalHoursPerMonth;
-
-                    }else if(entryDate < moreThanThreeMonthAgo) {
-                        
-                        projTmSpntHstryObj.moreThanThreeMonthAgoHours += totalHoursPerMonth;
-                    }
-
-                    projTmSpntHstryObj.totalHourstoDate = projTmSpntHstryObj.currentMonthHours + projTmSpntHstryObj.firstMonthHours + projTmSpntHstryObj.secondMonthHours + projTmSpntHstryObj.thirdMonthHours + projTmSpntHstryObj.moreThanThreeMonthAgoHours;
-
-                    laborWithHours.put(employeeName,projTmSpntHstryObj);
-                }
-
-                for(PROProjectTimeSpentHistory obj :laborWithHours.values() ) { 
-
-                    timeSpendHistoryList.add(obj);
-                    currentMonthTotalhours += obj.currentMonthHours;
-                    firstMonthTotalhours += obj.firstMonthHours;
-                    secondMonthTotalhours += obj.secondMonthHours;
-                    thirdMonthTotalhours += obj.thirdMonthHours;
-                    moreThanThreeMonthTotalhours += obj.moreThanThreeMonthAgoHours;
-                }
-
-
-            }
-        }
-        
-        timeSpendHistoryList.sort();
-
-        projTmSpntHstryObj = new PROProjectTimeSpentHistory();
-        projTmSpntHstryObj.laborName = 'Total';
-        projTmSpntHstryObj.currentMonthHours = currentMonthTotalhours;
-        projTmSpntHstryObj.firstMonthHours = firstMonthTotalhours;
-        projTmSpntHstryObj.secondMonthHours = secondMonthTotalhours;
-        projTmSpntHstryObj.thirdMonthHours = thirdMonthTotalhours;
-        projTmSpntHstryObj.moreThanThreeMonthAgoHours = moreThanThreeMonthTotalhours;
-        projTmSpntHstryObj.totalHourstoDate = totalHours;
-        projTmSpntHstryObj.laborCost = totalCost;
-        timeSpendHistoryList.add(projTmSpntHstryObj);
-
-    }
-
-    public List<PROProjectBudget> proExpenseSpendList{
-         get;set;
-     }
-
-     public void loadContractExpenseSpend() {
-        proExpenseSpendList = new List<PROProjectBudget>();
-
-        if( contractMap.containsKey(financialContractId) ){
-            DContract__c contractObj = contractMap.get(financialContractId);
-            List<DContract__c> childContracts = childContractMap.containsKey(financialContractId) ? childContractMap.get(financialContractId) : null;
-            
-            Decimal Direct_Costs_Travel_BUDGET = contractObj.Direct_Costs_Travel_BUDGET__c != null ? contractObj.Direct_Costs_Travel_BUDGET__c : 0 ;
-            Decimal Direct_Costs_Sub_Contract_BUDGET = contractObj.Direct_Costs_Sub_Contract_BUDGET__c != null ? contractObj.Direct_Costs_Sub_Contract_BUDGET__c : 0 ;
-            Decimal Internal_Sub_contract_BUDGET = contractObj.Internal_Sub_contract_BUDGET__c != null ? contractObj.Internal_Sub_contract_BUDGET__c : 0 ;
-            Decimal Project_Other_BUDGET = contractObj.Project_Other_BUDGET__c != null ? contractObj.Project_Other_BUDGET__c : 0 ;
-            
-            Decimal Direct_Costs_Travel_Expenses = contractObj.Direct_Costs_Travel_Expenses__c != null ? contractObj.Direct_Costs_Travel_Expenses__c : 0 ;
-            Decimal Direct_Costs_Sub_contract_Expenses = contractObj.Direct_Costs_Sub_contract_Expenses__c != null ? contractObj.Direct_Costs_Sub_contract_Expenses__c : 0 ;
-            Decimal Internal_Sub_contract_Spend = contractObj.Internal_Sub_contract_Spend__c != null ? contractObj.Internal_Sub_contract_Spend__c : 0 ;
-            Decimal Project_Other_Spent = contractObj.Project_Other_Spent__c != null ? contractObj.Project_Other_Spent__c : 0 ;
-
-            Decimal Percent_through_SOW_deliverables = contractObj.Percent_through_SOW_deliverables__c != null ? contractObj.Percent_through_SOW_deliverables__c: 0 ;
-
-            
-            if(childContracts != null) {
-                for(DContract__c childContract : childContracts) {
-                    Direct_Costs_Travel_BUDGET += childContract.Direct_Costs_Travel_BUDGET__c != null ? childContract.Direct_Costs_Travel_BUDGET__c : 0 ;
-                    Direct_Costs_Sub_Contract_BUDGET += childContract.Direct_Costs_Sub_Contract_BUDGET__c != null ? childContract.Direct_Costs_Sub_Contract_BUDGET__c : 0 ;
-                    Internal_Sub_contract_BUDGET += childContract.Internal_Sub_contract_BUDGET__c != null ? childContract.Internal_Sub_contract_BUDGET__c : 0 ;
-                    Project_Other_BUDGET += childContract.Project_Other_BUDGET__c != null ? childContract.Project_Other_BUDGET__c : 0 ;
-                    
-                    Direct_Costs_Travel_Expenses += childContract.Direct_Costs_Travel_Expenses__c != null ? childContract.Direct_Costs_Travel_Expenses__c : 0 ;
-                    Direct_Costs_Sub_contract_Expenses += childContract.Direct_Costs_Sub_contract_Expenses__c != null ? childContract.Direct_Costs_Sub_contract_Expenses__c : 0 ;
-                    Internal_Sub_contract_Spend += childContract.Internal_Sub_contract_Spend__c != null ? childContract.Internal_Sub_contract_Spend__c : 0 ;
-                    Project_Other_Spent += childContract.Project_Other_Spent__c != null ? childContract.Project_Other_Spent__c : 0 ;
-
-                    Percent_through_SOW_deliverables += childContract.Percent_through_SOW_deliverables__c != null ? childContract.Percent_through_SOW_deliverables__c: 0 ;
-                }
-            }
-            
-            
-            Decimal a = Direct_Costs_Travel_BUDGET;
-            Decimal b = Direct_Costs_Travel_Expenses;
-            PROProjectBudget prbjObj1 = new PROProjectBudget();
-            prbjObj1.categoryName = 'Expense Travel';
-            prbjObj1.contractamount = Integer.valueOf( Direct_Costs_Travel_BUDGET );
-            prbjObj1.spentAmount = Integer.valueOf( Direct_Costs_Travel_Expenses );
-            prbjObj1.throughSOWDeliverable = Integer.valueOf( Direct_Costs_Travel_BUDGET - Direct_Costs_Travel_Expenses );
-            prbjObj1.prcntgUsed = a != 0 ? Math.round((b/a) * 100) : 0;
-            proExpenseSpendList.add(prbjObj1);
-
-            a = Direct_Costs_Sub_Contract_BUDGET;
-            b = Direct_Costs_Sub_contract_Expenses;
-            PROProjectBudget prbjObj2 = new PROProjectBudget();
-            prbjObj2.categoryName = 'Expense External Subcontract';
-            prbjObj2.contractamount = Integer.valueOf( Direct_Costs_Sub_Contract_BUDGET );
-            prbjObj2.spentAmount = Integer.valueOf( Direct_Costs_Sub_contract_Expenses );
-            prbjObj2.throughSOWDeliverable = Integer.valueOf( Direct_Costs_Sub_Contract_BUDGET - Direct_Costs_Sub_contract_Expenses );
-            prbjObj2.prcntgUsed = a != 0 ? Math.round((b/a) * 100) : 0;
-            proExpenseSpendList.add(prbjObj2);
-
-            a = Project_Other_BUDGET;
-            b = Project_Other_Spent;//calculate manually
-            PROProjectBudget prbjObj3 = new PROProjectBudget();
-            prbjObj3.categoryName = 'Expense Other Direct Costs';
-            prbjObj3.contractamount = Integer.valueOf( Project_Other_BUDGET );
-            prbjObj3.spentAmount = Integer.valueOf( Project_Other_Spent );
-            prbjObj3.throughSOWDeliverable = Integer.valueOf( Project_Other_BUDGET - Project_Other_Spent );
-            prbjObj3.prcntgUsed = a != 0 ? Math.round((b/a) * 100) : 0;
-            proExpenseSpendList.add(prbjObj3);
-
-            a = Internal_Sub_contract_BUDGET;
-            b = Internal_Sub_contract_Spend;
-            PROProjectBudget prbjObj4 = new PROProjectBudget();
-            prbjObj4.categoryName = 'Expense Internal Subcontract';
-            prbjObj4.contractamount = Integer.valueOf( Internal_Sub_contract_BUDGET );
-            prbjObj4.spentAmount = Integer.valueOf( Internal_Sub_contract_Spend );
-            prbjObj4.throughSOWDeliverable = Integer.valueOf( Internal_Sub_contract_BUDGET - Internal_Sub_contract_Spend );
-            prbjObj4.prcntgUsed = a != 0 ? Math.round((b/a) * 100) : 0;
-            proExpenseSpendList.add(prbjObj4);
-
-            a = prbjObj1.contractamount + prbjObj2.contractamount + prbjObj3.contractamount;
-            b = prbjObj1.spentAmount + prbjObj2.spentAmount + prbjObj3.spentAmount;
-            PROProjectBudget prbjObj5 = new PROProjectBudget();
-            prbjObj5.categoryName = 'Total Costs (not including subcontracts)';
-            prbjObj5.contractamount = Integer.valueOf(a);
-            prbjObj5.spentAmount = Integer.valueOf(b);
-            prbjObj5.throughSOWDeliverable = Integer.valueOf( a - b );
-            prbjObj5.prcntgUsed = a != 0 ? Math.round((b/a) * 100) : 0;
-            proExpenseSpendList.add(prbjObj5);
-
-            a = prbjObj1.contractamount + prbjObj2.contractamount + prbjObj3.contractamount + prbjObj4.contractamount;
-            b = prbjObj1.spentAmount + prbjObj2.spentAmount + prbjObj3.spentAmount + prbjObj4.spentAmount;
-            PROProjectBudget prbjObj6 = new PROProjectBudget();
-            prbjObj6.categoryName = 'Total Costs (including subcontracts)';
-            prbjObj6.contractamount = Integer.valueOf(a);
-            prbjObj6.spentAmount = Integer.valueOf(b);
-            prbjObj6.throughSOWDeliverable = Integer.valueOf( a - b );
-            prbjObj6.prcntgUsed = a != 0 ? Math.round((b/a) * 100) : 0;
-            proExpenseSpendList.add(prbjObj6);
-            
-        }
-    }
 
     public class PROProject {
 

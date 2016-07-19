@@ -78,29 +78,22 @@
                 readProCell();
             }
 
-            function clickElem1(projectId) {
+            function clickProBudget(projectId) {
                 console.log("contractId: "+ projectId);
                 $j('[id$=financialContractElement]').val(projectId);
                 readPROBudget();
             }
 
-            function clickElem2(elem) {
+            function clickProject(elem) {
                 var contractId = $j(elem).find(".accId").find('span').html();
                 $j('[id$=selectedProjectId]').val(contractId);
                 readProjectCell();
             }
 
-            function clickElem3(elem) {
+            function clickAddProjectToList(elem) {
                 var contractId = $j(elem).find(".accId").find('span').html();
                 $j('[id$=contractToAdd]').val(contractId);
                 addProjectToUserList();
-            }
-
-            function clickElem4(elem) {
-                var contractId = $j("a.accId2").parent().parent().find('span').html();
-                $j('[id$=contractToRemove]').val(contractId);
-                removeProjectFromUserListAF();
-                alert("Function executed");
             }
 
             function replaceEnter(e) {
@@ -126,7 +119,6 @@
 
     <body>
         <apex:form >
-            <!--  TODO -->
             <apex:inputHidden id="projectId" value="{!projectId}"/>
 
             <apex:actionstatus id="loadingDiv">
@@ -212,7 +204,7 @@
                                 <apex:outputLabel ></apex:outputLabel>
                             </apex:pageBlockSectionItem>
 
-                            <apex:pageBlockSectionItem  id="proCheckboxes">
+                            <apex:pageBlockSectionItem id="proCheckboxes">
                                 <apex:outputPanel >
                                     <table width="100%">
                                         <tr>
@@ -286,7 +278,7 @@
                                 <apex:inputField id="kns2w" value="{!pro.Key_Next_Steps_next_2_weeks__c}" style="width:100%"/>
                             </apex:pageBlockSectionItem>
 
-                            <apex:pageBlockSectionItem>
+                            <apex:pageBlockSectionItem >
                                 <apex:outputLabel value="Issues / Questions / Notables" for="issues"/>
                                 <apex:inputField id="issues" value="{!pro.Issues_Questions_Notables__c}" />
                             </apex:pageBlockSectionItem>
@@ -330,7 +322,7 @@
                             <apex:outputPanel styleClass="requiredInput" layout="block">
                                  <apex:inputHidden value="{!contractToAdd}" id="contractToAdd"/>
                                  <apex:actionFunction name="addProjectToUserList" action="{!addProjectToUserList}" ></apex:actionFunction>
-                                 <apex:pageBlockTable value="{!searchedProjects}" var="obj" onRowClick="clickElem3(this);" style="width:300px" id="searchResultTable" styleClass="tablesorter" >
+                                 <apex:pageBlockTable value="{!searchedProjects}" var="obj" onRowClick="clickAddProjectToList(this);" style="width:300px" id="searchResultTable" styleClass="tablesorter" >
                                    <apex:column headerValue="" value="{!obj.Id}" styleClass="accId" style="display:none" headerClass="hedareClsNone"   />
                                    <apex:column headerValue="Project Name" value="{!obj.Name}"  />
                                    <apex:column headerValue="Last Report Out Date" value="{!obj.Last_Report_Out_Date__c}"  />
@@ -349,9 +341,9 @@
 
                                    <apex:column headerValue="" value="{!acc.Contract.Id}" styleClass="projectId" style="display:none" headerClass="hedareClsNone"   />
 
-                                   <apex:column onclick="clickElem1('{!acc.Contract.Id}');" headerValue="Project Name" value="{!acc.Contract.Name}" styleClass="{!acc.CSSClass}"/>
+                                   <apex:column onclick="clickProBudget('{!acc.Contract.Id}');" headerValue="Project Name" value="{!acc.Contract.Name}" styleClass="{!acc.CSSClass}"/>
 
-                                   <apex:column onclick="clickElem1('{!acc.Contract.Id}');" headerValue="Last Report Out Date" value="{!acc.Contract.Last_Report_Out_Date__c}" styleClass="{!acc.CSSClass}" style="width:126px" />
+                                   <apex:column onclick="clickProBudget('{!acc.Contract.Id}');" headerValue="Last Report Out Date" value="{!acc.Contract.Last_Report_Out_Date__c}" styleClass="{!acc.CSSClass}" style="width:126px" />
 
                                    <apex:column headerValue="Action" styleClass="{!acc.CSSClass}">
                                         <apex:commandLink value=" Remove " action="{! removeProjectFromUserList }" styleClass="accId2" rendered="{!acc.customAdded}"> 
@@ -440,10 +432,6 @@
 
                                    <apex:column headerValue="% Budget Used" value="{!obj.prcntgUsed}%" style = "{!if(obj.prcntgUsed > 100,'background-color: red;', if(obj.prcntgUsed > 85,'background-color: yellow;',''))};{!if(obj.categoryName='Total Costs (not including subcontracts)' || obj.categoryName='Total Costs (including subcontracts)','font-weight: bold', '')}" />
 
-                                    <!--<apex:column headerValue="% Deliverables Completed">
-                                        <apex:outputText value="{!obj.throughSOWDeliverable}%" rendered="{!if(obj.categoryName='Total Costs (not including subcontracts)' || obj.categoryName='Total Costs (including subcontracts)',false, true)}"></apex:outputText>
-                                    </apex:column>-->
-
                                 </apex:pageBlockTable>
                             </apex:outputPanel>
                         </apex:pageBlockSectionItem>
@@ -510,7 +498,7 @@
                                 <apex:outputPanel styleClass="requiredInput" layout="block">
                                     <apex:inputHidden value="{!selectedProjectId}" id="selectedProjectId"/>
                                     <apex:actionFunction name="readProjectCell" action="{!fillProjectDetails}" ></apex:actionFunction>
-                                    <apex:pageBlockTable value="{!projectsList}" var="acc" onRowClick="clickElem2(this);" style="width:300px" id="proTable1" styleClass="tablesorter" >   
+                                    <apex:pageBlockTable value="{!projectsList}" var="acc" onRowClick="clickProject(this);" style="width:300px" id="proTable1" styleClass="tablesorter" >   
                                         <apex:column headerValue="" value="{!acc.Contract.Id}" styleClass="accId" style="display:none" headerClass="hedareClsNone"   />
                                         <apex:column headerValue="Project Name" value="{!acc.Contract.Name}"  styleClass="{!acc.CSSClass}"  />
                                         <apex:column headerValue="Last Report Out Date" value="{!acc.Contract.Last_Report_Out_Date__c}" styleClass="{!acc.CSSClass}"  />
