@@ -123,7 +123,7 @@ public with sharing class FogBugzAPI {
         if (String.isBlank(fbCase.caseId)) {
             if (!Test.isRunningTest()) {
                 String adress = FogBugz_Settings__c.getOrgDefaults().Error_Email__c;
-                EmailHelper.sendEmail(new String[] {adress}, 'Cannot create FogBugz case', 'Cannot create FogbBugz case for Oppurtinity<br/> Response:<br/>' + es.getBody());
+                EmailHelper.sendEmail(new String[] {adress}, 'Cannot create FogBugz case', 'Cannot create FogbBugz case for Oppurtinity<br/> Response:<br/>' + res.getBody());
             }
         }
 
