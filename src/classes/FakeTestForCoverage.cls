@@ -10,8 +10,8 @@
 public with sharing class FakeTestForCoverage {
 
     public static void dummyMethod() {
-    	Integer a;
-    	
+        Integer a;
+
         a = 1;
         a = 1;
         a = 1;
@@ -4111,6 +4111,6 @@ public with sharing class FakeTestForCoverage {
     }
 
     static testMethod void testDummyMethod() {
-    	dummyMethod();
+        dummyMethod();
     }
 }
