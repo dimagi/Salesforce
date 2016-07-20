@@ -2,7 +2,7 @@
 public class ProjectReportOutControllerTest {
 
     static testMethod void ProjectReportOutControllerTest1() {
-        ProjectReportOutController proObj=new ProjectReportOutController();
+        ProjectReportOutController proObj = new ProjectReportOutController();
         proObj.initAction();
         proObj.getProContracts();
         proObj.getProjectsList();
@@ -10,25 +10,23 @@ public class ProjectReportOutControllerTest {
         proObj.getProjectsForFinancialTab();
         proObj.loadContractBudgetAndSpentData();
 
-        //proObj.getAllProjectList();
-        List<ProjectReportOutController.PROProject> contractList= proObj.getProjectsList();
+        List<ProjectReportOutController.PROProject> contractList = proObj.getProjectsList();
         proObj.contractIdName.put(contractList[0].contract.id,contractList[0].contract);
-        proObj.contractId=contractList[0].contract.id;
+        proObj.reportContractId = contractList[0].contract.id;
 
         proObj.loadProjectReport();
-        //Return false
         proObj.validData();
-        
+
         proObj.status = 'Red';
         proObj.pro.PM_email__c = 'akanksha@gmail.com';
-        proObj.pro.Report_Out_Date__c=Date.newInstance(2014, 12, 25);
-        proObj.save();
+        proObj.pro.Report_Out_Date__c = Date.newInstance(2014, 12, 25);
+        PageReference pagRef = proObj.save();
         
         proObj.submitAnother();
         proObj.authenticateButton();
-        
-        List<selectoption> objList=proObj.StatusList;
-        
+ 
+        List<selectoption> objList = proObj.StatusList;
+
         ProjectReportOutController.getRandomNonce();
     }
 
@@ -36,11 +34,8 @@ public class ProjectReportOutControllerTest {
         ProjectReportOutController proObj=new ProjectReportOutController();
         List<ProjectReportOutController.PROProject> contractList= proObj.getProjectsList();
         proObj.selectedProjectId=contractList[0].contract.id;
-        
-        //proObj.selectedProjectId=contractList[0].id;
+
         proObj.fillProjectDetails();
-        
-        //Return False
         proObj.ValidateProject();
         
         proObj.saveProject();
@@ -55,8 +50,7 @@ public class ProjectReportOutControllerTest {
         proObj.RemoveEmail();
         proObj.addProjectToUserList();
         proObj.removeProjectFromUserList();
-        proObj.SendEmail(contractList[0].contract.id);
-        //proObj.financialContractId = contractList[0].contract.id;
+        proObj.sendReportEmail(contractList[0].contract.id);
 
         proObj.seachProjectName = 'proj';
         proObj.searchProject();
@@ -67,11 +61,10 @@ public class ProjectReportOutControllerTest {
             Exchange_Rate__c = 10
         );
         insert employeeObj;
-
         Time_Card__c timeCardObj1 = new Time_Card__c(
             Date__c = Date.today().addMonths(-1),
             Employee__c = employeeObj.Id,
-            Client__c = proObj.financialCintractElement
+            Client__c = proObj.financialContractId
         );
         insert timeCardObj1;
         Time_Card__c timeCardObj2 = new Time_Card__c(

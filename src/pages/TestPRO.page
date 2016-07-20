@@ -131,12 +131,12 @@
                 </apex:facet>
             </apex:actionstatus>
 
-            <apex:tabPanel switchType="client"  value="{!selectedTab}" id="projectReportOutTabPanel"><!-- rendered="{!isAuthenticated}"> -->
+            <apex:tabPanel switchType="client"  value="{!selectedTab}" id="projectReportOutTabPanel" rendered="{!isAuthenticated}">
                 <apex:tab label="Report Out" name="reportTab" id="reportTab">
                     <input type="text" style="width:0;opacity:0;height:0" />
-                    <apex:pageBlock title="Project Report Out" >
+                    <apex:pageBlock title="Project Report Out" id="reportOutTabId">
                         <apex:pageBlockButtons >
-                            <apex:commandButton action="{!save}" value="Submit" reRender="proCheckboxes" status="loadingDiv"/>
+                            <apex:commandButton action="{!save}" value="Submit" reRender="messages" status="loadingDiv"/>
                         </apex:pageBlockButtons>
 
                         <apex:outputPanel layout="block" id="messages">

@@ -14,7 +14,6 @@ public with sharing class ProjectReportOutController {
     private string domainName = '';
     private String sfInstanceName;
     private String currentLoginUser = '';
-    // TODO Setter isTEst true!!!!
     public String currentLoginEmail { get; set; }
 
     public Map<Id,DContract__c> contractMap{get;set;}
@@ -23,7 +22,6 @@ public with sharing class ProjectReportOutController {
     public String searchError { get; set; }
     public Boolean showDevWork { get; set; }
 
-    //TODO only getter
     public Boolean isAuthenticated { get; set;}
     public String password { get; set;}
 
@@ -91,9 +89,6 @@ public with sharing class ProjectReportOutController {
     public string status{
         get;set;
     }
-
-
-    // TODO test setter
     public Map<Id, DContract__C> contractIdName = new Map<Id, DContract__C> {};
 
     public void loadProjectReport() {
@@ -221,7 +216,6 @@ public with sharing class ProjectReportOutController {
 
     public PageReference save() {
         PageReference page = null;
-
         try {
             if (validData()) {
                 List<Project_Report_Out__c> proList = new list<Project_Report_Out__c>([SELECT Id, Name, Last_Report_ID__C, Contract_Snapshot__c, Contract__c,
@@ -855,8 +849,6 @@ public with sharing class ProjectReportOutController {
                     thirdMonthTotalhours += obj.thirdMonthHours;
                     moreThanThreeMonthTotalhours += obj.moreThanThreeMonthAgoHours;
                 }
-
-
             }
         }
 
@@ -1200,8 +1192,8 @@ public with sharing class ProjectReportOutController {
 
     public String getUnauthorizedReqToken() {
         String vf_url = this.OAUTH_CALLBACK_URL;
-        String state = getRandomNonce(); // TODO ????? projectId; //Random String
-        String body = 'client_id=' + this.clientId + '&redirect_uri=' + this.OAUTH_CALLBACK_URL +' &state=' + state;
+        String state = projectId; //Random String
+        String body = 'client_id=' + this.clientId + '&redirect_uri=' + this.OAUTH_CALLBACK_URL + '&state=' + state;
 
         String retUrl = this.AUTH_URL + '?' + body + '&response_type=code&scope=profile+email';
 
