@@ -12,17 +12,17 @@ private class hqInt_TestClass {
 
         testCustomSetting = new CommcareToSalesforceSettings__c();
         testCustomSetting.name = 'BatchFailureReportRecepeint';
-        testCustomSetting.value__c = 'angadpathak@outlook.com;';
+        testCustomSetting.value__c = 'BatchFailureReportRecepeint@gmail.com;';
         customSettings.add(testCustomSetting);
 
         testCustomSetting = new CommcareToSalesforceSettings__c();
         testCustomSetting.name = 'CommCarePassword';
-        testCustomSetting.value__c = 'Google@123';
+        testCustomSetting.value__c = 'CommCarePassword';
         customSettings.add(testCustomSetting);
 
         testCustomSetting = new CommcareToSalesforceSettings__c();
         testCustomSetting.name = 'CommCareUserName';
-        testCustomSetting.value__c = 'niketsoral@gmail.com';
+        testCustomSetting.value__c = 'CommCareUserName@gmail.com';
         customSettings.add(testCustomSetting);
 
         testCustomSetting = new CommcareToSalesforceSettings__c();
