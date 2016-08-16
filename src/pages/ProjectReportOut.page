@@ -368,7 +368,7 @@
                         </apex:pageBlockSectionItem>
                     </apex:pageBlockSection>
                     
-                    <apex:pageBlockSection title="Contract Budget and Spend to date (Services & Labor updated in real time, all other data updated monthly)" collapsible="false" columns="1">
+                    <apex:pageBlockSection title="Contract Budget and Spend to date (Services & Labor updated in real time, all other data updated monthly, including subcontracts)" collapsible="false" columns="1">
                         <apex:pageBlockSectionItem >
                             <apex:outputPanel >
                                 <apex:pageBlockTable value="{!proBudgetList}" var="obj" id="proTable3" styleClass="tablesorter">

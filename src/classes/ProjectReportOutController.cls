@@ -578,19 +578,16 @@ public with sharing class ProjectReportOutController {
             Decimal Percent_through_Contract = contractObj.Percent_through_Contract__c != null ? contractObj.Percent_through_Contract__c: 0 ;
             Decimal Percent_through_SOW_deliverables = contractObj.Percent_through_SOW_deliverables__c != null ? contractObj.Percent_through_SOW_deliverables__c: 0 ;
             Decimal Expected_Margin = contractObj.Expected_Margin__c != null ? contractObj.Expected_Margin__c: 0 ;
+            Decimal Project_Other_Spent = contractObj.Project_Other_Spent__c != null ? contractObj.Project_Other_Spent__c : 0 ;
+            Decimal Project_Other_BUDGET = contractObj.Project_Other_BUDGET__c != null ? contractObj.Project_Other_BUDGET__c : 0 ;
 
             if(childContracts != null && childContracts.size() > 0) {
                 for(DContract__c childContract : childContracts) {
                     parentAndChildContractIds.add(childContract.Id);
-                    //TODO
-                    /*Contract_Expense_BUDGET += childContract.Contract_Expense_BUDGET__c != null ? childContract.Contract_Expense_BUDGET__c: 0 ;
-                    Direct_Costs_Total_Expenses += childContract.Direct_Costs_Total_Expenses__c != null ? contractObj.Direct_Costs_Total_Expenses__c: 0 ;
                     Product_Income_Budget += childContract.Product_Income_Budget__c != null ? childContract.Product_Income_Budget__c: 0 ;
                     Product_Spend += childContract.Product_Spend__c != null ? childContract.Product_Spend__c: 0 ;
-                    Total_Amount_of_Contract += childContract.Total_Amount_of_Contract__c != null ? childContract.Total_Amount_of_Contract__c: 0 ;
-                    Percent_through_Contract += childContract.Percent_through_Contract__c != null ? childContract.Percent_through_Contract__c: 0 ;
-                    Percent_through_SOW_deliverables += childContract.Percent_through_SOW_deliverables__c != null ? childContract.Percent_through_SOW_deliverables__c: 0 ;
-                    Expected_Margin += childContract.Expected_Margin__c != null ? childContract.Expected_Margin__c: 0 ;*/
+                    Contract_Expense_BUDGET += childContract.Contract_Expense_BUDGET__c != null ? childContract.Contract_Expense_BUDGET__c: 0 ;
+                    Direct_Costs_Total_Expenses += childContract.Direct_Costs_Total_Expenses__c != null ? contractObj.Direct_Costs_Total_Expenses__c: 0 ;
                 }
             }
 
@@ -645,15 +642,25 @@ public with sharing class ProjectReportOutController {
             prbjObj3.prcntgUsed = a != 0 ? Math.round((b/a) * 100) : 0;
             proBudgetList.add(prbjObj3);
 
-            a = Total_Amount_of_Contract;
-            b = prbjObj1.spentAmount + prbjObj2.spentAmount + prbjObj3.spentAmount;//calculate manually
+            a = Project_Other_BUDGET;
+            b = Project_Other_Spent;
             PROProjectBudget prbjObj4 = new PROProjectBudget();
-            prbjObj4.categoryName = 'Total';
-            prbjObj4.contractamount = Integer.valueOf( Total_Amount_of_Contract );
-            prbjObj4.spentAmount = Integer.valueOf( b );
-            prbjObj4.amountRemaining = Integer.valueOf( Total_Amount_of_Contract - b);
+            prbjObj4.categoryName = 'Expense Other';
+            prbjObj4.contractamount = Integer.valueOf(Project_Other_BUDGET);
+            prbjObj4.spentAmount = Integer.valueOf(Project_Other_Spent);
+            prbjObj4.amountRemaining = Integer.valueOf(Project_Other_BUDGET - Project_Other_Spent);
             prbjObj4.prcntgUsed = a != 0 ? Math.round((b/a) * 100) : 0;
             proBudgetList.add(prbjObj4);
+
+            a = Total_Amount_of_Contract;
+            b = prbjObj1.spentAmount + prbjObj2.spentAmount + prbjObj3.spentAmount + prbjObj4.spentAmount;//calculate manually
+            PROProjectBudget prbjObj5 = new PROProjectBudget();
+            prbjObj5.categoryName = 'Total';
+            prbjObj5.contractamount = Integer.valueOf( Total_Amount_of_Contract );
+            prbjObj5.spentAmount = Integer.valueOf( b );
+            prbjObj5.amountRemaining = Integer.valueOf( Total_Amount_of_Contract - b);
+            prbjObj5.prcntgUsed = a != 0 ? Math.round((b/a) * 100) : 0;
+            proBudgetList.add(prbjObj5);
         }
 
         loadProjectExecutionStatusList();
@@ -775,8 +782,6 @@ public with sharing class ProjectReportOutController {
 
         Date moreThanThreeMonthAgo = currentDate.addMonths(-3);
 
-        //System.debug('oneMonthAgoStartDate: '+oneMonthAgoStartDate + ' - oneMonthAgoEndDate: '+oneMonthAgoEndDate);
-
         Decimal currentMonthTotalhours = 0;
         Decimal firstMonthTotalhours = 0;
         Decimal secondMonthTotalhours = 0;
@@ -787,7 +792,6 @@ public with sharing class ProjectReportOutController {
 
         timeSpendHistoryList = new List<PROProjectTimeSpentHistory>();
         if( contractMap.containsKey(financialContractId) ){
-            //List<Time_Card__c> timeEntries = contractMap.get(financialContractId).Time_Cards__r;
             List<Time_Card__c> timeEntries = new List<Time_Card__c>();
             if(contractIdTimeCardsMap.containsKey(financialContractId)) {
                 timeEntries.addAll(contractIdTimeCardsMap.get(financialContractId));
@@ -870,12 +874,11 @@ public with sharing class ProjectReportOutController {
     public void loadProjectExecutionStatusList() {
         if( contractMap.containsKey(financialContractId) ){
             DContract__c contractObj = contractMap.get(financialContractId);
-            //List<DContract__c> childContracts = childContractMap.containsKey(financialContractId) ? childContractMap.get(financialContractId) : null;
 
             ProjectExecutionStatus execStatus1 = new ProjectExecutionStatus();
             execStatus1.FieldName = 'Execution Efficiency';
             execStatus1.FieldValue = Integer.valueOf(contractObj.Execution_Efficiency__c);
-            
+
             ProjectExecutionStatus execStatus2 = new ProjectExecutionStatus();
             execStatus2.FieldName = '% Budget Used';
             execStatus2.FieldValue = Integer.valueOf(contractObj.Budget_Used__c);
@@ -891,16 +894,7 @@ public with sharing class ProjectReportOutController {
             ProjectExecutionStatus execStatus5 = new ProjectExecutionStatus();
             execStatus5.FieldName = 'Buffer % by Work Completed';
             execStatus5.FieldValue = Integer.valueOf(contractObj.Buffer_by_SOW_Completed__c);
-                        
-            /*if(childContracts != null) {
-                for(DContract__c childContract : childContracts) {
-                    execStatus1.FieldValue += Integer.valueOf(childContract.Execution_Efficiency__c);
-                    execStatus2.FieldValue += Integer.valueOf(childContract.Budget_Used__c);
-                    execStatus3.FieldValue += Integer.valueOf(childContract.Percent_through_SOW_deliverables__c);
-                    execStatus4.FieldValue += Integer.valueOf(childContract.Percent_through_Contract__c);
-                    execStatus5.FieldValue += Integer.valueOf(childContract.Buffer_by_SOW_Completed__c);
-                }
-            }*/
+
             executionStatusList = new List<ProjectExecutionStatus>{execStatus1, execStatus2, execStatus3, execStatus4, execStatus5};
             
         }
