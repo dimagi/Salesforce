@@ -412,15 +412,7 @@ public class hqInt_ModelClass {
             obj.subscription__c = subscriptionId;
             obj.reason__c = reason;
             obj.method__c = method;
-
-            obj.note__c = note;
-            obj.web_user__c = web_user;
             obj.date_created__c = date_created;
-            obj.new_date_start__c = new_date_start;
-
-            obj.new_date_end__c = new_date_end;
-            obj.new_date_delay_invoicing__c = new_date_delay_invoicing;
-            obj.new_salesforce_contract_id__c = new_salesforce_contract_id;
 
             return obj;
         }
