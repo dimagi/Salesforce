@@ -398,13 +398,7 @@ public class hqInt_ModelClass {
         public String subscription;
         public String reason;
         public String method;
-        public String note;
-        public String web_user;
         public DateTime date_created;
-        public Date new_date_start;
-        public Date new_date_end;
-        public Date new_date_delay_invoicing;
-        public String new_salesforce_contract_id;
 
         public Accounting_SubscriptionAdjustment__c createDbObject(String subscriptionId) {
             Accounting_SubscriptionAdjustment__c obj = new Accounting_SubscriptionAdjustment__c();
