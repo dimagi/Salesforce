@@ -50,8 +50,6 @@ public class hqInt_Model_DomainClass {
     public String default_timezone;
     public String description;
     public String hr_name;
-    public String image_path;
-    public String image_type;
     public String is_test;
     public String license;
     public String Name; 
@@ -66,7 +64,6 @@ public class hqInt_Model_DomainClass {
     public String sms_case_registration_user_id;
     public String sub_area;
     public String title;
-    public String yt_id;
     public String billable_client;
     public String billing_number;
     public String currency_code;
@@ -118,7 +115,7 @@ public class hqInt_Model_DomainClass {
         domainObj.sms_conversation_length__c = this.sms_conversation_length;
         domainObj.total_downloads__c = this.total_downloads;
         domainObj.id__c = this.x_id;
-        //domainObj.area__c = this.area;
+
         domainObj.attribution_notes__c = this.attribution_notes;
         domainObj.author__c = this.author;
         domainObj.cloudcare_releases__c = this.cloudcare_releases;
@@ -132,23 +129,20 @@ public class hqInt_Model_DomainClass {
         domainObj.description__c = this.description;
 
         domainObj.hr_name__c = this.hr_name;
-        domainObj.image_path__c = this.image_path;
-        domainObj.image_type__c = this.image_type;
         domainObj.is_test__c = this.is_test;
         domainObj.license__c = this.license;
         domainObj.Name = this.Name;
         domainObj.name_of_publisher__c = this.name_of_publisher;
         domainObj.organization__c = this.organization;
-        //domainObj.phone_model__c = this.phone_model;
+
         domainObj.project_type__c = this.project_type;
         domainObj.publisher__c = this.publisher;
         domainObj.short_description__c = this.short_description;
         domainObj.sms_case_registration_owner_id__c = this.sms_case_registration_owner_id;
         domainObj.sms_case_registration_type__c = this.sms_case_registration_type;
         domainObj.sms_case_registration_user_id__c = this.sms_case_registration_user_id;
-        //domainObj.sub_area__c = this.sub_area;
+
         domainObj.title__c = this.title;
-        domainObj.yt_id__c = this.yt_id;
         domainobj.tags__c = String.join(this.tags,',');
         domainObj.billable_client__c = this.billable_client;
         domainObj.billing_number__c = this.billing_number;
