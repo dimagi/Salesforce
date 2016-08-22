@@ -70,14 +70,27 @@ global class PROEmailRemindarBatch implements Database.Batchable<DContract__c>, 
         require report out.
     */
     private List<DContract__c> GetContract() {
-       List<DContract__c> contractList = [SELECT Id, Name, Last_Report_Out_Date__c, Last_Report_Out_Status__c, Is_Snooze__c, Is_First_Nag_Sent__c,
-                                          Snooze_Days__c, Snooze_Date__c, First_Nag_Sent_Date__c , OwnerId, Owner.Name,Owner.Email,
-                                          Backstop__c, Backstop__r.FirstName, Backstop__r.LastName, Backstop__r.Email,
-                                          Project_Manager__c, Project_Manager__r.FirstName, Project_Manager__r.LastName, Project_Manager__r.Email,
-                                          Prime_Contracting_Business_Unit__c, Last_Report_Out_Created_Date__c,
-                                          In_Charge_Of_Report_Out__c, Field_Manager__c, Field_Manager__r.FirstName, Field_Manager__r.LastName, CreatedDate
-                                          FROM DContract__c
-                                          WHERE Requires_Report_Out__c = 'Yes' AND Workflow_Escalation_Enabled__C = true];
+        List<DContract__c> contractList;
+        if (Test.isRunningTest()) {
+            contractList = [SELECT Id, Name, Last_Report_Out_Date__c, Last_Report_Out_Status__c, Is_Snooze__c, Is_First_Nag_Sent__c,
+                                    Snooze_Days__c, Snooze_Date__c, First_Nag_Sent_Date__c , OwnerId, Owner.Name,Owner.Email,
+                                    Backstop__c, Backstop__r.FirstName, Backstop__r.LastName, Backstop__r.Email,
+                                    Project_Manager__c, Project_Manager__r.FirstName, Project_Manager__r.LastName, Project_Manager__r.Email,
+                                    Prime_Contracting_Business_Unit__c, Last_Report_Out_Created_Date__c,
+                                    In_Charge_Of_Report_Out__c, Field_Manager__c, Field_Manager__r.FirstName, Field_Manager__r.LastName, CreatedDate
+                                    FROM DContract__c
+                                    WHERE Requires_Report_Out__c = 'Yes' AND Workflow_Escalation_Enabled__C = true LIMIT 30];
+        } else {
+            contractList = [SELECT Id, Name, Last_Report_Out_Date__c, Last_Report_Out_Status__c, Is_Snooze__c, Is_First_Nag_Sent__c,
+                                    Snooze_Days__c, Snooze_Date__c, First_Nag_Sent_Date__c , OwnerId, Owner.Name,Owner.Email,
+                                    Backstop__c, Backstop__r.FirstName, Backstop__r.LastName, Backstop__r.Email,
+                                    Project_Manager__c, Project_Manager__r.FirstName, Project_Manager__r.LastName, Project_Manager__r.Email,
+                                    Prime_Contracting_Business_Unit__c, Last_Report_Out_Created_Date__c,
+                                    In_Charge_Of_Report_Out__c, Field_Manager__c, Field_Manager__r.FirstName, Field_Manager__r.LastName, CreatedDate
+                                    FROM DContract__c
+                                    WHERE Requires_Report_Out__c = 'Yes' AND Workflow_Escalation_Enabled__C = true];
+        }
+
        return contractList;
     }
 }
