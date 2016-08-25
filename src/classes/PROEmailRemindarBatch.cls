@@ -16,19 +16,6 @@ global class PROEmailRemindarBatch implements Database.Batchable<DContract__c>, 
         snoozeHelperObj = new PROEmailContractSnoozeHelper();
         List<PRO_Email_Remindar_Settings__c> settingList = PRO_Email_Remindar_Settings__c.getALL().values();
         contractFilterHelper = new PROEmailContractFilterHelper();
-        OrgWideEmailAddress orgWideAddress = [SELECT Id FROM OrgWideEmailAddress WHERE
-                                                        Address = 'dimagi-salesforce@dimagi.com' LIMIT 1];
-        orgWideId = orgWideAddress.Id;
-        processHelper = new PROEmailProcessHelper(orgWideId, managmentTeamEmail, businessUnitEmpMap);
-
-        List<SFDC_Employee__c> empList = [SELECT Id, Email_Address__c, Business_Unit__c FROM SFDC_Employee__c
-                                          WHERE Business_Unit__c != null AND Title__c = 'company director'];
-
-        for (SFDC_Employee__c emp:empList) {
-            if (!businessUnitEmpMap.containsKey(emp.Business_Unit__c)) {
-                businessUnitEmpMap.put(emp.Business_Unit__c, emp);
-            }
-        }
 
         if (settingList != null && settingList.size() > 0) {
             PRO_Email_Remindar_Settings__c settings = settingList[0];
@@ -38,6 +25,20 @@ global class PROEmailRemindarBatch implements Database.Batchable<DContract__c>, 
             contractFilterHelper.FourthNagDays = Integer.ValueOf(settings.Fourth_Nag_Days__c);
             managmentTeamEmail = settings.Management_Team_Email__c;
         }
+
+        OrgWideEmailAddress orgWideAddress = [SELECT Id FROM OrgWideEmailAddress WHERE
+                                                        Address = 'dimagi-salesforce@dimagi.com' LIMIT 1];
+        orgWideId = orgWideAddress.Id;
+        List<SFDC_Employee__c> empList = [SELECT Id, Email_Address__c, Business_Unit__c FROM SFDC_Employee__c
+                                          WHERE Business_Unit__c != null AND Title__c = 'company director'];
+
+        for (SFDC_Employee__c emp:empList) {
+            if (!businessUnitEmpMap.containsKey(emp.Business_Unit__c)) {
+                businessUnitEmpMap.put(emp.Business_Unit__c, emp);
+            }
+        }
+
+        processHelper = new PROEmailProcessHelper(orgWideId, managmentTeamEmail, businessUnitEmpMap);
 
         firstNagProcessed = new List<DContract__c>();
         secondNagProcessed = new List<DContract__c>();
@@ -65,13 +66,13 @@ global class PROEmailRemindarBatch implements Database.Batchable<DContract__c>, 
             snoozeHelperObj.SetFirstNegSent(firstNagContract);
         }
         if (secondNagContract.size() > 0) {
-            snoozeHelperObj.SetFirstNegSent(secondNagContract);
+            snoozeHelperObj.SetSecondNegSent(secondNagContract);
         }
         if (thirdNagContract.size() > 0) {
-            snoozeHelperObj.SetFirstNegSent(thirdNagContract);
+            snoozeHelperObj.SetThirdNegSent(thirdNagContract);
         }
         if (fourthNagContract.size() > 0) {
-            snoozeHelperObj.SetFirstNegSent(fourthNagContract);
+            snoozeHelperObj.SetFourthNegSent(fourthNagContract);
         }
 
         firstNagProcessed.addAll(firstNagContract);
