@@ -1,18 +1,23 @@
 global class PROEmailRemindarBatch implements Database.Batchable<DContract__c>, Database.Stateful {
 
     PROEmailContractFilterHelper contractFilterHelper = null;
-    PROEmailProcessHelper processHelper=null;
+    PROEmailProcessHelper processHelper = null;
     Id orgWideId;
     String ManagmentTeamEmail;
-    Map<Id,SFDC_Employee__c> BusinessUnitEmpMap=new Map<Id,SFDC_Employee__c>();
+    Map<Id,SFDC_Employee__c> BusinessUnitEmpMap = new Map<Id,SFDC_Employee__c>();
+
+    private List<DContract__c> firstNagProcessed;
+    private List<DContract__c> secondNagProcessed;
+    private List<DContract__c> thirdNagProcessed;
+    private List<DContract__c> fourthNagProcessed;
 
     public PROEmailRemindarBatch() {
-        List<PRO_Email_Remindar_Settings__c> settingList=PRO_Email_Remindar_Settings__c.getALL().values();
-        contractFilterHelper=new PROEmailContractFilterHelper();
+        List<PRO_Email_Remindar_Settings__c> settingList = PRO_Email_Remindar_Settings__c.getALL().values();
+        contractFilterHelper = new PROEmailContractFilterHelper();
 
         if (settingList != null && settingList.size() > 0) {
             PRO_Email_Remindar_Settings__c settings = settingList[0];
-            contractFilterHelper.FirstNagDays = Integer.ValueOf(settings.First_Nag_Days__c);
+            contractFilterHelpManagmentTeamEmailer.FirstNagDays = Integer.ValueOf(settings.First_Nag_Days__c);
             contractFilterHelper.SecondNagDays = Integer.ValueOf(settings.Second_Nag_Days__c);
             contractFilterHelper.ThirdNagDays = Integer.ValueOf(settings.Third_Nag_Days__c);
             contractFilterHelper.FourthNagDays = Integer.ValueOf(settings.Fourth_Nag_Days__c);
@@ -20,9 +25,9 @@ global class PROEmailRemindarBatch implements Database.Batchable<DContract__c>, 
         }
 
         OrgWideEmailAddress orgWideAddress = [SELECT Id FROM OrgWideEmailAddress WHERE
-                                              Address = 'dimagi-salesforce@dimagi.com' LIMIT 1];
+                                                        Address = 'dimagi-salesforce@dimagi.com' LIMIT 1];
         orgWideId = orgWideAddress.Id;
-        processHelper = new PROEmailProcessHelper(orgWideId,ManagmentTeamEmail,BusinessUnitEmpMap);
+        processHelper = new PROEmailProcessHelper(orgWideId, ManagmentTeamEmail, BusinessUnitEmpMap);
 
         List<SFDC_Employee__c> empList = [SELECT Id, Email_Address__c, Business_Unit__c FROM SFDC_Employee__c
                                           WHERE Business_Unit__c != null AND Title__c = 'company director'];
@@ -32,6 +37,11 @@ global class PROEmailRemindarBatch implements Database.Batchable<DContract__c>, 
                 BusinessUnitEmpMap.put(emp.Business_Unit__c, emp);
             }
         }
+
+        firstNagProcessed = new List<DContract__c>();
+        secondNagProcessed = new List<DContract__c>();
+        thirdNagProcessed = new List<DContract__c>();
+        fourthNagProcessed = new List<DContract__c>();
     }
 
     global List<DContract__c> start(Database.BatchableContext context) {
@@ -40,29 +50,40 @@ global class PROEmailRemindarBatch implements Database.Batchable<DContract__c>, 
 
     global void execute(Database.BatchableContext context, List<DContract__c> contracts) {
 
-        List<DContract__c> firstNagContract=new List<DContract__c>();
-        List<DContract__c> secondNagContract=new List<DContract__c>();
-        List<DContract__c> thirdNagContract=new List<DContract__c>();
-        List<DContract__c> fourthNagContract=new List<DContract__c>();
+        List<DContract__c> firstNagContract = new List<DContract__c>();
+        List<DContract__c> secondNagContract = new List<DContract__c>();
+        List<DContract__c> thirdNagContract = new List<DContract__c>();
+        List<DContract__c> fourthNagContract = new List<DContract__c>();
 
         firstNagContract.addAll(contractFilterHelper.filter(contracts,PROEmailContractFilterType.FirstNag));
         secondNagContract.addAll(contractFilterHelper.filter(contracts,PROEmailContractFilterType.SecondNag));
         thirdNagContract.addAll(contractFilterHelper.filter(contracts,PROEmailContractFilterType.ThirdNag));
         fourthNagContract.addAll(contractFilterHelper.filter(contracts,PROEmailContractFilterType.FourthNag));
 
-        System.debug('First Nag Count:'+firstNagContract.size());
-        System.debug('Second Nag Count:'+secondNagContract.size());
-        System.debug('Third Nag Count:'+thirdNagContract.size());
-        System.debug('Fourth Nag Count:'+fourthNagContract.size());
- 
-        processHelper.ProcessFirstNag(firstNagContract);
-        processHelper.ProcessSecondNag(secondNagContract);
-        processHelper.ProcessThirdNag(thirdNagContract);
-        processHelper.ProcessFourthNag(fourthNagContract);
+        if (firstNagContract.size() > 0) {
+            snoozeHelperObj.SetFirstNegSent(firstNagContract);
+        }
+        if (secondNagContract.size() > 0) {
+            snoozeHelperObj.SetFirstNegSent(secondNagContract);
+        }
+        if (thirdNagContract.size() > 0) {
+            snoozeHelperObj.SetFirstNegSent(thirdNagContract);
+        }
+        if (fourthNagContract.size() > 0) {
+            snoozeHelperObj.SetFirstNegSent(fourthNagContract);
+        }
+
+        firstNagProcessed.addAll(firstNagContract);
+        secondNagProcessed.addAll(secondNagContract);
+        thirdNagProcessed.addAll(thirdNagContract);
+        fourthNagProcessed.addAll(fourthNagContract);
     }
 
     global void finish(Database.BatchableContext context) {
-        //TODO Send error info
+            processHelper.ProcessFirstNag(firstNagContract);
+            processHelper.ProcessSecondNag(secondNagContract);
+            processHelper.ProcessThirdNag(thirdNagContract);
+            processHelper.ProcessFourthNag(fourthNagContract);
     }
 
     /*

@@ -12,7 +12,7 @@ public class EmailHelper {
         Messaging.Email[] mails = new Messaging.Email[]{};
 
         for (String body : emailsBody) {
-            Messaging.SingleEmailMessage mail = new Messaging.Singleemailmessage();
+            Messaging.SingleEmailMessage mail = new Messaging.SingleEmailMessage();
 
             if (orgWideAddress != null) {
                 mail.setOrgWideEmailAddressId(orgWideAddress.Id);
