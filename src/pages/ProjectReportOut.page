@@ -136,7 +136,7 @@
                     <input type="text" style="width:0;opacity:0;height:0" />
                     <apex:pageBlock title="Project Report Out" id="reportOutTabId">
                         <apex:pageBlockButtons >
-                            <apex:commandButton action="{!save}" value="Submit" reRender="messages" status="loadingDiv"/>
+                            <apex:commandButton action="{!save}" value="Submit" />
                         </apex:pageBlockButtons>
 
                         <apex:outputPanel layout="block" id="messages">
