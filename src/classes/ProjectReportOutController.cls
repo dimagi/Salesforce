@@ -578,7 +578,6 @@ public with sharing class ProjectReportOutController {
             Decimal Percent_through_Contract = contractObj.Percent_through_Contract__c != null ? contractObj.Percent_through_Contract__c: 0 ;
             Decimal Percent_through_SOW_deliverables = contractObj.Percent_through_SOW_deliverables__c != null ? contractObj.Percent_through_SOW_deliverables__c: 0 ;
             Decimal Expected_Margin = contractObj.Expected_Margin__c != null ? contractObj.Expected_Margin__c: 0 ;
-            Decimal Project_Other_Spent = contractObj.Project_Other_Spent__c != null ? contractObj.Project_Other_Spent__c : 0 ;
             Decimal Project_Other_BUDGET = contractObj.Project_Other_BUDGET__c != null ? contractObj.Project_Other_BUDGET__c : 0 ;
 
             if(childContracts != null && childContracts.size() > 0) {
@@ -589,7 +588,6 @@ public with sharing class ProjectReportOutController {
                     Contract_Expense_BUDGET += childContract.Contract_Expense_BUDGET__c != null ? childContract.Contract_Expense_BUDGET__c: 0 ;
                     Direct_Costs_Total_Expenses += childContract.Direct_Costs_Total_Expenses__c != null ? contractObj.Direct_Costs_Total_Expenses__c: 0 ;
                     Project_Other_BUDGET += childContract.Project_Other_BUDGET__c != null ? childContract.Project_Other_BUDGET__c : 0 ;
-                    Project_Other_Spent += childContract.Project_Other_Spent__c != null ? childContract.Project_Other_Spent__c : 0 ;
                     Burdened_Income_Budget += childContract.Burdened_Income_Budget__c != null ? childContract.Burdened_Income_Budget__c : 0;
                 }
             }
@@ -619,9 +617,9 @@ public with sharing class ProjectReportOutController {
             Decimal b = Product_Spend;
             PROProjectBudget prbjObj1 = new PROProjectBudget();
             prbjObj1.categoryName = 'Product';
-            prbjObj1.contractamount = Integer.valueOf( Product_Income_Budget );
-            prbjObj1.spentAmount = Integer.valueOf( Product_Spend );
-            prbjObj1.amountRemaining = Integer.valueOf( Product_Income_Budget - Product_Spend );
+            prbjObj1.contractamount = Integer.valueOf(Product_Income_Budget);
+            prbjObj1.spentAmount = Integer.valueOf(Product_Spend);
+            prbjObj1.amountRemaining = Integer.valueOf(Product_Income_Budget - Product_Spend);
             prbjObj1.prcntgUsed = a != 0 ? Math.round((b/a) * 100) : 0;
             proBudgetList.add(prbjObj1);
 
@@ -629,39 +627,29 @@ public with sharing class ProjectReportOutController {
             b = LaborSpent;
             PROProjectBudget prbjObj2 = new PROProjectBudget();
             prbjObj2.categoryName = 'Services & Labor';
-            prbjObj2.contractamount = Integer.valueOf( Burdened_Income_Budget );
-            prbjObj2.spentAmount = Integer.valueOf( LaborSpent );
-            prbjObj2.amountRemaining = Integer.valueOf( Burdened_Income_Budget - LaborSpent );
+            prbjObj2.contractamount = Integer.valueOf(Burdened_Income_Budget);
+            prbjObj2.spentAmount = Integer.valueOf(LaborSpent);
+            prbjObj2.amountRemaining = Integer.valueOf(Burdened_Income_Budget - LaborSpent);
             prbjObj2.prcntgUsed = a != 0 ? Math.round((b/a) * 100) : 0;
             proBudgetList.add(prbjObj2);
 
-            a = Contract_Expense_BUDGET;
+            a = Contract_Expense_BUDGET + Project_Other_BUDGET;
             b = Direct_Costs_Total_Expenses;
             PROProjectBudget prbjObj3 = new PROProjectBudget();
             prbjObj3.categoryName = 'Expense & Travel';
-            prbjObj3.contractamount = Integer.valueOf( Contract_Expense_BUDGET );
-            prbjObj3.spentAmount = Integer.valueOf( Direct_Costs_Total_Expenses );
-            prbjObj3.amountRemaining = Integer.valueOf( Contract_Expense_BUDGET - Direct_Costs_Total_Expenses );
+            prbjObj3.contractamount = Integer.valueOf(Contract_Expense_BUDGET + Project_Other_BUDGET);
+            prbjObj3.spentAmount = Integer.valueOf(Direct_Costs_Total_Expenses);
+            prbjObj3.amountRemaining = Integer.valueOf(Contract_Expense_BUDGET + Project_Other_BUDGET - Direct_Costs_Total_Expenses);
             prbjObj3.prcntgUsed = a != 0 ? Math.round((b/a) * 100) : 0;
             proBudgetList.add(prbjObj3);
 
-            a = Project_Other_BUDGET;
-            b = Project_Other_Spent;
-            PROProjectBudget prbjObj4 = new PROProjectBudget();
-            prbjObj4.categoryName = 'Expense Other';
-            prbjObj4.contractamount = Integer.valueOf(Project_Other_BUDGET);
-            prbjObj4.spentAmount = Integer.valueOf(Project_Other_Spent);
-            prbjObj4.amountRemaining = Integer.valueOf(Project_Other_BUDGET - Project_Other_Spent);
-            prbjObj4.prcntgUsed = a != 0 ? Math.round((b/a) * 100) : 0;
-            proBudgetList.add(prbjObj4);
-
             a = Total_Amount_of_Contract;
-            b = prbjObj1.spentAmount + prbjObj2.spentAmount + prbjObj3.spentAmount + prbjObj4.spentAmount;//calculate manually
+            b = prbjObj1.spentAmount + prbjObj2.spentAmount + prbjObj3.spentAmount;//calculate manually
             PROProjectBudget prbjObj5 = new PROProjectBudget();
             prbjObj5.categoryName = 'Total';
-            prbjObj5.contractamount = Integer.valueOf( Total_Amount_of_Contract );
-            prbjObj5.spentAmount = Integer.valueOf( b );
-            prbjObj5.amountRemaining = Integer.valueOf( Total_Amount_of_Contract - b);
+            prbjObj5.contractamount = Integer.valueOf(Total_Amount_of_Contract);
+            prbjObj5.spentAmount = Integer.valueOf(b);
+            prbjObj5.amountRemaining = Integer.valueOf(Total_Amount_of_Contract - b);
             prbjObj5.prcntgUsed = a != 0 ? Math.round((b/a) * 100) : 0;
             proBudgetList.add(prbjObj5);
         }
