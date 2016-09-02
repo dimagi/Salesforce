@@ -10,14 +10,14 @@ public class ContractSnapshotTest {
 
         DContract__c dcontract = addContract();
 
-        projectReportOutController.contractId = dcontract.Id;
+        projectReportOutController.reportContractId = dcontract.Id;
         projectReportOutController.contractIdName = new Map<Id, DContract__C> {};
         projectReportOutController.contractIdName.put(dcontract.Id, dcontract);
         projectReportOutController.status = 'Active';
-        projectReportOutController.ToMeetSchedule = 'Green';
-        projectReportOutController.StayWithinScope = 'Green';
-        projectReportOutController.CurrentSystemUsage = 'Green';
-        projectReportOutController.PartnerRelationship = 'Green';
+        projectReportOutController.toMeetSchedule = 'Green';
+        projectReportOutController.stayWithinScope = 'Green';
+        projectReportOutController.currentSystemUsage = 'Green';
+        projectReportOutController.partnerRelationship = 'Green';
         projectReportOutController.proTabContractPercntgethroughSOW = 30;
 
         projectReportOutController.save();

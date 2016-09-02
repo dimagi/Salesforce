@@ -22,6 +22,10 @@ public with sharing class OpportunityContractController {
                                     Proposal_Dropbox_Location__c,
                                     Funder_Account__c,
                                     Implementing_Business_Unit__c,
+                                    Channel_Response__c,
+                                    of_Execution_budget_for_GS__c,
+                                    Expected_Buffer__c,
+                                    Implementation_Type__c,
                                     X7_Long_term_partnership_or_one_off__c,
                                     X10_Major_component_risks__c,
                                     (SELECT Country__c FROM OpportunityCountries__r),
@@ -44,6 +48,10 @@ public with sharing class OpportunityContractController {
         contract.Proposal_Dropbox_Location__c = o.Proposal_Dropbox_Location__c;
         contract.Long_term_partnership_or_one_off__c = o.X7_Long_term_partnership_or_one_off__c;
         contract.Major_Component_Risks__c = o.X10_Major_component_risks__c;
+        contract.Channel__c = o.Channel_Response__c;
+        contract.Implementation_Type__c = o.Implementation_Type__c;
+        contract.Expected_Buffer__c = o.Expected_Buffer__c;
+        contract.of_Services_budget_for_GS__c = o.of_Execution_budget_for_GS__c;
         insert contract;
 
         List<Contract_Country__c> contractCountries = new List<Contract_Country__c>();
