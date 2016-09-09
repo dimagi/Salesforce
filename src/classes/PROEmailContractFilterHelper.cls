@@ -1,36 +1,35 @@
-public class PROEmailContractFilterHelper{
-    
-    //Setting Default Value
-    public integer FirstNagDays{
-        get;set;
-    }
-    public integer SecondNagDays{
-        get;set;
-    }
-    public integer ThirdNagDays{
-        get;set;
-    }
-    public integer FourthNagDays{
-        get;set;
-    }
-    
-    
-    public PROEmailContractFilterHelper(){
-        FirstNagDays=4;
-        SecondNagDays=1;
-        ThirdNagDays=3;
-        FourthNagDays=7;
-    }
-    
-    
-    public List<DContract__c> filter(List<DContract__c> contracts, PROEmailContractFilterType filterType){
-        Date currentDate=Date.Today();
-        List<DContract__c> filteredContract=new List<DContract__c>();
-        
-        if(filterType==PROEmailContractFilterType.FirstNag){
-            Date latestPRODueDate=GetLatestPRODueDate();
+public class PROEmailContractFilterHelper {
 
-            Date lastAllowedDate=latestPRODueDate.addDays(FirstNagDays);
+    public integer FirstNagDays{
+        get; set;
+    }
+
+    public integer SecondNagDays{
+        get; set;
+    }
+
+    public integer ThirdNagDays{
+        get; set;
+    }
+
+    public integer FourthNagDays{
+        get; set;
+    }
+
+    public PROEmailContractFilterHelper() {
+        FirstNagDays = 4;
+        SecondNagDays = 1;
+        ThirdNagDays = 3;
+        FourthNagDays = 7;
+    }
+
+    public List<DContract__c> filter(List<DContract__c> contracts, PROEmailContractFilterType filterType) {
+        Date currentDate = Date.Today();
+        List<DContract__c> filteredContract = new List<DContract__c>();
+
+        if (filterType == PROEmailContractFilterType.FirstNag) {
+            Date latestPRODueDate = GetLatestPRODueDate();
+            Date lastAllowedDate = latestPRODueDate.addDays(FirstNagDays);
 
             for(DContract__c contract: contracts){
                 if((contract.Last_Report_Out_Date__c!=null && contract.Last_Report_Out_Date__c<latestPRODueDate) 
