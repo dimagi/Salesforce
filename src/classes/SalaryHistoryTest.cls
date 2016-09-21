@@ -167,7 +167,7 @@ public class SalaryHistoryTest {
         // 3 Employess, 3 contracts, one is subcontract
         Test.startTest();
 
-        SFDC_Employee__c employee_1 = new SFDC_Employee__c(Name = 'emp_6', Salary__c = 60000);
+        SFDC_Employee__c employee_1 = new SFDC_Employee__c(Name = 'emp_6', Salary__c = 60000, Exchange_Rate__c = 1);
         insert employee_1;
         SFDC_Employee__c employee_2 = new SFDC_Employee__c(Name = 'emp_7', Salary__c = 45000, Exchange_Rate__c = 2,
                                                          Effective_Salary_Date__c = Date.newInstance(2013, 1, 1),

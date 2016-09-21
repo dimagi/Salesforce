@@ -47,15 +47,12 @@ global class BatchCalculateTotalHoursOfTimeCard implements Database.Batchable<sO
             if (tc.Employee__c != this.lastEmployee) {
                 this.lastEmployee = tc.Employee__c;
                 this.employeeSalaryHistory = this.salaryHistoryHelper.mergeSalaryHistory([SELECT Name, Salary__c, Effective_Salary_Date__c, Exchange_Rate__c, Effective_Exchange_Rate_Date__c FROM SFDC_Employee__c WHERE Id =: tc.Employee__c]);
-                System.debug('this.employeeSalaryHistory : ' + this.employeeSalaryHistory);
+
                 lastToSalaryDate = this.employeeSalaryHistory.size() > 1 ? this.employeeSalaryHistory.get(1).getValueDate() : Date.today().addYears(1);
                 lastSalary = this.employeeSalaryHistory.get(0).getValue();
                 lastFromSalaryDate = Date.newInstance(1900, 1, 1);
             }
 
-            System.debug('TC date : ' + tc.Date__c);
-            System.debug('lastFromSalaryDate : ' + lastFromSalaryDate);
-            System.debug('lastToSalaryDate : ' + lastToSalaryDate);
             if (tc.Date__c < lastFromSalaryDate || tc.Date__c >= lastToSalaryDate) {
                 Integer index = 0;
                 for (Integer i = 0; i < this.employeeSalaryHistory.size(); i++) {
@@ -69,15 +66,9 @@ global class BatchCalculateTotalHoursOfTimeCard implements Database.Batchable<sO
                 }
 
                 lastToSalaryDate = this.employeeSalaryHistory.size() > index + 1 ? this.employeeSalaryHistory.get(index + 1).getValueDate() : Date.today().addYears(1);
-                System.debug('Loading new salary ' + lastFromSalaryDate + ' - ' + lastToSalaryDate);
-                System.debug('loaded : ' + lastSalary);
             }
 
             Decimal laborCost = tc.Total__c * lastSalary;
-            System.debug('TC date : ' + tc.Date__c);
-            System.debug('Total__c : ' + tc.Total__c);
-            System.debug('lastSalary : ' + lastSalary);
-            System.debug('laborCost for ' + tc.Id + ' : ' + laborCost);
             if (laborCost != null) {
                 if (servicesSpendMap.containsKey(tc.Client__c)) {
                     servicesSpendMap.put(tc.Client__c, servicesSpendMap.get(tc.Client__c) + laborCost);

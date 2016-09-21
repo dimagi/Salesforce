@@ -32,11 +32,15 @@ public class SalaryHistoryHelper {
             // We can have history of first fill or first update we must check and set proper first salary - Effective date for first sallary will be 01.01.1900
             if (employeeSalaryHistory.get(0).OldValue == null) {
                 // First salary is in NewValue
-                lastSalary = (Decimal) employeeSalaryHistory.get(0).NewValue;
+                lastSalary = getValueForSalary(salaryField, employeeSalaryHistory.get(0));
                 salaryIndex++;
             } else {
                 // First salary is in OldValue
-                lastSalary = (Decimal) employeeSalaryHistory.get(0).OldValue;
+                if (salaryField == 'Salary__c' ) {
+                    lastSalary = (Decimal) employeeSalaryHistory.get(0).OldValue;
+                } else {
+                    lastSalary = ((Decimal) employeeSalaryHistory.get(0).OldValue) == 0 ? 1 : (Decimal) employeeSalaryHistory.get(0).OldValue;
+                }
             }
 
             salaryList.add(new SalaryHistoryRecord(lastSalary, lastSalaryDate));
@@ -49,9 +53,13 @@ public class SalaryHistoryHelper {
                 }
             }
 
+            Date lEffDate = Date.newInstance(1900, 1, 1);
             for (Integer i = 0; i < employeeSalaryDateHistory.size(); i++) {
                 effectiveDateMap.put(takeDate((DateTime) employeeSalaryDateHistory.get(i).CreatedDate),
-                                      employeeSalaryDateHistory.get(i).NewValue == null ? Date.newInstance(1900, 1, 1) : (Date) employeeSalaryDateHistory.get(i).NewValue);
+                                      employeeSalaryDateHistory.get(i).NewValue == null ? lEffDate : (Date) employeeSalaryDateHistory.get(i).NewValue);
+                if (employeeSalaryDateHistory.get(i).NewValue != null) {
+                    lEffDate = (Date) employeeSalaryDateHistory.get(i).NewValue;
+                }
             }
 
             Integer helperIndex = 0;
@@ -64,16 +72,12 @@ public class SalaryHistoryHelper {
                     toAdd = effectiveDateMap.get(cDate);
                 }
 
-                System.debug('cDate: '+ cDate);
-                System.debug('toAdd: '+ toAdd);
-
                 if (lastSalaryDate == cDate) {
                     System.debug('Update: '+ helperIndex + ' ' + employeeSalaryHistory[i].NewValue);
-                    salaryList.set(helperIndex, new SalaryHistoryRecord(employeeSalaryHistory[i].NewValue == null ? 0 : (Decimal) employeeSalaryHistory[i].NewValue,
+                    salaryList.set(helperIndex, new SalaryHistoryRecord(getValueForSalary(salaryField, employeeSalaryHistory.get(i)),
                                                                         toAdd));
                 } else {
-                    System.debug('New: '+ helperIndex + ' ' + employeeSalaryHistory[i].NewValue);
-                    salaryList.add(new SalaryHistoryRecord(employeeSalaryHistory[i].NewValue == null ? 0 : (Decimal) employeeSalaryHistory[i].NewValue,
+                    salaryList.add(new SalaryHistoryRecord(getValueForSalary(salaryField, employeeSalaryHistory.get(i)),
                                                            toAdd));
                     helperIndex++;
                 }
@@ -81,8 +85,6 @@ public class SalaryHistoryHelper {
                 lastSalaryDate = cDate;
             }
         }
-
-        System.debug('salaryList: '+ salaryList);
 
         return salaryList;
     }
@@ -148,6 +150,26 @@ public class SalaryHistoryHelper {
         result = ((result / 260) * 1.3 * 1.52 * 1.1 * 1.1) / 8.0;
 
         return Decimal.valueOf(result).setScale(2);
+    }
+
+    private Decimal getValueForSalary(String field, SalaryHistoryWrapper record) {
+        if (field == 'Exchange_Rate__c') {
+            if (record.NewValue != null && ((Decimal) record.NewValue) != 0) {
+                return (Decimal) record.NewValue;
+            } else if (record.OldValue != null && ((Decimal) record.OldValue) != 0) {
+                return (Decimal) record.OldValue;
+            } else {
+               return 1;
+            }
+        } else {
+            if (record.NewValue != null) {
+                return (Decimal) record.NewValue;
+            } else if (record.OldValue != null) {
+                return (Decimal) record.OldValue;
+            } else {
+               return 0;
+            }
+        }
     }
 
     private List<SalaryHistoryWrapper> getFieldHistory(SFDC_Employee__c employee, String fieldName) {

@@ -51,7 +51,7 @@ public class BatchUpdateContractServicesSpend implements Database.Batchable<DCon
             }
         }
 
-        update contractsToUpdate;
+        Database.update(contractsToUpdate, false);
     }
 
     public void finish(Database.BatchableContext context) {
