@@ -145,7 +145,7 @@ public class SalaryHistoryHelper {
 
     public static Decimal calculateSalary(Decimal sal, Decimal er) {
         Double result = (sal / (Double) er);
-        result = ((result / 260) * 1.3 * 1.52 * 1.1 * 1.1);
+        result = ((result / 260) * 1.3 * 1.52 * 1.1 * 1.1) / 8.0;
 
         return Decimal.valueOf(result).setScale(2);
     }
