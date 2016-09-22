@@ -558,9 +558,9 @@ public with sharing class ProjectReportOutController {
         }
     }
 
-   public void loadContractBudgetAndSpentData() {
+    public void loadContractBudgetAndSpentData() {
         proBudgetList = new List<PROProjectBudget>();
-
+        Boolean timeSpenHistoryLoaded = false;
         if( contractMap.containsKey(financialContractId)) {
             contractUrl = 'https://'+sfInstanceName+'/'+financialContractId;
             Set<Id> parentAndChildContractIds = new Set<Id>{financialContractId};
@@ -592,27 +592,17 @@ public with sharing class ProjectReportOutController {
                 }
             }
 
-            for(Time_Card__c obj : [select Employee__r.Name,Date__c,Total__c,labor_cost__c,Client__c  from Time_Card__c where Client__c IN:parentAndChildContractIds]) {
+            for(Time_Card__c obj : [select Employee__c,Employee__r.Name,Date__c,Total__c,labor_cost__c,Client__c  from Time_Card__c where Employee__c != '' AND Client__c IN:parentAndChildContractIds ORDER BY Employee__c]) {
                 if(contractIdTimeCardsMap.containsKey(obj.Client__c)){
                     List<Time_Card__c> tempList = contractIdTimeCardsMap.get(obj.Client__c);
                     tempList.add(obj);
                     contractIdTimeCardsMap.put(obj.Client__c,tempList);
-                }else{
+                } else {
                     contractIdTimeCardsMap.put(obj.Client__c,new List<Time_Card__c>{obj});
                 }
             }
 
-            for(Id contractId : parentAndChildContractIds) {
-                List<Time_Card__c> timeEntries = contractIdTimeCardsMap.get(contractId);
-                if(timeEntries != null && timeEntries.size() > 0) {
-                    for(Time_Card__c obj : timeEntries) {
-                        if(obj.labor_cost__c != null) {
-                            LaborSpent += obj.labor_cost__c;
-                        }
-                    }
-                }
-            }
-
+            LaborSpent = loadHistoryOfTimeSpend();
             Decimal a = Product_Income_Budget;
             Decimal b = Product_Spend;
             PROProjectBudget prbjObj1 = new PROProjectBudget();
@@ -652,10 +642,14 @@ public with sharing class ProjectReportOutController {
             prbjObj5.amountRemaining = Integer.valueOf(Total_Amount_of_Contract - b);
             prbjObj5.prcntgUsed = a != 0 ? Math.round((b/a) * 100) : 0;
             proBudgetList.add(prbjObj5);
+
+            timeSpenHistoryLoaded = false;
         }
 
         loadProjectExecutionStatusList();
-        loadHistoryOfTimeSpend();
+        if (timeSpenHistoryLoaded == false) {
+            loadHistoryOfTimeSpend();
+        }
         loadContractExpenseSpend();
     }
 
@@ -756,7 +750,7 @@ public with sharing class ProjectReportOutController {
         }
     }
 
-    public void loadHistoryOfTimeSpend(){
+    public Decimal loadHistoryOfTimeSpend(){
         PROProjectTimeSpentHistory projTmSpntHstryObj;
         Map<String,PROProjectTimeSpentHistory> laborWithHours = new Map<String,PROProjectTimeSpentHistory>();
 
@@ -779,7 +773,7 @@ public with sharing class ProjectReportOutController {
         Decimal thirdMonthTotalhours = 0;
         Decimal moreThanThreeMonthTotalhours = 0;
         Decimal totalHours = 0;
-        Integer totalCost = 0;
+        Decimal totalCost = 0;
 
         timeSpendHistoryList = new List<PROProjectTimeSpentHistory>();
         if( contractMap.containsKey(financialContractId) ){
@@ -797,15 +791,43 @@ public with sharing class ProjectReportOutController {
                 }
             }
 
-            if(timeEntries != null && timeEntries.size() > 0) {
+            if (timeEntries != null && timeEntries.size() > 0) {
+                List<SalaryHistoryRecord> employeeSalaryHistory = new List<SalaryHistoryRecord>();
+                Id lastEmployee;
+                Date lastFromSalaryDate = Date.newInstance(1900, 1, 1);
+                Date lastToSalaryDate = Date.today().addYears(1);
+                Decimal lastSalary = 0;
+                SalaryHistoryHelper salaryHistoryHelper = new SalaryHistoryHelper();
 
                 for(Time_Card__c  obj: timeEntries) {
+                    if (obj.Employee__c != lastEmployee) {
+                        lastEmployee = obj.Employee__c;
+                        employeeSalaryHistory = salaryHistoryHelper.mergeSalaryHistory([SELECT Name, Salary__c, Effective_Salary_Date__c, Exchange_Rate__c, Effective_Exchange_Rate_Date__c FROM SFDC_Employee__c WHERE Id =: obj.Employee__c], false);
+                        lastToSalaryDate = employeeSalaryHistory.size() > 1 ? employeeSalaryHistory.get(1).getValueDate() : Date.today().addYears(1);
+                        lastSalary = employeeSalaryHistory.get(0).getValue();
+                        lastFromSalaryDate = Date.newInstance(1900, 1, 1);
+                    }
+
+                    if (obj.Date__c < lastFromSalaryDate || obj.Date__c >= lastToSalaryDate) {
+                        Integer index = 0;
+                        for (Integer i = 0; i < employeeSalaryHistory.size(); i++) {
+                            if (obj.Date__c >= employeeSalaryHistory.get(i).getValueDate()) {
+                                lastSalary = employeeSalaryHistory.get(i).getValue();
+                                lastFromSalaryDate = employeeSalaryHistory.get(i).getValueDate();
+                            } else {
+                                index = i - 1;
+                                break;
+                            }
+                        }
+                        lastToSalaryDate = employeeSalaryHistory.size() > index + 1 ? employeeSalaryHistory.get(index + 1).getValueDate() : Date.today().addYears(1);
+                    }
+
                     String employeeName = obj.Employee__r.Name;
                     Date entryDate = obj.Date__c != null ? obj.Date__c : Date.today();
                     Integer entryDateMonth = obj.Date__c != null ? obj.Date__c.month() : 0;
                     Integer entryDateYear = obj.Date__c != null ? obj.Date__c.year() : 0;
                     Decimal totalHoursPerMonth = obj.Total__c != null ? obj.Total__c: 0;
-                    Integer laborCost = obj.labor_cost__c != null ? Integer.valueOf(obj.labor_cost__c) : 0;
+                    Decimal laborCost = obj.Total__c != null ? obj.Total__c * lastSalary : 0;
 
                     if (laborWithHours.containsKey(employeeName)) {
                         projTmSpntHstryObj = laborWithHours.get(employeeName);
@@ -859,7 +881,7 @@ public with sharing class ProjectReportOutController {
         projTmSpntHstryObj.totalHourstoDate = totalHours;
         projTmSpntHstryObj.laborCost = totalCost;
         timeSpendHistoryList.add(projTmSpntHstryObj);
-
+        return totalCost;
     }
 
     public void loadProjectExecutionStatusList() {
@@ -1338,7 +1360,7 @@ public with sharing class ProjectReportOutController {
             set;
         }
 
-        public Integer laborCost { get; set; }
+        public Decimal laborCost { get; set; }
 
         public Integer compareTo(Object objToCompare) {
             return Integer.valueOf(((PROProjectTimeSpentHistory)objToCompare).totalHourstoDate - totalHourstoDate);

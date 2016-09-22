@@ -1,19 +1,22 @@
 /**
  * Calculates Services Spend field value for each contracts, runs BatchUpdateContractServicesSpend job.
  */
-global class BatchCalculateTotalHoursOfTimeCard implements Database.Batchable<sObject>, Database.Stateful {
+global without sharing class BatchCalculateTotalHoursOfTimeCard implements Database.Batchable<sObject>, Database.Stateful {
 
     private String contractId;
     private Map<Id, Decimal> servicesSpendMap;
     private String lastEmployee;
     private List<SalaryHistoryRecord> employeeSalaryHistory;
     private SalaryHistoryHelper salaryHistoryHelper;
+    private Boolean testMode;
 
     global BatchCalculateTotalHoursOfTimeCard(){
+        this.testMode = false;
         this.servicesSpendMap = new Map<Id, Decimal>();
     }
 
     global BatchCalculateTotalHoursOfTimeCard(String contractId){
+        this.testMode = false;
         this.contractId = contractId;
         this.servicesSpendMap = new Map<Id, Decimal>();
     }
@@ -21,6 +24,7 @@ global class BatchCalculateTotalHoursOfTimeCard implements Database.Batchable<sO
     global Database.QueryLocator start(Database.BatchableContext context) {
         this.salaryHistoryHelper = new SalaryHistoryHelper();
         this.employeeSalaryHistory = new List<SalaryHistoryRecord>();
+
         String query;
         if (String.isEmpty(contractId)) {
             query = 'SELECT Client__c, Total__c, Employee__c, Date__c FROM Time_Card__c WHERE Employee__c != \'\' ORDER BY Employee__c';
@@ -46,8 +50,8 @@ global class BatchCalculateTotalHoursOfTimeCard implements Database.Batchable<sO
 
             if (tc.Employee__c != this.lastEmployee) {
                 this.lastEmployee = tc.Employee__c;
-                this.employeeSalaryHistory = this.salaryHistoryHelper.mergeSalaryHistory([SELECT Name, Salary__c, Effective_Salary_Date__c, Exchange_Rate__c, Effective_Exchange_Rate_Date__c FROM SFDC_Employee__c WHERE Id =: tc.Employee__c]);
-
+                this.employeeSalaryHistory = this.salaryHistoryHelper.mergeSalaryHistory([SELECT Name, Salary__c, Effective_Salary_Date__c, Exchange_Rate__c, Effective_Exchange_Rate_Date__c FROM SFDC_Employee__c WHERE Id =: tc.Employee__c], this.testMode);
+                System.debug('New employee : ' + tc.Employee__c);
                 lastToSalaryDate = this.employeeSalaryHistory.size() > 1 ? this.employeeSalaryHistory.get(1).getValueDate() : Date.today().addYears(1);
                 lastSalary = this.employeeSalaryHistory.get(0).getValue();
                 lastFromSalaryDate = Date.newInstance(1900, 1, 1);
@@ -85,6 +89,10 @@ global class BatchCalculateTotalHoursOfTimeCard implements Database.Batchable<sO
             BatchUpdateContractServicesSpend obj = new BatchUpdateContractServicesSpend(servicesSpendMap);
             Database.executeBatch(obj, 50);
         }
+    }
+
+    public void setTestMode(Boolean testMode) {
+        this.testMode = testMode;
     }
 
     public Map<Id, Decimal> getServicesSpendMap() {

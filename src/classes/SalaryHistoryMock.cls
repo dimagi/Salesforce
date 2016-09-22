@@ -53,4 +53,23 @@ public class SalaryHistoryMock {
 
         return records;
     }
+
+    public static List<SalaryHistoryRecord> getMockMergeData(SFDC_Employee__c employee) {
+        System.debug('Using mock merge for Name : ' + employee.Name);
+        List<SalaryHistoryRecord> result = new List<SalaryHistoryRecord>();
+        if (employee.Name == 'emp_11') {
+            result.add(new SalaryHistoryRecord(77.43, Date.newInstance(1900, 1, 1)));
+            result.add(new SalaryHistoryRecord(99.44, Date.newInstance(2015, 11, 5)));
+            result.add(new SalaryHistoryRecord(102.67, Date.newInstance(2016, 2, 24)));
+        } else if (employee.Name == 'emp_10') {
+            result.add(new SalaryHistoryRecord(33.59, Date.newInstance(1900, 1, 1)));
+            result.add(new SalaryHistoryRecord(50.39, Date.newInstance(2015, 11, 05)));
+            result.add(new SalaryHistoryRecord(52.03, Date.newInstance(2016, 2, 24)));
+        } else if (employee.Name == 'emp_9') {
+            result.add(new SalaryHistoryRecord(57.83, Date.newInstance(1900, 1, 1)));
+            result.add(new SalaryHistoryRecord(113.39, Date.newInstance(2015, 11, 12)));
+            result.add(new SalaryHistoryRecord(117.08, Date.newInstance(2016, 2, 24)));
+        }
+        return result;
+    }
 }

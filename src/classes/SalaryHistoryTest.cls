@@ -91,7 +91,7 @@ public class SalaryHistoryTest {
         SalaryHistoryHelper salaryHelper = new SalaryHistoryHelper();
         SFDC_Employee__c employee = new SFDC_Employee__c(Name = 'emp_6', Salary__c = 60000);
 
-        List<SalaryHistoryRecord> historyList = salaryHelper.mergeSalaryHistory(employee);
+        List<SalaryHistoryRecord> historyList = salaryHelper.mergeSalaryHistory(employee, false);
 
         System.assertEquals(5, historyList.size());
 
@@ -121,7 +121,7 @@ public class SalaryHistoryTest {
                                                          Effective_Salary_Date__c = Date.newInstance(2013, 1, 1),
                                                          Effective_Exchange_Rate_Date__c = Date.newInstance(2011, 1, 1));
 
-        List<SalaryHistoryRecord> historyList = salaryHelper.mergeSalaryHistory(employee);
+        List<SalaryHistoryRecord> historyList = salaryHelper.mergeSalaryHistory(employee, false);
 
         System.assertEquals(1, historyList.size());
         System.assertEquals(SalaryHistoryHelper.calculateSalary(45000, 2), historyList.get(0).getValue());
@@ -138,7 +138,7 @@ public class SalaryHistoryTest {
                                                          Effective_Salary_Date__c = Date.newInstance(2010, 1, 1),
                                                          Effective_Exchange_Rate_Date__c = Date.newInstance(2013, 6, 1));
 
-        List<SalaryHistoryRecord> historyList = salaryHelper.mergeSalaryHistory(employee);
+        List<SalaryHistoryRecord> historyList = salaryHelper.mergeSalaryHistory(employee, false);
 
         System.assertEquals(2, historyList.size());
         System.assertEquals(SalaryHistoryHelper.calculateSalary(200000, 4), historyList.get(0).getValue());
@@ -263,4 +263,159 @@ public class SalaryHistoryTest {
         dcontractFromDB = [SELECT Id, Name, Services_Spend__c FROM DContract__c WHERE Id =: parent_2.Id];
         System.assertEquals(1049.87, dcontractFromDB.Services_Spend__c);
     }
+
+    static testMethod void testCalcualtionScale() {
+        Test.startTest();
+        DContract__c parent = new DContract__c(Name = 'Sample Parent', Status__c = 'Active', Requires_Report_Out__c = 'No', Intracompany_Sub_contract__c = 'No');
+        insert parent;
+
+        SFDC_Employee__c employee_1 = new SFDC_Employee__c(Name = 'emp_9', Salary__c = 101854.98, Exchange_Rate__c = 1);
+        SFDC_Employee__c employee_2 = new SFDC_Employee__c(Name = 'emp_10', Salary__c = 45259.16, Exchange_Rate__c = 1);
+        SFDC_Employee__c employee_3 = new SFDC_Employee__c(Name = 'emp_11', Salary__c = 89319.79, Exchange_Rate__c = 1);
+
+        insert employee_1;
+        insert employee_2;
+        insert employee_3;
+
+        List<Time_Card__c> timecards = new List<Time_Card__c>();
+        timecards.add(new Time_Card__c(Total__c = 1, Date__c = Date.newInstance(2016, 7, 3), Employee__c = employee_1.Id, Client__c = parent.Id));
+        timecards.add(new Time_Card__c(Total__c = 2.7, Date__c = Date.newInstance(2016, 7, 4), Employee__c = employee_1.Id, Client__c = parent.Id));
+        timecards.add(new Time_Card__c(Total__c = 2.8, Date__c = Date.newInstance(2016, 7, 5), Employee__c = employee_1.Id, Client__c = parent.Id));
+        timecards.add(new Time_Card__c(Total__c = 6, Date__c = Date.newInstance(2016, 7, 6), Employee__c = employee_1.Id, Client__c = parent.Id));
+        timecards.add(new Time_Card__c(Total__c = 6.2, Date__c = Date.newInstance(2016, 7, 7), Employee__c = employee_1.Id, Client__c = parent.Id));
+        timecards.add(new Time_Card__c(Total__c = 5.7, Date__c = Date.newInstance(2016, 7, 8), Employee__c = employee_1.Id, Client__c = parent.Id));
+        timecards.add(new Time_Card__c(Total__c = 0.9, Date__c = Date.newInstance(2016, 7, 9), Employee__c = employee_1.Id, Client__c = parent.Id));
+        timecards.add(new Time_Card__c(Total__c = 1, Date__c = Date.newInstance(2016, 7, 13), Employee__c = employee_1.Id, Client__c = parent.Id));
+        timecards.add(new Time_Card__c(Total__c = 6.8, Date__c = Date.newInstance(2016, 7, 14), Employee__c = employee_1.Id, Client__c = parent.Id));
+        timecards.add(new Time_Card__c(Total__c = 6.7, Date__c = Date.newInstance(2016, 7, 15), Employee__c = employee_1.Id, Client__c = parent.Id));
+        timecards.add(new Time_Card__c(Total__c = 0.8, Date__c = Date.newInstance(2016, 7, 18), Employee__c = employee_1.Id, Client__c = parent.Id));
+        timecards.add(new Time_Card__c(Total__c = 2.8, Date__c = Date.newInstance(2016, 7, 19), Employee__c = employee_1.Id, Client__c = parent.Id));
+        timecards.add(new Time_Card__c(Total__c = 2.8, Date__c = Date.newInstance(2016, 7, 19), Employee__c = employee_1.Id, Client__c = parent.Id));
+        timecards.add(new Time_Card__c(Total__c = 1.3, Date__c = Date.newInstance(2016, 7, 19), Employee__c = employee_1.Id, Client__c = parent.Id));
+        timecards.add(new Time_Card__c(Total__c = 1.2, Date__c = Date.newInstance(2016, 7, 21), Employee__c = employee_1.Id, Client__c = parent.Id));
+        timecards.add(new Time_Card__c(Total__c = 2.7, Date__c = Date.newInstance(2016, 7, 22), Employee__c = employee_1.Id, Client__c = parent.Id));
+        timecards.add(new Time_Card__c(Total__c = 1.6, Date__c = Date.newInstance(2016, 7, 25), Employee__c = employee_1.Id, Client__c = parent.Id));
+        timecards.add(new Time_Card__c(Total__c = 1.2, Date__c = Date.newInstance(2016, 7, 26), Employee__c = employee_1.Id, Client__c = parent.Id));
+        timecards.add(new Time_Card__c(Total__c = 1.5, Date__c = Date.newInstance(2016, 8, 2), Employee__c = employee_1.Id, Client__c = parent.Id));
+        timecards.add(new Time_Card__c(Total__c = 0.1, Date__c = Date.newInstance(2016, 8, 3), Employee__c = employee_1.Id, Client__c = parent.Id));
+        timecards.add(new Time_Card__c(Total__c = 2, Date__c = Date.newInstance(2016, 8, 8), Employee__c = employee_1.Id, Client__c = parent.Id));
+        timecards.add(new Time_Card__c(Total__c = 1.6, Date__c = Date.newInstance(2016, 8, 9), Employee__c = employee_1.Id, Client__c = parent.Id));
+
+        timecards.add(new Time_Card__c(Total__c = 1.1, Date__c = Date.newInstance(2016, 4, 28), Employee__c = employee_2.Id, Client__c = parent.Id));
+        timecards.add(new Time_Card__c(Total__c = 1.4, Date__c = Date.newInstance(2016, 4, 29), Employee__c = employee_2.Id, Client__c = parent.Id));
+        timecards.add(new Time_Card__c(Total__c = 0.3, Date__c = Date.newInstance(2016, 5, 2), Employee__c = employee_2.Id, Client__c = parent.Id));
+        timecards.add(new Time_Card__c(Total__c = 1.9, Date__c = Date.newInstance(2016, 5, 4), Employee__c = employee_2.Id, Client__c = parent.Id));
+        timecards.add(new Time_Card__c(Total__c = 3.6, Date__c = Date.newInstance(2016, 5, 5), Employee__c = employee_2.Id, Client__c = parent.Id));
+        timecards.add(new Time_Card__c(Total__c = 2.1, Date__c = Date.newInstance(2016, 5, 10), Employee__c = employee_2.Id, Client__c = parent.Id));
+        timecards.add(new Time_Card__c(Total__c = 0.1, Date__c = Date.newInstance(2016, 5, 10), Employee__c = employee_2.Id, Client__c = parent.Id));
+        timecards.add(new Time_Card__c(Total__c = 2.1, Date__c = Date.newInstance(2016, 5, 12), Employee__c = employee_2.Id, Client__c = parent.Id));
+        timecards.add(new Time_Card__c(Total__c = 1.4, Date__c = Date.newInstance(2016, 5, 12), Employee__c = employee_2.Id, Client__c = parent.Id));
+        timecards.add(new Time_Card__c(Total__c = 0.1, Date__c = Date.newInstance(2016, 5, 13), Employee__c = employee_2.Id, Client__c = parent.Id));
+        timecards.add(new Time_Card__c(Total__c = 1.2, Date__c = Date.newInstance(2016, 5, 16), Employee__c = employee_2.Id, Client__c = parent.Id));
+        timecards.add(new Time_Card__c(Total__c = 1.1, Date__c = Date.newInstance(2016, 5, 17), Employee__c = employee_2.Id, Client__c = parent.Id));
+        timecards.add(new Time_Card__c(Total__c = 1.3, Date__c = Date.newInstance(2016, 5, 17), Employee__c = employee_2.Id, Client__c = parent.Id));
+        timecards.add(new Time_Card__c(Total__c = 1.1, Date__c = Date.newInstance(2016, 5, 17), Employee__c = employee_2.Id, Client__c = parent.Id));
+        timecards.add(new Time_Card__c(Total__c = 1.3, Date__c = Date.newInstance(2016, 5, 17), Employee__c = employee_2.Id, Client__c = parent.Id));
+        timecards.add(new Time_Card__c(Total__c = 1.1, Date__c = Date.newInstance(2016, 5, 17), Employee__c = employee_2.Id, Client__c = parent.Id));
+        timecards.add(new Time_Card__c(Total__c = 1.3, Date__c = Date.newInstance(2016, 5, 17), Employee__c = employee_2.Id, Client__c = parent.Id));
+        timecards.add(new Time_Card__c(Total__c = 0.4, Date__c = Date.newInstance(2016, 5, 19), Employee__c = employee_2.Id, Client__c = parent.Id));
+        timecards.add(new Time_Card__c(Total__c = 0.6, Date__c = Date.newInstance(2016, 5, 19), Employee__c = employee_2.Id, Client__c = parent.Id));
+        timecards.add(new Time_Card__c(Total__c = 0.4, Date__c = Date.newInstance(2016, 5, 19), Employee__c = employee_2.Id, Client__c = parent.Id));
+        timecards.add(new Time_Card__c(Total__c = 0.6, Date__c = Date.newInstance(2016, 5, 19), Employee__c = employee_2.Id, Client__c = parent.Id));
+        timecards.add(new Time_Card__c(Total__c = 0.7, Date__c = Date.newInstance(2016, 5, 20), Employee__c = employee_2.Id, Client__c = parent.Id));
+        timecards.add(new Time_Card__c(Total__c = 0.7, Date__c = Date.newInstance(2016, 5, 20), Employee__c = employee_2.Id, Client__c = parent.Id));
+        timecards.add(new Time_Card__c(Total__c = 0.8, Date__c = Date.newInstance(2016, 5, 23), Employee__c = employee_2.Id, Client__c = parent.Id));
+        timecards.add(new Time_Card__c(Total__c = 0.3, Date__c = Date.newInstance(2016, 5, 23), Employee__c = employee_2.Id, Client__c = parent.Id));
+        timecards.add(new Time_Card__c(Total__c = 1, Date__c = Date.newInstance(2016, 5, 25), Employee__c = employee_2.Id, Client__c = parent.Id));
+        timecards.add(new Time_Card__c(Total__c = 0, Date__c = Date.newInstance(2016, 5, 31), Employee__c = employee_2.Id, Client__c = parent.Id));
+        timecards.add(new Time_Card__c(Total__c = 0.3, Date__c = Date.newInstance(2016, 6, 3), Employee__c = employee_2.Id, Client__c = parent.Id));
+        timecards.add(new Time_Card__c(Total__c = 0.5, Date__c = Date.newInstance(2016, 6, 6), Employee__c = employee_2.Id, Client__c = parent.Id));
+        timecards.add(new Time_Card__c(Total__c = 0.7, Date__c = Date.newInstance(2016, 6, 8), Employee__c = employee_2.Id, Client__c = parent.Id));
+        timecards.add(new Time_Card__c(Total__c = 0.8, Date__c = Date.newInstance(2016, 6, 8), Employee__c = employee_2.Id, Client__c = parent.Id));
+        timecards.add(new Time_Card__c(Total__c = 2.3, Date__c = Date.newInstance(2016, 7, 1), Employee__c = employee_2.Id, Client__c = parent.Id));
+        timecards.add(new Time_Card__c(Total__c = 0.2, Date__c = Date.newInstance(2016, 7, 6), Employee__c = employee_2.Id, Client__c = parent.Id));
+        timecards.add(new Time_Card__c(Total__c = 1.3, Date__c = Date.newInstance(2016, 7, 6), Employee__c = employee_2.Id, Client__c = parent.Id));
+        timecards.add(new Time_Card__c(Total__c = 1.2, Date__c = Date.newInstance(2016, 7, 7), Employee__c = employee_2.Id, Client__c = parent.Id));
+        timecards.add(new Time_Card__c(Total__c = 1.2, Date__c = Date.newInstance(2016, 7, 7), Employee__c = employee_2.Id, Client__c = parent.Id));
+        timecards.add(new Time_Card__c(Total__c = 1.1, Date__c = Date.newInstance(2016, 7, 8), Employee__c = employee_2.Id, Client__c = parent.Id));
+        timecards.add(new Time_Card__c(Total__c = 1, Date__c = Date.newInstance(2016, 7, 8), Employee__c = employee_2.Id, Client__c = parent.Id));
+        timecards.add(new Time_Card__c(Total__c = 1, Date__c = Date.newInstance(2016, 7, 8), Employee__c = employee_2.Id, Client__c = parent.Id));
+        timecards.add(new Time_Card__c(Total__c = 0.6, Date__c = Date.newInstance(2016, 7, 25), Employee__c = employee_2.Id, Client__c = parent.Id));
+        timecards.add(new Time_Card__c(Total__c = 2.2, Date__c = Date.newInstance(2016, 7, 26), Employee__c = employee_2.Id, Client__c = parent.Id));
+        timecards.add(new Time_Card__c(Total__c = 1.7, Date__c = Date.newInstance(2016, 7, 27), Employee__c = employee_2.Id, Client__c = parent.Id));
+        timecards.add(new Time_Card__c(Total__c = 0.9, Date__c = Date.newInstance(2016, 8, 2), Employee__c = employee_2.Id, Client__c = parent.Id));
+        timecards.add(new Time_Card__c(Total__c = 5.2, Date__c = Date.newInstance(2016, 8, 3), Employee__c = employee_2.Id, Client__c = parent.Id));
+        timecards.add(new Time_Card__c(Total__c = 0.7, Date__c = Date.newInstance(2016, 8, 4), Employee__c = employee_2.Id, Client__c = parent.Id));
+        timecards.add(new Time_Card__c(Total__c = 2.5, Date__c = Date.newInstance(2016, 8, 4), Employee__c = employee_2.Id, Client__c = parent.Id));
+        timecards.add(new Time_Card__c(Total__c = 2, Date__c = Date.newInstance(2016, 8, 5), Employee__c = employee_2.Id, Client__c = parent.Id));
+        timecards.add(new Time_Card__c(Total__c = 1.7, Date__c = Date.newInstance(2016, 8, 5), Employee__c = employee_2.Id, Client__c = parent.Id));
+        timecards.add(new Time_Card__c(Total__c = 1.4, Date__c = Date.newInstance(2016, 8, 9), Employee__c = employee_2.Id, Client__c = parent.Id));
+        timecards.add(new Time_Card__c(Total__c = 2.2, Date__c = Date.newInstance(2016, 8, 10), Employee__c = employee_2.Id, Client__c = parent.Id));
+        timecards.add(new Time_Card__c(Total__c = 1, Date__c = Date.newInstance(2016, 8, 17), Employee__c = employee_2.Id, Client__c = parent.Id));
+        timecards.add(new Time_Card__c(Total__c = 0.4, Date__c = Date.newInstance(2016, 8, 17), Employee__c = employee_2.Id, Client__c = parent.Id));
+        timecards.add(new Time_Card__c(Total__c = 0.5, Date__c = Date.newInstance(2016, 8, 18), Employee__c = employee_2.Id, Client__c = parent.Id));
+        timecards.add(new Time_Card__c(Total__c = 0.5, Date__c = Date.newInstance(2016, 8, 18), Employee__c = employee_2.Id, Client__c = parent.Id));
+        timecards.add(new Time_Card__c(Total__c = 2.2, Date__c = Date.newInstance(2016, 8, 19), Employee__c = employee_2.Id, Client__c = parent.Id));
+        timecards.add(new Time_Card__c(Total__c = 1.7, Date__c = Date.newInstance(2016, 8, 19), Employee__c = employee_2.Id, Client__c = parent.Id));
+        timecards.add(new Time_Card__c(Total__c = 1.3, Date__c = Date.newInstance(2016, 8, 23), Employee__c = employee_2.Id, Client__c = parent.Id));
+        timecards.add(new Time_Card__c(Total__c = 0.7, Date__c = Date.newInstance(2016, 8, 23), Employee__c = employee_2.Id, Client__c = parent.Id));
+        timecards.add(new Time_Card__c(Total__c = 2, Date__c = Date.newInstance(2016, 8, 24), Employee__c = employee_2.Id, Client__c = parent.Id));
+        timecards.add(new Time_Card__c(Total__c = 1.9, Date__c = Date.newInstance(2016, 8, 24), Employee__c = employee_2.Id, Client__c = parent.Id));
+        timecards.add(new Time_Card__c(Total__c = 1, Date__c = Date.newInstance(2016, 8, 25), Employee__c = employee_2.Id, Client__c = parent.Id));
+        timecards.add(new Time_Card__c(Total__c = 5.5, Date__c = Date.newInstance(2016, 8, 25), Employee__c = employee_2.Id, Client__c = parent.Id));
+        timecards.add(new Time_Card__c(Total__c = 6, Date__c = Date.newInstance(2016, 8, 26), Employee__c = employee_2.Id, Client__c = parent.Id));
+        timecards.add(new Time_Card__c(Total__c = 1, Date__c = Date.newInstance(2016, 8, 26), Employee__c = employee_2.Id, Client__c = parent.Id));
+        timecards.add(new Time_Card__c(Total__c = 0.4, Date__c = Date.newInstance(2016, 8, 29), Employee__c = employee_2.Id, Client__c = parent.Id));
+        timecards.add(new Time_Card__c(Total__c = 2, Date__c = Date.newInstance(2016, 8, 30), Employee__c = employee_2.Id, Client__c = parent.Id));
+        timecards.add(new Time_Card__c(Total__c = 0.5, Date__c = Date.newInstance(2016, 8, 31), Employee__c = employee_2.Id, Client__c = parent.Id));
+        timecards.add(new Time_Card__c(Total__c = 2, Date__c = Date.newInstance(2016, 8, 31), Employee__c = employee_2.Id, Client__c = parent.Id));
+        timecards.add(new Time_Card__c(Total__c = 1, Date__c = Date.newInstance(2016, 8, 31), Employee__c = employee_2.Id, Client__c = parent.Id));
+        timecards.add(new Time_Card__c(Total__c = 0.6, Date__c = Date.newInstance(2016, 8, 31), Employee__c = employee_2.Id, Client__c = parent.Id));
+        timecards.add(new Time_Card__c(Total__c = 0.8, Date__c = Date.newInstance(2016, 9, 1), Employee__c = employee_2.Id, Client__c = parent.Id));
+        timecards.add(new Time_Card__c(Total__c = 2, Date__c = Date.newInstance(2016, 9, 1), Employee__c = employee_2.Id, Client__c = parent.Id));
+        timecards.add(new Time_Card__c(Total__c = 0.9, Date__c = Date.newInstance(2016, 9, 2), Employee__c = employee_2.Id, Client__c = parent.Id));
+        timecards.add(new Time_Card__c(Total__c = 2.3, Date__c = Date.newInstance(2016, 9, 2), Employee__c = employee_2.Id, Client__c = parent.Id));
+        timecards.add(new Time_Card__c(Total__c = 1.7, Date__c = Date.newInstance(2016, 9, 12), Employee__c = employee_2.Id, Client__c = parent.Id));
+
+        timecards.add(new Time_Card__c(Total__c = 1.9, Date__c = Date.newInstance(2016, 3, 23), Employee__c = employee_3.Id, Client__c = parent.Id));
+        timecards.add(new Time_Card__c(Total__c = 1.3, Date__c = Date.newInstance(2016, 4, 1), Employee__c = employee_3.Id, Client__c = parent.Id));
+        timecards.add(new Time_Card__c(Total__c = 1, Date__c = Date.newInstance(2016, 5, 5), Employee__c = employee_3.Id, Client__c = parent.Id));
+        timecards.add(new Time_Card__c(Total__c = 0.9, Date__c = Date.newInstance(2016, 5, 10), Employee__c = employee_3.Id, Client__c = parent.Id));
+        timecards.add(new Time_Card__c(Total__c = 1, Date__c = Date.newInstance(2016, 5, 13), Employee__c = employee_3.Id, Client__c = parent.Id));
+        timecards.add(new Time_Card__c(Total__c = 1, Date__c = Date.newInstance(2016, 5, 18), Employee__c = employee_3.Id, Client__c = parent.Id));
+        timecards.add(new Time_Card__c(Total__c = 1, Date__c = Date.newInstance(2016, 5, 18), Employee__c = employee_3.Id, Client__c = parent.Id));
+        timecards.add(new Time_Card__c(Total__c = 1, Date__c = Date.newInstance(2016, 5, 18), Employee__c = employee_3.Id, Client__c = parent.Id));
+        timecards.add(new Time_Card__c(Total__c = 1.1, Date__c = Date.newInstance(2016, 5, 31), Employee__c = employee_3.Id, Client__c = parent.Id));
+        timecards.add(new Time_Card__c(Total__c = 0.5, Date__c = Date.newInstance(2016, 6, 6), Employee__c = employee_3.Id, Client__c = parent.Id));
+        timecards.add(new Time_Card__c(Total__c = 0.2, Date__c = Date.newInstance(2016, 6, 27), Employee__c = employee_3.Id, Client__c = parent.Id));
+        timecards.add(new Time_Card__c(Total__c = 0.3, Date__c = Date.newInstance(2016, 7, 7), Employee__c = employee_3.Id, Client__c = parent.Id));
+        timecards.add(new Time_Card__c(Total__c = 1, Date__c = Date.newInstance(2016, 7, 26), Employee__c = employee_3.Id, Client__c = parent.Id));
+        timecards.add(new Time_Card__c(Total__c = 0.6, Date__c = Date.newInstance(2016, 7, 28), Employee__c = employee_3.Id, Client__c = parent.Id));
+        timecards.add(new Time_Card__c(Total__c = 0.5, Date__c = Date.newInstance(2016, 8, 3), Employee__c = employee_3.Id, Client__c = parent.Id));
+        timecards.add(new Time_Card__c(Total__c = 0.5, Date__c = Date.newInstance(2016, 8, 18), Employee__c = employee_3.Id, Client__c = parent.Id));
+        timecards.add(new Time_Card__c(Total__c = 0.5, Date__c = Date.newInstance(2016, 8, 23), Employee__c = employee_3.Id, Client__c = parent.Id));
+        timecards.add(new Time_Card__c(Total__c = 0.7, Date__c = Date.newInstance(2016, 8, 31), Employee__c = employee_3.Id, Client__c = parent.Id));
+        timecards.add(new Time_Card__c(Total__c = 0.5, Date__c = Date.newInstance(2016, 9, 12), Employee__c = employee_3.Id, Client__c = parent.Id));
+
+        insert timecards;
+
+
+        BatchCalculateTotalHoursOfTimeCard batch1 = new BatchCalculateTotalHoursOfTimeCard();
+        batch1.setTestMode(true);
+        Database.QueryLocatorIterator iter = batch1.start(null).iterator();
+        List<sObject> testData = new List<sObject>();
+        while (iter.hasNext()) {
+            testData.add(iter.next());
+        }
+        System.debug('Time cards : ' + testData.size());
+        batch1.execute(null, testData);
+        BatchUpdateContractServicesSpend batch2 = new BatchUpdateContractServicesSpend(batch1.getServicesSpendMap());
+        batch2.execute(null, batch2.start(null));
+
+        Test.stopTest();
+
+        DContract__c dcontractFromDB = [SELECT Id, Name, Services_Spend__c FROM DContract__c WHERE Id =: parent.Id];
+        System.assertEquals(13780.155, dcontractFromDB.Services_Spend__c);
+    }
+
 }

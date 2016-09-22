@@ -1,7 +1,7 @@
 /**
  * Helper class for fetching salary history for employees
  */
-public class SalaryHistoryHelper {
+public without sharing class SalaryHistoryHelper {
 
     /**
      * Builds employee salary and exchange rate history.
@@ -89,7 +89,13 @@ public class SalaryHistoryHelper {
         return salaryList;
     }
 
-    public List<SalaryHistoryRecord> mergeSalaryHistory(SFDC_Employee__c employee) {
+    public List<SalaryHistoryRecord> mergeSalaryHistory(SFDC_Employee__c employee, Boolean testMode) {
+        System.debug('Using Mode : ' + testMode + ' for Name : ' + employee.Name);
+        if (testMode == true) {
+            System.debug('Using mock for Name : ' + employee.Name);
+            return SalaryHistoryMock.getMockMergeData(employee);
+        }
+
         List<SalaryHistoryRecord> salary = getHistoryForEmployee(employee, 'Salary__c', 'Effective_Salary_Date__c');
         List<SalaryHistoryRecord> exchangeRate = getHistoryForEmployee(employee, 'Exchange_Rate__c', 'Effective_Exchange_Rate_Date__c');
         List<SalaryHistoryRecord> result = new List<SalaryHistoryRecord>();
