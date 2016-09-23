@@ -12,7 +12,26 @@ public with sharing class LeadConversionController {
     }
 
     public PageReference doConversion() {
+        Database.LeadConvert lc = new Database.LeadConvert();
+        lc.setLeadId(l.Id);
+        LeadStatus convertStatus = [SELECT Id, MasterLabel FROM LeadStatus WHERE IsConverted = true LIMIT 1];
+        lc.setConvertedStatus(convertStatus.MasterLabel);
+        Database.LeadConvertResult lcr = Database.convertLead(lc);
+        if (lcr.isSuccess()) {
 
+            // TODO populate new fields to OPP and Account!!!
+
+            PageReference contrPage = new ApexPages.StandardController(l).view();
+            contrPage.setRedirect(true);
+            return contrPage;
+        } else {
+            Database.Error[] errors = lcr.getErrors();
+            String message = '';
+            if (errors.size() > 0) {
+                message += errors[0].getMessage();
+            }
+            ApexPages.addMessage(new ApexPages.message(ApexPages.severity.ERROR, 'Cannot conver lead : ' + message + '.'));
+        }
         return null;
     }
 
