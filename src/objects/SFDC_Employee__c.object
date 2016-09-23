@@ -219,6 +219,79 @@
         <type>Lookup</type>
     </fields>
     <fields>
+        <fullName>COL_Location__c</fullName>
+        <externalId>false</externalId>
+        <inlineHelpText>Select the location used for payscale COL calculations</inlineHelpText>
+        <label>COL Location</label>
+        <picklist>
+            <picklistValues>
+                <fullName>Antigua</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Boston</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Calgary</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Cape Town</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Dakar</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>DC</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Delhi</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Harare</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>LA/Seattle</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Lusaka</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Maputo</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Montreal</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Nairobi</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>San Jose</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Yangon</fullName>
+                <default>false</default>
+            </picklistValues>
+            <restrictedPicklist>true</restrictedPicklist>
+            <sorted>false</sorted>
+        </picklist>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+    </fields>
+    <fields>
         <fullName>Call_Center__c</fullName>
         <externalId>false</externalId>
         <label>Call Center #</label>
@@ -650,6 +723,14 @@
                 <fullName>Zambia</fullName>
                 <default>false</default>
             </picklistValues>
+            <picklistValues>
+                <fullName>Zimbabwe</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Tunisian</fullName>
+                <default>false</default>
+            </picklistValues>
             <sorted>false</sorted>
         </picklist>
         <trackHistory>false</trackHistory>
@@ -1055,6 +1136,24 @@
         <visibleLines>3</visibleLines>
     </fields>
     <fields>
+        <fullName>Effective_Exchange_Rate_Date__c</fullName>
+        <externalId>false</externalId>
+        <label>Effective Exchange Rate Date</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>Effective_Salary_Date__c</fullName>
+        <externalId>false</externalId>
+        <label>Effective Salary Date</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Date</type>
+    </fields>
+    <fields>
         <fullName>Email_Address__c</fullName>
         <externalId>false</externalId>
         <label>Dimagi Email Address</label>
@@ -1418,6 +1517,7 @@
     <fields>
         <fullName>Hourly_Rate_Time_Reports__c</fullName>
         <externalId>false</externalId>
+        <inlineHelpText>For employees paid hourly, based on on FB time reports</inlineHelpText>
         <label>Hourly Rate (Time Reports)</label>
         <precision>18</precision>
         <required>false</required>
@@ -1433,7 +1533,7 @@
         <label>Hours Per Pay Period</label>
         <precision>18</precision>
         <required>false</required>
-        <scale>0</scale>
+        <scale>2</scale>
         <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Number</type>
@@ -1552,6 +1652,18 @@
         <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>LOCAL_EMERGENCY_CONTACT__c</fullName>
+        <description>Local emergency contact, primarily for employees in country offices</description>
+        <externalId>false</externalId>
+        <label>LOCAL EMERGENCY CONTACT</label>
+        <length>50</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
     </fields>
     <fields>
         <fullName>Language_1_Proficiency__c</fullName>
@@ -1781,6 +1893,56 @@
         <type>Currency</type>
     </fields>
     <fields>
+        <fullName>Local_Emergency_Contact_Email__c</fullName>
+        <description>Email address for local emergency contact</description>
+        <externalId>false</externalId>
+        <label>Local Emergency Contact Email</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Email</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Local_Emergency_Contact_Phone__c</fullName>
+        <description>Phone number for local emergency contact</description>
+        <externalId>false</externalId>
+        <label>Local Emergency Contact Phone</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Phone</type>
+    </fields>
+    <fields>
+        <fullName>Local_Emergency_Contact_Relationship__c</fullName>
+        <description>Relationship to employee for local emergency contact</description>
+        <externalId>false</externalId>
+        <label>Local Emergency Contact Relationship</label>
+        <picklist>
+            <picklistValues>
+                <fullName>Significant Other</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Parent</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Child</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Other</fullName>
+                <default>false</default>
+            </picklistValues>
+            <restrictedPicklist>true</restrictedPicklist>
+            <sorted>false</sorted>
+        </picklist>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+    </fields>
+    <fields>
         <fullName>Local_Loaded_Daily_Rate__c</fullName>
         <description>Calculates the Daily loaded rate in local currency</description>
         <externalId>false</externalId>
@@ -1936,10 +2098,6 @@
             </picklistValues>
             <picklistValues>
                 <fullName>EFT</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>NEFT</fullName>
                 <default>false</default>
             </picklistValues>
             <picklistValues>
@@ -2339,6 +2497,16 @@
         <unique>false</unique>
     </fields>
     <fields>
+        <fullName>Signature_on_File__c</fullName>
+        <defaultValue>false</defaultValue>
+        <description>Dimagi has electronic copy of employee&apos;s signature on file</description>
+        <externalId>false</externalId>
+        <label>Signature on File</label>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
         <fullName>Signed_Travel_Waiver__c</fullName>
         <defaultValue>false</defaultValue>
         <externalId>false</externalId>
@@ -2465,6 +2633,34 @@
         <unique>false</unique>
     </fields>
     <fields>
+        <fullName>TEMP_Annual_Local_Salary__c</fullName>
+        <description>TEMPORARY FOR OPS During 8/2016 Payroll Transition</description>
+        <externalId>false</externalId>
+        <inlineHelpText>TEMPORARY FOR OPS During 8/2016 Payroll Transition</inlineHelpText>
+        <label>TEMP Annual Local Salary</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>TEMP_Pay_Rate_Per_Pay_Period__c</fullName>
+        <description>TEMPORARY FOR OPS during 8/2016 pay updates</description>
+        <externalId>false</externalId>
+        <inlineHelpText>TEMPORARY FOR OPS during 8/2016 pay updates</inlineHelpText>
+        <label>TEMP Pay Rate Per Pay Period</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
         <fullName>Tax_Address_City__c</fullName>
         <externalId>false</externalId>
         <label>Tax Address City</label>
@@ -2588,15 +2784,6 @@
         <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Currency</type>
-    </fields>
-    <fields>
-        <fullName>Travel_Insurance_End_Date__c</fullName>
-        <externalId>false</externalId>
-        <label>Travel Insurance End Date</label>
-        <required>false</required>
-        <trackHistory>false</trackHistory>
-        <trackTrending>false</trackTrending>
-        <type>Date</type>
     </fields>
     <fields>
         <fullName>USD_Currency_Per_Pay_period__c</fullName>
@@ -2878,4 +3065,24 @@
         <searchResultsAdditionalFields>CREATED_DATE</searchResultsAdditionalFields>
     </searchLayouts>
     <sharingModel>ReadWrite</sharingModel>
+    <validationRules>
+        <fullName>ExchangeRateHistoryValidation</fullName>
+        <active>false</active>
+        <errorConditionFormula>(ISNEW() &amp;&amp; (
+(ISNULL(Exchange_Rate__c) &amp;&amp; NOT(ISNULL(Effective_Exchange_Rate_Date__c))) ||
+(ISNULL(Effective_Exchange_Rate_Date__c) &amp;&amp; NOT(ISNULL(Exchange_Rate__c)))))
+|| (ISCHANGED(Exchange_Rate__c) &amp;&amp; NOT(ISCHANGED(Effective_Exchange_Rate_Date__c)))
+|| (NOT(ISCHANGED(Exchange_Rate__c)) &amp;&amp; ISCHANGED(Effective_Exchange_Rate_Date__c))</errorConditionFormula>
+        <errorMessage>You must update Exchange Rate with Exchange Rate Effective Date</errorMessage>
+    </validationRules>
+    <validationRules>
+        <fullName>SalaryHistoryValidation</fullName>
+        <active>false</active>
+        <errorConditionFormula>(ISNEW() &amp;&amp; (
+(ISNULL(Salary__c) &amp;&amp; NOT(ISNULL(Effective_Salary_Date__c))) ||
+(ISNULL(Effective_Salary_Date__c) &amp;&amp; NOT(ISNULL(Salary__c)))))
+|| (ISCHANGED(Salary__c) &amp;&amp; NOT(ISCHANGED(Effective_Salary_Date__c)))
+|| (NOT(ISCHANGED(Salary__c)) &amp;&amp; ISCHANGED(Effective_Salary_Date__c))</errorConditionFormula>
+        <errorMessage>You must update Salary with Effective Date</errorMessage>
+    </validationRules>
 </CustomObject>

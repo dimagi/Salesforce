@@ -977,7 +977,7 @@ If any blanks in variables is set to 100%.</inlineHelpText>
         <formula>Services_Budget__c *  of_Services_budget_for_GS__c</formula>
         <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
         <inlineHelpText>Services Budget * % of Serivces Budget for GS</inlineHelpText>
-        <label>GS Services Budget</label>
+        <label>GS Project Services Budget</label>
         <precision>18</precision>
         <required>false</required>
         <scale>0</scale>
@@ -1164,7 +1164,7 @@ Total_Services_Work_Remaining__c * (9 / (MONTH(Contract_End_Date__c) + 12*YEAR(C
         <label>Implementation Type</label>
         <picklist>
             <picklistValues>
-                <fullName>Self Starters</fullName>
+                <fullName>Self Service</fullName>
                 <default>false</default>
             </picklistValues>
             <picklistValues>
@@ -1942,7 +1942,7 @@ Total_Services_Work_Remaining__c * (9 / (MONTH(Contract_End_Date__c) + 12*YEAR(C
         <formula>(Total_Amount_of_Contract__c - Contract_Expense_BUDGET__c) * (1-Expected_Buffer__c )</formula>
         <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
         <inlineHelpText>(Total Contract Amount - Expense Budget) * (1- Expected % Buffer)</inlineHelpText>
-        <label>Services Budget</label>
+        <label>Project Services Budget</label>
         <precision>18</precision>
         <required>false</required>
         <scale>0</scale>
@@ -2457,7 +2457,7 @@ Total_Services_Work_Remaining__c * (9 / (MONTH(Contract_End_Date__c) + 12*YEAR(C
         <formula>Services_Budget__c *(1- of_Services_budget_for_GS__c )</formula>
         <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
         <inlineHelpText>Services Budget * (1 - % of Services budget for GS)</inlineHelpText>
-        <label>Tech Services Budget</label>
+        <label>Tech Project Services Budget</label>
         <precision>18</precision>
         <required>false</required>
         <scale>0</scale>
@@ -2694,6 +2694,21 @@ Total_Services_Work_Remaining__c * (9 / (MONTH(Contract_End_Date__c) + 12*YEAR(C
         <type>Picklist</type>
     </fields>
     <fields>
+        <fullName>Weighted_Efficiency__c</fullName>
+        <description>Execution Efficiency * Project Services Budget</description>
+        <externalId>false</externalId>
+        <formula>if(Execution_Efficiency__c &gt; 2, 2 * Services_Budget__c, Execution_Efficiency__c * Services_Budget__c)</formula>
+        <inlineHelpText>Execution Efficiency * Project Services Budget</inlineHelpText>
+        <label>Weighted Efficiency</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
         <fullName>Workflow_Escalation_Enabled__c</fullName>
         <defaultValue>false</defaultValue>
         <externalId>false</externalId>
@@ -2905,6 +2920,20 @@ Total_Non_Expense_Income_Remaining__c * (9 / (MONTH(Contract_End_Date__c) + 12*Y
         <type>Currency</type>
     </fields>
     <fields>
+        <fullName>executive_sponsor__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <externalId>false</externalId>
+        <inlineHelpText>If this opportunity has innovation or strategic value not well captured through other impact, team, or profit metrics, it requires an executive sponsor.</inlineHelpText>
+        <label>Executive Sponsor</label>
+        <referenceTo>SFDC_Employee__c</referenceTo>
+        <relationshipLabel>Contracts</relationshipLabel>
+        <relationshipName>custom_contract_sponsor</relationshipName>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
         <fullName>of_Services_budget_for_GS__c</fullName>
         <defaultValue>1</defaultValue>
         <description>This is the % of the remaining budget (after removing expenses and buffer %) that is planned for GS work</description>
@@ -2941,7 +2970,9 @@ Total_Non_Expense_Income_Remaining__c * (9 / (MONTH(Contract_End_Date__c) + 12*Y
     <listViews>
         <fullName>All</fullName>
         <columns>NAME</columns>
-        <columns>ALL_TIME_Income__c</columns>
+        <columns>Country_Text__c</columns>
+        <columns>Maturity_implementation__c</columns>
+        <columns>Prime_Contracting_Business_Unit__c</columns>
         <columns>Status__c</columns>
         <columns>Parent_Contract__c</columns>
         <columns>Requires_Report_Out__c</columns>
@@ -2950,10 +2981,10 @@ Total_Non_Expense_Income_Remaining__c * (9 / (MONTH(Contract_End_Date__c) + 12*Y
         <columns>OWNER.ALIAS</columns>
         <columns>Account__c</columns>
         <columns>Salesforce_Contract_ID__c</columns>
-        <columns>Prime_Contracting_Business_Unit__c</columns>
-        <columns>Country_Text__c</columns>
+        <columns>Contracting_Business_Unit__c</columns>
+        <columns>ALL_TIME_Income__c</columns>
         <filterScope>Everything</filterScope>
-        <label>All</label>
+        <label>All by Country</label>
     </listViews>
     <listViews>
         <fullName>Cash_Flow_3Month_12Month</fullName>
@@ -3076,6 +3107,7 @@ Total_Non_Expense_Income_Remaining__c * (9 / (MONTH(Contract_End_Date__c) + 12*Y
         <columns>NAME</columns>
         <columns>Product_Text__c</columns>
         <columns>Project_Manager__c</columns>
+        <columns>Backstop__c</columns>
         <columns>Contract_Start_Date__c</columns>
         <columns>Summary_Overview__c</columns>
         <columns>Maturity_implementation__c</columns>
@@ -3093,6 +3125,22 @@ Total_Non_Expense_Income_Remaining__c * (9 / (MONTH(Contract_End_Date__c) + 12*Y
             <value>DSA</value>
         </filters>
         <label>DSA Contracts</label>
+    </listViews>
+    <listViews>
+        <fullName>DSA_Contracts_Complete</fullName>
+        <columns>NAME</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Prime_Contracting_Business_Unit__c</field>
+            <operation>equals</operation>
+            <value>DSA</value>
+        </filters>
+        <filters>
+            <field>Status__c</field>
+            <operation>equals</operation>
+            <value>Complete</value>
+        </filters>
+        <label>DSA Contracts - Complete</label>
     </listViews>
     <listViews>
         <fullName>DSA_Contracts_Open</fullName>

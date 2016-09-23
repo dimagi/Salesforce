@@ -36,6 +36,7 @@
     </fields>
     <fields>
         <fullName>Global_Services_Backstop__c</fullName>
+        <description>Note, the update of this field will not change the existing relationship between the contract and a contact</description>
         <externalId>false</externalId>
         <label>Global Services Backstop</label>
         <required>false</required>

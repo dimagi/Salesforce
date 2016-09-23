@@ -1382,18 +1382,18 @@
             <controllingField>LeadSource</controllingField>
             <picklistValues>
                 <fullName>Internal referral (within the same organization)</fullName>
-                <controllingFieldValues>Inbound - Referral</controllingFieldValues>
                 <default>false</default>
+                <controllingFieldValues>Inbound - Referral</controllingFieldValues>
             </picklistValues>
             <picklistValues>
                 <fullName>External referral (to a different organization)</fullName>
-                <controllingFieldValues>Inbound - Referral</controllingFieldValues>
                 <default>false</default>
+                <controllingFieldValues>Inbound - Referral</controllingFieldValues>
             </picklistValues>
             <picklistValues>
                 <fullName>Dimagi referral (someone from Dimagi referred this lead)</fullName>
-                <controllingFieldValues>Inbound - Referral</controllingFieldValues>
                 <default>false</default>
+                <controllingFieldValues>Inbound - Referral</controllingFieldValues>
             </picklistValues>
             <sorted>false</sorted>
         </picklist>
@@ -1411,48 +1411,48 @@
             <controllingField>Status__c</controllingField>
             <picklistValues>
                 <fullName>Recruiting / Hiring</fullName>
-                <controllingFieldValues>Passive &amp; Friendly</controllingFieldValues>
                 <default>false</default>
+                <controllingFieldValues>7- Passive &amp; Friendly</controllingFieldValues>
             </picklistValues>
             <picklistValues>
                 <fullName>Stopped responding</fullName>
-                <controllingFieldValues>Passive &amp; Friendly</controllingFieldValues>
                 <default>false</default>
+                <controllingFieldValues>7- Passive &amp; Friendly</controllingFieldValues>
             </picklistValues>
             <picklistValues>
                 <fullName>Timeline &gt; 6 months out</fullName>
-                <controllingFieldValues>Passive &amp; Friendly</controllingFieldValues>
                 <default>false</default>
+                <controllingFieldValues>7- Passive &amp; Friendly</controllingFieldValues>
             </picklistValues>
             <picklistValues>
                 <fullName>Existing client / project</fullName>
-                <controllingFieldValues>Passive &amp; Friendly</controllingFieldValues>
                 <default>false</default>
+                <controllingFieldValues>7- Passive &amp; Friendly</controllingFieldValues>
             </picklistValues>
             <picklistValues>
                 <fullName>No response</fullName>
-                <controllingFieldValues>Passive &amp; Unfriendly</controllingFieldValues>
                 <default>false</default>
+                <controllingFieldValues>8- Passive &amp; Unfriendly</controllingFieldValues>
             </picklistValues>
             <picklistValues>
                 <fullName>Email opt-out</fullName>
-                <controllingFieldValues>Passive &amp; Unfriendly</controllingFieldValues>
                 <default>false</default>
+                <controllingFieldValues>8- Passive &amp; Unfriendly</controllingFieldValues>
             </picklistValues>
             <picklistValues>
                 <fullName>Spam</fullName>
-                <controllingFieldValues>Passive &amp; Unfriendly</controllingFieldValues>
                 <default>false</default>
+                <controllingFieldValues>8- Passive &amp; Unfriendly</controllingFieldValues>
             </picklistValues>
             <picklistValues>
                 <fullName>Competitor</fullName>
-                <controllingFieldValues>Passive &amp; Unfriendly</controllingFieldValues>
                 <default>false</default>
+                <controllingFieldValues>8- Passive &amp; Unfriendly</controllingFieldValues>
             </picklistValues>
             <picklistValues>
                 <fullName>Partner program</fullName>
-                <controllingFieldValues>Passive &amp; Friendly</controllingFieldValues>
                 <default>false</default>
+                <controllingFieldValues>7- Passive &amp; Friendly</controllingFieldValues>
             </picklistValues>
             <sorted>false</sorted>
         </picklist>
@@ -1486,6 +1486,17 @@
         <trackFeedHistory>false</trackFeedHistory>
         <trackHistory>true</trackHistory>
         <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>Date_1st_Next_activity_date_set_for_opps__c</fullName>
+        <description>Field automatically filled in by Hubspot. Date of First &quot;Next activity date&quot; known, after the contact became an opps, i.e first day at which the follow-up call is scheduled</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Field automatically filled in by Hubspot. Date of First &quot;Next activity date&quot; known, after the contact became an opps, i.e first day at which the follow-up call is scheduled</inlineHelpText>
+        <label>Date 1st Next activity date set for opps</label>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <type>DateTime</type>
     </fields>
     <fields>
         <fullName>Days_w_o_Activity__c</fullName>
@@ -1592,6 +1603,15 @@
         <unique>false</unique>
     </fields>
     <fields>
+        <fullName>HS_Became_a_Sales_Qualified_Lead_Date__c</fullName>
+        <externalId>false</externalId>
+        <label>HS -Became a Sales Qualified Lead Date</label>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <type>Date</type>
+    </fields>
+    <fields>
         <fullName>HasOptedOutOfEmail</fullName>
         <trackFeedHistory>false</trackFeedHistory>
         <trackHistory>false</trackHistory>
@@ -1605,6 +1625,138 @@
         <fullName>HomePhone</fullName>
         <trackFeedHistory>false</trackFeedHistory>
         <trackHistory>false</trackHistory>
+    </fields>
+    <fields>
+        <fullName>Hubspot_Date_of_last_HQ_login__c</fullName>
+        <description>Date of last login to CCHQ</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Date of last login to CCHQ</inlineHelpText>
+        <label>Hubspot - Date of last HQ login</label>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>Hubspot_First_Conversion_Clustered__c</fullName>
+        <description>Automatically filled in by Hubspot. Indicates the type of Hubspot form the contact first submitted to become a Hubspot lead. These type of forms got clustered into big bucket by the marketing team (Note: there are sometimes a few mistakes in the classification but it is 90% accurate and gets updated correctly every month)</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Automatically filled by Hubspot. Indicates the type of Hubspot form the contact first submitted to become a HS lead. These forms got clustered into big bucket  (Note: there are sometimes a few mistakes in the classification, which is solved every month</inlineHelpText>
+        <label>Hubspot - First Conversion [Clustered]</label>
+        <length>100</length>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Hubspot_First_conversion__c</fullName>
+        <description>Field automatically populated by Hubspot. Indicates the first Hubspot form submitted by this contact to become a Hubspot inbound lead</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Field automatically populated by Hubspot. Indicates the first Hubspot form submitted by this contact to become a Hubspot inbound lead</inlineHelpText>
+        <label>Hubspot -First conversion</label>
+        <length>32768</length>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <type>LongTextArea</type>
+        <visibleLines>3</visibleLines>
+    </fields>
+    <fields>
+        <fullName>Hubspot_Lifecycle_stage__c</fullName>
+        <description>This is mapped to the Hubspot lifecycle stage and should automatically get updated by Hubspot. Note that you CANNOT rollback a stage to a previous stage.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>This is mapped to the Hubspot lifecycle stage and should automatically get updated by Hubspot. Note that you CANNOT rollback a stage to a previous stage.</inlineHelpText>
+        <label>Hubspot - Lifecycle stage</label>
+        <picklist>
+            <picklistValues>
+                <fullName>Subscriber</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Lead</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Marketing Qualified Lead</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Sales Qualified Lead</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Opportunity</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Customer</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Evangelist</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Other</fullName>
+                <default>false</default>
+            </picklistValues>
+            <restrictedPicklist>true</restrictedPicklist>
+            <sorted>false</sorted>
+        </picklist>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <type>MultiselectPicklist</type>
+        <visibleLines>4</visibleLines>
+    </fields>
+    <fields>
+        <fullName>Hubspot_Next_Activity_Date__c</fullName>
+        <description>Next activity date from Hubspot. Oddly this is a text field from Hubspot, not a date.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Next activity date from Hubspot. Oddly this is a text field from Hubspot, not a date.</inlineHelpText>
+        <label>Hubspot - Next Activity Date</label>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>Hubspot_Project_Spaces_List__c</fullName>
+        <description>This should get automatically populated by Hubspot --&gt; to the Lead and then to the contact when the lead gets converted to a contact</description>
+        <externalId>false</externalId>
+        <inlineHelpText>This should get automatically populated by Hubspot --&gt; to the Lead and then to the contact when the lead gets converted to a contact</inlineHelpText>
+        <label>Hubspot - Project Spaces List</label>
+        <length>32768</length>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <type>LongTextArea</type>
+        <visibleLines>3</visibleLines>
+    </fields>
+    <fields>
+        <fullName>Hubspot_SQL_reason__c</fullName>
+        <description>Automatically filled in Hubspot. Indicates which action made this contact become a SQL</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Automatically filled in Hubspot. Indicates which action made this contact become a SQL</inlineHelpText>
+        <label>Hubspot - SQL reason</label>
+        <length>32768</length>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <type>LongTextArea</type>
+        <visibleLines>3</visibleLines>
+    </fields>
+    <fields>
+        <fullName>Hubspot_of_Hubspot_forms_submitted__c</fullName>
+        <description>Automatically filled in by Hubspot. Indicates the number of Hubspot forms (eg form to get access a case study) that got submitted. All the key &quot;action buttons&quot; in HQ are set up as Hubspot forms so it gives a sense of the activity of the contact in CCHQ too (eg enter the form builder, click deploy, click preview, etc.)</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Automatically filled by Hubspot. Indicates # Hubspot forms submitted (eg form to get access a case study)  All the key &quot;action buttons&quot; in HQ are set up as Hubspot forms so it gives a sense of the activity of the contact in HQ (eg enter the form builder)</inlineHelpText>
+        <label>Hubspot - # of Hubspot forms submitted</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <type>Number</type>
+        <unique>false</unique>
     </fields>
     <fields>
         <fullName>India_Owner__c</fullName>
@@ -1681,31 +1833,23 @@
         <fullName>LeadSource</fullName>
         <picklist>
             <picklistValues>
-                <fullName>Conference</fullName>
+                <fullName>Inbound - Contacted us directly</fullName>
                 <default>false</default>
             </picklistValues>
             <picklistValues>
-                <fullName>Outbound - Pulled from Forum</fullName>
+                <fullName>Inbound - Referred within same Org</fullName>
                 <default>false</default>
             </picklistValues>
             <picklistValues>
-                <fullName>Inbound - Called us directly</fullName>
+                <fullName>Inbound - Referred by another Org</fullName>
                 <default>false</default>
             </picklistValues>
             <picklistValues>
-                <fullName>Inbound - Consultation</fullName>
+                <fullName>Inbound - Referred by Dimagi staff</fullName>
                 <default>false</default>
             </picklistValues>
             <picklistValues>
-                <fullName>Inbound - Emailed us directly</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Inbound - HQ signup</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Inbound - information@dimagi.com</fullName>
+                <fullName>Outbound - Conference</fullName>
                 <default>false</default>
             </picklistValues>
             <picklistValues>
@@ -1713,7 +1857,15 @@
                 <default>false</default>
             </picklistValues>
             <picklistValues>
-                <fullName>Other</fullName>
+                <fullName>Outbound - Networking Event</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Outbound - Personal Contact</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Outbound - Pulled from Forum</fullName>
                 <default>false</default>
             </picklistValues>
             <picklistValues>
@@ -1725,23 +1877,51 @@
                 <default>false</default>
             </picklistValues>
             <picklistValues>
+                <fullName>Inbound - Emailed us directly DO NOT USE</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Inbound - Conference (came to us after)</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Inbound - Called us directly -DO NOT USE</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Inbound-Tried schedule call dir. DONT U</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Inbound - Contacted us on Social Media</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Inbound - Event Sign Up</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Inbound - HQ signup</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Inbound - Emailed info@ DO NOT USE</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
                 <fullName>Inbound - Referral</fullName>
                 <default>false</default>
             </picklistValues>
             <picklistValues>
-                <fullName>Webinar Sign Up</fullName>
+                <fullName>Inbound - Webinar Sign Up</fullName>
                 <default>false</default>
             </picklistValues>
             <picklistValues>
-                <fullName>Web Sign Up</fullName>
+                <fullName>Inbound- Workshop Sign Up</fullName>
                 <default>false</default>
             </picklistValues>
             <picklistValues>
-                <fullName>Workshop</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Inbound - Contacted Through Social Media</fullName>
+                <fullName>Other</fullName>
                 <default>false</default>
             </picklistValues>
             <sorted>false</sorted>
@@ -2125,39 +2305,43 @@
         <label>Contact Status</label>
         <picklist>
             <picklistValues>
-                <fullName>Passive &amp; Friendly</fullName>
+                <fullName>1- Working - Active Opp Development</fullName>
                 <default>false</default>
             </picklistValues>
             <picklistValues>
-                <fullName>Passive &amp; Unfriendly</fullName>
+                <fullName>2- Working - Talking</fullName>
                 <default>false</default>
             </picklistValues>
             <picklistValues>
-                <fullName>Strategic Partner</fullName>
+                <fullName>3- Working - Contacted</fullName>
                 <default>false</default>
             </picklistValues>
             <picklistValues>
-                <fullName>Working - Talking</fullName>
+                <fullName>4- Strategic Partner</fullName>
                 <default>false</default>
             </picklistValues>
             <picklistValues>
-                <fullName>Working - Contacted</fullName>
+                <fullName>5- Active Project Team Member</fullName>
                 <default>false</default>
             </picklistValues>
             <picklistValues>
-                <fullName>Working - Active Opp Development</fullName>
+                <fullName>6- Active Self Start</fullName>
                 <default>false</default>
             </picklistValues>
             <picklistValues>
-                <fullName>Active Project Team Member</fullName>
+                <fullName>7- Passive &amp; Friendly</fullName>
                 <default>false</default>
             </picklistValues>
             <picklistValues>
-                <fullName>HOLD - Not mine/move</fullName>
+                <fullName>8- Passive &amp; Unfriendly</fullName>
                 <default>false</default>
             </picklistValues>
             <picklistValues>
-                <fullName>Dimagi Staff</fullName>
+                <fullName>9-HOLD Not mine/move</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>10-Dimagi Staff</fullName>
                 <default>false</default>
             </picklistValues>
             <sorted>false</sorted>
@@ -2179,6 +2363,19 @@
         <unique>false</unique>
     </fields>
     <fields>
+        <fullName>Time_btw_opp_creation_1st_call_schedul__c</fullName>
+        <externalId>false</externalId>
+        <formula>IF(Date_1st_Next_activity_date_set_for_opps__c &gt;CreatedDate,(Date_1st_Next_activity_date_set_for_opps__c -CreatedDate),0)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Time btw opp creation &amp; 1st call schedul</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackHistory>false</trackHistory>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
         <fullName>Title</fullName>
         <trackFeedHistory>false</trackFeedHistory>
         <trackHistory>false</trackHistory>
@@ -2195,6 +2392,58 @@
         <type>Checkbox</type>
     </fields>
     <fields>
+        <fullName>rh2__Currency_Test__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>Currency Test</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>rh2__Describe__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>Describe</label>
+        <referenceTo>rh2__PS_Describe__c</referenceTo>
+        <relationshipLabel>Contacts</relationshipLabel>
+        <relationshipName>Contacts</relationshipName>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>rh2__Formula_Test__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <formula>rh2__Currency_Test__c</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Formula Test</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackHistory>false</trackHistory>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>rh2__Integer_Test__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>Integer Test</label>
+        <precision>3</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
         <fullName>secondary_email__c</fullName>
         <description>if someone has used another email address to correspond, sign up for an event/webinar, etc</description>
         <externalId>false</externalId>
@@ -2206,18 +2455,30 @@
         <type>Email</type>
         <unique>true</unique>
     </fields>
+    <fields>
+        <fullName>time_contact_failed_Sales_Opp_process__c</fullName>
+        <externalId>false</externalId>
+        <label># time contact failed Sales Opp process</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
     <listViews>
         <fullName>Academic</fullName>
         <columns>FULL_NAME</columns>
         <columns>ACCOUNT.NAME</columns>
         <columns>CONTACT.TITLE</columns>
-        <columns>CONTACT.EMAIL</columns>
         <columns>CONTACT.LAST_ACTIVITY</columns>
+        <columns>CONTACT.EMAIL</columns>
+        <columns>CORE.USERS.ALIAS</columns>
         <columns>City_Object__c</columns>
         <columns>Country__c</columns>
-        <columns>CORE.USERS.ALIAS</columns>
         <columns>UPDATEDBY_USER.ALIAS</columns>
-        <filterScope>Mine</filterScope>
+        <filterScope>Everything</filterScope>
         <filters>
             <field>CONTACT.EMAIL</field>
             <operation>contains</operation>
@@ -2272,6 +2533,22 @@
             <value>THIS_MONTH</value>
         </filters>
         <label>Birthdays This Month</label>
+    </listViews>
+    <listViews>
+        <fullName>CJ_Contacts_Working_List</fullName>
+        <columns>FULL_NAME</columns>
+        <columns>ACCOUNT.NAME</columns>
+        <columns>CONTACT.TITLE</columns>
+        <columns>Status__c</columns>
+        <columns>CONTACT.LAST_ACTIVITY</columns>
+        <columns>City_Object__c</columns>
+        <columns>Country__c</columns>
+        <columns>CONTACT.EMAIL</columns>
+        <columns>Relationship_Strength__c</columns>
+        <columns>Days_w_o_Activity__c</columns>
+        <columns>Tag__c</columns>
+        <filterScope>Mine</filterScope>
+        <label>CJ Contacts Working List</label>
     </listViews>
     <listViews>
         <fullName>CJ_Contacts_in_Open_Opp_Development</fullName>
@@ -2400,7 +2677,7 @@
     </listViews>
     <listViews>
         <fullName>DWA_Contacts</fullName>
-        <booleanFilter>1 OR 2 OR 3 OR 4</booleanFilter>
+        <booleanFilter>1</booleanFilter>
         <columns>FULL_NAME</columns>
         <columns>ACCOUNT.NAME</columns>
         <columns>CONTACT.TITLE</columns>
@@ -2411,26 +2688,11 @@
         <columns>CONTACT.LAST_ACTIVITY</columns>
         <filterScope>Everything</filterScope>
         <filters>
-            <field>CORE.USERS.FIRST_NAME</field>
+            <field>Country__c</field>
             <operation>equals</operation>
-            <value>Mohini</value>
+            <value>Senegal</value>
         </filters>
-        <filters>
-            <field>CORE.USERS.FIRST_NAME</field>
-            <operation>equals</operation>
-            <value>Rowena</value>
-        </filters>
-        <filters>
-            <field>CORE.USERS.FIRST_NAME</field>
-            <operation>equals</operation>
-            <value>Fiorenzo</value>
-        </filters>
-        <filters>
-            <field>CORE.USERS.LAST_NAME</field>
-            <operation>equals</operation>
-            <value>Sagan</value>
-        </filters>
-        <label>DWA Contacts</label>
+        <label>DWA Contacts Khady focus in Senegal</label>
         <sharedTo>
             <group>DSA</group>
             <group>DSI</group>
@@ -2692,7 +2954,7 @@
         <filters>
             <field>Status__c</field>
             <operation>equals</operation>
-            <value>Strategic Partner</value>
+            <value>4- Strategic Partner</value>
         </filters>
         <filters>
             <field>Days_w_o_Activity__c</field>
@@ -2736,7 +2998,7 @@
         <filters>
             <field>Status__c</field>
             <operation>equals</operation>
-            <value>Working - Talking</value>
+            <value>2- Working - Talking</value>
         </filters>
         <filters>
             <field>Days_w_o_Activity__c</field>
