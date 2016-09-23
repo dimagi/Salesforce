@@ -176,82 +176,6 @@
         <type>Lookup</type>
     </fields>
     <fields>
-        <fullName>CloudingoAgent__ARDI__c</fullName>
-        <deprecated>false</deprecated>
-        <externalId>false</externalId>
-        <label>Residential Delivery Indicator</label>
-        <length>12</length>
-        <required>false</required>
-        <trackFeedHistory>false</trackFeedHistory>
-        <trackHistory>false</trackHistory>
-        <type>Text</type>
-        <unique>false</unique>
-    </fields>
-    <fields>
-        <fullName>CloudingoAgent__AR__c</fullName>
-        <deprecated>false</deprecated>
-        <externalId>false</externalId>
-        <label>Address Type</label>
-        <length>1</length>
-        <required>false</required>
-        <trackFeedHistory>false</trackFeedHistory>
-        <trackHistory>false</trackHistory>
-        <type>Text</type>
-        <unique>false</unique>
-    </fields>
-    <fields>
-        <fullName>CloudingoAgent__AS__c</fullName>
-        <defaultValue>0</defaultValue>
-        <deprecated>false</deprecated>
-        <externalId>false</externalId>
-        <label>Address Status</label>
-        <precision>18</precision>
-        <required>false</required>
-        <scale>0</scale>
-        <trackFeedHistory>false</trackFeedHistory>
-        <trackHistory>false</trackHistory>
-        <type>Number</type>
-        <unique>false</unique>
-    </fields>
-    <fields>
-        <fullName>CloudingoAgent__ATZ__c</fullName>
-        <deprecated>false</deprecated>
-        <externalId>false</externalId>
-        <label>Address Timezone</label>
-        <length>48</length>
-        <required>false</required>
-        <trackFeedHistory>false</trackFeedHistory>
-        <trackHistory>false</trackHistory>
-        <type>Text</type>
-        <unique>false</unique>
-    </fields>
-    <fields>
-        <fullName>CloudingoAgent__AV__c</fullName>
-        <deprecated>false</deprecated>
-        <externalId>false</externalId>
-        <label>Address Vacancy</label>
-        <length>1</length>
-        <required>false</required>
-        <trackFeedHistory>false</trackFeedHistory>
-        <trackHistory>false</trackHistory>
-        <type>Text</type>
-        <unique>false</unique>
-    </fields>
-    <fields>
-        <fullName>CloudingoAgent__LES__c</fullName>
-        <defaultValue>0</defaultValue>
-        <deprecated>false</deprecated>
-        <externalId>false</externalId>
-        <label>Lead Email Status</label>
-        <precision>18</precision>
-        <required>false</required>
-        <scale>0</scale>
-        <trackFeedHistory>false</trackFeedHistory>
-        <trackHistory>false</trackHistory>
-        <type>Number</type>
-        <unique>false</unique>
-    </fields>
-    <fields>
         <fullName>CommCare_Newsletter__c</fullName>
         <defaultValue>false</defaultValue>
         <externalId>false</externalId>
@@ -2055,16 +1979,6 @@ IF( Hubspot__c &gt; 250, &quot;6 Good Fit – Bad Outcome&quot;, &quot;4 Weak Fi
         <type>Picklist</type>
     </fields>
     <fields>
-        <fullName>SFSSDupeCatcher__Override_DupeCatcher__c</fullName>
-        <defaultValue>false</defaultValue>
-        <deprecated>false</deprecated>
-        <externalId>false</externalId>
-        <label>Lead Override DupeCatcher</label>
-        <trackFeedHistory>false</trackFeedHistory>
-        <trackHistory>false</trackHistory>
-        <type>Checkbox</type>
-    </fields>
-    <fields>
         <fullName>SQL_to_ops_lead_time__c</fullName>
         <externalId>false</externalId>
         <formula>IF(NOT(ISBLANK( ConvertedDate )) &amp;&amp; NOT(ISBLANK( Became_a_Sales_Qualified_Lead_Date__c )),(((YEAR( ConvertedDate ) -YEAR(DATEVALUE(Became_a_Sales_Qualified_Lead_Date__c )) - 1) *12) + (12 - MONTH(DATEVALUE( Became_a_Sales_Qualified_Lead_Date__c )) +1) + MONTH( ConvertedDate )), null)</formula>
@@ -2453,17 +2367,6 @@ IF(
         <trackFeedHistory>false</trackFeedHistory>
         <trackHistory>false</trackHistory>
         <type>Lookup</type>
-    </fields>
-    <fields>
-        <fullName>cirrusadv__Created_by_Cirrus_Insight__c</fullName>
-        <defaultValue>false</defaultValue>
-        <deprecated>false</deprecated>
-        <description>Indicates that this record was created by Cirrus Insight. This checkbox does not have to be included on the page layout, except with Contact Manager, Group, and Professional Edition organizations.</description>
-        <externalId>false</externalId>
-        <label>Created by Cirrus Insight</label>
-        <trackFeedHistory>false</trackFeedHistory>
-        <trackHistory>false</trackHistory>
-        <type>Checkbox</type>
     </fields>
     <fields>
         <fullName>city_of_residence__c</fullName>
