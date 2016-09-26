@@ -41,10 +41,6 @@
         <type>Default</type>
     </actionOverrides>
     <actionOverrides>
-        <actionName>Follow</actionName>
-        <type>Default</type>
-    </actionOverrides>
-    <actionOverrides>
         <actionName>List</actionName>
         <type>Default</type>
     </actionOverrides>
@@ -1230,147 +1226,10 @@
             </picklistValues>
             <sorted>false</sorted>
         </picklist>
+        <required>false</required>
         <trackFeedHistory>false</trackFeedHistory>
         <trackHistory>false</trackHistory>
         <type>Picklist</type>
-    </fields>
-    <fields>
-        <fullName>CloudingoAgent__CES__c</fullName>
-        <defaultValue>0</defaultValue>
-        <deprecated>false</deprecated>
-        <externalId>false</externalId>
-        <label>Contact Email Status</label>
-        <precision>18</precision>
-        <required>false</required>
-        <scale>0</scale>
-        <trackFeedHistory>false</trackFeedHistory>
-        <trackHistory>false</trackHistory>
-        <type>Number</type>
-        <unique>false</unique>
-    </fields>
-    <fields>
-        <fullName>CloudingoAgent__MAR__c</fullName>
-        <deprecated>false</deprecated>
-        <externalId>false</externalId>
-        <label>Mailing Address Record Type</label>
-        <length>1</length>
-        <required>false</required>
-        <trackFeedHistory>false</trackFeedHistory>
-        <trackHistory>false</trackHistory>
-        <type>Text</type>
-        <unique>false</unique>
-    </fields>
-    <fields>
-        <fullName>CloudingoAgent__MAS__c</fullName>
-        <defaultValue>0</defaultValue>
-        <deprecated>false</deprecated>
-        <externalId>false</externalId>
-        <label>Mailing Address Status</label>
-        <precision>18</precision>
-        <required>false</required>
-        <scale>0</scale>
-        <trackFeedHistory>false</trackFeedHistory>
-        <trackHistory>false</trackHistory>
-        <type>Number</type>
-        <unique>false</unique>
-    </fields>
-    <fields>
-        <fullName>CloudingoAgent__MAV__c</fullName>
-        <deprecated>false</deprecated>
-        <externalId>false</externalId>
-        <label>Mailing Address Vacancy</label>
-        <length>1</length>
-        <required>false</required>
-        <trackFeedHistory>false</trackFeedHistory>
-        <trackHistory>false</trackHistory>
-        <type>Text</type>
-        <unique>false</unique>
-    </fields>
-    <fields>
-        <fullName>CloudingoAgent__MRDI__c</fullName>
-        <deprecated>false</deprecated>
-        <externalId>false</externalId>
-        <label>Mailing Residential Delivery Indicator</label>
-        <length>12</length>
-        <required>false</required>
-        <trackFeedHistory>false</trackFeedHistory>
-        <trackHistory>false</trackHistory>
-        <type>Text</type>
-        <unique>false</unique>
-    </fields>
-    <fields>
-        <fullName>CloudingoAgent__MTZ__c</fullName>
-        <deprecated>false</deprecated>
-        <externalId>false</externalId>
-        <label>Mailing Timezone</label>
-        <length>48</length>
-        <required>false</required>
-        <trackFeedHistory>false</trackFeedHistory>
-        <trackHistory>false</trackHistory>
-        <type>Text</type>
-        <unique>false</unique>
-    </fields>
-    <fields>
-        <fullName>CloudingoAgent__OAR__c</fullName>
-        <deprecated>false</deprecated>
-        <externalId>false</externalId>
-        <label>Other Address Record Type</label>
-        <length>1</length>
-        <required>false</required>
-        <trackFeedHistory>false</trackFeedHistory>
-        <trackHistory>false</trackHistory>
-        <type>Text</type>
-        <unique>false</unique>
-    </fields>
-    <fields>
-        <fullName>CloudingoAgent__OAS__c</fullName>
-        <defaultValue>0</defaultValue>
-        <deprecated>false</deprecated>
-        <externalId>false</externalId>
-        <label>Other Address Status</label>
-        <precision>18</precision>
-        <required>false</required>
-        <scale>0</scale>
-        <trackFeedHistory>false</trackFeedHistory>
-        <trackHistory>false</trackHistory>
-        <type>Number</type>
-        <unique>false</unique>
-    </fields>
-    <fields>
-        <fullName>CloudingoAgent__OAV__c</fullName>
-        <deprecated>false</deprecated>
-        <externalId>false</externalId>
-        <label>Other Address Vacancy</label>
-        <length>1</length>
-        <required>false</required>
-        <trackFeedHistory>false</trackFeedHistory>
-        <trackHistory>false</trackHistory>
-        <type>Text</type>
-        <unique>false</unique>
-    </fields>
-    <fields>
-        <fullName>CloudingoAgent__ORDI__c</fullName>
-        <deprecated>false</deprecated>
-        <externalId>false</externalId>
-        <label>Other Residential Delivery Indicator</label>
-        <length>12</length>
-        <required>false</required>
-        <trackFeedHistory>false</trackFeedHistory>
-        <trackHistory>false</trackHistory>
-        <type>Text</type>
-        <unique>false</unique>
-    </fields>
-    <fields>
-        <fullName>CloudingoAgent__OTZ__c</fullName>
-        <deprecated>false</deprecated>
-        <externalId>false</externalId>
-        <label>Other Timezone</label>
-        <length>48</length>
-        <required>false</required>
-        <trackFeedHistory>false</trackFeedHistory>
-        <trackHistory>false</trackHistory>
-        <type>Text</type>
-        <unique>false</unique>
     </fields>
     <fields>
         <fullName>Contact_Source_Reason__c</fullName>
@@ -1397,6 +1256,7 @@
             </picklistValues>
             <sorted>false</sorted>
         </picklist>
+        <required>false</required>
         <trackFeedHistory>false</trackFeedHistory>
         <trackHistory>true</trackHistory>
         <type>Picklist</type>
@@ -1456,6 +1316,7 @@
             </picklistValues>
             <sorted>false</sorted>
         </picklist>
+        <required>false</required>
         <trackFeedHistory>false</trackFeedHistory>
         <trackHistory>true</trackHistory>
         <type>Picklist</type>
@@ -1704,6 +1565,7 @@
             <restrictedPicklist>true</restrictedPicklist>
             <sorted>false</sorted>
         </picklist>
+        <required>false</required>
         <trackFeedHistory>false</trackFeedHistory>
         <trackHistory>false</trackHistory>
         <type>MultiselectPicklist</type>
@@ -1791,6 +1653,7 @@
             </picklistValues>
             <sorted>false</sorted>
         </picklist>
+        <required>false</required>
         <trackFeedHistory>false</trackFeedHistory>
         <trackHistory>true</trackHistory>
         <type>Picklist</type>
@@ -1819,6 +1682,7 @@
             </picklistValues>
             <sorted>false</sorted>
         </picklist>
+        <required>false</required>
         <trackFeedHistory>false</trackFeedHistory>
         <trackHistory>false</trackHistory>
         <type>Picklist</type>
@@ -2025,6 +1889,7 @@
             </picklistValues>
             <sorted>false</sorted>
         </picklist>
+        <required>false</required>
         <trackFeedHistory>false</trackFeedHistory>
         <trackHistory>true</trackHistory>
         <type>Picklist</type>
@@ -2048,6 +1913,7 @@
             </picklistValues>
             <sorted>false</sorted>
         </picklist>
+        <required>false</required>
         <trackFeedHistory>false</trackFeedHistory>
         <trackHistory>false</trackHistory>
         <type>Picklist</type>
@@ -2057,16 +1923,6 @@
         <trackFeedHistory>false</trackFeedHistory>
         <trackHistory>false</trackHistory>
         <type>Lookup</type>
-    </fields>
-    <fields>
-        <fullName>SFSSDupeCatcher__Override_DupeCatcher__c</fullName>
-        <defaultValue>false</defaultValue>
-        <deprecated>false</deprecated>
-        <externalId>false</externalId>
-        <label>Contact Override DupeCatcher</label>
-        <trackFeedHistory>false</trackFeedHistory>
-        <trackHistory>false</trackHistory>
-        <type>Checkbox</type>
     </fields>
     <fields>
         <fullName>Skype__c</fullName>
@@ -2295,6 +2151,7 @@
             </picklistValues>
             <sorted>false</sorted>
         </picklist>
+        <required>false</required>
         <trackFeedHistory>false</trackFeedHistory>
         <trackHistory>false</trackHistory>
         <type>Picklist</type>
@@ -2346,6 +2203,7 @@
             </picklistValues>
             <sorted>false</sorted>
         </picklist>
+        <required>false</required>
         <trackFeedHistory>false</trackFeedHistory>
         <trackHistory>true</trackHistory>
         <type>Picklist</type>
@@ -2379,69 +2237,6 @@
         <fullName>Title</fullName>
         <trackFeedHistory>false</trackFeedHistory>
         <trackHistory>false</trackHistory>
-    </fields>
-    <fields>
-        <fullName>cirrusadv__Created_by_Cirrus_Insight__c</fullName>
-        <defaultValue>false</defaultValue>
-        <deprecated>false</deprecated>
-        <description>Indicates that this record was created by Cirrus Insight. This checkbox does not have to be included on the page layout, except with Contact Manager, Group, and Professional Edition organizations.</description>
-        <externalId>false</externalId>
-        <label>Created by Cirrus Insight</label>
-        <trackFeedHistory>false</trackFeedHistory>
-        <trackHistory>true</trackHistory>
-        <type>Checkbox</type>
-    </fields>
-    <fields>
-        <fullName>rh2__Currency_Test__c</fullName>
-        <deprecated>false</deprecated>
-        <externalId>false</externalId>
-        <label>Currency Test</label>
-        <precision>18</precision>
-        <required>false</required>
-        <scale>0</scale>
-        <trackFeedHistory>false</trackFeedHistory>
-        <trackHistory>false</trackHistory>
-        <type>Currency</type>
-    </fields>
-    <fields>
-        <fullName>rh2__Describe__c</fullName>
-        <deleteConstraint>SetNull</deleteConstraint>
-        <deprecated>false</deprecated>
-        <externalId>false</externalId>
-        <label>Describe</label>
-        <referenceTo>rh2__PS_Describe__c</referenceTo>
-        <relationshipLabel>Contacts</relationshipLabel>
-        <relationshipName>Contacts</relationshipName>
-        <required>false</required>
-        <trackFeedHistory>false</trackFeedHistory>
-        <trackHistory>false</trackHistory>
-        <type>Lookup</type>
-    </fields>
-    <fields>
-        <fullName>rh2__Formula_Test__c</fullName>
-        <deprecated>false</deprecated>
-        <externalId>false</externalId>
-        <formula>rh2__Currency_Test__c</formula>
-        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
-        <label>Formula Test</label>
-        <precision>18</precision>
-        <required>false</required>
-        <scale>0</scale>
-        <trackHistory>false</trackHistory>
-        <type>Currency</type>
-    </fields>
-    <fields>
-        <fullName>rh2__Integer_Test__c</fullName>
-        <deprecated>false</deprecated>
-        <externalId>false</externalId>
-        <label>Integer Test</label>
-        <precision>3</precision>
-        <required>false</required>
-        <scale>0</scale>
-        <trackFeedHistory>false</trackFeedHistory>
-        <trackHistory>false</trackHistory>
-        <type>Number</type>
-        <unique>false</unique>
     </fields>
     <fields>
         <fullName>secondary_email__c</fullName>
@@ -2906,6 +2701,18 @@
         <label>Michelle Contacts View for BD 2016</label>
     </listViews>
     <listViews>
+        <fullName>My_Contacts</fullName>
+        <columns>FULL_NAME</columns>
+        <columns>ACCOUNT.NAME</columns>
+        <columns>Relationship_Strength__c</columns>
+        <columns>CONTACT.TITLE</columns>
+        <columns>CONTACT.EMAIL</columns>
+        <columns>CORE.USERS.ALIAS</columns>
+        <columns>CONTACT.ADDRESS2_CITY</columns>
+        <filterScope>Mine</filterScope>
+        <label>My Contacts</label>
+    </listViews>
+    <listViews>
         <fullName>My_Contacts1</fullName>
         <columns>FULL_NAME</columns>
         <columns>ACCOUNT.NAME</columns>
@@ -3170,25 +2977,6 @@
         <label>Info and Unknown Contacts</label>
     </listViews>
     <listViews>
-        <fullName>my_contacts</fullName>
-        <columns>FULL_NAME</columns>
-        <columns>ACCOUNT.NAME</columns>
-        <columns>CONTACT.EMAIL</columns>
-        <columns>Status__c</columns>
-        <columns>CORE.USERS.ALIAS</columns>
-        <columns>Days_w_o_Activity__c</columns>
-        <columns>CONTACT.LAST_ACTIVITY</columns>
-        <columns>CONTACT.LAST_UPDATE</columns>
-        <columns>CONTACT.REPORTS_TO.FIRST_NAME</columns>
-        <columns>CONTACT.REPORTS_TO.LAST_NAME</columns>
-        <filterScope>Mine</filterScope>
-        <filters>
-            <field>ACCOUNT.NAME</field>
-            <operation>equals</operation>
-        </filters>
-        <label>my contacts missing account</label>
-    </listViews>
-    <listViews>
         <fullName>my_contacts_last_touch</fullName>
         <columns>FULL_NAME</columns>
         <columns>ACCOUNT.NAME</columns>
@@ -3377,37 +3165,5 @@
         <showsLocation>false</showsLocation>
         <showsStatus>false</showsStatus>
         <url>http://weather.yahoo.com/search/weather2?p={!Contact_MailingPostalCode}</url>
-    </webLinks>
-    <webLinks>
-        <fullName>salesvisual__Map_Contacts</fullName>
-        <availability>online</availability>
-        <displayType>massActionButton</displayType>
-        <linkType>javascript</linkType>
-        <masterLabel>Map Contacts</masterLabel>
-        <openType>onClickJavaScript</openType>
-        <protected>false</protected>
-        <requireRowSelection>true</requireRowSelection>
-        <url>{!requireScript(&quot;/soap/ajax/24.0/connection.js&quot;)}
-{!requireScript(&quot;/soap/ajax/24.0/apex.js&quot;)}
-idArray = {!GETRECORDIDS($ObjectType.Contact)};
-
-if(idArray.length == 0)
-{
-     alert(&quot;Please select at least one contact to map&quot;);
-}
-else if(idArray.length &gt; 20)
-{
-     alert(&quot;Please select no more than 20 contacts to map&quot;);
-}
-else
-{
-   // try the namespace first
-   var pageUrl = sforce.apex.execute(&quot;salesvisual.ContactMap&quot;, &quot;getPageUrl&quot;, {ids: idArray.toString()});
-   if (pageUrl == null)
-   {
-      var pageUrl = sforce.apex.execute(&quot;ContactMap&quot;, &quot;getPageUrl&quot;,  {ids: idArray.toString()});
-   }
-   window.location.href = pageUrl;
-}</url>
     </webLinks>
 </CustomObject>
