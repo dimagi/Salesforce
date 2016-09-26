@@ -13,6 +13,12 @@ public with sharing class LeadConversionController {
         this.l = fetchLeadById(sc.getId());
     }
 
+    public LeadConversionController(Id leadId) {
+        this.cancelPage = null;
+        this.leadId = leadId;
+        this.l = fetchLeadById(leadId);
+    }
+
     public PageReference doConversion() {
 
         PageReference page = null;
