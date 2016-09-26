@@ -62,7 +62,7 @@ public with sharing class LeadConversionController {
                 newOpp.Implementation_Type__c = 'Self Service';
                 newOpp.Opportunity_Source__c = 'Inbound';
                 newOpp.Duration_months__c = 12;
-                newOpp.CloseDate = Date.today().addMonths(1).toStartofMonth().addDays(-1);
+                newOpp.CloseDate = Date.today().addMonths(2).toStartofMonth().addDays(-1);
                 newOpp.Renewal_expected__c = true;
 
                 Business_Unit__c bu = [SELECT Id FROM Business_Unit__c WHERE Name = 'Inc' LIMIT 1];

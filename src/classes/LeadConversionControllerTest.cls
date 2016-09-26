@@ -24,7 +24,7 @@ public class LeadConversionControllerTest {
         System.assertEquals('Self Service', newOpp.Implementation_Type__c);
         System.assertEquals('Inbound', newOpp.Opportunity_Source__c);
         System.assertEquals(12, newOpp.Duration_months__c);
-        System.assertEquals(Date.today().addMonths(1).toStartofMonth().addDays(-1), newOpp.CloseDate);
+        System.assertEquals(Date.today().addMonths(2).toStartofMonth().addDays(-1), newOpp.CloseDate);
         System.assertEquals(true, newOpp.Renewal_expected__c);
         System.assertEquals(bu.Id, newOpp.Opportunity_Owning_Entity__c);
 
