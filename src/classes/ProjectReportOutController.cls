@@ -438,9 +438,6 @@ public with sharing class ProjectReportOutController {
 
     private Set<Id> excludeContractFromSearch = new Set<Id>();
 
-    //.... to delete>?
-    private Map<Id,List<Time_Card__c>> contractIdTimeCardsMap;
-
     public List<PROProject> getProjectsForFinancialTab() {
         List<PROProject> proList = new List<PROProject>();
         Set<Id> customContractsIdsToAddInList = new Set<Id>();
@@ -560,13 +557,12 @@ public with sharing class ProjectReportOutController {
 
    public void loadContractBudgetAndSpentData() {
         proBudgetList = new List<PROProjectBudget>();
-
+        Map<Id,List<Time_Card__c>> contractIdTimeCardsMap = new Map<Id,List<Time_Card__c>>();
         if( contractMap.containsKey(financialContractId)) {
             contractUrl = 'https://'+sfInstanceName+'/'+financialContractId;
             Set<Id> parentAndChildContractIds = new Set<Id>{financialContractId};
             DContract__c contractObj = contractMap.get(financialContractId);
             List<DContract__c> childContracts = childContractMap.containsKey(financialContractId) ? childContractMap.get(financialContractId) : null;
-            contractIdTimeCardsMap = new Map<Id,List<Time_Card__c>>();
 
             Decimal Burdened_Income_Budget = contractObj.Burdened_Income_Budget__c!= null ? contractObj.Burdened_Income_Budget__c : 0;
             Decimal LaborSpent = 0;
@@ -654,7 +650,7 @@ public with sharing class ProjectReportOutController {
         }
 
         loadProjectExecutionStatusList();
-        loadHistoryOfTimeSpend();
+        loadHistoryOfTimeSpend(contractIdTimeCardsMap);
         loadContractExpenseSpend();
     }
 
@@ -755,7 +751,7 @@ public with sharing class ProjectReportOutController {
         }
     }
 
-    public void loadHistoryOfTimeSpend(){
+    public void loadHistoryOfTimeSpend(Map<Id,List<Time_Card__c>> contractIdTimeCardsMap){
         PROProjectTimeSpentHistory projTmSpntHstryObj;
         Map<String,PROProjectTimeSpentHistory> laborWithHours = new Map<String,PROProjectTimeSpentHistory>();
 
