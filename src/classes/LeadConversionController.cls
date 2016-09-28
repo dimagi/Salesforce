@@ -40,6 +40,11 @@ public with sharing class LeadConversionController {
         lc.setLeadId(l.Id);
         LeadStatus convertStatus = [SELECT Id, MasterLabel FROM LeadStatus WHERE IsConverted = true LIMIT 1];
         lc.setConvertedStatus(convertStatus.MasterLabel);
+
+        if (l.account_name__c != null) {
+            lc.setAccountId(l.account_name__c);
+        }
+
         Database.LeadConvertResult lcr = Database.convertLead(lc);
         if (lcr.isSuccess()) {
             ApexPages.addMessage(new ApexPages.message(ApexPages.severity.CONFIRM, 'Lead was converted.'));
@@ -89,6 +94,6 @@ public with sharing class LeadConversionController {
     }
 
     private Lead fetchLeadById(Id leadId) {
-        return [SELECT  Id FROM Lead WHERE Id =: leadId];
+        return [SELECT Id, account_name__c FROM Lead WHERE Id =: leadId];
     }
 }
