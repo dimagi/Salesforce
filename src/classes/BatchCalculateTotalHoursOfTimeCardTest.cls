@@ -5,7 +5,9 @@ public class BatchCalculateTotalHoursOfTimeCardTest {
         SFDC_Employee__c employeeObj = new SFDC_Employee__c(
             name = 'Sample Employee',
             Salary__c = 50000,
-            Exchange_Rate__c = 1
+            Exchange_Rate__c = 1,
+            Effective_Salary_Date__c = Date.newInstance(2016, 2, 24),
+            Effective_Exchange_Rate_Date__c = Date.newInstance(2016, 2, 24)
         );
         insert employeeObj;
 
@@ -47,7 +49,9 @@ public class BatchCalculateTotalHoursOfTimeCardTest {
         SFDC_Employee__c employeeObj = new SFDC_Employee__c(
             name = 'Sample Employee',
             Salary__c = 50000,
-            Exchange_Rate__c = 1
+            Exchange_Rate__c = 1,
+            Effective_Salary_Date__c = Date.newInstance(2016, 2, 24),
+            Effective_Exchange_Rate_Date__c = Date.newInstance(2016, 2, 24)
         );
         insert employeeObj;
 
@@ -121,7 +125,9 @@ public class BatchCalculateTotalHoursOfTimeCardTest {
         SFDC_Employee__c employeeObj = new SFDC_Employee__c(
             name = 'Sample Employee',
             Salary__c = 50000,
-            Exchange_Rate__c = 1
+            Exchange_Rate__c = 1,
+            Effective_Salary_Date__c = Date.newInstance(2016, 2, 24),
+            Effective_Exchange_Rate_Date__c = Date.newInstance(2016, 2, 24)
         );
         insert employeeObj;
 

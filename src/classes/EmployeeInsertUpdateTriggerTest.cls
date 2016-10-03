@@ -49,22 +49,23 @@ public class EmployeeInsertUpdateTriggerTest {
         contact.ReportsToId = reportsTo.Id;
         contact.Country__c = country.Id;
         insert contact;
-        
+
         //Create Employee
         SFDC_Employee__c emp = new SFDC_Employee__c();
         emp.Name = 'Test employee';
         emp.Contact__c = contact.Id;
         emp.Salary__c = 5000;
         emp.Exchange_Rate__c = 10;
-        
+        emp.Effective_Salary_Date__c = Date.newInstance(2016, 2, 24);
+        emp.Effective_Exchange_Rate_Date__c = Date.newInstance(2016, 2, 24);
         Test.startTest();
-        
+
         insert emp;
-        
-        List<SFDC_Employee__c> employees = [Select Id, Title__c, Emergency_Contact_Phone__c, Sub_Unit__c, Field_Location__c 
+
+        List<SFDC_Employee__c> employees = [SELECT Id, Title__c, Emergency_Contact_Phone__c, Sub_Unit__c, Field_Location__c
                                             ,Country__c
-                                            From SFDC_Employee__c where Id =:emp.Id];
-                                            
+                                            FROM SFDC_Employee__c WHERE Id =:emp.Id];
+
         List<Contact> contacts = [Select Id, Title, MobilePhone From Contact where Id = :contact.Id];  
         
         System.assertNotEquals(employees, null);

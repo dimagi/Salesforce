@@ -29,61 +29,68 @@ public without sharing class SalaryHistoryHelper {
                 salaryList.add(new SalaryHistoryRecord(employee.Exchange_Rate__c == null ? 1 : (Decimal) employee.Exchange_Rate__c, lastSalaryDate));
             }
         } else { // We have salary history
-            // We can have history of first fill or first update we must check and set proper first salary - Effective date for first sallary will be 01.01.1900
-            if (employeeSalaryHistory.get(0).OldValue == null) {
-                // First salary is in NewValue
-                lastSalary = getValueForSalary(salaryField, employeeSalaryHistory.get(0));
-                salaryIndex++;
-            } else {
-                // First salary is in OldValue
+
+            // If first history record contains OldValue we must take it to the list
+            if (employeeSalaryHistory.get(0).OldValue != null) {
                 if (salaryField == 'Salary__c' ) {
                     lastSalary = (Decimal) employeeSalaryHistory.get(0).OldValue;
                 } else {
                     lastSalary = ((Decimal) employeeSalaryHistory.get(0).OldValue) == 0 ? 1 : (Decimal) employeeSalaryHistory.get(0).OldValue;
                 }
-            }
-
-            salaryList.add(new SalaryHistoryRecord(lastSalary, lastSalaryDate));
-
-            Map <Date, Date> effectiveDateMap = new Map<Date, Date>();
-            if (employeeSalaryDateHistory.size() > 0) {
-                if (employeeSalaryDateHistory.get(0).OldValue != null) {
-                    effectiveDateMap.put(takeDate((DateTime) employeeSalaryDateHistory.get(0).CreatedDate),
-                                         (Date) employeeSalaryDateHistory.get(0).OldValue);
+                if (employeeSalaryDateHistory.size() > 0) {
+                    if (employeeSalaryDateHistory.get(0).OldValue != null) {
+                        lastSalaryDate = (Date) employeeSalaryDateHistory.get(0).OldValue;
+                    } else {
+                        lastSalaryDate = takeDate(employeeSalaryHistory.get(0).CreatedDate);
+                    }
                 }
+                salaryList.add(new SalaryHistoryRecord(lastSalary, lastSalaryDate));
             }
 
-            Date lEffDate = Date.newInstance(1900, 1, 1);
+            Map <DateTime, Date> effectiveDateMap = new Map<DateTime, Date>();
+
+            Date helperDate = Date.newInstance(1900, 1, 1);
             for (Integer i = 0; i < employeeSalaryDateHistory.size(); i++) {
-                effectiveDateMap.put(takeDate((DateTime) employeeSalaryDateHistory.get(i).CreatedDate),
-                                      employeeSalaryDateHistory.get(i).NewValue == null ? lEffDate : (Date) employeeSalaryDateHistory.get(i).NewValue);
+                effectiveDateMap.put((DateTime) employeeSalaryDateHistory.get(i).CreatedDate,
+                                      employeeSalaryDateHistory.get(i).NewValue == null ? helperDate : (Date) employeeSalaryDateHistory.get(i).NewValue);
                 if (employeeSalaryDateHistory.get(i).NewValue != null) {
-                    lEffDate = (Date) employeeSalaryDateHistory.get(i).NewValue;
+                    helperDate = (Date) employeeSalaryDateHistory.get(i).NewValue;
                 }
             }
 
-            Integer helperIndex = 0;
-            for (Integer i = salaryIndex; i < employeeSalaryHistory.size(); i++) {
+            Boolean needSort = false;
+            for (Integer i = 0; i < employeeSalaryHistory.size(); i++) {
 
-                Date cDate = takeDate((DateTime) employeeSalaryHistory.get(i).CreatedDate);
-                Date toAdd = cDate;
-
-                if (effectiveDateMap.containsKey(cDate)) {
-                    toAdd = effectiveDateMap.get(cDate);
+                Decimal currentSalary = (Decimal) employeeSalaryHistory.get(i).NewValue;
+                if (currentSalary == null) {
+                    continue;
                 }
 
-                if (lastSalaryDate == cDate) {
-                    System.debug('Update: '+ helperIndex + ' ' + employeeSalaryHistory[i].NewValue);
-                    salaryList.set(helperIndex, new SalaryHistoryRecord(getValueForSalary(salaryField, employeeSalaryHistory.get(i)),
-                                                                        toAdd));
+                DateTime salCreateDateTime = (DateTime) employeeSalaryHistory.get(i).CreatedDate;
+                Date toAdd;
+
+                if (effectiveDateMap.containsKey(salCreateDateTime)) {
+                    toAdd = effectiveDateMap.get(salCreateDateTime);
                 } else {
-                    salaryList.add(new SalaryHistoryRecord(getValueForSalary(salaryField, employeeSalaryHistory.get(i)),
-                                                           toAdd));
-                    helperIndex++;
+                    toAdd = takeDate(salCreateDateTime);
                 }
+                salaryList.add(new SalaryHistoryRecord(currentSalary, toAdd));
 
-                lastSalaryDate = cDate;
+                if (lastSalaryDate > toAdd) {
+                    needSort = true;
+                }
+                lastSalaryDate = toAdd;
             }
+
+            if (needSort) {
+                salaryList.sort();
+            }
+        }
+
+        if (salaryList.size() > 0) {
+            SalaryHistoryRecord firstRec = salaryList.get(0);
+            firstRec.setValueDate(Date.newInstance(1900, 1, 1));
+            salaryList.set(0, firstRec);
         }
 
         return salaryList;

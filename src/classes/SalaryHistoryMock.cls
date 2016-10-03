@@ -23,11 +23,11 @@ public class SalaryHistoryMock {
             if (fieldName == 'Salary__c') {
                 records.add(new SalaryHistoryWrapper(null, 17000, DateTime.newInstance(2015, 2, 2, 10, 0, 0)));
                 records.add(new SalaryHistoryWrapper(17000, 13000, DateTime.newInstance(2015, 4, 14, 10, 0, 0)));
-                records.add(new SalaryHistoryWrapper(13000, 34000, DateTime.newInstance(2015, 4, 14, 10, 0, 0)));
+                records.add(new SalaryHistoryWrapper(13000, 34000, DateTime.newInstance(2015, 4, 14, 11, 0, 0)));
             } else {
                 records.add(new SalaryHistoryWrapper(null, Date.newInstance(2013, 3, 7), DateTime.newInstance(2015, 2, 2, 10, 0, 0)));
                 records.add(new SalaryHistoryWrapper(Date.newInstance(2013, 3, 7), Date.newInstance(2015, 6, 1), DateTime.newInstance(2015, 4, 14, 10, 0, 0)));
-                records.add(new SalaryHistoryWrapper(Date.newInstance(2015, 6, 1), Date.newInstance(2015, 1, 1), DateTime.newInstance(2015, 4, 14, 10, 0, 0)));
+                records.add(new SalaryHistoryWrapper(Date.newInstance(2015, 6, 1), Date.newInstance(2015, 1, 1), DateTime.newInstance(2015, 4, 14, 11, 0, 0)));
             }
         } else if (employee.Name == 'emp_6') {
             if (fieldName == 'Salary__c') {

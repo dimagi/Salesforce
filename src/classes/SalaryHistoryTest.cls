@@ -76,11 +76,13 @@ public class SalaryHistoryTest {
 
         List<SalaryHistoryRecord> historyList = salaryHelper.getHistoryForEmployee(employee, 'Salary__c', 'Effective_Salary_Date__c');
 
-        System.assertEquals(2, historyList.size());
+        System.assertEquals(3, historyList.size());
         System.assertEquals(17000, historyList.get(0).getValue());
         System.assertEquals(Date.newInstance(1900, 1, 1), historyList.get(0).getValueDate());
         System.assertEquals(34000, historyList.get(1).getValue());
         System.assertEquals(Date.newInstance(2015, 1, 1), historyList.get(1).getValueDate());
+        System.assertEquals(13000, historyList.get(2).getValue());
+        System.assertEquals(Date.newInstance(2015, 6, 1), historyList.get(2).getValueDate());
 
         Test.stopTest();
     }
@@ -93,6 +95,7 @@ public class SalaryHistoryTest {
 
         List<SalaryHistoryRecord> historyList = salaryHelper.mergeSalaryHistory(employee, false);
 
+        System.debug(historyList);
         System.assertEquals(5, historyList.size());
 
         System.assertEquals(SalaryHistoryHelper.calculateSalary(20000, 2), historyList.get(0).getValue());
@@ -167,7 +170,9 @@ public class SalaryHistoryTest {
         // 3 Employess, 3 contracts, one is subcontract
         Test.startTest();
 
-        SFDC_Employee__c employee_1 = new SFDC_Employee__c(Name = 'emp_6', Salary__c = 60000, Exchange_Rate__c = 1);
+        SFDC_Employee__c employee_1 = new SFDC_Employee__c(Name = 'emp_6', Salary__c = 60000, Exchange_Rate__c = 2,
+                                                          Effective_Salary_Date__c = Date.newInstance(2011, 11, 1),
+                                                          Effective_Exchange_Rate_Date__c = Date.newInstance(2013, 1, 1));
         insert employee_1;
         SFDC_Employee__c employee_2 = new SFDC_Employee__c(Name = 'emp_7', Salary__c = 45000, Exchange_Rate__c = 2,
                                                          Effective_Salary_Date__c = Date.newInstance(2013, 1, 1),
@@ -264,14 +269,32 @@ public class SalaryHistoryTest {
         System.assertEquals(1049.87, dcontractFromDB.Services_Spend__c);
     }
 
+    static testMethod void shouldSortList() {
+        List<SalaryHistoryRecord> salaryList = new List<SalaryHistoryRecord>();
+        salaryList.add(new SalaryHistoryRecord(11, Date.newInstance(2015, 4, 11)));
+        salaryList.add(new SalaryHistoryRecord(12, Date.newInstance(1900, 1, 1)));
+        salaryList.add(new SalaryHistoryRecord(10, Date.newInstance(2014, 1, 15)));
+        salaryList.add(new SalaryHistoryRecord(44, Date.newInstance(2016, 2, 22)));
+
+        salaryList.sort();
+
+        System.assertEquals(Date.newInstance(1900, 1, 1), salaryList.get(0).getValueDate());
+        System.assertEquals(Date.newInstance(2014, 1, 15), salaryList.get(1).getValueDate());
+        System.assertEquals(Date.newInstance(2015, 4, 11), salaryList.get(2).getValueDate());
+        System.assertEquals(Date.newInstance(2016, 2, 22), salaryList.get(3).getValueDate());
+    }
+
     static testMethod void testCalcualtionScale() {
         Test.startTest();
         DContract__c parent = new DContract__c(Name = 'Sample Parent', Status__c = 'Active', Requires_Report_Out__c = 'No', Intracompany_Sub_contract__c = 'No');
         insert parent;
 
-        SFDC_Employee__c employee_1 = new SFDC_Employee__c(Name = 'emp_9', Salary__c = 101854.98, Exchange_Rate__c = 1);
-        SFDC_Employee__c employee_2 = new SFDC_Employee__c(Name = 'emp_10', Salary__c = 45259.16, Exchange_Rate__c = 1);
-        SFDC_Employee__c employee_3 = new SFDC_Employee__c(Name = 'emp_11', Salary__c = 89319.79, Exchange_Rate__c = 1);
+        SFDC_Employee__c employee_1 = new SFDC_Employee__c(Name = 'emp_9', Salary__c = 101854.98, Effective_Salary_Date__c = Date.newInstance(2016, 2, 24),
+                                                           Exchange_Rate__c = 1, Effective_Exchange_Rate_Date__c = Date.newInstance(2016, 2, 24));
+        SFDC_Employee__c employee_2 = new SFDC_Employee__c(Name = 'emp_10', Salary__c = 45259.16, Effective_Salary_Date__c = Date.newInstance(2016, 2, 24),
+                                                           Exchange_Rate__c = 1, Effective_Exchange_Rate_Date__c = Date.newInstance(2016, 2, 24));
+        SFDC_Employee__c employee_3 = new SFDC_Employee__c(Name = 'emp_11', Salary__c = 89319.79, Effective_Salary_Date__c = Date.newInstance(2016, 2, 24),
+                                                           Exchange_Rate__c = 1, Effective_Exchange_Rate_Date__c = Date.newInstance(2016, 2, 24));
 
         insert employee_1;
         insert employee_2;
