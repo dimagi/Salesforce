@@ -43,6 +43,11 @@ public with sharing class LeadConversionController {
 
         if (l.account_name__c != null) {
             lc.setAccountId(l.account_name__c);
+        } else {
+            List<Account> accounts = [SELECT Id FROM Account WHERE Name =: l.Company];
+            if (accounts.size() > 0) {
+                lc.setAccountId(accounts.get(0).Id);
+            }
         }
 
         Database.LeadConvertResult lcr = Database.convertLead(lc);
@@ -94,6 +99,6 @@ public with sharing class LeadConversionController {
     }
 
     private Lead fetchLeadById(Id leadId) {
-        return [SELECT Id, account_name__c FROM Lead WHERE Id =: leadId];
+        return [SELECT Id, account_name__c, Company FROM Lead WHERE Id =: leadId];
     }
 }
