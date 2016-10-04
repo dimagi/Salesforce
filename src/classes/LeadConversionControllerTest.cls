@@ -65,4 +65,28 @@ public class LeadConversionControllerTest {
 
         Test.stopTest();
     }
+
+    public static testMethod void shouldConvertLeadAndSetFieldsWhenAccountExist2() {
+        Test.startTest();
+
+        Account acc = new Account(Name = 'Smith IT Company');
+        insert acc;
+        Lead testLead = new Lead(FirstName = 'Tom', LastName = 'Smith', Company = 'Smith IT Company');
+        insert testLead;
+        LeadConversionController convController = new LeadConversionController(testLead.Id);
+        Business_Unit__c bu = new Business_Unit__c(Name = 'Inc');
+        insert bu;
+
+        PageReference contrPage = convController.doConversion();
+
+        Contact newContact = [SELECT Id, Status__c FROM Contact WHERE Name = 'Tom Smith'];
+        Opportunity newOpp = [SELECT Id, StageName, Probability, of_Execution_budget_for_GS__c, Channel_Response__c, Implementation_Type__c, Renewal_expected__c,
+                                             Opportunity_Source__c, Duration_months__c, Opportunity_Owning_Entity__c, CloseDate FROM Opportunity WHERE Name = 'Smith IT Company'];
+
+        List<Account> accounts = [SELECT Id, Name FROM Account];
+        System.assertEquals(1, accounts.size());
+        System.assertEquals(acc.Id, accounts.get(0).Id);
+
+        Test.stopTest();
+    }
 }
