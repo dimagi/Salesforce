@@ -67,7 +67,7 @@ public class hqInt_BatchFetchObjectSubscriber implements Database.Batchable<Inte
         // this method updates relation to the domain object from subscriber
         List<Accounting_Subscriber__c> subscribers = [SELECT domain__c, domain_lookup__c FROM Accounting_Subscriber__c WHERE domain_lookup__c = ''];
         System.debug('---Subscribers with blank domain relation---' + subscribers);
-        
+
         if (subscribers.size() > 0) {
             Set<String> domainNames = new Set<String>();
             for (Accounting_Subscriber__c subscriber : subscribers) {
@@ -93,5 +93,5 @@ public class hqInt_BatchFetchObjectSubscriber implements Database.Batchable<Inte
     
             update subscribers;
         }
-    }    
+    }
 }
