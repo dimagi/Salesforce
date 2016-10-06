@@ -32,7 +32,7 @@ public without sharing class SalaryHistoryHelper {
 
             // If first history record contains OldValue we must take it to the list
             if (employeeSalaryHistory.get(0).OldValue != null) {
-                if (salaryField == 'Salary__c' ) {
+                if (salaryField == 'Salary__c') {
                     lastSalary = (Decimal) employeeSalaryHistory.get(0).OldValue;
                 } else {
                     lastSalary = ((Decimal) employeeSalaryHistory.get(0).OldValue) == 0 ? 1 : (Decimal) employeeSalaryHistory.get(0).OldValue;
@@ -62,7 +62,8 @@ public without sharing class SalaryHistoryHelper {
             for (Integer i = 0; i < employeeSalaryHistory.size(); i++) {
 
                 Decimal currentSalary = (Decimal) employeeSalaryHistory.get(i).NewValue;
-                if (currentSalary == null) {
+                // We must ignore exchange rate == 0 - Exception Divide by 0
+                if (currentSalary == null || (currentSalary == 0 && salaryField == 'Exchange_Rate__c')) {
                     continue;
                 }
 
