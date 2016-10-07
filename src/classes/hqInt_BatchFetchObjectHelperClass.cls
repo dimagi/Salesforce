@@ -1063,6 +1063,7 @@ public class hqInt_BatchFetchObjectHelperClass {
             CommcareToSalesforceSettings__c lastRunDateSetting = CommcareToSalesforceSettings__c.getInstance('LastRunDate');
             CommcareToSalesforceSettings__c jobStartDateSetting = CommcareToSalesforceSettings__c.getInstance('JOBSTARTDATE');
             lastRunDateSetting.Value__c = jobStartDateSetting.Value__c;
+            Database.executeBatch(new CalculateDomainsLifeTimeMRRBatch(), 100);
             update lastRunDateSetting;
         }
      }
