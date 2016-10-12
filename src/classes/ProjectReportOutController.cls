@@ -589,6 +589,7 @@ public with sharing class ProjectReportOutController {
                 }
             }
 
+            Set<Id> employees = new Set<Id>();
             for(Time_Card__c obj : [select Employee__c,Employee__r.Name,Date__c,Total__c,labor_cost__c,Client__c  from Time_Card__c where Employee__c != '' AND Client__c IN:parentAndChildContractIds ORDER BY Employee__c]) {
                 if(contractIdTimeCardsMap.containsKey(obj.Client__c)){
                     List<Time_Card__c> tempList = contractIdTimeCardsMap.get(obj.Client__c);
@@ -597,9 +598,10 @@ public with sharing class ProjectReportOutController {
                 } else {
                     contractIdTimeCardsMap.put(obj.Client__c,new List<Time_Card__c>{obj});
                 }
+                employees.add(obj.Employee__c);
             }
 
-            LaborSpent = loadHistoryOfTimeSpend(contractIdTimeCardsMap);
+            LaborSpent = loadHistoryOfTimeSpend(contractIdTimeCardsMap, employees);
             Decimal a = Product_Income_Budget;
             Decimal b = Product_Spend;
             PROProjectBudget prbjObj1 = new PROProjectBudget();
@@ -645,7 +647,7 @@ public with sharing class ProjectReportOutController {
 
         loadProjectExecutionStatusList();
         if (timeSpenHistoryLoaded == false) {
-            loadHistoryOfTimeSpend(contractIdTimeCardsMap);
+            loadHistoryOfTimeSpend(contractIdTimeCardsMap, new Set<Id>());
         }
         loadContractExpenseSpend();
     }
@@ -747,7 +749,7 @@ public with sharing class ProjectReportOutController {
         }
     }
 
-    public Decimal loadHistoryOfTimeSpend(Map<Id,List<Time_Card__c>> contractIdTimeCardsMap){
+    public Decimal loadHistoryOfTimeSpend(Map<Id,List<Time_Card__c>> contractIdTimeCardsMap, Set<Id> employees){
         PROProjectTimeSpentHistory projTmSpntHstryObj;
         Map<String,PROProjectTimeSpentHistory> laborWithHours = new Map<String,PROProjectTimeSpentHistory>();
 
@@ -795,11 +797,16 @@ public with sharing class ProjectReportOutController {
                 Date lastToSalaryDate = Date.today().addYears(1);
                 Decimal lastSalary = 0;
                 SalaryHistoryHelper salaryHistoryHelper = new SalaryHistoryHelper();
+                salaryHistoryHelper.loadHistoryForEmployees(employees);
+                Map<Id, SFDC_Employee__c>  empMap = new Map<Id, SFDC_Employee__c>();
+                for (SFDC_Employee__c e : [SELECT Name, Salary__c, Effective_Salary_Date__c, Exchange_Rate__c, Effective_Exchange_Rate_Date__c FROM SFDC_Employee__c WHERE Id IN: employees]) {
+                    empMap.put(e.Id, e);
+                }
 
                 for(Time_Card__c  obj: timeEntries) {
                     if (obj.Employee__c != lastEmployee) {
                         lastEmployee = obj.Employee__c;
-                        employeeSalaryHistory = salaryHistoryHelper.mergeSalaryHistory([SELECT Name, Salary__c, Effective_Salary_Date__c, Exchange_Rate__c, Effective_Exchange_Rate_Date__c FROM SFDC_Employee__c WHERE Id =: obj.Employee__c], false);
+                        employeeSalaryHistory = salaryHistoryHelper.mergeSalaryHistory(empMap.get(obj.Employee__c), false);
                         lastToSalaryDate = employeeSalaryHistory.size() > 1 ? employeeSalaryHistory.get(1).getValueDate() : Date.today().addYears(1);
                         lastSalary = employeeSalaryHistory.get(0).getValue();
                         lastFromSalaryDate = Date.newInstance(1900, 1, 1);
@@ -1135,8 +1142,6 @@ public with sharing class ProjectReportOutController {
      * Auth
      *
      */
-
-
 
     public void initAction() {
         oauth_token = ApexPages.currentPage().getParameters().get('oauth_token');

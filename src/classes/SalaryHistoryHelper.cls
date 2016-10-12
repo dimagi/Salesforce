@@ -3,6 +3,29 @@
  */
 public without sharing class SalaryHistoryHelper {
 
+    // Needed for PRO page to avoid SOQL Limit Exception
+    private Map<Id, List<SalaryHistoryWrapper>> employeeSalaryList;
+    private Map<Id, List<SalaryHistoryWrapper>> employeeSalaryDateList;
+    private Map<Id, List<SalaryHistoryWrapper>> employeeExchangeRateList;
+    private Map<Id, List<SalaryHistoryWrapper>> employeeExchangeRateDateList;
+
+    public SalaryHistoryHelper() {
+        this.employeeSalaryList = new Map<Id, List<SalaryHistoryWrapper>>();
+        this.employeeSalaryDateList = new Map<Id, List<SalaryHistoryWrapper>>();
+        this.employeeExchangeRateList = new Map<Id, List<SalaryHistoryWrapper>>();
+        this.employeeExchangeRateDateList = new Map<Id, List<SalaryHistoryWrapper>>();
+    }
+
+    /**
+     * Loads history records from DB for employees from given list
+     */
+    public void loadHistoryForEmployees(Set<Id> emps) {
+        this.employeeSalaryList = fillMap([SELECT ParentId, OldValue, NewValue, CreatedDate FROM SFDC_Employee__History WHERE ParentId IN: emps AND Field = 'Salary__c' ORDER BY CreatedDate ASC]);
+        this.employeeSalaryDateList = fillMap([SELECT ParentId, OldValue, NewValue, CreatedDate FROM SFDC_Employee__History WHERE ParentId IN: emps AND Field = 'Effective_Salary_Date__c' ORDER BY CreatedDate ASC]);
+        this.employeeExchangeRateList = fillMap([SELECT ParentId, OldValue, NewValue, CreatedDate FROM SFDC_Employee__History WHERE ParentId IN: emps AND Field = 'Exchange_Rate__c' ORDER BY CreatedDate ASC]);
+        this.employeeExchangeRateDateList = fillMap([SELECT ParentId, OldValue, NewValue, CreatedDate FROM SFDC_Employee__History WHERE ParentId IN: emps AND Field = 'Effective_Exchange_Rate_Date__c' ORDER BY CreatedDate ASC]);
+    }
+
     /**
      * Builds employee salary and exchange rate history.
      */
@@ -191,6 +214,17 @@ public without sharing class SalaryHistoryHelper {
             return SalaryHistoryMock.getFieldHistory(employee, fieldName);
         }
 
+        // Check data fom buffor
+        if (fieldName == 'Salary__c' && this.employeeSalaryList.containsKey(employee.Id)) {
+            return this.employeeSalaryList.get(employee.Id);
+        } else if (fieldName == 'Effective_Salary_Date__c' && this.employeeSalaryDateList.containsKey(employee.Id)) {
+            return this.employeeSalaryDateList.get(employee.Id);
+        } else if (fieldName == 'Exchange_Rate__c' && this.employeeExchangeRateList.containsKey(employee.Id)) {
+            return this.employeeExchangeRateList.get(employee.Id);
+        } else if (fieldName == 'Effective_Exchange_Rate_Date__c' && this.employeeExchangeRateDateList.containsKey(employee.Id)) {
+            return this.employeeExchangeRateDateList.get(employee.Id);
+        }
+
         List<SFDC_Employee__History> records = [SELECT OldValue, NewValue, CreatedDate FROM SFDC_Employee__History WHERE parentId =: employee.Id AND Field =: fieldName ORDER BY CreatedDate ASC];
         List<SalaryHistoryWrapper> salaryHistory = new List<SalaryHistoryWrapper>();
         for (SFDC_Employee__History rec : records) {
@@ -198,6 +232,21 @@ public without sharing class SalaryHistoryHelper {
         }
 
         return salaryHistory;
+    }
+
+    private Map<Id, List<SalaryHistoryWrapper>> fillMap(List<SFDC_Employee__History> records) {
+        Map<Id, List<SalaryHistoryWrapper>> tmpMap = new Map<Id, List<SalaryHistoryWrapper>>();
+        for (SFDC_Employee__History rec : records) {
+            if (tmpMap.containsKey(rec.ParentId)) {
+                List<SalaryHistoryWrapper> salaryHistory = tmpMap.get(rec.ParentId);
+                salaryHistory.add(new SalaryHistoryWrapper(rec.OldValue, rec.NewValue, rec.CreatedDate));
+                tmpMap.put(rec.ParentId, salaryHistory);
+            } else {
+                tmpMap.put(rec.ParentId, new List<SalaryHistoryWrapper> { new SalaryHistoryWrapper(rec.OldValue, rec.NewValue, rec.CreatedDate) });
+            }
+        }
+
+        return tmpMap;
     }
 
     private Date takeDate(DateTime dt) {
