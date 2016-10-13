@@ -89,4 +89,35 @@ public class LeadConversionControllerTest {
 
         Test.stopTest();
     }
+
+    public static testMethod void testLeadConversionTrigger() {
+        Test.startTest();
+
+        Lead testLead = new Lead(FirstName = 'Tom', LastName = 'Smith', Company = 'Smith IT Company');
+        insert testLead;
+
+        testLead.Status = 'Working - Talking';
+        testLead.Lead_Status_Reason__c = 'Contacted - Sent Email #1';
+        testLead.Response_Date__c = Date.today();
+        // testLead.First_Call_Date__c  = Date.today();
+        testLead.Follow_up_calls_held__c = 11;
+
+        update testLead;
+
+        Database.LeadConvert lc = new Database.LeadConvert();
+        lc.setLeadId(testLead.Id);
+        lc.setConvertedStatus('Converted');
+        Database.LeadConvertResult lcr = Database.convertLead(lc);
+
+        Test.stopTest();
+
+        Opportunity newOpp = [SELECT Lead_Status__c, Lead_Status_Reason__c, Lead_Ever_Responded__c, Lead_first_call_held__c, Lead_follow_up_calls_held__c
+                              FROM Opportunity WHERE Name = 'Smith IT Company' LIMIT 1];
+
+        System.assertEquals('Converted', newOpp.Lead_Status__c);
+        System.assertEquals('Contacted - Sent Email #1', newOpp.Lead_Status_Reason__c);
+        System.assertEquals(true, newOpp.Lead_Ever_Responded__c);
+        System.assertEquals(false, newOpp.Lead_first_call_held__c);
+        System.assertEquals(11, newOpp.Lead_follow_up_calls_held__c);
+    }
 }
