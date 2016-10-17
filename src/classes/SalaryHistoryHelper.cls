@@ -20,10 +20,10 @@ public without sharing class SalaryHistoryHelper {
      * Loads history records from DB for employees from given list
      */
     public void loadHistoryForEmployees(Set<Id> emps) {
-        this.employeeSalaryList = fillMap([SELECT ParentId, OldValue, NewValue, CreatedDate FROM SFDC_Employee__History WHERE ParentId IN: emps AND Field = 'Salary__c' ORDER BY CreatedDate ASC]);
-        this.employeeSalaryDateList = fillMap([SELECT ParentId, OldValue, NewValue, CreatedDate FROM SFDC_Employee__History WHERE ParentId IN: emps AND Field = 'Effective_Salary_Date__c' ORDER BY CreatedDate ASC]);
-        this.employeeExchangeRateList = fillMap([SELECT ParentId, OldValue, NewValue, CreatedDate FROM SFDC_Employee__History WHERE ParentId IN: emps AND Field = 'Exchange_Rate__c' ORDER BY CreatedDate ASC]);
-        this.employeeExchangeRateDateList = fillMap([SELECT ParentId, OldValue, NewValue, CreatedDate FROM SFDC_Employee__History WHERE ParentId IN: emps AND Field = 'Effective_Exchange_Rate_Date__c' ORDER BY CreatedDate ASC]);
+        this.employeeSalaryList = fillMap(emps, [SELECT ParentId, OldValue, NewValue, CreatedDate FROM SFDC_Employee__History WHERE ParentId IN: emps AND Field = 'Salary__c' ORDER BY CreatedDate ASC]);
+        this.employeeSalaryDateList = fillMap(emps,[SELECT ParentId, OldValue, NewValue, CreatedDate FROM SFDC_Employee__History WHERE ParentId IN: emps AND Field = 'Effective_Salary_Date__c' ORDER BY CreatedDate ASC]);
+        this.employeeExchangeRateList = fillMap(emps,[SELECT ParentId, OldValue, NewValue, CreatedDate FROM SFDC_Employee__History WHERE ParentId IN: emps AND Field = 'Exchange_Rate__c' ORDER BY CreatedDate ASC]);
+        this.employeeExchangeRateDateList = fillMap(emps,[SELECT ParentId, OldValue, NewValue, CreatedDate FROM SFDC_Employee__History WHERE ParentId IN: emps AND Field = 'Effective_Exchange_Rate_Date__c' ORDER BY CreatedDate ASC]);
     }
 
     /**
@@ -234,16 +234,16 @@ public without sharing class SalaryHistoryHelper {
         return salaryHistory;
     }
 
-    private Map<Id, List<SalaryHistoryWrapper>> fillMap(List<SFDC_Employee__History> records) {
+    private Map<Id, List<SalaryHistoryWrapper>> fillMap(Set<Id> emps, List<SFDC_Employee__History> records) {
         Map<Id, List<SalaryHistoryWrapper>> tmpMap = new Map<Id, List<SalaryHistoryWrapper>>();
+        for (Id ei: emps) {
+            tmpMap.put(ei, new List<SalaryHistoryWrapper>());
+        }
+
         for (SFDC_Employee__History rec : records) {
-            if (tmpMap.containsKey(rec.ParentId)) {
-                List<SalaryHistoryWrapper> salaryHistory = tmpMap.get(rec.ParentId);
-                salaryHistory.add(new SalaryHistoryWrapper(rec.OldValue, rec.NewValue, rec.CreatedDate));
-                tmpMap.put(rec.ParentId, salaryHistory);
-            } else {
-                tmpMap.put(rec.ParentId, new List<SalaryHistoryWrapper> { new SalaryHistoryWrapper(rec.OldValue, rec.NewValue, rec.CreatedDate) });
-            }
+            List<SalaryHistoryWrapper> salaryHistory = tmpMap.get(rec.ParentId);
+            salaryHistory.add(new SalaryHistoryWrapper(rec.OldValue, rec.NewValue, rec.CreatedDate));
+            tmpMap.put(rec.ParentId, salaryHistory);
         }
 
         return tmpMap;
