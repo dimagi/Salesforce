@@ -22,7 +22,7 @@ public class BatchCalculateEVDiffTest {
 
         insert snapShot1;
         Pipeline_Snapshot__c snapShot2 = new Pipeline_Snapshot__c(Opportunity__c = currentOpp.Id, Opportunity_Amount_Minus_Expense_Income__c = 2200,
-                                                                                Amount_Minus_Expense_Income__c = 2000, Probability__c = 100, Opportunity_Amount__c = 2000,
+                                                                                Amount_Minus_Expense_Income__c = 4000, Probability__c = 100, Opportunity_Amount__c = 2000,
                                                                                 Amount__c = 2000, Account__c = snapShotAccount.Id, Country__c = 'Test Country', Duration_months__c = 4,
                                                                                 Funder_Account__c = funderAccount.Id, Month_Date__c = Date.newInstance(2016, 2, 10), Source_Type__c = 'Opportunity',
                                                                                 Name = 'Test PS for date  ' + Date.newInstance(2016, 2, 10));
@@ -95,7 +95,7 @@ public class BatchCalculateEVDiffTest {
         insert snapshots_1;
 
         Pipeline_Snapshot__c snapShot2_1 = new Pipeline_Snapshot__c(Opportunity__c = currentOpp1.Id, Opportunity_Amount_Minus_Expense_Income__c = 1000,
-                                                                                Amount_Minus_Expense_Income__c = 2000, Probability__c = 100, Opportunity_Amount__c = 2000,
+                                                                                Amount_Minus_Expense_Income__c = 2000, Probability__c = 45, Opportunity_Amount__c = 2000,
                                                                                 Amount__c = 2000, Account__c = snapShotAccount.Id, Country__c = 'Test Country', Duration_months__c = 4,
                                                                                 Funder_Account__c = funderAccount.Id, Month_Date__c = Date.newInstance(2016, 2, 10), Source_Type__c = 'Opportunity',
                                                                                 Name = 'Test PS for date  ' + Date.newInstance(2016, 2, 10));
@@ -105,7 +105,7 @@ public class BatchCalculateEVDiffTest {
                                                                                 Funder_Account__c = funderAccount.Id, Month_Date__c = Date.newInstance(2016, 2, 10), Source_Type__c = 'Opportunity',
                                                                                 Name = 'Test PS for date  ' + Date.newInstance(2016, 2, 10));
         Pipeline_Snapshot__c snapShot2_3 = new Pipeline_Snapshot__c(Opportunity__c = currentOpp3.Id, Opportunity_Amount_Minus_Expense_Income__c = 2400,
-                                                                                Amount_Minus_Expense_Income__c = 2000, Probability__c = 100, Opportunity_Amount__c = 2000,
+                                                                                Amount_Minus_Expense_Income__c = 4000, Probability__c = 100, Opportunity_Amount__c = 2000,
                                                                                 Amount__c = 2000, Account__c = snapShotAccount.Id, Country__c = 'Test Country', Duration_months__c = 4,
                                                                                 Funder_Account__c = funderAccount.Id, Month_Date__c = Date.newInstance(2016, 2, 10), Source_Type__c = 'Opportunity',
                                                                                 Name = 'Test PS for date  ' + Date.newInstance(2016, 2, 10));

@@ -94,28 +94,28 @@ public class NetEVDifferenceTriggerGateway {
             snapShotsDiff.Monthly_Recurring_Revenue_MRR__c = snapshot.Opportunity__r.Monthly_Recurring_Revenue_MRR__c;
             snapShotsDiff.Pipeline_Snapshot__c = snapshot.Id;
 
-/** TODO delete after talking with Carter
+/** TODO delete after talking with Carter */
             snapShotsDiff.DIFF_12_Month_Cash_Minus_Expense_Income__c = (snapshot.Opportunity__r.X12Month_Cash_Minus_Expenses_EV__c != null ? snapshot.Opportunity__r.X12Month_Cash_Minus_Expenses_EV__c : 0) - (snapshot.X12_Month_Cash_Minus_Expense_Income_EV__c != null ? snapshot.X12_Month_Cash_Minus_Expense_Income_EV__c : 0);
             snapShotsDiff.DIFF_18_Month_Cash_Minus_Expenses_Income__c = (snapshot.Opportunity__r.X18_Month_Cash_Minus_Expenses_EV__c != null ? snapshot.Opportunity__r.X18_Month_Cash_Minus_Expenses_EV__c : 0) - (snapshot.X18_Month_Cash_Minus_Expenses_Income_EV__c != null ? snapshot.X18_Month_Cash_Minus_Expenses_Income_EV__c : 0);
             snapShotsDiff.DIFF_24_Month_Cash_Minus_Expense_Income__c = (snapshot.Opportunity__r.X24_Month_Cash_Minus_Expense_EV__c != null ? snapshot.Opportunity__r.X24_Month_Cash_Minus_Expense_EV__c : 0) - (snapshot.X24_Month_Cash_Minus_Expense_Income_EV__c != null ? snapshot.X24_Month_Cash_Minus_Expense_Income_EV__c : 0);
             snapShotsDiff.DIFF_Amount_Minus_Expense_Income__c = (snapshot.Opportunity__r.Amount_Minus_Expense_Income__c != null ? snapshot.Opportunity__r.Amount_Minus_Expense_Income__c : 0) - (snapshot.Opportunity_Amount_Minus_Expense_Income__c != null ? snapshot.Opportunity_Amount_Minus_Expense_Income__c : 0);
             snapShotsDiff.DIFF_Expected_Value_Minus_Expense__c = (snapshot.Opportunity__r.Expected_Value_Minus_Income__c != null ? snapshot.Opportunity__r.Expected_Value_Minus_Income__c : 0) - (snapshot.Expected_Value_Minus_Expense__c != null ? snapshot.Expected_Value_Minus_Expense__c : 0);
 
-*/
+/**
             snapShotsDiff.DIFF_12_Month_Cash_Minus_Expense_Income__c = 0;
             snapShotsDiff.DIFF_18_Month_Cash_Minus_Expenses_Income__c = 0;
             snapShotsDiff.DIFF_24_Month_Cash_Minus_Expense_Income__c = 0;
             snapShotsDiff.DIFF_Amount_Minus_Expense_Income__c = 0;
             snapShotsDiff.DIFF_Expected_Value_Minus_Expense__c = 0;
             snapShotsDiff.Prior_Snapshot_date__c = snapshot.Month_Date__c;
-
+*/
             if(snapshot.Opportunity__r.StageName == 'Closed - Lost' || snapshot.Opportunity__r.StageName == 'Closed - No Go' || snapshot.Opportunity__r.StageName == 'Closed') {
                 snapShotsDiff.Delta_Type__c = LOST;
             } else if(snapshot.Opportunity__r.StageName == 'Closed - Won') {
                 snapShotsDiff.Delta_Type__c = WON;
-            } else {
-                snapShotsDiff.Delta_Type__c = getDeltaType(snapShotsDiff);
-            }
+            }// else {
+             //   snapShotsDiff.Delta_Type__c = getDeltaType(snapShotsDiff);
+            //}
 
             snapShotDiffs.add(snapShotsDiff);
         }
@@ -230,7 +230,7 @@ public class NetEVDifferenceTriggerGateway {
     }
 
     public String getDeltaType(Pipeline_Snapshot_EV_DIff__c diffObj) {
-        Decimal diff = diffObj.DIFF_Amount_Minus_Expense_Income__c;
+        Decimal diff = diffObj.DIFF_Expected_Value_Minus_Expense__c;
         if(diff > 0) {
             return INCREASED;
         } else if(diff < 0) {
