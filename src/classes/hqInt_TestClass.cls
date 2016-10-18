@@ -586,6 +586,101 @@ private class hqInt_TestClass {
         Test.stopTest();
     }
 
+    @isTest
+    static void hqIntTestLifetimeMRRCalculation() {
+        Test.startTest();
+
+        Accounting_SoftwareProductRate__c productRate1 = new Accounting_SoftwareProductRate__c(is_active__c = true,  monthly_fee__c = 150);
+        Accounting_SoftwareProductRate__c productRate2 = new Accounting_SoftwareProductRate__c(is_active__c = true,  monthly_fee__c = 75);
+        Accounting_SoftwareProductRate__c productRate3 = new Accounting_SoftwareProductRate__c(is_active__c = true,  monthly_fee__c = 25);
+
+        insert productRate1;
+        insert productRate2;
+        insert productRate3;
+
+        Accounting_Softwareplan__c softwarePlan1 = new Accounting_Softwareplan__c(Name = 'softwarePlan1');
+        Accounting_Softwareplan__c softwarePlan2 = new Accounting_Softwareplan__c(Name = 'softwarePlan2');
+        Accounting_Softwareplan__c softwarePlan3 = new Accounting_Softwareplan__c(Name = 'softwarePlan3');
+
+        insert softwarePlan1;
+        insert softwarePlan2;
+        insert softwarePlan3;
+
+        Accounting_SoftwarePlanVersion__c planVersion1 = new Accounting_SoftwarePlanVersion__c(is_active__c = true, Software_Product_Rate__c = productRate1.Id,
+                                                                                               Accounting_SoftwarePlan__c = softwarePlan1.Id);
+        Accounting_SoftwarePlanVersion__c planVersion2 = new Accounting_SoftwarePlanVersion__c(is_active__c = true, Software_Product_Rate__c = productRate2.Id,
+                                                                                               Accounting_SoftwarePlan__c = softwarePlan2.Id);
+        Accounting_SoftwarePlanVersion__c planVersion3 = new Accounting_SoftwarePlanVersion__c(is_active__c = true, Software_Product_Rate__c = productRate3.Id,
+                                                                                               Accounting_SoftwarePlan__c = softwarePlan3.Id);
+
+        insert planVersion1;
+        insert planVersion2;
+        insert planVersion3;
+
+        Domain__c domain1 = new Domain__c(Name = 'Sample 1');
+        Domain__c domain2 = new Domain__c(Name = 'Sample 2');
+        Domain__c domain3 = new Domain__c(Name = 'Sample 3');
+
+        insert domain1;
+        insert domain2;
+        insert domain3;
+
+        Accounting_Subscription__c subscription1 = new Accounting_Subscription__c(date_start__c = Date.newInstance(2015, 11, 2), date_end__c = Date.newInstance(2016, 2 ,1),
+                                                                                  Accounting_subscriber_domain__c = domain1.Id, plan_version__c = planVersion1.Id);
+        insert subscription1;
+        Accounting_Subscription__c subscription2 = new Accounting_Subscription__c(date_start__c = Date.newInstance(2016, 1, 1), date_end__c = Date.newInstance(2016, 2 ,1),
+                                                                                  Accounting_subscriber_domain__c = domain1.Id, plan_version__c = planVersion2.Id);
+        insert subscription2;
+        Accounting_Subscription__c subscription3 = new Accounting_Subscription__c(date_start__c = Date.newInstance(2014, 1, 1), date_end__c = Date.newInstance(2014, 3 ,4),
+                                                                                  Accounting_subscriber_domain__c = domain1.Id, plan_version__c = planVersion3.Id);
+        insert subscription3;
+        Accounting_Subscription__c subscription4 = new Accounting_Subscription__c(date_start__c = Date.newInstance(2016, 1, 1), date_end__c = Date.newInstance(2016, 2 ,1),
+                                                                                  Accounting_subscriber_domain__c = domain2.Id, plan_version__c = planVersion1.Id);
+        insert subscription4;
+        Accounting_Subscription__c subscription5 = new Accounting_Subscription__c(date_start__c = Date.newInstance(2016, 1, 1), date_end__c = Date.newInstance(2016, 2 ,1),
+                                                                                  Accounting_subscriber_domain__c = domain2.Id, plan_version__c = planVersion2.Id);
+        insert subscription5;
+        Accounting_Subscription__c subscription6 = new Accounting_Subscription__c(date_start__c = Date.newInstance(2013, 6, 6), date_end__c = Date.newInstance(2014, 5 ,5),
+                                                                                  Accounting_subscriber_domain__c = domain2.Id, plan_version__c = planVersion3.Id);
+        insert subscription6;
+        Accounting_Subscription__c subscription7 = new Accounting_Subscription__c(date_start__c = Date.newInstance(2016, 1, 1), date_end__c = Date.newInstance(2016, 2 ,1),
+                                                                                  Accounting_subscriber_domain__c = domain2.Id, plan_version__c = planVersion1.Id);
+        insert subscription7;
+        Accounting_Subscription__c subscription8 = new Accounting_Subscription__c(date_start__c = Date.newInstance(2016, 2, 1), date_end__c = Date.newInstance(2016, 4, 4),
+                                                                                  Accounting_subscriber_domain__c = domain3.Id, plan_version__c = planVersion2.Id);
+        insert subscription8;
+        Accounting_Subscription__c subscription9 = new Accounting_Subscription__c(date_start__c = Date.newInstance(2016, 1, 14), date_end__c = Date.newInstance(2016, 2 ,10),
+                                                                                  Accounting_subscriber_domain__c = domain3.Id, plan_version__c = planVersion3.Id);
+        insert subscription9;
+
+        Database.executeBatch(new CalculateDomainsLifeTimeMRRBatch(), 200);
+
+        Test.stopTest();
+
+        Domain__c domainFromDB1 = [SELECT Lifetime_MRR__c FROM Domain__c WHERE Name = 'Sample 1' LIMIT 1];
+        System.assertEquals(calculateMRRForDomain(domain1.Id, 3), domainFromDB1.Lifetime_MRR__c);
+        Domain__c domainFromDB2 = [SELECT Lifetime_MRR__c FROM Domain__c WHERE Name = 'Sample 2' LIMIT 1];
+        System.assertEquals(calculateMRRForDomain(domain2.Id, 4), domainFromDB2.Lifetime_MRR__c);
+        Domain__c domainFromDB3 = [SELECT Lifetime_MRR__c FROM Domain__c WHERE Name = 'Sample 3' LIMIT 1];
+        System.assertEquals(calculateMRRForDomain(domain3.Id, 2), domainFromDB3.Lifetime_MRR__c);
+        System.debug(domainFromDB1);
+        System.debug(domainFromDB2);
+        System.debug(domainFromDB3);
+    }
+
+    static private Decimal calculateMRRForDomain(Id domainId, Integer expectedSize) {
+        Decimal sumForDomain = 0;
+        List<Accounting_Subscription__c> subsForDomain1 = [SELECT Lifetime_MRR__c, accounting_software_monthly_fee__c FROM Accounting_Subscription__c WHERE Accounting_subscriber_domain__c =: domainId];
+        System.assertEquals(expectedSize, subsForDomain1.size());
+
+        for (Accounting_Subscription__c s : subsForDomain1) {
+            System.debug('For domain : ' + domainId + ' ' + s.Lifetime_MRR__c + ' calculated by : ' + s.accounting_software_monthly_fee__c);
+            sumForDomain += s.Lifetime_MRR__c;
+        }
+
+        return sumForDomain;
+    }
+
     static private void createSoftwarePlan(String planId) {
         hqInt_ModelClass.Accounting_SoftwarePlan plan = new hqInt_ModelClass.Accounting_SoftwarePlan();
         plan.id = planId;
