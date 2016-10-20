@@ -19,7 +19,12 @@ public without sharing class BatchRecalculateTimeCardCost implements Database.Ba
         this.employeeSalaryHistory = new List<SalaryHistoryRecord>();
 
         String query;
-        query = 'SELECT Time_card_cost__c, Total__c, Employee__c, Date__c FROM Time_Card__c WHERE Id In: timeCardsIds AND Employee__c != \'\' ORDER BY Employee__c';
+        System.debug('timeCardsIds ' + timeCardsIds);
+        if (this.timeCardsIds != null && this.timeCardsIds.size() > 0) {
+            query = 'SELECT Time_card_cost__c, Total__c, Employee__c, Date__c FROM Time_Card__c WHERE Id In: timeCardsIds AND Employee__c != \'\' ORDER BY Employee__c';
+        } else {
+            query = 'SELECT Time_card_cost__c, Total__c, Employee__c, Date__c FROM Time_Card__c WHERE Employee__c != \'\' ORDER BY Employee__c';
+        }
         return Database.getQueryLocator(query);
     }
 
