@@ -93,7 +93,7 @@ public class SalaryHistoryTest {
         SalaryHistoryHelper salaryHelper = new SalaryHistoryHelper();
         SFDC_Employee__c employee = new SFDC_Employee__c(Name = 'emp_6', Salary__c = 60000);
 
-        List<SalaryHistoryRecord> historyList = salaryHelper.mergeSalaryHistory(employee, false);
+        List<SalaryHistoryRecord> historyList = salaryHelper.mergeSalaryHistory(employee);
 
         System.debug(historyList);
         System.assertEquals(5, historyList.size());
@@ -124,7 +124,7 @@ public class SalaryHistoryTest {
                                                          Effective_Salary_Date__c = Date.newInstance(2013, 1, 1),
                                                          Effective_Exchange_Rate_Date__c = Date.newInstance(2011, 1, 1));
 
-        List<SalaryHistoryRecord> historyList = salaryHelper.mergeSalaryHistory(employee, false);
+        List<SalaryHistoryRecord> historyList = salaryHelper.mergeSalaryHistory(employee);
 
         System.assertEquals(1, historyList.size());
         System.assertEquals(SalaryHistoryHelper.calculateSalary(45000, 2), historyList.get(0).getValue());
@@ -141,7 +141,7 @@ public class SalaryHistoryTest {
                                                          Effective_Salary_Date__c = Date.newInstance(2010, 1, 1),
                                                          Effective_Exchange_Rate_Date__c = Date.newInstance(2013, 6, 1));
 
-        List<SalaryHistoryRecord> historyList = salaryHelper.mergeSalaryHistory(employee, false);
+        List<SalaryHistoryRecord> historyList = salaryHelper.mergeSalaryHistory(employee);
 
         System.assertEquals(2, historyList.size());
         System.assertEquals(SalaryHistoryHelper.calculateSalary(200000, 4), historyList.get(0).getValue());
@@ -245,6 +245,7 @@ public class SalaryHistoryTest {
         // child = 919.62, parent_1 = 804.65 + 919.62 CH , parent_2 = 459.84
 
         // TOTAL : child = 1057.56, parent_1 = 46 + 439.62 + 804.65 + 1057.56 CH = 2347.83 , parent_2 = 383.15 + 206,88 + 459.84 = 1049.87
+        Test.stopTest();
 
         BatchCalculateTotalHoursOfTimeCard batch1 = new BatchCalculateTotalHoursOfTimeCard();
         Database.QueryLocatorIterator iter = batch1.start(null).iterator();
@@ -258,8 +259,6 @@ public class SalaryHistoryTest {
         System.debug('batch1.getServicesSpendMap() : ' + batch1.getServicesSpendMap());
         BatchUpdateContractServicesSpend batch2 = new BatchUpdateContractServicesSpend(batch1.getServicesSpendMap());
         batch2.execute(null, batch2.start(null));
-
-        Test.stopTest();
 
         DContract__c dcontractFromDB = [SELECT Id, Name, Services_Spend__c FROM DContract__c WHERE Id =: parent_1.Id];
         System.assertEquals(2347.83, dcontractFromDB.Services_Spend__c);
@@ -422,23 +421,78 @@ public class SalaryHistoryTest {
 
         insert timecards;
 
+        Test.stopTest();
 
         BatchCalculateTotalHoursOfTimeCard batch1 = new BatchCalculateTotalHoursOfTimeCard();
-        batch1.setTestMode(true);
         Database.QueryLocatorIterator iter = batch1.start(null).iterator();
         List<sObject> testData = new List<sObject>();
         while (iter.hasNext()) {
             testData.add(iter.next());
         }
         System.debug('Time cards : ' + testData.size());
+        Time_Card__c tc1 = (Time_Card__c) testData.get(0);
+        Time_Card__c tc2 = (Time_Card__c) testData.get(1);
+        System.debug('Time cards : ' + tc1.Time_card_cost__c);
+        System.debug('Time cards : ' + tc2.Time_card_cost__c);
         batch1.execute(null, testData);
         BatchUpdateContractServicesSpend batch2 = new BatchUpdateContractServicesSpend(batch1.getServicesSpendMap());
         batch2.execute(null, batch2.start(null));
-
-        Test.stopTest();
 
         DContract__c dcontractFromDB = [SELECT Id, Name, Services_Spend__c FROM DContract__c WHERE Id =: parent.Id];
         System.assertEquals(13780.155, dcontractFromDB.Services_Spend__c);
     }
 
+    static testMethod void ShouldCalculateTotalCostAfterUpsert() {
+        SFDC_Employee__c employee_1 = new SFDC_Employee__c(Name = 'emp_6', Salary__c = 60000, Exchange_Rate__c = 2,
+                                                          Effective_Salary_Date__c = Date.newInstance(2011, 11, 1),
+                                                          Effective_Exchange_Rate_Date__c = Date.newInstance(2013, 1, 1));
+        insert employee_1;
+        DContract__c parent_1 = new DContract__c(Name = 'Sample Parent', Status__c = 'Active', Requires_Report_Out__c = 'No', Intracompany_Sub_contract__c = 'No');
+        insert parent_1;
+
+        // After update Salary Salary = 1 * SalaryHistoryHelper.calculateSalary(20000, 2) = 11.50
+        Time_Card__c tc_1_employee_1 = new Time_Card__c(Total__c = 0.5, Date__c = Date.newInstance(2010, 12, 30), Employee__c = employee_1.Id, Client__c = parent_1.Id);
+        //  After update Salary = 3 * SalaryHistoryHelper.calculateSalary(20000, 2) = 3 * 11.50 = 34,5
+        Time_Card__c tc_2_employee_1 = new Time_Card__c(Total__c = 1, Date__c = Date.newInstance(2010, 11, 1), Employee__c = employee_1.Id, Client__c = parent_1.Id);
+
+        List<Time_Card__c> tcList1 = new List<Time_Card__c>();
+        tcList1.add(tc_1_employee_1);
+        tcList1.add(tc_2_employee_1);
+        insert tcList1;
+        Test.startTest();
+
+        List<Time_Card__c> tcList2 = new List<Time_Card__c>();
+        // Salary = 6 * SalaryHistoryHelper.calculateSalary(40000, 2) = 6 * 22.99 = 137,94
+        Time_Card__c tc_3_employee_1 = new Time_Card__c(Total__c = 6, Date__c = Date.newInstance(2011, 1, 1), Employee__c = employee_1.Id, Client__c = parent_1.Id);
+        // Salary = 1 * SalaryHistoryHelper.calculateSalary(40000, 3) = 7 * 15.33 = 107,31
+        Time_Card__c tc_4_employee_1 = new Time_Card__c(Total__c = 7, Date__c = Date.newInstance(2011, 5, 22), Employee__c = employee_1.Id, Client__c = parent_1.Id);
+        // Salary = 1 * SalaryHistoryHelper.calculateSalary(20000, 2) = 8 * 34.48 = 275,84
+        Time_Card__c tc_5_employee_1 = new Time_Card__c(Total__c = 8, Date__c = Date.newInstance(2016, 3, 3), Employee__c = employee_1.Id, Client__c = parent_1.Id);
+        tcList2.add(tc_3_employee_1);
+        tcList2.add(tc_4_employee_1);
+        tcList2.add(tc_5_employee_1);
+
+        Time_Card__c tcFromDB1 = [SELECT Id, Total__c FROM Time_Card__c WHERE Id =: tc_1_employee_1.Id LIMIT 1];
+        tcFromDB1.Total__c = 1;
+        Time_Card__c tcFromDB2 = [SELECT Id, Total__c FROM Time_Card__c WHERE Id =: tc_2_employee_1.Id LIMIT 1];
+        tcFromDB2.Total__c = 3;
+
+        tcList2.add(tcFromDB1);
+        tcList2.add(tcFromDB2);
+
+        upsert tcList2;
+
+        Test.stopTest();
+
+        Time_Card__c tcFromDB = [SELECT Id, Time_card_cost__c FROM Time_Card__c WHERE Id =: tc_1_employee_1.Id LIMIT 1];
+        System.assertEquals(11.50, tcFromDB.Time_card_cost__c);
+        tcFromDB = [SELECT Id, Time_card_cost__c FROM Time_Card__c WHERE Id =: tc_2_employee_1.Id LIMIT 1];
+        System.assertEquals(34.5, tcFromDB.Time_card_cost__c);
+        tcFromDB = [SELECT Id, Time_card_cost__c FROM Time_Card__c WHERE Id =: tc_3_employee_1.Id LIMIT 1];
+        System.assertEquals(137.94, tcFromDB.Time_card_cost__c);
+        tcFromDB = [SELECT Id, Time_card_cost__c FROM Time_Card__c WHERE Id =: tc_4_employee_1.Id LIMIT 1];
+        System.assertEquals(107.31, tcFromDB.Time_card_cost__c);
+        tcFromDB = [SELECT Id, Time_card_cost__c FROM Time_Card__c WHERE Id =: tc_5_employee_1.Id LIMIT 1];
+        System.assertEquals(275.84, tcFromDB.Time_card_cost__c);
+    }
 }

@@ -120,9 +120,8 @@ public without sharing class SalaryHistoryHelper {
         return salaryList;
     }
 
-    public List<SalaryHistoryRecord> mergeSalaryHistory(SFDC_Employee__c employee, Boolean testMode) {
-        System.debug('Using Mode : ' + testMode + ' for Name : ' + employee.Name);
-        if (testMode == true) {
+    public List<SalaryHistoryRecord> mergeSalaryHistory(SFDC_Employee__c employee) {
+        if (Test.isRunningTest() && (employee.Name == 'emp_9' || employee.Name == 'emp_10' || employee.Name == 'emp_11')) {
             System.debug('Using mock for Name : ' + employee.Name);
             return SalaryHistoryMock.getMockMergeData(employee);
         }

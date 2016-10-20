@@ -2,6 +2,8 @@
 public class BatchCalculateTotalHoursOfTimeCardTest {
 
     static testMethod void shouldUpdateServicesSpend() {
+        Test.startTest();
+
         SFDC_Employee__c employeeObj = new SFDC_Employee__c(
             name = 'Sample Employee',
             Salary__c = 50000,
@@ -19,8 +21,6 @@ public class BatchCalculateTotalHoursOfTimeCardTest {
         );
         insert dcontract;
 
-        Test.startTest();
-
         Time_Card__c timeCardObj = new Time_Card__c(
             Total__c = 4,
             Date__c = Date.today().addMonths(-2),
@@ -28,6 +28,7 @@ public class BatchCalculateTotalHoursOfTimeCardTest {
             Client__c = dcontract.Id
         );
         insert timeCardObj;
+        Test.stopTest();
 
         BatchCalculateTotalHoursOfTimeCard batch1 = new BatchCalculateTotalHoursOfTimeCard();
         Database.QueryLocatorIterator iter = batch1.start(null).iterator();
@@ -39,13 +40,13 @@ public class BatchCalculateTotalHoursOfTimeCardTest {
         batch1.execute(null, testData);
         BatchUpdateContractServicesSpend batch2 = new BatchUpdateContractServicesSpend(batch1.getServicesSpendMap());
         batch2.execute(null, batch2.start(null));
-        Test.stopTest();
 
         DContract__c dcontractFromDB = [SELECT Id, Name, Services_Spend__c FROM DContract__c WHERE Id =: dcontract.Id];
         System.assertEquals(229.92, dcontractFromDB.Services_Spend__c);
     }
 
     static testMethod void shouldUpdateParentServicesSpend() {
+        Test.startTest();
         SFDC_Employee__c employeeObj = new SFDC_Employee__c(
             name = 'Sample Employee',
             Salary__c = 50000,
@@ -81,8 +82,6 @@ public class BatchCalculateTotalHoursOfTimeCardTest {
         );
         insert child2;
 
-        Test.startTest();
-
         Time_Card__c timeCardObj1 = new Time_Card__c(
             Total__c = 4,
             Date__c = Date.today().addMonths(-2),
@@ -99,6 +98,8 @@ public class BatchCalculateTotalHoursOfTimeCardTest {
         );
         insert timeCardObj2;
 
+        Test.stopTest();
+
         BatchCalculateTotalHoursOfTimeCard batch1 = new BatchCalculateTotalHoursOfTimeCard();
         Database.QueryLocatorIterator iter = batch1.start(null).iterator();
         List<sObject> testData = new List<sObject>();
@@ -106,10 +107,10 @@ public class BatchCalculateTotalHoursOfTimeCardTest {
             testData.add(iter.next());
         }
 
+        System.debug('testData ' + testData);
         batch1.execute(null, testData);
         BatchUpdateContractServicesSpend batch2 = new BatchUpdateContractServicesSpend(batch1.getServicesSpendMap());
         batch2.execute(null, batch2.start(null));
-        Test.stopTest();
 
         DContract__c dcontractFromDB = [SELECT Id, Name, Services_Spend__c FROM DContract__c WHERE Id =: parent.Id];
         System.assertEquals(689.76, dcontractFromDB.Services_Spend__c);
@@ -122,6 +123,7 @@ public class BatchCalculateTotalHoursOfTimeCardTest {
     }
 
     static testMethod void shouldUpdateServicesSpendInManyContracts() {
+        Test.startTest();
         SFDC_Employee__c employeeObj = new SFDC_Employee__c(
             name = 'Sample Employee',
             Salary__c = 50000,
@@ -183,8 +185,6 @@ public class BatchCalculateTotalHoursOfTimeCardTest {
         );
         insert child4;
 
-        Test.startTest();
-
         Time_Card__c timeCardObj1 = new Time_Card__c(
             Total__c = 8,
             Date__c = Date.today().addMonths(-2),
@@ -217,6 +217,8 @@ public class BatchCalculateTotalHoursOfTimeCardTest {
         );
         insert timeCardObj4;
 
+        Test.stopTest();
+
         Set<Id> ids = new Set<Id>();
         ids.add(child4.Id);
         ids.add(parent1.Id);
@@ -231,7 +233,6 @@ public class BatchCalculateTotalHoursOfTimeCardTest {
         batch1.execute(null, testData);
         BatchUpdateContractServicesSpend batch2 = new BatchUpdateContractServicesSpend(batch1.getServicesSpendMap());
         batch2.execute(null, batch2.start(null));
-        Test.stopTest();
 
         DContract__c dcontractFromDB = [SELECT Id, Name, Services_Spend__c FROM DContract__c WHERE Id =: parent1.Id];
         System.assertEquals(689.76, dcontractFromDB.Services_Spend__c);
@@ -251,5 +252,4 @@ public class BatchCalculateTotalHoursOfTimeCardTest {
         dcontractFromDB = [SELECT Id, Name, Services_Spend__c FROM DContract__c WHERE Id =: child4.Id];
         System.assertEquals(459.84, dcontractFromDB.Services_Spend__c);
     }
-
 }
