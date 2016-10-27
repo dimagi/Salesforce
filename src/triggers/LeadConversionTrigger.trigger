@@ -30,7 +30,7 @@ trigger LeadConversionTrigger on Lead (after update) {
                             leadIds.add(l.Id);
                         }
                     } else { // We cannot mock LastActivityDate so in test we use Follow_up_calls_held field !!! IMPORTANT for changes
-                        System.debug('My test : ' + l.Name);
+                        System.debug('Name test : ' + l.Name);
                         if (l.Failed_Qualifying_process_at_least_once__c == false && l.Follow_up_calls_held__c > threshold && l.Status == 'Working - Talking' && (l.Follow_up_Date__c == null || l.Follow_up_Date__c < Date.today())
                                 && (l.Hubspot_Next_Activity_Date__c == null || l.Hubspot_Next_Activity_Date__c < Date.today())
                                 && (l.Lead_Status_Reason__c == 'Working - Exploratory Call - Trying for' || l.Lead_Status_Reason__c == 'Working - Exploratory Call Held')) {
@@ -42,9 +42,12 @@ trigger LeadConversionTrigger on Lead (after update) {
 
             if (leadIds.size() > 0) {
                 List<Lead> leads = [SELECT Id, Failed_Qualifying_process_at_least_once__c FROM Lead WHERE Id In: leadIds];
+                for (Lead l : leads) {
+                    l.Failed_Qualifying_process_at_least_once__c = true;
+                }
                 if (leads.size() > 0) {
                     RecursiveTriggerHelper.setRecursiveFlag();
-                    LeadQualifyProcessBatch.setFlagInLeads(leads, true);
+                    update leads;
                 }
             }
         }

@@ -42,19 +42,12 @@ public without sharing class LeadQualifyProcessBatch implements Database.Batchab
             l.Failed_Qualifying_process_at_least_once__c = true;
             leadsToUpdate.add(l);
         }
-        LeadQualifyProcessBatch.setFlagInLeads(leadsToUpdate, false);
+        if (leadsToUpdate.size() > 0) {
+            update leadsToUpdate;
+        }
     }
 
     public void finish(Database.BatchableContext context) {
 
-    }
-
-    public static void setFlagInLeads(List<Lead> leads, Boolean setFlag) {
-        if (setFlag) {
-            for (Lead l : leads) {
-                l.Failed_Qualifying_process_at_least_once__c = true;
-            }
-        }
-        update leads;
     }
 }

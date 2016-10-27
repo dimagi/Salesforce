@@ -27,10 +27,12 @@ public class LeadQualifyProcessTest {
 
         Test.stopTest();
 
-        List<Lead> leadsFromDB = [SELECT Id, Failed_Qualifying_process_at_least_once__c FROM Lead ORDER BY Company];
-        System.assertEquals(true, leadsFromDB.get(0).Failed_Qualifying_process_at_least_once__c);
-        System.assertEquals(true, leadsFromDB.get(1).Failed_Qualifying_process_at_least_once__c);
-        System.assertEquals(false, leadsFromDB.get(2).Failed_Qualifying_process_at_least_once__c);
+        Lead leadFromDB = [SELECT Id, Failed_Qualifying_process_at_least_once__c FROM Lead WHERE Id =: testLead1.Id LIMIT 1];
+        System.assertEquals(true, leadFromDB.Failed_Qualifying_process_at_least_once__c);
+        leadFromDB = [SELECT Id, Failed_Qualifying_process_at_least_once__c FROM Lead WHERE Id =: testLead2.Id LIMIT 1];
+        System.assertEquals(true, leadFromDB.Failed_Qualifying_process_at_least_once__c);
+        leadFromDB = [SELECT Id, Failed_Qualifying_process_at_least_once__c FROM Lead WHERE Id =: testLead3.Id LIMIT 1];
+        System.assertEquals(false, leadFromDB.Failed_Qualifying_process_at_least_once__c);
 
     }
 
