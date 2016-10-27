@@ -99,8 +99,8 @@ public class SalaryHistoryTest {
         System.assertEquals(5, historyList.size());
 
         Loaded_Daily_Rate_Settings__c settings = new Loaded_Daily_Rate_Settings__c(Settings_Effective_Date__c = Date.newInstance(1900, 1, 1),
-                                                                                   Working_Days__c = 260, Fringe__c = 0.30,
-                                                                                   Overhead__c = 0.52, Fee__c = 0.1, G_A__c = 0.1);
+                                                                                   Working_Days__c = 260, Fringe__c = 30,
+                                                                                   Overhead__c = 52, Fee__c = 10, G_A__c = 10);
 
         System.assertEquals(SalaryHistoryHelper.calculatePerHourSalary(SalaryHistoryHelper.calculateSalary(20000, 2), settings),
                             historyList.get(0).getValue());
@@ -129,8 +129,8 @@ public class SalaryHistoryTest {
         Test.startTest();
 
         Loaded_Daily_Rate_Settings__c settings = new Loaded_Daily_Rate_Settings__c(Settings_Effective_Date__c = Date.newInstance(1900, 1, 1),
-                                                                                   Working_Days__c = 260, Fringe__c = 0.30,
-                                                                                   Overhead__c = 0.52, Fee__c = 0.1, G_A__c = 0.1);
+                                                                                   Working_Days__c = 260, Fringe__c = 30,
+                                                                                   Overhead__c = 52, Fee__c = 10, G_A__c = 10);
 
         SalaryHistoryHelper salaryHelper = new SalaryHistoryHelper();
         SFDC_Employee__c employee = new SFDC_Employee__c(Name = 'emp_7', Salary__c = 45000, Exchange_Rate__c = 2,
@@ -151,8 +151,8 @@ public class SalaryHistoryTest {
         Test.startTest();
 
         Loaded_Daily_Rate_Settings__c settings = new Loaded_Daily_Rate_Settings__c(Settings_Effective_Date__c = Date.newInstance(1900, 1, 1),
-                                                                                   Working_Days__c = 260, Fringe__c = 0.30,
-                                                                                   Overhead__c = 0.52, Fee__c = 0.1, G_A__c = 0.1);
+                                                                                   Working_Days__c = 260, Fringe__c = 30,
+                                                                                   Overhead__c = 52, Fee__c = 10, G_A__c = 10);
 
         SalaryHistoryHelper salaryHelper = new SalaryHistoryHelper();
         SFDC_Employee__c employee = new SFDC_Employee__c(Name = 'emp_8', Salary__c = 200000, Exchange_Rate__c = 2,
@@ -176,8 +176,8 @@ public class SalaryHistoryTest {
     static testMethod void shouldCalculateCorrectSalary() {
         Test.startTest();
         Loaded_Daily_Rate_Settings__c settings = new Loaded_Daily_Rate_Settings__c(Settings_Effective_Date__c = Date.newInstance(1900, 1, 1),
-                                                                                   Working_Days__c = 260, Fringe__c = 0.30,
-                                                                                   Overhead__c = 0.52, Fee__c = 0.1, G_A__c = 0.1);
+                                                                                   Working_Days__c = 260, Fringe__c = 30,
+                                                                                   Overhead__c = 52, Fee__c = 10, G_A__c = 10);
         System.assertEquals(11.50, SalaryHistoryHelper.calculatePerHourSalary(SalaryHistoryHelper.calculateSalary(20000, 2), settings));
         System.assertEquals(22.99, SalaryHistoryHelper.calculatePerHourSalary(SalaryHistoryHelper.calculateSalary(40000, 2), settings));
         System.assertEquals(15.33, SalaryHistoryHelper.calculatePerHourSalary(SalaryHistoryHelper.calculateSalary(40000, 3), settings));
@@ -522,11 +522,11 @@ public class SalaryHistoryTest {
         Test.startTest();
 
         Loaded_Daily_Rate_Settings__c settings_1 = new Loaded_Daily_Rate_Settings__c(Name = 'Test 1', Settings_Effective_Date__c = Date.newInstance(1990, 1, 1), Working_Days__c = 260, Fringe__c = 0.30,
-                                          Overhead__c = 0.52, Fee__c = 0.1, G_A__c = 0.1);
+                                          Overhead__c = 52, Fee__c = 10, G_A__c = 10);
         Loaded_Daily_Rate_Settings__c settings_2 = new Loaded_Daily_Rate_Settings__c(Name = 'Test 3', Settings_Effective_Date__c = Date.newInstance(2016, 1, 1), Working_Days__c = 260, Fringe__c = 0.2,
-                                          Overhead__c = 0.3, Fee__c = 0.1, G_A__c = 0.1);
+                                          Overhead__c = 30, Fee__c = 10, G_A__c = 10);
         Loaded_Daily_Rate_Settings__c settings_3 = new Loaded_Daily_Rate_Settings__c(Name = 'Test 2', Settings_Effective_Date__c = Date.newInstance(2014, 1, 1), Working_Days__c = 260, Fringe__c = 0.1,
-                                          Overhead__c = 0.7, Fee__c = 0.15, G_A__c = 0.15);
+                                          Overhead__c = 70, Fee__c = 15, G_A__c = 15);
         insert settings_1;
         insert settings_2;
         insert settings_3;

@@ -245,7 +245,9 @@ public without sharing class SalaryHistoryHelper {
     }
 
     public static Decimal calculatePerHourSalary(Decimal sal, Loaded_Daily_Rate_Settings__c settings) {
-        Double result = ((sal / settings.Working_Days__c) * (1 + settings.Fringe__c) * (1 + settings.Overhead__c) * (1 + settings.Fee__c) * (1 + settings.G_A__c)) / 8.0;
+        Double result = ((sal / settings.Working_Days__c) * (1 + settings.Fringe__c / 100.0)
+                            * (1 + settings.Overhead__c / 100.0) * (1 + settings.Fee__c / 100.0)
+                            * (1 + settings.G_A__c / 100.0)) / 8.0;
         return Decimal.valueOf(result).setScale(2);
     }
 
@@ -326,8 +328,8 @@ public without sharing class SalaryHistoryHelper {
             System.debug('Loaded_Daily_Rate_Settings__c ' + this.dailyRateSettings);
         } else {
             this.dailyRateSettings.add(new LoadedDailyRateSettingsWrapper(
-                    new Loaded_Daily_Rate_Settings__c(Settings_Effective_Date__c = Date.newInstance(1900, 1, 1), Working_Days__c = 260, Fringe__c = 0.30,
-                                                      Overhead__c = 0.52, Fee__c = 0.1, G_A__c = 0.1)));
+                    new Loaded_Daily_Rate_Settings__c(Settings_Effective_Date__c = Date.newInstance(1900, 1, 1), Working_Days__c = 260, Fringe__c = 30,
+                                                      Overhead__c = 52, Fee__c = 10, G_A__c = 10)));
         }
     }
 
