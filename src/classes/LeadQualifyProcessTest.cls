@@ -27,7 +27,7 @@ public class LeadQualifyProcessTest {
 
         Test.stopTest();
 
-        List<Lead> leadsFromDB = [SELECT Id, Failed_Qualifying_process_at_least_once__c FROM Lead ORDER BY CreatedDate];
+        List<Lead> leadsFromDB = [SELECT Id, Failed_Qualifying_process_at_least_once__c FROM Lead ORDER BY Company];
         System.assertEquals(true, leadsFromDB.get(0).Failed_Qualifying_process_at_least_once__c);
         System.assertEquals(true, leadsFromDB.get(1).Failed_Qualifying_process_at_least_once__c);
         System.assertEquals(false, leadsFromDB.get(2).Failed_Qualifying_process_at_least_once__c);
@@ -60,7 +60,7 @@ public class LeadQualifyProcessTest {
 
         Test.stopTest();
 
-        List<Lead> leadsFromDB = [SELECT Id, Failed_Qualifying_process_at_least_once__c FROM Lead ORDER BY CreatedDate];
+        List<Lead> leadsFromDB = [SELECT Id, Failed_Qualifying_process_at_least_once__c FROM Lead ORDER BY Company];
         System.assertEquals(true, leadsFromDB.get(0).Failed_Qualifying_process_at_least_once__c);
         System.assertEquals(true, leadsFromDB.get(1).Failed_Qualifying_process_at_least_once__c);
         System.assertEquals(false, leadsFromDB.get(2).Failed_Qualifying_process_at_least_once__c);
@@ -97,7 +97,7 @@ public class LeadQualifyProcessTest {
 
         Test.stopTest();
 
-        List<Lead> leadsFromDB = [SELECT Id, Failed_Qualifying_process_at_least_once__c FROM Lead ORDER BY CreatedDate];
+        List<Lead> leadsFromDB = [SELECT Id, Failed_Qualifying_process_at_least_once__c FROM Lead ORDER BY Company];
         System.assertEquals(true, leadsFromDB.get(0).Failed_Qualifying_process_at_least_once__c);
         System.assertEquals(true, leadsFromDB.get(1).Failed_Qualifying_process_at_least_once__c);
         System.assertEquals(false, leadsFromDB.get(2).Failed_Qualifying_process_at_least_once__c);
