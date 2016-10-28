@@ -9,6 +9,7 @@ trigger LeadConversionTrigger on Lead (after update) {
                 threshold = settings.Threshold__c;
             }
 
+            System.debug('SIZE: ' + Trigger.new.size());
             for (Lead l : Trigger.new) {
                 // After conversion
                 if (Trigger.oldMap.get(l.Id).isConverted == false && l.isConverted == true) {
@@ -41,6 +42,7 @@ trigger LeadConversionTrigger on Lead (after update) {
             }
 
             if (leadIds.size() > 0) {
+                System.debug('leadIds ' + leadIds.size());
                 List<Lead> leads = [SELECT Id, Failed_Qualifying_process_at_least_once__c FROM Lead WHERE Id In: leadIds];
                 for (Lead l : leads) {
                     l.Failed_Qualifying_process_at_least_once__c = true;
