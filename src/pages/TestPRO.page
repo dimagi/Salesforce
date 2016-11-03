@@ -131,7 +131,7 @@
                 </apex:facet>
             </apex:actionstatus>
 
-            <apex:tabPanel switchType="client"  value="{!selectedTab}" id="projectReportOutTabPanel" rendered="{!isAuthenticated}">
+            <apex:tabPanel switchType="client"  value="{!selectedTab}" id="projectReportOutTabPanel">
                 <apex:tab label="Report Out" name="reportTab" id="reportTab">
                     <input type="text" style="width:0;opacity:0;height:0" />
                     <apex:pageBlock title="Project Report Out" id="reportOutTabId">

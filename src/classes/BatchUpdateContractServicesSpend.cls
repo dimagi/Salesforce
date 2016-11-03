@@ -3,13 +3,13 @@
  */
 public class BatchUpdateContractServicesSpend implements Database.Batchable<DContract__c>, Database.Stateful {
 
-    private Map<Id, Integer> servicesSpendMap;
+    private Map<Id, Decimal> servicesSpendMap;
 
     public BatchUpdateContractServicesSpend() {
-        this.servicesSpendMap = new Map<Id, Integer>();
+        this.servicesSpendMap = new Map<Id, Decimal>();
     }
 
-    public BatchUpdateContractServicesSpend(Map<Id, Integer> servicesSpendMap) {
+    public BatchUpdateContractServicesSpend(Map<Id, Decimal> servicesSpendMap) {
         this.servicesSpendMap = servicesSpendMap;
     }
 
@@ -26,7 +26,7 @@ public class BatchUpdateContractServicesSpend implements Database.Batchable<DCon
                 continue;
             }
 
-            Integer contractValue = servicesSpendMap.get(contract.Id);
+            Decimal contractValue = servicesSpendMap.get(contract.Id);
             if (servicesSpendMap.containsKey(contract.Parent_Contract__c)) {
                 servicesSpendMap.put(contract.Parent_Contract__c, servicesSpendMap.get(contract.Parent_Contract__c) + contractValue);
             } else {
@@ -44,14 +44,14 @@ public class BatchUpdateContractServicesSpend implements Database.Batchable<DCon
                 continue;
             }
 
-            Integer contractValue = servicesSpendMap.get(contract.Id);
+            Decimal contractValue = servicesSpendMap.get(contract.Id);
             if (contract.Services_Spend__c != contractValue) {
                 contract.Services_Spend__c = contractValue;
                 contractsToUpdate.add(contract);
             }
         }
 
-        update contractsToUpdate;
+        Database.update(contractsToUpdate, false);
     }
 
     public void finish(Database.BatchableContext context) {

@@ -28,13 +28,19 @@ public class BatchCalculateTotalHoursOfTimeCardTest {
         insert timeCardObj;
 
         BatchCalculateTotalHoursOfTimeCard batch1 = new BatchCalculateTotalHoursOfTimeCard();
-        batch1.execute(null, batch1.start(null));
+        Database.QueryLocatorIterator iter = batch1.start(null).iterator();
+        List<sObject> testData = new List<sObject>();
+        while (iter.hasNext()) {
+            testData.add(iter.next());
+        }
+
+        batch1.execute(null, testData);
         BatchUpdateContractServicesSpend batch2 = new BatchUpdateContractServicesSpend(batch1.getServicesSpendMap());
         batch2.execute(null, batch2.start(null));
         Test.stopTest();
 
         DContract__c dcontractFromDB = [SELECT Id, Name, Services_Spend__c FROM DContract__c WHERE Id =: dcontract.Id];
-        System.assertEquals(230, dcontractFromDB.Services_Spend__c);
+        System.assertEquals(229.92, dcontractFromDB.Services_Spend__c);
     }
 
     static testMethod void shouldUpdateParentServicesSpend() {
@@ -90,19 +96,25 @@ public class BatchCalculateTotalHoursOfTimeCardTest {
         insert timeCardObj2;
 
         BatchCalculateTotalHoursOfTimeCard batch1 = new BatchCalculateTotalHoursOfTimeCard();
-        batch1.execute(null, batch1.start(null));
+        Database.QueryLocatorIterator iter = batch1.start(null).iterator();
+        List<sObject> testData = new List<sObject>();
+        while (iter.hasNext()) {
+            testData.add(iter.next());
+        }
+
+        batch1.execute(null, testData);
         BatchUpdateContractServicesSpend batch2 = new BatchUpdateContractServicesSpend(batch1.getServicesSpendMap());
         batch2.execute(null, batch2.start(null));
         Test.stopTest();
 
         DContract__c dcontractFromDB = [SELECT Id, Name, Services_Spend__c FROM DContract__c WHERE Id =: parent.Id];
-        System.assertEquals(690, dcontractFromDB.Services_Spend__c);
+        System.assertEquals(689.76, dcontractFromDB.Services_Spend__c);
 
         dcontractFromDB = [SELECT Id, Name, Services_Spend__c FROM DContract__c WHERE Id =: child1.Id];
-        System.assertEquals(230, dcontractFromDB.Services_Spend__c);
+        System.assertEquals(229.92, dcontractFromDB.Services_Spend__c);
 
         dcontractFromDB = [SELECT Id, Name, Services_Spend__c FROM DContract__c WHERE Id =: child2.Id];
-        System.assertEquals(460, dcontractFromDB.Services_Spend__c);
+        System.assertEquals(459.84, dcontractFromDB.Services_Spend__c);
     }
 
     static testMethod void shouldUpdateServicesSpendInManyContracts() {
@@ -204,28 +216,34 @@ public class BatchCalculateTotalHoursOfTimeCardTest {
         ids.add(parent1.Id);
 
         BatchCalculateTotalHoursOfTimeCard batch1 = new BatchCalculateTotalHoursOfTimeCard();
-        batch1.execute(null, batch1.start(null));
+        Database.QueryLocatorIterator iter = batch1.start(null).iterator();
+        List<sObject> testData = new List<sObject>();
+        while (iter.hasNext()) {
+            testData.add(iter.next());
+        }
+
+        batch1.execute(null, testData);
         BatchUpdateContractServicesSpend batch2 = new BatchUpdateContractServicesSpend(batch1.getServicesSpendMap());
         batch2.execute(null, batch2.start(null));
         Test.stopTest();
 
         DContract__c dcontractFromDB = [SELECT Id, Name, Services_Spend__c FROM DContract__c WHERE Id =: parent1.Id];
-        System.assertEquals(690, dcontractFromDB.Services_Spend__c);
+        System.assertEquals(689.76, dcontractFromDB.Services_Spend__c);
 
         dcontractFromDB = [SELECT Id, Name, Services_Spend__c FROM DContract__c WHERE Id =: child1.Id];
-        System.assertEquals(460, dcontractFromDB.Services_Spend__c);
+        System.assertEquals(459.84, dcontractFromDB.Services_Spend__c);
 
         dcontractFromDB = [SELECT Id, Name, Services_Spend__c FROM DContract__c WHERE Id =: child2.Id];
         System.assertEquals(null, dcontractFromDB.Services_Spend__c);
 
         dcontractFromDB = [SELECT Id, Name, Services_Spend__c FROM DContract__c WHERE Id =: parent2.Id];
-        System.assertEquals(1035, dcontractFromDB.Services_Spend__c);
+        System.assertEquals(1034.64, dcontractFromDB.Services_Spend__c);
 
         dcontractFromDB = [SELECT Id, Name, Services_Spend__c FROM DContract__c WHERE Id =: child3.Id];
-        System.assertEquals(575, dcontractFromDB.Services_Spend__c);
+        System.assertEquals(574.8, dcontractFromDB.Services_Spend__c);
 
         dcontractFromDB = [SELECT Id, Name, Services_Spend__c FROM DContract__c WHERE Id =: child4.Id];
-        System.assertEquals(460, dcontractFromDB.Services_Spend__c);
+        System.assertEquals(459.84, dcontractFromDB.Services_Spend__c);
     }
 
 }
