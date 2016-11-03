@@ -56,19 +56,15 @@ public without sharing class SalaryHistoryHelper {
         } else { // We have salary history
 
             // If first history record contains OldValue we must take it to the list
-            if (employeeSalaryHistory.get(0).OldValue != null) {
-                if (salaryField == 'Salary__c') {
-                    lastSalary = (Decimal) employeeSalaryHistory.get(0).OldValue;
+            if (employeeSalaryHistory.get(0).OldValue != null && ((Decimal) employeeSalaryHistory.get(0).OldValue) >= 0.1) {
+                lastSalary = (Decimal) employeeSalaryHistory.get(0).OldValue;
+
+                if (employeeSalaryDateHistory.size() > 0 && employeeSalaryDateHistory.get(0).OldValue != null && employeeSalaryDateHistory.get(0).CreatedDate == employeeSalaryHistory.get(0).CreatedDate) {
+                    lastSalaryDate = (Date) employeeSalaryDateHistory.get(0).OldValue;
                 } else {
-                    lastSalary = ((Decimal) employeeSalaryHistory.get(0).OldValue) == 0 ? 1 : (Decimal) employeeSalaryHistory.get(0).OldValue;
+                    lastSalaryDate = takeDate(employeeSalaryHistory.get(0).CreatedDate);
                 }
-                if (employeeSalaryDateHistory.size() > 0) {
-                    if (employeeSalaryDateHistory.get(0).OldValue != null) {
-                        lastSalaryDate = (Date) employeeSalaryDateHistory.get(0).OldValue;
-                    } else {
-                        lastSalaryDate = takeDate(employeeSalaryHistory.get(0).CreatedDate);
-                    }
-                }
+
                 salaryList.add(new SalaryHistoryRecord(lastSalary, lastSalaryDate));
             }
 
@@ -87,8 +83,8 @@ public without sharing class SalaryHistoryHelper {
             for (Integer i = 0; i < employeeSalaryHistory.size(); i++) {
 
                 Decimal currentSalary = (Decimal) employeeSalaryHistory.get(i).NewValue;
-                // We must ignore exchange rate == 0 - Exception Divide by 0
-                if (currentSalary == null || (currentSalary == 0 && salaryField == 'Exchange_Rate__c')) {
+                // We must ignore exchange rate < 0.1 - Exception Divide by 0 and reject bad values from old history
+                if (currentSalary == null || (currentSalary < 0.1 && salaryField == 'Exchange_Rate__c')) {
                     continue;
                 }
 
