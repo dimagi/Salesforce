@@ -3,6 +3,31 @@
  */
 public without sharing class SalaryHistoryHelper {
 
+    // Needed for PRO page to avoid SOQL Limit Exception
+    private Map<Id, List<SalaryHistoryWrapper>> employeeSalaryList;
+    private Map<Id, List<SalaryHistoryWrapper>> employeeSalaryDateList;
+    private Map<Id, List<SalaryHistoryWrapper>> employeeExchangeRateList;
+    private Map<Id, List<SalaryHistoryWrapper>> employeeExchangeRateDateList;
+    private List<LoadedDailyRateSettingsWrapper> dailyRateSettings;
+
+    public SalaryHistoryHelper() {
+        this.employeeSalaryList = new Map<Id, List<SalaryHistoryWrapper>>();
+        this.employeeSalaryDateList = new Map<Id, List<SalaryHistoryWrapper>>();
+        this.employeeExchangeRateList = new Map<Id, List<SalaryHistoryWrapper>>();
+        this.employeeExchangeRateDateList = new Map<Id, List<SalaryHistoryWrapper>>();
+        loadLoadedDailyRateSettings();
+    }
+
+    /**
+     * Loads history records from DB for employees from given list
+     */
+    public void loadHistoryForEmployees(Set<Id> emps) {
+        this.employeeSalaryList = fillMap(emps, [SELECT ParentId, OldValue, NewValue, CreatedDate FROM SFDC_Employee__History WHERE ParentId IN: emps AND Field = 'Salary__c' ORDER BY CreatedDate ASC]);
+        this.employeeSalaryDateList = fillMap(emps,[SELECT ParentId, OldValue, NewValue, CreatedDate FROM SFDC_Employee__History WHERE ParentId IN: emps AND Field = 'Effective_Salary_Date__c' ORDER BY CreatedDate ASC]);
+        this.employeeExchangeRateList = fillMap(emps,[SELECT ParentId, OldValue, NewValue, CreatedDate FROM SFDC_Employee__History WHERE ParentId IN: emps AND Field = 'Exchange_Rate__c' ORDER BY CreatedDate ASC]);
+        this.employeeExchangeRateDateList = fillMap(emps,[SELECT ParentId, OldValue, NewValue, CreatedDate FROM SFDC_Employee__History WHERE ParentId IN: emps AND Field = 'Effective_Exchange_Rate_Date__c' ORDER BY CreatedDate ASC]);
+    }
+
     /**
      * Builds employee salary and exchange rate history.
      */
@@ -29,69 +54,76 @@ public without sharing class SalaryHistoryHelper {
                 salaryList.add(new SalaryHistoryRecord(employee.Exchange_Rate__c == null ? 1 : (Decimal) employee.Exchange_Rate__c, lastSalaryDate));
             }
         } else { // We have salary history
-            // We can have history of first fill or first update we must check and set proper first salary - Effective date for first sallary will be 01.01.1900
-            if (employeeSalaryHistory.get(0).OldValue == null) {
-                // First salary is in NewValue
-                lastSalary = getValueForSalary(salaryField, employeeSalaryHistory.get(0));
-                salaryIndex++;
-            } else {
-                // First salary is in OldValue
-                if (salaryField == 'Salary__c' ) {
+
+            // If first history record contains OldValue we must take it to the list
+            if (employeeSalaryHistory.get(0).OldValue != null) {
+                if (salaryField == 'Salary__c') {
                     lastSalary = (Decimal) employeeSalaryHistory.get(0).OldValue;
                 } else {
                     lastSalary = ((Decimal) employeeSalaryHistory.get(0).OldValue) == 0 ? 1 : (Decimal) employeeSalaryHistory.get(0).OldValue;
                 }
-            }
-
-            salaryList.add(new SalaryHistoryRecord(lastSalary, lastSalaryDate));
-
-            Map <Date, Date> effectiveDateMap = new Map<Date, Date>();
-            if (employeeSalaryDateHistory.size() > 0) {
-                if (employeeSalaryDateHistory.get(0).OldValue != null) {
-                    effectiveDateMap.put(takeDate((DateTime) employeeSalaryDateHistory.get(0).CreatedDate),
-                                         (Date) employeeSalaryDateHistory.get(0).OldValue);
+                if (employeeSalaryDateHistory.size() > 0) {
+                    if (employeeSalaryDateHistory.get(0).OldValue != null) {
+                        lastSalaryDate = (Date) employeeSalaryDateHistory.get(0).OldValue;
+                    } else {
+                        lastSalaryDate = takeDate(employeeSalaryHistory.get(0).CreatedDate);
+                    }
                 }
+                salaryList.add(new SalaryHistoryRecord(lastSalary, lastSalaryDate));
             }
 
-            Date lEffDate = Date.newInstance(1900, 1, 1);
+            Map <DateTime, Date> effectiveDateMap = new Map<DateTime, Date>();
+
+            Date helperDate = Date.newInstance(1900, 1, 1);
             for (Integer i = 0; i < employeeSalaryDateHistory.size(); i++) {
-                effectiveDateMap.put(takeDate((DateTime) employeeSalaryDateHistory.get(i).CreatedDate),
-                                      employeeSalaryDateHistory.get(i).NewValue == null ? lEffDate : (Date) employeeSalaryDateHistory.get(i).NewValue);
+                effectiveDateMap.put((DateTime) employeeSalaryDateHistory.get(i).CreatedDate,
+                                      employeeSalaryDateHistory.get(i).NewValue == null ? helperDate : (Date) employeeSalaryDateHistory.get(i).NewValue);
                 if (employeeSalaryDateHistory.get(i).NewValue != null) {
-                    lEffDate = (Date) employeeSalaryDateHistory.get(i).NewValue;
+                    helperDate = (Date) employeeSalaryDateHistory.get(i).NewValue;
                 }
             }
 
-            Integer helperIndex = 0;
-            for (Integer i = salaryIndex; i < employeeSalaryHistory.size(); i++) {
+            Boolean needSort = false;
+            for (Integer i = 0; i < employeeSalaryHistory.size(); i++) {
 
-                Date cDate = takeDate((DateTime) employeeSalaryHistory.get(i).CreatedDate);
-                Date toAdd = cDate;
-
-                if (effectiveDateMap.containsKey(cDate)) {
-                    toAdd = effectiveDateMap.get(cDate);
+                Decimal currentSalary = (Decimal) employeeSalaryHistory.get(i).NewValue;
+                // We must ignore exchange rate == 0 - Exception Divide by 0
+                if (currentSalary == null || (currentSalary == 0 && salaryField == 'Exchange_Rate__c')) {
+                    continue;
                 }
 
-                if (lastSalaryDate == cDate) {
-                    System.debug('Update: '+ helperIndex + ' ' + employeeSalaryHistory[i].NewValue);
-                    salaryList.set(helperIndex, new SalaryHistoryRecord(getValueForSalary(salaryField, employeeSalaryHistory.get(i)),
-                                                                        toAdd));
+                DateTime salCreateDateTime = (DateTime) employeeSalaryHistory.get(i).CreatedDate;
+                Date toAdd;
+
+                if (effectiveDateMap.containsKey(salCreateDateTime)) {
+                    toAdd = effectiveDateMap.get(salCreateDateTime);
                 } else {
-                    salaryList.add(new SalaryHistoryRecord(getValueForSalary(salaryField, employeeSalaryHistory.get(i)),
-                                                           toAdd));
-                    helperIndex++;
+                    toAdd = takeDate(salCreateDateTime);
                 }
+                salaryList.add(new SalaryHistoryRecord(currentSalary, toAdd));
 
-                lastSalaryDate = cDate;
+                if (lastSalaryDate > toAdd) {
+                    needSort = true;
+                }
+                lastSalaryDate = toAdd;
             }
+
+            if (needSort) {
+                salaryList.sort();
+            }
+        }
+
+        if (salaryList.size() > 0) {
+            SalaryHistoryRecord firstRec = salaryList.get(0);
+            firstRec.setValueDate(Date.newInstance(1900, 1, 1));
+            salaryList.set(0, firstRec);
         }
 
         return salaryList;
     }
 
-    public List<SalaryHistoryRecord> mergeSalaryHistory(SFDC_Employee__c employee, Boolean testMode) {
-        System.debug('Using Mode : ' + testMode + ' for Name : ' + employee.Name);
-        if (testMode == true) {
+    public List<SalaryHistoryRecord> mergeSalaryWithExchangeRateHistory(SFDC_Employee__c employee) {
+        if (Test.isRunningTest() && (employee.Name == 'emp_9' || employee.Name == 'emp_10' || employee.Name == 'emp_11')) {
             System.debug('Using mock for Name : ' + employee.Name);
             return SalaryHistoryMock.getMockMergeData(employee);
         }
@@ -151,10 +183,71 @@ public without sharing class SalaryHistoryHelper {
         return result;
     }
 
+    public List<SalaryHistoryRecord> mergeSalaryHistory(SFDC_Employee__c employee) {
+        List<SalaryHistoryRecord> salary = mergeSalaryWithExchangeRateHistory(employee);
+        List<SalaryHistoryRecord> result = new List<SalaryHistoryRecord>();
+
+        Boolean endLoop = false;
+
+        Decimal currentSalary = 0;
+        LoadedDailyRateSettingsWrapper currentSettings = this.dailyRateSettings.get(0);
+        Integer salaryIndex = 0;
+        Integer settingsIndex = 0;
+
+        while (!endLoop) {
+
+            Date salaryDate = null;
+            Date settingsDate = null;
+
+            Decimal sal = 0;
+            LoadedDailyRateSettingsWrapper settings = null;
+
+            if (salaryIndex < salary.size()) {
+                sal = salary.get(salaryIndex).getValue();
+                salaryDate = salary.get(salaryIndex).getValueDate();
+            }
+
+            if (settingsIndex < this.dailyRateSettings.size()) {
+                settings = this.dailyRateSettings.get(settingsIndex);
+                settingsDate = this.dailyRateSettings.get(settingsIndex).getSettings().Settings_Effective_Date__c;
+            }
+
+            Date toAdd = salaryDate;
+            if ((salaryDate == null && settingsDate != null) || salaryDate > settingsDate) {
+                toAdd = settingsDate;
+                currentSettings = settings;
+                settingsIndex++;
+            } else if ((salaryDate != null && settingsDate == null) || salaryDate < settingsDate) {
+                currentSalary = sal;
+                salaryIndex++;
+            } else if (salaryDate == settingsDate) {
+                currentSalary = sal;
+                currentSettings = settings;
+                salaryIndex++;
+                settingsIndex++;
+            } else {
+                break;
+            }
+
+            result.add(new SalaryHistoryRecord(calculatePerHourSalary(currentSalary, currentSettings.getSettings()), toAdd));
+
+            if (salaryIndex  >= salary.size() && settingsIndex  >= this.dailyRateSettings.size()) {
+                break;
+            }
+        }
+
+        return result;
+    }
+
     public static Decimal calculateSalary(Decimal sal, Decimal er) {
         Double result = (sal / (Double) er);
-        result = ((result / 260) * 1.3 * 1.52 * 1.1 * 1.1) / 8.0;
+        return Decimal.valueOf(result).setScale(2);
+    }
 
+    public static Decimal calculatePerHourSalary(Decimal sal, Loaded_Daily_Rate_Settings__c settings) {
+        Double result = ((sal / settings.Working_Days__c) * (1 + settings.Fringe__c / 100.0)
+                            * (1 + settings.Overhead__c / 100.0) * (1 + settings.Fee__c / 100.0)
+                            * (1 + settings.G_A__c / 100.0)) / 8.0;
         return Decimal.valueOf(result).setScale(2);
     }
 
@@ -183,6 +276,17 @@ public without sharing class SalaryHistoryHelper {
             return SalaryHistoryMock.getFieldHistory(employee, fieldName);
         }
 
+        // Check data fom buffor
+        if (fieldName == 'Salary__c' && this.employeeSalaryList.containsKey(employee.Id)) {
+            return this.employeeSalaryList.get(employee.Id);
+        } else if (fieldName == 'Effective_Salary_Date__c' && this.employeeSalaryDateList.containsKey(employee.Id)) {
+            return this.employeeSalaryDateList.get(employee.Id);
+        } else if (fieldName == 'Exchange_Rate__c' && this.employeeExchangeRateList.containsKey(employee.Id)) {
+            return this.employeeExchangeRateList.get(employee.Id);
+        } else if (fieldName == 'Effective_Exchange_Rate_Date__c' && this.employeeExchangeRateDateList.containsKey(employee.Id)) {
+            return this.employeeExchangeRateDateList.get(employee.Id);
+        }
+
         List<SFDC_Employee__History> records = [SELECT OldValue, NewValue, CreatedDate FROM SFDC_Employee__History WHERE parentId =: employee.Id AND Field =: fieldName ORDER BY CreatedDate ASC];
         List<SalaryHistoryWrapper> salaryHistory = new List<SalaryHistoryWrapper>();
         for (SFDC_Employee__History rec : records) {
@@ -192,7 +296,67 @@ public without sharing class SalaryHistoryHelper {
         return salaryHistory;
     }
 
+    private Map<Id, List<SalaryHistoryWrapper>> fillMap(Set<Id> emps, List<SFDC_Employee__History> records) {
+        Map<Id, List<SalaryHistoryWrapper>> tmpMap = new Map<Id, List<SalaryHistoryWrapper>>();
+        for (Id ei: emps) {
+            tmpMap.put(ei, new List<SalaryHistoryWrapper>());
+        }
+
+        for (SFDC_Employee__History rec : records) {
+            List<SalaryHistoryWrapper> salaryHistory = tmpMap.get(rec.ParentId);
+            salaryHistory.add(new SalaryHistoryWrapper(rec.OldValue, rec.NewValue, rec.CreatedDate));
+            tmpMap.put(rec.ParentId, salaryHistory);
+        }
+
+        return tmpMap;
+    }
+
     private Date takeDate(DateTime dt) {
         return Date.newInstance(dt.year(), dt.month(), dt.day());
+    }
+
+    private void loadLoadedDailyRateSettings() {
+        this.dailyRateSettings = new List<LoadedDailyRateSettingsWrapper>();
+        List<Loaded_Daily_Rate_Settings__c> ldrs = Loaded_Daily_Rate_Settings__c.getall().values();
+
+        if (ldrs.size() > 0) {
+            for (Loaded_Daily_Rate_Settings__c settings : ldrs) {
+                this.dailyRateSettings.add(new LoadedDailyRateSettingsWrapper(settings));
+            }
+            this.dailyRateSettings.sort();
+            this.dailyRateSettings.get(0).getSettings().Settings_Effective_Date__c = Date.newInstance(1900, 1, 1);
+            System.debug('Loaded_Daily_Rate_Settings__c ' + this.dailyRateSettings);
+        } else {
+            this.dailyRateSettings.add(new LoadedDailyRateSettingsWrapper(
+                    new Loaded_Daily_Rate_Settings__c(Settings_Effective_Date__c = Date.newInstance(1900, 1, 1), Working_Days__c = 260, Fringe__c = 30,
+                                                      Overhead__c = 52, Fee__c = 10, G_A__c = 10)));
+        }
+    }
+
+    private class LoadedDailyRateSettingsWrapper implements Comparable {
+
+        private Loaded_Daily_Rate_Settings__c settings;
+
+        public LoadedDailyRateSettingsWrapper(Loaded_Daily_Rate_Settings__c settings) {
+            this.settings = settings;
+        }
+
+        public Loaded_Daily_Rate_Settings__c getSettings() {
+            return this.settings;
+        }
+
+        public void setSettings(Loaded_Daily_Rate_Settings__c settings) {
+            this.settings = settings;
+        }
+
+        public Integer compareTo(Object objToCompare) {
+            Date dateToCompare = ((LoadedDailyRateSettingsWrapper) objToCompare).getSettings().Settings_Effective_Date__c;
+            if (this.getSettings().Settings_Effective_Date__c > dateToCompare) {
+                return 1;
+            } else if (this.getSettings().Settings_Effective_Date__c < dateToCompare) {
+                return -1;
+            }
+            return 0;
+        }
     }
 }

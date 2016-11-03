@@ -76,11 +76,13 @@ public class SalaryHistoryTest {
 
         List<SalaryHistoryRecord> historyList = salaryHelper.getHistoryForEmployee(employee, 'Salary__c', 'Effective_Salary_Date__c');
 
-        System.assertEquals(2, historyList.size());
+        System.assertEquals(3, historyList.size());
         System.assertEquals(17000, historyList.get(0).getValue());
         System.assertEquals(Date.newInstance(1900, 1, 1), historyList.get(0).getValueDate());
         System.assertEquals(34000, historyList.get(1).getValue());
         System.assertEquals(Date.newInstance(2015, 1, 1), historyList.get(1).getValueDate());
+        System.assertEquals(13000, historyList.get(2).getValue());
+        System.assertEquals(Date.newInstance(2015, 6, 1), historyList.get(2).getValueDate());
 
         Test.stopTest();
     }
@@ -91,23 +93,33 @@ public class SalaryHistoryTest {
         SalaryHistoryHelper salaryHelper = new SalaryHistoryHelper();
         SFDC_Employee__c employee = new SFDC_Employee__c(Name = 'emp_6', Salary__c = 60000);
 
-        List<SalaryHistoryRecord> historyList = salaryHelper.mergeSalaryHistory(employee, false);
+        List<SalaryHistoryRecord> historyList = salaryHelper.mergeSalaryHistory(employee);
 
+        System.debug(historyList);
         System.assertEquals(5, historyList.size());
 
-        System.assertEquals(SalaryHistoryHelper.calculateSalary(20000, 2), historyList.get(0).getValue());
+        Loaded_Daily_Rate_Settings__c settings = new Loaded_Daily_Rate_Settings__c(Settings_Effective_Date__c = Date.newInstance(1900, 1, 1),
+                                                                                   Working_Days__c = 260, Fringe__c = 30,
+                                                                                   Overhead__c = 52, Fee__c = 10, G_A__c = 10);
+
+        System.assertEquals(SalaryHistoryHelper.calculatePerHourSalary(SalaryHistoryHelper.calculateSalary(20000, 2), settings),
+                            historyList.get(0).getValue());
         System.assertEquals(Date.newInstance(1900, 1, 1), historyList.get(0).getValueDate());
 
-        System.assertEquals(SalaryHistoryHelper.calculateSalary(40000, 2), historyList.get(1).getValue());
+        System.assertEquals(SalaryHistoryHelper.calculatePerHourSalary(SalaryHistoryHelper.calculateSalary(40000, 2), settings),
+                            historyList.get(1).getValue());
         System.assertEquals(Date.newInstance(2011, 1, 1), historyList.get(1).getValueDate());
 
-        System.assertEquals(SalaryHistoryHelper.calculateSalary(40000, 3), historyList.get(2).getValue());
+        System.assertEquals(SalaryHistoryHelper.calculatePerHourSalary(SalaryHistoryHelper.calculateSalary(40000, 3), settings),
+                            historyList.get(2).getValue());
         System.assertEquals(Date.newInstance(2011, 2, 14), historyList.get(2).getValueDate());
 
-        System.assertEquals(SalaryHistoryHelper.calculateSalary(60000, 3), historyList.get(3).getValue());
+        System.assertEquals(SalaryHistoryHelper.calculatePerHourSalary(SalaryHistoryHelper.calculateSalary(60000, 3), settings),
+                            historyList.get(3).getValue());
         System.assertEquals(Date.newInstance(2011, 11, 1), historyList.get(3).getValueDate());
 
-        System.assertEquals(SalaryHistoryHelper.calculateSalary(60000, 2), historyList.get(4).getValue());
+        System.assertEquals(SalaryHistoryHelper.calculatePerHourSalary(SalaryHistoryHelper.calculateSalary(60000, 2), settings),
+                            historyList.get(4).getValue());
         System.assertEquals(Date.newInstance(2012, 1, 1), historyList.get(4).getValueDate());
 
         Test.stopTest();
@@ -116,15 +128,20 @@ public class SalaryHistoryTest {
     static testMethod void shouldMergeListsEmp7() {
         Test.startTest();
 
+        Loaded_Daily_Rate_Settings__c settings = new Loaded_Daily_Rate_Settings__c(Settings_Effective_Date__c = Date.newInstance(1900, 1, 1),
+                                                                                   Working_Days__c = 260, Fringe__c = 30,
+                                                                                   Overhead__c = 52, Fee__c = 10, G_A__c = 10);
+
         SalaryHistoryHelper salaryHelper = new SalaryHistoryHelper();
         SFDC_Employee__c employee = new SFDC_Employee__c(Name = 'emp_7', Salary__c = 45000, Exchange_Rate__c = 2,
                                                          Effective_Salary_Date__c = Date.newInstance(2013, 1, 1),
                                                          Effective_Exchange_Rate_Date__c = Date.newInstance(2011, 1, 1));
 
-        List<SalaryHistoryRecord> historyList = salaryHelper.mergeSalaryHistory(employee, false);
+        List<SalaryHistoryRecord> historyList = salaryHelper.mergeSalaryHistory(employee);
 
         System.assertEquals(1, historyList.size());
-        System.assertEquals(SalaryHistoryHelper.calculateSalary(45000, 2), historyList.get(0).getValue());
+        System.assertEquals(SalaryHistoryHelper.calculatePerHourSalary(SalaryHistoryHelper.calculateSalary(45000, 2), settings),
+                            historyList.get(0).getValue());
         System.assertEquals(Date.newInstance(1900, 1, 1), historyList.get(0).getValueDate());
 
         Test.stopTest();
@@ -133,18 +150,24 @@ public class SalaryHistoryTest {
     static testMethod void shouldMergeListsEmp8() {
         Test.startTest();
 
+        Loaded_Daily_Rate_Settings__c settings = new Loaded_Daily_Rate_Settings__c(Settings_Effective_Date__c = Date.newInstance(1900, 1, 1),
+                                                                                   Working_Days__c = 260, Fringe__c = 30,
+                                                                                   Overhead__c = 52, Fee__c = 10, G_A__c = 10);
+
         SalaryHistoryHelper salaryHelper = new SalaryHistoryHelper();
         SFDC_Employee__c employee = new SFDC_Employee__c(Name = 'emp_8', Salary__c = 200000, Exchange_Rate__c = 2,
                                                          Effective_Salary_Date__c = Date.newInstance(2010, 1, 1),
                                                          Effective_Exchange_Rate_Date__c = Date.newInstance(2013, 6, 1));
 
-        List<SalaryHistoryRecord> historyList = salaryHelper.mergeSalaryHistory(employee, false);
+        List<SalaryHistoryRecord> historyList = salaryHelper.mergeSalaryHistory(employee);
 
         System.assertEquals(2, historyList.size());
-        System.assertEquals(SalaryHistoryHelper.calculateSalary(200000, 4), historyList.get(0).getValue());
+        System.assertEquals(SalaryHistoryHelper.calculatePerHourSalary(SalaryHistoryHelper.calculateSalary(200000, 4), settings),
+                            historyList.get(0).getValue());
         System.assertEquals(Date.newInstance(1900, 1, 1), historyList.get(0).getValueDate());
 
-        System.assertEquals(SalaryHistoryHelper.calculateSalary(200000, 2), historyList.get(1).getValue());
+        System.assertEquals(SalaryHistoryHelper.calculatePerHourSalary(SalaryHistoryHelper.calculateSalary(200000, 2), settings),
+                            historyList.get(1).getValue());
         System.assertEquals(Date.newInstance(2013, 6, 1), historyList.get(1).getValueDate());
 
         Test.stopTest();
@@ -152,13 +175,15 @@ public class SalaryHistoryTest {
 
     static testMethod void shouldCalculateCorrectSalary() {
         Test.startTest();
-
-        System.assertEquals(11.50, SalaryHistoryHelper.calculateSalary(20000, 2));
-        System.assertEquals(22.99, SalaryHistoryHelper.calculateSalary(40000, 2));
-        System.assertEquals(15.33, SalaryHistoryHelper.calculateSalary(40000, 3));
-        System.assertEquals(34.48, SalaryHistoryHelper.calculateSalary(60000, 2));
-        System.assertEquals(22.25, SalaryHistoryHelper.calculateSalary(60000, 3.1));
-        System.assertEquals(71.96, SalaryHistoryHelper.calculateSalary(457000, 7.3));
+        Loaded_Daily_Rate_Settings__c settings = new Loaded_Daily_Rate_Settings__c(Settings_Effective_Date__c = Date.newInstance(1900, 1, 1),
+                                                                                   Working_Days__c = 260, Fringe__c = 30,
+                                                                                   Overhead__c = 52, Fee__c = 10, G_A__c = 10);
+        System.assertEquals(11.50, SalaryHistoryHelper.calculatePerHourSalary(SalaryHistoryHelper.calculateSalary(20000, 2), settings));
+        System.assertEquals(22.99, SalaryHistoryHelper.calculatePerHourSalary(SalaryHistoryHelper.calculateSalary(40000, 2), settings));
+        System.assertEquals(15.33, SalaryHistoryHelper.calculatePerHourSalary(SalaryHistoryHelper.calculateSalary(40000, 3), settings));
+        System.assertEquals(34.48, SalaryHistoryHelper.calculatePerHourSalary(SalaryHistoryHelper.calculateSalary(60000, 2), settings));
+        System.assertEquals(22.25, SalaryHistoryHelper.calculatePerHourSalary(SalaryHistoryHelper.calculateSalary(60000, 3.1), settings));
+        System.assertEquals(71.96, SalaryHistoryHelper.calculatePerHourSalary(SalaryHistoryHelper.calculateSalary(457000, 7.3), settings));
 
         Test.stopTest();
     }
@@ -167,7 +192,9 @@ public class SalaryHistoryTest {
         // 3 Employess, 3 contracts, one is subcontract
         Test.startTest();
 
-        SFDC_Employee__c employee_1 = new SFDC_Employee__c(Name = 'emp_6', Salary__c = 60000, Exchange_Rate__c = 1);
+        SFDC_Employee__c employee_1 = new SFDC_Employee__c(Name = 'emp_6', Salary__c = 60000, Exchange_Rate__c = 2,
+                                                          Effective_Salary_Date__c = Date.newInstance(2011, 11, 1),
+                                                          Effective_Exchange_Rate_Date__c = Date.newInstance(2013, 1, 1));
         insert employee_1;
         SFDC_Employee__c employee_2 = new SFDC_Employee__c(Name = 'emp_7', Salary__c = 45000, Exchange_Rate__c = 2,
                                                          Effective_Salary_Date__c = Date.newInstance(2013, 1, 1),
@@ -240,6 +267,7 @@ public class SalaryHistoryTest {
         // child = 919.62, parent_1 = 804.65 + 919.62 CH , parent_2 = 459.84
 
         // TOTAL : child = 1057.56, parent_1 = 46 + 439.62 + 804.65 + 1057.56 CH = 2347.83 , parent_2 = 383.15 + 206,88 + 459.84 = 1049.87
+        Test.stopTest();
 
         BatchCalculateTotalHoursOfTimeCard batch1 = new BatchCalculateTotalHoursOfTimeCard();
         Database.QueryLocatorIterator iter = batch1.start(null).iterator();
@@ -254,8 +282,6 @@ public class SalaryHistoryTest {
         BatchUpdateContractServicesSpend batch2 = new BatchUpdateContractServicesSpend(batch1.getServicesSpendMap());
         batch2.execute(null, batch2.start(null));
 
-        Test.stopTest();
-
         DContract__c dcontractFromDB = [SELECT Id, Name, Services_Spend__c FROM DContract__c WHERE Id =: parent_1.Id];
         System.assertEquals(2347.83, dcontractFromDB.Services_Spend__c);
         dcontractFromDB = [SELECT Id, Name, Services_Spend__c FROM DContract__c WHERE Id =: child.Id];
@@ -264,14 +290,32 @@ public class SalaryHistoryTest {
         System.assertEquals(1049.87, dcontractFromDB.Services_Spend__c);
     }
 
+    static testMethod void shouldSortList() {
+        List<SalaryHistoryRecord> salaryList = new List<SalaryHistoryRecord>();
+        salaryList.add(new SalaryHistoryRecord(11, Date.newInstance(2015, 4, 11)));
+        salaryList.add(new SalaryHistoryRecord(12, Date.newInstance(1900, 1, 1)));
+        salaryList.add(new SalaryHistoryRecord(10, Date.newInstance(2014, 1, 15)));
+        salaryList.add(new SalaryHistoryRecord(44, Date.newInstance(2016, 2, 22)));
+
+        salaryList.sort();
+
+        System.assertEquals(Date.newInstance(1900, 1, 1), salaryList.get(0).getValueDate());
+        System.assertEquals(Date.newInstance(2014, 1, 15), salaryList.get(1).getValueDate());
+        System.assertEquals(Date.newInstance(2015, 4, 11), salaryList.get(2).getValueDate());
+        System.assertEquals(Date.newInstance(2016, 2, 22), salaryList.get(3).getValueDate());
+    }
+
     static testMethod void testCalcualtionScale() {
         Test.startTest();
         DContract__c parent = new DContract__c(Name = 'Sample Parent', Status__c = 'Active', Requires_Report_Out__c = 'No', Intracompany_Sub_contract__c = 'No');
         insert parent;
 
-        SFDC_Employee__c employee_1 = new SFDC_Employee__c(Name = 'emp_9', Salary__c = 101854.98, Exchange_Rate__c = 1);
-        SFDC_Employee__c employee_2 = new SFDC_Employee__c(Name = 'emp_10', Salary__c = 45259.16, Exchange_Rate__c = 1);
-        SFDC_Employee__c employee_3 = new SFDC_Employee__c(Name = 'emp_11', Salary__c = 89319.79, Exchange_Rate__c = 1);
+        SFDC_Employee__c employee_1 = new SFDC_Employee__c(Name = 'emp_9', Salary__c = 101854.98, Effective_Salary_Date__c = Date.newInstance(2016, 2, 24),
+                                                           Exchange_Rate__c = 1, Effective_Exchange_Rate_Date__c = Date.newInstance(2016, 2, 24));
+        SFDC_Employee__c employee_2 = new SFDC_Employee__c(Name = 'emp_10', Salary__c = 45259.16, Effective_Salary_Date__c = Date.newInstance(2016, 2, 24),
+                                                           Exchange_Rate__c = 1, Effective_Exchange_Rate_Date__c = Date.newInstance(2016, 2, 24));
+        SFDC_Employee__c employee_3 = new SFDC_Employee__c(Name = 'emp_11', Salary__c = 89319.79, Effective_Salary_Date__c = Date.newInstance(2016, 2, 24),
+                                                           Exchange_Rate__c = 1, Effective_Exchange_Rate_Date__c = Date.newInstance(2016, 2, 24));
 
         insert employee_1;
         insert employee_2;
@@ -399,23 +443,111 @@ public class SalaryHistoryTest {
 
         insert timecards;
 
+        Test.stopTest();
 
         BatchCalculateTotalHoursOfTimeCard batch1 = new BatchCalculateTotalHoursOfTimeCard();
-        batch1.setTestMode(true);
         Database.QueryLocatorIterator iter = batch1.start(null).iterator();
         List<sObject> testData = new List<sObject>();
         while (iter.hasNext()) {
             testData.add(iter.next());
         }
         System.debug('Time cards : ' + testData.size());
+        Time_Card__c tc1 = (Time_Card__c) testData.get(0);
+        Time_Card__c tc2 = (Time_Card__c) testData.get(1);
+        System.debug('Time cards : ' + tc1.Time_card_cost__c);
+        System.debug('Time cards : ' + tc2.Time_card_cost__c);
         batch1.execute(null, testData);
         BatchUpdateContractServicesSpend batch2 = new BatchUpdateContractServicesSpend(batch1.getServicesSpendMap());
         batch2.execute(null, batch2.start(null));
-
-        Test.stopTest();
 
         DContract__c dcontractFromDB = [SELECT Id, Name, Services_Spend__c FROM DContract__c WHERE Id =: parent.Id];
         System.assertEquals(13780.155, dcontractFromDB.Services_Spend__c);
     }
 
+    static testMethod void shouldCalculateTotalCostAfterUpsert() {
+        SFDC_Employee__c employee_1 = new SFDC_Employee__c(Name = 'emp_6', Salary__c = 60000, Exchange_Rate__c = 2,
+                                                          Effective_Salary_Date__c = Date.newInstance(2011, 11, 1),
+                                                          Effective_Exchange_Rate_Date__c = Date.newInstance(2013, 1, 1));
+        insert employee_1;
+        DContract__c parent_1 = new DContract__c(Name = 'Sample Parent', Status__c = 'Active', Requires_Report_Out__c = 'No', Intracompany_Sub_contract__c = 'No');
+        insert parent_1;
+
+        // After update Salary Salary = 1 * SalaryHistoryHelper.calculateSalary(20000, 2) = 11.50
+        Time_Card__c tc_1_employee_1 = new Time_Card__c(Total__c = 0.5, Date__c = Date.newInstance(2010, 12, 30), Employee__c = employee_1.Id, Client__c = parent_1.Id);
+        //  After update Salary = 3 * SalaryHistoryHelper.calculateSalary(20000, 2) = 3 * 11.50 = 34,5
+        Time_Card__c tc_2_employee_1 = new Time_Card__c(Total__c = 1, Date__c = Date.newInstance(2010, 11, 1), Employee__c = employee_1.Id, Client__c = parent_1.Id);
+
+        List<Time_Card__c> tcList1 = new List<Time_Card__c>();
+        tcList1.add(tc_1_employee_1);
+        tcList1.add(tc_2_employee_1);
+        insert tcList1;
+        Test.startTest();
+
+        List<Time_Card__c> tcList2 = new List<Time_Card__c>();
+        // Salary = 6 * SalaryHistoryHelper.calculateSalary(40000, 2) = 6 * 22.99 = 137,94
+        Time_Card__c tc_3_employee_1 = new Time_Card__c(Total__c = 6, Date__c = Date.newInstance(2011, 1, 1), Employee__c = employee_1.Id, Client__c = parent_1.Id);
+        // Salary = 1 * SalaryHistoryHelper.calculateSalary(40000, 3) = 7 * 15.33 = 107,31
+        Time_Card__c tc_4_employee_1 = new Time_Card__c(Total__c = 7, Date__c = Date.newInstance(2011, 5, 22), Employee__c = employee_1.Id, Client__c = parent_1.Id);
+        // Salary = 1 * SalaryHistoryHelper.calculateSalary(20000, 2) = 8 * 34.48 = 275,84
+        Time_Card__c tc_5_employee_1 = new Time_Card__c(Total__c = 8, Date__c = Date.newInstance(2016, 3, 3), Employee__c = employee_1.Id, Client__c = parent_1.Id);
+        tcList2.add(tc_3_employee_1);
+        tcList2.add(tc_4_employee_1);
+        tcList2.add(tc_5_employee_1);
+
+        Time_Card__c tcFromDB1 = [SELECT Id, Total__c FROM Time_Card__c WHERE Id =: tc_1_employee_1.Id LIMIT 1];
+        tcFromDB1.Total__c = 1;
+        Time_Card__c tcFromDB2 = [SELECT Id, Total__c FROM Time_Card__c WHERE Id =: tc_2_employee_1.Id LIMIT 1];
+        tcFromDB2.Total__c = 3;
+
+        tcList2.add(tcFromDB1);
+        tcList2.add(tcFromDB2);
+
+        upsert tcList2;
+
+        Test.stopTest();
+
+        Time_Card__c tcFromDB = [SELECT Id, Time_card_cost__c FROM Time_Card__c WHERE Id =: tc_1_employee_1.Id LIMIT 1];
+        System.assertEquals(11.50, tcFromDB.Time_card_cost__c);
+        tcFromDB = [SELECT Id, Time_card_cost__c FROM Time_Card__c WHERE Id =: tc_2_employee_1.Id LIMIT 1];
+        System.assertEquals(34.5, tcFromDB.Time_card_cost__c);
+        tcFromDB = [SELECT Id, Time_card_cost__c FROM Time_Card__c WHERE Id =: tc_3_employee_1.Id LIMIT 1];
+        System.assertEquals(137.94, tcFromDB.Time_card_cost__c);
+        tcFromDB = [SELECT Id, Time_card_cost__c FROM Time_Card__c WHERE Id =: tc_4_employee_1.Id LIMIT 1];
+        System.assertEquals(107.31, tcFromDB.Time_card_cost__c);
+        tcFromDB = [SELECT Id, Time_card_cost__c FROM Time_Card__c WHERE Id =: tc_5_employee_1.Id LIMIT 1];
+        System.assertEquals(275.84, tcFromDB.Time_card_cost__c);
+    }
+
+    static testMethod void shouldUseSettingsList() {
+        Test.startTest();
+
+        Loaded_Daily_Rate_Settings__c settings_1 = new Loaded_Daily_Rate_Settings__c(Name = 'Test 1', Settings_Effective_Date__c = Date.newInstance(1990, 1, 1), Working_Days__c = 260, Fringe__c = 0.30,
+                                          Overhead__c = 52, Fee__c = 10, G_A__c = 10);
+        Loaded_Daily_Rate_Settings__c settings_2 = new Loaded_Daily_Rate_Settings__c(Name = 'Test 3', Settings_Effective_Date__c = Date.newInstance(2016, 1, 1), Working_Days__c = 260, Fringe__c = 0.2,
+                                          Overhead__c = 30, Fee__c = 10, G_A__c = 10);
+        Loaded_Daily_Rate_Settings__c settings_3 = new Loaded_Daily_Rate_Settings__c(Name = 'Test 2', Settings_Effective_Date__c = Date.newInstance(2014, 1, 1), Working_Days__c = 260, Fringe__c = 0.1,
+                                          Overhead__c = 70, Fee__c = 15, G_A__c = 15);
+        insert settings_1;
+        insert settings_2;
+        insert settings_3;
+
+        SFDC_Employee__c employee_1 = new SFDC_Employee__c(Name = 'emp_9', Salary__c = 101854.98, Effective_Salary_Date__c = Date.newInstance(2016, 2, 24),
+                                                           Exchange_Rate__c = 1, Effective_Exchange_Rate_Date__c = Date.newInstance(2016, 2, 24));
+        Test.stopTest();
+
+        SalaryHistoryHelper helper = new SalaryHistoryHelper();
+        List<SalaryHistoryRecord> empHistory = helper.mergeSalaryHistory(employee_1);
+        System.debug(empHistory);
+        System.assertEquals(5, empHistory.size());
+        System.assertEquals(SalaryHistoryHelper.calculatePerHourSalary(5700.83, settings_1), empHistory.get(0).getValue());
+        System.assertEquals(Date.newInstance(1900, 1, 1), empHistory.get(0).getValueDate());
+        System.assertEquals(SalaryHistoryHelper.calculatePerHourSalary(5700.83, settings_3), empHistory.get(1).getValue());
+        System.assertEquals(Date.newInstance(2014, 1, 1), empHistory.get(1).getValueDate());
+        System.assertEquals(SalaryHistoryHelper.calculatePerHourSalary(11300.39, settings_3), empHistory.get(2).getValue());
+        System.assertEquals(Date.newInstance(2015, 11, 12), empHistory.get(2).getValueDate());
+        System.assertEquals(SalaryHistoryHelper.calculatePerHourSalary(11300.39, settings_2), empHistory.get(3).getValue());
+        System.assertEquals(Date.newInstance(2016, 1, 1), empHistory.get(3).getValueDate());
+        System.assertEquals(SalaryHistoryHelper.calculatePerHourSalary(101854.98, settings_2), empHistory.get(4).getValue());
+        System.assertEquals(Date.newInstance(2016, 2, 24), empHistory.get(4).getValueDate());
+    }
 }

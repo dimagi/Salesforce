@@ -23,11 +23,11 @@ public class SalaryHistoryMock {
             if (fieldName == 'Salary__c') {
                 records.add(new SalaryHistoryWrapper(null, 17000, DateTime.newInstance(2015, 2, 2, 10, 0, 0)));
                 records.add(new SalaryHistoryWrapper(17000, 13000, DateTime.newInstance(2015, 4, 14, 10, 0, 0)));
-                records.add(new SalaryHistoryWrapper(13000, 34000, DateTime.newInstance(2015, 4, 14, 10, 0, 0)));
+                records.add(new SalaryHistoryWrapper(13000, 34000, DateTime.newInstance(2015, 4, 14, 11, 0, 0)));
             } else {
                 records.add(new SalaryHistoryWrapper(null, Date.newInstance(2013, 3, 7), DateTime.newInstance(2015, 2, 2, 10, 0, 0)));
                 records.add(new SalaryHistoryWrapper(Date.newInstance(2013, 3, 7), Date.newInstance(2015, 6, 1), DateTime.newInstance(2015, 4, 14, 10, 0, 0)));
-                records.add(new SalaryHistoryWrapper(Date.newInstance(2015, 6, 1), Date.newInstance(2015, 1, 1), DateTime.newInstance(2015, 4, 14, 10, 0, 0)));
+                records.add(new SalaryHistoryWrapper(Date.newInstance(2015, 6, 1), Date.newInstance(2015, 1, 1), DateTime.newInstance(2015, 4, 14, 11, 0, 0)));
             }
         } else if (employee.Name == 'emp_6') {
             if (fieldName == 'Salary__c') {
@@ -58,17 +58,17 @@ public class SalaryHistoryMock {
         System.debug('Using mock merge for Name : ' + employee.Name);
         List<SalaryHistoryRecord> result = new List<SalaryHistoryRecord>();
         if (employee.Name == 'emp_11') {
-            result.add(new SalaryHistoryRecord(77.43, Date.newInstance(1900, 1, 1)));
-            result.add(new SalaryHistoryRecord(99.44, Date.newInstance(2015, 11, 5)));
-            result.add(new SalaryHistoryRecord(102.67, Date.newInstance(2016, 2, 24)));
+            result.add(new SalaryHistoryRecord(7700.43, Date.newInstance(1900, 1, 1)));
+            result.add(new SalaryHistoryRecord(9900.44, Date.newInstance(2015, 11, 5)));
+            result.add(new SalaryHistoryRecord(89319.79, Date.newInstance(2016, 2, 24)));
         } else if (employee.Name == 'emp_10') {
-            result.add(new SalaryHistoryRecord(33.59, Date.newInstance(1900, 1, 1)));
-            result.add(new SalaryHistoryRecord(50.39, Date.newInstance(2015, 11, 05)));
-            result.add(new SalaryHistoryRecord(52.03, Date.newInstance(2016, 2, 24)));
+            result.add(new SalaryHistoryRecord(3300.59, Date.newInstance(1900, 1, 1)));
+            result.add(new SalaryHistoryRecord(5000.39, Date.newInstance(2015, 11, 05)));
+            result.add(new SalaryHistoryRecord(45259.16, Date.newInstance(2016, 2, 24)));
         } else if (employee.Name == 'emp_9') {
-            result.add(new SalaryHistoryRecord(57.83, Date.newInstance(1900, 1, 1)));
-            result.add(new SalaryHistoryRecord(113.39, Date.newInstance(2015, 11, 12)));
-            result.add(new SalaryHistoryRecord(117.08, Date.newInstance(2016, 2, 24)));
+            result.add(new SalaryHistoryRecord(5700.83, Date.newInstance(1900, 1, 1)));
+            result.add(new SalaryHistoryRecord(11300.39, Date.newInstance(2015, 11, 12)));
+            result.add(new SalaryHistoryRecord(101854.98, Date.newInstance(2016, 2, 24)));
         }
         return result;
     }

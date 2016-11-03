@@ -58,43 +58,51 @@ public class ProjectReportOutControllerTest {
         SFDC_Employee__c employeeObj = new SFDC_Employee__c(
             name = 'Mustafa Turab',
             Salary__c = 5000,
-            Exchange_Rate__c = 10
+            Exchange_Rate__c = 10,
+            Effective_Salary_Date__c = Date.newInstance(2016, 2, 24),
+            Effective_Exchange_Rate_Date__c = Date.newInstance(2016, 2, 24)
         );
         insert employeeObj;
         Time_Card__c timeCardObj1 = new Time_Card__c(
             Date__c = Date.today().addMonths(-1),
             Employee__c = employeeObj.Id,
-            Client__c = proObj.financialContractId
+            Client__c = proObj.financialContractId,
+            Total__c = 1
         );
         insert timeCardObj1;
         Time_Card__c timeCardObj2 = new Time_Card__c(
             Date__c = Date.today().addMonths(-2),
             Employee__c = employeeObj.Id,
-            Client__c = proObj.financialContractId
+            Client__c = proObj.financialContractId,
+            Total__c = 1
         );
         insert timeCardObj2;
         Time_Card__c timeCardObj3 = new Time_Card__c(
             Date__c = Date.today().addMonths(-3),
             Employee__c = employeeObj.Id,
-            Client__c = proObj.financialContractId
+            Client__c = proObj.financialContractId,
+            Total__c = 1
         );
         insert timeCardObj3;
         Time_Card__c timeCardObj4 = new Time_Card__c(
             Date__c = Date.today().addMonths(-4),
             Employee__c = employeeObj.Id,
-            Client__c = proObj.financialContractId
+            Client__c = proObj.financialContractId,
+            Total__c = 1
         );
         insert timeCardObj4;
         Time_Card__c timeCardObj5 = new Time_Card__c(
             Date__c = Date.today().addMonths(-5),
             Employee__c = employeeObj.Id,
-            Client__c = proObj.financialContractId
+            Client__c = proObj.financialContractId,
+            Total__c = 1
         );
         insert timeCardObj5;
         Time_Card__c timeCardObj6 = new Time_Card__c(
             Date__c = Date.today().addMonths(-6),
             Employee__c = employeeObj.Id,
-            Client__c = proObj.financialContractId
+            Client__c = proObj.financialContractId,
+            Total__c = 1
         );
         insert timeCardObj6;
 

@@ -18,17 +18,19 @@ public class EmployeeTriggerTests {
     
     @isTest static void testBusinessUnitNameUpdate() {
         List<Business_Unit__c> businessUnits = [Select Id, Name From Business_Unit__c];
-        
+
         test.startTest();
         SFDC_Employee__c emp = new SFDC_Employee__c(
             Name = 'test employee', 
             Email_Address__c = 'tester@noemail.com', 
             Business_Unit__c = businessUnits[0].Id,
             Salary__c = 5000,
-            Exchange_Rate__c = 10
+            Exchange_Rate__c = 10,
+            Effective_Salary_Date__c = Date.newInstance(2016, 2, 24),
+            Effective_Exchange_Rate_Date__c = Date.newInstance(2016, 2, 24)
         );
         insert emp;
-        
+
         emp = [Select Id, SF_User__c, Email_Address__c, Business_Unit__c, Business_Unit__r.Name From SFDC_Employee__c Where Id =: emp.Id];
         User user = [Select Id, Business_Unit_Name__c From User Where Username =: emp.Email_Address__c];
         system.assertEquals(emp.SF_User__c, user.Id);

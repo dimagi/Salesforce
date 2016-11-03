@@ -1,7 +1,7 @@
 /**
  * Schedules BatchCalculateTotalHoursOfTimeCard job for calculating Services Spend value.
  */
-global class BatchCalculateTotalHoursScheduler implements Schedulable {
+global without sharing class BatchCalculateTotalHoursScheduler implements Schedulable {
 
     public BatchCalculateTotalHoursScheduler () {}
 
