@@ -87,6 +87,23 @@ public class SalaryHistoryTest {
         Test.stopTest();
     }
 
+    static testMethod void shouldIgnoreBadExchangeRate() {
+        Test.startTest();
+
+        SalaryHistoryHelper salaryHelper = new SalaryHistoryHelper();
+        SFDC_Employee__c employee = new SFDC_Employee__c(Name = 'emp_12', Salary__c = 150000);
+
+        List<SalaryHistoryRecord> historyList = salaryHelper.getHistoryForEmployee(employee, 'Exchange_Rate__c', 'Effective_Exchange_Rate_Date__c');
+
+        System.assertEquals(2, historyList.size());
+        System.assertEquals(3, historyList.get(0).getValue());
+        System.assertEquals(Date.newInstance(1900, 1, 1), historyList.get(0).getValueDate());
+        System.assertEquals(2, historyList.get(1).getValue());
+        System.assertEquals(Date.newInstance(2016, 1, 1), historyList.get(1).getValueDate());
+
+        Test.stopTest();
+    }
+
     static testMethod void shouldMergeListsEmp6() {
         Test.startTest();
 

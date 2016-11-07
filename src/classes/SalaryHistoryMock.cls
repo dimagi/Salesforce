@@ -49,6 +49,15 @@ public class SalaryHistoryMock {
             } else if (fieldName == 'Effective_Exchange_Rate_Date__c') {
                 records.add(new SalaryHistoryWrapper(Date.newInstance(2012, 5, 5), Date.newInstance(2013, 6, 1), DateTime.newInstance(2014, 9, 9, 10, 0, 0)));
             }
+        } else if (employee.Name == 'emp_12') {
+            if (fieldName == 'Exchange_Rate__c') {
+                records.add(new SalaryHistoryWrapper(0, 0.016, DateTime.newInstance(2014, 1, 1, 10, 0, 0)));
+                records.add(new SalaryHistoryWrapper(0.016, 3, DateTime.newInstance(2015, 1, 1, 10, 0, 0)));
+                records.add(new SalaryHistoryWrapper(3, 2, DateTime.newInstance(2016, 1, 1, 10, 0, 0)));
+            } else {
+                records.add(new SalaryHistoryWrapper(null, Date.newInstance(2012, 1, 1), DateTime.newInstance(2014, 1, 1, 10, 0, 0)));
+                records.add(new SalaryHistoryWrapper(Date.newInstance(2014, 1, 1), Date.newInstance(2014, 6, 1), DateTime.newInstance(2015, 1, 1, 10, 0, 0)));
+            }
         }
 
         return records;
