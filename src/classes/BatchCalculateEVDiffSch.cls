@@ -1,5 +1,5 @@
 /**
- * Calculates NetDiff for Closed opps in current month (Pipeline Snapshot wasn't created).
+ * Calculates NetDiff for Closed opps in last month (Pipeline Snapshot wasn't created).
  */
 public class BatchCalculateEVDiffSch implements Schedulable{
 
