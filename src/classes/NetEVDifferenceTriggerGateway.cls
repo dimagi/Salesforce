@@ -180,7 +180,8 @@ public class NetEVDifferenceTriggerGateway {
                                                                X24_Month_Cash_Minus_Expense_Income_EV__c, 
                                                                Opportunity_Amount_Minus_Expense_Income__c, 
                                                                Expected_Value_Minus_Expense__c, Monthly_Recurring_Revenue_MRR__c,
-                                                               Expected_Monthly_Recurring_Revenue_MRR__c
+                                                               Expected_Monthly_Recurring_Revenue_MRR__c,
+                                                               Month_Date__c
                                                                FROM Pipeline_Snapshot__c
                                                                WHERE Month_Date__c < :prevMonthDate
                                                                AND Month_Date__c > :prevMonthDate.addMonths(-6)
