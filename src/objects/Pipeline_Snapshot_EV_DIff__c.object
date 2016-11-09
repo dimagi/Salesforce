@@ -151,6 +151,17 @@
         <type>Picklist</type>
     </fields>
     <fields>
+        <fullName>Expected_Monthly_Recurring_Revenue_MRR__c</fullName>
+        <externalId>false</externalId>
+        <label>Expected Monthly Recurring Revenue (MRR)</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
         <fullName>Month_Date__c</fullName>
         <externalId>false</externalId>
         <label>Month_Date</label>
@@ -158,6 +169,17 @@
         <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>Monthly_Recurring_Revenue_MRR__c</fullName>
+        <externalId>false</externalId>
+        <label>Monthly Recurring Revenue (MRR)</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
     </fields>
     <fields>
         <fullName>Opportunity_Name__c</fullName>
@@ -170,7 +192,41 @@
         <type>Text</type>
         <unique>false</unique>
     </fields>
+    <fields>
+        <fullName>Pipeline_Snapshot__c</fullName>
+        <externalId>false</externalId>
+        <label>Pipeline Snapshot</label>
+        <referenceTo>Pipeline_Snapshot__c</referenceTo>
+        <relationshipLabel>Pipeline Snapshot EV DIffs</relationshipLabel>
+        <relationshipName>Pipeline_Snapshot_EV_DIffs</relationshipName>
+        <relationshipOrder>0</relationshipOrder>
+        <reparentableMasterDetail>false</reparentableMasterDetail>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>MasterDetail</type>
+        <writeRequiresMasterRead>false</writeRequiresMasterRead>
+    </fields>
+    <fields>
+        <fullName>Prior_Snapshot_date__c</fullName>
+        <externalId>false</externalId>
+        <label>Diff with snapshot from</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Date</type>
+    </fields>
     <label>Pipeline Snapshot EV DIff</label>
+    <listViews>
+        <fullName>All</fullName>
+        <columns>DIFF_12_Month_Cash_Minus_Expense_Income__c</columns>
+        <columns>DIFF_18_Month_Cash_Minus_Expenses_Income__c</columns>
+        <columns>DIFF_24_Month_Cash_Minus_Expense_Income__c</columns>
+        <columns>DIFF_Amount_Minus_Expense_Income__c</columns>
+        <columns>DIFF_Expected_Value_Minus_Expense__c</columns>
+        <columns>Delta_Type__c</columns>
+        <filterScope>Everything</filterScope>
+        <label>All</label>
+    </listViews>
     <nameField>
         <label>Pipeline Snapshot EV DIff Name</label>
         <trackHistory>false</trackHistory>
@@ -178,5 +234,5 @@
     </nameField>
     <pluralLabel>Pipeline Snapshot EV DIffs</pluralLabel>
     <searchLayouts/>
-    <sharingModel>ReadWrite</sharingModel>
+    <sharingModel>ControlledByParent</sharingModel>
 </CustomObject>

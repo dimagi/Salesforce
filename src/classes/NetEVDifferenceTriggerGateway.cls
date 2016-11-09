@@ -1,114 +1,225 @@
-public with sharing class NetEVDifferenceTriggerGateway {
-    
-    private static NetEVDifferenceTriggerGateway Instance;
-    
-    public static NetEVDifferenceTriggerGateway getInstance()
-    {
-        if(Instance == null)
-        {
-            Instance = new NetEVDifferenceTriggerGateway();   
-        }
-        return Instance;
-    }
-    
-    public Date getCurrentDate(List<sObject> newTrigger)
-    {
-        Date currentDate;
-        if(newTrigger.size() > 0)
-        {
-            List<Pipeline_Snapshot__c> snapShots = (List<Pipeline_Snapshot__c>)newTrigger;
-            if(snapShots.size() > 0)
-            {
-                currentDate = snapShots[0].Month_Date__c;
+/**
+ * Helper class for retrieving old Pipeline_Snapshot__c records to create NetEVDiff records.
+ */
+public class NetEVDifferenceTriggerGateway {
+
+    public static final String NEW_OPP = 'New Opp EV';
+    public static final String INCREASED = 'Increased EV';
+    public static final String DECREASED = 'Decreased EV';
+    public static final String NO_CHANGE = 'No Change';
+    public static final String LOST = 'Closed Opp - Lost / No Go';
+    public static final String WON = 'Closed Opp - Won';
+
+    public NetEVDifferenceTriggerGateway() {}
+
+    /**
+     * Used by Pipeline_Snapshot__c trigger. Creates new NetDiff records for given snapshots from one month
+     * (It creates only for NEW_OPP, INCREASED, DECREASED, NO_CHANGE other detla types are handled by batch job).
+     */
+    public void processLastMonthSnapshots(List<Pipeline_Snapshot__c> triggerSnapshots) {
+        Set<Id> opps = new Set<Id>();
+        Date currentDate = triggerSnapshots[0].Month_Date__c;
+        List<Pipeline_Snapshot__c> snapshots = new List<Pipeline_Snapshot__c>();
+        // For now we don't want Total
+        for(Pipeline_Snapshot__c snapshot : triggerSnapshots) {
+            if (!String.isBlank(snapshot.Opportunity__c) && snapshot.Stage__c != 'Total') {
+                opps.add(snapshot.Opportunity__c);
+                snapshots.add(snapshot);
             }
         }
-        
-        return currentDate;
-    }
-    
-    public Map<Id, Pipeline_Snapshot__c> getLastMonthSnapShotRecords(Date currentDate)
-    {
-        Date prevMonthDate =  currentDate.addMonths(-1);
-        Date firstDate = prevMonthDate.toStartOfMonth();
-        Date lastDate = firstDate.addDays(date.daysInMonth(prevMonthDate.year() , prevMonthDate.month())  - 1);
-        
-        List<Pipeline_Snapshot__c> lastMonthSnapShotsList = [SELECT Name, Opportunity__c, Opportunity__r.StageName, Month_Date__c, 
-                                                               X12_Month_Cash_Minus_Expense_Income_EV__c , 
-                                                               X18_Month_Cash_Minus_Expenses_Income_EV__c, 
-                                                               X24_Month_Cash_Minus_Expense_Income_EV__c, 
-                                                               Opportunity_Amount_Minus_Expense_Income__c, 
-                                                               Expected_Value_Minus_Expense__c  
-                                                               FROM Pipeline_Snapshot__c
-                                                               WHERE Month_Date__c >= :firstDate and Month_Date__c <= :lastDate
-                                                            ];
-            
-        Map<Id, Pipeline_Snapshot__c> lastMonthSnapShotsMap = new Map<Id, Pipeline_Snapshot__c>();
-        for(Pipeline_Snapshot__c snapshotObject : lastMonthSnapShotsList)
-        {
-            lastMonthSnapShotsMap.put(snapshotObject.Opportunity__c, snapshotObject);
+
+        Map<Id, Pipeline_Snapshot__c> priorMonthSnapshotRecords = getPriorMonthSnapshots(currentDate, opps);
+        Map<Id, Pipeline_Snapshot__c> oldMonthSnapshotRecords = getOldSnapShotRecords(currentDate, opps);
+
+        List<Pipeline_Snapshot_EV_DIff__c> snapShotDiffs = new List<Pipeline_Snapshot_EV_DIff__c>();
+
+        for (Pipeline_Snapshot__c lastMonthSnapshot : snapshots) {
+            Pipeline_Snapshot__c priorMonthSnapShot = priorMonthSnapshotRecords.get(lastMonthSnapshot.Opportunity__c);
+            if (priorMonthSnapShot == null) { // If prior month snapshot doesn't exist we calculate with last prior snapshot 
+                priorMonthSnapShot = oldMonthSnapshotRecords.get(lastMonthSnapshot.Opportunity__c);
+            }
+
+            Pipeline_Snapshot_EV_DIff__c snapShotsDiff = new Pipeline_Snapshot_EV_DIff__c();
+            snapShotsDiff.Name = lastMonthSnapshot.Name;
+            snapShotsDiff.Month_Date__c = lastMonthSnapshot.Month_Date__c;
+
+            snapShotsDiff.Pipeline_Snapshot__c = lastMonthSnapshot.Id;
+            snapShotsDiff.Opportunity_Name__c = lastMonthSnapshot.Opportunity_Name__c;
+
+            if (priorMonthSnapShot != null) {
+                snapShotsDiff = calculateDiff(snapShotsDiff, lastMonthSnapshot, priorMonthSnapShot);
+                snapShotsDiff.Delta_Type__c = getDeltaType(snapShotsDiff);
+            } else {
+                snapShotsDiff.Delta_Type__c = NEW_OPP;
+                snapShotsDiff.DIFF_12_Month_Cash_Minus_Expense_Income__c = 0;
+                snapShotsDiff.DIFF_18_Month_Cash_Minus_Expenses_Income__c = 0;
+                snapShotsDiff.DIFF_24_Month_Cash_Minus_Expense_Income__c = 0;
+                snapShotsDiff.DIFF_Amount_Minus_Expense_Income__c = 0;
+                snapShotsDiff.DIFF_Expected_Value_Minus_Expense__c = 0;
+                snapShotsDiff.Monthly_Recurring_Revenue_MRR__c = 0;
+                snapShotsDiff.Expected_Monthly_Recurring_Revenue_MRR__c = 0;
+            }
+
+            snapShotDiffs.add(snapShotsDiff);
         }
-        
-        return lastMonthSnapShotsMap;
-    }
-    
-    public Map<Id, Pipeline_Snapshot__c> getPriorToLastMonthSnapShotRecords(Date currentDate)
-    {
-        Date prevMonthDate =  currentDate.addMonths(-2);
-        Date firstDate = prevMonthDate.toStartOfMonth();
-        Date lastDate = firstDate.addDays(date.daysInMonth(prevMonthDate.year() , prevMonthDate.month())  - 1);
-        
-        List<Pipeline_Snapshot__c> priorToLastMonthSnapShotsList = [SELECT Name, Opportunity__c, Opportunity__r.StageName, Month_Date__c, 
-                                                               X12_Month_Cash_Minus_Expense_Income_EV__c , 
-                                                               X18_Month_Cash_Minus_Expenses_Income_EV__c, 
-                                                               X24_Month_Cash_Minus_Expense_Income_EV__c, 
-                                                               Opportunity_Amount_Minus_Expense_Income__c, 
-                                                               Expected_Value_Minus_Expense__c  
-                                                               FROM Pipeline_Snapshot__c
-                                                               WHERE Month_Date__c >= :firstDate and Month_Date__c <= :lastDate
-                                                            ];
-        
-        Map<Id, Pipeline_Snapshot__c> priorToLastMonthSnapShotsMap = new Map<Id, Pipeline_Snapshot__c>();
-        for(Pipeline_Snapshot__c snapshotObject : priorToLastMonthSnapShotsList)
-        {
-            priorToLastMonthSnapShotsMap.put(snapshotObject.Opportunity__c, snapshotObject);
+
+        if (snapShotDiffs.size() > 0) {
+            insert snapShotDiffs;
         }
-        
-        return priorToLastMonthSnapShotsMap;
-    }
-    
-    public Map<Id, Pipeline_Snapshot__c> getOldSnapShotRecords(Date currentDate)
-    {
-        Date prevMonthDate =  currentDate.addMonths(-1);
-        
-        List<Pipeline_Snapshot__c> oldSnapShotsList = [SELECT Name, Opportunity__c, Opportunity__r.StageName, Month_Date__c, 
-                                                               X12_Month_Cash_Minus_Expense_Income_EV__c , 
-                                                               X18_Month_Cash_Minus_Expenses_Income_EV__c, 
-                                                               X24_Month_Cash_Minus_Expense_Income_EV__c, 
-                                                               Opportunity_Amount_Minus_Expense_Income__c, 
-                                                               Expected_Value_Minus_Expense__c  
-                                                               FROM Pipeline_Snapshot__c
-                                                               WHERE Month_Date__c < :prevMonthDate
-                                                            ];
-        
-        Map<Id, Pipeline_Snapshot__c> oldSnapShotsMap = new Map<Id, Pipeline_Snapshot__c>();
-        for(Pipeline_Snapshot__c snapshotObject : oldSnapShotsList)
-        {
-            oldSnapShotsMap.put(snapshotObject.Opportunity__c, snapshotObject);
-        }
-        
-        return oldSnapShotsMap;
-    }
-    
-    public Boolean IfCUrrentMonthRecordExists()
-    {
-        Date todayDate = system.today();
-        Date firstDate = todayDate.toStartOfMonth();
-        Date lastDate = firstDate.addDays(date.daysInMonth(todayDate.year() , todayDate.month())  - 1);
-        
-        Integer recordCount = [SELECT Count() FROM Pipeline_Snapshot_EV_DIff__c where Month_Date__c >= :firstDate and Month_Date__c <= :lastDate];
-        
-        return recordCount > 0;
-        
     }
 
+    public void processPriorMonthSnapshotsWithClosedStatus(List<Pipeline_Snapshot__c> triggerSnapshots, Date executeDate) {
+        Date currentDate = executeDate;
+        Date firstDate = currentDate.toStartOfMonth();
+        currentDate = firstDate.addDays(date.daysInMonth(currentDate.year() , currentDate.month())).addDays(-1);
+
+        Map<Id, Pipeline_Snapshot__c> priorMonthSnapshotRecords = getPriorMonthSnapshotsForDate(firstDate);
+        for (Pipeline_Snapshot__c snapshot : triggerSnapshots) {
+            if (!String.isBlank(snapshot.Opportunity__c) && priorMonthSnapshotRecords.containsKey(snapshot.Opportunity__c)) {
+                priorMonthSnapshotRecords.remove(snapshot.Opportunity__c);
+            }
+        }
+
+        List<Pipeline_Snapshot_EV_DIff__c> snapShotDiffs = new List<Pipeline_Snapshot_EV_DIff__c>();
+
+        for (Pipeline_Snapshot__c snapshot : priorMonthSnapshotRecords.values()) {
+            Pipeline_Snapshot_EV_DIff__c snapShotsDiff = new Pipeline_Snapshot_EV_DIff__c();
+            snapShotsDiff.Name = snapshot.Opportunity_Name__c + ' - ' + currentDate.month() + '/' + currentDate.year();
+            snapShotsDiff.Opportunity_Name__c = snapshot.Opportunity_Name__c;
+            snapShotsDiff.Month_Date__c = currentDate;
+
+            snapShotsDiff.Pipeline_Snapshot__c = snapshot.Id;
+
+            snapShotsDiff.DIFF_12_Month_Cash_Minus_Expense_Income__c = 0;
+            snapShotsDiff.DIFF_18_Month_Cash_Minus_Expenses_Income__c = 0;
+            snapShotsDiff.DIFF_24_Month_Cash_Minus_Expense_Income__c = 0;
+            snapShotsDiff.DIFF_Amount_Minus_Expense_Income__c = 0;
+            snapShotsDiff.DIFF_Expected_Value_Minus_Expense__c = 0;
+            snapShotsDiff.Expected_Monthly_Recurring_Revenue_MRR__c = 0;
+            snapShotsDiff.Monthly_Recurring_Revenue_MRR__c = 0;
+            snapShotsDiff.Prior_Snapshot_date__c = snapshot.Month_Date__c;
+
+            if(snapshot.Opportunity__r.StageName == 'Closed - Lost' || snapshot.Opportunity__r.StageName == 'Closed - No Go' || snapshot.Opportunity__r.StageName == 'Closed') {
+                snapShotsDiff.Delta_Type__c = LOST;
+                snapShotDiffs.add(snapShotsDiff);
+            } else if(snapshot.Opportunity__r.StageName == 'Closed - Won') {
+                snapShotsDiff.Delta_Type__c = WON;
+                snapShotDiffs.add(snapShotsDiff);
+            }
+        }
+
+        if (snapShotDiffs.size() > 0) {
+            insert snapShotDiffs;
+        }
+    }
+
+    /**
+     * Returns prior month snapshots for given date and Opportunity set.
+     */
+    public Map<Id, Pipeline_Snapshot__c> getPriorMonthSnapshots(Date currentDate, Set<Id> opps) {
+        Date prevMonthDate = currentDate.addMonths(-1);
+        Date firstDate = prevMonthDate.toStartOfMonth();
+        Date lastDate = firstDate.addDays(date.daysInMonth(prevMonthDate.year() , prevMonthDate.month())).addDays(-1);
+
+        List<Pipeline_Snapshot__c> lastMonthSnapShotsList = [SELECT Name, Opportunity__c, Opportunity__r.StageName,
+                                                   Month_Date__c, Amount_Minus_Expense_Income__c, Opportunity_Name__c,
+                                                   X12_Month_Cash_Minus_Expense_Income_EV__c ,
+                                                   X18_Month_Cash_Minus_Expenses_Income_EV__c,
+                                                   X24_Month_Cash_Minus_Expense_Income_EV__c,
+                                                   Opportunity_Amount_Minus_Expense_Income__c,
+                                                   Expected_Value_Minus_Expense__c, Monthly_Recurring_Revenue_MRR__c,
+                                                   Expected_Monthly_Recurring_Revenue_MRR__c
+                                                   FROM Pipeline_Snapshot__c
+                                                   WHERE Month_Date__c >= :firstDate AND Month_Date__c <= :lastDate
+                                                   AND Opportunity__c in :opps AND Stage__c != 'Total'];
+
+        Map<Id, Pipeline_Snapshot__c> lastMonthSnapShotsMap = new Map<Id, Pipeline_Snapshot__c>();
+        for(Pipeline_Snapshot__c snapshotObject : lastMonthSnapShotsList) {
+            lastMonthSnapShotsMap.put(snapshotObject.Opportunity__c, snapshotObject);
+        }
+
+        return lastMonthSnapShotsMap;
+    }
+
+    /**
+     * Returns prior month snapshots for given date.
+     */
+    public Map<Id, Pipeline_Snapshot__c> getPriorMonthSnapshotsForDate(Date currentDate) {
+        Date prevMonthDate = currentDate.addMonths(-1);
+        Date firstDate = prevMonthDate.toStartOfMonth();
+        Date lastDate = firstDate.addDays(date.daysInMonth(prevMonthDate.year() , prevMonthDate.month())).addDays(-1);
+
+        List<Pipeline_Snapshot__c> lastMonthSnapShotsList = [SELECT Name, Opportunity__c, Opportunity__r.StageName,
+                Month_Date__c, Amount_Minus_Expense_Income__c, Opportunity_Name__c,
+                X12_Month_Cash_Minus_Expense_Income_EV__c ,
+                X18_Month_Cash_Minus_Expenses_Income_EV__c,
+                X24_Month_Cash_Minus_Expense_Income_EV__c,
+                Opportunity_Amount_Minus_Expense_Income__c,
+                Expected_Value_Minus_Expense__c, Monthly_Recurring_Revenue_MRR__c,
+                Expected_Monthly_Recurring_Revenue_MRR__c
+                FROM Pipeline_Snapshot__c
+                WHERE Month_Date__c >= :firstDate AND Month_Date__c <= :lastDate
+                AND Stage__c != 'Total'];
+
+        Map<Id, Pipeline_Snapshot__c> lastMonthSnapShotsMap = new Map<Id, Pipeline_Snapshot__c>();
+        for(Pipeline_Snapshot__c snapshotObject : lastMonthSnapShotsList) {
+            lastMonthSnapShotsMap.put(snapshotObject.Opportunity__c, snapshotObject);
+        }
+
+        return lastMonthSnapShotsMap;
+    }
+
+
+    public Map<Id, Pipeline_Snapshot__c> getOldSnapShotRecords(Date currentDate, Set<Id> opps) {
+        Date prevMonthDate =  currentDate.toStartOfMonth();
+
+        List<Pipeline_Snapshot__c> oldSnapShotsList = [SELECT Name, Opportunity__c, Opportunity__r.StageName, Opportunity_Name__c,
+                                                               Amount_Minus_Expense_Income__c,
+                                                               X12_Month_Cash_Minus_Expense_Income_EV__c , 
+                                                               X18_Month_Cash_Minus_Expenses_Income_EV__c, 
+                                                               X24_Month_Cash_Minus_Expense_Income_EV__c, 
+                                                               Opportunity_Amount_Minus_Expense_Income__c, 
+                                                               Expected_Value_Minus_Expense__c, Monthly_Recurring_Revenue_MRR__c,
+                                                               Expected_Monthly_Recurring_Revenue_MRR__c,
+                                                               Month_Date__c
+                                                               FROM Pipeline_Snapshot__c
+                                                               WHERE Month_Date__c < :prevMonthDate
+                                                               AND Month_Date__c > :prevMonthDate.addMonths(-6)
+                                                               AND Opportunity__c in :opps
+                                                               AND Stage__c != 'Total'
+                                                               ORDER BY Month_Date__c DESC
+                                                            ];
+
+        Map<Id, Pipeline_Snapshot__c> oldSnapShotsMap = new Map<Id, Pipeline_Snapshot__c>();
+        for(Pipeline_Snapshot__c snapshotObject : oldSnapShotsList) {
+            if (!oldSnapShotsMap.containsKey(snapshotObject.Opportunity__c)) {
+                oldSnapShotsMap.put(snapshotObject.Opportunity__c, snapshotObject);
+            }
+        }
+
+        return oldSnapShotsMap;
+    }
+
+    public Pipeline_Snapshot_EV_DIff__c calculateDiff(Pipeline_Snapshot_EV_DIff__c diff, Pipeline_Snapshot__c lastSnapshot, Pipeline_Snapshot__c priorSnapshot) {
+        diff.DIFF_12_Month_Cash_Minus_Expense_Income__c = (lastSnapshot.X12_Month_Cash_Minus_Expense_Income_EV__c != null ? lastSnapshot.X12_Month_Cash_Minus_Expense_Income_EV__c : 0) - (priorSnapshot.X12_Month_Cash_Minus_Expense_Income_EV__c != null ? priorSnapshot.X12_Month_Cash_Minus_Expense_Income_EV__c : 0);
+        diff.DIFF_18_Month_Cash_Minus_Expenses_Income__c = (lastSnapshot.X18_Month_Cash_Minus_Expenses_Income_EV__c != null ? lastSnapshot.X18_Month_Cash_Minus_Expenses_Income_EV__c : 0) - (priorSnapshot.X18_Month_Cash_Minus_Expenses_Income_EV__c != null ? priorSnapshot.X18_Month_Cash_Minus_Expenses_Income_EV__c : 0);
+        diff.DIFF_24_Month_Cash_Minus_Expense_Income__c = (lastSnapshot.X24_Month_Cash_Minus_Expense_Income_EV__c != null ? lastSnapshot.X24_Month_Cash_Minus_Expense_Income_EV__c : 0) - (priorSnapshot.X24_Month_Cash_Minus_Expense_Income_EV__c != null ? priorSnapshot.X24_Month_Cash_Minus_Expense_Income_EV__c : 0);
+        diff.DIFF_Amount_Minus_Expense_Income__c = (lastSnapshot.Opportunity_Amount_Minus_Expense_Income__c != null ? lastSnapshot.Opportunity_Amount_Minus_Expense_Income__c : 0) - (priorSnapshot.Opportunity_Amount_Minus_Expense_Income__c != null ? priorSnapshot.Opportunity_Amount_Minus_Expense_Income__c : 0);
+        diff.DIFF_Expected_Value_Minus_Expense__c = (lastSnapshot.Expected_Value_Minus_Expense__c != null ? lastSnapshot.Expected_Value_Minus_Expense__c : 0) - (priorSnapshot.Expected_Value_Minus_Expense__c != null ? priorSnapshot.Expected_Value_Minus_Expense__c : 0);
+        diff.Prior_Snapshot_date__c = priorSnapshot.Month_Date__c;
+        diff.Monthly_Recurring_Revenue_MRR__c = (lastSnapshot.Monthly_Recurring_Revenue_MRR__c != null ? lastSnapshot.Monthly_Recurring_Revenue_MRR__c : 0) - (priorSnapshot.Monthly_Recurring_Revenue_MRR__c != null ? priorSnapshot.Monthly_Recurring_Revenue_MRR__c : 0);
+        diff.Expected_Monthly_Recurring_Revenue_MRR__c = (lastSnapshot.Expected_Monthly_Recurring_Revenue_MRR__c != null ? lastSnapshot.Expected_Monthly_Recurring_Revenue_MRR__c : 0) - (priorSnapshot.Expected_Monthly_Recurring_Revenue_MRR__c != null ? priorSnapshot.Expected_Monthly_Recurring_Revenue_MRR__c : 0);
+
+        return diff;
+    }
+
+    public String getDeltaType(Pipeline_Snapshot_EV_DIff__c diffObj) {
+        Decimal diff = diffObj.DIFF_Expected_Value_Minus_Expense__c;
+        if(diff > 0) {
+            return INCREASED;
+        } else if(diff < 0) {
+            return DECREASED;
+        }
+        return NO_CHANGE;
+    }
 }
