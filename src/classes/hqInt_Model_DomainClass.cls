@@ -131,7 +131,11 @@ public class hqInt_Model_DomainClass {
         domainObj.hr_name__c = this.hr_name;
         domainObj.is_test__c = this.is_test;
         domainObj.license__c = this.license;
-        domainObj.Name = this.Name;
+        if (this.Name != null && this.Name.length() > 80) {
+            domainObj.Name = this.Name.subString(0, 80);
+        } else {
+            domainObj.Name = this.Name;
+        }
         domainObj.name_of_publisher__c = this.name_of_publisher;
         domainObj.organization__c = this.organization;
 

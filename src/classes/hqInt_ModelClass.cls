@@ -95,7 +95,11 @@ public class hqInt_ModelClass {
         public Accounting_Subscriber__c createDbObject(id domainId) {
             Accounting_Subscriber__c accountingSubscriberObj = new Accounting_Subscriber__c();
             accountingSubscriberObj.id__c = this.id;
-            accountingSubscriberObj.domain__c = this.domain;
+            if (this.domain != null && this.domain.length() > 80) {
+                accountingSubscriberObj.domain__c = this.domain.subString(0, 80);
+            } else {
+                accountingSubscriberObj.domain__c = this.domain;
+            }
             accountingSubscriberObj.organization__c = this.organization;
             accountingSubscriberObj.domain_lookup__c = domainId;
             system.debug('--domainid--' + domainid);
@@ -127,7 +131,11 @@ public class hqInt_ModelClass {
         public Accounting_BillingAccount__c createDbObject(id billingContactId) {
             Accounting_BillingAccount__c accountingBillingAccount = new Accounting_BillingAccount__c();
             accountingBillingAccount.id__c = this.id;
-            accountingBillingAccount.name = this.name;
+            if (this.name != null && this.name.length() > 80) {
+                accountingBillingAccount.name = this.name.subString(0, 80);
+            } else {
+                accountingBillingAccount.name = this.name;
+            }
             accountingBillingAccount.salesforce_account_id__c = this.salesforce_account_id;
             accountingBillingAccount.created_by__c = this.created_by;
             accountingBillingAccount.date_created__c = this.date_created;

@@ -111,7 +111,7 @@ global class hqInt_MainClass {
                 listInternalPropToBeDeleted.add(InternalPropRec);
             }
             if(domain.Deployment__c != null) {
-                Deployment__c 	deploymentRec = new Deployment__c(id=domain.Deployment__c);
+                Deployment__c deploymentRec = new Deployment__c(id=domain.Deployment__c);
                 listDeploymentToBeDeleted.add(deploymentRec);
             }
         }
