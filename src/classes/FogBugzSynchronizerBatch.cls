@@ -21,7 +21,10 @@ global without sharing class FogBugzSynchronizerBatch implements Database.Batcha
         FogBugz_Settings__c settings = FogBugz_Settings__c.getOrgDefaults();
         this.jobStartDateTime = Datetime.now();
         this.syncSuccess = true;
-        this.errorEmailAdress = CommcareToSalesforceSettings__c.getInstance('BatchFailureReportRecepeint').Value__c.split(';');
+        CommcareToSalesforceSettings__c settingsData = CommcareToSalesforceSettings__c.getInstance('BatchFailureReportRecepeint');
+        if (settingsData != null) {
+            this.errorEmailAdress = settingsData.Value__c.split(';');
+        }
 
         try {
             Opportunity[] modifiedOps = preFetchOpportunities(settings.Last_Time_Sync_Ran__c);
@@ -132,7 +135,7 @@ global without sharing class FogBugzSynchronizerBatch implements Database.Batcha
         FogBugz_Settings__c fbSettings = FogBugz_Settings__c.getOrgDefaults();
         fbSettings.Sync_Script_Running__c = false;
         if (this.syncSuccess) { // we can update sync date when all cases was updated
-            fbSettings.Last_Time_Sync_Ran__c = thisTime;
+            fbSettings.Last_Time_Sync_Ran__c = this.jobStartDateTime;
         }
         update fbSettings;
 
@@ -145,6 +148,10 @@ global without sharing class FogBugzSynchronizerBatch implements Database.Batcha
      * Sends email to admin, needed for reproduce bug 235623.
      */
     private void sendEmailBeforeSyncOpps(Map<String, FogBugzCase> fbIdToCaseMap) {
+        if (Test.isRunningTest()) {
+            return;
+        }
+
         String emailBody = '';
         for (FogBugzCase fbCase : fbIdToCaseMap.values()) {
             emailBody += fbCase.caseId + ' ' + fbCase.title + ' ' + fbCase.lastModifiedDate + '<br/>';
