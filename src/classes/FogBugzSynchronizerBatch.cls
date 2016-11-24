@@ -11,22 +11,24 @@ global without sharing class FogBugzSynchronizerBatch implements Database.Batcha
 
     private DateTime jobStartDateTime;
     private Boolean syncSuccess;
+    private String[] errorEmailAdress;
 
     public FogBugzSynchronizerBatch(Boolean testMode) {
         this.testMode = testMode;
     }
 
     global Iterable<Opportunity> start(Database.BatchableContext BC) {
+        FogBugz_Settings__c settings = FogBugz_Settings__c.getOrgDefaults();
         this.jobStartDateTime = Datetime.now();
         this.syncSuccess = true;
+        this.errorEmailAdress = CommcareToSalesforceSettings__c.getInstance('BatchFailureReportRecepeint').Value__c.split(';');
 
         try {
-            FogBugz_Settings__c settings = FogBugz_Settings__c.getOrgDefaults();
             Opportunity[] modifiedOps = preFetchOpportunities(settings.Last_Time_Sync_Ran__c);
             return new OpportunityIterable(modifiedOps);
         } catch(exception e) {
             this.syncSuccess = false;
-            EmailHelper.sendEmailFromException(new String[] {}, 'Fogbugz Sync - Error in start method',
+            EmailHelper.sendEmailFromException(this.errorEmailAdress, 'Fogbugz Sync - Error in start method',
                                                 'Last sync date time wasn\'t updated, we catch following exception', e);
             return null;
         }
@@ -87,9 +89,11 @@ global without sharing class FogBugzSynchronizerBatch implements Database.Batcha
 
         // We delay a little this upsert to avoid the "uncommitted work pending" exception when performing the FB API HTTP requests
         upsert fbSettings;
+        sendEmailBeforeSyncOpps(fbIdToCaseMap);
 
         if (fbIdToCaseMap.size() > 0) {
             Map<String, Opportunity> existentOpportunities = FogBugzUtils.fetchOpportunitiesByFBId(fbIdToCaseMap.keySet());
+
             for (String caseId:fbIdToCaseMap.keySet()) {
                 if (existentOpportunities.containsKey(caseId)) {
 
@@ -135,6 +139,17 @@ global without sharing class FogBugzSynchronizerBatch implements Database.Batcha
         if(!test.isRunningTest()) {
             hqInt_BatchErrorLogger.sendErrorEmails(BC.getJobId(), 'Fogbugz Success & Errors', 'Fogbugz Batch Run Results Logs:');
         }
+    }
+
+    /**
+     * Sends email to admin, needed for reproduce bug 235623.
+     */
+    private void sendEmailBeforeSyncOpps(Map<String, FogBugzCase> fbIdToCaseMap) {
+        String emailBody = '';
+        for (FogBugzCase fbCase : fbIdToCaseMap.values()) {
+            emailBody += fbCase.caseId + ' ' + fbCase.title + ' ' + fbCase.lastModifiedDate + '<br/>';
+        }
+        EmailHelper.sendEmail(this.errorEmailAdress, 'Fogbugz Sync - Cases listed by FB filter', emailBody);
     }
 
     /**
