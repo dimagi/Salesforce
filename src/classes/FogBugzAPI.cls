@@ -7,7 +7,7 @@
  * @date    11/13/2012
  */
 public with sharing class FogBugzAPI {
-    
+
     private static final String FB_API_URL = 'http://manage.dimagi.com/api.asp?';
     private static final String FB_LIST_COLS = 'ixPersonOpenedBy,dtLastUpdated';
     private static final String FB_CASE_COLS = 'sTitle,sArea,sPersonAssignedTo,sVersion,dtLastUpdated,latestEvent,tags,ixPersonOpenedBy';
@@ -32,6 +32,10 @@ public with sharing class FogBugzAPI {
         } else {
             FogBugzHttpCalloutMock mock = new FogBugzHttpCalloutMock();
             res = mock.respond(req);
+        }
+
+        if (res.getStatusCode() != 200) {
+            throw new CalloutException('Bad Response Status : ' + res.getStatusCode() + ' - message - ' + res.getBody());
         }
 
         if (res.getBody() != null) {

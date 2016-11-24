@@ -58,6 +58,7 @@ global class FogBugzHttpCalloutMock implements HttpCalloutMock {
         } else if (params.get('cmd') == 'viewPerson') {
             res.setBody(RESPONSE_VIEW_PERSON);
         }
+        res.setStatusCode(200);
 
         return res;
     }
