@@ -14,17 +14,15 @@ trigger TaskToCaseNote on Task (after insert) {
         tasksInSet.add(t.Id);
     }
 
-    Task[] tasks = [select Id,
-                           WhatId
-                    from Task
-                    where Id in :tasksInSet
-                    and Subject like 'Email: %'
-                    and What.Type = 'Opportunity'];
+    Task[] tasks = [SELECT Id, WhatId
+                    FROM Task
+                    WHERE Id in :tasksInSet
+                    AND Subject LIKE 'Email: %'
+                    AND What.Type = 'Opportunity'];
 
     if (!tasks.isEmpty()) {
-        
         Opportunity o = [select Fogbugz_Ticket_Number__c from Opportunity where Id = :tasks[0].WhatId];
-        
+
         if (o.Fogbugz_Ticket_Number__c != null) {
             TaskTriggers.addNoteInFogBugz(tasks[0].Id);
         }

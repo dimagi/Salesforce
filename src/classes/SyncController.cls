@@ -1,3 +1,6 @@
+/**
+ * Synchronization Controller used to manual synchronization with FogBugz.
+ */
 public with sharing class SyncController {
 
     private PageReference cancelPage = null;
