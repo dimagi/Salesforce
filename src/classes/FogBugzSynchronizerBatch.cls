@@ -92,7 +92,7 @@ global without sharing class FogBugzSynchronizerBatch implements Database.Batcha
 
         // We delay a little this upsert to avoid the "uncommitted work pending" exception when performing the FB API HTTP requests
         upsert fbSettings;
-        sendEmailBeforeSyncOpps(fbIdToCaseMap);
+        sendEmailBeforeSyncOpps(fbIdToCaseMap, minTime);
 
         if (fbIdToCaseMap.size() > 0) {
             Map<String, Opportunity> existentOpportunities = FogBugzUtils.fetchOpportunitiesByFBId(fbIdToCaseMap.keySet());
@@ -147,15 +147,17 @@ global without sharing class FogBugzSynchronizerBatch implements Database.Batcha
     /**
      * Sends email to admin, needed for reproduce bug 235623.
      */
-    private void sendEmailBeforeSyncOpps(Map<String, FogBugzCase> fbIdToCaseMap) {
+    private void sendEmailBeforeSyncOpps(Map<String, FogBugzCase> fbIdToCaseMap, DateTime syncedDate) {
         if (Test.isRunningTest()) {
             return;
         }
 
-        String emailBody = '';
+        String emailBody = 'syncedDate: ' + syncedDate + ' <br/><br/>';
+        emailBody += '<table border="1">';
         for (FogBugzCase fbCase : fbIdToCaseMap.values()) {
-            emailBody += fbCase.caseId + ' ' + fbCase.title + ' ' + fbCase.lastModifiedDate + '<br/>';
+            emailBody += '<tr><td>' + fbCase.caseId + '</td><td>Last modified date: ' + fbCase.lastModifiedDate + '</td></tr>';
         }
+        emailBody += '</table>';
         EmailHelper.sendEmail(this.errorEmailAdress, 'Fogbugz Sync - Cases listed by FB filter', emailBody);
     }
 
