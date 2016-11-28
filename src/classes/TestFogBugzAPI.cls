@@ -22,6 +22,7 @@ public class TestFogBugzAPI {
                                                     '<dtLastUpdated>2012-1-1T00:00:00Z</dtLastUpdated>' +
                                                     '<tags><tag><![CDATA[[1/1]]]></tag></tags>' +
                                                     '<ixPersonOpenedBy>1</ixPersonOpenedBy>' +
+                                                    '<hrsElapsed>41.7327995300293</hrsElapsed>' +
                                                     '</case></cases>' +
                                                     '</response>';
 
