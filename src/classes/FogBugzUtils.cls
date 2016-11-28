@@ -96,6 +96,7 @@ public without sharing class FogBugzUtils {
                 o.Fogbugz_Assigned_To__c = fbCase.assignedTo;
                 o.Name = fbCase.title == null ? null : (fbCase.title.length() > 120 ? fbCase.title.substring(0, 120) : fbCase.title);
                 o.Fogbugz_Opened_By__c = null;
+                o.Fogbugz_elapsed_time__c = fbCase.hrsElapsed;
 
                 if (fbCase.lastModifiedDate != null) {
                     o.Fogbugz_Last_Updated_Date__c = fbCase.lastModifiedDate;
