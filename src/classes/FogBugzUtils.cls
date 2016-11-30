@@ -39,7 +39,7 @@ public without sharing class FogBugzUtils {
     public static Opportunity fetchOpportunity(Id opportunityId) {
         Opportunity[] ops = [SELECT Id, Name, Owner.Name, Owner.Email, Owner.Id, StageName, Amount,
                              Fogbugz_Most_Recent_Note__c, Probability, Fogbugz_Probability__c, Fogbugz_Ticket_Number__c,
-                             Fogbugz_Assigned_To__c, Fogbugz_Opened_By__c, Fogbugz_Last_Updated_Date__c, IsClosed
+                             Fogbugz_Assigned_To__c, Fogbugz_Opened_By__c, Fogbugz_Last_Updated_Date__c, Fogbugz_elapsed_time__c, IsClosed
                              FROM Opportunity
                              WHERE Id = :opportunityId];
         return !ops.isEmpty() ? ops[0] : null;
@@ -53,7 +53,7 @@ public without sharing class FogBugzUtils {
 
         for (Opportunity o:[SELECT Id, Name, Owner.Name, Owner.Email, Owner.Id, StageName, Amount,
                             Fogbugz_Most_Recent_Note__c, Probability, Fogbugz_Probability__c, Fogbugz_Ticket_Number__c,
-                            Fogbugz_Assigned_To__c, Fogbugz_Opened_By__c, Fogbugz_Last_Updated_Date__c
+                            Fogbugz_Assigned_To__c, Fogbugz_Opened_By__c, Fogbugz_Last_Updated_Date__c, Fogbugz_elapsed_time__c
                             FROM Opportunity
                             WHERE Fogbugz_Ticket_Number__c in :fbCaseIds]) {
             res.put(o.Fogbugz_Ticket_Number__c, o);
@@ -96,6 +96,7 @@ public without sharing class FogBugzUtils {
                 o.Fogbugz_Assigned_To__c = fbCase.assignedTo;
                 o.Name = fbCase.title == null ? null : (fbCase.title.length() > 120 ? fbCase.title.substring(0, 120) : fbCase.title);
                 o.Fogbugz_Opened_By__c = null;
+                o.Fogbugz_elapsed_time__c = fbCase.hrsElapsed;
 
                 if (fbCase.lastModifiedDate != null) {
                     o.Fogbugz_Last_Updated_Date__c = fbCase.lastModifiedDate;

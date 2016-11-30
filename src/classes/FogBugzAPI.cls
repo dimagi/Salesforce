@@ -10,7 +10,7 @@ public with sharing class FogBugzAPI {
 
     private static final String FB_API_URL = 'http://manage.dimagi.com/api.asp?';
     private static final String FB_LIST_COLS = 'ixPersonOpenedBy,dtLastUpdated';
-    private static final String FB_CASE_COLS = 'sTitle,sArea,sPersonAssignedTo,sVersion,dtLastUpdated,latestEvent,tags,ixPersonOpenedBy';
+    private static final String FB_CASE_COLS = 'sTitle,sArea,sPersonAssignedTo,sVersion,dtLastUpdated,latestEvent,tags,ixPersonOpenedBy,hrsElapsed';
     private static final Integer FB_HTTP_TIMEOUT = 60000;
 
     /**
@@ -398,8 +398,13 @@ public with sharing class FogBugzAPI {
         fbCase.externalBugID = caseNode.getElementByTagName('sVersion').nodeValue;
         fbCase.caseId = caseNode.getAttribute('ixBug');
         fbCase.ixPersonOpenedBy = caseNode.getElementByTagName('ixPersonOpenedBy').nodeValue;
-        String dtLastUpdatedValue = caseNode.getElementByTagName('dtLastUpdated').nodeValue;
 
+        String hours = caseNode.getElementByTagName('hrsElapsed').nodeValue;
+        if (hours != null && hours.length() > 0) {
+            fbCase.hrsElapsed = Decimal.valueOf(hours);
+        }
+
+        String dtLastUpdatedValue = caseNode.getElementByTagName('dtLastUpdated').nodeValue;
         if (dtLastUpdatedValue != null && dtLastUpdatedValue.length() > 0) {
             fbCase.lastModifiedDate = FogBugzUtils.parseRFC822UTCTime(dtLastUpdatedValue);
         }

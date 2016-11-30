@@ -17,4 +17,5 @@ public with sharing class FogBugzCase {
     public Datetime lastModifiedDate { get; set; }
     public String latestEvent { get; set; }
     public String ixPersonOpenedBy { get; set; }
+    public Decimal hrsElapsed { get; set; }
 }

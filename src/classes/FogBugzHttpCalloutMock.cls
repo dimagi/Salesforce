@@ -16,7 +16,7 @@ global class FogBugzHttpCalloutMock implements HttpCalloutMock {
                                                  '<case ixBug="testFBId" operations="edit,assign,resolve,email,remind">' +
                                                  '</case></response>';
     public static final String RESPONSE_SEARCH = '<?xml version="1.0" encoding="UTF-8"?><response><cases count="1">' +
-                                                 '<case ixBug="testFBId"><ixBug>testFBId</ixBug><sTitle>Title</sTitle><sArea>area</sArea><sPersonAssignedTo>salesforce</sPersonAssignedTo><sVersion>1</sVersion><ixPersonOpenedBy>salesforce</ixPersonOpenedBy><dtLastUpdated>2013-04-25T22:47:59Z</dtLastUpdated>' +
+                                                 '<case ixBug="testFBId"><ixBug>testFBId</ixBug><sTitle>Title</sTitle><sArea>area</sArea><sPersonAssignedTo>salesforce</sPersonAssignedTo><sVersion>1</sVersion><ixPersonOpenedBy>salesforce</ixPersonOpenedBy><dtLastUpdated>2013-04-25T22:47:59Z</dtLastUpdated><hrsElapsed>41.7327995300293</hrsElapsed>' +
                                                  '<event><s>event</s></event></case></cases></response>';
     public static final String RESPONSE_LIST_CASES = '<?xml version="1.0" encoding="UTF-8"?><response><cases count="2">' +
                                                      '<case ixBug="testFBId"><ixBug>testFBId</ixBug><sTitle>Title</sTitle><sArea>area</sArea><sPersonAssignedTo>salesforce</sPersonAssignedTo><sVersion>1</sVersion><ixPersonOpenedBy>salesforce</ixPersonOpenedBy><dtLastUpdated>2007-05-06T22:47:59Z</dtLastUpdated></case>' +
