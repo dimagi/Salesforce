@@ -144,61 +144,53 @@ public with sharing class OpenOpportunityEmailUtils {
         return result.replace('[LEFT_STYLE]', LEFT_STYLE).replace('[RIGHT_STYLE]', RIGHT_STYLE);
     }
 
-	/**************************************************
-	Method Name: getEmailStageTableRow
-	Method Comments: method called from buildEmailStageTable. For each opportunity this method is called. Renders the status of the opportunity and its data.    
-	**************************************************/
-    private static String getEmailStageTableRow(Opportunity opp, Integer daysNotUpdatedLimit, Integer daysNotUpdatedLimitEarlyStages, Set<String> earlyStagesSet, Integer daysSinceStageChange) {
-        
+    /**************************************************
+    Method Name: getEmailStageTableRow
+    Method Comments: method called from buildEmailStageTable. For each opportunity this method is called. Renders the status of the opportunity and its data.
+    **************************************************/
+    private static String getEmailStageTableRow(Opportunity opp, Integer daysNotUpdatedLimit, Integer daysNotUpdatedLimitEarlyStages,
+                                                Set<String> earlyStagesSet, Integer daysSinceStageChange) {
         final String LEFT_STYLE = 'style="border-width:0 0 1px 0;vertical-align:middle;padding:4px 2px 4px 5px;border-bottom:1px solid #e3deb8;"';
         final String STYLE = 'style="border-width:0 0 1px 0;vertical-align:middle;padding:4px 2px 4px 5px;border-bottom:1px solid #e3deb8;text-align:right"'; 
         String rowStart = '';
-        
+
         /**************************************************
         Comments: Filtering process in order to define the style of the Opportunity Row (red, yellow, etc)
         **************************************************/
         // Default has no color
         rowStart = '<tr>';
-        
+
         // Turn green if stage changed in past week
         if (opp.Stage_Duration__c <= daysSinceStageChange) {
             rowStart = '<tr style="background:' + GREEN_COLOR + '">';
         }
-        else rowStart = rowStart;
-        
+
         // Turn yellow if there is no account
-        if (opp.AccountId == null) {        	
-        	rowStart = '<tr style="background:' + YELLOW_COLOR + '">';
+        if (opp.AccountId == null) {
+            rowStart = '<tr style="background:' + YELLOW_COLOR + '">';
         }
-        else {
-        	rowStart = rowStart;
-        }        
-        
+
         // added by Nick - checking if it is a long wait after submission
         if (opp.long_wait__c) {
-			rowStart = rowStart;
-		}
-		else {
-		// end added by Nick
-			
-        if (earlyStagesSet.contains(opp.StageName)) {            
-            rowStart = opp.Total_Days_Not_Updated__c > daysNotUpdatedLimitEarlyStages 
-                                   ? '<tr style="background:' + RED_COLOR + '">' 
-                                   : rowStart;
+            rowStart = rowStart;
+        } else {
+            // end added by Nick
+            if (earlyStagesSet.contains(opp.StageName)) {            
+                rowStart = opp.Total_Days_Not_Updated__c > daysNotUpdatedLimitEarlyStages 
+                                    ? '<tr style="background:' + RED_COLOR + '">' 
+                                    : rowStart;
+            } else {
+                rowStart = opp.Total_Days_Not_Updated__c > daysNotUpdatedLimit 
+                                    ? '<tr style="background:' + RED_COLOR + '">' 
+                                    : rowStart;
+            }
         }
-        else {
-            rowStart = opp.Total_Days_Not_Updated__c > daysNotUpdatedLimit 
-                                   ? '<tr style="background:' + RED_COLOR + '">' 
-                                   : rowStart;
-        }
-        }
-        
-        
+
         String href = URL.getSalesforceBaseUrl().toExternalForm() + '/' + String.valueOf(opp.Id);
-        
+
         Open_Opportunity_Fields__c[] selectedFields = OpenOpportunityReportController.getOpportunityFields();
         String result =  rowStart;
-        
+
         if (!selectedFields.isEmpty()) {
             
 	        /**************************************************
