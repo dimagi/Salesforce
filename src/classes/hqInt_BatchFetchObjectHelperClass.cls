@@ -557,7 +557,6 @@ public class hqInt_BatchFetchObjectHelperClass {
             Accounting_Subscriber__c sobj = subscriber.createDbObject(parentId);
             listSobject.add(sobj);
         }
-        System.debug('--subscriberobj--' + listSobject[0]);
 
         upsert listSobject id__c;
         return listSobject.size();
