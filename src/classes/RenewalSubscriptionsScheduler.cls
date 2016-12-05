@@ -3,7 +3,7 @@
  */
 public without sharing class RenewalSubscriptionsScheduler implements Schedulable {
 
-    global void execute(SchedulableContext sc) {
+    public void execute(SchedulableContext sc) {
        Database.executeBatch(new BatchCalculateTotalHoursOfTimeCard(), 50);
     }
 }

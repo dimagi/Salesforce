@@ -31,7 +31,9 @@ public without sharing class RenewalSubscriptionsBatch implements Database.Batch
         if (this.incBusinessUnit == null || this.defaultOppOwner == null) {
             EmailHelper.sendEmail(settings.Error_Emails__c.split(','), 'Subscription Renewal ERROR',
                                   'Cannot find default Opportunity owner or INC business unit');
-            throw new NoDataFoundException('Cannot find default Opportunity owner or INC business unit');
+            NoDataFoundException ex = new NoDataFoundException();
+            ex.setMessage('Cannot find default Opportunity owner or INC business unit');
+            throw ex;
         }
 
         Set<String> domainsWithFutureSubscriptions = new Set<String>();
@@ -60,7 +62,7 @@ public without sharing class RenewalSubscriptionsBatch implements Database.Batch
             Opportunity newOpp = new Opportunity(
                                                     Prior_Dimagi_contact__c = subscription.Dimagi_Contact__c,
                                                     Name = subscription.Software_Plan_Edition__c + ' - Renewal', // TODO account name ?????
-                                                    Subscriptions_web_users = Accounting_subscriber_domain__r.cpAllWebUsers__c,
+                                                    Subscriptions_web_users__c = subscription.Accounting_subscriber_domain__r.cpAllWebUsers__c,
                                                     Probability = 0.25,
                                                     Duration_months__c = 12,
                                                     Expected_Buffer__c = 1,
@@ -68,12 +70,12 @@ public without sharing class RenewalSubscriptionsBatch implements Database.Batch
                                                     CloseDate = subscription.date_end__c,
                                                     Domain_Name__c = subscription.Accounting_subscriber_domain__c,
                                                     Product_Text__c = subscription.Software_Plan_Edition__c,
-                                                    Stage = 'Stage 3 - Prospect',
+                                                    StageName = 'Stage 3 - Prospect',
                                                     Owner = this.defaultOppOwner,
                                                     Implementation_Type__c = 'Self Service',
-                                                    Opportunity_Owning_Entity__c = this.incBusinessUnit,
-                                                    Contract_Owner_BU__c = this.incBusinessUnit,
-                                                    Implementing_Business_Unit__c = this.incBusinessUnit
+                                                    Opportunity_Owning_Entity__c = this.incBusinessUnit.Id,
+                                                    Contract_Owner_BU__c = this.incBusinessUnit.Id,
+                                                    Implementing_Business_Unit__c = this.incBusinessUnit.Id
                                                 );
 
             if (subscription.service_type__c == 'Implementation' || subscription.service_type__c == 'Product') {
@@ -90,7 +92,7 @@ public without sharing class RenewalSubscriptionsBatch implements Database.Batch
             for(Integer i = 0; i < insertResults.size(); i++){
                 if (!insertResults.get(i).isSuccess()){
                     Database.Error error = insertResults.get(i).getErrors().get(0);
-                    this.oppsError.add(new DatabaseErrorInfo(insertList.get(i).Domain_Name__c, error.getMessage()));
+                    this.oppsErrors.add(new DatabaseErrorInfo(newOpps.get(i).Domain_Name__c, error.getMessage()));
                 }
             }
         }
@@ -100,12 +102,16 @@ public without sharing class RenewalSubscriptionsBatch implements Database.Batch
         for(Integer i = 0; i < updateResults.size(); i++){
             if (!updateResults.get(i).isSuccess()){
                 Database.Error error = updateResults.get(i).getErrors().get(0);
-                this.subsErrors.add(new DatabaseErrorInfo(updateResults.get(i).Id, error.getMessage()));
+                this.subsErrors.add(new DatabaseErrorInfo(updateResults.get(i).getId(), error.getMessage()));
             }
         }
     }
 
     public void finish(Database.BatchableContext context) {
+        if (!Test.isRunningTest()) {
+            return;
+        }
+
         String emailBody = 'RenewalSubscriptionsBatch : ' + Date.today() + '</br></br>OPP Errors : </br>';
         Boolean tableStart = false;
 
