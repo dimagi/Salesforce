@@ -4,6 +4,6 @@
 public without sharing class RenewalSubscriptionsScheduler implements Schedulable {
 
     public void execute(SchedulableContext sc) {
-       Database.executeBatch(new BatchCalculateTotalHoursOfTimeCard(), 50);
+       Database.executeBatch(new RenewalSubscriptionsBatch(), 50);
     }
 }

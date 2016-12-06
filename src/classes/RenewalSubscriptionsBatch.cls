@@ -9,6 +9,7 @@ public without sharing class RenewalSubscriptionsBatch implements Database.Batch
     private Subscription_Renewal_Settings__c settings;
     private List<DatabaseErrorInfo> oppsErrors;
     private List<DatabaseErrorInfo> subsErrors;
+    private Map<String, Date> createdOppsForDomains;
 
     public RenewalSubscriptionsBatch () {
         this.currentDate = Date.today();
@@ -19,10 +20,7 @@ public without sharing class RenewalSubscriptionsBatch implements Database.Batch
     }
 
     public List<Accounting_Subscription__c> start(Database.BatchableContext context) {
-        List<Accounting_Subscription__c> subscriptions = [SELECT Id, Accounting_subscriber_domain__r.Name FROM Accounting_Subscription__c
-                                                          WHERE Accounting_subscriber_domain__r.Name != '' AND date_start__c >: this.currentDate
-                                                          AND date_end__c != null];
-
+        List<Accounting_Subscription__c> subscriptions = getFutureSubscriptions();
         this.settings = Subscription_Renewal_Settings__c.getOrgDefaults();
 
         this.incBusinessUnit = [SELECT Id FROM Business_Unit__c WHERE Name =: settings.Default_Business_Unit__c];
@@ -30,7 +28,7 @@ public without sharing class RenewalSubscriptionsBatch implements Database.Batch
 
         if (this.incBusinessUnit == null || this.defaultOppOwner == null) {
             EmailHelper.sendEmail(settings.Error_Emails__c.split(','), 'Subscription Renewal ERROR',
-                                  'Cannot find default Opportunity owner or INC business unit');
+                                  'Cannot find default Opportunity owner or Inc business unit');
             NoDataFoundException ex = new NoDataFoundException();
             ex.setMessage('Cannot find default Opportunity owner or INC business unit');
             throw ex;
@@ -45,45 +43,50 @@ public without sharing class RenewalSubscriptionsBatch implements Database.Batch
 
         this.oppsErrors = new List<DatabaseErrorInfo>();
         this.subsErrors = new List<DatabaseErrorInfo>();
+        this.createdOppsForDomains = new Map<String, Date>();
 
-        return [SELECT Id, date_end__c, service_type__c, Accounting_subscriber_domain__c, Accounting_subscriber_domain__r.Name, Dimagi_Contact__c,
-                Accounting_subscriber_domain__r.cpAllWebUsers__c, Software_Plan_Edition__c, Renewal_Opportunity_created__c FROM Accounting_Subscription__c
-                WHERE Accounting_subscriber_domain__r.Name != '' AND date_start__c <=: currentDate
-                AND date_end__c != null AND date_end__c <=: this.currentDate.addDays(60) AND Renewal_Opportunity_created__c = false
-                AND Accounting_subscriber_domain__r.Name NOT IN: domainsWithFutureSubscriptions
-                ORDER BY Accounting_subscriber_domain__r.Name];
+        return getSubscriptionsForRenewal(domainsWithFutureSubscriptions);
     }
 
     public void execute(Database.BatchableContext context, List<Accounting_Subscription__c> subs) {
         // NEW FIELDS : SUBSCRIPTION Renewal_Opportunity_created__c, Dimagi_Contact__c OPP :  Subscriptions_web_users__c, Prior Dimagi contact__c
         List<Opportunity> newOpps = new List<Opportunity>();
+        List<Accounting_Subscription__c> subsToUpdate = new List<Accounting_Subscription__c>();
 
         for (Accounting_Subscription__c subscription : subs) {
-            Opportunity newOpp = new Opportunity(
-                                                    Prior_Dimagi_contact__c = subscription.Dimagi_Contact__c,
-                                                    Name = subscription.Software_Plan_Edition__c + ' - Renewal', // TODO account name ?????
-                                                    Subscriptions_web_users__c = subscription.Accounting_subscriber_domain__r.cpAllWebUsers__c,
-                                                    Probability = 0.25,
-                                                    Duration_months__c = 12,
-                                                    Expected_Buffer__c = 1,
-                                                    of_Execution_budget_for_GS__c = 0,
-                                                    CloseDate = subscription.date_end__c,
-                                                    Domain_Name__c = subscription.Accounting_subscriber_domain__c,
-                                                    Product_Text__c = subscription.Software_Plan_Edition__c,
-                                                    StageName = 'Stage 3 - Prospect',
-                                                    Owner = this.defaultOppOwner,
-                                                    Implementation_Type__c = 'Self Service',
-                                                    Opportunity_Owning_Entity__c = this.incBusinessUnit.Id,
-                                                    Contract_Owner_BU__c = this.incBusinessUnit.Id,
-                                                    Implementing_Business_Unit__c = this.incBusinessUnit.Id
-                                                );
+            if (!this.createdOppsForDomains.containsKey(subscription.Accounting_subscriber_domain__c)) {
+                this.createdOppsForDomains.put(subscription.Accounting_subscriber_domain__c, subscription.date_end__c);
 
-            if (subscription.service_type__c == 'Implementation' || subscription.service_type__c == 'Product') {
-                newOpp.Opportunity_Source__c = 'Implementation Renewal';
-            } else {
-                newOpp.Opportunity_Source__c = 'Product Renewal';
+                Opportunity newOpp = new Opportunity(
+                                                        Prior_Dimagi_contact__c = subscription.Dimagi_Contact__c,
+                                                        Name = subscription.Software_Plan_Edition__c + ' - Renewal', // TODO account name ?????
+                                                        Subscriptions_web_users__c = subscription.Accounting_subscriber_domain__r.cpAllWebUsers__c,
+                                                        Fogbugz_Probability__c = 25,
+                                                        Probability = 25,
+                                                        Duration_months__c = 12,
+                                                        Expected_Buffer__c = 100,
+                                                        of_Execution_budget_for_GS__c = 0,
+                                                        CloseDate = subscription.date_end__c,
+                                                        Domain_Name__c = subscription.Accounting_subscriber_domain__c,
+                                                        Product_Text__c = subscription.Software_Plan_Edition__c,
+                                                        StageName = 'Stage 3 - Prospect',
+                                                        OwnerId = this.defaultOppOwner.Id,
+                                                        Implementation_Type__c = 'Self Service',
+                                                        Opportunity_Owning_Entity__c = this.incBusinessUnit.Id,
+                                                        Contract_Owner_BU__c = this.incBusinessUnit.Id,
+                                                        Implementing_Business_Unit__c = this.incBusinessUnit.Id
+                                                    );
+
+                if (subscription.service_type__c == 'Implementation' || subscription.service_type__c == 'Product') {
+                    newOpp.Opportunity_Source__c = 'Implementation Renewal';
+                } else {
+                    newOpp.Opportunity_Source__c = 'Product Renewal';
+                }
+
+                subscription.Renewal_Opportunity_created__c = true;
+                newOpps.add(newOpp);
+                subsToUpdate.add(subscription);
             }
-            subscription.Renewal_Opportunity_created__c = true;
         }
 
         // Create new Opps
@@ -92,22 +95,26 @@ public without sharing class RenewalSubscriptionsBatch implements Database.Batch
             for(Integer i = 0; i < insertResults.size(); i++){
                 if (!insertResults.get(i).isSuccess()){
                     Database.Error error = insertResults.get(i).getErrors().get(0);
-                    this.oppsErrors.add(new DatabaseErrorInfo(newOpps.get(i).Domain_Name__c, error.getMessage()));
+                    System.debug('Opp Error : Fields - ' + error.getFields() + ' Message - ' + error.getMessage());
+                    this.oppsErrors.add(new DatabaseErrorInfo(newOpps.get(i).Domain_Name__c, 'Fields - ' + error.getFields() + ' Message - ' + error.getMessage()));
                 }
             }
         }
 
         // Update subscriptions
-        List<Database.SaveResult> updateResults = Database.update(subs, false);
-        for(Integer i = 0; i < updateResults.size(); i++){
-            if (!updateResults.get(i).isSuccess()){
-                Database.Error error = updateResults.get(i).getErrors().get(0);
-                this.subsErrors.add(new DatabaseErrorInfo(updateResults.get(i).getId(), error.getMessage()));
+        if (subsToUpdate.size() > 0) {
+            List<Database.SaveResult> updateResults = Database.update(subsToUpdate, false);
+            for(Integer i = 0; i < updateResults.size(); i++){
+                if (!updateResults.get(i).isSuccess()){
+                    Database.Error error = updateResults.get(i).getErrors().get(0);
+                    this.subsErrors.add(new DatabaseErrorInfo(updateResults.get(i).getId(), 'Fields - ' + error.getFields() + ' Message - ' + error.getMessage()));
+                }
             }
         }
     }
 
     public void finish(Database.BatchableContext context) {
+        Database.executeBatch(new CreateFBCasesBatch(), 10);
         if (!Test.isRunningTest()) {
             return;
         }
@@ -143,6 +150,25 @@ public without sharing class RenewalSubscriptionsBatch implements Database.Batch
 
         public String objectId { get; set; }
         public String errorMessage { get; set; }
+    }
 
+    /**
+     * Returns Subscriptions which ends after 60 days
+     */
+    public List<Accounting_Subscription__c> getFutureSubscriptions() {
+        return [SELECT Id, Accounting_subscriber_domain__r.Name FROM Accounting_Subscription__c
+                WHERE Accounting_subscriber_domain__r.Name != '' AND is_active__c = true
+                AND date_end__c != null AND date_end__c >: this.currentDate.addDays(60)];
+    }
+
+    /**
+     * Returns Subscriptions which ends in 60 days for domains which dosen't contain subscriptions from future (which ends after 60 days).
+     */
+    public List<Accounting_Subscription__c> getSubscriptionsForRenewal(Set<String> domainsWithFutureSubscriptions) {
+        return [SELECT Id, date_end__c, service_type__c, Accounting_subscriber_domain__c, Accounting_subscriber_domain__r.Name, Dimagi_Contact__c,
+                Accounting_subscriber_domain__r.cpAllWebUsers__c, Software_Plan_Edition__c, Renewal_Opportunity_created__c FROM Accounting_Subscription__c
+                WHERE Accounting_subscriber_domain__r.Name != '' AND date_end__c != null AND date_end__c <=: this.currentDate.addDays(60) AND date_end__c >=: this.currentDate
+                AND Accounting_subscriber_domain__r.Name NOT IN: domainsWithFutureSubscriptions AND is_active__c = true
+                ORDER BY date_end__c DESC];
     }
 }
