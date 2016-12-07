@@ -87,7 +87,7 @@ public class RenewalSubscriptionsTest {
         Opportunity opp1 = opps.get(0);
 
         System.assertEquals('contact_1@dimagi.com', opp1.Prior_Dimagi_contact__c);
-        System.assertEquals('Pro - Renewal', opp1.Name); //TODO
+        System.assertEquals('Pro - Renewal', opp1.Name);
         System.assertEquals(30, opp1.Subscriptions_web_users__c);
         System.assertEquals(25, opp1.Fogbugz_Probability__c);
         System.assertEquals(12, opp1.Duration_months__c);

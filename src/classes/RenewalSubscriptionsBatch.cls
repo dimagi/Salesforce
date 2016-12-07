@@ -54,7 +54,7 @@ public without sharing class RenewalSubscriptionsBatch implements Database.Batch
         List<Accounting_Subscription__c> subsToUpdate = new List<Accounting_Subscription__c>();
 
         for (Accounting_Subscription__c subscription : subs) {
-            if (!this.createdOppsForDomains.containsKey(subscription.Accounting_subscriber_domain__c)) {
+            if (!this.createdOppsForDomains.containsKey(subscription.Accounting_subscriber_domain__c) && subscription.Renewal_Opportunity_created__c == false) {
                 this.createdOppsForDomains.put(subscription.Accounting_subscriber_domain__c, subscription.date_end__c);
 
                 Opportunity newOpp = new Opportunity(
