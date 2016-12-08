@@ -582,7 +582,7 @@ public with sharing class ProjectReportOutController {
                     Product_Income_Budget += childContract.Product_Income_Budget__c != null ? childContract.Product_Income_Budget__c: 0 ;
                     Product_Spend += childContract.Product_Spend__c != null ? childContract.Product_Spend__c: 0 ;
                     Contract_Expense_BUDGET += childContract.Contract_Expense_BUDGET__c != null ? childContract.Contract_Expense_BUDGET__c: 0 ;
-                    Direct_Costs_Total_Expenses += childContract.Direct_Costs_Total_Expenses__c != null ? contractObj.Direct_Costs_Total_Expenses__c: 0 ;
+                    Direct_Costs_Total_Expenses += childContract.Direct_Costs_Total_Expenses__c != null ? childContract.Direct_Costs_Total_Expenses__c: 0 ;
                     Project_Other_BUDGET += childContract.Project_Other_BUDGET__c != null ? childContract.Project_Other_BUDGET__c : 0 ;
                 }
             }
