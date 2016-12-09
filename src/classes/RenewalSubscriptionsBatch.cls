@@ -49,17 +49,17 @@ public without sharing class RenewalSubscriptionsBatch implements Database.Batch
     }
 
     public void execute(Database.BatchableContext context, List<Accounting_Subscription__c> subs) {
-        // NEW FIELDS : SUBSCRIPTION Renewal_Opportunity_created__c, Dimagi_Contact__c OPP :  Subscriptions_web_users__c, Prior Dimagi contact__c
         List<Opportunity> newOpps = new List<Opportunity>();
         List<Accounting_Subscription__c> subsToUpdate = new List<Accounting_Subscription__c>();
 
         for (Accounting_Subscription__c subscription : subs) {
             if (!this.createdOppsForDomains.containsKey(subscription.Accounting_subscriber_domain__c) && subscription.Renewal_Opportunity_created__c == false) {
-                this.createdOppsForDomains.put(subscription.Accounting_subscriber_domain__c, subscription.date_end__c);
+                String oppNameFirstPart = subscription.Accounting_subscriber_domain__r.Account__r.Name != null && subscription.Accounting_subscriber_domain__r.Account__r.Name != '' ?
+                                            subscription.Accounting_subscriber_domain__r.Account__r.Name : subscription.Accounting_subscriber_domain__r.Name;
 
                 Opportunity newOpp = new Opportunity(
                                                         Prior_Dimagi_contact__c = subscription.Dimagi_Contact__c,
-                                                        Name = subscription.Software_Plan_Edition__c + ' - Renewal', // TODO account name ?????
+                                                        Name = oppNameFirstPart + ' - ' + subscription.Software_Plan_Edition__c + ' - Renewal',
                                                         Subscriptions_web_users__c = subscription.Accounting_subscriber_domain__r.cpAllWebUsers__c,
                                                         Fogbugz_Probability__c = 25,
                                                         Probability = 25,
@@ -86,6 +86,10 @@ public without sharing class RenewalSubscriptionsBatch implements Database.Batch
                 subscription.Renewal_Opportunity_created__c = true;
                 newOpps.add(newOpp);
                 subsToUpdate.add(subscription);
+            }
+            // we must create Opp only for the latest subscription which will end
+            if (!this.createdOppsForDomains.containsKey(subscription.Accounting_subscriber_domain__c)) {
+                this.createdOppsForDomains.put(subscription.Accounting_subscriber_domain__c, subscription.date_end__c);
             }
         }
 
@@ -115,14 +119,15 @@ public without sharing class RenewalSubscriptionsBatch implements Database.Batch
 
     public void finish(Database.BatchableContext context) {
         Database.executeBatch(new CreateFBCasesBatch(), 10);
-        if (!Test.isRunningTest()) {
+        if (Test.isRunningTest()) {
             return;
         }
 
-        String emailBody = 'RenewalSubscriptionsBatch : ' + Date.today() + '</br></br>OPP Errors : </br>';
+        String emailBody = 'RenewalSubscriptionsBatch : ' + Date.today();
         Boolean tableStart = false;
 
         if (oppsErrors.size() > 0) {
+            emailBody += '</br></br>OPP Errors : </br>';
             emailBody += '<table border="1"><tr><td>Domain Id</td><td>Error Message</td></tr>';
             for (DatabaseErrorInfo er : this.oppsErrors) {
                 emailBody += '<tr><td>' + er.objectId + '</td><td>' + er.errorMessage + '</td></tr>';
@@ -165,7 +170,7 @@ public without sharing class RenewalSubscriptionsBatch implements Database.Batch
      * Returns Subscriptions which ends in 60 days for domains which dosen't contain subscriptions from future (which ends after 60 days).
      */
     public List<Accounting_Subscription__c> getSubscriptionsForRenewal(Set<String> domainsWithFutureSubscriptions) {
-        return [SELECT Id, date_end__c, service_type__c, Accounting_subscriber_domain__c, Accounting_subscriber_domain__r.Name, Dimagi_Contact__c,
+        return [SELECT Id, date_end__c, service_type__c, Accounting_subscriber_domain__c, Accounting_subscriber_domain__r.Name, Dimagi_Contact__c, Accounting_subscriber_domain__r.Account__r.Name,
                 Accounting_subscriber_domain__r.cpAllWebUsers__c, Software_Plan_Edition__c, Renewal_Opportunity_created__c FROM Accounting_Subscription__c
                 WHERE Accounting_subscriber_domain__r.Name != '' AND date_end__c != null AND date_end__c <=: this.currentDate.addDays(60) AND date_end__c >=: this.currentDate
                 AND Accounting_subscriber_domain__r.Name NOT IN: domainsWithFutureSubscriptions AND is_active__c = true

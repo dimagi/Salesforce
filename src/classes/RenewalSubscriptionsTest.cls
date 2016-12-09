@@ -32,7 +32,9 @@ public class RenewalSubscriptionsTest {
         Accounting_BillingAccount__c billingAccount5 = new Accounting_BillingAccount__c(account_type__c = 'Free', is_active__c = true, created_by__c = 'test@dimagi.com', created_by_domain__c = 'domain_3', dimagi_contact__c = 'contact_1@dimagi.com');
         insert billingAccount5;
 
-        Domain__c domain1 = new Domain__c(Name = 'domain_1', cpAllWebUsers__c = 30);
+        Account testAccount = new Account(Name = 'Test Account');
+        insert testAccount;
+        Domain__c domain1 = new Domain__c(Name = 'domain_1', cpAllWebUsers__c = 30, Account__c = testAccount.Id);
         insert domain1;
         Domain__c domain2 = new Domain__c(Name = 'domain_2', cpAllWebUsers__c = 22);
         insert domain2;
@@ -75,8 +77,7 @@ public class RenewalSubscriptionsTest {
         System.assertEquals(1, futureList.size());
         List<Accounting_Subscription__c> renewalList = batchJob.getSubscriptionsForRenewal(new Set<String>());
         System.assertEquals(3, renewalList.size());
-
-        Database.executeBatch(new RenewalSubscriptionsBatch(Date.newInstance(2016, 12, 1)), 50);
+        Database.executeBatch(batchJob, 50);
         Test.stopTest();
 
         List<Opportunity> opps = [SELECT Id, Name, Prior_Dimagi_contact__c, Subscriptions_web_users__c, Fogbugz_Probability__c, Duration_months__c,
@@ -87,7 +88,7 @@ public class RenewalSubscriptionsTest {
         Opportunity opp1 = opps.get(0);
 
         System.assertEquals('contact_1@dimagi.com', opp1.Prior_Dimagi_contact__c);
-        System.assertEquals('Pro - Renewal', opp1.Name);
+        System.assertEquals('Test Account - Pro - Renewal', opp1.Name);
         System.assertEquals(30, opp1.Subscriptions_web_users__c);
         System.assertEquals(25, opp1.Fogbugz_Probability__c);
         System.assertEquals(12, opp1.Duration_months__c);
@@ -108,7 +109,7 @@ public class RenewalSubscriptionsTest {
         Opportunity opp2 = opps.get(1);
 
         System.assertEquals('contact_1@dimagi.com', opp2.Prior_Dimagi_contact__c);
-        System.assertEquals('Community - Renewal', opp2.Name); //TODO
+        System.assertEquals('domain_2 - Community - Renewal', opp2.Name);
         System.assertEquals(22, opp2.Subscriptions_web_users__c);
         System.assertEquals(25, opp2.Fogbugz_Probability__c);
         System.assertEquals(12, opp2.Duration_months__c);
@@ -124,5 +125,18 @@ public class RenewalSubscriptionsTest {
         System.assertEquals(bu.Id, opp2.Contract_Owner_BU__c);
         System.assertEquals(bu.Id, opp2.Implementing_Business_Unit__c);
         System.assertEquals('FirstName LastName', opp2.Owner.Name);
+
+        futureList = batchJob.getFutureSubscriptions();
+        System.assertEquals(1, futureList.size());
+        renewalList = batchJob.getSubscriptionsForRenewal(new Set<String>());
+        System.assertEquals(3, renewalList.size());
+        batchJob.start(null);
+        batchJob.execute(null, renewalList);
+
+        opps = [SELECT Id, Name, Prior_Dimagi_contact__c, Subscriptions_web_users__c, Fogbugz_Probability__c, Duration_months__c,
+                                  Expected_Buffer__c, of_Execution_budget_for_GS__c, CloseDate, Domain_Name__c, Product_Text__c,
+                                  StageName, Implementation_Type__c, Opportunity_Owning_Entity__c, Contract_Owner_BU__c,
+                                  Implementing_Business_Unit__c, Opportunity_Source__c, Owner.Name FROM Opportunity ORDER BY Name DESC];
+        System.assertEquals(2, opps.size());
     }
 }
