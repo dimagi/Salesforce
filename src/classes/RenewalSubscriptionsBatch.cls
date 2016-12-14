@@ -10,6 +10,9 @@ public without sharing class RenewalSubscriptionsBatch implements Database.Batch
     private List<DatabaseErrorInfo> oppsErrors;
     private List<DatabaseErrorInfo> subsErrors;
     private Map<String, Date> createdOppsForDomains;
+    private Map<String, PricebookEntry> priceBookEntries;
+    private PricebookEntry commCareEntry;
+    private Map<String, Decimal> salesPrices;
 
     public RenewalSubscriptionsBatch () {
         this.currentDate = Date.today();
@@ -44,6 +47,30 @@ public without sharing class RenewalSubscriptionsBatch implements Database.Batch
         this.oppsErrors = new List<DatabaseErrorInfo>();
         this.subsErrors = new List<DatabaseErrorInfo>();
         this.createdOppsForDomains = new Map<String, Date>();
+        this.priceBookEntries = new Map<String, PricebookEntry>();
+
+        Set<String> productCodes = new Set<String> { 'Advanced', 'Community', 'Enterprise', 'Pro', 'Standard' };
+        PriceBook2 dimagiPriceBook = [SELECT Id FROM PriceBook2 WHERE Name = 'Dimagi'];
+        List<PricebookEntry> entries = [SELECT Id, ProductCode, UnitPrice FROM PricebookEntry WHERE ProductCode IN: ProductCodes AND Pricebook2Id =: dimagiPriceBook.Id];
+
+        for (PricebookEntry entry : entries) {
+            this.priceBookEntries.put(entry.ProductCode, entry);
+        }
+
+        this.commCareEntry = [SELECT Id, ProductCode, UnitPrice FROM PricebookEntry WHERE ProductCode = 'CommCare' AND Pricebook2Id =: dimagiPriceBook.Id LIMIT 1];
+
+        if (entries.size() != 5 || this.commCareEntry == null) {
+            NoDataFoundException ex = new NoDataFoundException();
+            ex.setMessage('Cannot find price book entries');
+            throw ex;
+        }
+
+        this.salesPrices = new Map<String, Decimal>();
+        this.salesPrices.put('Community', this.settings.Community__c != null ? this.settings.Community__c : 0);
+        this.salesPrices.put('Standard', this.settings.Standard__c != null ? this.settings.Standard__c : 100);
+        this.salesPrices.put('Pro', this.settings.Pro__c != null ? this.settings.Pro__c : 500);
+        this.salesPrices.put('Advanced', this.settings.Advanced__c != null ? this.settings.Advanced__c : 1000);
+        this.salesPrices.put('Enterprise', this.settings.Enterprise__c != null ? this.settings.Enterprise__c : 2000);
 
         return getSubscriptionsForRenewal(domainsWithFutureSubscriptions);
     }
@@ -51,6 +78,8 @@ public without sharing class RenewalSubscriptionsBatch implements Database.Batch
     public void execute(Database.BatchableContext context, List<Accounting_Subscription__c> subs) {
         List<Opportunity> newOpps = new List<Opportunity>();
         List<Accounting_Subscription__c> subsToUpdate = new List<Accounting_Subscription__c>();
+        List<OpportunityLineItem> opportunityProducts = new List<OpportunityLineItem>();
+        List<OpportunityLineItem> opportunityCommcareProducts = new List<OpportunityLineItem>();
 
         for (Accounting_Subscription__c subscription : subs) {
             if (!this.createdOppsForDomains.containsKey(subscription.Accounting_subscriber_domain__c) && subscription.Renewal_Opportunity_created__c == false) {
@@ -61,14 +90,13 @@ public without sharing class RenewalSubscriptionsBatch implements Database.Batch
                                                         Prior_Dimagi_contact__c = subscription.Dimagi_Contact__c,
                                                         Name = oppNameFirstPart + ' - ' + subscription.Software_Plan_Edition__c + ' - Renewal',
                                                         Subscriptions_web_users__c = subscription.Accounting_subscriber_domain__r.cpAllWebUsers__c,
-                                                        Fogbugz_Probability__c = 25,
-                                                        Probability = 25,
+                                                        Fogbugz_Probability__c = 30,
+                                                        Probability = 30,
                                                         Duration_months__c = 12,
                                                         Expected_Buffer__c = 100,
                                                         of_Execution_budget_for_GS__c = 0,
                                                         CloseDate = subscription.date_end__c,
                                                         Domain_Name__c = subscription.Accounting_subscriber_domain__c,
-                                                        Product_Text__c = subscription.Software_Plan_Edition__c,
                                                         StageName = 'Stage 3 - Prospect',
                                                         OwnerId = this.defaultOppOwner.Id,
                                                         Implementation_Type__c = 'Self Service',
@@ -86,6 +114,12 @@ public without sharing class RenewalSubscriptionsBatch implements Database.Batch
                 subscription.Renewal_Opportunity_created__c = true;
                 newOpps.add(newOpp);
                 subsToUpdate.add(subscription);
+
+                PricebookEntry pbe = this.priceBookEntries.get(subscription.Software_Plan_Edition__c);
+                Decimal price = this.salesPrices.get(subscription.Software_Plan_Edition__c);
+                OpportunityLineItem oppProduct = new OpportunityLineItem(PricebookEntryId = pbe.Id, Quantity = 12, UnitPrice = price);
+                opportunityProducts.add(oppProduct);
+
             }
             // we must create Opp only for the latest subscription which will end
             if (!this.createdOppsForDomains.containsKey(subscription.Accounting_subscriber_domain__c)) {
@@ -103,6 +137,26 @@ public without sharing class RenewalSubscriptionsBatch implements Database.Batch
                     this.oppsErrors.add(new DatabaseErrorInfo(newOpps.get(i).Domain_Name__c, 'Fields - ' + error.getFields() + ' Message - ' + error.getMessage()));
                 }
             }
+            for (Integer i = 0; i < newOpps.size(); i++) {
+                Opportunity o = newOpps.get(i);
+                if (!String.isBlank(o.Id)) {
+                    opportunityProducts.get(i).OpportunityId = o.Id;
+                    opportunityCommcareProducts.add(new OpportunityLineItem(OpportunityId = o.Id, PricebookEntryId = commCareEntry.Id, Quantity = 1, UnitPrice = commCareEntry.UnitPrice));
+                }
+            }
+        }
+
+        // Add Opp products
+        if (opportunityProducts.size() > 0) {
+            opportunityProducts.addAll(opportunityCommcareProducts);
+            List<Database.SaveResult> insertResults = Database.insert(opportunityProducts, false);
+            for(Integer i = 0; i < insertResults.size(); i++){
+                if (!insertResults.get(i).isSuccess()){
+                    Database.Error error = insertResults.get(i).getErrors().get(0);
+                    System.debug('Opp Error : Fields - ' + error.getFields() + ' Message - ' + error.getMessage());
+                    this.oppsErrors.add(new DatabaseErrorInfo(newOpps.get(i).Domain_Name__c, 'Cannot create Product: Fields - ' + error.getFields() + ' Message - ' + error.getMessage()));
+                }
+            }
         }
 
         // Update subscriptions
@@ -115,10 +169,19 @@ public without sharing class RenewalSubscriptionsBatch implements Database.Batch
                 }
             }
         }
+
+        String emailBody = '';
+        emailBody += '<table border="1"><tr><td>Sub Id</td><td>Opp Id</td></tr>';
+        for (Integer i = 0; i < subsToUpdate.size(); i++) {
+            emailBody += '<tr><td><a href="https://dimagi--dsandbox.cs20.my.salesforce.com/' + subsToUpdate.get(i).Id + '">https://dimagi--dsandbox.cs20.my.salesforce.com/' + subsToUpdate.get(i).Id +
+                         '</a></td><td><a href="https://dimagi--dsandbox.cs20.my.salesforce.com/' + newOpps.get(i).Id + '">https://dimagi--dsandbox.cs20.my.salesforce.com/' + newOpps.get(i).Id + '</a></td></tr>';
+        }
+        emailBody += '</table></br>';
+        EmailHelper.sendEmail('tstalka@soldevelo.com'.split(','), 'Subscription Renewal Job Status', emailBody);
     }
 
     public void finish(Database.BatchableContext context) {
-        Database.executeBatch(new CreateFBCasesBatch(), 10);
+        //Database.executeBatch(new CreateFBCasesBatch(), 10);
         if (Test.isRunningTest()) {
             return;
         }
