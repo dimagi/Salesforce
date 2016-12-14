@@ -154,7 +154,7 @@ public without sharing class RenewalSubscriptionsBatch implements Database.Batch
                 if (!insertResults.get(i).isSuccess()){
                     Database.Error error = insertResults.get(i).getErrors().get(0);
                     System.debug('Opp Error : Fields - ' + error.getFields() + ' Message - ' + error.getMessage());
-                    this.oppsErrors.add(new DatabaseErrorInfo(newOpps.get(i).Domain_Name__c, 'Cannot create Product: Fields - ' + error.getFields() + ' Message - ' + error.getMessage()));
+                    this.oppsErrors.add(new DatabaseErrorInfo(newOpps.get(i / 2).Domain_Name__c, 'Cannot create Product: Fields - ' + error.getFields() + ' Message - ' + error.getMessage()));
                 }
             }
         }
