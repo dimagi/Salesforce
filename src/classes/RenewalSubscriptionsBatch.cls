@@ -117,9 +117,8 @@ public without sharing class RenewalSubscriptionsBatch implements Database.Batch
 
                 PricebookEntry pbe = this.priceBookEntries.get(subscription.Software_Plan_Edition__c);
                 Decimal price = this.salesPrices.get(subscription.Software_Plan_Edition__c);
-                OpportunityLineItem oppProduct = new OpportunityLineItem(PricebookEntryId = pbe.Id, Quantity = 12, UnitPrice = price);
-                opportunityProducts.add(oppProduct);
-
+                opportunityProducts.add(new OpportunityLineItem(PricebookEntryId = pbe.Id, Quantity = 12, UnitPrice = price));
+                opportunityCommcareProducts.add(new OpportunityLineItem(PricebookEntryId = commCareEntry.Id, Quantity = 1, UnitPrice = commCareEntry.UnitPrice));
             }
             // we must create Opp only for the latest subscription which will end
             if (!this.createdOppsForDomains.containsKey(subscription.Accounting_subscriber_domain__c)) {
@@ -141,22 +140,15 @@ public without sharing class RenewalSubscriptionsBatch implements Database.Batch
                 Opportunity o = newOpps.get(i);
                 if (!String.isBlank(o.Id)) {
                     opportunityProducts.get(i).OpportunityId = o.Id;
-                    opportunityCommcareProducts.add(new OpportunityLineItem(OpportunityId = o.Id, PricebookEntryId = commCareEntry.Id, Quantity = 1, UnitPrice = commCareEntry.UnitPrice));
+                    opportunityCommcareProducts.get(i).OpportunityId = o.Id;
                 }
             }
         }
 
         // Add Opp products
         if (opportunityProducts.size() > 0) {
-            opportunityProducts.addAll(opportunityCommcareProducts);
-            List<Database.SaveResult> insertResults = Database.insert(opportunityProducts, false);
-            for(Integer i = 0; i < insertResults.size(); i++){
-                if (!insertResults.get(i).isSuccess()){
-                    Database.Error error = insertResults.get(i).getErrors().get(0);
-                    System.debug('Opp Error : Fields - ' + error.getFields() + ' Message - ' + error.getMessage());
-                    this.oppsErrors.add(new DatabaseErrorInfo(newOpps.get(i / 2).Domain_Name__c, 'Cannot create Product: Fields - ' + error.getFields() + ' Message - ' + error.getMessage()));
-                }
-            }
+            processProductsErrors(Database.insert(opportunityProducts, false), newOpps);
+            processProductsErrors(Database.insert(opportunityCommcareProducts, false), newOpps);
         }
 
         // Update subscriptions
@@ -169,19 +161,10 @@ public without sharing class RenewalSubscriptionsBatch implements Database.Batch
                 }
             }
         }
-
-        String emailBody = '';
-        emailBody += '<table border="1"><tr><td>Sub Id</td><td>Opp Id</td></tr>';
-        for (Integer i = 0; i < subsToUpdate.size(); i++) {
-            emailBody += '<tr><td><a href="https://dimagi--dsandbox.cs20.my.salesforce.com/' + subsToUpdate.get(i).Id + '">https://dimagi--dsandbox.cs20.my.salesforce.com/' + subsToUpdate.get(i).Id +
-                         '</a></td><td><a href="https://dimagi--dsandbox.cs20.my.salesforce.com/' + newOpps.get(i).Id + '">https://dimagi--dsandbox.cs20.my.salesforce.com/' + newOpps.get(i).Id + '</a></td></tr>';
-        }
-        emailBody += '</table></br>';
-        EmailHelper.sendEmail('tstalka@soldevelo.com'.split(','), 'Subscription Renewal Job Status', emailBody);
     }
 
     public void finish(Database.BatchableContext context) {
-        //Database.executeBatch(new CreateFBCasesBatch(), 10);
+        Database.executeBatch(new CreateFBCasesBatch(), 5);
         if (Test.isRunningTest()) {
             return;
         }
@@ -236,7 +219,17 @@ public without sharing class RenewalSubscriptionsBatch implements Database.Batch
         return [SELECT Id, date_end__c, service_type__c, Accounting_subscriber_domain__c, Accounting_subscriber_domain__r.Name, Dimagi_Contact__c, Accounting_subscriber_domain__r.Account__r.Name,
                 Accounting_subscriber_domain__r.cpAllWebUsers__c, Software_Plan_Edition__c, Renewal_Opportunity_created__c FROM Accounting_Subscription__c
                 WHERE Accounting_subscriber_domain__r.Name != '' AND date_end__c != null AND date_end__c <=: this.currentDate.addDays(60) AND date_end__c >=: this.currentDate
-                AND Accounting_subscriber_domain__r.Name NOT IN: domainsWithFutureSubscriptions AND is_active__c = true
+                AND Accounting_subscriber_domain__r.Name NOT IN: domainsWithFutureSubscriptions AND is_active__c = true AND is_trial__c = true
                 ORDER BY date_end__c DESC];
+    }
+
+    private void processProductsErrors(List<Database.SaveResult> insertResults, List<Opportunity> newOpps) {
+        for(Integer i = 0; i < insertResults.size(); i++){
+            if (!insertResults.get(i).isSuccess()){
+                Database.Error error = insertResults.get(i).getErrors().get(0);
+                System.debug('Opp Error : Fields - ' + error.getFields() + ' Message - ' + error.getMessage());
+                this.oppsErrors.add(new DatabaseErrorInfo(newOpps.get(i).Domain_Name__c, 'Cannot create Product: Fields - ' + error.getFields() + ' Message - ' + error.getMessage()));
+            }
+        }
     }
 }
