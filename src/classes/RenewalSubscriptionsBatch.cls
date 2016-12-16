@@ -164,10 +164,11 @@ public without sharing class RenewalSubscriptionsBatch implements Database.Batch
     }
 
     public void finish(Database.BatchableContext context) {
-        Database.executeBatch(new CreateFBCasesBatch(), 5);
         if (Test.isRunningTest()) {
             return;
         }
+
+        Database.executeBatch(new CreateFBCasesBatch(), 5);
 
         String emailBody = 'RenewalSubscriptionsBatch : ' + Date.today();
         Boolean tableStart = false;
@@ -208,7 +209,7 @@ public without sharing class RenewalSubscriptionsBatch implements Database.Batch
      */
     public List<Accounting_Subscription__c> getFutureSubscriptions() {
         return [SELECT Id, Accounting_subscriber_domain__r.Name FROM Accounting_Subscription__c
-                WHERE Accounting_subscriber_domain__r.Name != '' AND is_active__c = true
+                WHERE Accounting_subscriber_domain__r.Name != '' AND is_active__c = true AND is_trial__c = false
                 AND date_end__c != null AND date_end__c >: this.currentDate.addDays(60)];
     }
 
@@ -219,7 +220,7 @@ public without sharing class RenewalSubscriptionsBatch implements Database.Batch
         return [SELECT Id, date_end__c, service_type__c, Accounting_subscriber_domain__c, Accounting_subscriber_domain__r.Name, Dimagi_Contact__c, Accounting_subscriber_domain__r.Account__r.Name,
                 Accounting_subscriber_domain__r.cpAllWebUsers__c, Software_Plan_Edition__c, Renewal_Opportunity_created__c FROM Accounting_Subscription__c
                 WHERE Accounting_subscriber_domain__r.Name != '' AND date_end__c != null AND date_end__c <=: this.currentDate.addDays(60) AND date_end__c >=: this.currentDate
-                AND Accounting_subscriber_domain__r.Name NOT IN: domainsWithFutureSubscriptions AND is_active__c = true AND is_trial__c = true
+                AND Accounting_subscriber_domain__r.Name NOT IN: domainsWithFutureSubscriptions AND is_active__c = true AND is_trial__c = false
                 ORDER BY date_end__c DESC];
     }
 
