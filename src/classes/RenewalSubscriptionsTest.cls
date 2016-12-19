@@ -37,6 +37,11 @@ public class RenewalSubscriptionsTest {
         Accounting_BillingAccount__c billingAccount5 = new Accounting_BillingAccount__c(account_type__c = 'Free', is_active__c = true, created_by__c = 'test@dimagi.com', created_by_domain__c = 'domain_3', dimagi_contact__c = 'contact_1@dimagi.com');
         insert billingAccount5;
 
+        Business_Unit__c bizUnit = new Business_Unit__c(Name = 'Test Business Unit 1');
+        Opportunity opp = new Opportunity(Name = 'AAA Opportunity 1', Business_Unit_Owner__c = bizUnit.Id, StageName = 'Stage 5 - Submitted',
+                                                 CloseDate = date.today().addMonths(5), Probability = 30);
+        insert opp;
+
         Account testAccount = new Account(Name = 'Test Account');
         insert testAccount;
         Domain__c domain1 = new Domain__c(Name = 'domain_1', cpAllWebUsers__c = 30, Account__c = testAccount.Id);
@@ -45,6 +50,8 @@ public class RenewalSubscriptionsTest {
         insert domain2;
         Domain__c domain3 = new Domain__c(Name = 'domain_3', cpAllWebUsers__c = 11);
         insert domain3;
+        Domain__c domain4 = new Domain__c(Name = 'domain_4', cpAllWebUsers__c = 111, Opportunity__c = opp.Id);
+        insert domain4;
 
         Accounting_Softwareplan__c softwarePlan1 = new Accounting_Softwareplan__c(edition__c = 'Pro');
         insert softwarePlan1;
@@ -75,6 +82,12 @@ public class RenewalSubscriptionsTest {
         Accounting_Subscription__c subscription5 = new Accounting_Subscription__c(is_trial__c = false, date_start__c = Date.newInstance(2016, 1, 1), date_end__c = Date.newInstance(2017, 5, 1), service_type__c = 'Product', is_active__c = true,
                                                                                   Renewal_Opportunity_created__c = false, account__c = billingAccount5.Id, Accounting_subscriber_domain__c = domain3.Id, plan_version__c = planVersion3.Id);
         insert subscription5;
+        Accounting_Subscription__c subscription6 = new Accounting_Subscription__c(is_trial__c = false, date_start__c = Date.newInstance(2016, 1, 1), date_end__c = Date.newInstance(2017, 1, 1), service_type__c = 'Product', is_active__c = true,
+                                                                                  Renewal_Opportunity_created__c = false, account__c = billingAccount5.Id, Accounting_subscriber_domain__c = domain4.Id, plan_version__c = planVersion3.Id);
+        insert subscription6;
+        Accounting_Subscription__c subscription7 = new Accounting_Subscription__c(is_trial__c = false, date_start__c = Date.newInstance(2016, 1, 1), date_end__c = Date.newInstance(2017, 1, 12), service_type__c = 'Product', is_active__c = true,
+                                                                                  Renewal_Opportunity_created__c = false, account__c = billingAccount5.Id, Accounting_subscriber_domain__c = domain4.Id, plan_version__c = planVersion3.Id);
+        insert subscription7;
 
         Test.startTest();
         RenewalSubscriptionsBatch batchJob = new RenewalSubscriptionsBatch(Date.newInstance(2016, 12, 1));
@@ -89,7 +102,7 @@ public class RenewalSubscriptionsTest {
                                   Expected_Buffer__c, of_Execution_budget_for_GS__c, CloseDate, Domain_Name__c, Product_Text__c,
                                   StageName, Implementation_Type__c, Opportunity_Owning_Entity__c, Contract_Owner_BU__c,
                                   Implementing_Business_Unit__c, Opportunity_Source__c, Owner.Name FROM Opportunity ORDER BY Name DESC];
-        System.assertEquals(2, opps.size());
+        System.assertEquals(3, opps.size());
         Opportunity opp1 = opps.get(0);
 
         System.assertEquals('contact_1@dimagi.com', opp1.Prior_Dimagi_contact__c);
@@ -149,7 +162,7 @@ public class RenewalSubscriptionsTest {
         futureList = batchJob.getFutureSubscriptions();
         System.assertEquals(1, futureList.size());
         renewalList = batchJob.getSubscriptionsForRenewal(new Set<String>());
-        System.assertEquals(3, renewalList.size());
+        System.assertEquals(0, renewalList.size());
         batchJob.start(null);
         batchJob.execute(null, renewalList);
 
@@ -157,7 +170,10 @@ public class RenewalSubscriptionsTest {
                                   Expected_Buffer__c, of_Execution_budget_for_GS__c, CloseDate, Domain_Name__c, Product_Text__c,
                                   StageName, Implementation_Type__c, Opportunity_Owning_Entity__c, Contract_Owner_BU__c,
                                   Implementing_Business_Unit__c, Opportunity_Source__c, Owner.Name FROM Opportunity ORDER BY Name DESC];
-        System.assertEquals(2, opps.size());
+        System.assertEquals(3, opps.size());
+
+        List<Domain__c> domains = [SELECT Id, Opportunity__c FROM Domain__c WHERE Opportunity__c != ''];
+        System.assertEquals(3, domains.size());
     }
 
     private static void addTestPricebooks() {
