@@ -74,8 +74,7 @@ public class HqBatchFetchDataObjects implements Database.Batchable<Integer>, Dat
             String subject = this.serverCode + ' - ' + EMAIL_SUBJECT + this.customObject + ' Object';
             String emailBody = 'Total Successfully loaded ' + this.customObject + ' records = ' + successfullyLoadedRecords + '\n\n';
             hqInt_BatchErrorLogger.sendErrorEmails(info.getJobId(), subject, emailBody);
-            // TODO nextServers
-            hqInt_BatchFetchObjectHelperClass.runNextBatch(this.batchNo + 1);
+            HqBatchJobHelper.runNextBatchJob(this.batchNo + 1, this.serverCode, this.nextServers);
         }
     }
 }
