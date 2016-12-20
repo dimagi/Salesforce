@@ -40,6 +40,8 @@ public class HqBatchFetchDataDomains implements Database.Batchable<Integer>, Dat
             listOffset = new List<Integer>{0};
         }
 
+        System.debug('listOffset: ' + listOffset);
+
         return listOffset;
     }
 

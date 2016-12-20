@@ -19,6 +19,7 @@ public class HqBatchJobHelper {
         List<String> servers = getCommcareServers();
         if (servers.size() > 0) {
             String serverCode = servers.get(0);
+            servers.remove(0);
             Database.executeBatch(new HqBatchFetchDataDomains(serverCode, servers), 1);
         }
     }
