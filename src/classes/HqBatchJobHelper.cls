@@ -1,7 +1,43 @@
 /**
- * Helper class which is used to start and manage sync from CommCare servers.
+ * Helper class which is used to start and manage synchronization from CommCare servers.
  */
 public class HqBatchJobHelper {
+
+    /**
+     * Starts Domains sunchronization.
+     */
+    public static void startDomainJob() {
+        Commcare_Job_Settings__c settings = Commcare_Job_Settings__c.getOrgDefaults();
+
+        if (settings.Is_Domain_Job_Running__c == true) {
+            return;
+        }
+
+        settings.Is_Domain_Job_Running__c = true;
+        update settings;
+
+        List<String> servers = getCommcareServers();
+        if (servers.size() > 0) {
+            String serverCode = servers.get(0);
+            Database.executeBatch(new HqBatchFetchDataDomains(serverCode, servers), 1);
+        }
+    }
+
+    /**
+     * Ends Domains synchronization.
+     */
+    public static void endDomainJob() {
+        Commcare_Job_Settings__c settings = Commcare_Job_Settings__c.getOrgDefaults();
+
+        if (settings.Is_Domain_Job_Running__c == false) {
+            return;
+        }
+
+        settings.Is_Domain_Job_Running__c = false;
+        update settings;
+    }
+
+/**
 
     public static void startBatchJobs() {
         Date startDate = Date.now();
@@ -25,6 +61,7 @@ public class HqBatchJobHelper {
         settings.Job_Start_Date__c = null;
         settings.Is_Job_Running__c = false;
         settings.Server_Code__c = '';
+        update settings;
     }
 
     public static void runNextBatchJob(Integer batchNo, String serverCode, List<String> nextServers) {
@@ -90,5 +127,16 @@ public class HqBatchJobHelper {
         } catch (Exception e) {
             HqBatchJobHelper.endBatchJobs();
         }
+    }
+*/
+    private static List<String> getCommcareServers() {
+        List<String> servers = new List<String>();
+        List<CommcareToSalesforceSettings__c> serverSettingsList = CommcareToSalesforceSettings__c.getAll().values();
+        for (CommcareToSalesforceSettings__c serverSettings : serverSettingsList) {
+            if (serverSettings.Skip_in_batch_job__c == false) {
+                servers.add(serverSettings.Name);
+            }
+        }
+        return servers;
     }
 }
