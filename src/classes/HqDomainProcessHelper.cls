@@ -1,5 +1,5 @@
 /**
- * Helper used to call Http request and process JSON.
+ * Helper used to call Http request and process Domains JSON.
  */
 public class HqDomainProcessHelper {
 
@@ -43,11 +43,11 @@ public class HqDomainProcessHelper {
     /**
      * Fetchs data from HQ and saves in DB.
      */
-    public void processDomains(Integer offsetParameter) {
+    public Integer processDomains(Integer offsetParameter) {
         HTTPResponse res = request(offsetParameter);
         String response = res.getBody();
         response = replaceReservedWords(response);
-        processJson(response, offsetParameter);
+        return processJson(response, offsetParameter);
     }
 
     public HTTPResponse request(Integer offset) {
@@ -56,11 +56,8 @@ public class HqDomainProcessHelper {
 
     private HTTPResponse request(Integer size, Integer offset) {
         HttpRequest req = new HttpRequest();
-        req.setEndpoint(this.endPoint + String.valueOf(limitParameter) + '&offset=' + String.valueOf(offset));
+        req.setEndpoint(this.endPoint + String.valueOf(size) + '&offset=' + String.valueOf(offset));
         req.setMethod('GET');
-
-        // Specify the required user name and password to access the endpoint
-        // As well as the header and header information
 
         String username = this.serverSettings.CommCare_User_Name__c;
         String password = this.serverSettings.CommCare_Password__c;
@@ -69,9 +66,6 @@ public class HqDomainProcessHelper {
         String authorizationHeader = 'BASIC ' + EncodingUtil.base64Encode(headerValue);
         req.setHeader('Authorization', authorizationHeader);
         req.setTimeout(120000);
-
-        // Create a new http object to send the request object
-        // A response object is generated as a result of the request
 
         Http http = new Http();
         HTTPResponse res = http.send(req);
@@ -85,7 +79,7 @@ public class HqDomainProcessHelper {
         return res;
     }
 
-    private void processJson(String jsonString, Integer offset) {
+    private Integer processJson(String jsonString, Integer offset) {
         List <HqIntModelProjectSpaceMetadata> projectSpaceMetadataList = new List <HqIntModelProjectSpaceMetadata>();
         List <Domain__c> listDomainRec = new List <Domain__c>();
         List <hqInt_Model_DeploymentClass> listDeploymentObj = new List <hqInt_Model_DeploymentClass>();
@@ -153,7 +147,9 @@ public class HqDomainProcessHelper {
         }
 
         //Finally do an upsert on the domain record list
-        upsert listDomainRec;
+        upsert listDomainRec id__c;
+
+        return listDomainRec.size();
     }
 
     private String replaceReservedWords(String body) {

@@ -114,7 +114,7 @@ public class hqInt_Model_DomainClass {
         domainObj.full_downloads__c = this.full_downloads;
         domainObj.sms_conversation_length__c = this.sms_conversation_length;
         domainObj.total_downloads__c = this.total_downloads;
-        domainObj.id__c = this.x_id;
+        domainObj.id__c = this.x_id + serverName.replaceAll(' ', '-');
 
         domainObj.attribution_notes__c = this.attribution_notes;
         domainObj.author__c = this.author;

@@ -27,7 +27,7 @@ public class HqIntegrationTests {
         System.assertEquals(2, domains.size());
 
         Domain__c testDomain = [SELECT id__c, cp300thFormSubmission__c, InternalProp_Business_Unit__c, Deployment_country__c, Deployment_city__c, Deployment_region__c, billing_address_country__c, billing_address_city__c,
-                                    Server_Name__c FROM Domain__c WHERE id__c ='sample_external_id'];
+                                    Server_Name__c FROM Domain__c WHERE id__c ='sample_external_idCommCare-HQ'];
         System.assertEquals('DSA', testDomain.InternalProp_Business_Unit__c);
         System.assertEquals('Uganda', testDomain.Deployment_country__c);
         System.assertEquals(null, testDomain.Deployment_city__c);
@@ -40,7 +40,7 @@ public class HqIntegrationTests {
         System.assertEquals('CommCare HQ', testDomain.Server_Name__c);
 
         testDomain = [SELECT id__c, InternalProp_Business_Unit__c, Deployment_country__c, Deployment_city__c, Deployment_region__c, billing_address_country__c, billing_address_city__c, Server_Name__c
-                                    FROM Domain__c WHERE id__c ='test-external-2'];
+                                    FROM Domain__c WHERE id__c ='test-external-2CommCare-HQ'];
         System.assertEquals('DSA', testDomain.InternalProp_Business_Unit__c);
         System.assertEquals('Zambia', testDomain.Deployment_country__c);
         System.assertEquals('sinazongwe', testDomain.Deployment_city__c);
@@ -77,7 +77,7 @@ public class HqIntegrationTests {
         System.assertEquals(4, domains.size());
 
         Domain__c testDomain = [SELECT id__c, cp300thFormSubmission__c, InternalProp_Business_Unit__c, Deployment_country__c, Deployment_city__c, Deployment_region__c, billing_address_country__c, billing_address_city__c,
-                                    Server_Name__c FROM Domain__c WHERE id__c ='sample_external_id' AND Server_Name__c = 'CommCare HQ'];
+                                    Server_Name__c FROM Domain__c WHERE id__c ='sample_external_idCommCare-HQ' AND Server_Name__c = 'CommCare HQ'];
         System.assertEquals('DSA', testDomain.InternalProp_Business_Unit__c);
         System.assertEquals('Uganda', testDomain.Deployment_country__c);
         System.assertEquals(null, testDomain.Deployment_city__c);
@@ -90,7 +90,7 @@ public class HqIntegrationTests {
         System.assertEquals('CommCare HQ', testDomain.Server_Name__c);
 
         testDomain = [SELECT id__c, InternalProp_Business_Unit__c, Deployment_country__c, Deployment_city__c, Deployment_region__c, billing_address_country__c, billing_address_city__c, Server_Name__c
-                                    FROM Domain__c WHERE id__c ='test-external-2' AND Server_Name__c = 'CommCare HQ'];
+                                    FROM Domain__c WHERE id__c ='test-external-2CommCare-HQ' AND Server_Name__c = 'CommCare HQ'];
         System.assertEquals('DSA', testDomain.InternalProp_Business_Unit__c);
         System.assertEquals('Zambia', testDomain.Deployment_country__c);
         System.assertEquals('sinazongwe', testDomain.Deployment_city__c);
@@ -100,7 +100,7 @@ public class HqIntegrationTests {
         System.assertEquals('CommCare HQ', testDomain.Server_Name__c);
 
         testDomain = [SELECT id__c, cp300thFormSubmission__c, InternalProp_Business_Unit__c, Deployment_country__c, Deployment_city__c, Deployment_region__c, billing_address_country__c, billing_address_city__c,
-                                    Server_Name__c FROM Domain__c WHERE id__c ='sample_external_id' AND Server_Name__c = 'Test CommCare HQ'];
+                                    Server_Name__c FROM Domain__c WHERE id__c ='sample_external_idTest-CommCare-HQ' AND Server_Name__c = 'Test CommCare HQ'];
         System.assertEquals('DSA', testDomain.InternalProp_Business_Unit__c);
         System.assertEquals('Uganda', testDomain.Deployment_country__c);
         System.assertEquals(null, testDomain.Deployment_city__c);
@@ -113,7 +113,7 @@ public class HqIntegrationTests {
         System.assertEquals('Test CommCare HQ', testDomain.Server_Name__c);
 
         testDomain = [SELECT id__c, InternalProp_Business_Unit__c, Deployment_country__c, Deployment_city__c, Deployment_region__c, billing_address_country__c, billing_address_city__c, Server_Name__c
-                                    FROM Domain__c WHERE id__c ='test-external-2' AND Server_Name__c = 'Test CommCare HQ'];
+                                    FROM Domain__c WHERE id__c ='test-external-2Test-CommCare-HQ' AND Server_Name__c = 'Test CommCare HQ'];
         System.assertEquals('DSA', testDomain.InternalProp_Business_Unit__c);
         System.assertEquals('Zambia', testDomain.Deployment_country__c);
         System.assertEquals('sinazongwe', testDomain.Deployment_city__c);
@@ -135,8 +135,8 @@ public class HqIntegrationTests {
                                     cpAllSmsIn30Days__c, cpAllSmsIn60Days__c, cpAllSmsIn90Days__c, cpAllWebUsers__c, cpCasesIn30Days__c, cpCasesIn90Days__c, cpCasesIn60Days__c, cpFirstFormSubmissionDate__c,
                                     cpFormsIn30Days__c, cpFormsIn60Days__c, cpFormsIn90Days__c, cpHasApp__c, cpIncomingSmsIn30Days__c, cpIncomingSmsIn60Days__c, cpIncomingSmsIn90Days__c, cpIsActive__c,
                                     cpLastFormSubmissionDate__c, cpOutgoingSmsIn30Days__c, cpOutgoingSmsIn60Days__c, cpOutgoingSmsIn90Days__c
-                                    FROM Domain__c WHERE id__c ='542f59e04ca149f9a5ae0837529fb06d'];
-        System.assertEquals('542f59e04ca149f9a5ae0837529fb06d', testDomain.id__c);
+                                    FROM Domain__c WHERE id__c ='542f59e04ca149f9a5ae0837529fb06dCommCare-HQ'];
+        System.assertEquals('542f59e04ca149f9a5ae0837529fb06dCommCare-HQ', testDomain.id__c);
         System.assertEquals(testDomain.cpAllActiveCases__c, 2);
         System.assertEquals(testDomain.cpAllCases__c, 4);
         System.assertEquals(testDomain.cpAllForms__c, 6);

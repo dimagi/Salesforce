@@ -47,8 +47,7 @@ public class HqBatchFetchDataDomains implements Database.Batchable<Integer>, Dat
 
     public void execute(Database.BatchableContext info, List<Integer> offsetList) {
         try {
-            this.domainHelper.processDomains(offsetList[0]);
-            this.successfullyLoadedRecords += apiLimitParameter;
+            this.successfullyLoadedRecords += this.domainHelper.processDomains(offsetList[0]);
         } catch(Exception e) {
             System.debug('Failed at offset with limit param ' + this.apiLimitParameter);
             System.debug(e.getMessage());
