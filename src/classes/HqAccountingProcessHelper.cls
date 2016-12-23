@@ -10,15 +10,15 @@ public class HqAccountingProcessHelper {
     private String suffix;
     private String serverNameId;
 
-    public HqAccountingProcessHelper(String suffix) {
+    public HqAccountingProcessHelper(CommcareToSalesforceSettings__c serverSettings, String suffix) {
         this.serverSettings = serverSettings;
         this.limitParameter = this.serverSettings.API_Limit_Parameter__c != null ? Integer.valueOf(serverSettings.API_Limit_Parameter__c)
                                 : 10;
         this.suffix = suffix;
         this.endPoint = this.serverSettings.Server_URL__c + suffix;
-        this.lastRunDate = this.serverSettings.Last_Run_Date__c != null ?  this.serverSettings.Last_Run_Date__c.format('yyyy-MM-dd')
-                            : Date.newInstance(1990, 1, 1).format('yyyy-MM-dd');
-        this.serverNameId = this.serverSettings.replaceAll(' ', '-');
+        this.lastRunDate = this.serverSettings.Last_Run_Date__c != null ?  this.serverSettings.Last_Run_Date__c.year() + '-' + this.serverSettings.Last_Run_Date__c.month() + '-'
+                                                    + this.serverSettings.Last_Run_Date__c.day() : '1990-1-1';
+        this.serverNameId = this.serverSettings.Name.replaceAll(' ', '-');
     }
 
     /**

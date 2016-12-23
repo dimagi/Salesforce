@@ -171,6 +171,296 @@ public class HqIntegrationTests {
         System.assertEquals('CommCare HQ', testDomain.Server_Name__c);
     }
 
+    @isTest
+    static void hqShouldSetDateInSettings() {
+        Test.startTest();
+        Test.setMock(HttpCalloutMock.class, new hqInt_HttpMock());
+        HqBatchJobHelper.startBatchJobs();
+        HqBatchJobHelper.endBatchJobs();
+        Test.stopTest();
+
+        CommcareToSalesforceSettings__c settings = CommcareToSalesforceSettings__c.getInstance('CommCare HQ');
+        System.assertEquals(Date.today(), settings.Last_Run_Date__c);
+    }
+
+    @isTest
+    static void hqIntTestSubscription() {
+        Test.startTest();
+        Test.setMock(HttpCalloutMock.class, new hqInt_HttpMock());
+        HqBatchJobHelper.runNextBatchJob(11, 'CommCare HQ', new List<String>());
+        Test.stopTest();
+
+        List<Accounting_Subscription__c> subscriptions = [SELECT id__c FROM Accounting_Subscription__c];
+        System.assertEquals(4, subscriptions.size());
+
+        Accounting_Subscription__c subscription = [SELECT id__c, service_type__c, pro_bono_status__c, funding_source__c
+                                                        FROM Accounting_Subscription__c WHERE id__c = '1CommCare-HQ'];
+        System.assertEquals('NOT_SET', subscription.service_type__c);
+        System.assertEquals('NOT_SET', subscription.pro_bono_status__c);
+        System.assertEquals('CLIENT', subscription.funding_source__c);
+
+        subscription = [SELECT id__c, service_type__c, pro_bono_status__c, funding_source__c FROM Accounting_Subscription__c
+                            WHERE id__c = '2CommCare-HQ'];
+        System.assertEquals('NOT_SET', subscription.service_type__c);
+        System.assertEquals('NOT_SET', subscription.pro_bono_status__c);
+        System.assertEquals('CLIENT', subscription.funding_source__c);
+
+        subscription = [SELECT id__c, service_type__c, pro_bono_status__c, funding_source__c FROM Accounting_Subscription__c
+                            WHERE id__c = '3CommCare-HQ'];
+        System.assertEquals('TRIAL', subscription.service_type__c);
+        System.assertEquals('NOT_SET', subscription.pro_bono_status__c);
+        System.assertEquals('CLIENT', subscription.funding_source__c);
+
+        subscription = [SELECT id__c, service_type__c, pro_bono_status__c, funding_source__c FROM Accounting_Subscription__c
+                            WHERE id__c = '4CommCare-HQ'];
+        System.assertEquals('PRODUCT', subscription.service_type__c);
+        System.assertEquals('FULL_PRICE', subscription.pro_bono_status__c);
+        System.assertEquals('CLIENT', subscription.funding_source__c);
+    }
+
+    @isTest
+    static void hqIntTestBillingAccount() {
+        Test.startTest();
+        Test.setMock(HttpCalloutMock.class, new hqInt_HttpMock());
+        HqBatchJobHelper.runNextBatchJob(10, 'CommCare HQ', new List<String>());
+        Test.stopTest();
+
+        List<Accounting_BillingAccount__c> billings = [SELECT id__c FROM Accounting_BillingAccount__c];
+        System.assertEquals(3, billings.size());
+
+        Accounting_BillingAccount__c billing = [SELECT id__c, last_payment_method__c, pre_or_post_pay__c FROM Accounting_BillingAccount__c
+                                                 WHERE id__c = '1CommCare-HQ'];
+        System.assertEquals('CC_ONE_TIME', billing.last_payment_method__c);
+        System.assertEquals('PREPAY', billing.pre_or_post_pay__c);
+
+        billing = [SELECT id__c, last_payment_method__c, pre_or_post_pay__c FROM Accounting_BillingAccount__c WHERE id__c = '2CommCare-HQ'];
+        System.assertEquals('CC_AUTO', billing.last_payment_method__c);
+        System.assertEquals('NOT_SET', billing.pre_or_post_pay__c);
+
+        billing = [SELECT id__c, last_payment_method__c, pre_or_post_pay__c FROM Accounting_BillingAccount__c WHERE id__c = '3CommCare-HQ'];
+        System.assertEquals('NONE', billing.last_payment_method__c);
+        System.assertEquals('POSTPAY', billing.pre_or_post_pay__c);
+    }
+
+    @isTest
+    static void hqIntTestBillingContact() {
+
+        hqInt_ModelClass.Accounting_BillingContactInfo newContact = new hqInt_ModelClass.Accounting_BillingContactInfo();
+        newContact.account = '1';
+        newContact.emails = 'emails@old.com';
+
+        insert newContact.createDbObject('CommCare HQ');
+
+        Test.startTest();
+        Test.setMock(HttpCalloutMock.class, new hqInt_HttpMock());
+        HqBatchJobHelper.runNextBatchJob(8, 'CommCare HQ', new List<String>());
+        Test.stopTest();
+
+        List<Accounting_BillingContactInfo__c> billingContacts = [SELECT accountid__c FROM Accounting_BillingContactInfo__c];
+        System.assertEquals(4, billingContacts.size());
+
+        Accounting_BillingContactInfo__c contact = [SELECT accountid__c, city__c, company_name__c, country__c, emails__c, first_line__c, first_name__c,
+                                                        last_name__c , phone_number__c, postal_code__c, second_line__c, state_province_region__c
+                                                        FROM Accounting_BillingContactInfo__c WHERE accountid__c = '1CommCare-HQ'];
+        System.assertEquals('1CommCare-HQ', contact.accountid__c);
+        System.assertEquals('City_1', contact.city__c);
+        System.assertEquals('Company_1', contact.company_name__c);
+        System.assertEquals('US', contact.country__c);
+        System.assertEquals('email_updated@gmail.com', contact.emails__c);
+        System.assertEquals('first_line_1', contact.first_line__c);
+        System.assertEquals('Name_1', contact.first_name__c);
+        System.assertEquals('Last_name_1', contact.last_name__c);
+        System.assertEquals('+48123123', contact.phone_number__c);
+        System.assertEquals('123123', contact.postal_code__c);
+        System.assertEquals('Second_1', contact.second_line__c);
+        System.assertEquals('XD', contact.state_province_region__c);
+
+        contact = [SELECT accountid__c, city__c, company_name__c, country__c, emails__c, first_line__c, first_name__c, last_name__c , phone_number__c,
+                    postal_code__c, second_line__c, state_province_region__c FROM Accounting_BillingContactInfo__c WHERE accountid__c = '2CommCare-HQ'];
+        System.assertEquals('2CommCare-HQ', contact.accountid__c);
+        System.assertEquals('empty data', contact.city__c);
+        System.assertEquals(null, contact.company_name__c);
+        System.assertEquals(null, contact.country__c);
+        System.assertEquals(null, contact.emails__c);
+        System.assertEquals(null, contact.first_line__c);
+        System.assertEquals(null, contact.first_name__c);
+        System.assertEquals(null, contact.last_name__c);
+        System.assertEquals(null, contact.phone_number__c);
+        System.assertEquals('11', contact.postal_code__c);
+        System.assertEquals(null, contact.second_line__c);
+        System.assertEquals(null, contact.state_province_region__c);
+
+        contact = [SELECT accountid__c, city__c, company_name__c, country__c, emails__c, first_line__c, first_name__c, last_name__c , phone_number__c,
+                    postal_code__c, second_line__c, state_province_region__c FROM Accounting_BillingContactInfo__c WHERE accountid__c = '3CommCare-HQ'];
+        System.assertEquals('3CommCare-HQ', contact.accountid__c);
+        System.assertEquals('City_3', contact.city__c);
+        System.assertEquals('Company_3', contact.company_name__c);
+        System.assertEquals('US', contact.country__c);
+        System.assertEquals('em31@gmail.com,em32@gmail.com', contact.emails__c);
+        System.assertEquals('first_line_3', contact.first_line__c);
+        System.assertEquals('Name_3', contact.first_name__c);
+        System.assertEquals('Last_name_3', contact.last_name__c);
+        System.assertEquals('+483123123', contact.phone_number__c);
+        System.assertEquals('113', contact.postal_code__c);
+        System.assertEquals('Second_3', contact.second_line__c);
+        System.assertEquals('T_3', contact.state_province_region__c);
+
+        contact = [SELECT accountid__c, city__c, company_name__c, country__c, emails__c, first_line__c, first_name__c, last_name__c , phone_number__c,
+                    postal_code__c, second_line__c, state_province_region__c FROM Accounting_BillingContactInfo__c WHERE accountid__c = '4CommCare-HQ'];
+        System.assertEquals('4CommCare-HQ', contact.accountid__c);
+        System.assertEquals('City_4', contact.city__c);
+        System.assertEquals('Company_4', contact.company_name__c);
+        System.assertEquals('US', contact.country__c);
+        System.assertEquals('qwe1@gmail.com', contact.emails__c);
+        System.assertEquals('first_line_4', contact.first_line__c);
+        System.assertEquals('Name_4', contact.first_name__c);
+        System.assertEquals('Last_name_4', contact.last_name__c);
+        System.assertEquals('+483444123', contact.phone_number__c);
+        System.assertEquals('11443', contact.postal_code__c);
+        System.assertEquals('Second_4', contact.second_line__c);
+        System.assertEquals('T_4', contact.state_province_region__c);
+    }
+
+
+    @isTest
+    static void hqIntTestMethodPhase2SoftPlanVer() {
+        createSoftwarePlan('1');
+        createSoftwarePlan('3');
+        createSoftwarePlan('4');
+        createSoftwarePlan('5');
+        createSoftwarePlan('7');
+        createProductRate('9');
+        createProductRate('11');
+        createProductRate('12');
+        createProductRate('13');
+        createProductRate('15');
+
+        Test.startTest();
+        Test.setMock(HttpCalloutMock.class, new hqInt_HttpMock());
+        HqBatchJobHelper.runNextBatchJob(6, 'CommCare HQ', new List<String>());
+        Test.stopTest();
+
+        List<Accounting_SoftwarePlanVersion__c> softwarePlans = [SELECT id__c FROM Accounting_SoftwarePlanVersion__c];
+        System.debug('--softwarePlans--' + softwarePlans);
+        System.assertEquals(5, softwarePlans.size());
+
+        Accounting_SoftwarePlanVersion__c planVersion = [SELECT id__c, Software_Product_Rate__r.id__c, Accounting_SoftwarePlan__r.id__c, is_active__c, FeatureRates__c
+                                                            FROM Accounting_SoftwarePlanVersion__c WHERE id__c = '25CommCare-HQ'];
+        System.assertEquals(false, planVersion.is_active__c);
+        System.assertEquals('17,18', planVersion.FeatureRates__c);
+        System.assertEquals('9CommCare-HQ', planVersion.Software_Product_Rate__r.id__c);
+        System.assertEquals('1CommCare-HQ', planVersion.Accounting_SoftwarePlan__r.id__c);
+
+        planVersion = [SELECT id__c, Software_Product_Rate__r.id__c, Accounting_SoftwarePlan__r.id__c, is_active__c, FeatureRates__c
+                        FROM Accounting_SoftwarePlanVersion__c WHERE id__c = '27CommCare-HQ'];
+        System.assertEquals(true, planVersion.is_active__c);
+        System.assertEquals('22,21', planVersion.FeatureRates__c);
+        System.assertEquals('11CommCare-HQ', planVersion.Software_Product_Rate__r.id__c);
+        System.assertEquals('3CommCare-HQ', planVersion.Accounting_SoftwarePlan__r.id__c);
+
+        planVersion = [SELECT id__c, Software_Product_Rate__r.id__c, Accounting_SoftwarePlan__r.id__c, is_active__c, FeatureRates__c
+                            FROM Accounting_SoftwarePlanVersion__c WHERE id__c = '28CommCare-HQ'];
+        System.assertEquals(true, planVersion.is_active__c);
+        System.assertEquals('24,23', planVersion.FeatureRates__c);
+        System.assertEquals('12CommCare-HQ', planVersion.Software_Product_Rate__r.id__c);
+        System.assertEquals('4CommCare-HQ', planVersion.Accounting_SoftwarePlan__r.id__c);
+
+        planVersion = [SELECT id__c, Software_Product_Rate__r.id__c, Accounting_SoftwarePlan__r.id__c, is_active__c, FeatureRates__c
+                            FROM Accounting_SoftwarePlanVersion__c WHERE id__c = '29CommCare-HQ'];
+        System.assertEquals(true, planVersion.is_active__c);
+        System.assertEquals('25,26', planVersion.FeatureRates__c);
+        System.assertEquals('13CommCare-HQ', planVersion.Software_Product_Rate__r.id__c);
+        System.assertEquals('5CommCare-HQ', planVersion.Accounting_SoftwarePlan__r.id__c);
+
+        planVersion = [SELECT id__c, Software_Product_Rate__r.id__c, Accounting_SoftwarePlan__r.id__c, is_active__c, FeatureRates__c
+                            FROM Accounting_SoftwarePlanVersion__c WHERE id__c = '31CommCare-HQ'];
+        System.assertEquals(true, planVersion.is_active__c);
+        System.assertEquals('29,30', planVersion.FeatureRates__c);
+        System.assertEquals('15CommCare-HQ', planVersion.Software_Product_Rate__r.id__c);
+        System.assertEquals('7CommCare-HQ', planVersion.Accounting_SoftwarePlan__r.id__c);
+    }
+
+    @isTest
+    static void hqintTestSoftwareProductRateBatch() {
+        Test.startTest();
+        Test.setMock(HttpCalloutMock.class, new hqInt_HttpMock());
+        HqBatchJobHelper.runNextBatchJob(5, 'CommCare HQ', new List<String>());
+        Test.stopTest();
+
+        List<Accounting_SoftwareProductRate__c> productsRates = [SELECT id__c, monthly_fee__c FROM Accounting_SoftwareProductRate__c];
+        System.assertEquals(5, productsRates.size());
+
+        Accounting_SoftwareProductRate__c productRate = [SELECT id__c, monthly_fee__c FROM Accounting_SoftwareProductRate__c WHERE id__c = '9CommCare-HQ'];
+        System.assertEquals(0.00, productRate.monthly_fee__c);
+        productRate = [SELECT id__c, monthly_fee__c FROM Accounting_SoftwareProductRate__c WHERE id__c = '10CommCare-HQ'];
+        System.assertEquals(100.00, productRate.monthly_fee__c);
+        productRate = [SELECT id__c, monthly_fee__c FROM Accounting_SoftwareProductRate__c WHERE id__c = '11CommCare-HQ'];
+        System.assertEquals(500.00, productRate.monthly_fee__c);
+        productRate = [SELECT id__c, monthly_fee__c FROM Accounting_SoftwareProductRate__c WHERE id__c = '12CommCare-HQ'];
+        System.assertEquals(1000.00, productRate.monthly_fee__c);
+        productRate = [SELECT id__c, monthly_fee__c FROM Accounting_SoftwareProductRate__c WHERE id__c = '13CommCare-HQ'];
+        System.assertEquals(0.00, productRate.monthly_fee__c);
+    }
+/**
+    @isTest
+    static void hqIntShouldUpdateMissingRelationsInSubscriberCustomObject() {
+        Test.startTest();
+
+        Domain__c d1 = buildDomain(1);
+        Domain__c d2 = buildDomain(2);
+        Domain__c d3 = buildDomain(3);
+        buildSubscriber(1, null);
+        buildSubscriber(2, null);
+        buildSubscriber(3, d3.Id);   
+
+        List<Accounting_Subscriber__c> subscribers = [SELECT id__c, domain__c, domain_lookup__c FROM Accounting_Subscriber__c];
+        System.assertEquals(3, subscribers.size());
+
+        hqInt_BatchFetchObjectSubscriber batchSubscriber = new hqInt_BatchFetchObjectSubscriber(1);
+        batchSubscriber.finish(null);
+
+        Accounting_Subscriber__c subscriber = [SELECT id__c, domain__c, domain_lookup__c FROM Accounting_Subscriber__c WHERE id__c = 'external_id_1'];
+        System.assertEquals(d1.Id, subscriber.domain_lookup__c);
+        subscriber = [SELECT id__c, domain__c, domain_lookup__c FROM Accounting_Subscriber__c WHERE id__c = 'external_id_2'];
+        System.assertEquals(d2.Id, subscriber.domain_lookup__c);
+        subscriber = [SELECT id__c, domain__c, domain_lookup__c FROM Accounting_Subscriber__c WHERE id__c = 'external_id_3'];
+        System.assertEquals(d3.Id, subscriber.domain_lookup__c);
+        Test.stopTest();
+    }
+
+    @isTest
+    static void hqIntShouldUpdateMissingRelationsInAccountingCustomObject() {
+        Test.startTest();
+
+        Domain__c d1 = buildDomain(1);
+        Domain__c d2 = buildDomain(2);
+        Domain__c d3 = buildDomain(3);
+        Accounting_Subscriber__c s1 = buildSubscriber(1, null);
+        Accounting_Subscriber__c s2 = buildSubscriber(2, null);
+        Accounting_Subscriber__c s3 = buildSubscriber(3, d3.Id);
+        Accounting_Subscription__c sub1 = buildSubscription(1, s1.Id);
+        Accounting_Subscription__c sub2 = buildSubscription(2, s2.Id);
+        Accounting_Subscription__c sub3 = buildSubscription(3, s3.Id);
+        buildInvoice(1, sub1.Id, null);
+        buildInvoice(2, sub2.Id, null);
+        buildInvoice(3, sub3.Id, d3.Id);
+
+        List<Accounting_Invoice__c> invoiceList = [SELECT id__c, Project_Space__c FROM Accounting_Invoice__c];
+        System.assertEquals(3, invoiceList.size());
+
+        hqInt_BatchFetchObjectAcctingInvoice batchInvoice = new hqInt_BatchFetchObjectAcctingInvoice(1);
+        batchInvoice.finish(null);
+
+        Accounting_Invoice__c invoice = [SELECT id__c, Project_Space__c FROM Accounting_Invoice__c WHERE id__c = 'external_id_1'];
+        System.assertEquals(d1.Id, invoice.Project_Space__c);
+        invoice = [SELECT id__c, Project_Space__c FROM Accounting_Invoice__c WHERE id__c = 'external_id_2'];
+        System.assertEquals(d2.Id, invoice.Project_Space__c);
+        invoice = [SELECT id__c, Project_Space__c FROM Accounting_Invoice__c WHERE id__c = 'external_id_3'];
+        System.assertEquals(d3.Id, invoice.Project_Space__c);
+        Test.stopTest();
+    }
+
+*/
     static private Decimal calculateMRRForDomain(Id domainId, Integer expectedSize) {
         Decimal sumForDomain = 0;
         List<Accounting_Subscription__c> subsForDomain1 = [SELECT Lifetime_MRR__c, accounting_software_monthly_fee__c FROM Accounting_Subscription__c WHERE Accounting_subscriber_domain__c =: domainId];
@@ -188,14 +478,14 @@ public class HqIntegrationTests {
         hqInt_ModelClass.Accounting_SoftwarePlan plan = new hqInt_ModelClass.Accounting_SoftwarePlan();
         plan.id = planId;
         plan.name = 'sampleName' + planId;
-        insert plan.createDbObject();
+        insert plan.createDbObject('CommCare HQ');
     }
 
     static private void createProductRate(String rateId) {
         hqInt_ModelClass.Accounting_SoftwareProductRate rate = new hqInt_ModelClass.Accounting_SoftwareProductRate();
         rate.id = rateId;
         rate.is_active = true;
-        insert rate.createDbObject();
+        insert rate.createDbObject('CommCare HQ');
     }
 
     static private Accounting_Invoice__c buildInvoice(Integer i, Id subsciptionId, Id domainId) {
@@ -203,7 +493,7 @@ public class HqIntegrationTests {
         a.id = 'external_id_' + i;
         a.is_hidden = false;
         a.is_hidden_to_ops = false;
-        Accounting_Invoice__c aFromDB  = a.createDbObject(subsciptionId, domainId);
+        Accounting_Invoice__c aFromDB  = a.createDbObject(subsciptionId, domainId, 'CommCare HQ');
         insert aFromDb;
         return aFromDb;
     }
@@ -216,7 +506,7 @@ public class HqIntegrationTests {
         a.auto_generate_credits = false;
         a.is_trial = true;
         a.is_hidden_to_ops = false;
-        Accounting_Subscription__c aFromDB  = a.createDbObject(null, null, subscriberId, null);
+        Accounting_Subscription__c aFromDB  = a.createDbObject(null, null, subscriberId, null, 'CommCare HQ');
         insert aFromDb;
         return aFromDb;
     }
@@ -225,7 +515,7 @@ public class HqIntegrationTests {
         hqInt_ModelClass.Accounting_Subscriber a = new hqInt_ModelClass.Accounting_Subscriber();
         a.id = 'external_id_' + i;
         a.domain = 'domain_name_' + i;
-        Accounting_Subscriber__c aFromDB  = a.createDbObject(domainId);
+        Accounting_Subscriber__c aFromDB  = a.createDbObject(domainId, 'CommCare HQ');
         insert aFromDb;
         return aFromDb;
     }
