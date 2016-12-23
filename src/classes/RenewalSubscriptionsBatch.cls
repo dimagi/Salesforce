@@ -108,6 +108,7 @@ public without sharing class RenewalSubscriptionsBatch implements Database.Batch
                                                         StageName = 'Stage 3 - Prospect',
                                                         OwnerId = this.defaultOppOwner.Id,
                                                         Implementation_Type__c = 'Self Service',
+                                                        Channel_Response__c = 'Inside Sales',
                                                         Opportunity_Owning_Entity__c = this.incBusinessUnit.Id,
                                                         Contract_Owner_BU__c = this.incBusinessUnit.Id,
                                                         Implementing_Business_Unit__c = this.incBusinessUnit.Id
