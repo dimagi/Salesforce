@@ -1,7 +1,7 @@
 public class hqInt_BatchFetchObjectHelperClass {
 
     public Integer fetchTotalCount(Integer offset, String objectUrl, Integer apiLimitParameter,String dateModifiedParam) {
-        Integer totalCount;
+        /**Integer totalCount;
         String endPointUrl = this.generateEndPointUrl(offset,objectUrl,apiLimitParameter,dateModifiedParam);
         HttpRequest req = new HttpRequest();
         System.debug('--endpointurl--' + endPointUrl);
@@ -38,7 +38,8 @@ public class hqInt_BatchFetchObjectHelperClass {
             }
         }
 
-        return totalCount;
+        return totalCount;*/
+        return 0;
     }
 
     /**
@@ -106,7 +107,7 @@ public class hqInt_BatchFetchObjectHelperClass {
      * 
      **/
     private Integer processJson(String jsonString, String objectUrl) {
-        if (objectUrl.endsWith('software_product_rate/')) {
+        /**if (objectUrl.endsWith('software_product_rate/')) {
             return processSoftwareProductRate(jsonString, objectUrl);
         } else if(objectUrl.endsWith('software_plan/')) {
             return processSoftwarePlan(jsonString, objectUrl);
@@ -141,10 +142,10 @@ public class hqInt_BatchFetchObjectHelperClass {
         } else if(objectUrl.endsWith('credit_adjustment/')) {
             return processCreditAdjustment(jsonString, objectUrl);
         }
-
+*/
         return null;
     }
-
+/**
     private Integer processSoftwareProductRate(String jsonString, String objectUrl) {
         JSONParser parser = JSON.createParser(jsonString);
         List<Accounting_SoftwareProductRate__c> softwareProductRateList = new List<Accounting_SoftwareProductRate__c>();
@@ -977,7 +978,7 @@ public class hqInt_BatchFetchObjectHelperClass {
         upsert listSobject id__c;
         return listSobject.size();
     }
-
+*/
     /**
      * 
      * Method Name : replaceReservedWords

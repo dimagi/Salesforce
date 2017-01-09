@@ -1,5 +1,6 @@
 public class hqInt_BatchFetchObjectSubscription implements Database.Batchable<Integer>,Database.AllowsCallouts,Database.Stateful
 {
+    
 	Integer apiLimitParameter = Integer.valueOf(CommcareToSalesforceSettings__c.getInstance('ApiLimitParameter').Value__c);
 	String lastRunDate = CommcareToSalesforceSettings__c.getInstance('LastRunDate').Value__c;
     Integer successfullyLoadedRecords = 0;

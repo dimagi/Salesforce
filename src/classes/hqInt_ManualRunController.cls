@@ -33,9 +33,9 @@ public with sharing class hqInt_ManualRunController {
 
     public pagereference runBatchJob() {
         fetchRunningInstances();
-        if(!batchIsRunning) {
+        /**if(!batchIsRunning) {
             Database.executeBatch(new hqInt_MainClassBatch(),1);
-        }
+        }*/
 
         fetchRunningInstances();
         return null;
@@ -133,9 +133,9 @@ public with sharing class hqInt_ManualRunController {
 
     public pagereference runBatchJobPhase2() {
         fetchRunningInstancesPhase2();
-        if (!phase2Running) {
-            hqInt_BatchFetchObjectHelperClass.runNextBatch(1);
-        }
+        //if (!phase2Running) {
+         //   hqInt_BatchFetchObjectHelperClass.runNextBatch(1);
+        //}
 
         fetchRunningInstancesPhase2();
         return null;

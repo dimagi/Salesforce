@@ -26,7 +26,7 @@ public class HqBatchFetchDataObjects implements Database.Batchable<Integer>, Dat
         if (this.serverSettings == null) {
             Commcare_Job_Settings__c settings = Commcare_Job_Settings__c.getOrgDefaults();
             EmailHelper.sendEmail(settings.Error_Emails__c.split(','), 'Commcare sync Error', 'Cannot find server settings with name : ' + this.serverCode);
-            HqBatchJobHelper.endDomainJob();
+            HqBatchJobHelper.endBatchJobs(true);
             NoDataFoundException ex = new NoDataFoundException();
             ex.setMessage('Cannot find settings for server with given code : ' + serverCode);
             throw ex;
@@ -39,7 +39,7 @@ public class HqBatchFetchDataObjects implements Database.Batchable<Integer>, Dat
 
     public Iterable<Integer> start(Database.BatchableContext BC) {
         Integer totalCount = this.hqHelper.getTotalCount();
-        System.debug('total Count of records found --'+ totalCount);
+        System.debug('total Count of records found --' + totalCount);
 
         List<Integer> listOffset = new List<Integer>();
         for(Integer i = 0; i <= totalCount / this.apiLimitParameter; i++) {

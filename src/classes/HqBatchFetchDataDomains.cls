@@ -33,11 +33,11 @@ public class HqBatchFetchDataDomains implements Database.Batchable<Integer>, Dat
     public Iterable<Integer> start(Database.BatchableContext BC) {
         Integer totalCount = this.domainHelper.getTotalCount();
         List <Integer> listOffset = new List <Integer>();
-        for(Integer i = 0;i <= totalCount / apiLimitParameter; i++) {
-            listOffset.add(i * apiLimitParameter);
+        for(Integer i = 0; i <= totalCount / this.apiLimitParameter; i++) {
+            listOffset.add(i * this.apiLimitParameter);
         }
         if(Test.isRunningTest()) {
-            listOffset = new List<Integer>{0};
+            listOffset = new List<Integer> {0};
         }
 
         System.debug('listOffset: ' + listOffset);

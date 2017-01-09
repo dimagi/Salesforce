@@ -125,7 +125,8 @@ public class HqDomainProcessHelper {
         List <Deployment__c> listDeploymentToBeDeleted = new List <Deployment__c>();
 
         //fetch exisiting sf id of deployment and internal prop for deletion.
-        for (Domain__c domain : [SELECT Id, Internal_Properties__c, Deployment__c from Domain__c WHERE id__c in :setDomainId AND Server_Name__c =: this.serverSettings.Name]) {
+        Map<String, Id> externalIdMap = new Map<String, Id>();
+        for (Domain__c domain : [SELECT Id, Internal_Properties__c, Deployment__c, id__c FROM Domain__c WHERE id__c in :setDomainId AND Server_Name__c =: this.serverSettings.Name]) {
             if(domain.Internal_Properties__c != null) {
                 Internal_Properties__c InternalPropRec = new Internal_Properties__c(Id = domain.Internal_Properties__c);
                 listInternalPropToBeDeleted.add(InternalPropRec);
@@ -134,6 +135,7 @@ public class HqDomainProcessHelper {
                 Deployment__c deploymentRec = new Deployment__c(Id = domain.Deployment__c);
                 listDeploymentToBeDeleted.add(deploymentRec);
             }
+            externalIdMap.put(domain.id__c, domain.Id);
         }
 
         //delete existing int prop and deployment records
@@ -144,11 +146,13 @@ public class HqDomainProcessHelper {
         for (Integer i = 0; i < listDeploymentRec.size(); i++) {
             listDomainRec[i].Internal_Properties__c = listInternalPropRec[i].Id;
             listDomainRec[i].Deployment__c = listDeploymentRec[i].Id;
+            if (externalIdMap.containsKey(listDomainRec[i].id__c)) {
+                listDomainRec[i].Id = externalIdMap.get(listDomainRec[i].id__c);
+            }
         }
 
         //Finally do an upsert on the domain record list
-        upsert listDomainRec id__c;
-
+        upsert listDomainRec;
         return listDomainRec.size();
     }
 

@@ -7,7 +7,7 @@ public with sharing class hqInt_MainClassBatch implements Database.Batchable<Int
     Integer successfullyLoadedRecords = 0;
 
     public Iterable<Integer> start(Database.BatchableContext BC) {
-        Integer totalCount;
+        /**Integer totalCount;
         Integer totalBatches;
 
         try {
@@ -43,14 +43,14 @@ public with sharing class hqInt_MainClassBatch implements Database.Batchable<Int
         }
 
         system.debug('--- listoffset --- ' + listoffset);
-
-        return listOffset;
+*/
+        return null;
     }
 
     public void execute(Database.BatchableContext info, List<Integer> offsetList) {
         try {
-            hqInt_MainClass obj = new hqInt_MainClass();
-            obj.mainMethod(offsetList[0]);
+            hqInt_MainClass obj = null;//new hqInt_MainClass();
+            //obj.mainMethod(offsetList[0]);
             successfullyLoadedRecords += apiLimitParameter;
         } catch(Exception e) {
             hqInt_BatchErrorLogger.logError(info.getJobId(), '\n failed at offset with limit param ' +  apiLimitParameter + ' : ' + string.valueOf(offsetList[0]), e.getMessage(), e.getStackTraceString());
