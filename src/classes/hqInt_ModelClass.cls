@@ -20,7 +20,7 @@ public class hqInt_ModelClass {
 
         public Accounting_Invoice__c createDbObject(Id subscriptionId, Id domainId, String serverName) {
             Accounting_Invoice__c accountingInvoiceObj = new Accounting_Invoice__c();
-            accountingInvoiceObj.id__c = this.id + serverName.replaceAll(' ', '-');
+            accountingInvoiceObj.id__c = this.id;
             accountingInvoiceObj.Accounting_Subscription__c = subscriptionId;
             accountingInvoiceObj.tax_rate__c = this.tax_rate;
             accountingInvoiceObj.balance__c = this.balance;
@@ -316,7 +316,7 @@ public class hqInt_ModelClass {
 
         public Accounting_LineItems__c createDbObject(String invoiceId, String featurerateId, String serverName) {
             Accounting_LineItems__c obj = new Accounting_LineItems__c();
-            obj.id__c = id + serverName.replaceAll(' ', '-');
+            obj.id__c = id;
             obj.invoice__c = invoiceId;
             obj.Accounting_FeatureRate__c = featurerateId;
             obj.base_description__c = base_description;
@@ -394,7 +394,7 @@ public class hqInt_ModelClass {
 
         public Accounting_BillingAccountAdmin__c createDbObject(String serverName) {
             Accounting_BillingAccountAdmin__c obj = new Accounting_BillingAccountAdmin__c();
-            obj.id__c = id + serverName.replaceAll(' ', '-');
+            obj.id__c = id;
             obj.domain__c = domain;
             obj.web_user__c = web_user;
             obj.Server_Name__c = serverName;
@@ -419,7 +419,7 @@ public class hqInt_ModelClass {
 
         public Accounting_SubscriptionAdjustment__c createDbObject(String subscriptionId, String serverName) {
             Accounting_SubscriptionAdjustment__c obj = new Accounting_SubscriptionAdjustment__c();
-            obj.id__c = id + serverName.replaceAll(' ', '-');
+            obj.id__c = id;
             obj.subscription__c = subscriptionId;
             obj.reason__c = reason;
             obj.method__c = method;
@@ -457,7 +457,7 @@ public class hqInt_ModelClass {
             obj.amount__c = amount;
             obj.credit_line__c = creditLineSfId;
             obj.date_created__c = date_created;
-            obj.id__c = id + serverName.replaceAll(' ', '-');
+            obj.id__c = id;
 
             obj.invoice_id__c = invoiceSfId;
             obj.line_item_id__c = lineItemSfId;
@@ -493,7 +493,7 @@ public class hqInt_ModelClass {
 
         public Accounting_CreditLine__c createDbObject(String billingAccSfId, String subscriptionSfId, String serverName) {
             Accounting_CreditLine__c obj = new Accounting_CreditLine__c();
-            obj.id__c = id + serverName.replaceAll(' ', '-');
+            obj.id__c = id;
             obj.account__c = billingAccSfId;
             obj.balance__c = balance;
             obj.date_created__c = date_created;

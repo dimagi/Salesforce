@@ -234,71 +234,71 @@ public class HqIntegrationTests {
         System.assertEquals(Date.today(), settings.Last_Run_Date__c);
     }
 
-    /**@isTest
+    @isTest
     static void hqIntTestLifetimeMRRCalculation() {
         Test.startTest();
 
-        Accounting_SoftwareProductRate__c productRate1 = new Accounting_SoftwareProductRate__c(is_active__c = true,  monthly_fee__c = 150);
-        Accounting_SoftwareProductRate__c productRate2 = new Accounting_SoftwareProductRate__c(is_active__c = true,  monthly_fee__c = 75);
-        Accounting_SoftwareProductRate__c productRate3 = new Accounting_SoftwareProductRate__c(is_active__c = true,  monthly_fee__c = 25);
+        Accounting_SoftwareProductRate__c productRate1 = new Accounting_SoftwareProductRate__c(is_active__c = true,  monthly_fee__c = 150, Server_Name__c = 'CommCare HQ');
+        Accounting_SoftwareProductRate__c productRate2 = new Accounting_SoftwareProductRate__c(is_active__c = true,  monthly_fee__c = 75, Server_Name__c = 'CommCare HQ');
+        Accounting_SoftwareProductRate__c productRate3 = new Accounting_SoftwareProductRate__c(is_active__c = true,  monthly_fee__c = 25, Server_Name__c = 'CommCare HQ');
 
         insert productRate1;
         insert productRate2;
         insert productRate3;
 
-        Accounting_Softwareplan__c softwarePlan1 = new Accounting_Softwareplan__c(Name = 'softwarePlan1');
-        Accounting_Softwareplan__c softwarePlan2 = new Accounting_Softwareplan__c(Name = 'softwarePlan2');
-        Accounting_Softwareplan__c softwarePlan3 = new Accounting_Softwareplan__c(Name = 'softwarePlan3');
+        Accounting_Softwareplan__c softwarePlan1 = new Accounting_Softwareplan__c(Name = 'softwarePlan1', Server_Name__c = 'CommCare HQ');
+        Accounting_Softwareplan__c softwarePlan2 = new Accounting_Softwareplan__c(Name = 'softwarePlan2', Server_Name__c = 'CommCare HQ');
+        Accounting_Softwareplan__c softwarePlan3 = new Accounting_Softwareplan__c(Name = 'softwarePlan3', Server_Name__c = 'CommCare HQ');
 
         insert softwarePlan1;
         insert softwarePlan2;
         insert softwarePlan3;
 
         Accounting_SoftwarePlanVersion__c planVersion1 = new Accounting_SoftwarePlanVersion__c(is_active__c = true, Software_Product_Rate__c = productRate1.Id,
-                                                                                               Accounting_SoftwarePlan__c = softwarePlan1.Id);
+                                                                                               Accounting_SoftwarePlan__c = softwarePlan1.Id, Server_Name__c = 'CommCare HQ');
         Accounting_SoftwarePlanVersion__c planVersion2 = new Accounting_SoftwarePlanVersion__c(is_active__c = true, Software_Product_Rate__c = productRate2.Id,
-                                                                                               Accounting_SoftwarePlan__c = softwarePlan2.Id);
+                                                                                               Accounting_SoftwarePlan__c = softwarePlan2.Id, Server_Name__c = 'CommCare HQ');
         Accounting_SoftwarePlanVersion__c planVersion3 = new Accounting_SoftwarePlanVersion__c(is_active__c = true, Software_Product_Rate__c = productRate3.Id,
-                                                                                               Accounting_SoftwarePlan__c = softwarePlan3.Id);
+                                                                                               Accounting_SoftwarePlan__c = softwarePlan3.Id, Server_Name__c = 'CommCare HQ');
 
         insert planVersion1;
         insert planVersion2;
         insert planVersion3;
 
-        Domain__c domain1 = new Domain__c(Name = 'Sample 1');
-        Domain__c domain2 = new Domain__c(Name = 'Sample 2');
-        Domain__c domain3 = new Domain__c(Name = 'Sample 3');
+        Domain__c domain1 = new Domain__c(Name = 'Sample 1', Server_Name__c = 'CommCare HQ');
+        Domain__c domain2 = new Domain__c(Name = 'Sample 2', Server_Name__c = 'CommCare HQ');
+        Domain__c domain3 = new Domain__c(Name = 'Sample 3', Server_Name__c = 'CommCare HQ');
 
         insert domain1;
         insert domain2;
         insert domain3;
 
         Accounting_Subscription__c subscription1 = new Accounting_Subscription__c(date_start__c = Date.newInstance(2015, 11, 2), date_end__c = Date.newInstance(2016, 2 ,1),
-                                                                                  Accounting_subscriber_domain__c = domain1.Id, plan_version__c = planVersion1.Id);
+                                                                                  Accounting_subscriber_domain__c = domain1.Id, plan_version__c = planVersion1.Id, Server_Name__c = 'CommCare HQ');
         insert subscription1;
         Accounting_Subscription__c subscription2 = new Accounting_Subscription__c(date_start__c = Date.newInstance(2016, 1, 1), date_end__c = Date.newInstance(2016, 2 ,1),
-                                                                                  Accounting_subscriber_domain__c = domain1.Id, plan_version__c = planVersion2.Id);
+                                                                                  Accounting_subscriber_domain__c = domain1.Id, plan_version__c = planVersion2.Id, Server_Name__c = 'CommCare HQ');
         insert subscription2;
         Accounting_Subscription__c subscription3 = new Accounting_Subscription__c(date_start__c = Date.newInstance(2014, 1, 1), date_end__c = Date.newInstance(2014, 3 ,4),
-                                                                                  Accounting_subscriber_domain__c = domain1.Id, plan_version__c = planVersion3.Id);
+                                                                                  Accounting_subscriber_domain__c = domain1.Id, plan_version__c = planVersion3.Id, Server_Name__c = 'CommCare HQ');
         insert subscription3;
         Accounting_Subscription__c subscription4 = new Accounting_Subscription__c(date_start__c = Date.newInstance(2016, 1, 1), date_end__c = Date.newInstance(2016, 2 ,1),
-                                                                                  Accounting_subscriber_domain__c = domain2.Id, plan_version__c = planVersion1.Id);
+                                                                                  Accounting_subscriber_domain__c = domain2.Id, plan_version__c = planVersion1.Id, Server_Name__c = 'CommCare HQ');
         insert subscription4;
         Accounting_Subscription__c subscription5 = new Accounting_Subscription__c(date_start__c = Date.newInstance(2016, 1, 1), date_end__c = Date.newInstance(2016, 2 ,1),
-                                                                                  Accounting_subscriber_domain__c = domain2.Id, plan_version__c = planVersion2.Id);
+                                                                                  Accounting_subscriber_domain__c = domain2.Id, plan_version__c = planVersion2.Id, Server_Name__c = 'CommCare HQ');
         insert subscription5;
         Accounting_Subscription__c subscription6 = new Accounting_Subscription__c(date_start__c = Date.newInstance(2013, 6, 6), date_end__c = Date.newInstance(2014, 5 ,5),
-                                                                                  Accounting_subscriber_domain__c = domain2.Id, plan_version__c = planVersion3.Id);
+                                                                                  Accounting_subscriber_domain__c = domain2.Id, plan_version__c = planVersion3.Id, Server_Name__c = 'CommCare HQ');
         insert subscription6;
         Accounting_Subscription__c subscription7 = new Accounting_Subscription__c(date_start__c = Date.newInstance(2016, 1, 1), date_end__c = Date.newInstance(2016, 2 ,1),
-                                                                                  Accounting_subscriber_domain__c = domain2.Id, plan_version__c = planVersion1.Id);
+                                                                                  Accounting_subscriber_domain__c = domain2.Id, plan_version__c = planVersion1.Id, Server_Name__c = 'CommCare HQ');
         insert subscription7;
         Accounting_Subscription__c subscription8 = new Accounting_Subscription__c(date_start__c = Date.newInstance(2016, 2, 1), date_end__c = Date.newInstance(2016, 4, 4),
-                                                                                  Accounting_subscriber_domain__c = domain3.Id, plan_version__c = planVersion2.Id);
+                                                                                  Accounting_subscriber_domain__c = domain3.Id, plan_version__c = planVersion2.Id, Server_Name__c = 'CommCare HQ');
         insert subscription8;
         Accounting_Subscription__c subscription9 = new Accounting_Subscription__c(date_start__c = Date.newInstance(2016, 1, 14), date_end__c = Date.newInstance(2016, 2 ,10),
-                                                                                  Accounting_subscriber_domain__c = domain3.Id, plan_version__c = planVersion3.Id);
+                                                                                  Accounting_subscriber_domain__c = domain3.Id, plan_version__c = planVersion3.Id, Server_Name__c = 'CommCare HQ');
         insert subscription9;
 
         Database.executeBatch(new CalculateDomainsLifeTimeMRRBatch(), 200);
@@ -314,7 +314,7 @@ public class HqIntegrationTests {
         System.debug(domainFromDB1);
         System.debug(domainFromDB2);
         System.debug(domainFromDB3);
-    }*/
+    }
 
     /**
      * Accounting Test
@@ -397,6 +397,9 @@ public class HqIntegrationTests {
     static void testFeatureRate() {
         Accounting_feature__c af = new Accounting_feature__c(id__c = '2', Name = 'Wrong Name', feature_type__c = 'SMS', Server_Name__c = 'CommCare HQ');
         insert af;
+        Accounting_Featurerate__c frate1 = new Accounting_Featurerate__c(id__c = '18', Server_Name__c = 'CommCare HQ');
+        insert  frate1;
+
         Test.startTest();
         Test.setMock(HttpCalloutMock.class, new hqInt_HttpMock());
         HqBatchJobHelper.runNextBatchJob(4, 'CommCare HQ', new List<String>());
@@ -713,6 +716,151 @@ public class HqIntegrationTests {
         System.assertEquals('CLIENT', subscription.funding_source__c);
     }
 
+    @isTest
+    static void testInvoice() {
+        Accounting_Subscription__c sub1 = new Accounting_Subscription__c(id__c = '277', Server_Name__c = 'CommCare HQ');
+        insert sub1;
+        Accounting_Subscription__c sub2 = new Accounting_Subscription__c(id__c = '325', Server_Name__c = 'CommCare HQ');
+        insert sub2;
+
+        Accounting_Invoice__c inv1 = new Accounting_Invoice__c(id__c = '3', Server_Name__c = 'CommCare HQ');
+        insert inv1;
+
+        Test.startTest();
+        Test.setMock(HttpCalloutMock.class, new hqInt_HttpMock());
+        HqBatchJobHelper.runNextBatchJob(12, 'CommCare HQ', new List<String>());
+        Test.stopTest();
+
+        List<Accounting_Invoice__c> invs = [SELECT id__c FROM Accounting_Invoice__c];
+        System.assertEquals(3, invs.size());
+
+        Accounting_Invoice__c invoice = [SELECT id__c, Accounting_Subscription__c FROM Accounting_Invoice__c WHERE id__c = '1'];
+        System.assertEquals(sub1.Id, invoice.Accounting_Subscription__c);
+
+        invoice = [SELECT id__c, Accounting_Subscription__c FROM Accounting_Invoice__c WHERE id__c = '2'];
+        System.assertEquals(null, invoice.Accounting_Subscription__c);
+
+        invoice = [SELECT id__c, Accounting_Subscription__c FROM Accounting_Invoice__c WHERE id__c = '3'];
+        System.assertEquals(sub2.Id, invoice.Accounting_Subscription__c);
+    }
+
+    @isTest
+    static void testLineItem() {
+        Accounting_Featurerate__c frate1 = new Accounting_Featurerate__c(id__c = '21', Server_Name__c = 'CommCare HQ');
+        insert  frate1;
+        Accounting_Featurerate__c frate2 = new Accounting_Featurerate__c(id__c = '22', Server_Name__c = 'CommCare HQ');
+        insert  frate2;
+
+        Accounting_Invoice__c inv1 = new Accounting_Invoice__c(id__c = '1', Server_Name__c = 'CommCare HQ');
+        insert inv1;
+        Accounting_Invoice__c inv2 = new Accounting_Invoice__c(id__c = '2', Server_Name__c = 'CommCare HQ');
+        insert inv2;
+
+        Accounting_LineItems__c lineItem1 = new Accounting_LineItems__c(id__c = '1', invoice__c = inv1.Id, Server_Name__c = 'CommCare HQ');
+        insert lineItem1;
+
+        Test.startTest();
+        Test.setMock(HttpCalloutMock.class, new hqInt_HttpMock());
+        HqBatchJobHelper.runNextBatchJob(13, 'CommCare HQ', new List<String>());
+        Test.stopTest();
+
+        List<Accounting_LineItems__c> invs = [SELECT id__c FROM Accounting_LineItems__c];
+        System.assertEquals(3, invs.size());
+
+        Accounting_LineItems__c lineItem = [SELECT id__c, invoice__c, Accounting_FeatureRate__c FROM Accounting_LineItems__c WHERE id__c = '1'];
+        System.assertEquals(null, lineItem.Accounting_FeatureRate__c);
+        System.assertEquals(inv1.Id, lineItem.invoice__c);
+
+        lineItem = [SELECT id__c, invoice__c, Accounting_FeatureRate__c FROM Accounting_LineItems__c WHERE id__c = '2'];
+        System.assertEquals(frate1.Id, lineItem.Accounting_FeatureRate__c);
+        System.assertEquals(inv1.Id, lineItem.invoice__c);
+
+        lineItem = [SELECT id__c, invoice__c, Accounting_FeatureRate__c FROM Accounting_LineItems__c WHERE id__c = '3'];
+        System.assertEquals(frate2.Id, lineItem.Accounting_FeatureRate__c);
+        System.assertEquals(inv2.Id, lineItem.invoice__c);
+    }
+
+    @isTest
+    static void testSubAdjust() {
+        Accounting_Subscription__c sub1 = new Accounting_Subscription__c(id__c = '1', Server_Name__c = 'CommCare HQ');
+        insert sub1;
+        Accounting_Subscription__c sub2 = new Accounting_Subscription__c(id__c = '2', Server_Name__c = 'CommCare HQ');
+        insert sub2;
+
+        Accounting_SubscriptionAdjustment__c sadjust1 = new Accounting_SubscriptionAdjustment__c(id__c = '1', Server_Name__c = 'CommCare HQ');
+        insert sadjust1;
+
+        Test.startTest();
+        Test.setMock(HttpCalloutMock.class, new hqInt_HttpMock());
+        HqBatchJobHelper.runNextBatchJob(14, 'CommCare HQ', new List<String>());
+        Test.stopTest();
+
+        List<Accounting_SubscriptionAdjustment__c> invs = [SELECT id__c, subscription__c FROM Accounting_SubscriptionAdjustment__c];
+        System.assertEquals(2, invs.size());
+
+        Accounting_SubscriptionAdjustment__c sadjust = [SELECT id__c, subscription__c FROM Accounting_SubscriptionAdjustment__c WHERE id__c = '1'];
+        System.assertEquals(sub1.Id, sadjust.subscription__c);
+
+        sadjust = [SELECT id__c, subscription__c FROM Accounting_SubscriptionAdjustment__c WHERE id__c = '2'];
+        System.assertEquals(sub2.Id, sadjust.subscription__c);
+    }
+
+    @isTest
+    static void testCreditLine() {
+        Accounting_Subscription__c sub1 = new Accounting_Subscription__c(id__c = '1', Server_Name__c = 'CommCare HQ');
+        insert sub1;
+        Accounting_Subscription__c sub2 = new Accounting_Subscription__c(id__c = '2', Server_Name__c = 'CommCare HQ');
+        insert sub2;
+
+        Accounting_BillingAccount__c accountingBillingAccount1 = new Accounting_BillingAccount__c(Name = 'tb1', id__c = '1', Server_Name__c = 'CommCare HQ');
+        Accounting_BillingAccount__c accountingBillingAccount2 = new Accounting_BillingAccount__c(Name = 'tb2', id__c = '3', Server_Name__c = 'CommCare HQ');
+
+        Accounting_CreditLine__c cLine1 = new Accounting_CreditLine__c(id__c = '3', Server_Name__c = 'CommCare HQ');
+        insert cLine1;
+
+        Test.startTest();
+        Test.setMock(HttpCalloutMock.class, new hqInt_HttpMock());
+        HqBatchJobHelper.runNextBatchJob(15, 'CommCare HQ', new List<String>());
+        Test.stopTest();
+
+        List<Accounting_CreditLine__c> invs = [SELECT id__c FROM Accounting_CreditLine__c];
+        System.assertEquals(3, invs.size());
+
+        Accounting_CreditLine__c cLine = [SELECT id__c, account__c, Subscription__c FROM Accounting_CreditLine__c WHERE id__c = '1'];
+        System.assertEquals(sub1.Id, cLine.subscription__c);
+        System.assertEquals(accountingBillingAccount1.Id, cLine.account__c);
+
+        cLine = [SELECT id__c, account__c, Subscription__c FROM Accounting_CreditLine__c WHERE id__c = '2'];
+        System.assertEquals(sub2.Id, cLine.subscription__c);
+        System.assertEquals(null, cLine.account__c);
+
+        cLine = [SELECT id__c, account__c, Subscription__c FROM Accounting_CreditLine__c WHERE id__c = '3'];
+        System.assertEquals(null, cLine.subscription__c);
+        System.assertEquals(accountingBillingAccount2.Id, cLine.account__c);
+    }
+
+    @isTest
+    static void testCreditAdjust() {
+        Accounting_CreditAdjustment__c cadj1 = new Accounting_CreditAdjustment__c(id__c = '2', Server_Name__c = 'CommCare HQ');
+        insert cadj1;
+
+        Test.startTest();
+        Test.setMock(HttpCalloutMock.class, new hqInt_HttpMock());
+        HqBatchJobHelper.runNextBatchJob(16, 'CommCare HQ', new List<String>());
+        Test.stopTest();
+
+        List<Accounting_CreditAdjustment__c> invs = [SELECT id__c FROM Accounting_CreditAdjustment__c];
+        System.assertEquals(3, invs.size());
+
+        Accounting_CreditAdjustment__c cAdj = [SELECT id__c, amount__c FROM Accounting_CreditAdjustment__c WHERE id__c = '1'];
+        System.assertEquals(12.00, cAdj.amount__c);
+
+        cAdj = [SELECT id__c, amount__c FROM Accounting_CreditAdjustment__c WHERE id__c = '2'];
+        System.assertEquals(500, cAdj.amount__c);
+
+        cAdj = [SELECT id__c, amount__c FROM Accounting_CreditAdjustment__c WHERE id__c = '3'];
+        System.assertEquals(-500, cAdj.amount__c);
+    }
 /**
     @isTest
     static void hqIntShouldUpdateMissingRelationsInSubscriberCustomObject() {
