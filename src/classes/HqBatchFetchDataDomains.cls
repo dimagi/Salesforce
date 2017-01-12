@@ -25,6 +25,10 @@ public class HqBatchFetchDataDomains implements Database.Batchable<Integer>, Dat
             throw ex;
         }
 
+        Commcare_Job_Settings__c settings = Commcare_Job_Settings__c.getOrgDefaults();
+        settings.Server_Code__c = serverCode;
+        update settings;
+
         this.apiLimitParameter = this.serverSettings.API_Limit_Parameter__c != null ? Integer.valueOf(this.serverSettings.API_Limit_Parameter__c)
                             : 10;
         this.domainHelper = new HqDomainProcessHelper(this.serverSettings);

@@ -16,7 +16,7 @@ global class hqInt_MainClass {
      * Purpose : Http Callout to CommCareHQ
      **/
     public HTTPResponse requestMethod() {
-
+        return null;
     }
 
     /**

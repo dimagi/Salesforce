@@ -12,16 +12,7 @@ public class hqInt_BatchFetchObjectSubscriber implements Database.Batchable<Inte
 
     public void execute(Database.BatchableContext info, List<Integer> offsetList) 
     {
-        try
-        {
-        	hqInt_BatchFetchObjectHelperClass obj = new hqInt_BatchFetchObjectHelperClass();
-            integer successfullyLoadedRecordsThisBatch = obj.fetchAndInsertRecords(offsetList[0],objectUrl,apiLimitParameter,lastRunDate);
-            successfullyLoadedRecords += successfullyLoadedRecordsThisBatch;
-		}
-        catch(exception e)
-        {
-            hqInt_BatchErrorLogger.logError(info.getJobId(),'\n Object : '+Accounting_Subscriber__c.SObjectType.getDescribe().getLabel()+' failed at offset with limit param '+ apiLimitParameter +' : '+ string.valueOf(offsetList[0]),e.getMessage(),e.getStackTraceString());
-        } 
+
      }
 
     public void finish(Database.BatchableContext info) 

@@ -16,7 +16,7 @@ public class HqBatchJobHelper {
         settings.Is_Domain_Job_Running__c = true;
         update settings;
 
-        List<String> servers = getCommcareServers();
+        List<String> servers = getCommcareServers(false);
         if (servers.size() > 0) {
             String serverCode = servers.get(0);
             servers.remove(0);
@@ -46,11 +46,14 @@ public class HqBatchJobHelper {
 
         Commcare_Job_Settings__c settings = Commcare_Job_Settings__c.getOrgDefaults();
         settings.Job_Start_Date__c = startDate;
+        if (settings.Is_Job_Running__c == true) {
+            return;
+        }
         settings.Is_Job_Running__c = true;
 
         update settings;
 
-        List<String> servers = getCommcareServers();
+        List<String> servers = getCommcareServers(false);
         if (servers.size() > 0) {
             String serverCode = servers.get(0);
             servers.remove(0);
@@ -63,19 +66,11 @@ public class HqBatchJobHelper {
     /**
      * Ends Accounting objects synchronization.
      */
-    public static void endBatchJobs(Boolean errors) {
+    public static void endBatchJobs() {
         Commcare_Job_Settings__c settings = Commcare_Job_Settings__c.getOrgDefaults();
         settings.Is_Job_Running__c = false;
         settings.Server_Code__c = '';
         update settings;
-
-        if (!errors) {
-            List<CommcareToSalesforceSettings__c> serverSettingsList = CommcareToSalesforceSettings__c.getAll().values();
-            for (CommcareToSalesforceSettings__c serverSettings : serverSettingsList) {
-                serverSettings.Last_Run_Date__c = settings.Job_Start_Date__c;
-                update serverSettings;
-            }
-        }
     }
 
     /**
@@ -139,18 +134,18 @@ public class HqBatchJobHelper {
                 Database.executeBatch(new HqBatchFetchDataObjects(1, Accounting_feature__c.SObjectType.getDescribe().getLabel(), newServerCode,
                                         'accounting_features/', nextServers), 1);
             } else {
-                HqBatchJobHelper.endBatchJobs(false);
+                HqBatchJobHelper.endBatchJobs();
             }
         } catch (Exception e) {
-            HqBatchJobHelper.endBatchJobs(true);
+            HqBatchJobHelper.endBatchJobs();
         }
     }
 
-    private static List<String> getCommcareServers() {
+    public static List<String> getCommcareServers(Boolean skipBatchData) {
         List<String> servers = new List<String>();
         List<CommcareToSalesforceSettings__c> serverSettingsList = CommcareToSalesforceSettings__c.getAll().values();
         for (CommcareToSalesforceSettings__c serverSettings : serverSettingsList) {
-            if (serverSettings.Skip_in_batch_job__c == false) {
+            if (serverSettings.Skip_in_batch_job__c == false || skipBatchData == true) {
                 servers.add(serverSettings.Name);
             }
         }

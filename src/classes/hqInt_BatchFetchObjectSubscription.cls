@@ -12,6 +12,10 @@ public class hqInt_BatchFetchObjectSubscription implements Database.Batchable<In
     public void execute(Database.BatchableContext info, List<Integer> offsetList) {
     }
 
+    public void finish(Database.BatchableContext info) {
+
+    }
+
     public void updateMissingRelations() {
         // this method updates relation to the domain object from subscriptions
         List<Accounting_Subscription__c> subscriptions = [SELECT Id, Name, Accounting_subscriber_domain__c, Accounting_Subscriber__r.domain__c FROM Accounting_Subscription__c WHERE Accounting_subscriber_domain__c = '' AND Accounting_Subscriber__r.domain__c != ''];

@@ -223,18 +223,6 @@ public class HqIntegrationTests {
     }
 
     @isTest
-    static void hqShouldSetDateInSettings() {
-        Test.startTest();
-        Test.setMock(HttpCalloutMock.class, new hqInt_HttpMock());
-        HqBatchJobHelper.startBatchJobs();
-        HqBatchJobHelper.endBatchJobs(false);
-        Test.stopTest();
-
-        CommcareToSalesforceSettings__c settings = CommcareToSalesforceSettings__c.getInstance('CommCare HQ');
-        System.assertEquals(Date.today(), settings.Last_Run_Date__c);
-    }
-
-    @isTest
     static void hqIntTestLifetimeMRRCalculation() {
         Test.startTest();
 

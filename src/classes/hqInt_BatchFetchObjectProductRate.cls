@@ -5,7 +5,7 @@ public class hqInt_BatchFetchObjectProductRate implements Database.Batchable<Int
     }
 
     public Iterable<Integer> start(Database.BatchableContext BC) {
-
+        return null;
     }
 
     public void execute(Database.BatchableContext info, List<Integer> offsetList) {
