@@ -122,35 +122,27 @@ public class NetEVDifferenceTriggerGateway {
 
             snapShotsDiff.Pipeline_Snapshot__c = snapshot.Id;
 
-
+            snapShotsDiff.DIFF_12_Month_Cash_Minus_Expense_Income__c = (snapshot.Opportunity__r.X12Month_Cash_Minus_Expenses_EV__c != null ? snapshot.Opportunity__r.X12Month_Cash_Minus_Expenses_EV__c : 0)
+                                     - (snapshot.X12_Month_Cash_Minus_Expense_Income_EV__c != null ? snapshot.X12_Month_Cash_Minus_Expense_Income_EV__c : 0);
+            snapShotsDiff.DIFF_18_Month_Cash_Minus_Expenses_Income__c = (snapshot.Opportunity__r.X18_Month_Cash_Minus_Expenses_EV__c != null ? snapshot.Opportunity__r.X18_Month_Cash_Minus_Expenses_EV__c : 0)
+                                     - (snapshot.X18_Month_Cash_Minus_Expenses_Income_EV__c != null ? snapshot.X18_Month_Cash_Minus_Expenses_Income_EV__c : 0);
+            snapShotsDiff.DIFF_24_Month_Cash_Minus_Expense_Income__c = (snapshot.Opportunity__r.X24_Month_Cash_Minus_Expense_EV__c != null ? snapshot.Opportunity__r.X24_Month_Cash_Minus_Expense_EV__c : 0)
+                                     - (snapshot.X24_Month_Cash_Minus_Expense_Income_EV__c != null ? snapshot.X24_Month_Cash_Minus_Expense_Income_EV__c : 0);
+            snapShotsDiff.DIFF_Amount_Minus_Expense_Income__c = (snapshot.Opportunity__r.Amount_Minus_Expense_Income__c != null ? snapshot.Opportunity__r.Amount_Minus_Expense_Income__c : 0 )
+                                     - (snapshot.Opportunity_Amount_Minus_Expense_Income__c != null ? snapshot.Opportunity_Amount_Minus_Expense_Income__c : 0);
+            snapShotsDiff.DIFF_Expected_Value_Minus_Expense__c = (snapshot.Opportunity__r.Expected_Value_Minus_Income__c != null ? snapshot.Opportunity__r.Expected_Value_Minus_Income__c : 0)
+                                     - (snapshot.Expected_Value_Minus_Expense__c != null ? snapshot.Expected_Value_Minus_Expense__c : 0);
+            snapShotsDiff.Expected_Monthly_Recurring_Revenue_MRR__c = (snapshot.Opportunity__r.Expected_Monthly_Recurring_Revenue_MRR__c != null ? snapshot.Opportunity__r.Expected_Monthly_Recurring_Revenue_MRR__c : 0)
+                                     - (snapshot.Expected_Monthly_Recurring_Revenue_MRR__c != null ? snapshot.Expected_Monthly_Recurring_Revenue_MRR__c : 0);
+            snapShotsDiff.Monthly_Recurring_Revenue_MRR__c = (snapshot.Opportunity__r.Monthly_Recurring_Revenue_MRR__c != null ? snapshot.Opportunity__r.Monthly_Recurring_Revenue_MRR__c : 0)
+                                     - (snapshot.Monthly_Recurring_Revenue_MRR__c != null ? snapshot.Monthly_Recurring_Revenue_MRR__c : 0);
             snapShotsDiff.Prior_Snapshot_date__c = snapshot.Month_Date__c;
 
             if(snapshot.Opportunity__r.StageName == 'Closed - Lost' || snapshot.Opportunity__r.StageName == 'Closed - No Go' || snapshot.Opportunity__r.StageName == 'Closed') {
                 snapShotsDiff.Delta_Type__c = LOST;
-                snapShotsDiff.DIFF_12_Month_Cash_Minus_Expense_Income__c = snapshot.Opportunity__r.X12Month_Cash_Minus_Expenses_EV__c != null ? (-1) * snapshot.Opportunity__r.X12Month_Cash_Minus_Expenses_EV__c : 0;
-                snapShotsDiff.DIFF_18_Month_Cash_Minus_Expenses_Income__c = snapshot.Opportunity__r.X18_Month_Cash_Minus_Expenses_EV__c != null ? (-1) * snapshot.Opportunity__r.X18_Month_Cash_Minus_Expenses_EV__c : 0;
-                snapShotsDiff.DIFF_24_Month_Cash_Minus_Expense_Income__c = snapshot.Opportunity__r.X24_Month_Cash_Minus_Expense_EV__c != null ? (-1) * snapshot.Opportunity__r.X24_Month_Cash_Minus_Expense_EV__c: 0;
-                snapShotsDiff.DIFF_Amount_Minus_Expense_Income__c = snapshot.Opportunity__r.Amount_Minus_Expense_Income__c != null ? (-1) * snapshot.Opportunity__r.Amount_Minus_Expense_Income__c : 0;
-                snapShotsDiff.DIFF_Expected_Value_Minus_Expense__c = snapshot.Opportunity__r.Expected_Value_Minus_Income__c != null ? (-1) * snapshot.Opportunity__r.Expected_Value_Minus_Income__c : 0;
-                snapShotsDiff.Expected_Monthly_Recurring_Revenue_MRR__c = snapshot.Opportunity__r.Expected_Monthly_Recurring_Revenue_MRR__c != null ? (-1) * snapshot.Opportunity__r.Expected_Monthly_Recurring_Revenue_MRR__c : 0;
-                snapShotsDiff.Monthly_Recurring_Revenue_MRR__c = snapshot.Opportunity__r.Monthly_Recurring_Revenue_MRR__c != null ? (-1) * snapshot.Opportunity__r.Monthly_Recurring_Revenue_MRR__c : 0;
                 snapShotDiffs.add(snapShotsDiff);
             } else if(snapshot.Opportunity__r.StageName == 'Closed - Won') {
                 snapShotsDiff.Delta_Type__c = WON;
-                snapShotsDiff.DIFF_12_Month_Cash_Minus_Expense_Income__c = (snapshot.Opportunity__r.X12Month_Cash_Minus_Expenses_EV__c != null ? snapshot.Opportunity__r.X12Month_Cash_Minus_Expenses_EV__c : 0)
-                                         - (snapshot.X12_Month_Cash_Minus_Expense_Income_EV__c != null ? snapshot.X12_Month_Cash_Minus_Expense_Income_EV__c : 0);
-                snapShotsDiff.DIFF_18_Month_Cash_Minus_Expenses_Income__c = (snapshot.Opportunity__r.X18_Month_Cash_Minus_Expenses_EV__c != null ? snapshot.Opportunity__r.X18_Month_Cash_Minus_Expenses_EV__c : 0)
-                                         - (snapshot.X18_Month_Cash_Minus_Expenses_Income_EV__c != null ? snapshot.X18_Month_Cash_Minus_Expenses_Income_EV__c : 0);
-                snapShotsDiff.DIFF_24_Month_Cash_Minus_Expense_Income__c = (snapshot.Opportunity__r.X24_Month_Cash_Minus_Expense_EV__c != null ? snapshot.Opportunity__r.X24_Month_Cash_Minus_Expense_EV__c : 0)
-                                         - (snapshot.X24_Month_Cash_Minus_Expense_Income_EV__c != null ? snapshot.X24_Month_Cash_Minus_Expense_Income_EV__c : 0);
-                snapShotsDiff.DIFF_Amount_Minus_Expense_Income__c = (snapshot.Opportunity__r.Amount_Minus_Expense_Income__c != null ? snapshot.Opportunity__r.Amount_Minus_Expense_Income__c : 0 )
-                                         - (snapshot.Opportunity_Amount_Minus_Expense_Income__c != null ? snapshot.Opportunity_Amount_Minus_Expense_Income__c : 0);
-                snapShotsDiff.DIFF_Expected_Value_Minus_Expense__c = (snapshot.Opportunity__r.Expected_Value_Minus_Income__c != null ? snapshot.Opportunity__r.Expected_Value_Minus_Income__c : 0)
-                                         - (snapshot.Expected_Value_Minus_Expense__c != null ? snapshot.Expected_Value_Minus_Expense__c : 0);
-                snapShotsDiff.Expected_Monthly_Recurring_Revenue_MRR__c = (snapshot.Opportunity__r.Expected_Monthly_Recurring_Revenue_MRR__c != null ? snapshot.Opportunity__r.Expected_Monthly_Recurring_Revenue_MRR__c : 0)
-                                         - (snapshot.Expected_Monthly_Recurring_Revenue_MRR__c != null ? snapshot.Expected_Monthly_Recurring_Revenue_MRR__c : 0);
-                snapShotsDiff.Monthly_Recurring_Revenue_MRR__c = (snapshot.Opportunity__r.Monthly_Recurring_Revenue_MRR__c != null ? snapshot.Opportunity__r.Monthly_Recurring_Revenue_MRR__c : 0)
-                                         - (snapshot.Monthly_Recurring_Revenue_MRR__c != null ? snapshot.Monthly_Recurring_Revenue_MRR__c : 0);
                 snapShotDiffs.add(snapShotsDiff);
             }
         }
