@@ -51,37 +51,45 @@ public class OpenOpportunityMailer {
         
         sendEmail(content, recipients, EMAIL_SUBJECT, usersNameSubject);
     }
-    
-    private static Map<String, Opportunity[]> getRedStagedOpportunities(Map<String, Opportunity[]> stagedOpportunities)
-    {
+
+    private static Map<String, Opportunity[]> getRedStagedOpportunities(Map<String, Opportunity[]> stagedOpportunities) {
         Map<String, Opportunity[]> redStagedOpportunities = new Map<String, Opportunity[]>();
-        
+
         Integer daysNotUpdatedLimit = Open_Opportunity_Settings__c.getOrgDefaults().Days_Not_Updated_Limit__c != null 
                                        ? Open_Opportunity_Settings__c.getOrgDefaults().Days_Not_Updated_Limit__c.intValue()
                                        : 30;
-                                       
+
         Integer daysNotUpdatedLimitEarlyStages = Open_Opportunity_Settings__c.getOrgDefaults().Days_Not_Updated_Limit_Early_Stages__c != null 
                                        ? Open_Opportunity_Settings__c.getOrgDefaults().Days_Not_Updated_Limit_Early_Stages__c.intValue()
-                                       : 10;    
-        
+                                       : 10;
+
         Set<String> earlyStagesSet = new Set<String>(earlyStages);
-        
+
         // Remove fresh opportunities
-        for (String stageName :stagedOpportunities.keySet()) {          
-            
+        for (String stageName :stagedOpportunities.keySet()) {
             Opportunity[] opportunities = new Opportunity[] {};
-            
-            for(Opportunity opportunity :stagedOpportunities.get(stageName)) {
-                
-                if (earlyStagesSet.contains(opportunity.StageName)) {
-                    
-                    if (opportunity.Total_Days_Not_Updated__c > daysNotUpdatedLimitEarlyStages && !opportunity.long_wait__c) {                   
-                        opportunities.add(opportunity);
-                    }                   
+
+            List<OpportunityContactRole> contactRoles = [SELECT ContactId, OpportunityId FROM OpportunityContactRole WHERE IsPrimary = true AND OpportunityId IN: stagedOpportunities.get(stageName)];
+            Map<Id, Id> oppToContactMap = new Map<Id, Id>();
+            for (OpportunityContactRole role : contactRoles) {
+                oppToContactMap.put(role.OpportunityId, role.ContactId);
+            }
+            Map<Id, Contact> contacts = new Map<Id, Contact>([SELECT Id, Follow_up_Date__c FROM Contact WHERE Id IN: oppToContactMap.values()]);
+
+            for(Opportunity opportunity : stagedOpportunities.get(stageName)) {
+                Boolean isBlankORFromThePast = true;
+                if (oppToContactMap.containsKey(opportunity.Id) && contacts.containsKey(oppToContactMap.get(opportunity.Id))) {
+                    Contact con = contacts.get(oppToContactMap.get(opportunity.Id));
+                    if (con.Follow_up_Date__c != null && con.Follow_up_Date__c >= Date.today()) {
+                        isBlankORFromThePast = false;
+                    }
                 }
-                else {
-                    
-                    if (opportunity.Total_Days_Not_Updated__c > daysNotUpdatedLimit && !opportunity.long_wait__c) {                  
+                if (earlyStagesSet.contains(opportunity.StageName)) {
+                    if (opportunity.Total_Days_Not_Updated__c > daysNotUpdatedLimitEarlyStages && !opportunity.long_wait__c && isBlankORFromThePast) {
+                        opportunities.add(opportunity);
+                    }
+                } else {
+                    if (opportunity.Total_Days_Not_Updated__c > daysNotUpdatedLimit && !opportunity.long_wait__c && isBlankORFromThePast) {
                         opportunities.add(opportunity);
                     }
                 }
@@ -91,10 +99,10 @@ public class OpenOpportunityMailer {
               redStagedOpportunities.put(stageName, opportunities);
             }
         } 
-        
+
         return redStagedOpportunities;
     }
-    
+
     public static void sendRedOpenOpportunitiesBatchReport(User user, String[] recipients, Map<String, Opportunity[]> stagedOpportunities) {
         
         Map<String, Opportunity[]> redStagedOpportunities = getRedStagedOpportunities(stagedOpportunities);

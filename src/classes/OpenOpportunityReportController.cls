@@ -12,33 +12,32 @@ Date 05/09/2013
 Changed SOQL filter in getOpenOpportunitiesByUser to filter by BU also               
 **************************************************/
 public class OpenOpportunityReportController {
-    
+
     private static OpenOpportunityReportController instance = null;
     private static Open_Opportunity_Fields__c[] selectedColumnFields = null; 
-    
+
     private OpenOpportunityReportController() {}
-    
+
     public static OpenOpportunityReportController getInstance() {
-    	
-    	if (instance == null) {
-    		
-    		instance = new OpenOpportunityReportController();
-    	}   	
-    	return instance;
+
+        if (instance == null) {
+            instance = new OpenOpportunityReportController();
+        }
+        return instance;
     }
-    
+
     public Opportunity[] getOpenOpportunitiesAllUsers() {
-    	String[] stages = new String[] {'Stage 1 - Connect','Stage 2 - Talking','Stage 3 - Prospect','Stage 4 - Proposal Development','Stage 5 - Submitted','Stage 6 - In Negotiations'};
-        
+        String[] stages = new String[] {'Stage 1 - Connect','Stage 2 - Talking','Stage 3 - Prospect','Stage 4 - Proposal Development','Stage 5 - Submitted','Stage 6 - In Negotiations'};
+
         Opportunity[] result = new Opportunity[] {};
 
         String queryValues = this.getOpenOpportunitiesQueryValues();
         String sql = 'SELECT ' + queryValues + ' FROM Opportunity WHERE IsClosed = false AND StageName IN :stages';
-             
-        result = Database.query(sql);                                      
+
+        result = Database.query(sql);
         return result; 
     }
-    
+
     private String getOpenOpportunitiesQueryValues() {
     	/**************************************************
         Comments: Filled in with default values

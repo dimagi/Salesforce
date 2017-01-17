@@ -6,13 +6,11 @@
  */
  public with sharing class OpenOpportunityListData {
 
-    public String stageName {get; set;}
-    public Opportunity[] opportunities {get; set;} 
+    public String stageName { get; set;}
+    public Opportunity[] opportunities { get; set;} 
 
     public OpenOpportunityListData(String stageName, Opportunity[] opportunities) {
-    	
-    	this.opportunities = opportunities;
-    	this.stageName = stageName;    	
+        this.opportunities = opportunities;
+        this.stageName = stageName;
     }
-
 }
