@@ -230,6 +230,7 @@ public with sharing class ProjectReportOutController {
                 Project_Report_Out__c proToUpdate = createPROToUpdate(proList.isEmpty() ? null : proList[0]);
                 DContract__c dcontract = [SELECT Id, Name, Last_Report_Out_Status__c, Percent_through_SOW_deliverables__c, Budget_Used__c, of_Services_budget_for_GS__c, Total_Costs__c, Services_Spend__c,
                                         Buffer_by_SOW_Completed__c, Execution_Efficiency__c, Expected_Buffer__c, Direct_Costs_Total_Expenses__c, Net_Income_based_on_SOW_Completed__c, Product_Spend__c
+                                        GS_Execution_Budget__c, GS_Net_Income_to_Date_Handover__c, GS_Execution_Budget__c, GS_Services_Completed__c, GS_Net_Income_to_Date__c, GS_Net_Income_to_Date_Handover__c
                                         FROM DContract__c WHERE Id =: reportContractId];
 
                 dcontract.Last_Report_Out_Status__c = status;
@@ -334,28 +335,9 @@ public with sharing class ProjectReportOutController {
     private PRO_Contract_Snapshot__c createProSnapshot(Id currentSnapshot, DContract__c dcontract) {
         PRO_Contract_Snapshot__c proContractSnapshot = new PRO_Contract_Snapshot__c();
         if (currentSnapshot != null) { // we must update snapshot
-            proContractSnapshot = [SELECT Id, Budget_Used__c, Percent_Of_Work_Completed__c, Percent_Services_Budget_For_GS__c, Buffer_By_Deliverables_Complete__c,
-                                        Execution_Efficiency__c, Expected_Buffer__c, Expense_And_Travel_Spend__c, Net_Income_By_Deliverables_Complete__c, Product_Spend__c,
-                                        Services_Spend__c, Total_Calculated_Costs__c, Contract__c, Name, Snapshot_Date__c
-                                        FROM PRO_Contract_Snapshot__c WHERE Id =: currentSnapshot];
+            proContractSnapshot.Id = currentSnapshot;
         }
-
-        proContractSnapshot.Budget_Used__c = dcontract.Budget_Used__c;
-        proContractSnapshot.Percent_Of_Work_Completed__c = dcontract.Percent_through_SOW_deliverables__c;
-        proContractSnapshot.Percent_Services_Budget_For_GS__c = dcontract.of_Services_budget_for_GS__c;
-        proContractSnapshot.Buffer_By_Deliverables_Complete__c = dcontract.Buffer_by_SOW_Completed__c;
-        proContractSnapshot.Execution_Efficiency__c = dcontract.Execution_Efficiency__c;
-        proContractSnapshot.Expected_Buffer__c = dcontract.Expected_Buffer__c;
-        proContractSnapshot.Expense_And_Travel_Spend__c = dcontract.Direct_Costs_Total_Expenses__c;
-        proContractSnapshot.Net_Income_By_Deliverables_Complete__c = dcontract.Net_Income_based_on_SOW_Completed__c;
-        proContractSnapshot.Product_Spend__c = dcontract.Product_Spend__c;
-        proContractSnapshot.Services_Spend__c = dcontract.Services_Spend__c;
-        proContractSnapshot.Total_Calculated_Costs__c = dcontract.Total_Costs__c;
-        proContractSnapshot.Contract__c = dcontract.Id;
-        proContractSnapshot.Name = dcontract.Name;
-        proContractSnapshot.Snapshot_Date__c = Date.today();
-
-        return proContractSnapshot;
+        return fillPROSnapshot(proContractSnapshot, dcontract, SnapshotHelper.getLastPROSnapshot(dcontract));
     }
 
      // Get a list of picklist values from an existing object field.

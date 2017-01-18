@@ -15,38 +15,37 @@ global class PROContractSnapshotBatch implements Database.Batchable<DContract__c
     }
 
     global void execute(Database.BatchableContext context, List<DContract__c> contracts) {
-        List<PRO_Contract_Snapshot__c> insertList = new List<PRO_Contract_Snapshot__c>();
+        try {
+            List<PRO_Contract_Snapshot__c> insertList = new List<PRO_Contract_Snapshot__c>();
+            Map<Id, PRO_Contract_Snapshot__c> oldSnapshots = SnapshotHelper.getOldPROSnapshot(contracts);
 
-        for (DContract__c dcontract : contracts) {
-            PRO_Contract_Snapshot__c proContractSnapshot = new PRO_Contract_Snapshot__c();
+            for (DContract__c dcontract : contracts) {
+                PRO_Contract_Snapshot__c proContractSnapshot = new PRO_Contract_Snapshot__c();
+                PRO_Contract_Snapshot__c oldSnapshot = new PRO_Contract_Snapshot__c();
+                if (oldSnapshots.containsKey(dcontract.Id)) {
+                    oldSnapshot = oldSnapshots.get(dcontract.Id);
+                }
+                proContractSnapshot = SnapshotHelper.fillPROSnapshot(proContractSnapshot, dcontract, oldSnapshot);
 
-            proContractSnapshot.Budget_Used__c = dcontract.Budget_Used__c;
-            proContractSnapshot.Percent_Of_Work_Completed__c = dcontract.Percent_through_SOW_deliverables__c;
-            proContractSnapshot.Percent_Services_Budget_For_GS__c = dcontract.of_Services_budget_for_GS__c;
-            proContractSnapshot.Buffer_By_Deliverables_Complete__c = dcontract.Buffer_by_SOW_Completed__c;
-            proContractSnapshot.Execution_Efficiency__c = dcontract.Execution_Efficiency__c;
-            proContractSnapshot.Expected_Buffer__c = dcontract.Expected_Buffer__c;
-            proContractSnapshot.Expense_And_Travel_Spend__c = dcontract.Direct_Costs_Total_Expenses__c;
-            proContractSnapshot.Net_Income_By_Deliverables_Complete__c = dcontract.Net_Income_based_on_SOW_Completed__c;
-            proContractSnapshot.Product_Spend__c = dcontract.Product_Spend__c;
-            proContractSnapshot.Services_Spend__c = dcontract.Services_Spend__c;
-            proContractSnapshot.Total_Calculated_Costs__c = dcontract.Total_Costs__c;
-            proContractSnapshot.Contract__c = dcontract.Id;
-            proContractSnapshot.Name = dcontract.Name;
-            proContractSnapshot.Snapshot_Date__c = Date.today();
+                // TODO Fetch last PRO snapshot and calculate other fields
+                // Todo add job for pipeline snapshot - working daily for calcukaction !!!
 
-            insertList.add(proContractSnapshot);
-        }
-
-        List<Database.SaveResult> insertResults = Database.insert(insertList, false);
-
-        for(Integer i = 0; i < insertResults.size(); i++){
-            if (!insertResults.get(i).isSuccess()){
-                Database.Error error = insertResults.get(i).getErrors().get(0);
-                System.debug('DML error ' + error.getMessage());
-                System.debug('Failed to create snapshot for Contract: ' + insertList.get(i).Contract__c);
-                failedReocrds.add(insertList.get(i));
+                insertList.add(proContractSnapshot);
             }
+
+            List<Database.SaveResult> insertResults = Database.insert(insertList, false);
+
+            for(Integer i = 0; i < insertResults.size(); i++) {
+                if (!insertResults.get(i).isSuccess()){
+                    Database.Error error = insertResults.get(i).getErrors().get(0);
+                    System.debug('DML error ' + error.getMessage());
+                    System.debug('Failed to create snapshot for Contract: ' + insertList.get(i).Contract__c);
+                    failedReocrds.add(insertList.get(i));
+                }
+            }
+
+        } catch (Exception e) {
+            System.debug('ERROR', e);
         }
     }
 
@@ -80,7 +79,8 @@ global class PROContractSnapshotBatch implements Database.Batchable<DContract__c
     private List<DContract__c> GetContract() {
         List<DContract__c> contractList = [SELECT Id, Name, Last_Report_Out_Status__c, Percent_through_SOW_deliverables__c, Budget_Used__c, of_Services_budget_for_GS__c, Total_Costs__c, Services_Spend__c,
                                                 Buffer_by_SOW_Completed__c, Execution_Efficiency__c, Expected_Buffer__c, Direct_Costs_Total_Expenses__c, Net_Income_based_on_SOW_Completed__c, Product_Spend__c
-                                                FROM DContract__c WHERE   Status__c = 'Active' AND Requires_Report_Out__c = 'No'];
+                                                GS_Net_Income_to_Date_Handover__c, GS_Execution_Budget__c, GS_Services_Completed__c, GS_Net_Income_to_Date__c,
+                                                GS_Net_Income_to_Date_Handover__c FROM DContract__c WHERE Status__c = 'Active' AND Requires_Report_Out__c = 'No'];
        return contractList;
     }
 }
