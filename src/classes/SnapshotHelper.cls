@@ -4,13 +4,13 @@
 public class SnapshotHelper {
 
     public static Map<Id, PRO_Contract_Snapshot__c> getOldPROSnapshot(List<DContract__c> contracts) {
-        Map<Id, PRO_Contract_Snapshot__c> snapshotsMap =  new Map<Id, PRO_Contract_Snapshot__c>();
-        List<PRO_Contract_Snapshot__c> snapshotsList = [SELECT Id, Percent_Of_Work_Completed__c, Services_Spend__c, Expense_And_Travel_Spend__c, Product_Spend__c, Total_Calculated_Costs__c, GS_Services_Completed_Handover__c
-                                          GS_Services_Completed__c, GS_Net_Income_to_Date__c, GS_Net_Income_to_Date_Handover__c FROM PRO_Contract_Snapshot__c WHERE Snapshot_Date__c <: Date.today()
+        Map<Id, PRO_Contract_Snapshot__c> snapshotsMap = new Map<Id, PRO_Contract_Snapshot__c>();
+        List<PRO_Contract_Snapshot__c> snapshotsList = [SELECT Id, Percent_Of_Work_Completed__c, Services_Spend__c, Expense_And_Travel_Spend__c, Product_Spend__c, Total_Calculated_Costs__c, GS_Services_Completed_Handover__c,
+                                          Contract__c, GS_Services_Completed__c, GS_Net_Income_to_Date__c, GS_Net_Income_to_Date_Handover__c FROM PRO_Contract_Snapshot__c WHERE Snapshot_Date__c <: Date.today()
                                           AND Contract__c IN: contracts ORDER BY Snapshot_Date__c DESC];
 
         for (PRO_Contract_Snapshot__c sn : snapshotsList) {
-            if (!snapshotsMap.containcKey(sn.Contract__c)) {
+            if (!snapshotsMap.containsKey(sn.Contract__c)) {
                 snapshotsMap.put(sn.Contract__c, sn);
             }
         }
@@ -19,9 +19,9 @@ public class SnapshotHelper {
     }
 
     public static PRO_Contract_Snapshot__c getLastPROSnapshot(DContract__c dcontract) {
-        List<PRO_Contract_Snapshot__c> snapshotsList = [SELECT Id, Percent_Of_Work_Completed__c, Services_Spend__c, Expense_And_Travel_Spend__c, Product_Spend__c, Total_Calculated_Costs__c, GS_Services_Completed_Handover__c
-                                          GS_Services_Completed__c, GS_Net_Income_to_Date__c, GS_Net_Income_to_Date_Handover__c FROM PRO_Contract_Snapshot__c WHERE Snapshot_Date__c <: Date.today()
-                                          AND Contract__c =: dcontract ORDER BY Snapshot_Date__c DESC LIMIT 1];
+        List<PRO_Contract_Snapshot__c> snapshotsList = [SELECT Id, Percent_Of_Work_Completed__c, Services_Spend__c, Expense_And_Travel_Spend__c, Product_Spend__c, Total_Calculated_Costs__c, GS_Services_Completed_Handover__c,
+                                          Contract__c, GS_Services_Completed__c, GS_Net_Income_to_Date__c, GS_Net_Income_to_Date_Handover__c FROM PRO_Contract_Snapshot__c WHERE Snapshot_Date__c <: Date.today()
+                                          AND Contract__c =: dcontract.Id ORDER BY Snapshot_Date__c DESC LIMIT 1];
         if (snapshotsList.size() > 0) {
             return snapshotsList.get(0);
         }
