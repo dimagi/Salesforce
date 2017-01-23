@@ -1,4 +1,4 @@
-@isTest(SeeAllData=true)
+@isTest
 public class ContractSnapshotTest {
 
     static testMethod void shouldCreateSnapshotAfterSubmitingPRO() {
@@ -36,6 +36,11 @@ public class ContractSnapshotTest {
     static testMethod void jobShouldCreateSnapshotForActiveProject() {
         DContract__c dcontract = addContract();
 
+        PRO_Contract_Snapshot__c proSn1 = new PRO_Contract_Snapshot__c(Contract__c = dcontract.Id, Percent_Of_Work_Completed__c = 4, Snapshot_Date__c = Date.today().addDays(-40));
+        insert proSn1;
+        PRO_Contract_Snapshot__c proSn2 = new PRO_Contract_Snapshot__c(Contract__c = dcontract.Id, Percent_Of_Work_Completed__c = 11, Snapshot_Date__c = Date.today().addDays(-20));
+        insert proSn2;
+
         PROContractSnapshotBatch proContractSnapshotBatch = new PROContractSnapshotBatch();
         Database.BatchableContext bc;
         proContractSnapshotBatch.execute(bc, proContractSnapshotBatch.start(bc));
@@ -43,13 +48,50 @@ public class ContractSnapshotTest {
 
         List<PRO_Contract_Snapshot__c> snapshots = [SELECT Id, Name, Percent_Of_Work_Completed__c, Percent_Services_Budget_For_GS__c, Expected_Buffer__c,
                                                 Expense_And_Travel_Spend__c, Services_Spend__c, Total_Calculated_Costs__c, Product_Spend__c, Net_Income_By_Deliverables_Complete__c,
-                                                Execution_Efficiency__c, Buffer_By_Deliverables_Complete__c, Budget_Used__c
-                                                FROM PRO_Contract_Snapshot__c WHERE Contract__c =: dcontract.Id];
+                                                Execution_Efficiency__c, Buffer_By_Deliverables_Complete__c, Budget_Used__c, Work_Completed_for_Period__c
+                                                FROM PRO_Contract_Snapshot__c WHERE Contract__c =: dcontract.Id AND Id !=: proSn1.Id AND Id !=: proSn2.Id];
 
         System.assertEquals(1, snapshots.size());
         PRO_Contract_Snapshot__c snapshot = snapshots.get(0);
 
         assertSnapshotData(snapshot);
+        System.assertEquals(19, snapshot.Work_Completed_for_Period__c);
+    }
+
+    static testMethod void shouldCalculateForPeriodInPipelineSnapshot() {
+        DContract__c dcontract1 = new DContract__c(Name = 'Sample Test 1', Services_Spend__c = 100, Total_Amount_of_Contract__c = 1000);
+        DContract__c dcontract2 = new DContract__c(Name = 'Sample Test 2', Services_Spend__c = 155, Total_Amount_of_Contract__c = 5500);
+        DContract__c dcontract3 = new DContract__c(Name = 'Sample Test 3', Services_Spend__c = 23, Total_Amount_of_Contract__c = 222);
+        insert dcontract1;
+        insert dcontract2;
+        insert dcontract3;
+
+        Pipeline_Snapshot__c ps1 = new Pipeline_Snapshot__c(Source_Type__c = 'Contract', Month_Date__c = Date.today().addDays(-10), Contract__c = dcontract1.Id, Services_Spend__c = 10);
+        Pipeline_Snapshot__c ps2 = new Pipeline_Snapshot__c(Source_Type__c = 'Contract', Month_Date__c = Date.today(), Contract__c = dcontract1.Id, Services_Spend__c = 76);
+        Pipeline_Snapshot__c ps3 = new Pipeline_Snapshot__c(Source_Type__c = 'Contract', Month_Date__c = Date.today(), Contract__c = dcontract3.Id, Services_Spend__c = 100);
+        Pipeline_Snapshot__c ps4 = new Pipeline_Snapshot__c(Source_Type__c = 'Contract', Month_Date__c = Date.today().addDays(-50), Contract__c = dcontract2.Id, Services_Spend__c = 1);
+        Pipeline_Snapshot__c ps5 = new Pipeline_Snapshot__c(Source_Type__c = 'Contract', Month_Date__c = Date.today().addDays(-30), Contract__c = dcontract2.Id, Services_Spend__c = 8);
+        Pipeline_Snapshot__c ps6 = new Pipeline_Snapshot__c(Source_Type__c = 'Contract', Month_Date__c = Date.today(), Contract__c = dcontract2.Id, Services_Spend__c = 11);
+        insert ps1;
+        insert ps2;
+        insert ps3;
+        insert ps4;
+        insert ps5;
+        insert ps6;
+        Test.setCreatedDate(ps1.Id, DateTime.now().addDays(-6));
+        Test.setCreatedDate(ps4.Id, DateTime.now().addDays(-6));
+        Test.setCreatedDate(ps5.Id, DateTime.now().addDays(-6));
+
+        Test.startTest();
+        Database.executeBatch(new ForPeriodCalcSnapshotBatch(false), 50);
+        Test.stopTest();
+
+        Pipeline_Snapshot__c psFromDB = [SELECT Id, Services_Spend_for_Period__c FROM Pipeline_Snapshot__c WHERE Id =: ps2.Id];
+        System.assertEquals(66, psFromDB.Services_Spend_for_Period__c);
+        psFromDB = [SELECT Id, Services_Spend_for_Period__c FROM Pipeline_Snapshot__c WHERE Id =: ps4.Id];
+        System.assertEquals(null, psFromDB.Services_Spend_for_Period__c);
+        psFromDB = [SELECT Id, Services_Spend_for_Period__c FROM Pipeline_Snapshot__c WHERE Id =: ps6.Id];
+        System.assertEquals(3, psFromDB.Services_Spend_for_Period__c);
     }
 
     static private void assertSnapshotData(PRO_Contract_Snapshot__c snapshot) {

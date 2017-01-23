@@ -26,10 +26,6 @@ global class PROContractSnapshotBatch implements Database.Batchable<DContract__c
                     oldSnapshot = oldSnapshots.get(dcontract.Id);
                 }
                 proContractSnapshot = SnapshotHelper.fillPROSnapshot(proContractSnapshot, dcontract, oldSnapshot);
-
-                // TODO Fetch last PRO snapshot and calculate other fields
-                // Todo add job for pipeline snapshot - working daily for calcukaction !!!
-
                 insertList.add(proContractSnapshot);
             }
 
@@ -81,7 +77,7 @@ global class PROContractSnapshotBatch implements Database.Batchable<DContract__c
     }
 
     private List<DContract__c> GetContract() {
-        List<DContract__c> contractList = [SELECT Id, Name, Last_Report_Out_Status__c, Percent_through_SOW_deliverables__c, Budget_Used__c, of_Services_budget_for_GS__c, Total_Costs__c, Services_Spend__c,
+        List<DContract__c> contractList = [SELECT Id, GS_Revenue__c, Name, Last_Report_Out_Status__c, Percent_through_SOW_deliverables__c, Budget_Used__c, of_Services_budget_for_GS__c, Total_Costs__c, Services_Spend__c,
                                                 Buffer_by_SOW_Completed__c, Execution_Efficiency__c, Expected_Buffer__c, Direct_Costs_Total_Expenses__c, Net_Income_based_on_SOW_Completed__c, Product_Spend__c,
                                                 GS_Net_Income_to_Date_Handover__c, GS_Execution_Budget__c, GS_Services_Completed__c, GS_Net_Income_to_Date__c, GS_Services_Completed_Handover__c
                                                 FROM DContract__c WHERE Status__c = 'Active' AND Requires_Report_Out__c = 'No'];
