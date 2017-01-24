@@ -94,6 +94,37 @@ public class ContractSnapshotTest {
         System.assertEquals(3, psFromDB.Services_Spend_for_Period__c);
     }
 
+    static testMethod void shouldCalculateGSRevenue() {
+        Business_Unit__c bu = new Business_Unit__c(Name = 'Inc');
+        insert bu;
+
+        DContract__c dcontract1 = new DContract__c(Name = 'Sample Test 1', Prime_Contracting_Business_Unit__c = bu.Id, Percent_through_SOW_deliverables__c = 10, Expected_Buffer__c = 0,
+                                                   Contract_Expense_BUDGET__c = 0, of_Services_budget_for_GS__c = 100, Total_Amount_of_Contract__c = 1000); // 5
+        DContract__c dcontract2 = new DContract__c(Name = 'Sample Test 2', Prime_Contracting_Business_Unit__c = bu.Id, Percent_through_SOW_deliverables__c = 20, Expected_Buffer__c = 0,
+                                                   Contract_Expense_BUDGET__c = 0, of_Services_budget_for_GS__c = 100, Total_Amount_of_Contract__c = 2000); // 30
+        DContract__c dcontract3 = new DContract__c(Name = 'Sample Test 3', Prime_Contracting_Business_Unit__c = bu.Id, Percent_through_SOW_deliverables__c = 30, Expected_Buffer__c = 0,
+                                                   Contract_Expense_BUDGET__c = 0, of_Services_budget_for_GS__c = 100, Total_Amount_of_Contract__c = 3000); // 22
+        DContract__c dcontract4 = new DContract__c(Name = 'Sample Test 4', Prime_Contracting_Business_Unit__c = bu.Id, Percent_through_SOW_deliverables__c = 40, Expected_Buffer__c = 0,
+                                                   Contract_Expense_BUDGET__c = 0, of_Services_budget_for_GS__c = 100, Total_Amount_of_Contract__c = 4000); // 40
+        insert dcontract1;
+        insert dcontract2;
+        insert dcontract3;
+        insert dcontract4;
+
+        Test.startTest();
+        Database.executeBatch(new GSRevenueCalculationBatch([SELECT Id FROM Business_Unit__c]));
+        Test.stopTest();
+
+        DContract__c conFromDB = [SELECT Id, GS_Revenue__c FROM DContract__c WHERE Id =: dcontract1.Id LIMIT 1];
+        System.assertEquals(2910, conFromDB.GS_Revenue__c);
+        conFromDB = [SELECT Id, GS_Revenue__c FROM DContract__c WHERE Id =: dcontract2.Id LIMIT 1];
+        System.assertEquals(2910, conFromDB.GS_Revenue__c);
+        conFromDB = [SELECT Id, GS_Revenue__c FROM DContract__c WHERE Id =: dcontract3.Id LIMIT 1];
+        System.assertEquals(2910, conFromDB.GS_Revenue__c);
+        conFromDB = [SELECT Id, GS_Revenue__c FROM DContract__c WHERE Id =: dcontract4.Id LIMIT 1];
+        System.assertEquals(2910, conFromDB.GS_Revenue__c);
+    }
+
     static private void assertSnapshotData(PRO_Contract_Snapshot__c snapshot) {
         System.assertEquals('Sample Test Name', snapshot.Name);
         System.assertEquals(30, snapshot.Percent_Of_Work_Completed__c);
