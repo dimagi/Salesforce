@@ -46,21 +46,28 @@ public without sharing class GSRevenueCalculationBatch implements Database.Batch
     }
 
     public void finish(Database.BatchableContext BC) {
-        try {
-            List<DContract__c> toUpdate = new List<DContract__c>();
-            for (DContract__c con : this.contracts) {
-                if (this.gsRevenue != con.GS_Revenue__c) {
-                    con.GS_Revenue__c = this.gsRevenue;
-                    toUpdate.add(con);
-                }
+        List<DContract__c> toUpdate = new List<DContract__c>();
+        for (DContract__c con : this.contracts) {
+            if (this.gsRevenue != con.GS_Revenue__c) {
+                con.GS_Revenue__c = this.gsRevenue;
+                toUpdate.add(con);
             }
-            update toUpdate;
-        } catch (Exception ex) {
-            System.debug('Error : ' + ex);
-            if (!Test.isRunningTest()) {
-                BatchDefaultSettings__c settings = BatchDefaultSettings__c.getOrgDefaults();
-                EmailHelper.sendEmailFromException(settings.Error_Emails__c.split(','), 'GS Revenue calculation error', 'GS Revenue calculation error', ex);
+        }
+        List<Database.SaveResult> updateResults = Database.update(toUpdate, false);
+
+        String emailBody = '';
+        for(Integer i = 0; i < updateResults.size(); i++){
+            if (!updateResults.get(i).isSuccess()){
+                Database.Error error = updateResults.get(i).getErrors().get(0);
+                System.debug('Error : Fields - ' + error.getFields() + ' Message - ' + error.getMessage());
+                emailBody += '<tr><td>' + toUpdate.get(i).Id + '</td><td>' + error.getFields()+ '</td><td>' + error.getStatusCode()+ '</td><td>' + error.getMessage() + '</td></tr>';
             }
+        }
+
+        if (emailBody != '') {
+            BatchDefaultSettings__c settings = BatchDefaultSettings__c.getOrgDefaults();
+            emailBody = '<table border="1"><tr><td>Id</td>td>Fields</td>td>Code</td><td>Error Message</td></tr>' + emailBody + '</table></br>';
+            EmailHelper.sendEmail(settings.Error_Emails__c.split(','), 'GS Revenue calculation error', emailBody);
         }
 
         if (this.businessUnits.size() > 0) {
