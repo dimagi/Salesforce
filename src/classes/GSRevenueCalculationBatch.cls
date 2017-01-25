@@ -72,6 +72,8 @@ public without sharing class GSRevenueCalculationBatch implements Database.Batch
 
         if (this.businessUnits.size() > 0) {
             Database.executeBatch(new GSRevenueCalculationBatch(this.businessUnits));
+        } else {
+            Database.executeBatch(new ForPeriodCalcSnapshotBatch(false), 50);
         }
     }
 
