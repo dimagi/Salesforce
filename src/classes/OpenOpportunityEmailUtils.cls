@@ -96,10 +96,16 @@ public with sharing class OpenOpportunityEmailUtils {
 
         Map<Id, Contact> contacts = new Map<Id, Contact>();
         Map<Id, Id> oppToContactMap = new Map<Id, Id>();
-        if (fromUI) { // If from UI we must fetch Follow Up Date - if false list is already filtered and contains only red Opps.
+        if (fromUI) { // If from UI we must fetch Follow Up Date - if false list is already filtered and contains only red Opps (OpeOppMailer getRed...).
             List<OpportunityContactRole> contactRoles = [SELECT ContactId, OpportunityId FROM OpportunityContactRole WHERE IsPrimary = true AND OpportunityId IN: opportunities];
             for (OpportunityContactRole role : contactRoles) {
                 oppToContactMap.put(role.OpportunityId, role.ContactId);
+            }
+            List<OpportunityContactRole> contactRolesNotPrim = [SELECT ContactId, OpportunityId FROM OpportunityContactRole WHERE IsPrimary = false AND OpportunityId IN: opportunities];
+            for (OpportunityContactRole role : contactRolesNotPrim) {
+                if (!oppToContactMap.containsKey(role.OpportunityId)) {
+                    oppToContactMap.put(role.OpportunityId, role.ContactId);
+                }
             }
             contacts = new Map<Id, Contact>([SELECT Id, Follow_up_Date__c FROM Contact WHERE Id IN: oppToContactMap.values()]);
         }

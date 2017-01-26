@@ -74,6 +74,12 @@ public class OpenOpportunityMailer {
             for (OpportunityContactRole role : contactRoles) {
                 oppToContactMap.put(role.OpportunityId, role.ContactId);
             }
+            List<OpportunityContactRole> contactRolesNotPrim = [SELECT ContactId, OpportunityId FROM OpportunityContactRole WHERE IsPrimary = false AND OpportunityId IN: opportunities];
+            for (OpportunityContactRole role : contactRolesNotPrim) {
+                if (!oppToContactMap.containsKey(role.OpportunityId)) {
+                    oppToContactMap.put(role.OpportunityId, role.ContactId);
+                }
+            }
             Map<Id, Contact> contacts = new Map<Id, Contact>([SELECT Id, Follow_up_Date__c FROM Contact WHERE Id IN: oppToContactMap.values()]);
 
             for(Opportunity opportunity : stagedOpportunities.get(stageName)) {
