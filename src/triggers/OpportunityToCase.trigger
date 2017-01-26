@@ -12,7 +12,7 @@ trigger OpportunityToCase on Opportunity (after insert, after delete, after upda
         OpportunityTriggers.closeFogbugzCase(Trigger.old[0].Fogbugz_Ticket_Number__c);
     } else if (Trigger.isUpdate) {
         OpportunityTriggers.updateCaseInFogbugz(Trigger.new[0], Trigger.old[0]);
-    } else if (Trigger.new[0].Fogbugz_Ticket_Number__c == null) {
+    } else if (Trigger.new[0].Fogbugz_Ticket_Number__c == null && !System.isBatch()) {
         OpportunityTriggers.createInFogbugz(Trigger.new[0].Id);
     }
 }
