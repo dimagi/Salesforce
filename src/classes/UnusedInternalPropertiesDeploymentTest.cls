@@ -36,6 +36,8 @@ public class UnusedInternalPropertiesDeploymentTest {
         createDomainObject(2, deploymentObj2, intProp2);
         createDomainObject(3, deploymentObj3, intProp3);
 
+        List<Internal_Properties__c> intPropsInDB = [SELECT Id FROM Internal_Properties__c];
+        System.assertEquals(5, intPropsInDB.size());
         Database.executeBatch(new UnusedInternalPropertiesDeleteBatch());
         Test.stopTest();
 
@@ -60,7 +62,7 @@ public class UnusedInternalPropertiesDeploymentTest {
         d.x_id = 'domain_' + i;
         d.Name = 'domain_name_' + i;
         d.tags = new List<String> { ' ' };
-        Domain__c domainFromDb = d.createDbObject(null);
+        Domain__c domainFromDb = d.createDbObject(null, 'CommCareHQ');
         domainFromDb.Deployment__c = dep;
         domainFromDb.Internal_Properties__c = intProp;
         insert domainFromDb;

@@ -9,6 +9,7 @@ public class UnusedInternalPropertiesDeleteBatch implements Database.Batchable<s
 
     public void execute(Database.BatchableContext BC, List<sObject> scope) {
         List<Internal_Properties__c> unusedIntProp = new List<Internal_Properties__c>();
+        System.debug('Size : ' + scope.size());
         for (sObject obj : scope) {
             Internal_Properties__c inProp = (Internal_Properties__c) obj;
             if (inProp.Domain__r == null || inProp.Domain__r.size() == 0) {
