@@ -26,11 +26,16 @@ public class HqBatchFetchDataObjects implements Database.Batchable<Integer>, Dat
         if (this.serverSettings == null) {
             Commcare_Job_Settings__c settings = Commcare_Job_Settings__c.getOrgDefaults();
             EmailHelper.sendEmail(settings.Error_Emails__c.split(','), 'Commcare sync Error', 'Cannot find server settings with name : ' + this.serverCode);
-            HqBatchJobHelper.endDomainJob();
+            HqBatchJobHelper.endBatchJobs();
             NoDataFoundException ex = new NoDataFoundException();
             ex.setMessage('Cannot find settings for server with given code : ' + serverCode);
             throw ex;
         }
+
+        Commcare_Job_Settings__c settings = Commcare_Job_Settings__c.getOrgDefaults();
+        settings.Server_Code__c = serverCode;
+        settings.Job_Helper_Field__c = customObject;
+        update settings;
 
         this.apiLimitParameter = this.serverSettings.API_Limit_Parameter__c != null ? Integer.valueOf(this.serverSettings.API_Limit_Parameter__c)
                             : 10;
@@ -39,7 +44,7 @@ public class HqBatchFetchDataObjects implements Database.Batchable<Integer>, Dat
 
     public Iterable<Integer> start(Database.BatchableContext BC) {
         Integer totalCount = this.hqHelper.getTotalCount();
-        System.debug('total Count of records found --'+ totalCount);
+        System.debug('total Count of records found --' + totalCount);
 
         List<Integer> listOffset = new List<Integer>();
         for(Integer i = 0; i <= totalCount / this.apiLimitParameter; i++) {
@@ -62,7 +67,13 @@ public class HqBatchFetchDataObjects implements Database.Batchable<Integer>, Dat
         } 
      }
 
-    public void finish(Database.BatchableContext info)  {
+    public void finish(Database.BatchableContext info) {
+        if (this.batchNo >= 16) {
+            Commcare_Job_Settings__c settings = Commcare_Job_Settings__c.getOrgDefaults();
+            this.serverSettings.Last_Run_Date__c = settings.Job_Start_Date__c;
+            update this.serverSettings;
+        }
+
         if(!Test.IsRunningTest()) {
             String subject = this.serverCode + ' - ' + EMAIL_SUBJECT + this.customObject + ' Object';
             String emailBody = 'Total Successfully loaded ' + this.customObject + ' records = ' + successfullyLoadedRecords + '\n\n';

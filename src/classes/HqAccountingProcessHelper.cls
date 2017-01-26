@@ -8,7 +8,6 @@ public class HqAccountingProcessHelper {
     private String endPoint;
     private String lastRunDate;
     private String suffix;
-    private String serverNameId;
 
     public HqAccountingProcessHelper(CommcareToSalesforceSettings__c serverSettings, String suffix) {
         this.serverSettings = serverSettings;
@@ -18,7 +17,6 @@ public class HqAccountingProcessHelper {
         this.endPoint = this.serverSettings.Server_URL__c + suffix;
         this.lastRunDate = this.serverSettings.Last_Run_Date__c != null ?  this.serverSettings.Last_Run_Date__c.year() + '-' + this.serverSettings.Last_Run_Date__c.month() + '-'
                                                     + this.serverSettings.Last_Run_Date__c.day() : '1990-1-1';
-        this.serverNameId = this.serverSettings.Name.replaceAll(' ', '-');
     }
 
     /**
@@ -39,6 +37,7 @@ public class HqAccountingProcessHelper {
             }
         } catch(Exception e) {
             Commcare_Job_Settings__c settings = Commcare_Job_Settings__c.getOrgDefaults();
+            System.debug('Error : ' + e);
             EmailHelper.sendEmailFromException(settings.Error_Emails__c.split(','), 'Commcare sync Error', 'Cannot fetch total count for Accountings : '
                                                 + this.serverSettings.Name + ' ' + this.suffix, e);
             HqBatchJobHelper.endDomainJob();
@@ -75,6 +74,7 @@ public class HqAccountingProcessHelper {
         req.setTimeout(120000);
 
         Http http = new Http();
+        System.debug('Endpoint: ' + req.getEndpoint());
         HTTPResponse res = http.send(req);
         System.debug('--- status --' + res.getStatusCode());
         if(res.getStatusCode() != 200) {
@@ -141,6 +141,8 @@ public class HqAccountingProcessHelper {
     private Integer processSoftwareProductRate(String jsonString) {
         JSONParser parser = JSON.createParser(jsonString);
         List<Accounting_SoftwareProductRate__c> softwareProductRateList = new List<Accounting_SoftwareProductRate__c>();
+        List<hqInt_ModelClass.Accounting_SoftwareProductRate> softwareProductRateModelList = new List<hqInt_ModelClass.Accounting_SoftwareProductRate>();
+        List<String> ids = new List<String>();
 
         while (parser.nextToken() != null) {
             if (parser.getCurrentToken() == JSONToken.FIELD_NAME && parser.getText() == 'objects') {
@@ -149,23 +151,36 @@ public class HqAccountingProcessHelper {
                     if (parser.getCurrentToken() == JSONToken.START_OBJECT) {
                         hqInt_ModelClass.Accounting_SoftwareProductRate softwareProductRate = (hqInt_ModelClass.Accounting_SoftwareProductRate) parser.readValueAs(hqInt_ModelClass.Accounting_SoftwareProductRate.class);
                         System.debug('--softwareProductRate--' + softwareProductRate);
-
-                        softwareProductRateList.add(softwareProductRate.createDbObject(this.serverSettings.Name));
+                        softwareProductRateModelList.add(softwareProductRate);
+                        ids.add(softwareProductRate.id);
                         parser.skipChildren();
                     }
                 }
             }
         }
 
-        upsert softwareProductRateList id__c;
+        Map<String, Id> externalIdMap = new Map<String, Id>();
+        for (Accounting_SoftwareProductRate__c sfp : [SELECT Id, id__c FROM Accounting_SoftwareProductRate__c WHERE id__c IN: ids AND Server_Name__c =: this.serverSettings.Name]) {
+            externalIdMap.put(sfp.id__c, sfp.Id);
+        }
+
+        for (hqInt_ModelClass.Accounting_SoftwareProductRate sfp : softwareProductRateModelList) {
+            Accounting_SoftwareProductRate__c obj = sfp.createDbObject(this.serverSettings.Name);
+            if (externalIdMap.containsKey(obj.id__c)) {
+                obj.Id = externalIdMap.get(obj.id__c);
+            }
+            softwareProductRateList.add(obj);
+        }
+
+        upsert softwareProductRateList;
         return softwareProductRateList.size();
     }
 
     private Integer processSoftwarePlan(String jsonString) {
         JSONParser parser = JSON.createParser(jsonString);
         hqInt_ModelClass.Accounting_SoftwarePlan obj;
-        List<hqInt_ModelClass.Accounting_SoftwarePlan> listModelSoftwarePlan = new List<hqInt_ModelClass.Accounting_SoftwarePlan>();
         List<Accounting_Softwareplan__c> listSobjectSoftwarePlan = new List<Accounting_Softwareplan__c>();
+        List<String> ids = new List<String>();
 
         while (parser.nextToken() != null) {
             if (parser.getCurrentToken() == JSONToken.FIELD_NAME && parser.getText() == 'objects') {
@@ -173,19 +188,26 @@ public class HqAccountingProcessHelper {
                     System.debug('--getText---'+ parser.getText());
                     if (parser.getCurrentToken() == JSONToken.START_OBJECT) {
                         obj = (hqInt_ModelClass.Accounting_SoftwarePlan)parser.readValueAs(hqInt_ModelClass.Accounting_SoftwarePlan.class);
-                        listModelSoftwarePlan.add(obj);
+                        listSobjectSoftwarePlan.add(obj.createDbObject(this.serverSettings.Name));
+                        ids.add(obj.id);
                         parser.skipChildren();
                     }
                 }
             }
         }
 
-        for (hqInt_ModelClass.Accounting_SoftwarePlan softwarePlan : listModelSoftwarePlan) {
-            Accounting_Softwareplan__c softwarePlanC = softwarePlan.createDbObject(this.serverSettings.Name);
-            listSobjectSoftwarePlan.add(softwarePlanC);
+        Map<String, Id> externalIdMap = new Map<String, Id>();
+        for (Accounting_Softwareplan__c sfp : [SELECT Id, id__c FROM Accounting_Softwareplan__c WHERE id__c IN: ids AND Server_Name__c =: this.serverSettings.Name]) {
+            externalIdMap.put(sfp.id__c, sfp.Id);
         }
 
-        upsert listSobjectSoftwarePlan id__c;
+        for (Accounting_Softwareplan__c sfp : listSobjectSoftwarePlan) {
+            if (externalIdMap.containsKey(sfp.id__c)) {
+                sfp.Id = externalIdMap.get(sfp.id__c);
+            }
+        }
+
+        upsert listSobjectSoftwarePlan;
         return listSobjectSoftwarePlan.size();
     }
 
@@ -196,7 +218,7 @@ public class HqAccountingProcessHelper {
         List<Accounting_SoftwarePlanVersion__c> listSobject = new List<Accounting_SoftwarePlanVersion__c>();
         Set<String> planIdSet = new Set<String>();
         Set<String> productRateIdSet = new Set<String>();
-        
+        Set<String> ids = new Set<String>();
 
         while (parser.nextToken() != null) {
             if (parser.getCurrentToken() == JSONToken.FIELD_NAME && parser.getText() == 'objects') {
@@ -207,44 +229,53 @@ public class HqAccountingProcessHelper {
                         listModelObj.add(obj);
 
                         if (obj.plan != null) {
-                            planIdSet.add(obj.plan + this.serverNameId);
+                            planIdSet.add(obj.plan);
                         }
                         if (obj.product_rates != null && obj.product_rates.size() > 0) {
-                            productRateIdSet.add(obj.product_rates[0] + this.serverNameId);
+                            productRateIdSet.add(obj.product_rates[0]);
                         }
+                        ids.add(obj.id);
                         parser.skipChildren();
                     }
                 }
             }
         }
 
+        Map<String, Id> externalIdMap = new Map<String, Id>();
+        for (Accounting_SoftwarePlanVersion__c sfp : [SELECT Id, id__c FROM Accounting_SoftwarePlanVersion__c WHERE id__c IN: ids AND Server_Name__c =: this.serverSettings.Name]) {
+            externalIdMap.put(sfp.id__c, sfp.Id);
+        }
+
         Map<String, Id> mapJsonIdToSfId = new Map<String, Id>();
-        for (Accounting_Softwareplan__c softwarePlan : [SELECT Id, id__c FROM Accounting_Softwareplan__c WHERE id__c in :planIdSet]) {
+        for (Accounting_Softwareplan__c softwarePlan : [SELECT Id, id__c FROM Accounting_Softwareplan__c WHERE id__c in :planIdSet AND Server_Name__c = : this.serverSettings.Name]) {
             mapJsonIdToSfId.put(softwarePlan.id__c, softwarePlan.Id);
         }
 
         Map<String, Id> mapProductRate = new Map<String, Id>();
-        for (Accounting_SoftwareProductRate__c productRate : [Select Id, id__c From Accounting_SoftwareProductRate__c Where id__c in :productRateIdSet]) {
+        for (Accounting_SoftwareProductRate__c productRate : [SELECT Id, id__c FROM Accounting_SoftwareProductRate__c WHERE id__c in :productRateIdSet AND Server_Name__c = : this.serverSettings.Name]) {
             mapProductRate.put(productRate.id__c, productRate.Id);
         }
 
         for (hqInt_ModelClass.Accounting_SoftwarePlanVersion softwarePlanVersion : listModelObj) {
             Id planid;
-            if (mapJsonIdToSfId.containsKey(softwarePlanVersion.plan + this.serverNameId)) {
-                planid = mapJsonIdToSfId.get(softwarePlanVersion.plan + this.serverNameId);
+            if (mapJsonIdToSfId.containsKey(softwarePlanVersion.plan)) {
+                planid = mapJsonIdToSfId.get(softwarePlanVersion.plan);
             }
 
             Id productaRateId;
             if (softwarePlanVersion.product_rates != null && softwarePlanVersion.product_rates.size() > 0
-                    && mapProductRate.containsKey(softwarePlanVersion.product_rates[0] + this.serverNameId)) {
-                productaRateId = mapProductRate.get(softwarePlanVersion.product_rates[0] + this.serverNameId);
+                    && mapProductRate.containsKey(softwarePlanVersion.product_rates[0])) {
+                productaRateId = mapProductRate.get(softwarePlanVersion.product_rates[0]);
             }
 
             Accounting_SoftwarePlanVersion__c sobj = softwarePlanVersion.createDbObject(planid, productaRateId, this.serverSettings.Name);
+            if (externalIdMap.containsKey(sobj.id__c)) {
+                sobj.Id = externalIdMap.get(sobj.id__c);
+            }
             listSobject.add(sobj);
         }
 
-        upsert listSobject id__c;
+        upsert listSobject;
         return listSobject.size();
     }
 
@@ -263,7 +294,7 @@ public class HqAccountingProcessHelper {
                     System.debug('--getText--' + parser.getText());
                     if (parser.getCurrentToken() == JSONToken.START_OBJECT) {
                         obj = (hqInt_ModelClass.Accounting_BillingAccount)parser.readValueAs(hqInt_ModelClass.Accounting_BillingAccount.class);
-                        setAccountId.add(obj.Id + this.serverNameId);
+                        setAccountId.add(obj.Id);
                         listModelObj.add(obj);
                         parser.skipChildren();
                     }
@@ -271,22 +302,30 @@ public class HqAccountingProcessHelper {
             }
         }
 
+        Map<String, Id> externalIdMap = new Map<String, Id>();
+        for (Accounting_BillingAccount__c sfp : [SELECT Id, id__c FROM Accounting_BillingAccount__c WHERE id__c IN: setAccountId AND Server_Name__c =: this.serverSettings.Name]) {
+            externalIdMap.put(sfp.id__c, sfp.Id);
+        }
+
         System.debug('--setAccountId--' + setAccountId);
-        for (Accounting_BillingContactInfo__c billingContact : [SELECT Id, accountid__c FROM Accounting_BillingContactInfo__c WHERE accountid__c in :setAccountId]) {
+        for (Accounting_BillingContactInfo__c billingContact : [SELECT Id, accountid__c FROM Accounting_BillingContactInfo__c WHERE accountid__c in :setAccountId AND Server_Name__c =: this.serverSettings.Name]) {
             mapAccJsonIdToContactSfId.put(billingContact.accountid__c, billingContact.Id);
         }
 
         for (hqInt_ModelClass.Accounting_BillingAccount billingAccount : listModelObj) {
             Id billingContactId;
-            if (mapAccJsonIdToContactSfId.containsKey(billingAccount.id + this.serverNameId)) {
-                billingContactId = mapAccJsonIdToContactSfId.get(billingAccount.id + this.serverNameId);
+            if (mapAccJsonIdToContactSfId.containsKey(billingAccount.id)) {
+                billingContactId = mapAccJsonIdToContactSfId.get(billingAccount.id);
             }
 
             Accounting_Billingaccount__c sobj = billingAccount.createDbObject(billingContactId, this.serverSettings.Name);
+            if (externalIdMap.containsKey(sobj.id__c)) {
+                sobj.Id = externalIdMap.get(sobj.id__c);
+            }
             listSobject.add(sobj);
         }
 
-        upsert listSobject id__c;
+        upsert listSobject;
         return listSobject.size();
     }
 
@@ -298,6 +337,7 @@ public class HqAccountingProcessHelper {
         Set<String> parentObjectAccountIdSet = new Set<String>(); //PARENT=Account
         Set<String> parentObjectPlanVerIdSet = new Set<String>(); //PARENT=Plan Version
         Set<String> parentObjectSubscriberIdSet = new Set<String>(); //PARENT=Subscriber
+        Set<String> ids = new Set<String>();
 
         while (parser.nextToken() != null) {
             if (parser.getCurrentToken() == JSONToken.FIELD_NAME && parser.getText() == 'objects') {
@@ -307,15 +347,15 @@ public class HqAccountingProcessHelper {
 
                         obj = (hqInt_ModelClass.Accounting_Subscription)parser.readValueAs(hqInt_ModelClass.Accounting_Subscription.class);
                         if (obj.account != null) {
-                            parentObjectAccountIdSet.add(obj.account + this.serverNameId);
+                            parentObjectAccountIdSet.add(obj.account);
                         }
                         if (obj.plan_version != null) {
-                            parentObjectPlanVerIdSet.add(obj.plan_version + this.serverNameId);
+                            parentObjectPlanVerIdSet.add(obj.plan_version);
                         }
                         if (obj.subscriber != null) {
-                            parentObjectSubscriberIdSet.add(obj.subscriber + this.serverNameId);
+                            parentObjectSubscriberIdSet.add(obj.subscriber);
                         }
-
+                        ids.add(obj.id);
                         listModelObj.add(obj);
                         parser.skipChildren();
                     }
@@ -323,18 +363,23 @@ public class HqAccountingProcessHelper {
             }
         }
 
+        Map<String, Id> externalIdMap = new Map<String, Id>();
+        for (Accounting_Subscription__c sfp : [SELECT Id, id__c FROM Accounting_Subscription__c WHERE id__c IN: ids AND Server_Name__c =: this.serverSettings.Name]) {
+            externalIdMap.put(sfp.id__c, sfp.Id);
+        }
+
         Map<String,Id> mapJsonIdToSfIdForAccount = new Map<String,Id>();
-        for (Accounting_Billingaccount__c parentObj : [SELECT Id, id__c FROM Accounting_Billingaccount__c WHERE id__c in :parentObjectAccountIdSet]) {
+        for (Accounting_Billingaccount__c parentObj : [SELECT Id, id__c FROM Accounting_Billingaccount__c WHERE id__c in :parentObjectAccountIdSet AND Server_Name__c =: this.serverSettings.Name]) {
             mapJsonIdToSfIdForAccount.put(parentObj.id__c, parentObj.Id);
         }
 
         Map <String, Id> mapJsonIdToSfIdForPlanVer = new Map<String, Id>();
-        for (Accounting_SoftwarePlanVersion__c parentObj : [SELECT Id, id__c FROM Accounting_SoftwarePlanVersion__c WHERE id__c in :parentObjectPlanVerIdSet]) {
+        for (Accounting_SoftwarePlanVersion__c parentObj : [SELECT Id, id__c FROM Accounting_SoftwarePlanVersion__c WHERE id__c in :parentObjectPlanVerIdSet AND Server_Name__c =: this.serverSettings.Name]) {
             mapJsonIdToSfIdForPlanVer.put(parentObj.id__c, parentObj.Id);
         }
 
         Map <String, Accounting_Subscriber__c> mapJsonIdToSfIdForSubscriber = new Map<String, Accounting_Subscriber__c>();
-        for (Accounting_Subscriber__c parentObj : [SELECT Id,id__c, domain_lookup__c FROM Accounting_Subscriber__c WHERE id__c in :parentObjectSubscriberIdSet]) {
+        for (Accounting_Subscriber__c parentObj : [SELECT Id,id__c, domain_lookup__c FROM Accounting_Subscriber__c WHERE id__c in :parentObjectSubscriberIdSet AND Server_Name__c =: this.serverSettings.Name]) {
             mapJsonIdToSfIdForSubscriber.put(parentObj.id__c, parentObj);
         }
 
@@ -345,23 +390,26 @@ public class HqAccountingProcessHelper {
             Id parentObjectSubscriberId;
             Id domainId;
 
-            if (mapJsonIdToSfIdForAccount.containsKey(subscription.account + this.serverNameId)) {
-                parentObjectAccountId = mapJsonIdToSfIdForAccount.get(subscription.account + this.serverNameId);
+            if (mapJsonIdToSfIdForAccount.containsKey(subscription.account)) {
+                parentObjectAccountId = mapJsonIdToSfIdForAccount.get(subscription.account);
             }
-            if (mapJsonIdToSfIdForPlanVer.containsKey(subscription.plan_version + this.serverNameId)) {
-                parentObjectPlanVerId = mapJsonIdToSfIdForPlanVer.get(subscription.plan_version + this.serverNameId);
+            if (mapJsonIdToSfIdForPlanVer.containsKey(subscription.plan_version)) {
+                parentObjectPlanVerId = mapJsonIdToSfIdForPlanVer.get(subscription.plan_version);
             }
-            if (mapJsonIdToSfIdForSubscriber.containsKey(subscription.subscriber + this.serverNameId)) {
-                parentObjectSubscriberId = mapJsonIdToSfIdForSubscriber.get(subscription.subscriber + this.serverNameId).Id;
-                domainId = mapJsonIdToSfIdForSubscriber.get(subscription.subscriber + this.serverNameId).domain_lookup__c;
+            if (mapJsonIdToSfIdForSubscriber.containsKey(subscription.subscriber)) {
+                parentObjectSubscriberId = mapJsonIdToSfIdForSubscriber.get(subscription.subscriber).Id;
+                domainId = mapJsonIdToSfIdForSubscriber.get(subscription.subscriber).domain_lookup__c;
             }
 
             Accounting_Subscription__c sobj = subscription.createDbObject(parentObjectAccountId, parentObjectPlanVerId, parentObjectSubscriberId,
                                                                             domainId, this.serverSettings.Name);
+            if (externalIdMap.containsKey(sobj.id__c)) {
+                sobj.Id = externalIdMap.get(sobj.id__c);
+            }
             listSobject.add(sobj);
         }
 
-        upsert listSobject id__c;
+        upsert listSobject;
         return listSobject.size();
     }
 
@@ -376,6 +424,7 @@ public class HqAccountingProcessHelper {
         Map <String, String> mapSubscriptionJsonIdToFeatureRatesJsonId = new Map <String, String>();
         Map <String, String> mapFeatureRateJsonIdToSfId = new Map <String, String>();
         List <Accounting_FeatureRateForInvoice__c> listFeatureRateForInvoice = new List <Accounting_FeatureRateForInvoice__c>();
+        Set<String> ids = new Set<String>();
 
         while (parser.nextToken() != null) {
             // Start at the array of invoices.
@@ -386,9 +435,10 @@ public class HqAccountingProcessHelper {
                         // Read entire invoice object, including its array of line items.
                         obj = (hqInt_ModelClass.Accounting_Invoice) parser.readValueAs(hqInt_ModelClass.Accounting_Invoice.class);
                         if(obj.subscription != null) {
-                            parentObjectIdSet.add(obj.subscription + this.serverNameId);
+                            parentObjectIdSet.add(obj.subscription);
                         }
                         listModelObj.add(obj);
+                        ids.add(obj.id);
                         parser.skipChildren();
 
                         System.debug('--invoiceObj--' + obj);
@@ -397,9 +447,14 @@ public class HqAccountingProcessHelper {
             }
         }
 
+        Map<String, Id> externalIdMap = new Map<String, Id>();
+        for (Accounting_Invoice__c sfp : [SELECT Id, id__c FROM Accounting_Invoice__c WHERE id__c IN: ids AND Server_Name__c =: this.serverSettings.Name]) {
+            externalIdMap.put(sfp.id__c, sfp.Id);
+        }
+
         Map <String, String> mapASubscriptionJsonIdToDomainId = new Map <String, String>();
         for (Accounting_Subscription__c parentObj : [SELECT Id, Accounting_Subscriber__r.domain_lookup__c, id__c, plan_version__r.FeatureRates__c, account__c
-                                                     FROM Accounting_Subscription__c WHERE id__c in :parentObjectIdSet]) {
+                                                     FROM Accounting_Subscription__c WHERE id__c in :parentObjectIdSet AND Server_Name__c =: this.serverSettings.Name]) {
             mapJsonIdToSfId.put(parentObj.id__c, parentObj.Id);
             if (String.isNotBlank(parentObj.plan_version__r.FeatureRates__c)) {
                 setFeatureRates.addAll(parentObj.plan_version__r.FeatureRates__c.split(','));
@@ -410,7 +465,7 @@ public class HqAccountingProcessHelper {
             }
         }
 
-        for(Accounting_Featurerate__c featureRate : [SELECT id, id__c FROM Accounting_Featurerate__c WHERE id__c in :setFeatureRates]) {
+        for(Accounting_Featurerate__c featureRate : [SELECT id, id__c FROM Accounting_Featurerate__c WHERE id__c in :setFeatureRates AND Server_Name__c =: this.serverSettings.Name]) {
             mapFeatureRateJsonIdToSfId.put(featureRate.id__c, featureRate.id);
         }
 
@@ -419,32 +474,35 @@ public class HqAccountingProcessHelper {
 
         for (hqInt_ModelClass.Accounting_Invoice invoice : listModelObj) {
             Id parentId;
-            if(mapJsonIdToSfId.containsKey(invoice.subscription + this.serverNameId)) {
-                parentId = mapJsonIdToSfId.get(invoice.subscription + this.serverNameId);
+            if(mapJsonIdToSfId.containsKey(invoice.subscription)) {
+                parentId = mapJsonIdToSfId.get(invoice.subscription);
             }
 
             Id domainId;
-            if (mapASubscriptionJsonIdToDomainId.containsKey(invoice.subscription + this.serverNameId)) {
-                domainId = mapASubscriptionJsonIdToDomainId.get(invoice.subscription + this.serverNameId);
+            if (mapASubscriptionJsonIdToDomainId.containsKey(invoice.subscription)) {
+                domainId = mapASubscriptionJsonIdToDomainId.get(invoice.subscription);
             }
 
             Accounting_Invoice__c sobj = invoice.createDbObject(parentId, domainId, this.serverSettings.Name);
+            if (externalIdMap.containsKey(sobj.id__c)) {
+                sobj.Id = externalIdMap.get(sobj.id__c);
+            }
             listSobject.add(sobj);
         }
 
-        upsert listSobject id__c;
+        upsert listSobject;
 
         //prepare a map of Accid to invid
         Map <String, String> mapAccIdToInvId = new Map <String, String>();
         for(Accounting_Invoice__c invoice : [SELECT id ,Accounting_Subscription__r.account__c FROM Accounting_Invoice__c WHERE Id in : listSobject
-                                             AND Accounting_Subscription__r.account__c != null]) {
+                                             AND Accounting_Subscription__r.account__c != null AND Server_Name__c =: this.serverSettings.Name]) {
             mapAccIdToInvId.put(invoice.Accounting_Subscription__r.account__c, invoice.Id);
         }
 
         //using the above map of Accid to invid, preapre a map of invid to paymentrecid.
         Map <String, List<String>> mapInvIdToPymntRecIdList = new Map <String, List<String>>();
         for (Accounting_Paymentrecord__c paymentRec : [SELECT id, payment_method__r.account__c FROM Accounting_Paymentrecord__c
-                                                       WHERE payment_method__r.account__c in :mapAccIdToInvId.keySet() ]) {
+                                                       WHERE payment_method__r.account__c in :mapAccIdToInvId.keySet() AND Server_Name__c =: this.serverSettings.Name]) {
             if (mapAccIdToInvId.containsKey(paymentRec.payment_method__r.account__c)) {
                 Id invId = mapAccIdToInvId.get(paymentRec.payment_method__r.account__c);
                 if (mapInvIdToPymntRecIdList.containsKey(invId)) {
@@ -503,6 +561,7 @@ public class HqAccountingProcessHelper {
         List <hqInt_ModelClass.Accounting_Subscriber> listModelObj = new List <hqInt_ModelClass.Accounting_Subscriber>();
         List <Accounting_Subscriber__c> listSobject = new List <Accounting_Subscriber__c>();
         Set <String> parentObjectIdSet = new Set <String>();
+        Set<String> ids = new Set<String>();
 
         while (parser.nextToken() != null) {
             if (parser.getCurrentToken() == JSONToken.FIELD_NAME && parser.getText() == 'objects') {
@@ -512,9 +571,13 @@ public class HqAccountingProcessHelper {
                     if (parser.getCurrentToken() == JSONToken.START_OBJECT) {
                         obj = (hqInt_ModelClass.Accounting_Subscriber)parser.readValueAs(hqInt_ModelClass.Accounting_Subscriber.class);
                         if(obj.domain != null) {
+                            if (obj.domain.length() > 80) {
+                                obj.domain = obj.domain.subString(0, 80);
+                            }
                             parentObjectIdSet.add(obj.domain);
                         }
                         listModelObj.add(obj);
+                        ids.add(obj.id);
                         parser.skipChildren();
                     }
                 }
@@ -523,6 +586,11 @@ public class HqAccountingProcessHelper {
 
         System.debug('--domainnames--'+parentObjectIdSet);
         Map <String, Id> mapJsonIdToSfId = new Map <String, Id>();
+
+        Map<String, Id> externalIdMap = new Map<String, Id>();
+        for (Accounting_Subscriber__c af : [SELECT Id, id__c FROM Accounting_Subscriber__c WHERE id__c IN: ids AND Server_Name__c =: this.serverSettings.Name]) {
+            externalIdMap.put(af.id__c, af.Id);
+        }
 
         for (Domain__c parentObj : [SELECT Id, Name FROM Domain__c WHERE Name in :parentObjectIdSet AND Server_Name__c =: this.serverSettings.Name]) {
             mapJsonIdToSfId.put(parentObj.Name, parentObj.Id);
@@ -536,17 +604,21 @@ public class HqAccountingProcessHelper {
             }
             System.debug('--parentid--' + parentid);
             Accounting_Subscriber__c sobj = subscriber.createDbObject(parentId, this.serverSettings.Name);
+            if (externalIdMap.containsKey(sobj.id__c)) {
+                sobj.Id = externalIdMap.get(sobj.id__c);
+            }
             listSobject.add(sobj);
         }
 
-        upsert listSobject id__c;
+        upsert listSobject;
         return listSobject.size();
     }
 
     private Integer processFeature(String jsonString) {
         JSONParser parser = JSON.createParser(jsonString);
         hqInt_ModelClass.Accounting_Feature obj;
-        List <accounting_feature__c> listSobject = new List<accounting_feature__c>();
+        List <Accounting_feature__c> listSobject = new List<Accounting_feature__c>();
+        Set<String> ids = new Set<String>();
 
         while (parser.nextToken() != null) {
             if (parser.getCurrentToken() == JSONToken.FIELD_NAME && parser.getText() == 'objects') {
@@ -555,13 +627,25 @@ public class HqAccountingProcessHelper {
                     if (parser.getCurrentToken() == JSONToken.START_OBJECT) {
                         obj = (hqInt_ModelClass.Accounting_Feature)parser.readValueAs(hqInt_ModelClass.Accounting_Feature.class);
                         listSobject.add(obj.createDbObject(this.serverSettings.Name));
+                        ids.add(obj.id);
                         parser.skipChildren();
                     }
                 }
             }
         }
 
-        upsert listSobject id__c;
+        Map<String, Id> externalIdMap = new Map<String, Id>();
+        for (Accounting_feature__c af : [SELECT Id, id__c FROM Accounting_feature__c WHERE id__c IN: ids AND Server_Name__c =: this.serverSettings.Name]) {
+            externalIdMap.put(af.id__c, af.Id);
+        }
+
+        for (Accounting_feature__c af : listSobject) {
+            if (externalIdMap.containsKey(af.id__c)) {
+                af.Id = externalIdMap.get(af.id__c);
+            }
+        }
+
+        upsert listSobject;
         return listSobject.size();
     }
 
@@ -571,6 +655,7 @@ public class HqAccountingProcessHelper {
         List <hqInt_ModelClass.Accounting_FeatureRate> listModelObj = new List <hqInt_ModelClass.Accounting_FeatureRate>();
         List <Accounting_Featurerate__c> listSobject = new List <Accounting_Featurerate__c>();
         Set <String> parentObjectIdSet = new Set <String>();
+        Set<String> ids = new Set<String>();
 
         while (parser.nextToken() != null) {
             if (parser.getCurrentToken() == JSONToken.FIELD_NAME && parser.getText() == 'objects') {
@@ -579,10 +664,11 @@ public class HqAccountingProcessHelper {
                     if (parser.getCurrentToken() == JSONToken.START_OBJECT) {
                         obj = (hqInt_ModelClass.Accounting_FeatureRate)parser.readValueAs(hqInt_ModelClass.Accounting_FeatureRate.class);
                         if(obj.feature != null) {
-                            parentObjectIdSet.add(obj.feature + this.serverNameId);
+                            parentObjectIdSet.add(obj.feature);
                         }
 
                         listModelObj.add(obj);
+                        ids.add(obj.id);
                         parser.skipChildren();
 
                         System.debug('--newobj---' + obj);
@@ -592,20 +678,28 @@ public class HqAccountingProcessHelper {
         }
 
         Map <String, Id> mapJsonIdToSfId = new Map <String, Id>();
-        for (accounting_feature__c parentObj : [SELECT Id, id__c FROM accounting_feature__c WHERE id__c in :parentObjectIdSet]) {
+        for (accounting_feature__c parentObj : [SELECT Id, id__c FROM accounting_feature__c WHERE id__c in :parentObjectIdSet AND Server_Name__c =: this.serverSettings.Name]) {
             mapJsonIdToSfId.put(parentObj.id__c, parentObj.Id);
+        }
+
+        Map<String, Id> externalIdMap = new Map<String, Id>();
+        for (Accounting_Featurerate__c af : [SELECT Id, id__c FROM Accounting_Featurerate__c WHERE id__c IN: ids AND Server_Name__c =: this.serverSettings.Name]) {
+            externalIdMap.put(af.id__c, af.Id);
         }
 
         for (hqInt_ModelClass.Accounting_FeatureRate featureRate : listModelObj) {
             Id parentId;
-            if(mapJsonIdToSfId.containsKey(featureRate.feature + this.serverNameId)) {
-                parentId = mapJsonIdToSfId.get(featureRate.feature + this.serverNameId);
+            if(mapJsonIdToSfId.containsKey(featureRate.feature)) {
+                parentId = mapJsonIdToSfId.get(featureRate.feature);
             }
             Accounting_Featurerate__c sobj = featureRate.createDbObject(parentId, this.serverSettings.Name);
+            if (externalIdMap.containsKey(sobj.id__c)) {
+                sobj.Id = externalIdMap.get(sobj.id__c);
+            }
             listSobject.add(sobj);
         }
 
-        upsert listSobject id__c;
+        upsert listSobject;
         return listSobject.size();
     }
 
@@ -613,6 +707,8 @@ public class HqAccountingProcessHelper {
         JSONParser parser = JSON.createParser(jsonString);
         hqInt_ModelClass.Accounting_BillingContactInfo obj;
         List <Accounting_BillingContactInfo__c> listSobject = new List <Accounting_BillingContactInfo__c>();
+        List <hqInt_ModelClass.Accounting_BillingContactInfo> modelList = new List<hqInt_ModelClass.Accounting_BillingContactInfo>();
+        Set<String> ids = new set<String>();
 
         while (parser.nextToken() != null)  {
             if (parser.getCurrentToken() == JSONToken.FIELD_NAME && parser.getText() == 'objects') {
@@ -620,23 +716,38 @@ public class HqAccountingProcessHelper {
                     System.debug('--getText---'+ parser.getText());
                     if (parser.getCurrentToken() == JSONToken.START_OBJECT) {
                         obj = (hqInt_ModelClass.Accounting_BillingContactInfo) parser.readValueAs(hqInt_ModelClass.Accounting_BillingContactInfo.class);
-                        listSobject.add(obj.createDbObject(this.serverSettings.Name));
+                        ids.add(obj.account);
+                        modelList.add(obj);
                     }
                 }
             }
         }
 
-        upsert listSobject accountid__c;
+        Map<String, Id> externalIdMap = new Map<String, Id>();
+        for (Accounting_BillingContactInfo__c af : [SELECT Id, accountid__c FROM Accounting_BillingContactInfo__c WHERE accountid__c IN: ids AND Server_Name__c =: this.serverSettings.Name]) {
+            externalIdMap.put(af.accountid__c, af.Id);
+        }
+
+        for (hqInt_ModelClass.Accounting_BillingContactInfo billC : modelList) {
+            Accounting_BillingContactInfo__c sobj = billC.createDbObject(this.serverSettings.Name);
+            if (externalIdMap.containsKey(sobj.accountid__c)) {
+                sobj.Id = externalIdMap.get(sobj.accountid__c);
+            }
+            listSobject.add(sobj);
+        }
+
+        upsert listSobject;
         return listSobject.size();
     }
 
     private Integer processLineItem(String jsonString) {
         JSONParser parser = JSON.createParser(jsonString);
         hqInt_ModelClass.Accounting_LineItem obj;
-        List <hqInt_ModelClass.Accounting_LineItem> listModelObj = new List <hqInt_ModelClass.Accounting_LineItem>();
-        List <Accounting_LineItems__c> listSobject = new List <Accounting_LineItems__c>();
-        Set <String> parentInvoiceObjectIdSet = new Set <String>();
-        Set <String> parentFeatureObjectIdSet = new Set <String>();
+        List<hqInt_ModelClass.Accounting_LineItem> listModelObj = new List <hqInt_ModelClass.Accounting_LineItem>();
+        List<Accounting_LineItems__c> listSobject = new List <Accounting_LineItems__c>();
+        Set<String> parentInvoiceObjectIdSet = new Set<String>();
+        Set<String> parentFeatureObjectIdSet = new Set<String>();
+        Set<String> ids = new Set<String>();
 
         while (parser.nextToken() != null)  {
             if (parser.getCurrentToken() == JSONToken.FIELD_NAME && parser.getText() == 'objects') {
@@ -646,42 +757,54 @@ public class HqAccountingProcessHelper {
 
                         obj = (hqInt_ModelClass.Accounting_LineItem)parser.readValueAs(hqInt_ModelClass.Accounting_LineItem.class);
                         if(obj.invoice != null) {
-                            parentInvoiceObjectIdSet.add(obj.invoice + this.serverNameId);
+                            parentInvoiceObjectIdSet.add(obj.invoice);
                         }
                         if(obj.feature_rate != null) {
-                            parentFeatureObjectIdSet.add(obj.feature_rate + this.serverNameId);
+                            parentFeatureObjectIdSet.add(obj.feature_rate);
                         }
                         listModelObj.add(obj);
+                        ids.add(obj.id);
                         parser.skipChildren();
                     }
                 }
             }
         }
 
+        Map<String, Id> externalIdMap = new Map<String, Id>();
+        for (Accounting_LineItems__c af : [SELECT Id, id__c FROM Accounting_LineItems__c WHERE id__c IN: ids AND Server_Name__c =: this.serverSettings.Name]) {
+            externalIdMap.put(af.id__c, af.Id);
+        }
+
         Map <String, Id> mapInvoiceJsonIdToSfId = new Map <String, Id>();
-        for (Accounting_Invoice__c parentObj : [SELECT Id, id__c FROM Accounting_Invoice__c WHERE id__c in :parentInvoiceObjectIdSet]) {
+        for (Accounting_Invoice__c parentObj : [SELECT Id, id__c FROM Accounting_Invoice__c WHERE id__c in :parentInvoiceObjectIdSet AND Server_Name__c =: this.serverSettings.Name]) {
             mapInvoiceJsonIdToSfId.put(parentObj.id__c, parentObj.Id);
         }
+
         Map <String, Id> mapFeatureRateJsonIdToSfId = new Map <String, Id>();
-        for (Accounting_Featurerate__c parentObj : [SELECT Id, id__c FROM Accounting_Featurerate__c WHERE id__c in :parentFeatureObjectIdSet]) {
+        for (Accounting_Featurerate__c parentObj : [SELECT Id, id__c FROM Accounting_Featurerate__c WHERE id__c in :parentFeatureObjectIdSet AND Server_Name__c =: this.serverSettings.Name]) {
             mapFeatureRateJsonIdToSfId.put(parentObj.id__c, parentObj.Id);
         }
+
         for (hqInt_ModelClass.Accounting_LineItem lineItem : listModelObj) {
+            System.debug('lineItem: ' + lineItem);
             Id parentInvoiceSfId;
             Id parentFeatureRateSfId;
-            if(mapInvoiceJsonIdToSfId.containsKey(lineItem.invoice + this.serverNameId)) {
-                parentInvoiceSfId = mapInvoiceJsonIdToSfId.get(lineItem.invoice + this.serverNameId);
+            if(mapInvoiceJsonIdToSfId.containsKey(lineItem.invoice)) {
+                parentInvoiceSfId = mapInvoiceJsonIdToSfId.get(lineItem.invoice);
             }
-            if(mapFeatureRateJsonIdToSfId.containsKey(lineItem.feature_rate + this.serverNameId)) {
-                parentFeatureRateSfId = mapFeatureRateJsonIdToSfId.get(lineItem.feature_rate + this.serverNameId);
+            if(mapFeatureRateJsonIdToSfId.containsKey(lineItem.feature_rate)) {
+                parentFeatureRateSfId = mapFeatureRateJsonIdToSfId.get(lineItem.feature_rate);
             }
             if(parentInvoiceSfId != null) {
                 Accounting_LineItems__c sobj = lineItem.createDbObject(parentInvoiceSfId, parentFeatureRateSfId, this.serverSettings.Name);
+                if (externalIdMap.containsKey(sobj.id__c)) {
+                    sobj.Id = externalIdMap.get(sobj.id__c);
+                }
                 listSobject.add(sobj);
             }
         }
 
-        upsert listSobject id__c;
+        upsert listSobject;
         return listSobject.size();
     }
 
@@ -692,6 +815,7 @@ public class HqAccountingProcessHelper {
         List <Accounting_PaymentMethod__c> listSobject = new List <Accounting_PaymentMethod__c>();
         Set <String> parentBillingAccJsonIdSet = new Set <String>();
         Set <String> parentBillingAccAdminJsonIdSet = new Set <String>();
+        Set<String> ids = new Set<String>();
 
         while (parser.nextToken() != null) {
             if (parser.getCurrentToken() == JSONToken.FIELD_NAME && parser.getText() == 'objects') {
@@ -701,12 +825,13 @@ public class HqAccountingProcessHelper {
 
                         obj = (hqInt_ModelClass.Accounting_PaymentMethod)parser.readValueAs(hqInt_ModelClass.Accounting_PaymentMethod.class);
                         if(obj.account != null) {
-                            parentBillingAccJsonIdSet.add(obj.account + this.serverNameId);
+                            parentBillingAccJsonIdSet.add(obj.account);
                         }
                         if(obj.billing_admin != null) {
-                            parentBillingAccAdminJsonIdSet.add(obj.billing_admin + this.serverNameId);
+                            parentBillingAccAdminJsonIdSet.add(obj.billing_admin);
                         }
                         listModelObj.add(obj);
+                        ids.add(obj.id);
                         parser.skipChildren();
                         System.debug('--newobj---' + obj);
                     }
@@ -714,13 +839,18 @@ public class HqAccountingProcessHelper {
             }
         }
 
+        Map<String, Id> externalIdMap = new Map<String, Id>();
+        for (Accounting_PaymentMethod__c af : [SELECT Id, id__c FROM Accounting_PaymentMethod__c WHERE id__c IN: ids AND Server_Name__c =: this.serverSettings.Name]) {
+            externalIdMap.put(af.id__c, af.Id);
+        }
+
         Map <String, Id> mapBillingAccJsonIdToSfId = new Map <String, Id>();
-        for (Accounting_BillingAccount__c parentObj : [SELECT Id, id__c FROM Accounting_BillingAccount__c WHERE id__c in :parentBillingAccJsonIdSet]) {
+        for (Accounting_BillingAccount__c parentObj : [SELECT Id, id__c FROM Accounting_BillingAccount__c WHERE id__c in :parentBillingAccJsonIdSet AND Server_Name__c =: this.serverSettings.Name]) {
             mapBillingAccJsonIdToSfId.put(parentObj.id__c, parentObj.Id);
         }
 
         Map <String, Id> mapBillingAccAdminJsonIdToSfId = new Map <String, Id>();
-        for (Accounting_BillingAccountAdmin__c parentObj : [SELECT Id,id__c FROM Accounting_BillingAccountAdmin__c WHERE id__c in :parentBillingAccAdminJsonIdSet]) {
+        for (Accounting_BillingAccountAdmin__c parentObj : [SELECT Id, id__c FROM Accounting_BillingAccountAdmin__c WHERE id__c in :parentBillingAccAdminJsonIdSet AND Server_Name__c =: this.serverSettings.Name]) {
             mapBillingAccAdminJsonIdToSfId.put(parentObj.id__c, parentObj.Id);
         }
  
@@ -728,17 +858,20 @@ public class HqAccountingProcessHelper {
             Id parentBillingAccSfId;
             Id parentBillingAccAdminSfId;
 
-            if(mapBillingAccJsonIdToSfId.containsKey(paymentMethod.account + this.serverNameId)) {
-                parentBillingAccSfId = mapBillingAccJsonIdToSfId.get(paymentMethod.account + this.serverNameId);
+            if(mapBillingAccJsonIdToSfId.containsKey(paymentMethod.account)) {
+                parentBillingAccSfId = mapBillingAccJsonIdToSfId.get(paymentMethod.account);
             }
-            if(mapBillingAccAdminJsonIdToSfId.containsKey(paymentMethod.billing_admin + this.serverNameId)) {
-                parentBillingAccAdminSfId = mapBillingAccAdminJsonIdToSfId.get(paymentMethod.billing_admin + this.serverNameId);
+            if(mapBillingAccAdminJsonIdToSfId.containsKey(paymentMethod.billing_admin)) {
+                parentBillingAccAdminSfId = mapBillingAccAdminJsonIdToSfId.get(paymentMethod.billing_admin);
             }
             Accounting_PaymentMethod__c sobj = paymentMethod.createDbObject(parentBillingAccSfId, parentBillingAccAdminSfId, this.serverSettings.Name);
+            if (externalIdMap.containsKey(sobj.id__c)) {
+                sobj.Id = externalIdMap.get(sobj.id__c);
+            }
             listSobject.add(sobj);
         }
 
-        upsert listSobject id__c;
+        upsert listSobject;
         return listSobject.size();
     }
 
@@ -746,30 +879,41 @@ public class HqAccountingProcessHelper {
         List <hqInt_ModelClass.Accounting_PaymentRecord> listModelObj = new List <hqInt_ModelClass.Accounting_PaymentRecord>();
         List <Accounting_Paymentrecord__c> listSobject = new List <Accounting_Paymentrecord__c>();
         Set <String> setParentObjectJsonId = new Set <String>();
+        Set<String> ids = new Set<String>();
 
         hqInt_ModelClass.WRP_Accounting_PaymentRecord obj = (hqInt_ModelClass.WRP_Accounting_PaymentRecord) JSON.deserialize(jsonString, hqInt_ModelClass.WRP_Accounting_PaymentRecord.class);
         listModelObj = obj.objects;
 
         for (hqInt_ModelClass.Accounting_PaymentRecord paymentRecord : listModelObj) {
             if(paymentRecord.payment_method != null) {
-                setParentObjectJsonId.add(paymentRecord.payment_method + this.serverNameId);
+                setParentObjectJsonId.add(paymentRecord.payment_method);
             }
+            ids.add(paymentRecord.id);
+        }
+
+        Map<String, Id> externalIdMap = new Map<String, Id>();
+        for (Accounting_Paymentrecord__c af : [SELECT Id, id__c FROM Accounting_Paymentrecord__c WHERE id__c IN: ids AND Server_Name__c =: this.serverSettings.Name]) {
+            externalIdMap.put(af.id__c, af.Id);
         }
 
         Map <String, Id> mapJsonIdToSfId = new Map <String, Id>();
-        for (Accounting_PaymentMethod__c parentObj : [SELECT Id, id__c FROM Accounting_PaymentMethod__c WHERE id__c in :setParentObjectJsonId]) {
+        for (Accounting_PaymentMethod__c parentObj : [SELECT Id, id__c FROM Accounting_PaymentMethod__c WHERE id__c in :setParentObjectJsonId
+                                                            AND Server_Name__c =: this.serverSettings.Name]) {
             mapJsonIdToSfId.put(parentObj.id__c, parentObj.Id);
         }
         for (hqInt_ModelClass.Accounting_PaymentRecord paymentRecord : listModelObj) {
             Id parentId;
-            if(mapJsonIdToSfId.containsKey(paymentRecord.payment_method + this.serverNameId)) {
-                parentId = mapJsonIdToSfId.get(paymentRecord.payment_method + this.serverNameId);
+            if(mapJsonIdToSfId.containsKey(paymentRecord.payment_method)) {
+                parentId = mapJsonIdToSfId.get(paymentRecord.payment_method);
             }
             Accounting_Paymentrecord__c sobj = paymentRecord.createDbObject(parentId, this.serverSettings.Name);
+            if (externalIdMap.containsKey(sobj.id__c)) {
+                sobj.Id = externalIdMap.get(sobj.id__c);
+            }
             listSobject.add(sobj);
         }
 
-        upsert listSobject id__c;
+        upsert listSobject;
         return listSobject.size();
     }
 
@@ -793,32 +937,42 @@ public class HqAccountingProcessHelper {
         List <hqInt_ModelClass.Accounting_SubscriptionAdjustment> listModelObj = new List <hqInt_ModelClass.Accounting_SubscriptionAdjustment>();
         List <Accounting_SubscriptionAdjustment__c> listSobject = new List <Accounting_SubscriptionAdjustment__c>();
         Set <String> setParentObjectJsonId = new Set <String>();
+        Set<String> ids = new Set<String>();
 
         hqInt_ModelClass.WRP_Accounting_SubscriptionAdjustment obj = (hqInt_ModelClass.WRP_Accounting_SubscriptionAdjustment)JSON.deserialize(jsonString,hqInt_ModelClass.WRP_Accounting_SubscriptionAdjustment.class);
         listModelObj = obj.objects;
 
         for (hqInt_ModelClass.Accounting_SubscriptionAdjustment subscriptionAdjustment : listModelObj) {
             if(subscriptionAdjustment.subscription != null) {
-                setParentObjectJsonId.add(subscriptionAdjustment.subscription + this.serverNameId);
+                setParentObjectJsonId.add(subscriptionAdjustment.subscription);
             }
+            ids.add(subscriptionAdjustment.id);
+        }
+
+        Map<String, Id> externalIdMap = new Map<String, Id>();
+        for (Accounting_SubscriptionAdjustment__c af : [SELECT Id, id__c FROM Accounting_SubscriptionAdjustment__c WHERE id__c IN: ids AND Server_Name__c =: this.serverSettings.Name]) {
+            externalIdMap.put(af.id__c, af.Id);
         }
 
         Map <String, Id> mapJsonIdToSfId = new Map <String, Id>();
-        for (Accounting_Subscription__c parentObj : [Select Id, id__c From Accounting_Subscription__c Where id__c in :setParentObjectJsonId]) {
+        for (Accounting_Subscription__c parentObj : [SELECT Id, id__c FROM Accounting_Subscription__c WHERE id__c in :setParentObjectJsonId AND Server_Name__c =: this.serverSettings.Name]) {
             mapJsonIdToSfId.put(parentObj.id__c,parentObj.Id);
         }
 
         for (hqInt_ModelClass.Accounting_SubscriptionAdjustment subscriptionAdjustment : listModelObj) {
             Id parentid;
             if(subscriptionAdjustment.subscription != null) {
-                parentid = mapJsonIdToSfId.get(subscriptionAdjustment.subscription + this.serverNameId);
+                parentid = mapJsonIdToSfId.get(subscriptionAdjustment.subscription);
             }
             Accounting_SubscriptionAdjustment__c sobj = subscriptionAdjustment.createDbObject(parentid, this.serverSettings.Name);
-
+            if (externalIdMap.containsKey(sobj.id__c)) {
+                sobj.Id = externalIdMap.get(sobj.id__c);
+            }
+            System.debug('sobj: ' + sobj);
             listSobject.add(sobj);
         }
 
-        upsert listSobject id__c;
+        upsert listSobject;
         return listSobject.size();
     }
 
@@ -827,43 +981,53 @@ public class HqAccountingProcessHelper {
         List <Accounting_CreditLine__c> listSobject = new List <Accounting_CreditLine__c>();
         Set <String> setParentSubscriptionJsonId = new Set <String>();
         Set <String> setParentAccountJsonId = new Set <String>();
+        Set <String> ids = new Set <String>();
 
         hqInt_ModelClass.WRP_Accounting_CreditLine obj = (hqInt_ModelClass.WRP_Accounting_CreditLine)JSON.deserialize(jsonString,hqInt_ModelClass.WRP_Accounting_CreditLine.class);
         listModelObj = obj.objects;
 
         for (hqInt_ModelClass.Accounting_CreditLine creditLine : listModelObj) {
             if(creditLine.subscription != null) {
-                setParentSubscriptionJsonId.add(creditLine.subscription + this.serverNameId);
+                setParentSubscriptionJsonId.add(creditLine.subscription);
             }
             if(creditLine.account != null) {
-                setParentAccountJsonId.add(creditLine.account + this.serverNameId);
+                setParentAccountJsonId.add(creditLine.account);
             }
+            ids.add(creditLine.id);
+        }
+
+        Map<String, Id> externalIdMap = new Map<String, Id>();
+        for (Accounting_CreditLine__c af : [SELECT Id, id__c FROM Accounting_CreditLine__c WHERE id__c IN: ids AND Server_Name__c =: this.serverSettings.Name]) {
+            externalIdMap.put(af.id__c, af.Id);
         }
 
         Map <String,Id> mapSubscriptionJsonIdToSfId = new Map <String,Id>();
-        for (Accounting_Subscription__c parentObj : [Select Id, id__c From Accounting_Subscription__c Where id__c in :setParentSubscriptionJsonId]) {
+        for (Accounting_Subscription__c parentObj : [SELECT Id, id__c FROM Accounting_Subscription__c WHERE id__c in :setParentSubscriptionJsonId AND Server_Name__c =: this.serverSettings.Name]) {
             mapSubscriptionJsonIdToSfId.put(parentObj.id__c,parentObj.Id);
         }
         Map <String, Id> mapAccountJsonIdToSfId = new Map <String, Id>();
-        for (Accounting_BillingAccount__c parentObj : [Select Id,id__c From Accounting_BillingAccount__c Where id__c in :setParentAccountJsonId]) {
+        for (Accounting_BillingAccount__c parentObj : [SELECT Id,id__c FROM Accounting_BillingAccount__c WHERE id__c in :setParentAccountJsonId AND Server_Name__c =: this.serverSettings.Name]) {
             mapAccountJsonIdToSfId.put(parentObj.id__c,parentObj.Id);
         }
 
         for (hqInt_ModelClass.Accounting_CreditLine creditLine : listModelObj) {
             Id parentSubscriptionSfId;
-            if(creditLine.subscription != null && mapSubscriptionJsonIdToSfId.containsKey(creditLine.subscription + this.serverNameId)) {
-                parentSubscriptionSfId =  mapSubscriptionJsonIdToSfId.get(creditLine.subscription + this.serverNameId);
+            if(creditLine.subscription != null && mapSubscriptionJsonIdToSfId.containsKey(creditLine.subscription)) {
+                parentSubscriptionSfId =  mapSubscriptionJsonIdToSfId.get(creditLine.subscription);
             }
             Id parentAccountSfId;
-            if(creditLine.account != null && mapAccountJsonIdToSfId.containsKey(creditLine.account + this.serverNameId)) {
-                parentAccountSfId =  mapAccountJsonIdToSfId.get(creditLine.account + this.serverNameId);
+            if(creditLine.account != null && mapAccountJsonIdToSfId.containsKey(creditLine.account)) {
+                parentAccountSfId =  mapAccountJsonIdToSfId.get(creditLine.account);
             }
 
             Accounting_CreditLine__c sobj = creditLine.createDbObject(parentAccountSfId, parentSubscriptionSfId, this.serverSettings.Name);
+            if (externalIdMap.containsKey(sobj.id__c)) {
+                sobj.Id = externalIdMap.get(sobj.id__c);
+            }
             listSobject.add(sobj);
         }
 
-        upsert listSobject id__c;
+        upsert listSobject;
         return listSobject.size();
     }
 
@@ -874,38 +1038,45 @@ public class HqAccountingProcessHelper {
         Map <String, String> mapLineItemJsonIdToSfId = new Map<String, String>();
         Map <String, String> mapInvoiceJsonIdToSfId = new Map<String, String>();
         Map <String, String> mapPaymentRecJsonIdToSfId = new Map<String, String>();
+        Set <String> ids = new Set<String>();
 
         hqInt_ModelClass.WRP_Accounting_CreditAdjustment obj = (hqInt_ModelClass.WRP_Accounting_CreditAdjustment) JSON.deserialize(jsonString, hqInt_ModelClass.WRP_Accounting_CreditAdjustment.class);
         listModelObj = obj.objects;
 
         for (hqInt_ModelClass.Accounting_CreditAdjustment creditAdjustment : listModelObj) {
             if(creditAdjustment.credit_line != null) {
-                mapCreditLineJsonIdToSfId.put(creditAdjustment.credit_line + this.serverNameId, null);
+                mapCreditLineJsonIdToSfId.put(creditAdjustment.credit_line, null);
             }
             if(creditAdjustment.line_item != null) {
-                mapLineItemJsonIdToSfId.put(creditAdjustment.line_item + this.serverNameId, null);
+                mapLineItemJsonIdToSfId.put(creditAdjustment.line_item, null);
             }
             if(creditAdjustment.invoice != null) {
-                mapInvoiceJsonIdToSfId.put(creditAdjustment.invoice + this.serverNameId, null);
+                mapInvoiceJsonIdToSfId.put(creditAdjustment.invoice, null);
             }
             if(creditAdjustment.payment_record != null) {
-                mapPaymentRecJsonIdToSfId.put(creditAdjustment.payment_record + this.serverNameId, null);
+                mapPaymentRecJsonIdToSfId.put(creditAdjustment.payment_record, null);
             }
             if(creditAdjustment.related_credit != null) {
-                mapCreditLineJsonIdToSfId.put(creditAdjustment.related_credit + this.serverNameId, null);
+                mapCreditLineJsonIdToSfId.put(creditAdjustment.related_credit, null);
             }
+            ids.add(creditAdjustment.id);
         }
 
-        for (Accounting_CreditLine__c parentObj : [Select Id, id__c From Accounting_CreditLine__c Where id__c in :mapCreditLineJsonIdToSfId.keySet()]) {
+        Map<String, Id> externalIdMap = new Map<String, Id>();
+        for (Accounting_CreditAdjustment__c af : [SELECT Id, id__c FROM Accounting_CreditAdjustment__c WHERE id__c IN: ids AND Server_Name__c =: this.serverSettings.Name]) {
+            externalIdMap.put(af.id__c, af.Id);
+        }
+
+        for (Accounting_CreditLine__c parentObj : [SELECT Id, id__c FROM Accounting_CreditLine__c WHERE id__c in :mapCreditLineJsonIdToSfId.keySet() AND Server_Name__c =: this.serverSettings.Name]) {
             mapCreditLineJsonIdToSfId.put(parentObj.id__c, parentObj.Id);
         }
-        for (Accounting_LineItems__c parentObj : [Select Id, id__c From Accounting_LineItems__c Where id__c in :mapLineItemJsonIdToSfId.keySet()]) {
+        for (Accounting_LineItems__c parentObj : [SELECT Id, id__c FROM Accounting_LineItems__c WHERE id__c in :mapLineItemJsonIdToSfId.keySet() AND Server_Name__c =: this.serverSettings.Name]) {
             mapLineItemJsonIdToSfId.put(parentObj.id__c, parentObj.Id);
         }
-        for (Accounting_Invoice__c parentObj : [Select Id, id__c From Accounting_Invoice__c Where id__c in :mapInvoiceJsonIdToSfId.keySet()]) {
+        for (Accounting_Invoice__c parentObj : [SELECT Id, id__c FROM Accounting_Invoice__c WHERE id__c in :mapInvoiceJsonIdToSfId.keySet() AND Server_Name__c =: this.serverSettings.Name]) {
             mapInvoiceJsonIdToSfId.put(parentObj.id__c, parentObj.Id);
         }
-        for (Accounting_Paymentrecord__c parentObj : [Select Id, id__c From Accounting_Paymentrecord__c Where id__c in :mapPaymentRecJsonIdToSfId.keySet()]) {
+        for (Accounting_Paymentrecord__c parentObj : [SELECT Id, id__c FROM Accounting_Paymentrecord__c WHERE id__c in :mapPaymentRecJsonIdToSfId.keySet() AND Server_Name__c =: this.serverSettings.Name]) {
             mapPaymentRecJsonIdToSfId.put(parentObj.id__c, parentObj.Id);
         }
 
@@ -916,28 +1087,30 @@ public class HqAccountingProcessHelper {
             Id paymentRecSfId;
             Id relatedCreditLineSfId;
 
-            if(creditAdjustment.credit_line != null && mapCreditLineJsonIdToSfId.containsKey(creditAdjustment.credit_line + this.serverNameId)) {
-                creditLineSfId =  mapCreditLineJsonIdToSfId.get(creditAdjustment.credit_line + this.serverNameId);
+            if(creditAdjustment.credit_line != null && mapCreditLineJsonIdToSfId.containsKey(creditAdjustment.credit_line)) {
+                creditLineSfId =  mapCreditLineJsonIdToSfId.get(creditAdjustment.credit_line);
             }
-            if(creditAdjustment.line_item != null && mapLineItemJsonIdToSfId.containsKey(creditAdjustment.line_item + this.serverNameId)) {
-                lineItemSfId =  mapLineItemJsonIdToSfId.get(creditAdjustment.line_item + this.serverNameId);
+            if(creditAdjustment.line_item != null && mapLineItemJsonIdToSfId.containsKey(creditAdjustment.line_item)) {
+                lineItemSfId =  mapLineItemJsonIdToSfId.get(creditAdjustment.line_item);
             }
-            if(creditAdjustment.invoice != null && mapInvoiceJsonIdToSfId.containsKey(creditAdjustment.invoice + this.serverNameId)) {
-                invoiceSfId =  mapInvoiceJsonIdToSfId.get(creditAdjustment.invoice + this.serverNameId);
+            if(creditAdjustment.invoice != null && mapInvoiceJsonIdToSfId.containsKey(creditAdjustment.invoice)) {
+                invoiceSfId =  mapInvoiceJsonIdToSfId.get(creditAdjustment.invoice);
             }
-            if(creditAdjustment.payment_record != null && mapPaymentRecJsonIdToSfId.containsKey(creditAdjustment.payment_record + this.serverNameId)) {
-                paymentRecSfId =  mapPaymentRecJsonIdToSfId.get(creditAdjustment.payment_record + this.serverNameId);
+            if(creditAdjustment.payment_record != null && mapPaymentRecJsonIdToSfId.containsKey(creditAdjustment.payment_record)) {
+                paymentRecSfId =  mapPaymentRecJsonIdToSfId.get(creditAdjustment.payment_record);
             }
-            if(creditAdjustment.related_credit != null && mapCreditLineJsonIdToSfId.containsKey(creditAdjustment.related_credit + this.serverNameId)) {
-                relatedCreditLineSfId =  mapCreditLineJsonIdToSfId.get(creditAdjustment.related_credit + this.serverNameId);
+            if(creditAdjustment.related_credit != null && mapCreditLineJsonIdToSfId.containsKey(creditAdjustment.related_credit)) {
+                relatedCreditLineSfId =  mapCreditLineJsonIdToSfId.get(creditAdjustment.related_credit);
             }
             Accounting_CreditAdjustment__c sobj = creditAdjustment.createDbObject(creditLineSfId, invoiceSfId, lineItemSfId, paymentRecSfId,
                                                                                     relatedCreditLineSfId, this.serverSettings.Name);
-
+            if (externalIdMap.containsKey(sobj.id__c)) {
+                sobj.Id = externalIdMap.get(sobj.id__c);
+            }
             listSobject.add(sobj);
         }
 
-        upsert listSobject id__c;
+        upsert listSobject;
         return listSobject.size();
     }
 
