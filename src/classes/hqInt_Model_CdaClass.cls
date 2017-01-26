@@ -1,5 +1,5 @@
-public class hqInt_Model_CdaClass 
-{
+public class hqInt_Model_CdaClass {
+
     public DateTime x_date;
     public String doc_type;
     public Boolean signed;
