@@ -25,6 +25,10 @@ public class HqBatchFetchDataDomains implements Database.Batchable<Integer>, Dat
             throw ex;
         }
 
+        Commcare_Job_Settings__c settings = Commcare_Job_Settings__c.getOrgDefaults();
+        settings.Server_Code__c = serverCode;
+        update settings;
+
         this.apiLimitParameter = this.serverSettings.API_Limit_Parameter__c != null ? Integer.valueOf(this.serverSettings.API_Limit_Parameter__c)
                             : 10;
         this.domainHelper = new HqDomainProcessHelper(this.serverSettings);
@@ -33,11 +37,11 @@ public class HqBatchFetchDataDomains implements Database.Batchable<Integer>, Dat
     public Iterable<Integer> start(Database.BatchableContext BC) {
         Integer totalCount = this.domainHelper.getTotalCount();
         List <Integer> listOffset = new List <Integer>();
-        for(Integer i = 0;i <= totalCount / apiLimitParameter; i++) {
-            listOffset.add(i * apiLimitParameter);
+        for(Integer i = 0; i <= totalCount / this.apiLimitParameter; i++) {
+            listOffset.add(i * this.apiLimitParameter);
         }
         if(Test.isRunningTest()) {
-            listOffset = new List<Integer>{0};
+            listOffset = new List<Integer> {0};
         }
 
         System.debug('listOffset: ' + listOffset);

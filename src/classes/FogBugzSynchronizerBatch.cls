@@ -21,9 +21,9 @@ global without sharing class FogBugzSynchronizerBatch implements Database.Batcha
         FogBugz_Settings__c settings = FogBugz_Settings__c.getOrgDefaults();
         this.jobStartDateTime = Datetime.now();
         this.syncSuccess = true;
-        CommcareToSalesforceSettings__c settingsData = CommcareToSalesforceSettings__c.getInstance('BatchFailureReportRecepeint');
-        if (settingsData != null) {
-            this.errorEmailAdress = settingsData.Value__c.split(';');
+        Commcare_Job_Settings__c settingsData = Commcare_Job_Settings__c.getOrgDefaults();
+        if (settingsData != null && settingsData.Error_Emails__c != null) {
+            this.errorEmailAdress = settingsData.Error_Emails__c.split(',');
         }
 
         try {
