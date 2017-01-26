@@ -76,35 +76,35 @@ public class hqInt_Model_DomainClass {
     public hqInt_Model_Billing_address billing_address;
     public hqInt_Model_CdaClass cda;
 
-    public Domain__c createDbObject(HqIntModelCalculatedProperties calculatedProperties) {
+    public Domain__c createDbObject(HqIntModelCalculatedProperties calculatedProperties, String serverName) {
         Domain__c domainObj = new Domain__c();
-        domainObj.case_sharing__c = this.case_sharing==null?false:this.case_sharing;
-        domainObj.commconnect_enabled__c = this.commconnect_enabled==null?false:this.commconnect_enabled;
-        domainObj.commtrack_enabled__c = this.commtrack_enabled==null?false:this.commtrack_enabled;
-        domainObj.count_messages_as_read_by_anyone__c = this.count_messages_as_read_by_anyone==null?false:this.count_messages_as_read_by_anyone;
+        domainObj.case_sharing__c = this.case_sharing == null ? false : this.case_sharing;
+        domainObj.commconnect_enabled__c = this.commconnect_enabled == null ? false : this.commconnect_enabled;
+        domainObj.commtrack_enabled__c = this.commtrack_enabled == null ? false : this.commtrack_enabled;
+        domainObj.count_messages_as_read_by_anyone__c = this.count_messages_as_read_by_anyone == null ? false : this.count_messages_as_read_by_anyone;
         domainObj.default_sms_response__c = this.default_sms_response;
-        domainObj.filter_surveys_from_chat__c = this.filter_surveys_from_chat==null?false:this.filter_surveys_from_chat;
-        domainObj.has_careplan__c = this.has_careplan==null?false:this.has_careplan;
-        domainObj.has_custom_logo__c = this.has_custom_logo==null?false:this.has_custom_logo;
-        domainObj.is_active__c = this.is_active==null?false:this.is_active;
-        domainObj.is_approved__c = this.is_approved==null?false:this.is_approved;
-        domainObj.is_public__c = this.is_public==null?false:this.is_public;
-        domainObj.is_shared__c = this.is_shared==null?false:this.is_shared;
-        domainObj.is_snapshot__c = this.is_snapshot==null?false:this.is_snapshot;
-        domainObj.location_restriction_for_users__c = this.location_restriction_for_users==null?false:this.location_restriction_for_users;
-        domainObj.locations_enabled__c = this.locations_enabled==null?false:this.locations_enabled;
-        domainObj.multimedia_included__c = this.multimedia_included==null?false:this.multimedia_included;
-        domainObj.published__c = this.published==null?false:this.published;
-        domainObj.restrict_superusers__c = this.restrict_superusers==null?false:this.restrict_superusers;
-        domainObj.secure_submissions__c = this.secure_submissions==null?false:this.secure_submissions;
-        domainObj.send_to_duplicated_case_numbers__c = this.send_to_duplicated_case_numbers==null?false:this.send_to_duplicated_case_numbers;
-        domainObj.survey_management_enabled__c = this.survey_management_enabled==null?false:this.survey_management_enabled;
-        domainObj.show_invalid_survey_responses_in_chat__c = this.show_invalid_survey_responses_in_chat==null?false:this.show_invalid_survey_responses_in_chat;
-        domainObj.sms_case_registration_enabled__c = this.sms_case_registration_enabled==null?false:this.sms_case_registration_enabled;
-        domainObj.sms_mobile_worker_registration_enabled__c = this.sms_mobile_worker_registration_enabled==null?false:this.sms_mobile_worker_registration_enabled;
-        domainObj.supports_multiple_locations_per_user__c = this.supports_multiple_locations_per_user== null;
-        domainObj.use_cloudcare_releases__c = this.use_cloudcare_releases == null ? false:this.use_cloudcare_releases;
-        domainObj.use_default_sms_response__c = this.use_default_sms_response==null?false:this.use_default_sms_response;
+        domainObj.filter_surveys_from_chat__c = this.filter_surveys_from_chat == null ? false : this.filter_surveys_from_chat;
+        domainObj.has_careplan__c = this.has_careplan == null ? false : this.has_careplan;
+        domainObj.has_custom_logo__c = this.has_custom_logo == null ? false:this.has_custom_logo;
+        domainObj.is_active__c = this.is_active == null ? false:this.is_active;
+        domainObj.is_approved__c = this.is_approved == null ? false:this.is_approved;
+        domainObj.is_public__c = this.is_public == null ? false : this.is_public;
+        domainObj.is_shared__c = this.is_shared == null ? false : this.is_shared;
+        domainObj.is_snapshot__c = this.is_snapshot == null ? false : this.is_snapshot;
+        domainObj.location_restriction_for_users__c = this.location_restriction_for_users == null ? false : this.location_restriction_for_users;
+        domainObj.locations_enabled__c = this.locations_enabled == null ? false : this.locations_enabled;
+        domainObj.multimedia_included__c = this.multimedia_included == null ? false : this.multimedia_included;
+        domainObj.published__c = this.published == null ? false : this.published;
+        domainObj.restrict_superusers__c = this.restrict_superusers == null ? false : this.restrict_superusers;
+        domainObj.secure_submissions__c = this.secure_submissions == null ? false : this.secure_submissions;
+        domainObj.send_to_duplicated_case_numbers__c = this.send_to_duplicated_case_numbers == null ? false : this.send_to_duplicated_case_numbers;
+        domainObj.survey_management_enabled__c = this.survey_management_enabled == null ? false : this.survey_management_enabled;
+        domainObj.show_invalid_survey_responses_in_chat__c = this.show_invalid_survey_responses_in_chat == null ? false : this.show_invalid_survey_responses_in_chat;
+        domainObj.sms_case_registration_enabled__c = this.sms_case_registration_enabled == null ? false : this.sms_case_registration_enabled;
+        domainObj.sms_mobile_worker_registration_enabled__c = this.sms_mobile_worker_registration_enabled == null ? false : this.sms_mobile_worker_registration_enabled;
+        domainObj.supports_multiple_locations_per_user__c = this.supports_multiple_locations_per_user == null;
+        domainObj.use_cloudcare_releases__c = this.use_cloudcare_releases == null ? false : this.use_cloudcare_releases;
+        domainObj.use_default_sms_response__c = this.use_default_sms_response == null ? false : this.use_default_sms_response;
         domainObj.date_created__c = this.date_created;
         domainObj.launch_date__c = this.launch_date;
         domainObj.snapshot_time__c = this.snapshot_time;
@@ -168,7 +168,7 @@ public class hqInt_Model_DomainClass {
             domainObj.billing_address_doc_type__c = this.billing_address.doc_type;
             domainObj.billing_address_name__c = this.billing_address.name;
             domainObj.billing_address_postal_code__c = this.billing_address.postal_code;
-            domainObj.billing_address_state_province__c = this.billing_address.state_province;        
+            domainObj.billing_address_state_province__c = this.billing_address.state_province;
         }
 
         if(this.cda != null) {
@@ -215,6 +215,8 @@ public class hqInt_Model_DomainClass {
             domainObj.cpFormsIn90Days__c = calculatedProperties.cp_n_forms_90_d;
             domainObj.cpHasApp__c = calculatedProperties.cp_has_app == null ? false : calculatedProperties.cp_has_app;
         }
+
+        domainObj.Server_Name__c = serverName;
 
         return domainobj;
     }

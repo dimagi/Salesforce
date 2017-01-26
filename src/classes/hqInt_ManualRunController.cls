@@ -1,40 +1,59 @@
 public with sharing class hqInt_ManualRunController {
 
-    public Boolean batchIsRunning{get;set;}
-    public String batchSubmittedDate{get;set;}
-    public AsyncApexJob batchClassJob{get;set;}
-    public Boolean phase2Running{get;set;}
-    public list <JobWrapper> phase2Jobs{get;set;}
+    public String phaseOneServer { get; set;}
+    public String phaseTwoServer { get; set;}
+    public List<SelectOption> serverCodes { get; set;}
+    public Boolean batchIsRunning { get; set;}
+    public Boolean phase2Running { get; set;}
+    public String batchSubmittedDate { get; set;}
+    public AsyncApexJob batchClassJob { get; set;}
+    public list <JobWrapper> phase2Jobs { get; set;}
 
     public hqInt_ManualRunController() {
+        List<String> values = HqBatchJobHelper.getCommcareServers(true);
+        this.serverCodes = new List<SelectOption>();
+        for (String val : values) {
+            this.serverCodes.add(new SelectOption(val, val));
+        }
+        this.phaseOneServer = values[0];
+        this.phaseTwoServer = values[0];
         fetchRunningInstances();
         fetchRunningInstancesPhase2();
     }
 
     public void fetchRunningInstances() {
+        this.batchIsRunning = false;
         ApexClass batchClass;
-        batchIsRunning = false;
+        Commcare_Job_Settings__c settings = Commcare_Job_Settings__c.getOrgDefaults();
+        if (settings.Is_Domain_Job_Running__c == true) {
+            this.batchIsRunning = true;
+            this.phaseOneServer = settings.Server_Code__c;
+        }
 
         try {
-            batchClass = [SELECT id FROM ApexClass WHERE Name='hqInt_MainClassBatch' limit 1];
+            batchClass = [SELECT Id FROM ApexClass WHERE Name='HqBatchFetchDataDomains' LIMIT 1];
         } catch(exception e) {
             ApexPages.addMessage(new ApexPages.message(ApexPages.severity.ERROR, 'Class not found'));
         }
 
         batchClassJob = null;
-        AsyncApexJob[] batchClassJobList = [SELECT id, JobItemsProcessed, TotalJobItems, createdDate FROM AsyncApexJob WHERE ApexClassID = :batchClass.id AND Status IN ('Holding', 'Queued', 'Preparing', 'Processing') order by createdDate desc limit 1];
+        AsyncApexJob[] batchClassJobList = [SELECT Id, JobItemsProcessed, TotalJobItems, createdDate FROM AsyncApexJob WHERE ApexClassID = :batchClass.Id
+                                                AND Status IN ('Holding', 'Queued', 'Preparing', 'Processing') ORDER BY createdDate DESC LIMIT 1];
 
         if(batchClassJobList != null && batchClassJobList.size() > 0) {
-            batchIsRunning = true;
-            batchClassJob = batchClassJobList[0];
-            batchSubmittedDate = batchClassJobList[0].createdDate.format();
+            this.batchIsRunning = true;
+            this.batchClassJob = batchClassJobList[0];
+            this.batchSubmittedDate = batchClassJobList[0].createdDate.format();
         }
     }
 
-    public pagereference runBatchJob() {
+    public PageReference runBatchJob() {
         fetchRunningInstances();
-        if(!batchIsRunning) {
-            Database.executeBatch(new hqInt_MainClassBatch(),1);
+        if(!this.batchIsRunning) {
+            Commcare_Job_Settings__c settings = Commcare_Job_Settings__c.getOrgDefaults();
+            settings.Is_Domain_Job_Running__c = true;
+            update settings;
+            Database.executeBatch(new HqBatchFetchDataDomains(this.phaseOneServer, new List<String>()), 1);
         }
 
         fetchRunningInstances();
@@ -43,57 +62,43 @@ public with sharing class hqInt_ManualRunController {
 
     //FOR phase 2
     public void fetchRunningInstancesPhase2() {
-        list <String> objectNames = new list <String>();
-        map <String,String> mapClassNameToSimplifiedName = new map <String,String>();
-
-        mapClassNameToSimplifiedName.put('hqInt_BatchFetchObjectFeature', accounting_feature__c.SObjectType.getDescribe().getLabel());
-        mapClassNameToSimplifiedName.put('hqInt_BatchFetchObjectSoftwarePlan', Accounting_Softwareplan__c.SObjectType.getDescribe().getLabel());
-        mapClassNameToSimplifiedName.put('hqInt_BatchFetchObjectSubscriber', Accounting_Subscriber__c.SObjectType.getDescribe().getLabel());
-        mapClassNameToSimplifiedName.put('hqInt_BatchFetchObjectFeatureRate', Accounting_Featurerate__c.SObjectType.getDescribe().getLabel());
-        mapClassNameToSimplifiedName.put('hqInt_BatchFetchObjectProductRate', Accounting_SoftwareProductRate__c.SObjectType.getDescribe().getLabel());
-        mapClassNameToSimplifiedName.put('hqInt_BatchFetchObjectSoftwarePlanVer', Accounting_SoftwarePlanVersion__c.SObjectType.getDescribe().getLabel());
-        mapClassNameToSimplifiedName.put('hqInt_BatchFetchObjectBillingAccount', Accounting_Billingaccount__c.SObjectType.getDescribe().getLabel());
-        mapClassNameToSimplifiedName.put('hqInt_BatchFetchObjectSubscription', Accounting_Subscription__c.SObjectType.getDescribe().getLabel());
-        mapClassNameToSimplifiedName.put('hqInt_BatchFetchObjectAcctingInvoice', Accounting_Invoice__c.SObjectType.getDescribe().getLabel());
-        mapClassNameToSimplifiedName.put('hqInt_BatchFetchObjectLineItem', Accounting_LineItems__c.SObjectType.getDescribe().getLabel());
-        mapClassNameToSimplifiedName.put('hqInt_BatchFetchObjectBillingContactInfo', Accounting_BillingContactInfo__c.SObjectType.getDescribe().getLabel());
-        mapClassNameToSimplifiedName.put('hqInt_BatchFetchObjectPaymentMethod', Accounting_PaymentMethod__c.SObjectType.getDescribe().getLabel());
-        mapClassNameToSimplifiedName.put('hqInt_BatchFetchObjectBillingAccAdmin', Accounting_BillingAccountAdmin__c.SObjectType.getDescribe().getLabel());
-        mapClassNameToSimplifiedName.put('hqInt_BatchFetchObjectPaymentRec', Accounting_Paymentrecord__c.SObjectType.getDescribe().getLabel());
-        mapClassNameToSimplifiedName.put('hqInt_BatchFetchObjectSubcriptionAdj', Accounting_SubscriptionAdjustment__c.SObjectType.getDescribe().getLabel());
-        mapClassNameToSimplifiedName.put('hqInt_BatchFetchObjectCreditLine', Accounting_CreditLine__c.SObjectType.getDescribe().getLabel());
-        mapClassNameToSimplifiedName.put('hqInt_BatchFetchObjectCreditAdjustment', Accounting_CreditAdjustment__c.SObjectType.getDescribe().getLabel());
-
+        List <String> objectNames = new List <String>();
         objectNames.add(accounting_feature__c.SObjectType.getDescribe().getLabel());
         objectNames.add(Accounting_BillingAccountAdmin__c.SObjectType.getDescribe().getLabel());
         objectNames.add(Accounting_Softwareplan__c.SObjectType.getDescribe().getLabel());
         objectNames.add(Accounting_Subscriber__c.SObjectType.getDescribe().getLabel());
-
         objectNames.add(Accounting_Featurerate__c.SObjectType.getDescribe().getLabel());
         objectNames.add(Accounting_SoftwareProductRate__c.SObjectType.getDescribe().getLabel());
         objectNames.add(Accounting_SoftwarePlanVersion__c.SObjectType.getDescribe().getLabel());
         objectNames.add(Accounting_PaymentMethod__c.SObjectType.getDescribe().getLabel());
         objectNames.add(Accounting_BillingContactInfo__c.SObjectType.getDescribe().getLabel());
-
         objectNames.add(Accounting_Paymentrecord__c.SObjectType.getDescribe().getLabel());
         objectNames.add(Accounting_Billingaccount__c.SObjectType.getDescribe().getLabel());
         objectNames.add(Accounting_Subscription__c.SObjectType.getDescribe().getLabel());
         objectNames.add(Accounting_Invoice__c.SObjectType.getDescribe().getLabel());
-
         objectNames.add(Accounting_LineItems__c.SObjectType.getDescribe().getLabel());
         objectNames.add(Accounting_SubscriptionAdjustment__c.SObjectType.getDescribe().getLabel());
         objectNames.add(Accounting_CreditLine__c.SObjectType.getDescribe().getLabel());
         objectNames.add(Accounting_CreditAdjustment__c.SObjectType.getDescribe().getLabel());
 
-        batchClassJob = null;
-        AsyncApexJob[] batchClassJobList = [SELECT id,JobItemsProcessed,TotalJobItems, createdDate,ApexClass.id, ApexClass.Name, Status, CompletedDate
+        this.phase2Running = false;
+        Commcare_Job_Settings__c settings = Commcare_Job_Settings__c.getOrgDefaults();
+        this.phase2Running = settings.Is_Job_Running__c;
+        String customObject = settings.Job_Helper_Field__c;
+        this.phaseTwoServer = this.phase2Running == true ? settings.Server_Code__c : this.phaseTwoServer;
+
+        this.batchClassJob = null;
+        AsyncApexJob[] batchClassJobList = [SELECT Id, JobItemsProcessed, TotalJobItems, createdDate, ApexClass.Id, ApexClass.Name, Status, CompletedDate
                                             FROM AsyncApexJob
-                                            WHERE ApexClass.Name in :mapClassNameToSimplifiedName.keyset()
-                                            ORDER BY createdDate desc ];
+                                            WHERE ApexClass.Name = 'HqBatchFetchDataObjects' AND Status IN ('Holding', 'Queued', 'Preparing', 'Processing')
+                                            ORDER BY createdDate DESC LIMIT 1];
+
+        if(batchClassJobList != null && batchClassJobList.size() > 0) {
+            this.phase2Running = true;
+            this.batchClassJob = batchClassJobList[0];
+        }
 
         phase2Jobs = new List<JobWrapper>();
-        Set<Id> classesAddedToList = new Set <Id>();
-        phase2Running = false;
 
         for (String jobName : objectNames) {
             JobWrapper jobWrapper = new jobWrapper();
@@ -101,40 +106,31 @@ public with sharing class hqInt_ManualRunController {
             phase2Jobs.add(jobWrapper);
         }
 
-        for (AsyncApexJob asyncApexJob : batchClassJobList) {
-            if (!classesAddedToList.contains(asyncApexJob.ApexClass.id)) {
-                JobWrapper jobWrapper;
-                for (JobWrapper job : phase2Jobs) {
-                    if (job.jobName == mapClassNameToSimplifiedName.get(asyncApexJob.ApexClass.Name)) {
-                        jobWrapper = job;
-                        break;
-                    }
-                }
-
-                jobWrapper.batchClassId = asyncApexJob.ApexClass.Id;
-                jobWrapper.jobItemsProcessed = asyncApexJob.JobItemsProcessed;
-                jobWrapper.totalJobItems = asyncApexJob.TotalJobItems;
-                if(asyncApexJob.Status == 'Holding' || asyncApexJob.Status == 'Queued' || asyncApexJob.Status == 'Preparing' || asyncApexJob.Status ==  'Processing') {
-                    phase2Running = true;
-                    jobWrapper.isRunning = true;
-                } else {
-                    jobWrapper.isRunning = false;
-                }
-
-                jobWrapper.submittedDate =     asyncApexJob.createdDate.format();
-                if(asyncApexJob.completedDate != null) {
-                    jobWrapper.completedDate =     asyncApexJob.CompletedDate.format();
-                }
+        JobWrapper jobWrapper;
+        for (JobWrapper job : phase2Jobs) {
+            if (job.jobName == customObject) {
+                jobWrapper = job;
+                break;
             }
+        }
 
-            classesAddedToList.add(asyncApexJob.ApexClass.id);
+        if (jobWrapper != null && batchClassJob != null) {
+            jobWrapper.jobItemsProcessed = batchClassJob.JobItemsProcessed;
+            jobWrapper.totalJobItems = batchClassJob.TotalJobItems;
+            jobWrapper.isRunning = true;
         }
     }
 
-    public pagereference runBatchJobPhase2() {
+    public PageReference runBatchJobPhase2() {
         fetchRunningInstancesPhase2();
-        if (!phase2Running) {
-            hqInt_BatchFetchObjectHelperClass.runNextBatch(1);
+
+        if (this.phase2Running == false) {
+            Commcare_Job_Settings__c settings = Commcare_Job_Settings__c.getOrgDefaults();
+            settings.Job_Start_Date__c = Date.today();
+            settings.Is_Job_Running__c = true;
+            update settings;
+
+            HqBatchJobHelper.runNextBatchJob(1, this.phaseTwoServer, new List<String>());
         }
 
         fetchRunningInstancesPhase2();
@@ -142,13 +138,9 @@ public with sharing class hqInt_ManualRunController {
     }
 
     public class JobWrapper {
-
-        public String jobName{get;set;}
-        public Id batchClassId{get;set;}
-        public Boolean isRunning{get;set;}
-        public String submittedDate{get;set;}
-        public String completedDate{get;set;}
-        public integer jobItemsProcessed{get;set;}
-        public integer totalJobItems{get;set;}
+        public String jobName { get; set;}
+        public Boolean isRunning { get; set;}
+        public Integer jobItemsProcessed { get; set;}
+        public Integer totalJobItems { get; set;}
     }
 }

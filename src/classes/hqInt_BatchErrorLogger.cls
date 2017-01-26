@@ -1,7 +1,11 @@
 public class hqInt_BatchErrorLogger {
     public static void sendErrorEmails(String batchId, String subject, String body) {
         Messaging.SingleEmailMessage email = new Messaging.SingleEmailMessage();
-        String[] toAddresses = CommcareToSalesforceSettings__c.getInstance('BatchFailureReportRecepeint').Value__c.split(';');
+        String errorEmails = Commcare_Job_Settings__c.getOrgDefaults().Error_Emails__c;
+        if (errorEmails == '' || errorEmails == null) {
+            return;
+        }
+        String[] toAddresses = errorEmails.split(',');
 
         // Sets the paramaters of the email
         email.setSubject(subject);
