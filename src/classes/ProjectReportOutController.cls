@@ -231,12 +231,32 @@ public with sharing class ProjectReportOutController {
                 DContract__c dcontract = [SELECT Id, Name, Last_Report_Out_Status__c, Percent_through_SOW_deliverables__c, Budget_Used__c, of_Services_budget_for_GS__c, Total_Costs__c, Services_Spend__c,
                                         Buffer_by_SOW_Completed__c, Execution_Efficiency__c, Expected_Buffer__c, Direct_Costs_Total_Expenses__c, Net_Income_based_on_SOW_Completed__c, Product_Spend__c,
                                         GS_Execution_Budget__c, GS_Services_Completed__c, GS_Net_Income_to_Date__c, GS_Net_Income_to_Date_Handover__c, GS_Services_Completed_Handover__c,
-                                        GS_Revenue__c FROM DContract__c WHERE Id =: reportContractId];
+                                        GS_Revenue__c, Project_Quality_Overall_Status__c, Customer_Satisfaction_of_services__c FROM DContract__c WHERE Id =: reportContractId];
 
                 dcontract.Last_Report_Out_Status__c = status;
                 dcontract.Percent_through_SOW_deliverables__c = proTabContractPercntgethroughSOW;
 
                 PRO_Contract_Snapshot__c proContractSnapshot = createProSnapshot(proToUpdate.Contract_Snapshot__c == null ? null : proToUpdate.Contract_Snapshot__c, dcontract);
+
+                Decimal percent = 0;
+                if (status == 'Green') {
+                    percent = 1;
+                } else if (status == 'Yellow') {
+                    percent = 0.5;
+                }
+                Decimal projectQuality = percent * (dcontract.GS_Execution_Budget__c != null ? dcontract.GS_Execution_Budget__c : 0);
+                proContractSnapshot.Project_Quality_Overall_Status__c = projectQuality;
+                dcontract.Project_Quality_Overall_Status__c = projectQuality;
+
+                percent = 0;
+                if (PartnerRelationship == 'Green') {
+                    percent = 1;
+                } else if (PartnerRelationship == 'Yellow') {
+                    percent = 0.5;
+                }
+                Decimal customerSatisfaction = percent * (dcontract.GS_Execution_Budget__c != null ? dcontract.GS_Execution_Budget__c : 0);
+                proContractSnapshot.Customer_Satisfaction_of_services__c = customerSatisfaction;
+                dcontract.Customer_Satisfaction_of_services__c = customerSatisfaction;
 
                 PROEmailContractSnoozeHelper.resetEmailReminder(reportContractId);
                 upsert proContractSnapshot Id;
