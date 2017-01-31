@@ -129,6 +129,7 @@ public class HqBatchJobHelper {
                 Database.executeBatch(new HqBatchFetchDataObjects(batchToBeRun, Accounting_CreditAdjustment__c.SObjectType.getDescribe().getLabel(),
                                         serverCode, 'credit_adjustment/', nextServers), 1);
             } else if (nextServers.size() > 0) {
+                HqBatchJobHelper.updateMissingRelations(serverCode);
                 String newServerCode = nextServers.get(0);
                 nextServers.remove(0);
                 Database.executeBatch(new HqBatchFetchDataObjects(1, Accounting_feature__c.SObjectType.getDescribe().getLabel(), newServerCode,
@@ -150,5 +151,116 @@ public class HqBatchJobHelper {
             }
         }
         return servers;
+    }
+
+    public static void updateMissingRelations(String serverName) {
+        try {
+            updateMissingSubscriberDomain(serverName);
+            updateMissingSpaceLink(serverName);
+            updateMissingSubscriptionDomain(serverName);
+        } catch (Exception ex) {
+            Commcare_Job_Settings__c settings = Commcare_Job_Settings__c.getOrgDefaults();
+            System.debug('Error: ' + ex);
+            EmailHelper.sendEmailFromException(settings.Error_Emails__c.split(','), 'Commcare sync Error', 'Cannot update missing relations: ' + serverName, ex);
+        }
+    }
+
+    private static void updateMissingSpaceLink(String serverName) {
+        List<Accounting_Invoice__c> accountingInvoice = [SELECT id__c, Accounting_Subscription__r.Accounting_Subscriber__r.domain__c, Project_Space__c
+                                                         FROM Accounting_Invoice__c WHERE Project_Space__c = '' AND Server_Name__c =: serverName];
+        List<Accounting_Invoice__c> accountingInvoiceToUpdate = new List<Accounting_Invoice__c>();
+        System.debug('---Accounting Invoice with blank domain relation link---' + accountingInvoice);
+        if (accountingInvoice.size() == 0) {
+            return;
+        }
+
+        Set<String> domainNames = new Set<String>();
+        for(Accounting_Invoice__c ac : accountingInvoice) {
+            if (ac.Accounting_Subscription__r != null && ac.Accounting_Subscription__r.Accounting_Subscriber__r != null) {
+                domainNames.add(ac.Accounting_Subscription__r.Accounting_Subscriber__r.domain__c);
+                accountingInvoiceToUpdate.add(ac);
+            }
+        }
+
+        System.debug('---domainNames---' + domainNames);
+
+        if (domainNames.size() > 0) {
+            Map <String, Id> mapDomainNameId = new Map<String, Id>();
+            for(Domain__c domain : [SELECT Id, Name FROM Domain__c WHERE Name in: domainNames AND Server_Name__c =: serverName]) {
+                mapDomainNameId.put(domain.Name, domain.Id);
+            }
+
+            for (Accounting_Invoice__c ac : accountingInvoiceToUpdate) {
+                Id domainId = mapDomainNameId.get(ac.Accounting_Subscription__r.Accounting_Subscriber__r.domain__c);
+                if (domainId != null) {
+                    ac.Project_Space__c = domainId;
+                }
+            }
+
+            update accountingInvoiceToUpdate;
+        }
+    }
+
+    private static void updateMissingSubscriberDomain(String serverName) {
+        List<Accounting_Subscriber__c> subscribers = [SELECT domain__c, domain_lookup__c FROM Accounting_Subscriber__c WHERE domain_lookup__c = '' AND Server_Name__c =: serverName];
+        System.debug('---Subscribers with blank domain relation---' + subscribers);
+
+        if (subscribers.size() > 0) {
+            Set<String> domainNames = new Set<String>();
+            for (Accounting_Subscriber__c subscriber : subscribers) {
+                domainNames.add(subscriber.domain__c);
+            }
+            System.debug('---domainNames---' + domainNames);
+
+            if (domainNames.size() == 0) {
+                return;
+            }
+
+            Map <String, Id> mapDomainNameId = new Map<String, Id>();
+            for(Domain__c domain : [SELECT Id, Name FROM Domain__c WHERE Name in: domainNames AND Server_Name__c =: serverName]) {
+                mapDomainNameId.put(domain.Name, domain.Id);
+            }
+
+            for (Accounting_Subscriber__c subscriber : subscribers) {
+                Id domainId = mapDomainNameId.get(subscriber.domain__c);
+                if (domainId != null) {
+                    subscriber.domain_lookup__c = domainId;
+                }
+            }
+
+            update subscribers;
+        }
+    }
+
+    private static void updateMissingSubscriptionDomain(String serverName) {
+        List<Accounting_Subscription__c> subscriptions = [SELECT Id, Name, Accounting_subscriber_domain__c, Accounting_Subscriber__r.domain__c FROM Accounting_Subscription__c
+                                                          WHERE Accounting_subscriber_domain__c = '' AND Accounting_Subscriber__r.domain__c != '' AND Server_Name__c =: serverName];
+        System.debug('---subscriptions with blank domain relation---' + subscriptions);
+
+        if (subscriptions.size() > 0) {
+            Set<String> domainNames = new Set<String>();
+            for (Accounting_Subscription__c subscription : subscriptions) {
+                domainNames.add(subscription.Accounting_Subscriber__r.domain__c);
+            }
+            System.debug('---domainNames---' + domainNames);
+
+            if (domainNames.size() == 0) {
+                return;
+            }
+
+            Map <String, Id> mapDomainNameId = new Map<String, Id>();
+            for(Domain__c domain : [SELECT Id, Name FROM Domain__c WHERE Name in: domainNames AND Server_Name__c =: serverName]) {
+                mapDomainNameId.put(domain.Name, domain.Id);
+            }
+
+            for (Accounting_Subscription__c subscription : subscriptions) {
+                Id domainId = mapDomainNameId.get(subscription.Accounting_Subscriber__r.domain__c);
+                if (domainId != null) {
+                    subscription.Accounting_subscriber_domain__c = domainId;
+                }
+            }
+
+            update subscriptions;
+        }
     }
 }
