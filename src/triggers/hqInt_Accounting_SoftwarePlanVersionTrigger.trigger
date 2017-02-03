@@ -3,7 +3,9 @@ trigger hqInt_Accounting_SoftwarePlanVersionTrigger on Accounting_SoftwarePlanVe
     Map <String, DateTime> mapPlanIdToLastVersionDate = new Map <String, DateTime>();
 
     for(Accounting_SoftwarePlanVersion__c triggRec : trigger.new) {
-        mapPlanIdToLastVersionDate.put(triggRec.Accounting_SoftwarePlan__c,null);
+        if (triggRec.Accounting_SoftwarePlan__c != null) {
+            mapPlanIdToLastVersionDate.put(triggRec.Accounting_SoftwarePlan__c, null);
+        }
     }
     
     for(Accounting_SoftwarePlanVersion__c softPlanVer : [SELECT id,Accounting_SoftwarePlan__c,date_created__c FROM Accounting_SoftwarePlanVersion__c
@@ -26,7 +28,7 @@ trigger hqInt_Accounting_SoftwarePlanVersionTrigger on Accounting_SoftwarePlanVe
         String dateOfLastVerText = 'N/A';
         if(mapPlanIdToLastVersionDate.get(planId) != null)
             dateOfLastVerText = mapPlanIdToLastVersionDate.get(planId).format();
-            
+
         Accounting_Softwareplan__c softwarePlan = new Accounting_Softwareplan__c(id = planId, Date_of_Last_Version__c = mapPlanIdToLastVersionDate.get(planId),
                                                                                     Date_of_Last_Version_Text__c = dateOfLastVerText);
         listSoftwarePlan.add(softwarePlan);
