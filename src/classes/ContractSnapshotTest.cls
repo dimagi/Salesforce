@@ -188,7 +188,7 @@ public class ContractSnapshotTest {
         insert pro8;
 
         Test.startTest();
-        Database.executeBatch(new GSOverallCalculationBatch(Date.newInstance(2017, 3, 8)));
+        Database.executeBatch(new GSOverallCalculationBatch([SELECT Id FROM Business_Unit__c], Date.newInstance(2017, 3, 8)));
         Test.stopTest();
 
         PRO_Contract_Snapshot__c proDromDB = [SELECT Id, GS_Quality_Overall_Status__c, GS_Quality_Customer_Satisfaction__c FROM PRO_Contract_Snapshot__c WHERE Id =: proS8.Id];
@@ -263,7 +263,7 @@ public class ContractSnapshotTest {
         insert pro8;
 
         Test.startTest();
-        Database.executeBatch(new GSOverallCalculationBatch(Date.newInstance(2017, 3, 22)));
+        Database.executeBatch(new GSOverallCalculationBatch([SELECT Id FROM Business_Unit__c], Date.newInstance(2017, 3, 22)));
         Test.stopTest();
 
         PRO_Contract_Snapshot__c proDromDB = [SELECT Id, GS_Quality_Overall_Status__c, GS_Quality_Customer_Satisfaction__c FROM PRO_Contract_Snapshot__c WHERE Id =: proS8.Id];
@@ -338,7 +338,7 @@ public class ContractSnapshotTest {
         insert pro8;
 
         Test.startTest();
-        Database.executeBatch(new GSOverallCalculationBatch(Date.newInstance(2017, 3, 27)));
+        Database.executeBatch(new GSOverallCalculationBatch([SELECT Id FROM Business_Unit__c], Date.newInstance(2017, 3, 27)));
         Test.stopTest();
 
         PRO_Contract_Snapshot__c proDromDB = [SELECT Id, GS_Quality_Overall_Status__c, GS_Quality_Customer_Satisfaction__c FROM PRO_Contract_Snapshot__c WHERE Id =: proS8.Id];

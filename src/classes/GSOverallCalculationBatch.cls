@@ -3,13 +3,21 @@
  */
 public without sharing class GSOverallCalculationBatch implements Database.Batchable<Project_Report_Out__c>, Database.Stateful {
 
+    private List<Business_Unit__c> businessUnits;
+    private Business_Unit__c currentUnit;
+
     private Double gsOverall;
     private Double gsSatisfaction;
     private Double gsBudget;
     private List<Project_Report_Out__c> proList;
     private Date currentDate;
 
-    public GSOverallCalculationBatch() {
+    public GSOverallCalculationBatch(List<Business_Unit__c> businessUnits) {
+        this.businessUnits = businessUnits;
+        if (this.businessUnits.size() > 0) {
+            this.currentUnit = this.businessUnits.get(0);
+            this.businessUnits.remove(0);
+        }
         this.gsOverall = 0;
         this.gsSatisfaction = 0;
         this.gsBudget = 0;
@@ -17,7 +25,12 @@ public without sharing class GSOverallCalculationBatch implements Database.Batch
         this.currentDate = Date.today();
     }
 
-    public GSOverallCalculationBatch(Date currentDate) {
+    public GSOverallCalculationBatch(List<Business_Unit__c> businessUnits, Date currentDate) {
+        this.businessUnits = businessUnits;
+        if (this.businessUnits.size() > 0) {
+            this.currentUnit = this.businessUnits.get(0);
+            this.businessUnits.remove(0);
+        }
         this.gsOverall = 0;
         this.gsSatisfaction = 0;
         this.gsBudget = 0;
@@ -44,9 +57,13 @@ public without sharing class GSOverallCalculationBatch implements Database.Batch
 
         System.debug('Start date : ' + startDate);
         System.debug('End date : ' + endDate);
-        return [SELECT Id, Report_Out_Date__c, Contract_Snapshot__c, Contract_Snapshot__r.GS_Quality_Overall_Status__c, Contract_Snapshot__r.GS_Quality_Customer_Satisfaction__c,
+        if (this.currentUnit == null) {
+            return new List<Project_Report_Out__c>();
+        }
+        return [SELECT Id, Contract__c, Report_Out_Date__c, Contract_Snapshot__c, Contract_Snapshot__r.GS_Quality_Overall_Status__c, Contract_Snapshot__r.GS_Quality_Customer_Satisfaction__c,
                 Contract_Snapshot__r.Project_Quality_Overall_Status__c, Contract_Snapshot__r.Customer_Satisfaction_of_services__c, Contract_Snapshot__r.GS_Execution_Budget__c
-                FROM Project_Report_Out__c WHERE Contract_Snapshot__c != '' AND Report_Out_Date__c >=: startDate AND Report_Out_Date__c <: endDate];
+                FROM Project_Report_Out__c WHERE Contract__r.Prime_Contracting_Business_Unit__c =: this.currentUnit.Id AND Contract_Snapshot__c != ''
+                AND Report_Out_Date__c >=: startDate AND Report_Out_Date__c <: endDate];
     }
 
     public void execute(Database.BatchableContext BC, List<Project_Report_Out__c> scope) {
@@ -77,12 +94,31 @@ public without sharing class GSOverallCalculationBatch implements Database.Batch
             this.gsOverall = 100 * (this.gsOverall / this.gsBudget);
             this.gsSatisfaction = 100 * (this.gsSatisfaction / this.gsBudget);
 
+            List<DContract__c> contractsToUpdate = new List<DContract__c>();
             for (Project_Report_Out__c pro : this.proList) {
                 if (this.gsOverall != pro.Contract_Snapshot__r.GS_Quality_Overall_Status__c || this.gsSatisfaction != pro.Contract_Snapshot__r.GS_Quality_Customer_Satisfaction__c) {
                     PRO_Contract_Snapshot__c snap = new PRO_Contract_Snapshot__c(Id = pro.Contract_Snapshot__c, GS_Quality_Overall_Status__c = this.gsOverall, GS_Quality_Customer_Satisfaction__c = this.gsSatisfaction);
                     toUpdate.add(snap);
                 }
+                contractsToUpdate.add(new DContract__c(Id = pro.Contract__c, GS_Quality_Overall_Status__c = this.gsOverall,
+                                                        GS_Quality_Customer_Satisfaction__c = this.gsSatisfaction));
             }
+            List<Database.SaveResult> updateResults = Database.update(contractsToUpdate, false);
+            String emailBody = '';
+            for(Integer i = 0; i < updateResults.size(); i++){
+                if (!updateResults.get(i).isSuccess()){
+                    Database.Error error = updateResults.get(i).getErrors().get(0);
+                    System.debug('Error : Fields - ' + error.getFields() + ' Message - ' + error.getMessage());
+                    emailBody += '<tr><td>' + toUpdate.get(i).Id + '</td><td>' + error.getFields()+ '</td><td>' + error.getStatusCode()+ '</td><td>' + error.getMessage() + '</td></tr>';
+                }
+            }
+
+            if (emailBody != '') {
+                BatchDefaultSettings__c settings = BatchDefaultSettings__c.getOrgDefaults();
+                emailBody = '<table border="1"><tr><td>Id</td>td>Fields</td>td>Code</td><td>Error Message</td></tr>' + emailBody + '</table></br>';
+                EmailHelper.sendEmail(settings.Error_Emails__c.split(','), 'GS Quality calculation error', emailBody);
+            }
+
             if (toUpdate.size() > 0) {
                 update toUpdate;
             }
@@ -93,6 +129,12 @@ public without sharing class GSOverallCalculationBatch implements Database.Batch
                 BatchDefaultSettings__c settings = BatchDefaultSettings__c.getOrgDefaults();
                 EmailHelper.sendEmailFromException(settings.Error_Emails__c.split(','), 'GS Quality calculation error', 'GS Quality calculation error', ex);
             }
+        }
+
+        if (this.businessUnits.size() > 0) {
+            Database.executeBatch(new GSOverallCalculationBatch(this.businessUnits, this.currentDate));
+        } else {
+            Database.executeBatch(new ForPeriodCalcSnapshotBatch(false), 50);
         }
     }
 }
