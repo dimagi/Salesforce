@@ -15,13 +15,13 @@ public class OpenOpportunityReportUIController {
     private static final String DEFAULT_EMAIL = Open_Opportunity_Settings__c.getOrgDefaults() != null
                                                     ? Open_Opportunity_Settings__c.getOrgDefaults().Default_Email_Recipient__c
                                                     : 'bizdev@dimagi.com';
-    
+
     public OpenOpportunityReportUIController() {
-        
+
         userId = (Apexpages.currentPage().getParameters().containsKey('uid')) 
                     ? Apexpages.currentPage().getParameters().get('uid') 
                     : Userinfo.getUserId();
-                    
+
         selectedUsers = new String[] {userId};
     	stagedComments = new Map<String, String>();
     	stagedListData = new OpenOpportunityListData[] {};
@@ -42,13 +42,10 @@ public class OpenOpportunityReportUIController {
     }
 
     public void reload() {
-    	
-    	try {
-	    	
-	    	Id[] usersId = selectedUsers;
-	
-	        if (usersId != null && !usersId.isEmpty()) {    	    	    	
-	    	    	    	
+        try {
+            Id[] usersId = selectedUsers;
+
+            if (usersId != null && !usersId.isEmpty()) {
                 stagedComments = new Map<String, String>();	    	    	    	
 		    	Map<String, Opportunity[]> stagedOpportunities = OpenOpportunityReportController.getInstance().getOpenOpportunitiesOrderByStage(usersId);
 		    	stagedListData = new OpenOpportunityListData[] {};
