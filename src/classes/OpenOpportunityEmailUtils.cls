@@ -41,14 +41,14 @@ public with sharing class OpenOpportunityEmailUtils {
         List<String> sortedStages = new List<String>(stagedOpportunities.keySet());
         sortedStages.sort();
         
-        for(String stageName :sortedStages) {           
+        for(String stageName :sortedStages) {
             
             String stageTable = '<tr><table class="main-stage-table" style="width:100%;border:1px solid #E3DEB8;">' + SUB_TITLE.replace('[SUB_TITLE]', stageName);
             
             /**************************************************
 			Comments: for each stage we call buildEmailStageTable     
 			**************************************************/
-            stageTable += '<tr><td>' + buildEmailStageTable(stageName, stagedOpportunities.get(stageName)) + '</td></tr>';
+            stageTable += '<tr><td>' + buildEmailStageTable(stageName, stagedOpportunities.get(stageName), hasComments) + '</td></tr>';
                         
             /**************************************************
             Comments: for each stage we call getEmailStageComments (if there are no comments, the input text is generated anyway)
@@ -66,20 +66,20 @@ public with sharing class OpenOpportunityEmailUtils {
         // End added by Nick
         
         result = result.replace('[TITLE]', TITLE);
-        return result.replace('[CONTAINER]', CONTAINER.replace('[SUB_CONTAINER]', content));        
+        return result.replace('[CONTAINER]', CONTAINER.replace('[SUB_CONTAINER]', content));
     }
 
 	/**************************************************
 	Method Name: buildEmailStageTable
 	Method Comments: Method which returns the content of a HTML table for a Stage   
 	**************************************************/
-    public static String buildEmailStageTable(String stageName, Opportunity[] opportunities) {
+    public static String buildEmailStageTable(String stageName, Opportunity[] opportunities, Boolean fromUI) {
         
-        String result = '<table class="stage-table" cellspacing="0" style="width:100%;border:1px solid #e0e3e5">[THEADER][TBODY]</table>';      
+        String result = '<table class="stage-table" cellspacing="0" style="width:100%;border:1px solid #e0e3e5">[THEADER][TBODY]</table>';
         result = result.replace('[THEADER]', getEmailStageTableHeader());
-        
+
         String tbody = '';
-        
+
         Integer daysNotUpdatedLimit = Open_Opportunity_Settings__c.getOrgDefaults().Days_Not_Updated_Limit__c != null 
                                        ? Open_Opportunity_Settings__c.getOrgDefaults().Days_Not_Updated_Limit__c.intValue()
                                        : 30;
@@ -91,13 +91,41 @@ public with sharing class OpenOpportunityEmailUtils {
         Integer daysSinceStageChange = Open_Opportunity_Settings__c.getOrgDefaults().Days_Since_Stage_Change__c != null
         							   ? Open_Opportunity_Settings__c.getOrgDefaults().Days_Since_Stage_Change__c.intValue()
         							   : 7;
- 
-        
+
         Set<String> earlyStagesSet = new Set<String>(earlyStages);
-        
+
+        Map<Id, Contact> contacts = new Map<Id, Contact>();
+        Map<Id, Id> oppToContactMap = new Map<Id, Id>();
+        if (fromUI) { // If from UI we must fetch Follow Up Date - if false list is already filtered and contains only red Opps (OpeOppMailer getRed...).
+            List<OpportunityContactRole> contactRoles = [SELECT ContactId, OpportunityId FROM OpportunityContactRole WHERE IsPrimary = true AND OpportunityId IN: opportunities];
+            for (OpportunityContactRole role : contactRoles) {
+                oppToContactMap.put(role.OpportunityId, role.ContactId);
+            }
+            List<OpportunityContactRole> contactRolesNotPrim = [SELECT ContactId, OpportunityId FROM OpportunityContactRole WHERE IsPrimary = false AND OpportunityId IN: opportunities];
+            for (OpportunityContactRole role : contactRolesNotPrim) {
+                if (!oppToContactMap.containsKey(role.OpportunityId)) {
+                    oppToContactMap.put(role.OpportunityId, role.ContactId);
+                }
+            }
+            contacts = new Map<Id, Contact>([SELECT Id, Follow_up_Date__c FROM Contact WHERE Id IN: oppToContactMap.values()]);
+        }
+
         for(Opportunity opp :opportunities) {
-            tbody += getEmailStageTableRow(opp, daysNotUpdatedLimit, daysNotUpdatedLimitEarlyStages, earlyStagesSet, daysSinceStageChange);
-        }       
+            // Filter out all Opps.
+            if (fromUI) {
+                Boolean isBlankORFromThePast = true;
+                if (oppToContactMap.containsKey(opp.Id) && contacts.containsKey(oppToContactMap.get(opp.Id))) {
+                    Contact con = contacts.get(oppToContactMap.get(opp.Id));
+                    if (con.Follow_up_Date__c != null && con.Follow_up_Date__c >= Date.today()) {
+                        isBlankORFromThePast = false;
+                    }
+                }
+                tbody += getEmailStageTableRow(opp, daysNotUpdatedLimit, daysNotUpdatedLimitEarlyStages, earlyStagesSet, daysSinceStageChange, isBlankORFromThePast);
+            } else {
+                tbody += getEmailStageTableRow(opp, daysNotUpdatedLimit, daysNotUpdatedLimitEarlyStages, earlyStagesSet, daysSinceStageChange, true);
+            }
+        }
+
         result = result.replace('[TBODY]', tbody).replace('null', '');
         return result;
     }
@@ -106,18 +134,17 @@ public with sharing class OpenOpportunityEmailUtils {
 	Method Name: getEmailStageTableHeader
 	Method Comments: Returns the header of the stage tables, depending on which columns where selected   
 	**************************************************/
-    private static String getEmailStageTableHeader() {        
-        
+    private static String getEmailStageTableHeader() {
         final String LEFT_STYLE = 'style="background:#f2f3f3;text-align:left"';
         final String RIGHT_STYLE = 'style="background:#f2f3f3;text-align:right"'; 
-        
+
         String result =  '<tr>';
-        
+
         /**************************************************
         Comments: Fetches the columns from the Custom Settings
         **************************************************/         
         Open_Opportunity_Fields__c[] selectedFields = OpenOpportunityReportController.getOpportunityFields();
-        
+
         if (!selectedFields.isEmpty()) {
             
             result += '<th [LEFT_STYLE]>Opportunity Name</th>';
@@ -127,7 +154,6 @@ public with sharing class OpenOpportunityEmailUtils {
             }           
         }
         else {
-                        
             result += '<th [LEFT_STYLE]>Opportunity Name</th>' +
                         '<th [RIGHT_STYLE]>Stage Duration</th>' +
                         '<th [RIGHT_STYLE]>Fogbugz Ticket Number</th>' +
@@ -144,11 +170,11 @@ public with sharing class OpenOpportunityEmailUtils {
         return result.replace('[LEFT_STYLE]', LEFT_STYLE).replace('[RIGHT_STYLE]', RIGHT_STYLE);
     }
 
-	/**************************************************
-	Method Name: getEmailStageTableRow
-	Method Comments: method called from buildEmailStageTable. For each opportunity this method is called. Renders the status of the opportunity and its data.    
-	**************************************************/
-    private static String getEmailStageTableRow(Opportunity opp, Integer daysNotUpdatedLimit, Integer daysNotUpdatedLimitEarlyStages, Set<String> earlyStagesSet, Integer daysSinceStageChange) {
+    /**************************************************
+    Method Name: getEmailStageTableRow
+    Method Comments: method called from buildEmailStageTable. For each opportunity this method is called. Renders the status of the opportunity and its data.    
+    **************************************************/
+    private static String getEmailStageTableRow(Opportunity opp, Integer daysNotUpdatedLimit, Integer daysNotUpdatedLimitEarlyStages, Set<String> earlyStagesSet, Integer daysSinceStageChange, Boolean followUpFromPast) {
         
         final String LEFT_STYLE = 'style="border-width:0 0 1px 0;vertical-align:middle;padding:4px 2px 4px 5px;border-bottom:1px solid #e3deb8;"';
         final String STYLE = 'style="border-width:0 0 1px 0;vertical-align:middle;padding:4px 2px 4px 5px;border-bottom:1px solid #e3deb8;text-align:right"'; 
@@ -159,41 +185,34 @@ public with sharing class OpenOpportunityEmailUtils {
         **************************************************/
         // Default has no color
         rowStart = '<tr>';
-        
+
         // Turn green if stage changed in past week
         if (opp.Stage_Duration__c <= daysSinceStageChange) {
             rowStart = '<tr style="background:' + GREEN_COLOR + '">';
-        }
-        else rowStart = rowStart;
-        
+        } else rowStart = rowStart;
+
         // Turn yellow if there is no account
-        if (opp.AccountId == null) {        	
-        	rowStart = '<tr style="background:' + YELLOW_COLOR + '">';
+        if (opp.AccountId == null) {
+            rowStart = '<tr style="background:' + YELLOW_COLOR + '">';
+        } else {
+            rowStart = rowStart;
         }
-        else {
-        	rowStart = rowStart;
-        }        
-        
+
         // added by Nick - checking if it is a long wait after submission
         if (opp.long_wait__c) {
-			rowStart = rowStart;
-		}
-		else {
-		// end added by Nick
-			
-        if (earlyStagesSet.contains(opp.StageName)) {            
-            rowStart = opp.Total_Days_Not_Updated__c > daysNotUpdatedLimitEarlyStages 
+            rowStart = rowStart;
+        } else {
+            if (earlyStagesSet.contains(opp.StageName)) {
+                rowStart = opp.Total_Days_Not_Updated__c > daysNotUpdatedLimitEarlyStages && followUpFromPast
                                    ? '<tr style="background:' + RED_COLOR + '">' 
                                    : rowStart;
-        }
-        else {
-            rowStart = opp.Total_Days_Not_Updated__c > daysNotUpdatedLimit 
+            } else {
+                rowStart = opp.Total_Days_Not_Updated__c > daysNotUpdatedLimit && followUpFromPast
                                    ? '<tr style="background:' + RED_COLOR + '">' 
                                    : rowStart;
+            }
         }
-        }
-        
-        
+
         String href = URL.getSalesforceBaseUrl().toExternalForm() + '/' + String.valueOf(opp.Id);
         
         Open_Opportunity_Fields__c[] selectedFields = OpenOpportunityReportController.getOpportunityFields();
@@ -235,9 +254,9 @@ public with sharing class OpenOpportunityEmailUtils {
                         fieldValue = '';
                         if (opp.get(selectedField.Name) != null) {
                             
-                            List<String> args = new String[]{'0','number','###,###,##0.00'};    
+                            List<String> args = new String[]{'0','number','###,###,##0.00'};
                             Decimal currencyValue = (Decimal) opp.get(selectedField.Name);
-                            fieldValue = '$' + String.format(currencyValue.format(), args);                         
+                            fieldValue = '$' + String.format(currencyValue.format(), args);
                         }
                     }
                     
@@ -248,11 +267,9 @@ public with sharing class OpenOpportunityEmailUtils {
                     else {
                         result += '<td [STYLE]><span>' + fieldValue + '</span></td>';
                     }
-                }
-                catch (Exception e) {}    
+                } catch (Exception e) {}
             }
-        }
-        else {
+        } else {
             /**************************************************
             Comments: When the selectedFields list is empty, that means we need to display 
                        the default columns, which are already defined below. 
@@ -274,12 +291,11 @@ public with sharing class OpenOpportunityEmailUtils {
                         '<td [STYLE]><span>' + opp.Business_Unit_Owner__r.Name + '</span></td>' + 
                         '<td [STYLE]><span>' + opp.Total_Days_Not_Updated__c + '</span></td>';
         }
-            
+
         result += '</tr>';
-                        
-        return result.replace('[STYLE]', STYLE).replace('[LEFT_STYLE]', LEFT_STYLE);                        
+        return result.replace('[STYLE]', STYLE).replace('[LEFT_STYLE]', LEFT_STYLE);
     }
-    
+
 	/**************************************************
 	Method Name: getEmailStageComments
 	Method Comments: This method is called from buildEmailContent method, in order to add to the email comments written on the UI.     

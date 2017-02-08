@@ -17,8 +17,13 @@ public class NetEVDifferenceTriggerGateway {
      * (It creates only for NEW_OPP, INCREASED, DECREASED, NO_CHANGE other detla types are handled by batch job).
      */
     public void processLastMonthSnapshots(List<Pipeline_Snapshot__c> triggerSnapshots) {
+        if (triggerSnapshots.size() == 0) {
+            return;
+        }
         Set<Id> opps = new Set<Id>();
         Date currentDate = triggerSnapshots[0].Month_Date__c;
+        Date firstDate = currentDate.toStartOfMonth();
+        Date lastDate = firstDate.addDays(Date.daysInMonth(currentDate.year() , currentDate.month())).addDays(-1);
         List<Pipeline_Snapshot__c> snapshots = new List<Pipeline_Snapshot__c>();
         // For now we don't want Total
         for(Pipeline_Snapshot__c snapshot : triggerSnapshots) {
@@ -32,8 +37,19 @@ public class NetEVDifferenceTriggerGateway {
         Map<Id, Pipeline_Snapshot__c> oldMonthSnapshotRecords = getOldSnapShotRecords(currentDate, opps);
 
         List<Pipeline_Snapshot_EV_DIff__c> snapShotDiffs = new List<Pipeline_Snapshot_EV_DIff__c>();
+        List<Pipeline_Snapshot_EV_DIff__c> oldDiffs = [SELECT Id, Pipeline_Snapshot__c FROM Pipeline_Snapshot_EV_DIff__c WHERE Month_Date__c >=: firstDate
+                            AND Month_Date__c <=: lastDate];
+        Set<Id> pipelineSnapshotsToSkip = new Set<Id>();
+        for (Pipeline_Snapshot_EV_DIff__c evDiff : oldDiffs) {
+            pipelineSnapshotsToSkip.add(evDiff.Pipeline_Snapshot__c);
+        }
 
         for (Pipeline_Snapshot__c lastMonthSnapshot : snapshots) {
+            // We don't want duplicates for Snapshots
+            if (pipelineSnapshotsToSkip.contains(lastMonthSnapshot.Id)) {
+                continue;
+            }
+
             Pipeline_Snapshot__c priorMonthSnapShot = priorMonthSnapshotRecords.get(lastMonthSnapshot.Opportunity__c);
             if (priorMonthSnapShot == null) { // If prior month snapshot doesn't exist we calculate with last prior snapshot 
                 priorMonthSnapShot = oldMonthSnapshotRecords.get(lastMonthSnapshot.Opportunity__c);
@@ -68,13 +84,29 @@ public class NetEVDifferenceTriggerGateway {
         }
     }
 
-    public void processPriorMonthSnapshotsWithClosedStatus(List<Pipeline_Snapshot__c> triggerSnapshots, Date executeDate) {
+    @future
+    public static void processPriorMonthSnapshotsWithClosedStatus(Date executeDate) {
         Date currentDate = executeDate;
         Date firstDate = currentDate.toStartOfMonth();
         currentDate = firstDate.addDays(date.daysInMonth(currentDate.year() , currentDate.month())).addDays(-1);
 
+        List<Pipeline_Snapshot__c> records = [SELECT Id, Name, Opportunity__c, Opportunity__r.StageName,
+                            Month_Date__c, Amount_Minus_Expense_Income__c, Opportunity_Name__c,
+                            X12_Month_Cash_Minus_Expense_Income_EV__c ,
+                            X18_Month_Cash_Minus_Expenses_Income_EV__c,
+                            X24_Month_Cash_Minus_Expense_Income_EV__c,
+                            Opportunity_Amount_Minus_Expense_Income__c,
+                            Expected_Value_Minus_Expense__c,
+                            Stage__c, Monthly_Recurring_Revenue_MRR__c,
+                            Expected_Monthly_Recurring_Revenue_MRR__c
+                            FROM Pipeline_Snapshot__c
+                            WHERE Month_Date__c >=: firstDate
+                            AND Month_Date__c <=: currentDate
+                            AND Source_Type__c = 'Opportunity'
+                            AND Stage__c != 'Total'];
+
         Map<Id, Pipeline_Snapshot__c> priorMonthSnapshotRecords = getPriorMonthSnapshotsForDate(firstDate);
-        for (Pipeline_Snapshot__c snapshot : triggerSnapshots) {
+        for (Pipeline_Snapshot__c snapshot : records) {
             if (!String.isBlank(snapshot.Opportunity__c) && priorMonthSnapshotRecords.containsKey(snapshot.Opportunity__c)) {
                 priorMonthSnapshotRecords.remove(snapshot.Opportunity__c);
             }
@@ -90,13 +122,20 @@ public class NetEVDifferenceTriggerGateway {
 
             snapShotsDiff.Pipeline_Snapshot__c = snapshot.Id;
 
-            snapShotsDiff.DIFF_12_Month_Cash_Minus_Expense_Income__c = 0;
-            snapShotsDiff.DIFF_18_Month_Cash_Minus_Expenses_Income__c = 0;
-            snapShotsDiff.DIFF_24_Month_Cash_Minus_Expense_Income__c = 0;
-            snapShotsDiff.DIFF_Amount_Minus_Expense_Income__c = 0;
-            snapShotsDiff.DIFF_Expected_Value_Minus_Expense__c = 0;
-            snapShotsDiff.Expected_Monthly_Recurring_Revenue_MRR__c = 0;
-            snapShotsDiff.Monthly_Recurring_Revenue_MRR__c = 0;
+            snapShotsDiff.DIFF_12_Month_Cash_Minus_Expense_Income__c = (snapshot.Opportunity__r.X12Month_Cash_Minus_Expenses_EV__c != null ? snapshot.Opportunity__r.X12Month_Cash_Minus_Expenses_EV__c : 0)
+                                     - (snapshot.X12_Month_Cash_Minus_Expense_Income_EV__c != null ? snapshot.X12_Month_Cash_Minus_Expense_Income_EV__c : 0);
+            snapShotsDiff.DIFF_18_Month_Cash_Minus_Expenses_Income__c = (snapshot.Opportunity__r.X18_Month_Cash_Minus_Expenses_EV__c != null ? snapshot.Opportunity__r.X18_Month_Cash_Minus_Expenses_EV__c : 0)
+                                     - (snapshot.X18_Month_Cash_Minus_Expenses_Income_EV__c != null ? snapshot.X18_Month_Cash_Minus_Expenses_Income_EV__c : 0);
+            snapShotsDiff.DIFF_24_Month_Cash_Minus_Expense_Income__c = (snapshot.Opportunity__r.X24_Month_Cash_Minus_Expense_EV__c != null ? snapshot.Opportunity__r.X24_Month_Cash_Minus_Expense_EV__c : 0)
+                                     - (snapshot.X24_Month_Cash_Minus_Expense_Income_EV__c != null ? snapshot.X24_Month_Cash_Minus_Expense_Income_EV__c : 0);
+            snapShotsDiff.DIFF_Amount_Minus_Expense_Income__c = (snapshot.Opportunity__r.Amount_Minus_Expense_Income__c != null ? snapshot.Opportunity__r.Amount_Minus_Expense_Income__c : 0 )
+                                     - (snapshot.Opportunity_Amount_Minus_Expense_Income__c != null ? snapshot.Opportunity_Amount_Minus_Expense_Income__c : 0);
+            snapShotsDiff.DIFF_Expected_Value_Minus_Expense__c = (snapshot.Opportunity__r.Expected_Value_Minus_Income__c != null ? snapshot.Opportunity__r.Expected_Value_Minus_Income__c : 0)
+                                     - (snapshot.Expected_Value_Minus_Expense__c != null ? snapshot.Expected_Value_Minus_Expense__c : 0);
+            snapShotsDiff.Expected_Monthly_Recurring_Revenue_MRR__c = (snapshot.Opportunity__r.Expected_Monthly_Recurring_Revenue_MRR__c != null ? snapshot.Opportunity__r.Expected_Monthly_Recurring_Revenue_MRR__c : 0)
+                                     - (snapshot.Expected_Monthly_Recurring_Revenue_MRR__c != null ? snapshot.Expected_Monthly_Recurring_Revenue_MRR__c : 0);
+            snapShotsDiff.Monthly_Recurring_Revenue_MRR__c = (snapshot.Opportunity__r.Monthly_Recurring_Revenue_MRR__c != null ? snapshot.Opportunity__r.Monthly_Recurring_Revenue_MRR__c : 0)
+                                     - (snapshot.Monthly_Recurring_Revenue_MRR__c != null ? snapshot.Monthly_Recurring_Revenue_MRR__c : 0);
             snapShotsDiff.Prior_Snapshot_date__c = snapshot.Month_Date__c;
 
             if(snapshot.Opportunity__r.StageName == 'Closed - Lost' || snapshot.Opportunity__r.StageName == 'Closed - No Go' || snapshot.Opportunity__r.StageName == 'Closed') {
@@ -144,7 +183,7 @@ public class NetEVDifferenceTriggerGateway {
     /**
      * Returns prior month snapshots for given date.
      */
-    public Map<Id, Pipeline_Snapshot__c> getPriorMonthSnapshotsForDate(Date currentDate) {
+    public static Map<Id, Pipeline_Snapshot__c> getPriorMonthSnapshotsForDate(Date currentDate) {
         Date prevMonthDate = currentDate.addMonths(-1);
         Date firstDate = prevMonthDate.toStartOfMonth();
         Date lastDate = firstDate.addDays(date.daysInMonth(prevMonthDate.year() , prevMonthDate.month())).addDays(-1);
@@ -156,7 +195,14 @@ public class NetEVDifferenceTriggerGateway {
                 X24_Month_Cash_Minus_Expense_Income_EV__c,
                 Opportunity_Amount_Minus_Expense_Income__c,
                 Expected_Value_Minus_Expense__c, Monthly_Recurring_Revenue_MRR__c,
-                Expected_Monthly_Recurring_Revenue_MRR__c
+                Expected_Monthly_Recurring_Revenue_MRR__c,
+                Opportunity__r.X12Month_Cash_Minus_Expenses_EV__c,
+                Opportunity__r.X18_Month_Cash_Minus_Expenses_EV__c,
+                Opportunity__r.X24_Month_Cash_Minus_Expense_EV__c,
+                Opportunity__r.Amount_Minus_Expense_Income__c,
+                Opportunity__r.Expected_Value_Minus_Income__c,
+                Opportunity__r.Expected_Monthly_Recurring_Revenue_MRR__c,
+                Opportunity__r.Monthly_Recurring_Revenue_MRR__c
                 FROM Pipeline_Snapshot__c
                 WHERE Month_Date__c >= :firstDate AND Month_Date__c <= :lastDate
                 AND Stage__c != 'Total'];

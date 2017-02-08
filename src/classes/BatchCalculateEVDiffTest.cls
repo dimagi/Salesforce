@@ -1,7 +1,6 @@
 @isTest
 public class BatchCalculateEVDiffTest {
 
-    /**
     @isTest
     public static void testSnapshotTriggerForSingleRecord() {
         Account snapShotAccount = new Account(Name = 'Test Account');
@@ -12,8 +11,6 @@ public class BatchCalculateEVDiffTest {
         Opportunity currentOpp = new Opportunity(Name = 'Test Opportunity 1', Business_Unit_Owner__c = bizUnit.Id, StageName = 'Stage 5 - Submitted',
                                                  CloseDate = date.today().addMonths(5), Probability = 30);
         insert currentOpp;
-
-        Test.startTest();
 
         Pipeline_Snapshot__c snapShot1 = new Pipeline_Snapshot__c(Opportunity__c = currentOpp.Id, Opportunity_Amount_Minus_Expense_Income__c = 2000,
                                                                                 Amount_Minus_Expense_Income__c = 2000, Probability__c = 100, Opportunity_Amount__c = 2000,
@@ -37,8 +34,16 @@ public class BatchCalculateEVDiffTest {
 
         currentOpp.StageName = 'Closed - Won';
         update currentOpp;
-        NetEVDifferenceTriggerGateway helper = new NetEVDifferenceTriggerGateway();
-        helper.processPriorMonthSnapshotsWithClosedStatus(new List<Pipeline_Snapshot__c>(), Date.newInstance(2016, 4, 14));
+
+        Test.startTest();
+        BatchCalculateEVDiff januaryBatch = new BatchCalculateEVDiff(Date.newInstance(2016, 1, 1));
+        januaryBatch.execute(null, januaryBatch.start(null));
+        BatchCalculateEVDiff febBatch = new BatchCalculateEVDiff(Date.newInstance(2016, 2, 1));
+        febBatch.execute(null, febBatch.start(null));
+        BatchCalculateEVDiff marchBatch = new BatchCalculateEVDiff(Date.newInstance(2016, 3, 1));
+        marchBatch.execute(null, marchBatch.start(null));
+        marchBatch.execute(null, marchBatch.start(null));
+        NetEVDifferenceTriggerGateway.processPriorMonthSnapshotsWithClosedStatus(Date.newInstance(2016, 4, 14));
         Test.stopTest();
 
         List<Pipeline_Snapshot_EV_DIff__c> snapShotsEVDiffAll = [SELECT Delta_Type__c, DIFF_12_Month_Cash_Minus_Expense_Income__c, DIFF_18_Month_Cash_Minus_Expenses_Income__c,
@@ -70,8 +75,6 @@ public class BatchCalculateEVDiffTest {
         insert currentOpp1;
         insert currentOpp2;
         insert currentOpp3;
-
-        Test.startTest();
 
         Pipeline_Snapshot__c snapShot1_1 = new Pipeline_Snapshot__c(Opportunity__c = currentOpp1.Id, Opportunity_Amount_Minus_Expense_Income__c = 2200,
                                                                                 Amount_Minus_Expense_Income__c = 2000, Probability__c = 100, Opportunity_Amount__c = 2000,
@@ -123,9 +126,18 @@ public class BatchCalculateEVDiffTest {
         update currentOpp2;
         currentOpp3.StageName = 'Closed';
         update currentOpp3;
-        NetEVDifferenceTriggerGateway helper = new NetEVDifferenceTriggerGateway();
-        helper.processPriorMonthSnapshotsWithClosedStatus(new List<Pipeline_Snapshot__c>(), Date.newInstance(2016, 3, 25));
 
+        Test.startTest();
+        BatchCalculateEVDiff januaryBatch = new BatchCalculateEVDiff(Date.newInstance(2016, 1, 1));
+        januaryBatch.execute(null, januaryBatch.start(null));
+        BatchCalculateEVDiff febBatch = new BatchCalculateEVDiff(Date.newInstance(2016, 2, 1));
+        febBatch.execute(null, febBatch.start(null));
+        febBatch.execute(null, febBatch.start(null));
+        BatchCalculateEVDiff marchBatch = new BatchCalculateEVDiff(Date.newInstance(2016, 3, 1));
+        marchBatch.execute(null, marchBatch.start(null));
+        marchBatch.execute(null, marchBatch.start(null));
+        febBatch.execute(null, febBatch.start(null));
+        NetEVDifferenceTriggerGateway.processPriorMonthSnapshotsWithClosedStatus(Date.newInstance(2016, 3, 25));
         Test.stopTest();
 
         List<Pipeline_Snapshot_EV_DIff__c> snapShotsEVDiffAll = [SELECT Delta_Type__c, DIFF_12_Month_Cash_Minus_Expense_Income__c, DIFF_18_Month_Cash_Minus_Expenses_Income__c,
@@ -161,5 +173,5 @@ public class BatchCalculateEVDiffTest {
         System.assertEquals(NetEVDifferenceTriggerGateway.LOST , snapShotsEVDiffAll.get(2).Delta_Type__c);
         System.assertEquals(Date.newInstance(2016, 3, 31) , snapShotsEVDiffAll.get(2).Month_Date__c);
     }
-    **/
+
 }

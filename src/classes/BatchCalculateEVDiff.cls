@@ -1,13 +1,10 @@
 public class BatchCalculateEVDiff implements Database.Batchable<Pipeline_Snapshot__c>, Database.Stateful {
 
     private Date currentDate;
-    private Boolean forTrigger;
-    private Boolean emptyList;
+    private Boolean forClosed;
 
-    public BatchCalculateEVDiff (Date currentDate, Boolean forTrigger) {
+    public BatchCalculateEVDiff (Date currentDate) {
         this.currentDate = currentDate;
-        this.forTrigger = forTrigger;
-        this.emptyList = false;
     }
 
     public List<Pipeline_Snapshot__c> start(Database.BatchableContext BC) {
@@ -28,22 +25,12 @@ public class BatchCalculateEVDiff implements Database.Batchable<Pipeline_Snapsho
                             AND Month_Date__c <=: lastDate
                             AND Source_Type__c = 'Opportunity'
                             AND Stage__c != 'Total'];
-
-        if (!forTrigger && records.size() == 0) {
-            this.emptyList = true;
-            records.add(new Pipeline_Snapshot__c());
-        }
-
         return records;
     }
 
     public void execute(Database.BatchableContext BC, List<Pipeline_Snapshot__c> scope) {
         NetEVDifferenceTriggerGateway helper = new NetEVDifferenceTriggerGateway();
-    if (!forTrigger) {
-            helper.processPriorMonthSnapshotsWithClosedStatus(this.emptyList == true ? new List<Pipeline_Snapshot__c>() : scope, currentDate);
-        } else {
-            helper.processLastMonthSnapshots(scope);
-        }
+        helper.processLastMonthSnapshots(scope);
     }
 
     public void finish(Database.BatchableContext BC) {

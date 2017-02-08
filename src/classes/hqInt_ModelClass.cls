@@ -18,7 +18,7 @@ public class hqInt_ModelClass {
         public Double applied_credit;
         public Double subtotal;
 
-        public Accounting_Invoice__c createDbObject(id subscriptionId,id domainId) {
+        public Accounting_Invoice__c createDbObject(Id subscriptionId, Id domainId, String serverName) {
             Accounting_Invoice__c accountingInvoiceObj = new Accounting_Invoice__c();
             accountingInvoiceObj.id__c = this.id;
             accountingInvoiceObj.Accounting_Subscription__c = subscriptionId;
@@ -35,6 +35,7 @@ public class hqInt_ModelClass {
             accountingInvoiceObj.Total__c = subtotal;
             accountingInvoiceObj.Total_Credits__c = applied_credit;
             accountingInvoiceObj.Project_Space__c = domainId;
+            accountingInvoiceObj.Server_Name__c = serverName;
 
             return accountingInvoiceObj;
         }
@@ -61,7 +62,7 @@ public class hqInt_ModelClass {
         public String funding_source;
         public String subscriber;
 
-        public Accounting_Subscription__c createDbObject(Id billingAccountId, Id softPlanVerId, Id subscriberId, Id domainId) {
+        public Accounting_Subscription__c createDbObject(Id billingAccountId, Id softPlanVerId, Id subscriberId, Id domainId, String serverName) {
             Accounting_Subscription__c accountingSubscriptionObj = new Accounting_Subscription__c();
             accountingSubscriptionObj.id__c = this.id;
             accountingSubscriptionObj.salesforce_contract_id__c = this.salesforce_contract_id;
@@ -81,6 +82,7 @@ public class hqInt_ModelClass {
             accountingSubscriptionObj.plan_version__c = softPlanVerId;
             accountingSubscriptionObj.Accounting_Subscriber__c = subscriberId;
             accountingSubscriptionObj.Accounting_subscriber_domain__c = domainId;
+            accountingSubscriptionObj.Server_Name__c = serverName;
 
             return accountingSubscriptionObj;
         }
@@ -92,7 +94,7 @@ public class hqInt_ModelClass {
         public string domain;
         public string organization;
 
-        public Accounting_Subscriber__c createDbObject(id domainId) {
+        public Accounting_Subscriber__c createDbObject(Id domainId, String serverName) {
             Accounting_Subscriber__c accountingSubscriberObj = new Accounting_Subscriber__c();
             accountingSubscriberObj.id__c = this.id;
             if (this.domain != null && this.domain.length() > 80) {
@@ -102,6 +104,7 @@ public class hqInt_ModelClass {
             }
             accountingSubscriberObj.organization__c = this.organization;
             accountingSubscriberObj.domain_lookup__c = domainId;
+            accountingSubscriberObj.Server_Name__c = serverName;
             system.debug('--domainid--' + domainid);
 
             return accountingSubscriberObj;
@@ -116,7 +119,6 @@ public class hqInt_ModelClass {
         public String salesforce_account_id;
         public String created_by;
         public DateTime date_created;
-        //public String currency;
         public Boolean is_auto_invoiceable;
         public String account_type;
         public String created_by_domain;
@@ -126,9 +128,8 @@ public class hqInt_ModelClass {
         public String entry_point;
         public String last_payment_method;
         public String pre_or_post_pay;
-        //public String billing_admins;
 
-        public Accounting_BillingAccount__c createDbObject(id billingContactId) {
+        public Accounting_BillingAccount__c createDbObject(id billingContactId, String serverName) {
             Accounting_BillingAccount__c accountingBillingAccount = new Accounting_BillingAccount__c();
             accountingBillingAccount.id__c = this.id;
             if (this.name != null && this.name.length() > 80) {
@@ -149,6 +150,7 @@ public class hqInt_ModelClass {
             accountingBillingAccount.BillingContact__c = billingContactId;
             accountingBillingAccount.last_payment_method__c = this.last_payment_method;
             accountingBillingAccount.pre_or_post_pay__c = this.pre_or_post_pay;
+            accountingBillingAccount.Server_Name__c = serverName;
 
             return accountingBillingAccount;
         }
@@ -163,7 +165,7 @@ public class hqInt_ModelClass {
         public String visibility;
         public String edition;
 
-        public Accounting_Softwareplan__c createDbObject() {
+        public Accounting_Softwareplan__c createDbObject(String serverName) {
 
             Accounting_Softwareplan__c accountingSoftwarePlanObj = new Accounting_Softwareplan__c();
             accountingSoftwarePlanObj.id__c = this.id;
@@ -171,6 +173,7 @@ public class hqInt_ModelClass {
             accountingSoftwarePlanObj.description__c = this.description;
             accountingSoftwarePlanObj.edition__c = this.edition;
             accountingSoftwarePlanObj.visibility__c = this.visibility;
+            accountingSoftwarePlanObj.Server_Name__c = serverName;
 
             return accountingSoftwarePlanObj;
         }
@@ -182,11 +185,12 @@ public class hqInt_ModelClass {
         public Boolean is_active;
         public Double monthly_fee;
 
-        public Accounting_SoftwareProductRate__c createDbObject() {
+        public Accounting_SoftwareProductRate__c createDbObject(String serverName) {
             Accounting_SoftwareProductRate__c softwareProductRate = new Accounting_SoftwareProductRate__c();
             softwareProductRate.id__c = this.id;
             softwareProductRate.is_active__c = this.is_active;
             softwareProductRate.monthly_fee__c = this.monthly_fee;
+            softwareProductRate.Server_Name__c = serverName;
 
             return softwareProductRate;
         }
@@ -201,9 +205,8 @@ public class hqInt_ModelClass {
         public Boolean is_active;
         public String[] feature_rates;
         public String[] product_rates;
-        //public String role;
 
-        public Accounting_SoftwarePlanVersion__c createDbObject(Id planId, Id productRate) {
+        public Accounting_SoftwarePlanVersion__c createDbObject(Id planId, Id productRate, String serverName) {
             Accounting_SoftwarePlanVersion__c accountingSoftwarePlanVersionObj = new Accounting_SoftwarePlanVersion__c();
             accountingSoftwarePlanVersionObj.id__c = this.id;
             accountingSoftwarePlanVersionObj.Accounting_SoftwarePlan__c = planId;
@@ -211,7 +214,7 @@ public class hqInt_ModelClass {
             accountingSoftwarePlanVersionObj.is_active__c = this.is_active;
             accountingSoftwarePlanVersionObj.FeatureRates__c = String.join(feature_rates,',');
             accountingSoftwarePlanVersionObj.Software_Product_Rate__c = productRate;
-            //accountingSoftwarePlanVersionObj.id__c = this.role;
+            accountingSoftwarePlanVersionObj.Server_Name__c = serverName;
 
             return accountingSoftwarePlanVersionObj;
         }
@@ -228,7 +231,7 @@ public class hqInt_ModelClass {
         public DateTime date_created;
         public Boolean is_active;
 
-        public Accounting_Featurerate__c createDbObject(String featureId) {
+        public Accounting_Featurerate__c createDbObject(String featureId, String serverName) {
             Accounting_Featurerate__c obj = new Accounting_Featurerate__c();
             obj.id__c = id;
             obj.date_created__c = date_created;
@@ -237,6 +240,7 @@ public class hqInt_ModelClass {
             obj.monthly_fee__c = monthly_fee;
             obj.monthly_limit__c = monthly_limit;
             obj.per_excess_fee__c = per_excess_fee;
+            obj.Server_Name__c = serverName;
 
             return obj;
         }
@@ -245,15 +249,16 @@ public class hqInt_ModelClass {
     //////////////////////// ACCOUNTING FEATURE MODEL CLASS ////////////////////////
     public class Accounting_Feature {
 
-        public string id;
-        public string name;
-        public string feature_type;
+        public String id;
+        public String name;
+        public String feature_type;
 
-        public accounting_feature__c createDbObject() {
-            accounting_feature__c obj = new accounting_feature__c();
+        public accounting_feature__c createDbObject(String serverName) {
+            Accounting_feature__c obj = new Accounting_feature__c();
             obj.id__c = id;
             obj.name = name;
             obj.feature_type__c = feature_type;
+            obj.Server_Name__c = serverName;
 
             return obj;
         }
@@ -275,7 +280,7 @@ public class hqInt_ModelClass {
         public string postal_code;
         public string country;
 
-        public Accounting_BillingContactInfo__c createDbObject() {
+        public Accounting_BillingContactInfo__c createDbObject(String serverName) {
             Accounting_BillingContactInfo__c obj = new Accounting_BillingContactInfo__c();
             obj.city__c = city;
             obj.company_name__c = company_name;
@@ -289,6 +294,7 @@ public class hqInt_ModelClass {
             obj.second_line__c = second_line;
             obj.state_province_region__c = state_province_region;
             obj.accountid__c = account;
+            obj.Server_Name__c = serverName;
 
             return obj;
         }
@@ -308,7 +314,7 @@ public class hqInt_ModelClass {
         public double subtotal;
         public double applied_credit;
 
-        public Accounting_LineItems__c createDbObject(string invoiceId,String featurerateId) {
+        public Accounting_LineItems__c createDbObject(String invoiceId, String featurerateId, String serverName) {
             Accounting_LineItems__c obj = new Accounting_LineItems__c();
             obj.id__c = id;
             obj.invoice__c = invoiceId;
@@ -322,6 +328,7 @@ public class hqInt_ModelClass {
 
             obj.subtotal__c = subtotal;
             obj.applied_credit__c = applied_credit;
+            obj.Server_Name__c = serverName;
 
             return obj;
         }
@@ -336,13 +343,14 @@ public class hqInt_ModelClass {
         public string transaction_id;
         public Double amount;
 
-        public Accounting_Paymentrecord__c createDbObject(id sfIdPaymentMethod) {
+        public Accounting_Paymentrecord__c createDbObject(Id sfIdPaymentMethod, String serverName) {
             Accounting_Paymentrecord__c obj = new Accounting_Paymentrecord__c();
             obj.id__c = id;
             obj.payment_method__c = sfIdPaymentMethod;
             obj.amount__c = amount;
             obj.date_created__c = date_created;
             obj.transaction_id__c = transaction_id;
+            obj.Server_Name__c = serverName;
 
             return obj;
         }
@@ -362,7 +370,7 @@ public class hqInt_ModelClass {
         public DateTime date_created;
         public string billing_admin;
 
-        public Accounting_PaymentMethod__c createDbObject(id sfIdBillAcc,id sfIdBillAccAdmin) {
+        public Accounting_PaymentMethod__c createDbObject(Id sfIdBillAcc, Id sfIdBillAccAdmin, String serverName) {
             Accounting_PaymentMethod__c obj = new Accounting_PaymentMethod__c();
             obj.id__c = id;
             obj.account__c = sfIdBillAcc;
@@ -371,6 +379,7 @@ public class hqInt_ModelClass {
 
             obj.date_created__c = date_created;
             obj.method_type__c = method_type;
+            obj.Server_Name__c = serverName;
 
             return obj;
         }
@@ -383,13 +392,13 @@ public class hqInt_ModelClass {
         public string web_user;
         public string domain;
 
-        public Accounting_BillingAccountAdmin__c createDbObject()
-        {
+        public Accounting_BillingAccountAdmin__c createDbObject(String serverName) {
             Accounting_BillingAccountAdmin__c obj = new Accounting_BillingAccountAdmin__c();
             obj.id__c = id;
             obj.domain__c = domain;
             obj.web_user__c = web_user;
-            
+            obj.Server_Name__c = serverName;
+
             return obj;
         }
     } 
@@ -408,13 +417,14 @@ public class hqInt_ModelClass {
         public String method;
         public DateTime date_created;
 
-        public Accounting_SubscriptionAdjustment__c createDbObject(String subscriptionId) {
+        public Accounting_SubscriptionAdjustment__c createDbObject(String subscriptionId, String serverName) {
             Accounting_SubscriptionAdjustment__c obj = new Accounting_SubscriptionAdjustment__c();
             obj.id__c = id;
             obj.subscription__c = subscriptionId;
             obj.reason__c = reason;
             obj.method__c = method;
             obj.date_created__c = date_created;
+            obj.Server_Name__c = serverName;
 
             return obj;
         }
@@ -441,7 +451,8 @@ public class hqInt_ModelClass {
         public String payment_record;
         public String related_credit;
 
-        public Accounting_CreditAdjustment__c createDbObject(String creditLineSfId, String invoiceSfId, String lineItemSfId, String paymentRecSfId, String relatedCreditLineSfId) {
+        public Accounting_CreditAdjustment__c createDbObject(String creditLineSfId, String invoiceSfId, String lineItemSfId, String paymentRecSfId,
+                                                                String relatedCreditLineSfId, String serverName) {
             Accounting_CreditAdjustment__c obj = new Accounting_CreditAdjustment__c();
             obj.amount__c = amount;
             obj.credit_line__c = creditLineSfId;
@@ -456,6 +467,7 @@ public class hqInt_ModelClass {
             obj.reason__c = reason;
             obj.related_credit_id__c = relatedCreditLineSfId;
             obj.web_user__c = web_user;
+            obj.Server_Name__c = serverName;
 
             return obj;
         }
@@ -479,7 +491,7 @@ public class hqInt_ModelClass {
         public String feature_type;
         public Boolean is_active;
 
-        public Accounting_CreditLine__c createDbObject(String billingAccSfId, String subscriptionSfId) {
+        public Accounting_CreditLine__c createDbObject(String billingAccSfId, String subscriptionSfId, String serverName) {
             Accounting_CreditLine__c obj = new Accounting_CreditLine__c();
             obj.id__c = id;
             obj.account__c = billingAccSfId;
@@ -490,6 +502,7 @@ public class hqInt_ModelClass {
             obj.is_active__c = is_active;
             obj.product_type__c = product_type;
             obj.Subscription__c = subscriptionSfId;
+            obj.Server_Name__c = serverName;
 
             return obj;
         }
