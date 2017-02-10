@@ -188,7 +188,7 @@ public class ContractSnapshotTest {
         insert pro8;
 
         Test.startTest();
-        Database.executeBatch(new GSOverallCalculationBatch([SELECT Id FROM Business_Unit__c], Date.newInstance(2017, 3, 8), false));
+        Database.executeBatch(new GSOverallCalculationBatch([SELECT Id FROM Business_Unit__c], Date.newInstance(2017, 3, 8), 0, 0, 0));
         Test.stopTest();
 
         PRO_Contract_Snapshot__c proDromDB = [SELECT Id, GS_Quality_Overall_Status__c, GS_Quality_Customer_Satisfaction__c FROM PRO_Contract_Snapshot__c WHERE Id =: proS8.Id];
@@ -263,7 +263,7 @@ public class ContractSnapshotTest {
         insert pro8;
 
         Test.startTest();
-        Database.executeBatch(new GSOverallCalculationBatch([SELECT Id FROM Business_Unit__c], Date.newInstance(2017, 3, 22), false));
+        Database.executeBatch(new GSOverallCalculationBatch([SELECT Id FROM Business_Unit__c], Date.newInstance(2017, 3, 22), 0, 0, 0));
         Test.stopTest();
 
         PRO_Contract_Snapshot__c proDromDB = [SELECT Id, GS_Quality_Overall_Status__c, GS_Quality_Customer_Satisfaction__c FROM PRO_Contract_Snapshot__c WHERE Id =: proS8.Id];
@@ -338,7 +338,7 @@ public class ContractSnapshotTest {
         insert pro8;
 
         Test.startTest();
-        Database.executeBatch(new GSOverallCalculationBatch([SELECT Id FROM Business_Unit__c], Date.newInstance(2017, 3, 27), false));
+        Database.executeBatch(new GSOverallCalculationBatch([SELECT Id FROM Business_Unit__c], Date.newInstance(2017, 3, 27), 0, 0, 0));
         Test.stopTest();
 
         PRO_Contract_Snapshot__c proDromDB = [SELECT Id, GS_Quality_Overall_Status__c, GS_Quality_Customer_Satisfaction__c FROM PRO_Contract_Snapshot__c WHERE Id =: proS8.Id];
@@ -348,6 +348,61 @@ public class ContractSnapshotTest {
         System.assertEquals(25.99, value.setScale(2));
         // Expected Value = (400 + 444 + 678 + 543) / (1000 + 1367 + 1333 + 4567) = 2065 / 8267 = 24,97
         // Expected Value (Customer) = (250 + 223 + 900 + 776) / (1000 + 1367 + 1333 + 4567) = 2149 / 8267 = 25,99
+    }
+
+    static testMethod void shouldCalculateGSQualityTotal() {
+        Business_Unit__c bu1 = new Business_Unit__c(Name = 'Inc');
+        insert bu1;
+        Business_Unit__c bu2 = new Business_Unit__c(Name = 'Test BU');
+        insert bu2;
+        DContract__c dcontract1 = new DContract__c(Name = 'Sample Test 1', Prime_Contracting_Business_Unit__c = bu1.Id, Percent_through_SOW_deliverables__c = 10, Expected_Buffer__c = 0,
+                                                   Contract_Expense_BUDGET__c = 0, of_Services_budget_for_GS__c = 100, Total_Amount_of_Contract__c = 1000);
+        DContract__c dcontract2 = new DContract__c(Name = 'Sample Test 2', Prime_Contracting_Business_Unit__c = bu1.Id, Percent_through_SOW_deliverables__c = 20, Expected_Buffer__c = 0,
+                                                   Contract_Expense_BUDGET__c = 0, of_Services_budget_for_GS__c = 100, Total_Amount_of_Contract__c = 2000);
+        DContract__c dcontract3 = new DContract__c(Name = 'Sample Test 3', Prime_Contracting_Business_Unit__c = bu2.Id, Percent_through_SOW_deliverables__c = 30, Expected_Buffer__c = 0,
+                                                   Contract_Expense_BUDGET__c = 0, of_Services_budget_for_GS__c = 100, Total_Amount_of_Contract__c = 3000);
+        DContract__c dcontract4 = new DContract__c(Name = 'Sample Test 4', Prime_Contracting_Business_Unit__c = bu2.Id, Percent_through_SOW_deliverables__c = 40, Expected_Buffer__c = 0,
+                                                   Contract_Expense_BUDGET__c = 0, of_Services_budget_for_GS__c = 100, Total_Amount_of_Contract__c = 4000);
+        insert dcontract1;
+        insert dcontract2;
+        insert dcontract3;
+        insert dcontract4;
+
+        PRO_Contract_Snapshot__c proS1 = new PRO_Contract_Snapshot__c(Project_Quality_Overall_Status__c = 200, Customer_Satisfaction_of_services__c = 100,
+                                                                GS_Execution_Budget__c = 500);
+        PRO_Contract_Snapshot__c proS2 = new PRO_Contract_Snapshot__c(Project_Quality_Overall_Status__c = 400, Customer_Satisfaction_of_services__c = 200,
+                                                                GS_Execution_Budget__c = 900);
+        PRO_Contract_Snapshot__c proS3 = new PRO_Contract_Snapshot__c(Project_Quality_Overall_Status__c = 600, Customer_Satisfaction_of_services__c = 300,
+                                                                GS_Execution_Budget__c = 1000);
+        PRO_Contract_Snapshot__c proS4 = new PRO_Contract_Snapshot__c(Project_Quality_Overall_Status__c = 800, Customer_Satisfaction_of_services__c = 400,
+                                                                GS_Execution_Budget__c = 1500);
+
+        insert proS1;
+        insert proS2;
+        insert proS3;
+        insert proS4;
+
+        Project_Report_Out__c pro1 = new Project_Report_Out__c(Contract__c = dcontract1.Id, Contract_Snapshot__c = proS1.Id, Report_Out_Date__c = Date.newInstance(2017, 1, 26));
+        Project_Report_Out__c pro2 = new Project_Report_Out__c(Contract__c = dcontract2.Id, Contract_Snapshot__c = proS2.Id, Report_Out_Date__c = Date.newInstance(2017, 1, 26));
+        Project_Report_Out__c pro3 = new Project_Report_Out__c(Contract__c = dcontract3.Id, Contract_Snapshot__c = proS3.Id, Report_Out_Date__c = Date.newInstance(2017, 1, 26));
+        Project_Report_Out__c pro4 = new Project_Report_Out__c(Contract__c = dcontract4.Id, Contract_Snapshot__c = proS4.Id, Report_Out_Date__c = Date.newInstance(2017, 1, 26));
+
+        insert pro1;
+        insert pro2;
+        insert pro3;
+        insert pro4;
+
+        Test.startTest();
+        Database.executeBatch(new GSOverallCalculationBatch([SELECT Id FROM Business_Unit__c], Date.newInstance(2017, 2, 8), 0, 0, 0));
+        Test.stopTest();
+
+        Contract_Statistic__c proDromDB = [SELECT Id, GS_Quality_Total_Overall_Status__c, GS_Quality_Total_Customer_Satisfaction__c FROM Contract_Statistic__c LIMIT 1];
+        Decimal value = proDromDB.GS_Quality_Total_Overall_Status__c;
+        System.assertEquals(51.28, value.setScale(2));
+        value = proDromDB.GS_Quality_Total_Customer_Satisfaction__c;
+        System.assertEquals(25.64, value.setScale(2));
+        // Expected Value = (200 + 400 + 600 + 800) / (500 + 900 + 1000 + 1500) = 2000 / 3900 = 51,28
+        // Expected Value (Customer) = (100 + 200 + 300 + 400) / (500 + 900 + 1000 + 1500) = 1000 / 3900 = 25,64
     }
 
     static private void assertSnapshotData(PRO_Contract_Snapshot__c snapshot) {

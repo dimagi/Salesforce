@@ -9,11 +9,15 @@ public without sharing class GSOverallCalculationBatch implements Database.Batch
     private Double gsOverall;
     private Double gsSatisfaction;
     private Double gsBudget;
+    private Double gsTotalOverall;
+    private Double gsTotalSatisfaction;
+    private Double gsTotalBudget;
     private List<Project_Report_Out__c> proList;
     private Date currentDate;
     private Boolean total;
+    private Date cycleStartDate;
 
-    public GSOverallCalculationBatch(List<Business_Unit__c> businessUnits, Boolean total) {
+    public GSOverallCalculationBatch(List<Business_Unit__c> businessUnits) {
         this.businessUnits = businessUnits;
         if (this.businessUnits.size() > 0) {
             this.currentUnit = this.businessUnits.get(0);
@@ -22,12 +26,14 @@ public without sharing class GSOverallCalculationBatch implements Database.Batch
         this.gsOverall = 0;
         this.gsSatisfaction = 0;
         this.gsBudget = 0;
+        this.gsTotalOverall = 0;
+        this.gsTotalSatisfaction = 0;
+        this.gsTotalBudget = 0;
         this.proList = new List<Project_Report_Out__c>();
         this.currentDate = Date.today();
-        this.total = total;
     }
 
-    public GSOverallCalculationBatch(List<Business_Unit__c> businessUnits, Date currentDate, Boolean total) {
+    public GSOverallCalculationBatch(List<Business_Unit__c> businessUnits, Date currentDate, Double gsTotalOverall, Double gsTotalSatisfaction, Double gsTotalBudget) {
         this.businessUnits = businessUnits;
         if (this.businessUnits.size() > 0) {
             this.currentUnit = this.businessUnits.get(0);
@@ -36,9 +42,11 @@ public without sharing class GSOverallCalculationBatch implements Database.Batch
         this.gsOverall = 0;
         this.gsSatisfaction = 0;
         this.gsBudget = 0;
+        this.gsTotalOverall = gsTotalOverall;
+        this.gsTotalSatisfaction = gsTotalSatisfaction;
+        this.gsTotalBudget = gsTotalBudget;
         this.proList = new List<Project_Report_Out__c>();
         this.currentDate = currentDate;
-        this.total = total;
     }
 
     public List<Project_Report_Out__c> start(Database.BatchableContext BC) {
@@ -58,13 +66,14 @@ public without sharing class GSOverallCalculationBatch implements Database.Batch
             endDate = thursDayListNextMonth[1];
         }
 
+        this.cycleStartDate = startDate;
+        if (this.currentDate == endDate.addDays(-1)) {
+            this.total = true; // If last day we calculate total value
+        }
+
         System.debug('Start date : ' + startDate);
         System.debug('End date : ' + endDate);
-        if (this.total == true) {
-            return [SELECT Id, Contract__c, Report_Out_Date__c, Contract_Snapshot__c, Contract_Snapshot__r.GS_Quality_Overall_Status__c, Contract_Snapshot__r.GS_Quality_Customer_Satisfaction__c,
-                    Contract_Snapshot__r.Project_Quality_Overall_Status__c, Contract_Snapshot__r.Customer_Satisfaction_of_services__c, Contract_Snapshot__r.GS_Execution_Budget__c
-                    FROM Project_Report_Out__c WHERE Contract_Snapshot__c != '' AND Report_Out_Date__c >=: startDate AND Report_Out_Date__c <: endDate];
-        }
+
         if (this.currentUnit == null) {
             return new List<Project_Report_Out__c>();
         }
@@ -101,20 +110,19 @@ public without sharing class GSOverallCalculationBatch implements Database.Batch
             System.debug('this.gsOverall : ' + this.gsOverall);
             System.debug('this.gsSatisfaction : ' + this.gsSatisfaction);
             System.debug('this.gsBudget : ' + this.gsBudget);
+            this.gsTotalOverall += this.gsOverall;
+            this.gsTotalSatisfaction += this.gsSatisfaction;
+            this.gsTotalBudget += this.gsBudget;
+
             this.gsOverall = 100 * (this.gsOverall / this.gsBudget);
             this.gsSatisfaction = 100 * (this.gsSatisfaction / this.gsBudget);
 
             List<DContract__c> contractsToUpdate = new List<DContract__c>();
             for (Project_Report_Out__c pro : this.proList) {
-                if (this.total == false) {
-                    toUpdate.add(new PRO_Contract_Snapshot__c(Id = pro.Contract_Snapshot__c, GS_Quality_Overall_Status__c = this.gsOverall,
+                toUpdate.add(new PRO_Contract_Snapshot__c(Id = pro.Contract_Snapshot__c, GS_Quality_Overall_Status__c = this.gsOverall,
                                                           GS_Quality_Customer_Satisfaction__c = this.gsSatisfaction));
-                    contractsToUpdate.add(new DContract__c(Id = pro.Contract__c, GS_Quality_Overall_Status__c = this.gsOverall,
+                contractsToUpdate.add(new DContract__c(Id = pro.Contract__c, GS_Quality_Overall_Status__c = this.gsOverall,
                                                         GS_Quality_Customer_Satisfaction__c = this.gsSatisfaction));
-                } else {
-                    contractsToUpdate.add(new DContract__c(Id = pro.Contract__c, GS_Quality_Total_Overall_Status__c = this.gsOverall,
-                                                        GS_Quality_Total_Customer_Satisfaction__c = this.gsSatisfaction));
-                } 
             }
 
             if (contractsToUpdate.size() > 0) {
@@ -147,12 +155,23 @@ public without sharing class GSOverallCalculationBatch implements Database.Batch
             }
         }
 
-        if (this.total == false && this.businessUnits.size() > 0) {
-            Database.executeBatch(new GSOverallCalculationBatch(this.businessUnits, this.currentDate, this.total));
-        } else if (this.total == false) {
-            Database.executeBatch(new GSOverallCalculationBatch(new List<Business_Unit__c>(), this.currentDate, true));
+        if (this.businessUnits.size() > 0) {
+            GSOverallCalculationBatch overallBatch = new GSOverallCalculationBatch(this.businessUnits, this.currentDate, this.gsTotalOverall,
+                                                                                    this.gsTotalSatisfaction, this.gsTotalBudget);
+            Database.executeBatch(overallBatch);
         } else {
+            if (this.total == true) {
+                this.gsTotalOverall = 100 * (this.gsTotalOverall / this.gsTotalBudget);
+                this.gsTotalSatisfaction = 100 * (this.gsTotalSatisfaction / this.gsTotalBudget);
+                Contract_Statistic__c cs = new Contract_Statistic__c(PRO_Cycle_Date__c = this.cycleStartDate, GS_Quality_Total_Overall_Status__c = this.gsTotalOverall,
+                                                                     GS_Quality_Total_Customer_Satisfaction__c = this.gsTotalSatisfaction);
+                insert cs;
+            }
             Database.executeBatch(new ForPeriodCalcSnapshotBatch(false), 50);
         }
+    }
+
+    public void setTotal(Boolean total) {
+        this.total = total;
     }
 }
