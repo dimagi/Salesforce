@@ -17,6 +17,33 @@ public class HqIntegrationTests {
     }
 
     @isTest
+    static void shouldCalculateWAM() {
+        hqInt_Model_DomainClass d1 = new hqInt_Model_DomainClass();
+        d1.x_id = 'sample_external_id';
+        d1.Name = 'domain_1';
+        d1.tags = new List<String> { ' ' };
+        Domain__c domainFromDb1 = d1.createDbObject(null, 'CommCare HQ');
+        insert domainFromDb1;
+
+        hqInt_Model_DomainClass d2 = new hqInt_Model_DomainClass();
+        d2.x_id = 'test-external-2';
+        d2.Name = 'domain_2';
+        d2.tags = new List<String> { ' ' };
+        Domain__c domainFromDb2 = d2.createDbObject(null, 'CommCare HQ');
+        insert domainFromDb2;
+
+        Test.startTest();
+        Test.setMock(HttpCalloutMock.class, new hqInt_HttpMock());
+        HqBatchJobHelper.startMaltJob(Date.today());
+        Test.stopTest();
+
+        Domain__c assertDomain = [SELECT Id, Wam__c FROM Domain__c WHERE Id =: domainFromDb1.Id];
+        System.assertEquals(2, assertDomain.Wam__c);
+        assertDomain = [SELECT Id, Wam__c FROM Domain__c WHERE Id =: domainFromDb2.Id];
+        System.assertEquals(3, assertDomain.Wam__c);
+    }
+
+    @isTest
     static void shouldSetPrimaryContactOnDomain() {
         Business_Unit__c bunit = new Business_Unit__c();
         bunit.Name = 'Test';
