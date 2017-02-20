@@ -138,7 +138,7 @@ public without sharing class GSOverallCalculationBatch implements Database.Batch
 
                 if (emailBody != '') {
                     BatchDefaultSettings__c settings = BatchDefaultSettings__c.getOrgDefaults();
-                    emailBody = '<table border="1"><tr><td>Id</td>td>Fields</td>td>Code</td><td>Error Message</td></tr>' + emailBody + '</table></br>';
+                    emailBody = '<table border="1"><tr><td>Id</td><td>Fields</td><td>Code</td><td>Error Message</td></tr>' + emailBody + '</table></br>';
                     EmailHelper.sendEmail(settings.Error_Emails__c.split(','), 'GS Quality calculation error', emailBody);
                 }
             }
