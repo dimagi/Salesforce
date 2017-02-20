@@ -230,7 +230,7 @@ public with sharing class ProjectReportOutController {
                 Project_Report_Out__c proToUpdate = createPROToUpdate(proList.isEmpty() ? null : proList[0]);
                 DContract__c dcontract = [SELECT Id, Name, Last_Report_Out_Status__c, Percent_through_SOW_deliverables__c, Budget_Used__c, of_Services_budget_for_GS__c, Total_Costs__c, Services_Spend__c,
                                         Buffer_by_SOW_Completed__c, Execution_Efficiency__c, Expected_Buffer__c, Direct_Costs_Total_Expenses__c, Net_Income_based_on_SOW_Completed__c, Product_Spend__c,
-                                        Customer_Satisfaction_of_services__c, Project_Quality_Overall_Status__c FROM DContract__c WHERE Id =: reportContractId];
+                                        Customer_Satisfaction_of_services__c, Project_Quality_Overall_Status__c, GS_Execution_Budget__c FROM DContract__c WHERE Id =: reportContractId];
 
                 dcontract.Last_Report_Out_Status__c = status;
                 dcontract.Percent_through_SOW_deliverables__c = proTabContractPercntgethroughSOW;
@@ -371,7 +371,7 @@ public with sharing class ProjectReportOutController {
         proContractSnapshot.Contract__c = dcontract.Id;
         proContractSnapshot.Name = dcontract.Name;
         proContractSnapshot.Snapshot_Date__c = Date.today();
-
+        proContractSnapshot.GS_Execution_Budget__c = dcontract.GS_Execution_Budget__c;
         return proContractSnapshot;
     }
 
