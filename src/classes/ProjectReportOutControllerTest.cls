@@ -18,7 +18,7 @@ public class ProjectReportOutControllerTest {
         proObj.validData();
 
         proObj.status = 'Red';
-        proObj.pro.PM_email__c = 'akanksha@gmail.com';
+        proObj.pro.PM_email__c = 'akanksha@dimagi.com';
         proObj.pro.Report_Out_Date__c = Date.newInstance(2014, 12, 25);
         PageReference pagRef = proObj.save();
         
@@ -39,7 +39,7 @@ public class ProjectReportOutControllerTest {
         proObj.ValidateProject();
         
         proObj.saveProject();
-        proObj.currentLoginEmail='aakansha@gmail.com';
+        proObj.currentLoginEmail='aakansha@dimagi.com';
         proObj.AddMe();
 
         proObj.AddContact();
