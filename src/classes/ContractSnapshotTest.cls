@@ -1,4 +1,4 @@
-@isTest(SeeAllData=true)
+@isTest
 public class ContractSnapshotTest {
 
     static testMethod void shouldCreateSnapshotAfterSubmitingPRO() {
