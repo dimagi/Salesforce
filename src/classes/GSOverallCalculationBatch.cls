@@ -114,15 +114,20 @@ public without sharing class GSOverallCalculationBatch implements Database.Batch
             this.gsTotalSatisfaction += this.gsSatisfaction;
             this.gsTotalBudget += this.gsBudget;
 
-            this.gsOverall = 100 * (this.gsOverall / this.gsBudget);
-            this.gsSatisfaction = 100 * (this.gsSatisfaction / this.gsBudget);
+            if (this.gsBudget == 0) {
+                this.gsOverall = 0;
+                this.gsSatisfaction = 0;
+            } else {
+                this.gsOverall = 100 * (this.gsOverall / this.gsBudget);
+                this.gsSatisfaction = 100 * (this.gsSatisfaction / this.gsBudget);
+            }
 
             List<DContract__c> contractsToUpdate = new List<DContract__c>();
             for (Project_Report_Out__c pro : this.proList) {
                 toUpdate.add(new PRO_Contract_Snapshot__c(Id = pro.Contract_Snapshot__c, GS_Quality_Overall_Status__c = this.gsOverall,
-                                                          GS_Quality_Customer_Satisfaction__c = this.gsSatisfaction));
+                                                      GS_Quality_Customer_Satisfaction__c = this.gsSatisfaction));
                 contractsToUpdate.add(new DContract__c(Id = pro.Contract__c, GS_Quality_Overall_Status__c = this.gsOverall,
-                                                        GS_Quality_Customer_Satisfaction__c = this.gsSatisfaction));
+                                                    GS_Quality_Customer_Satisfaction__c = this.gsSatisfaction));
             }
 
             if (contractsToUpdate.size() > 0) {
@@ -146,7 +151,6 @@ public without sharing class GSOverallCalculationBatch implements Database.Batch
             if (toUpdate.size() > 0) {
                 update toUpdate;
             }
-
         } catch (Exception ex) {
             System.debug('Error : ' + ex);
             if (!Test.isRunningTest()) {
@@ -164,8 +168,13 @@ public without sharing class GSOverallCalculationBatch implements Database.Batch
                 System.debug('this.gsTotalOverall ' + this.gsTotalOverall);
                 System.debug('this.gsTotalSatisfaction ' + this.gsTotalSatisfaction);
                 System.debug('this.gsTotalBudget ' + this.gsTotalBudget);
-                this.gsTotalOverall = 100 * (this.gsTotalOverall / this.gsTotalBudget);
-                this.gsTotalSatisfaction = 100 * (this.gsTotalSatisfaction / this.gsTotalBudget);
+                if (this.gsTotalBudget != 0) {
+                    this.gsTotalOverall = 100 * (this.gsTotalOverall / this.gsTotalBudget);
+                    this.gsTotalSatisfaction = 100 * (this.gsTotalSatisfaction / this.gsTotalBudget);
+                } else {
+                    this.gsTotalOverall = 0;
+                    this.gsTotalSatisfaction = 0;
+                }
                 Contract_Statistic__c cs = new Contract_Statistic__c(PRO_Cycle_Date__c = this.cycleStartDate, GS_Quality_Total_Overall_Status__c = this.gsTotalOverall,
                                                                      GS_Quality_Total_Customer_Satisfaction__c = this.gsTotalSatisfaction);
                 insert cs;
