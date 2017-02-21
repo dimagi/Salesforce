@@ -49,7 +49,7 @@ public class hqInt_BatchErrorLogger {
     }
 
     public static Boolean checkErrorsLogged(String batchId) {
-        if([SELECT count() FROM Batch_Error_Logs__c WHERE id = :batchId] > 0) {
+        if([SELECT count() FROM Batch_Error_Logs__c WHERE Batch_Id__c = :batchId] > 0) {
             return true;
         } else {
             return false;
