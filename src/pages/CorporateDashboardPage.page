@@ -1,0 +1,99 @@
+<apex:page docType="html-5.0" controller="CorporateDashboardController" >
+    <style>
+    .chartsData{
+        width:25% !important;
+    }
+    .pageBackground {
+        background-color: white;
+    }
+    body .bPageBlock {
+        background-color: white;
+    }
+    body .secondaryPalette.bPageBlock {
+        background-color: white;
+    }
+    </style>
+
+    <script>
+        function reload() {
+            window.location.reload();
+        }
+    </script>
+
+    <apex:form styleClass="pageBackground">
+        <apex:outputPanel styleClass="pageBackground">
+        <apex:pageBlock id="corporateDashboard" title="Corporate Dashboard" mode="edit" >
+            <apex:pageBlockButtons id="buttonPanel" styleClass="pageBackground">
+                <apex:commandButton disabled="{!refreshing}" action="{!refreshDashboard}" value="Refresh" reRender="corporateDashboard,buttonPanel"/>
+                <apex:image url="/img/loading32.gif" height="10px" rendered="{!refreshing}"/>
+            </apex:pageBlockButtons>
+            <apex:actionPoller action="{!resetRefreshFlag}" enabled="{!refreshing}" reRender="corporateDashboard,buttonPanel" interval="35" oncomplete="reload()"/>
+            <apex:pageBlockSection title="Scale" columns="4" collapsible="false">
+                <apex:pageBlockSectionItem dataStyleClass="chartsData">
+                    <a href="/00Ob00000047zGu">
+                        <img src="/servlet/servlet.ChartServer?rsid=0FLb00000018xT2&ruid=005b0000001SrLL&did=01Zb0000000gCws&s=8&fs=12&tfg=12&tfs=-16777216&explode=0&c=column&cs=0&title=Scale+of+Users&eh=no&compo=yes&fg=-16777216&bg1=-1&bg2=-1&bgdir=2&dl1=Software+Plan+Edition&dl2=&l=2&sax=yes&Yman=no&nc=0&actUrl=%2F00Ob00000047zGu&sd=1&scv=no&sct=no&spt=no&bd=yes&cu=USD&ab=X&u=0&vt=0&ab2=Y&u2=0&vt2=0&vl0=Sum+of+Domain_cp_active_mobile_users&spoc=no&topn=no&gc0=-1&gc1=-1&gc2=-1&sona=0&refreshts=1487716617000" />
+                    </a>
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem dataStyleClass="chartsData">
+                    <a href="/00Ob00000047zGz">
+                        <img src="/servlet/servlet.ChartServer?rsid=0FLb00000018xT7&ruid=005b0000001SrLL&did=01Zb0000000gCws&s=8&fs=12&tfg=12&tfs=-16777216&explode=0&c=column&cs=0&title=Scale+of+Transactions&eh=no&compo=yes&fg=-16777216&bg1=-1&bg2=-1&bgdir=2&dl1=Software+Plan+Edition&dl2=&l=2&sax=yes&Yman=no&nc=0&actUrl=%2F00Ob00000047zGz&sd=1&scv=no&sct=no&spt=no&bd=yes&cu=USD&ab=X&u=0&vt=0&ab2=Y&u2=0&vt2=0&vl0=Sum+of+Domain_cp_all_forms&spoc=no&topn=no&gc0=-1&gc1=-1&gc2=-1&sona=0&refreshts=1487716726000" />
+                    </a>
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem dataStyleClass="chartsData">
+                    <a href="/00Ob0000003WOWK">
+                        <img src="/servlet/servlet.ChartServer?rsid=0FLb00000018qOV&ruid=005b0000001SrLL&did=01Zb0000000gCws&s=8&fs=12&tfg=12&tfs=-16777216&explode=0&c=pie&cs=0&title=Scale+of+Programs&eh=no&compo=yes&fg=-16777216&bg1=-1&bg2=-1&bgdir=2&dl1=Software+Plan+Edition&dl2=&l=2&sax=yes&Yman=no&nc=0&actUrl=%2F00Ob0000003WOWK&sd=1&scv=no&sct=no&spt=yes&bd=yes&cu=USD&ab=X&u=0&vt=0&ab2=Y&u2=0&vt2=0&vl0=Record+Count&spoc=no&topn=no&gc0=-1&gc1=-1&gc2=-1&sona=0&refreshts=1487240527000" />
+                    </a>
+                </apex:pageBlockSectionItem>
+            </apex:pageBlockSection>
+            <apex:pageBlockSection title="Business Development" columns="4" collapsible="false">
+                <apex:pageBlockSectionItem dataStyleClass="chartsData">
+                    <a href="/00Ob00000047qYz">
+                        <img src="/servlet/servlet.ChartServer?rsid=0FLb00000018qOe&ruid=005b0000001SrLL&did=01Zb0000000gCws&s=8&fs=12&tfg=12&tfs=-16777216&explode=0&c=column&cs=2&title=Change+in+Net+EV&eh=no&compo=yes&fg=-16777216&bg1=-1&bg2=-1&bgdir=2&dl1=Month_Date&dl2=Delta+Type&l=2&sax=yes&Yman=no&nc=0&actUrl=%2F00Ob00000047qYz&sd=1&scv=no&sct=no&spt=no&bd=yes&cu=USD&ab=X&u=0&vt=0&ab2=Y&u2=0&vt2=2&vl0=Sum+of+DIFF-24+Month+Cash+Minus+Expense+Income&spoc=no&topn=no&gm=0.0&gc0=-4041644&gm0=1.0&gc1=-4013484&gm1=2.0&gc2=-11222444&gm2=3.0&sona=0&refreshts=1487240536000"/>
+                    </a>
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem dataStyleClass="chartsData">
+                    <a href="/00Ob00000047qXw">
+                        <img src="/servlet/servlet.ChartServer?rsid=0FLb00000018qOt&ruid=005b0000001SrLL&did=01Zb0000000gCws&s=8&fs=12&tfg=12&tfs=-16777216&explode=0&c=column&cs=0&title=Buffer+EV+generated&eh=no&compo=yes&fg=-16777216&bg1=-1&bg2=-1&bgdir=2&dl1=Opportunity%3A+Opportunity+Owner+%28BU%29&dl2=&l=2&sax=yes&Yman=no&nc=0&actUrl=%2F00Ob00000047qXw&sd=1&scv=no&sct=no&spt=no&bd=yes&cu=USD&ab=X&u=0&vt=0&ab2=Y&u2=0&vt2=2&vl0=Sum+of+Opportunity%3A+Buffer+Amount+%28%24%29&spoc=no&topn=no&gc0=-1&gc1=-1&gc2=-1&sona=0&refreshts=1487240524000" />
+                    </a>
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem dataStyleClass="chartsData">
+                    <a href="/00Ob00000047qYB">
+                        <img src="/servlet/servlet.ChartServer?rsid=0FLb00000018qPS&ruid=005b0000001SrLL&did=01Zb0000000gCws&s=8&fs=12&tfg=12&tfs=-16777216&explode=0&c=column&cs=0&title=Contracts+Closed&eh=no&compo=yes&fg=-16777216&bg1=-1&bg2=-1&bgdir=2&dl1=Execution+Owner+%28BU%29&dl2=&l=2&sax=yes&Yman=no&nc=0&actUrl=%2F00Ob00000047qYB&sd=1&scv=no&sct=no&spt=no&bd=yes&cu=USD&ab=X&u=0&vt=0&ab2=Y&u2=0&vt2=2&vl0=Sum+of+Total+Non+Expense+Income+BUDGET&spoc=no&topn=no&gc0=-1&gc1=-1&gc2=-1&sona=0&refreshts=1487240526000" />
+                    </a>
+                </apex:pageBlockSectionItem>
+            </apex:pageBlockSection>
+            <apex:pageBlockSection title="Performance of Product" columns="4" collapsible="false">
+                <apex:pageBlockSectionItem dataStyleClass="chartsData">
+                    <a href="/00Ob00000047rxW">
+                        <img src="/servlet/servlet.ChartServer?rsid=0FLb00000018xTR&ruid=005b0000001SrLL&did=01Zb0000000gCws&s=8&fs=12&tfg=12&tfs=-16777216&explode=0&c=col_line&cs=0&title=Average+Page+Load&eh=no&compo=yes&fg=-16777216&bg1=-1&bg2=-1&bgdir=2&dl1=Date&dl2=&l=2&sax=yes&Yman=no&nc=0&actUrl=%2F00Ob00000047rxW&sd=1&scv=no&sct=no&spt=no&bd=yes&cu=USD&ab=X&u=0&vt=0&ab2=Y&u2=0&vt2=0&ab3=Y2&u3=0&vt3=0&vl0=Avg+Page+Load&vl1=Avg+%23+of+Submissions&spoc=no&topn=no&gc0=-1&gc1=-1&gc2=-1&sona=0&refreshts=1487885060000" />
+                    </a>
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem dataStyleClass="chartsData">
+                    <a href="/00Ob00000047rxW">
+                        <img src="/servlet/servlet.ChartServer?rsid=0FLb00000018xTg&ruid=005b0000001SrLL&did=01Zb0000000gCws&s=8&fs=12&tfg=12&tfs=-16777216&explode=0&c=col_line&cs=0&title=Average+Apdex&eh=no&compo=yes&fg=-16777216&bg1=-1&bg2=-1&bgdir=2&dl1=Date&dl2=&l=2&sax=yes&Yman=no&nc=0&actUrl=%2F00Ob00000047rxW&sd=1&scv=no&sct=no&spt=no&bd=yes&cu=USD&ab=X&u=0&vt=0&ab2=Y&u2=0&vt2=0&ab3=Y2&u3=0&vt3=0&vl0=Avg+Server+Apdex&vl1=Avg+%23+of+Submissions&spoc=no&topn=no&gc0=-1&gc1=-1&gc2=-1&sona=0&refreshts=1487885059000" />
+                    </a>    
+                </apex:pageBlockSectionItem>
+            </apex:pageBlockSection>
+            <apex:pageBlockSection title="Sustainability" columns="4" collapsible="false">
+                <apex:pageBlockSectionItem dataStyleClass="chartsData">
+                    <a href="/00Ob0000004ABF1">
+                        <img src="/servlet/servlet.ChartServer?rsid=0FLb00000018qoX&ruid=005b0000001SrLL&did=01Zb0000000gCws&s=8&fs=12&tfg=12&tfs=-16777216&explode=0&c=line&cs=4&title=SaaS&eh=no&compo=yes&fg=-16777216&bg1=-1&bg2=-1&bgdir=2&dl1=Close+Date&dl2=&l=2&sax=yes&Yman=no&nc=0&actUrl=%2F00Ob0000004ABF1&sd=1&scv=no&sct=no&spt=no&bd=yes&cu=USD&ab=X&u=0&vt=0&ab2=Y&u2=1&vt2=2&vl0=Sum+of+Expected+Monthly+Recurring+Revenue+%28MRR%29&spoc=no&topn=no&gc0=-1&gc1=-1&gc2=-1&sona=0&refreshts=1487240525000" />
+                    </a>
+                </apex:pageBlockSectionItem>
+            </apex:pageBlockSection>
+            <apex:pageBlockSection title="GS" columns="4" collapsible="false">
+                <apex:pageBlockSectionItem dataStyleClass="chartsData">
+                    <a href="/00Ob000000481sq">
+                        <img src="/servlet/servlet.ChartServer?rsid=0FLb00000018yfi&ruid=005b0000001SrLL&did=01Zb0000000gCws&s=8&fs=12&tfg=12&tfs=-16777216&explode=0&c=line&cs=0&title=GS+Overall+Quality&eh=no&compo=yes&fg=-16777216&bg1=-1&bg2=-1&bgdir=2&dl1=PRO+Cycle+Date&dl2=&l=2&sax=yes&Yman=no&nc=0&actUrl=%2F00Ob000000481sq&sd=1&scv=no&sct=no&spt=no&bd=yes&cu=USD&ab=X&u=0&vt=0&ab2=Y&u2=0&vt2=1&vl0=GS+Quality+Overall+Status&spoc=no&topn=no&gc0=-1&gc1=-1&gc2=-1&sona=0&refreshts=1487888152000" />
+                    </a>
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem dataStyleClass="chartsData">
+                    <a href="/00Ob000000481sq">
+                        <img src="/servlet/servlet.ChartServer?rsid=0FLb00000018yfn&ruid=005b0000001SrLL&did=01Zb0000000gCws&s=8&fs=12&tfg=12&tfs=-16777216&explode=0&c=line&cs=0&title=GS+Quality+Customer+Service&eh=no&compo=yes&fg=-16777216&bg1=-1&bg2=-1&bgdir=2&dl1=PRO+Cycle+Date&dl2=&l=2&sax=yes&Yman=no&nc=0&actUrl=%2F00Ob000000481sq&sd=1&scv=no&sct=no&spt=no&bd=yes&cu=USD&ab=X&u=0&vt=0&ab2=Y&u2=0&vt2=1&vl0=GS+Quality+Customer+Satisfaction&spoc=no&topn=no&gc0=-1&gc1=-1&gc2=-1&sona=0&refreshts=1487888218000" />
+                    </a>
+                </apex:pageBlockSectionItem>
+            </apex:pageBlockSection>
+        </apex:pageBlock>
+        </apex:outputPanel>
+    </apex:form>
+</apex:page>
