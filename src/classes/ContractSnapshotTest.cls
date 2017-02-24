@@ -115,13 +115,13 @@ public class ContractSnapshotTest {
         insert pro8;
 
         Test.startTest();
-        Database.executeBatch(new GSOverallCalculationBatch([SELECT Id FROM Business_Unit__c], Date.newInstance(2017, 3, 8), 0, 0, 0));
+        Database.executeBatch(new GSOverallCalculationBatch([SELECT Id, Name FROM Business_Unit__c], new Contract_Statistic__c(), Date.newInstance(2017, 3, 8), 0, 0, 0));
         Test.stopTest();
 
-        PRO_Contract_Snapshot__c proDromDB = [SELECT Id, GS_Quality_Overall_Status__c, GS_Quality_Customer_Satisfaction__c FROM PRO_Contract_Snapshot__c WHERE Id =: proS8.Id];
-        Decimal value = proDromDB.GS_Quality_Overall_Status__c;
+        Contract_Statistic__c proDromDB = [SELECT Id, Inc_GS_Customer_Sat__c, Inc_GS_Overall_Status__c FROM Contract_Statistic__c LIMIT 1];
+        Decimal value = proDromDB.Inc_GS_Overall_Status__c;
         System.assertEquals(24.98, value.setScale(2));
-        value = proDromDB.GS_Quality_Customer_Satisfaction__c;
+        value = proDromDB.Inc_GS_Customer_Sat__c;
         System.assertEquals(25.99, value.setScale(2));
         // Expected Value = (400 + 444 + 678 + 543) / (1000 + 1367 + 1333 + 4567) = 2065 / 8267 = 24,97
         // Expected Value (Customer) = (250 + 223 + 900 + 776) / (1000 + 1367 + 1333 + 4567) = 2149 / 8267 = 25,99
@@ -190,13 +190,13 @@ public class ContractSnapshotTest {
         insert pro8;
 
         Test.startTest();
-        Database.executeBatch(new GSOverallCalculationBatch([SELECT Id FROM Business_Unit__c], Date.newInstance(2017, 3, 22), 0, 0, 0));
+        Database.executeBatch(new GSOverallCalculationBatch([SELECT Id, Name FROM Business_Unit__c], new Contract_Statistic__c(), Date.newInstance(2017, 3, 22), 0, 0, 0));
         Test.stopTest();
 
-        PRO_Contract_Snapshot__c proDromDB = [SELECT Id, GS_Quality_Overall_Status__c, GS_Quality_Customer_Satisfaction__c FROM PRO_Contract_Snapshot__c WHERE Id =: proS8.Id];
-        Decimal value = proDromDB.GS_Quality_Overall_Status__c;
+        Contract_Statistic__c proDromDB = [SELECT Id, Inc_GS_Customer_Sat__c, Inc_GS_Overall_Status__c FROM Contract_Statistic__c LIMIT 1];
+        Decimal value = proDromDB.Inc_GS_Overall_Status__c;
         System.assertEquals(24.98, value.setScale(2));
-        value = proDromDB.GS_Quality_Customer_Satisfaction__c;
+        value = proDromDB.Inc_GS_Customer_Sat__c;
         System.assertEquals(25.99, value.setScale(2));
         // Expected Value = (400 + 444 + 678 + 543) / (1000 + 1367 + 1333 + 4567) = 2065 / 8267 = 24,97
         // Expected Value (Customer) = (250 + 223 + 900 + 776) / (1000 + 1367 + 1333 + 4567) = 2149 / 8267 = 25,99
@@ -265,13 +265,13 @@ public class ContractSnapshotTest {
         insert pro8;
 
         Test.startTest();
-        Database.executeBatch(new GSOverallCalculationBatch([SELECT Id FROM Business_Unit__c], Date.newInstance(2017, 3, 27), 0, 0, 0));
+        Database.executeBatch(new GSOverallCalculationBatch([SELECT Id, Name FROM Business_Unit__c], new Contract_Statistic__c(), Date.newInstance(2017, 3, 27), 0, 0, 0));
         Test.stopTest();
 
-        PRO_Contract_Snapshot__c proDromDB = [SELECT Id, GS_Quality_Overall_Status__c, GS_Quality_Customer_Satisfaction__c FROM PRO_Contract_Snapshot__c WHERE Id =: proS8.Id];
-        Decimal value = proDromDB.GS_Quality_Overall_Status__c;
+        Contract_Statistic__c proDromDB = [SELECT Id, Inc_GS_Customer_Sat__c, Inc_GS_Overall_Status__c FROM Contract_Statistic__c LIMIT 1];
+        Decimal value = proDromDB.Inc_GS_Overall_Status__c;
         System.assertEquals(24.98, value.setScale(2));
-        value = proDromDB.GS_Quality_Customer_Satisfaction__c;
+        value = proDromDB.Inc_GS_Customer_Sat__c;
         System.assertEquals(25.99, value.setScale(2));
         // Expected Value = (400 + 444 + 678 + 543) / (1000 + 1367 + 1333 + 4567) = 2065 / 8267 = 24,97
         // Expected Value (Customer) = (250 + 223 + 900 + 776) / (1000 + 1367 + 1333 + 4567) = 2149 / 8267 = 25,99
@@ -280,7 +280,7 @@ public class ContractSnapshotTest {
     static testMethod void shouldCalculateGSQualityTotal() {
         Business_Unit__c bu1 = new Business_Unit__c(Name = 'Inc');
         insert bu1;
-        Business_Unit__c bu2 = new Business_Unit__c(Name = 'Test BU');
+        Business_Unit__c bu2 = new Business_Unit__c(Name = 'DSI');
         insert bu2;
         DContract__c dcontract1 = new DContract__c(Name = 'Sample Test 1', Prime_Contracting_Business_Unit__c = bu1.Id, Percent_through_SOW_deliverables__c = 10, Expected_Buffer__c = 0,
                                                    Contract_Expense_BUDGET__c = 0, of_Services_budget_for_GS__c = 100, Total_Amount_of_Contract__c = 1000);
@@ -320,7 +320,7 @@ public class ContractSnapshotTest {
         insert pro4;
 
         Test.startTest();
-        Database.executeBatch(new GSOverallCalculationBatch([SELECT Id FROM Business_Unit__c], Date.newInstance(2017, 2, 8), 0, 0, 0));
+        Database.executeBatch(new GSOverallCalculationBatch([SELECT Id, Name FROM Business_Unit__c], new Contract_Statistic__c(), Date.newInstance(2017, 2, 8), 0, 0, 0));
         Test.stopTest();
 
         Contract_Statistic__c proDromDB = [SELECT Id, GS_Quality_Total_Overall_Status__c, GS_Quality_Total_Customer_Satisfaction__c FROM Contract_Statistic__c LIMIT 1];
