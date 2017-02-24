@@ -65,9 +65,10 @@ public without sharing class GSOverallCalculationBatch implements Database.Batch
             startDate = thursDayList[3];
             endDate = thursDayListNextMonth[1];
         }
-
         System.debug('Start date : ' + startDate);
         System.debug('End date : ' + endDate);
+
+        this.cycleStartDate = startDate;
 
         if (this.currentUnit == null) {
             return new List<Project_Report_Out__c>();
