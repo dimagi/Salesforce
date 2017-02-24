@@ -27,7 +27,7 @@
                 <apex:commandButton disabled="{!refreshing}" action="{!refreshDashboard}" value="Refresh" reRender="corporateDashboard,buttonPanel"/>
                 <apex:image url="/img/loading32.gif" height="10px" rendered="{!refreshing}"/>
             </apex:pageBlockButtons>
-            <apex:actionPoller action="{!resetRefreshFlag}" enabled="{!refreshing}" reRender="corporateDashboard,buttonPanel" interval="30" oncomplete="reload()"/>
+            <apex:actionPoller action="{!resetRefreshFlag}" enabled="{!refreshing}" reRender="corporateDashboard,buttonPanel" interval="35" oncomplete="reload()"/>
             <apex:pageBlockSection title="Scale" columns="4" collapsible="false">
                 <apex:pageBlockSectionItem dataStyleClass="chartsData">
                     <a href="/00Ob00000047zGu">
@@ -65,12 +65,12 @@
             <apex:pageBlockSection title="Performance of Product" columns="4" collapsible="false">
                 <apex:pageBlockSectionItem dataStyleClass="chartsData">
                     <a href="/00Ob00000047rxW">
-                        <img src="/servlet/servlet.ChartServer?rsid=0FLb00000018xTR&ruid=005b0000001SrLL&did=01Zb0000000gCws&s=8&fs=12&tfg=12&tfs=-16777216&explode=0&c=line&cs=0&title=Average+Page+Load&eh=no&compo=yes&fg=-16777216&bg1=-1&bg2=-1&bgdir=2&dl1=Date&dl2=&l=2&sax=yes&Yman=no&nc=0&actUrl=%2F00Ob00000047rxW&sd=1&scv=no&sct=no&spt=no&bd=yes&cu=USD&ab=X&u=0&vt=0&ab2=Y&u2=0&vt2=0&vl0=Avg+Page+Load&vl1=Avg+%23+of+Submissions&spoc=no&topn=no&gc0=-1&gc1=-1&gc2=-1&sona=0&refreshts=1487749975000" />
+                        <img src="/servlet/servlet.ChartServer?rsid=0FLb00000018xTR&ruid=005b0000001SrLL&did=01Zb0000000gCws&s=8&fs=12&tfg=12&tfs=-16777216&explode=0&c=col_line&cs=0&title=Average+Page+Load&eh=no&compo=yes&fg=-16777216&bg1=-1&bg2=-1&bgdir=2&dl1=Date&dl2=&l=2&sax=yes&Yman=no&nc=0&actUrl=%2F00Ob00000047rxW&sd=1&scv=no&sct=no&spt=no&bd=yes&cu=USD&ab=X&u=0&vt=0&ab2=Y&u2=0&vt2=0&ab3=Y2&u3=0&vt3=0&vl0=Avg+Page+Load&vl1=Avg+%23+of+Submissions&spoc=no&topn=no&gc0=-1&gc1=-1&gc2=-1&sona=0&refreshts=1487885060000" />
                     </a>
                 </apex:pageBlockSectionItem>
                 <apex:pageBlockSectionItem dataStyleClass="chartsData">
                     <a href="/00Ob00000047rxW">
-                        <img src="/servlet/servlet.ChartServer?rsid=0FLb00000018xTg&ruid=005b0000001SrLL&did=01Zb0000000gCws&s=8&fs=12&tfg=12&tfs=-16777216&explode=0&c=line&cs=0&title=Average+Apdex&eh=no&compo=yes&fg=-16777216&bg1=-1&bg2=-1&bgdir=2&dl1=Date&dl2=&l=2&sax=yes&Yman=no&nc=0&actUrl=%2F00Ob00000047rxW&sd=1&scv=no&sct=no&spt=no&bd=yes&cu=USD&ab=X&u=0&vt=0&ab2=Y&u2=0&vt2=0&vl0=Avg+Server+Apdex&vl1=Avg+%23+of+Submissions&spoc=no&topn=no&gc0=-1&gc1=-1&gc2=-1&sona=0&refreshts=1487749975000" />
+                        <img src="/servlet/servlet.ChartServer?rsid=0FLb00000018xTg&ruid=005b0000001SrLL&did=01Zb0000000gCws&s=8&fs=12&tfg=12&tfs=-16777216&explode=0&c=col_line&cs=0&title=Average+Apdex&eh=no&compo=yes&fg=-16777216&bg1=-1&bg2=-1&bgdir=2&dl1=Date&dl2=&l=2&sax=yes&Yman=no&nc=0&actUrl=%2F00Ob00000047rxW&sd=1&scv=no&sct=no&spt=no&bd=yes&cu=USD&ab=X&u=0&vt=0&ab2=Y&u2=0&vt2=0&ab3=Y2&u3=0&vt3=0&vl0=Avg+Server+Apdex&vl1=Avg+%23+of+Submissions&spoc=no&topn=no&gc0=-1&gc1=-1&gc2=-1&sona=0&refreshts=1487885059000" />
                     </a>    
                 </apex:pageBlockSectionItem>
             </apex:pageBlockSection>
@@ -81,11 +81,18 @@
                     </a>
                 </apex:pageBlockSectionItem>
             </apex:pageBlockSection>
-            <!--<apex:pageBlockSection title="GS" columns="4" collapsible="false">
+            <apex:pageBlockSection title="GS" columns="4" collapsible="false">
                 <apex:pageBlockSectionItem dataStyleClass="chartsData">
-
+                    <a href="/00Ob000000481sq">
+                        <img src="/servlet/servlet.ChartServer?rsid=0FLb00000018yfi&ruid=005b0000001SrLL&did=01Zb0000000gCws&s=8&fs=12&tfg=12&tfs=-16777216&explode=0&c=line&cs=0&title=GS+Overall+Quality&eh=no&compo=yes&fg=-16777216&bg1=-1&bg2=-1&bgdir=2&dl1=PRO+Cycle+Date&dl2=&l=2&sax=yes&Yman=no&nc=0&actUrl=%2F00Ob000000481sq&sd=1&scv=no&sct=no&spt=no&bd=yes&cu=USD&ab=X&u=0&vt=0&ab2=Y&u2=0&vt2=1&vl0=GS+Quality+Overall+Status&spoc=no&topn=no&gc0=-1&gc1=-1&gc2=-1&sona=0&refreshts=1487888152000" />
+                    </a>
                 </apex:pageBlockSectionItem>
-            </apex:pageBlockSection>-->
+                <apex:pageBlockSectionItem dataStyleClass="chartsData">
+                    <a href="/00Ob000000481sq">
+                        <img src="/servlet/servlet.ChartServer?rsid=0FLb00000018yfn&ruid=005b0000001SrLL&did=01Zb0000000gCws&s=8&fs=12&tfg=12&tfs=-16777216&explode=0&c=line&cs=0&title=GS+Quality+Customer+Service&eh=no&compo=yes&fg=-16777216&bg1=-1&bg2=-1&bgdir=2&dl1=PRO+Cycle+Date&dl2=&l=2&sax=yes&Yman=no&nc=0&actUrl=%2F00Ob000000481sq&sd=1&scv=no&sct=no&spt=no&bd=yes&cu=USD&ab=X&u=0&vt=0&ab2=Y&u2=0&vt2=1&vl0=GS+Quality+Customer+Satisfaction&spoc=no&topn=no&gc0=-1&gc1=-1&gc2=-1&sona=0&refreshts=1487888218000" />
+                    </a>
+                </apex:pageBlockSectionItem>
+            </apex:pageBlockSection>
         </apex:pageBlock>
         </apex:outputPanel>
     </apex:form>
