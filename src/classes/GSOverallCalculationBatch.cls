@@ -73,8 +73,8 @@ public without sharing class GSOverallCalculationBatch implements Database.Batch
         if (this.currentUnit == null) {
             return new List<Project_Report_Out__c>();
         }
-        return [SELECT Id, Contract__c, Report_Out_Date__c, Contract_Snapshot__c, Contract_Snapshot__r.GS_Quality_Overall_Status__c, Contract_Snapshot__r.GS_Quality_Customer_Satisfaction__c,
-                Contract_Snapshot__r.Project_Quality_Overall_Status__c, Contract_Snapshot__r.Customer_Satisfaction_of_services__c, Contract_Snapshot__r.GS_Execution_Budget__c
+        return [SELECT Id, Contract__c, Report_Out_Date__c, Contract_Snapshot__c, Contract_Snapshot__r.Project_Quality_Overall_Status__c,
+                Contract_Snapshot__r.Customer_Satisfaction_of_services__c, Contract_Snapshot__r.GS_Execution_Budget__c
                 FROM Project_Report_Out__c WHERE Contract__r.Prime_Contracting_Business_Unit__c =: this.currentUnit.Id AND Contract_Snapshot__c != ''
                 AND Report_Out_Date__c >=: startDate AND Report_Out_Date__c <: endDate];
     }
