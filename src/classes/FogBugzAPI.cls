@@ -8,7 +8,6 @@
  */
 public with sharing class FogBugzAPI {
 
-    private static final String FB_API_URL = 'http://manage.dimagi.com/api.asp?';
     private static final String FB_LIST_COLS = 'ixPersonOpenedBy,dtLastUpdated';
     private static final String FB_CASE_COLS = 'sTitle,sArea,sPersonAssignedTo,sVersion,dtLastUpdated,latestEvent,tags,ixPersonOpenedBy,hrsElapsed';
     private static final Integer FB_HTTP_TIMEOUT = 60000;
@@ -19,7 +18,7 @@ public with sharing class FogBugzAPI {
      */
     public Map<String, FogBugzCase> listCases() {
         HTTPRequest req = new HTTPRequest();
-        req.setEndpoint(FB_API_URL);
+        req.setEndpoint(FogBugz_Settings__c.getOrgDefaults().FB_URL__c);
         req.setBody('token=' + FogBugz_Settings__c.getOrgDefaults().Token__c + '&cmd=search&cols=' + FB_LIST_COLS);
         req.setTimeout(FB_HTTP_TIMEOUT);
         req.setMethod('POST');
@@ -48,7 +47,7 @@ public with sharing class FogBugzAPI {
 
     public FogBugzCase getCase(String caseId) {
         HTTPRequest req = new HTTPRequest();
-        req.setEndpoint(FB_API_URL);
+        req.setEndpoint(FogBugz_Settings__c.getOrgDefaults().FB_URL__c);
         req.setBody('token=' + FogBugz_Settings__c.getOrgDefaults().Token__c + '&cmd=search&cols=' + FB_CASE_COLS + '&q=' + caseId);
         req.setTimeout(FB_HTTP_TIMEOUT);
         req.setMethod('POST');
@@ -75,7 +74,7 @@ public with sharing class FogBugzAPI {
 
     public String setCurrentFilter(Integer filterId) {
         HTTPRequest req = new HTTPRequest();
-        req.setEndpoint(FB_API_URL);
+        req.setEndpoint(FogBugz_Settings__c.getOrgDefaults().FB_URL__c);
         req.setBody('token=' + FogBugz_Settings__c.getOrgDefaults().Token__c + '&cmd=setCurrentFilter&sFilter=' + filterId.format());
         req.setTimeout(FB_HTTP_TIMEOUT);
         req.setMethod('POST');
@@ -432,7 +431,7 @@ public with sharing class FogBugzAPI {
 
     private HTTPRequest buildHTTPRequest(Map<String, String> parameters) {
         HTTPRequest req = new HttpRequest();
-        req.setEndpoint(FB_API_URL);
+        req.setEndpoint(FogBugz_Settings__c.getOrgDefaults().FB_URL__c);
         req.setBody('token=' + FogBugz_Settings__c.getOrgDefaults().Token__c + '&' + encodeParameters(parameters));
         req.setTimeout(FB_HTTP_TIMEOUT);
         req.setMethod('POST');
