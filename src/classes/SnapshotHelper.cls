@@ -49,7 +49,7 @@ public class SnapshotHelper {
             proContractSnapshot.GS_Services_Completed__c = dcontract.GS_Services_Completed__c;
             proContractSnapshot.GS_Net_Income_to_Date__c = dcontract.GS_Net_Income_to_Date__c;
             proContractSnapshot.GS_Net_Income_to_Date_Handover__c = dcontract.GS_Net_Income_to_Date_Handover__c;
-            proContractSnapshot.GS_Revenue__c = dcontract.GS_Revenue__c;
+            // TODO FORMULA field proContractSnapshot.GS_Revenue__c = dcontract.GS_Revenue__c;
 
             if (oldSnapshot.Id != null) {
                 proContractSnapshot.Work_Completed_for_Period__c = (dcontract.Percent_through_SOW_deliverables__c != null ? dcontract.Percent_through_SOW_deliverables__c : 0) - (oldSnapshot.Percent_Of_Work_Completed__c != null ? oldSnapshot.Percent_Of_Work_Completed__c : 0);
@@ -61,7 +61,7 @@ public class SnapshotHelper {
                 proContractSnapshot.GS_Services_Completed_for_Period__c = (dcontract.GS_Services_Completed__c != null ? dcontract.GS_Services_Completed__c : 0) - (oldSnapshot.GS_Services_Completed__c != null ? oldSnapshot.GS_Services_Completed__c : 0);
                 proContractSnapshot.GS_Net_Income_for_Period__c = (dcontract.GS_Net_Income_to_Date__c != null ? dcontract.GS_Net_Income_to_Date__c : 0) - (oldSnapshot.GS_Net_Income_to_Date__c != null ? oldSnapshot.GS_Net_Income_to_Date__c : 0);
                 proContractSnapshot.GS_Net_Income_for_Period_by_Handover__c = (dcontract.GS_Net_Income_to_Date_Handover__c != null ? dcontract.GS_Net_Income_to_Date_Handover__c : 0) - (oldSnapshot.GS_Net_Income_to_Date_Handover__c != null ? oldSnapshot.GS_Net_Income_to_Date_Handover__c : 0);
-            } else {
+            } else { //TODO
                 proContractSnapshot.Work_Completed_for_Period__c = 0;
                 proContractSnapshot.Services_Spend_for_Period__c = 0;
                 proContractSnapshot.Expense_Travel_Spend_for_Period__c = 0;
@@ -119,7 +119,7 @@ public class SnapshotHelper {
             sn.GS_Services_Handover_Completed_for_Per__c = (sn.GS_Services_Completed_Handover__c != null ? sn.GS_Services_Completed_Handover__c : 0) - (oldSn.GS_Services_Completed_Handover__c != null ? oldSn.GS_Services_Completed_Handover__c : 0);
             sn.GS_Net_Income_for_Period__c = (sn.GS_Net_Income_to_Date__c != null ? sn.GS_Net_Income_to_Date__c : 0) - (oldSn.GS_Net_Income_to_Date__c != null ? oldSn.GS_Net_Income_to_Date__c : 0);
             sn.GS_Net_Income_for_Period_by_Handover__c = (sn.GS_Net_Income_to_Date_Handover__c != null ? sn.GS_Net_Income_to_Date_Handover__c : 0) - (oldSn.GS_Net_Income_to_Date_Handover__c != null ? oldSn.GS_Net_Income_to_Date_Handover__c : 0);
-        } else {
+        } else { // TODO
             sn.Work_Completed_for_Period__c = 0;
             sn.Services_Spend_for_Period__c = 0;
             sn.Expense_Travel_Spend_for_Period__c = 0;
