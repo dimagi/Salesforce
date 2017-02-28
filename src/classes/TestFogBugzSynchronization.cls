@@ -14,6 +14,7 @@ public class TestFogBugzSynchronization {
         settings.Token__c = 'test';
         settings.Sync_Script_Running__c = false;
         settings.Default_Opportunity_Owner__c = 'do@not.exist';
+        settings.FB_URL__c = 'https://manage.dimagi.com/api.asp?';
         upsert settings;
     }
 
