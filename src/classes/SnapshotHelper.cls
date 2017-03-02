@@ -5,7 +5,7 @@ public class SnapshotHelper {
 
     public static Map<Id, PRO_Contract_Snapshot__c> getOldPROSnapshot(List<DContract__c> contracts) {
         Map<Id, PRO_Contract_Snapshot__c> snapshotsMap = new Map<Id, PRO_Contract_Snapshot__c>();
-        List<PRO_Contract_Snapshot__c> snapshotsList = [SELECT Id, Percent_Of_Work_Completed__c, Services_Spend__c, Expense_And_Travel_Spend__c, Product_Spend__c, Total_Calculated_Costs__c, GS_Services_Completed_Handover__c,
+        List<PRO_Contract_Snapshot__c> snapshotsList = [SELECT Id, Percent_Of_Work_Completed__c, Services_Spend__c, Expense_And_Travel_Spend__c, Product_Spend__c, Total_Calculated_Costs__c, GS_Services_Completed_Handover__c, Product_Spend2__c,
                                           Contract__c, GS_Services_Completed__c, GS_Net_Income_to_Date__c, GS_Net_Income_to_Date_Handover__c FROM PRO_Contract_Snapshot__c WHERE Snapshot_Date__c <: Date.today()
                                           AND Contract__c IN: contracts ORDER BY Snapshot_Date__c DESC];
 
@@ -18,10 +18,18 @@ public class SnapshotHelper {
         return snapshotsMap;
     }
 
-    public static PRO_Contract_Snapshot__c getLastPROSnapshot(DContract__c dcontract) {
-        List<PRO_Contract_Snapshot__c> snapshotsList = [SELECT Id, Percent_Of_Work_Completed__c, Services_Spend__c, Expense_And_Travel_Spend__c, Product_Spend__c, Total_Calculated_Costs__c, GS_Services_Completed_Handover__c,
+    public static PRO_Contract_Snapshot__c getLastPROSnapshot(DContract__c dcontract, Id snapshotId) {
+        List<PRO_Contract_Snapshot__c> snapshotsList;
+        if (snapshotId == null) {
+            snapshotsList = [SELECT Id, Percent_Of_Work_Completed__c, Services_Spend__c, Expense_And_Travel_Spend__c, Product_Spend__c, Total_Calculated_Costs__c, GS_Services_Completed_Handover__c, Product_Spend2__c,
                                           Contract__c, GS_Services_Completed__c, GS_Net_Income_to_Date__c, GS_Net_Income_to_Date_Handover__c FROM PRO_Contract_Snapshot__c WHERE Snapshot_Date__c <: Date.today()
                                           AND Contract__c =: dcontract.Id ORDER BY Snapshot_Date__c DESC LIMIT 1];
+        } else {
+            snapshotsList = [SELECT Id, Percent_Of_Work_Completed__c, Services_Spend__c, Expense_And_Travel_Spend__c, Product_Spend__c, Total_Calculated_Costs__c, GS_Services_Completed_Handover__c, Product_Spend2__c,
+                                          Contract__c, GS_Services_Completed__c, GS_Net_Income_to_Date__c, GS_Net_Income_to_Date_Handover__c FROM PRO_Contract_Snapshot__c WHERE Snapshot_Date__c <: Date.today()
+                                          AND Contract__c =: dcontract.Id AND Id !=: snapshotId  ORDER BY Snapshot_Date__c DESC LIMIT 1];
+        }
+
         if (snapshotsList.size() > 0) {
             return snapshotsList.get(0);
         }
@@ -29,7 +37,7 @@ public class SnapshotHelper {
         return new PRO_Contract_Snapshot__c();
     }
 
-    public static PRO_Contract_Snapshot__c fillPROSnapshot(PRO_Contract_Snapshot__c proContractSnapshot, DContract__c dcontract, PRO_Contract_Snapshot__c oldSnapshot) {
+    public static PRO_Contract_Snapshot__c fillPROSnapshot(Date proDate, PRO_Contract_Snapshot__c proContractSnapshot, DContract__c dcontract, PRO_Contract_Snapshot__c oldSnapshot) {
             proContractSnapshot.Budget_Used__c = dcontract.Budget_Used__c;
             proContractSnapshot.Percent_Of_Work_Completed__c = dcontract.Percent_through_SOW_deliverables__c;
             proContractSnapshot.Percent_Services_Budget_For_GS__c = dcontract.of_Services_budget_for_GS__c;
@@ -38,40 +46,28 @@ public class SnapshotHelper {
             proContractSnapshot.Expected_Buffer__c = dcontract.Expected_Buffer__c;
             proContractSnapshot.Expense_And_Travel_Spend__c = dcontract.Direct_Costs_Total_Expenses__c;
             proContractSnapshot.Net_Income_By_Deliverables_Complete__c = dcontract.Net_Income_based_on_SOW_Completed__c;
-            proContractSnapshot.Product_Spend__c = dcontract.Product_Spend__c;
+            proContractSnapshot.Product_Spend2__c = dcontract.Product_Spend__c;
             proContractSnapshot.Services_Spend__c = dcontract.Services_Spend__c;
             proContractSnapshot.Total_Calculated_Costs__c = dcontract.Total_Costs__c;
             proContractSnapshot.Contract__c = dcontract.Id;
             proContractSnapshot.Name = dcontract.Name;
-            proContractSnapshot.Snapshot_Date__c = Date.today();
+            proContractSnapshot.Snapshot_Date__c = proDate;
             proContractSnapshot.GS_Execution_Budget__c = dcontract.GS_Execution_Budget__c;
             proContractSnapshot.GS_Services_Completed_Handover__c = dcontract.GS_Services_Completed_Handover__c;
             proContractSnapshot.GS_Services_Completed__c = dcontract.GS_Services_Completed__c;
             proContractSnapshot.GS_Net_Income_to_Date__c = dcontract.GS_Net_Income_to_Date__c;
             proContractSnapshot.GS_Net_Income_to_Date_Handover__c = dcontract.GS_Net_Income_to_Date_Handover__c;
-            // TODO FORMULA field proContractSnapshot.GS_Revenue__c = dcontract.GS_Revenue__c;
+            proContractSnapshot.GS_Project_Services_Budget_Handoff_Cp__c = dcontract.GS_Project_Services_Budget_Handoff__c;
 
-            if (oldSnapshot.Id != null) {
-                proContractSnapshot.Work_Completed_for_Period__c = (dcontract.Percent_through_SOW_deliverables__c != null ? dcontract.Percent_through_SOW_deliverables__c : 0) - (oldSnapshot.Percent_Of_Work_Completed__c != null ? oldSnapshot.Percent_Of_Work_Completed__c : 0);
-                proContractSnapshot.Services_Spend_for_Period__c = (dcontract.Services_Spend__c != null ? dcontract.Services_Spend__c : 0) - (oldSnapshot.Services_Spend__c != null ? oldSnapshot.Services_Spend__c : 0);
-                proContractSnapshot.Expense_Travel_Spend_for_Period__c = (dcontract.Direct_Costs_Total_Expenses__c != null ? dcontract.Direct_Costs_Total_Expenses__c : 0) - (oldSnapshot.Expense_And_Travel_Spend__c != null ? oldSnapshot.Expense_And_Travel_Spend__c : 0);
-                proContractSnapshot.Product_Spend_for_Period__c = (dcontract.Product_Spend__c != null ? dcontract.Product_Spend__c : 0) - (oldSnapshot.Product_Spend__c != null ? oldSnapshot.Product_Spend__c : 0);
-                proContractSnapshot.Total_Calculated_Costs_for_Period__c = (dcontract.Total_Costs__c != null ? dcontract.Total_Costs__c : 0) - (oldSnapshot.Total_Calculated_Costs__c != null ? oldSnapshot.Total_Calculated_Costs__c : 0);
-                proContractSnapshot.GS_Services_Handover_Completed_for_Per__c = (dcontract.GS_Services_Completed_Handover__c != null ? dcontract.GS_Services_Completed_Handover__c : 0) - (oldSnapshot.GS_Services_Completed_Handover__c != null ? oldSnapshot.GS_Services_Completed_Handover__c : 0);
-                proContractSnapshot.GS_Services_Completed_for_Period__c = (dcontract.GS_Services_Completed__c != null ? dcontract.GS_Services_Completed__c : 0) - (oldSnapshot.GS_Services_Completed__c != null ? oldSnapshot.GS_Services_Completed__c : 0);
-                proContractSnapshot.GS_Net_Income_for_Period__c = (dcontract.GS_Net_Income_to_Date__c != null ? dcontract.GS_Net_Income_to_Date__c : 0) - (oldSnapshot.GS_Net_Income_to_Date__c != null ? oldSnapshot.GS_Net_Income_to_Date__c : 0);
-                proContractSnapshot.GS_Net_Income_for_Period_by_Handover__c = (dcontract.GS_Net_Income_to_Date_Handover__c != null ? dcontract.GS_Net_Income_to_Date_Handover__c : 0) - (oldSnapshot.GS_Net_Income_to_Date_Handover__c != null ? oldSnapshot.GS_Net_Income_to_Date_Handover__c : 0);
-            } else { //TODO
-                proContractSnapshot.Work_Completed_for_Period__c = 0;
-                proContractSnapshot.Services_Spend_for_Period__c = 0;
-                proContractSnapshot.Expense_Travel_Spend_for_Period__c = 0;
-                proContractSnapshot.Product_Spend_for_Period__c = 0;
-                proContractSnapshot.Total_Calculated_Costs_for_Period__c = 0;
-                proContractSnapshot.GS_Services_Handover_Completed_for_Per__c = 0;
-                proContractSnapshot.GS_Services_Completed_for_Period__c = 0;
-                proContractSnapshot.GS_Net_Income_for_Period__c = 0;
-                proContractSnapshot.GS_Net_Income_for_Period_by_Handover__c = 0;
-            }
+            proContractSnapshot.Work_Completed_for_Period__c = (dcontract.Percent_through_SOW_deliverables__c != null ? dcontract.Percent_through_SOW_deliverables__c : 0) - (oldSnapshot.Percent_Of_Work_Completed__c != null ? oldSnapshot.Percent_Of_Work_Completed__c : 0);
+            proContractSnapshot.Services_Spend_for_Period__c = (dcontract.Services_Spend__c != null ? dcontract.Services_Spend__c : 0) - (oldSnapshot.Services_Spend__c != null ? oldSnapshot.Services_Spend__c : 0);
+            proContractSnapshot.Expense_Travel_Spend_for_Period__c = (dcontract.Direct_Costs_Total_Expenses__c != null ? dcontract.Direct_Costs_Total_Expenses__c : 0) - (oldSnapshot.Expense_And_Travel_Spend__c != null ? oldSnapshot.Expense_And_Travel_Spend__c : 0);
+            proContractSnapshot.Product_Spend_for_Period__c = (dcontract.Product_Spend__c != null ? dcontract.Product_Spend__c : 0) - (oldSnapshot.Product_Spend2__c != null ? oldSnapshot.Product_Spend2__c : 0);
+            proContractSnapshot.Total_Calculated_Costs_for_Period__c = (dcontract.Total_Costs__c != null ? dcontract.Total_Costs__c : 0) - (oldSnapshot.Total_Calculated_Costs__c != null ? oldSnapshot.Total_Calculated_Costs__c : 0);
+            proContractSnapshot.GS_Services_Handover_Completed_for_Per__c = (dcontract.GS_Services_Completed_Handover__c != null ? dcontract.GS_Services_Completed_Handover__c : 0) - (oldSnapshot.GS_Services_Completed_Handover__c != null ? oldSnapshot.GS_Services_Completed_Handover__c : 0);
+            proContractSnapshot.GS_Services_Completed_for_Period__c = (dcontract.GS_Services_Completed__c != null ? dcontract.GS_Services_Completed__c : 0) - (oldSnapshot.GS_Services_Completed__c != null ? oldSnapshot.GS_Services_Completed__c : 0);
+            proContractSnapshot.GS_Net_Income_for_Period__c = (dcontract.GS_Net_Income_to_Date__c != null ? dcontract.GS_Net_Income_to_Date__c : 0) - (oldSnapshot.GS_Net_Income_to_Date__c != null ? oldSnapshot.GS_Net_Income_to_Date__c : 0);
+            proContractSnapshot.GS_Net_Income_for_Period_by_Handover__c = (dcontract.GS_Net_Income_to_Date_Handover__c != null ? dcontract.GS_Net_Income_to_Date_Handover__c : 0) - (oldSnapshot.GS_Net_Income_to_Date_Handover__c != null ? oldSnapshot.GS_Net_Income_to_Date_Handover__c : 0);
 
             return proContractSnapshot;
     }
@@ -109,7 +105,6 @@ public class SnapshotHelper {
     }
 
     public static Pipeline_Snapshot__c calculateForPeriod(Pipeline_Snapshot__c sn, Pipeline_Snapshot__c oldSn) {
-        if (oldSn.Id != null) {
             sn.Work_Completed_for_Period__c = (sn.Work_Completed__c != null ? sn.Work_Completed__c : 0) - (oldSn.Work_Completed__c != null ? oldSn.Work_Completed__c : 0);
             sn.Services_Spend_for_Period__c = (sn.Services_Spend__c != null ? sn.Services_Spend__c : 0) - (oldSn.Services_Spend__c != null ? oldSn.Services_Spend__c : 0);
             sn.Expense_Travel_Spend_for_Period__c = (sn.Expense_Travel_Spend__c != null ? sn.Expense_Travel_Spend__c : 0) - (oldSn.Expense_Travel_Spend__c != null ? oldSn.Expense_Travel_Spend__c : 0);
@@ -119,17 +114,6 @@ public class SnapshotHelper {
             sn.GS_Services_Handover_Completed_for_Per__c = (sn.GS_Services_Completed_Handover__c != null ? sn.GS_Services_Completed_Handover__c : 0) - (oldSn.GS_Services_Completed_Handover__c != null ? oldSn.GS_Services_Completed_Handover__c : 0);
             sn.GS_Net_Income_for_Period__c = (sn.GS_Net_Income_to_Date__c != null ? sn.GS_Net_Income_to_Date__c : 0) - (oldSn.GS_Net_Income_to_Date__c != null ? oldSn.GS_Net_Income_to_Date__c : 0);
             sn.GS_Net_Income_for_Period_by_Handover__c = (sn.GS_Net_Income_to_Date_Handover__c != null ? sn.GS_Net_Income_to_Date_Handover__c : 0) - (oldSn.GS_Net_Income_to_Date_Handover__c != null ? oldSn.GS_Net_Income_to_Date_Handover__c : 0);
-        } else { // TODO
-            sn.Work_Completed_for_Period__c = 0;
-            sn.Services_Spend_for_Period__c = 0;
-            sn.Expense_Travel_Spend_for_Period__c = 0;
-            sn.Product_Spend_for_Period__c = 0;
-            sn.Total_Calculated_Costs_for_Period__c = 0;
-            sn.GS_Services_Completed_for_Period__c = 0;
-            sn.GS_Services_Handover_Completed_for_Per__c = 0;
-            sn.GS_Net_Income_for_Period__c = 0;
-            sn.GS_Net_Income_for_Period_by_Handover__c = 0;
-        }
 
         return sn;
     }

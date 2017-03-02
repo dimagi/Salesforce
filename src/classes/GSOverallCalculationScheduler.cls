@@ -19,7 +19,7 @@ public without sharing class GSOverallCalculationScheduler implements Schedulabl
         }
 
         if (currentDate == endDate.addDays(-1)) {
-            GSOverallCalculationBatch overallBatch = new GSOverallCalculationBatch([SELECT Id, Name FROM Business_Unit__c]);
+            GSOverallCalculationBatch overallBatch = new GSOverallCalculationBatch();
             Database.executeBatch(overallBatch);
         }
     }
