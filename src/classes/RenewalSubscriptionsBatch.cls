@@ -224,7 +224,7 @@ public without sharing class RenewalSubscriptionsBatch implements Database.Batch
     public List<Accounting_Subscription__c> getFutureSubscriptions() {
         return [SELECT Id, Accounting_subscriber_domain__r.Name FROM Accounting_Subscription__c
                 WHERE Accounting_subscriber_domain__r.Name != '' AND is_active__c = true AND is_trial__c = false
-                AND date_end__c != null AND date_end__c >: this.currentDate.addDays(60)];
+                AND date_end__c != null AND date_end__c >: this.currentDate.addDays(60) AND Server_Name__c = 'CommCareHQ'];
     }
 
     /**
@@ -235,7 +235,7 @@ public without sharing class RenewalSubscriptionsBatch implements Database.Batch
                 Accounting_subscriber_domain__r.cpAllWebUsers__c, Software_Plan_Edition__c, Renewal_Opportunity_created__c FROM Accounting_Subscription__c
                 WHERE Accounting_subscriber_domain__r.Name != '' AND Accounting_subscriber_domain__r.Opportunity__c = '' AND date_end__c != null AND date_end__c <=: this.currentDate.addDays(60)
                 AND date_end__c >=: this.currentDate AND Accounting_subscriber_domain__r.Name NOT IN: domainsWithFutureSubscriptions AND is_active__c = true
-                AND is_trial__c = false ORDER BY date_end__c DESC];
+                AND is_trial__c = false AND Server_Name__c = 'CommCareHQ' ORDER BY date_end__c DESC];
     }
 
     private void processProductsErrors(List<Database.SaveResult> insertResults, List<Opportunity> newOpps) {
