@@ -64,6 +64,20 @@
             </apex:pageBlockSection>
             <apex:pageBlockSection title="Performance of Product" columns="4" collapsible="false">
                 <apex:pageBlockSectionItem dataStyleClass="chartsData">
+                    <apex:outputLabel value="Tomasz 2 Axis Test" for="tomaszChart"/>
+                    <apex:chart data="{!performanceData}" height="500px" width="500px" id="tomaszChart">
+                        <apex:legend position="bottom"/>
+                        <apex:axis type="Numeric" position="left" fields="valueLeftY" title="Test Left Axis"/>
+                        <apex:axis type="Numeric" position="right" fields="valueRightY" title="Test Right Axis"/>
+                        <apex:axis type="Category" position="bottom" fields="name" title="Month of the Year" />
+                        <apex:axis type="Category" position="top" fields="name" title="Sample Title">
+                            <apex:chartLabel display="outside"/>
+                        </apex:axis>
+                        <apex:lineSeries axis="left" xField="name" yField="valueLeftY"  markerType="cross" markerSize="2" markerFill="#FF0000" strokeColor="green"/>
+                        <apex:lineSeries axis="right" xField="name" yField="valueRightY" markerType="circle" markerSize="2" markerFill="#8E35EF" strokeColor="red"/>
+                    </apex:chart>
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem dataStyleClass="chartsData">
                     <a href="/00Ob00000047rxW">
                         <img src="/servlet/servlet.ChartServer?rsid=0FLb00000018xTR&ruid=005b0000001SrLL&did=01Zb0000000gCws&s=8&fs=12&tfg=12&tfs=-16777216&explode=0&c=col_line&cs=0&title=Average+Page+Load&eh=no&compo=yes&fg=-16777216&bg1=-1&bg2=-1&bgdir=2&dl1=Date&dl2=&l=2&sax=yes&Yman=no&nc=0&actUrl=%2F00Ob00000047rxW&sd=1&scv=no&sct=no&spt=no&bd=yes&cu=USD&ab=X&u=0&vt=0&ab2=Y&u2=0&vt2=0&ab3=Y2&u3=0&vt3=0&vl0=Avg+Page+Load&vl1=Avg+%23+of+Submissions&spoc=no&topn=no&gc0=-1&gc1=-1&gc2=-1&sona=0&refreshts=1487885060000" />
                     </a>
