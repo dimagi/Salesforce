@@ -116,7 +116,15 @@ public class NetEVDifferenceTriggerGateway {
 
         for (Pipeline_Snapshot__c snapshot : priorMonthSnapshotRecords.values()) {
             Pipeline_Snapshot_EV_DIff__c snapShotsDiff = new Pipeline_Snapshot_EV_DIff__c();
-            snapShotsDiff.Name = snapshot.Opportunity_Name__c + ' - ' + currentDate.month() + '/' + currentDate.year();
+            String nameSuffix = ' - ' + currentDate.month() + '/' + currentDate.year();
+            String namePrefix = snapshot.Opportunity_Name__c;
+
+            if (namePrefix != null && namePrefix.length() + nameSuffix.length() > 80) {
+                Integer charsToCut = namePrefix.length() - (namePrefix.length() + nameSuffix.length() - 80);
+                namePrefix = namePrefix.subString(0, charsToCut);
+            }
+
+            snapShotsDiff.Name = namePrefix + nameSuffix;
             snapShotsDiff.Opportunity_Name__c = snapshot.Opportunity_Name__c;
             snapShotsDiff.Month_Date__c = currentDate;
 
