@@ -4,10 +4,11 @@
 */
 global class PROContractSnapshotBatch implements Database.Batchable<DContract__c>, Database.Stateful {
 
+    private Date currentDate;
     private List<PRO_Contract_Snapshot__c> failedReocrds = new List<PRO_Contract_Snapshot__c>();
 
     public PROContractSnapshotBatch(){
-
+        this.currentDate = Date.today();
     }
 
     global List<DContract__c> start(Database.BatchableContext context) {
@@ -17,7 +18,7 @@ global class PROContractSnapshotBatch implements Database.Batchable<DContract__c
     global void execute(Database.BatchableContext context, List<DContract__c> contracts) {
         try {
             List<PRO_Contract_Snapshot__c> insertList = new List<PRO_Contract_Snapshot__c>();
-            Map<Id, PRO_Contract_Snapshot__c> oldSnapshots = SnapshotHelper.getOldPROSnapshot(contracts);
+            Map<Id, PRO_Contract_Snapshot__c> oldSnapshots = SnapshotHelper.getOldPROSnapshot(contracts, this.currentDate);
 
             for (DContract__c dcontract : contracts) {
                 PRO_Contract_Snapshot__c proContractSnapshot = new PRO_Contract_Snapshot__c();
@@ -25,7 +26,7 @@ global class PROContractSnapshotBatch implements Database.Batchable<DContract__c
                 if (oldSnapshots.containsKey(dcontract.Id)) {
                     oldSnapshot = oldSnapshots.get(dcontract.Id);
                 }
-                proContractSnapshot = SnapshotHelper.fillPROSnapshot(Date.today(), proContractSnapshot, dcontract, oldSnapshot);
+                proContractSnapshot = SnapshotHelper.fillPROSnapshot(this.currentDate, proContractSnapshot, dcontract, oldSnapshot);
                 insertList.add(proContractSnapshot);
             }
 

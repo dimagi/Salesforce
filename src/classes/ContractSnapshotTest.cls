@@ -23,7 +23,7 @@ public class ContractSnapshotTest {
         projectReportOutController.save();
 
         List<PRO_Contract_Snapshot__c> snapshots = [SELECT Id, Name, Percent_Of_Work_Completed__c, Percent_Services_Budget_For_GS__c, Expected_Buffer__c,
-                                                        Expense_And_Travel_Spend__c, Services_Spend__c, Total_Calculated_Costs__c, Product_Spend__c, Net_Income_By_Deliverables_Complete__c,
+                                                        Expense_And_Travel_Spend__c, Services_Spend__c, Total_Calculated_Costs__c, Product_Spend2__c, Net_Income_By_Deliverables_Complete__c,
                                                         Execution_Efficiency__c, Buffer_By_Deliverables_Complete__c, Budget_Used__c
                                                         FROM PRO_Contract_Snapshot__c WHERE Contract__c =: dcontract.Id];
 
@@ -47,7 +47,7 @@ public class ContractSnapshotTest {
 
 
         List<PRO_Contract_Snapshot__c> snapshots = [SELECT Id, Name, Percent_Of_Work_Completed__c, Percent_Services_Budget_For_GS__c, Expected_Buffer__c,
-                                                Expense_And_Travel_Spend__c, Services_Spend__c, Total_Calculated_Costs__c, Product_Spend__c, Net_Income_By_Deliverables_Complete__c,
+                                                Expense_And_Travel_Spend__c, Services_Spend__c, Total_Calculated_Costs__c, Product_Spend2__c, Net_Income_By_Deliverables_Complete__c,
                                                 Execution_Efficiency__c, Buffer_By_Deliverables_Complete__c, Budget_Used__c, Work_Completed_for_Period__c
                                                 FROM PRO_Contract_Snapshot__c WHERE Contract__c =: dcontract.Id AND Id !=: proSn1.Id AND Id !=: proSn2.Id];
 
@@ -435,7 +435,7 @@ public class ContractSnapshotTest {
         System.assertEquals(5000, snapshot.Expense_And_Travel_Spend__c);
         System.assertEquals(2500, snapshot.Services_Spend__c);
         System.assertEquals(6000, snapshot.Total_Calculated_Costs__c);
-        System.assertEquals(1000, snapshot.Product_Spend__c);
+        System.assertEquals(1000, snapshot.Product_Spend2__c);
         System.assertEquals(-2400, snapshot.Net_Income_By_Deliverables_Complete__c);
         System.assertEquals(60, snapshot.Execution_Efficiency__c);
         System.assertEquals(-28, snapshot.Buffer_By_Deliverables_Complete__c);
