@@ -1,6 +1,7 @@
 public without sharing class GSOverallCalculationScheduler implements Schedulable {
 
     public void execute(SchedulableContext sc) {
+        Database.executeBatch(new ForPeriodCalcSnapshotBatch(false));
         Date currentDate = Date.today();
         List<Date> thursDayList = PROHelper.GetAllThursDayOfMonth(currentDate.year(), currentDate.month());
         List<Date> thursDayListLastMonth = PROHelper.GetAllThursDayOfMonth(currentDate.addMonths(-1).year(), currentDate.addMonths(-1).month());
@@ -19,7 +20,7 @@ public without sharing class GSOverallCalculationScheduler implements Schedulabl
         }
 
         if (currentDate == endDate.addDays(-1)) {
-            GSOverallCalculationBatch overallBatch = new GSOverallCalculationBatch([SELECT Id, Name FROM Business_Unit__c]);
+            GSOverallCalculationBatch overallBatch = new GSOverallCalculationBatch();
             Database.executeBatch(overallBatch);
         }
     }

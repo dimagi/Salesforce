@@ -10,7 +10,7 @@ global class PROContractSnapshotScheduled implements Schedulable {
         List<Date> thursDayList = PROHelper.GetAllThursDayOfMonth(currentYear, currentMonth);
 
         if (PROHelper.IsThursDay(currentDate) && (thursDayList[1] == currentDate || thursDayList[3] == currentDate)) {
-            PROContractSnapshotBatch proContractSnapshotBatch = new PROContractSnapshotBatch(); 
+            PROContractSnapshotBatch proContractSnapshotBatch = new PROContractSnapshotBatch();
             database.executeBatch(proContractSnapshotBatch, 50);
         }
     }
