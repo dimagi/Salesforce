@@ -1,0 +1,96 @@
+public class DomainMonthlySnapshotBatch implements Database.Batchable<Accounting_Subscription__c>, Database.Stateful {
+
+    private Map<String, Decimal> wamMap;
+    private Map<String, Decimal> formsMap;
+    private Map<String, Decimal> mobileUsersMap;
+    private Map<String, Decimal> recordCountMap;
+    private Date currentDate;
+    private Boolean error;
+    private BatchDefaultSettings__c settings;
+
+    public DomainMonthlySnapshotBatch() {
+        this(Date.today());
+    }
+
+    public DomainMonthlySnapshotBatch(Date currentDate) {
+        this.currentDate = currentDate;
+        this.wamMap = new Map<String, Decimal>{ 'Empty' => 0, 'Advanced' => 0, 'Community' => 0, 'Enterprise' => 0, 'Standard' => 0, 'Pro' => 0};
+        this.formsMap = new Map<String, Decimal>{ 'Empty' => 0, 'Advanced' => 0, 'Community' => 0, 'Enterprise' => 0, 'Standard' => 0, 'Pro' => 0};
+        this.mobileUsersMap = new Map<String, Decimal>{ 'Empty' => 0, 'Advanced' => 0, 'Community' => 0, 'Enterprise' => 0, 'Standard' => 0, 'Pro' => 0};
+        this.recordCountMap = new Map<String, Decimal>{ 'Empty' => 0, 'Advanced' => 0, 'Community' => 0, 'Enterprise' => 0, 'Standard' => 0, 'Pro' => 0};
+        this.error = false;
+        this.settings = BatchDefaultSettings__c.getOrgDefaults();
+    }
+
+    public List<Accounting_Subscription__c> start(Database.BatchableContext context) { // We cannot group by formula field
+       return [SELECT Id, Software_Plan_Edition__c, Accounting_subscriber_domain__r.Wam__c, Accounting_subscriber_domain__r.cpActiveMobileUsers__c,
+               Accounting_subscriber_domain__r.cpAllForms__c FROM Accounting_Subscription__c
+               WHERE is_trial__c = false AND is_active__c = true AND Accounting_subscriber_domain__c != null AND
+               Accounting_subscriber_domain__r.Likely_Real__c = true AND Accounting_subscriber_domain__r.is_test__c != 'true' AND
+               Accounting_subscriber_domain__r.cpIsActive__c = true];
+    }
+
+    public void execute(Database.BatchableContext context, List<Accounting_Subscription__c> scope) {
+        try {
+            for (Accounting_Subscription__c sub : scope) {
+                String softwarePlan = sub.Software_Plan_Edition__c;
+                if (softwarePlan == '' || softwarePlan == null || softwarePlan == '-') {
+                    softwarePlan = 'Empty';
+                }
+
+                wamMap.put(softwarePlan, wamMap.get(softwarePlan) + sub.Accounting_subscriber_domain__r.Wam__c);
+                formsMap.put(softwarePlan, formsMap.get(softwarePlan) + sub.Accounting_subscriber_domain__r.cpAllForms__c);
+                mobileUsersMap.put(softwarePlan, mobileUsersMap.get(softwarePlan) + sub.Accounting_subscriber_domain__r.cpActiveMobileUsers__c);
+            }
+        } catch (Exception e) {
+            System.debug('Error: ' + e);
+            if (!Test.isRunningTest()) {
+                EmailHelper.sendEmailFromException(this.settings.Error_Emails__c.split(','), 'Cannot calculate monthy Domain Snapshots',
+                                    'Error : ', e);
+            }
+            throw e; // we want stop calculations and fix problems
+        }
+    }
+
+    public void finish(Database.BatchableContext context) {
+        try {
+            if (error == false) {
+                SObject sobj = (SObject) new Domain_Monthly_Snapshot__c();
+                sobj = setValues(sobj, wamMap, '_Wam__c');
+                sobj = setValues(sobj, formsMap, '_Forms__c');
+                sobj = setValues(sobj, mobileUsersMap, '_Active_Mobile_Users__c');
+                Domain_Monthly_Snapshot__c domainSnapshot = (Domain_Monthly_Snapshot__c) sobj;
+                domainSnapshot.Snapshot_Date__c = this.currentDate;
+                insert domainSnapshot;
+            }
+        } catch (Exception e) {
+            System.debug('Error: ' + e);
+            if (!Test.isRunningTest()) {
+                EmailHelper.sendEmailFromException(this.settings.Error_Emails__c.split(','), 'Cannot calculate monthy Domain Snapshots',
+                                    'Error : ', e);
+            }
+        }
+    }
+    
+    private SObject setValues(SObject obj, Map<String, Decimal> values, String suffix) {
+
+        for (String key : values.keySet()) {
+            String name = (key + suffix).toLowerCase();
+            Decimal value = values.get(key);
+            if (hasSObjectField(name, obj)) {
+                obj.put(name, value);
+            } else {
+                System.debug('Cannot find field with name : ' + name);
+                if (!Test.isRunningTest()) {
+                    EmailHelper.sendEmail(this.settings.Error_Emails__c.split(','), 'Cannot find sObject field for Domain Monthly Snapshot',
+                                    'Cannot find fields: ' + name);
+                }
+            }
+        }
+        return obj;
+    }
+
+    private Boolean hasSObjectField(String fieldName, SObject so) {
+        return so.getSobjectType().getDescribe().fields.getMap().keySet().contains(fieldName);
+    }
+}
