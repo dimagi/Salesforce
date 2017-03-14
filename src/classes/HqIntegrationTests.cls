@@ -45,16 +45,28 @@ public class HqIntegrationTests {
         insert planVersion2;
         insert planVersion3;
 
+        Internal_Properties__c InternalPropRec1 = new Internal_Properties__c(self_started__c = true, Server_Name__c = 'CommCare HQ');
+        Internal_Properties__c InternalPropRec2 = new Internal_Properties__c(self_started__c = true, Server_Name__c = 'CommCare HQ');
+        Internal_Properties__c InternalPropRec3 = new Internal_Properties__c(self_started__c = true, Server_Name__c = 'CommCare HQ');
+        Internal_Properties__c InternalPropRec4 = new Internal_Properties__c(self_started__c = true, Server_Name__c = 'CommCare HQ');
+        Internal_Properties__c InternalPropRec5 = new Internal_Properties__c(self_started__c = true, Server_Name__c = 'CommCare HQ');
+
+        insert InternalPropRec1;
+        insert InternalPropRec2;
+        insert InternalPropRec3;
+        insert InternalPropRec4;
+        insert InternalPropRec5;
+
         Domain__c domain1 = new Domain__c(Name = 'Sample 1', Server_Name__c = 'CommCare HQ', is_test__c = 'false', cpIsActive__c = true,
-                                          Wam__c = 15, cpActiveMobileUsers__c = 20, cpAllForms__c = 325);
+                                          Wam__c = 15, cpActiveMobileUsers__c = 20, cpAllForms__c = 325, Internal_Properties__c = InternalPropRec1.Id);
         Domain__c domain2 = new Domain__c(Name = 'Sample 2', Server_Name__c = 'CommCare HQ', is_test__c = 'false', cpIsActive__c = true,
-                                          Wam__c = 30, cpActiveMobileUsers__c = 35, cpAllForms__c = 340);
+                                          Wam__c = 30, cpActiveMobileUsers__c = 35, cpAllForms__c = 340, Internal_Properties__c = InternalPropRec2.Id);
         Domain__c domain3 = new Domain__c(Name = 'Sample 3', Server_Name__c = 'CommCare HQ', is_test__c = 'false', cpIsActive__c = true,
-                                          Wam__c = 45, cpActiveMobileUsers__c = 50, cpAllForms__c = 355);
+                                          Wam__c = 45, cpActiveMobileUsers__c = 50, cpAllForms__c = 355, Internal_Properties__c = InternalPropRec3.Id);
         Domain__c domain4 = new Domain__c(Name = 'Sample 4', Server_Name__c = 'CommCare HQ', is_test__c = 'false', cpIsActive__c = true,
-                                          Wam__c = 60, cpActiveMobileUsers__c = 65, cpAllForms__c = 370);
+                                          Wam__c = 60, cpActiveMobileUsers__c = 65, cpAllForms__c = 370, Internal_Properties__c = InternalPropRec4.Id);
         Domain__c domain5 = new Domain__c(Name = 'Sample 5', Server_Name__c = 'CommCare HQ', is_test__c = 'false', cpIsActive__c = true,
-                                          Wam__c = 75, cpActiveMobileUsers__c = 80, cpAllForms__c = 385);
+                                          Wam__c = 75, cpActiveMobileUsers__c = 80, cpAllForms__c = 385, Internal_Properties__c = InternalPropRec5.Id);
 
         insert domain1;
         insert domain2;
@@ -64,22 +76,23 @@ public class HqIntegrationTests {
 
         Accounting_Subscription__c subscription1 = new Accounting_Subscription__c(date_start__c = Date.newInstance(2015, 11, 2), date_end__c = Date.newInstance(2016, 2 ,1), is_active__c = true,
                                                           Accounting_subscriber_domain__c = domain1.Id, plan_version__c = planVersion1.Id, Server_Name__c = 'CommCare HQ',
-                                                          is_trial__c = false);
+                                                          is_trial__c = false, service_type__c = 'Self_service');
         insert subscription1;
         Accounting_Subscription__c subscription2 = new Accounting_Subscription__c(date_start__c = Date.newInstance(2016, 1, 1), date_end__c = Date.newInstance(2016, 2 ,1), is_active__c = true,
                                                           Accounting_subscriber_domain__c = domain2.Id, plan_version__c = planVersion2.Id, Server_Name__c = 'CommCare HQ',
-                                                          is_trial__c = false);
+                                                          is_trial__c = false, service_type__c = 'Product');
         insert subscription2;
         Accounting_Subscription__c subscription3 = new Accounting_Subscription__c(date_start__c = Date.newInstance(2014, 1, 1), date_end__c = Date.newInstance(2014, 3 ,4), is_active__c = true,
-                                                          Accounting_subscriber_domain__c = domain3.Id, plan_version__c = planVersion3.Id, Server_Name__c = 'CommCare HQ');
+                                                          Accounting_subscriber_domain__c = domain3.Id, plan_version__c = planVersion3.Id, Server_Name__c = 'CommCare HQ',
+                                                          is_trial__c = false, service_type__c = 'Self_service');
         insert subscription3;
         Accounting_Subscription__c subscription4 = new Accounting_Subscription__c(date_start__c = Date.newInstance(2016, 1, 1), date_end__c = Date.newInstance(2016, 2 ,1), is_active__c = true,
                                                           Accounting_subscriber_domain__c = domain4.Id, plan_version__c = planVersion1.Id, Server_Name__c = 'CommCare HQ',
-                                                          is_trial__c = false);
+                                                          is_trial__c = false, service_type__c = 'Self_service');
         insert subscription4;
         Accounting_Subscription__c subscription5 = new Accounting_Subscription__c(date_start__c = Date.newInstance(2016, 1, 1), date_end__c = Date.newInstance(2016, 2 ,1), is_active__c = true,
                                                           Accounting_subscriber_domain__c = domain5.Id, plan_version__c = planVersion2.Id, Server_Name__c = 'CommCare HQ',
-                                                          is_trial__c = false);
+                                                          is_trial__c = false, service_type__c = 'Product');
         insert subscription5;
 
         Test.startTest();
@@ -91,7 +104,8 @@ public class HqIntegrationTests {
                                                Empty_Active_Mobile_Users__c, Empty_Forms__c, Empty_Wam__c,
                                                Enterprise_Active_Mobile_Users__c, Enterprise_Forms__c, Enterprise_Wam__c,
                                                Pro_Active_Mobile_Users__c, Pro_Forms__c, Pro_Wam__c,
-                                               Standard_Active_Mobile_Users__c, Standard_Forms__c, Standard_Wam__c, Snapshot_Date__c
+                                               Standard_Active_Mobile_Users__c, Standard_Forms__c, Standard_Wam__c, Snapshot_Date__c,
+                                               Pro_Scale_of_Programs__c, Community_Scale_of_Programs__c, Standard_Scale_of_Programs__c
                                                FROM Domain_Monthly_Snapshot__c LIMIT 1];
 
         // Community => subscription1 AND subscription4 => Wam = 15 + 60 = 75, Mobile Users = 20 + 65 = 85, Forms = 325 + 370 = 695
@@ -101,14 +115,17 @@ public class HqIntegrationTests {
         System.assertEquals(75, domainSn.Community_Wam__c);
         System.assertEquals(85, domainSn.Community_Active_Mobile_Users__c);
         System.assertEquals(695, domainSn.Community_Forms__c);
+        System.assertEquals(2, domainSn.Community_Scale_of_Programs__c);
 
         System.assertEquals(105, domainSn.Standard_Wam__c);
         System.assertEquals(115, domainSn.Standard_Active_Mobile_Users__c);
         System.assertEquals(725, domainSn.Standard_Forms__c);
+        System.assertEquals(2, domainSn.Standard_Scale_of_Programs__c);
 
         System.assertEquals(45, domainSn.Pro_Wam__c);
         System.assertEquals(50, domainSn.Pro_Active_Mobile_Users__c);
         System.assertEquals(355, domainSn.Pro_Forms__c);
+        System.assertEquals(1, domainSn.Pro_Scale_of_Programs__c);
     }
 
     @isTest

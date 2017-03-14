@@ -23,8 +23,8 @@ public class DomainMonthlySnapshotBatch implements Database.Batchable<Accounting
     }
 
     public List<Accounting_Subscription__c> start(Database.BatchableContext context) { // We cannot group by formula field
-       return [SELECT Id, Software_Plan_Edition__c, Accounting_subscriber_domain__r.Wam__c, Accounting_subscriber_domain__r.cpActiveMobileUsers__c,
-               Accounting_subscriber_domain__r.cpAllForms__c FROM Accounting_Subscription__c
+       return [SELECT Id, Software_Plan_Edition__c, Accounting_subscriber_domain__r.Wam__c, Accounting_subscriber_domain__r.cpActiveMobileUsers__c, service_type__c,
+               Accounting_subscriber_domain__r.cpAllForms__c, Accounting_subscriber_domain__r.InternalProp_self_started__c FROM Accounting_Subscription__c
                WHERE is_trial__c = false AND is_active__c = true AND Accounting_subscriber_domain__c != null AND
                Accounting_subscriber_domain__r.Likely_Real__c = true AND Accounting_subscriber_domain__r.is_test__c != 'true' AND
                Accounting_subscriber_domain__r.cpIsActive__c = true];
@@ -38,9 +38,12 @@ public class DomainMonthlySnapshotBatch implements Database.Batchable<Accounting
                     softwarePlan = 'Empty';
                 }
 
-                wamMap.put(softwarePlan, wamMap.get(softwarePlan) + sub.Accounting_subscriber_domain__r.Wam__c);
-                formsMap.put(softwarePlan, formsMap.get(softwarePlan) + sub.Accounting_subscriber_domain__r.cpAllForms__c);
-                mobileUsersMap.put(softwarePlan, mobileUsersMap.get(softwarePlan) + sub.Accounting_subscriber_domain__r.cpActiveMobileUsers__c);
+                this.wamMap.put(softwarePlan, wamMap.get(softwarePlan) + sub.Accounting_subscriber_domain__r.Wam__c);
+                this.formsMap.put(softwarePlan, formsMap.get(softwarePlan) + sub.Accounting_subscriber_domain__r.cpAllForms__c);
+                this.mobileUsersMap.put(softwarePlan, mobileUsersMap.get(softwarePlan) + sub.Accounting_subscriber_domain__r.cpActiveMobileUsers__c);
+                if ((sub.service_type__c == 'Self_service' || sub.service_type__c == 'Product') && sub.Accounting_subscriber_domain__r.InternalProp_self_started__c == true) {
+                    this.recordCountMap.put(softwarePlan, recordCountMap.get(softwarePlan) + 1);
+                }
             }
         } catch (Exception e) {
             System.debug('Error: ' + e);
@@ -59,6 +62,7 @@ public class DomainMonthlySnapshotBatch implements Database.Batchable<Accounting
                 sobj = setValues(sobj, wamMap, '_Wam__c');
                 sobj = setValues(sobj, formsMap, '_Forms__c');
                 sobj = setValues(sobj, mobileUsersMap, '_Active_Mobile_Users__c');
+                sobj = setValues(sobj, recordCountMap, '_Scale_of_Programs__c');
                 Domain_Monthly_Snapshot__c domainSnapshot = (Domain_Monthly_Snapshot__c) sobj;
                 domainSnapshot.Snapshot_Date__c = this.currentDate;
                 insert domainSnapshot;
@@ -71,7 +75,7 @@ public class DomainMonthlySnapshotBatch implements Database.Batchable<Accounting
             }
         }
     }
-    
+
     private SObject setValues(SObject obj, Map<String, Decimal> values, String suffix) {
 
         for (String key : values.keySet()) {
