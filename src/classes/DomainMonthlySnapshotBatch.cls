@@ -14,10 +14,10 @@ public class DomainMonthlySnapshotBatch implements Database.Batchable<Accounting
 
     public DomainMonthlySnapshotBatch(Date currentDate) {
         this.currentDate = currentDate;
-        this.wamMap = new Map<String, Decimal>{ 'Empty' => 0, 'Advanced' => 0, 'Community' => 0, 'Enterprise' => 0, 'Standard' => 0, 'Pro' => 0};
-        this.formsMap = new Map<String, Decimal>{ 'Empty' => 0, 'Advanced' => 0, 'Community' => 0, 'Enterprise' => 0, 'Standard' => 0, 'Pro' => 0};
-        this.mobileUsersMap = new Map<String, Decimal>{ 'Empty' => 0, 'Advanced' => 0, 'Community' => 0, 'Enterprise' => 0, 'Standard' => 0, 'Pro' => 0};
-        this.recordCountMap = new Map<String, Decimal>{ 'Empty' => 0, 'Advanced' => 0, 'Community' => 0, 'Enterprise' => 0, 'Standard' => 0, 'Pro' => 0};
+        this.wamMap = new Map<String, Decimal> { 'Empty' => 0, 'Advanced' => 0, 'Community' => 0, 'Enterprise' => 0, 'Standard' => 0, 'Pro' => 0};
+        this.formsMap = new Map<String, Decimal> { 'Empty' => 0, 'Advanced' => 0, 'Community' => 0, 'Enterprise' => 0, 'Standard' => 0, 'Pro' => 0};
+        this.mobileUsersMap = new Map<String, Decimal> { 'Empty' => 0, 'Advanced' => 0, 'Community' => 0, 'Enterprise' => 0, 'Standard' => 0, 'Pro' => 0};
+        this.recordCountMap = new Map<String, Decimal> { 'Empty' => 0, 'Advanced' => 0, 'Community' => 0, 'Enterprise' => 0, 'Standard' => 0, 'Pro' => 0};
         this.error = false;
         this.settings = BatchDefaultSettings__c.getOrgDefaults();
     }
@@ -38,9 +38,9 @@ public class DomainMonthlySnapshotBatch implements Database.Batchable<Accounting
                     softwarePlan = 'Empty';
                 }
 
-                this.wamMap.put(softwarePlan, wamMap.get(softwarePlan) + sub.Accounting_subscriber_domain__r.Wam__c);
-                this.formsMap.put(softwarePlan, formsMap.get(softwarePlan) + sub.Accounting_subscriber_domain__r.cpAllForms__c);
-                this.mobileUsersMap.put(softwarePlan, mobileUsersMap.get(softwarePlan) + sub.Accounting_subscriber_domain__r.cpActiveMobileUsers__c);
+                this.wamMap.put(softwarePlan, wamMap.get(softwarePlan) + (sub.Accounting_subscriber_domain__r.Wam__c != null ? sub.Accounting_subscriber_domain__r.Wam__c : 0));
+                this.formsMap.put(softwarePlan, formsMap.get(softwarePlan) + (sub.Accounting_subscriber_domain__r.cpAllForms__c != null ? sub.Accounting_subscriber_domain__r.cpAllForms__c : 0));
+                this.mobileUsersMap.put(softwarePlan, mobileUsersMap.get(softwarePlan) + (sub.Accounting_subscriber_domain__r.cpActiveMobileUsers__c != null ? sub.Accounting_subscriber_domain__r.cpActiveMobileUsers__c : 0));
                 if ((sub.service_type__c == 'Self_service' || sub.service_type__c == 'Product') && sub.Accounting_subscriber_domain__r.InternalProp_self_started__c == true) {
                     this.recordCountMap.put(softwarePlan, recordCountMap.get(softwarePlan) + 1);
                 }
@@ -51,7 +51,8 @@ public class DomainMonthlySnapshotBatch implements Database.Batchable<Accounting
                 EmailHelper.sendEmailFromException(this.settings.Error_Emails__c.split(','), 'Cannot calculate monthy Domain Snapshots',
                                     'Error : ', e);
             }
-            throw e; // we want stop calculations and fix problems
+            this.error = true;
+            //throw e; // we want stop calculations and fix problems
         }
     }
 
