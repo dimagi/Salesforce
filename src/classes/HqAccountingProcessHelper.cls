@@ -23,7 +23,7 @@ public class HqAccountingProcessHelper {
      * Returns total Accounting number from HQ server.
      */
     public Integer getTotalCount() {
-        Integer totalCount = 0;
+        Integer totalCount = null;
 
         try {
             HTTPResponse res = request(1, 0);
@@ -40,8 +40,7 @@ public class HqAccountingProcessHelper {
             System.debug('Error : ' + e);
             EmailHelper.sendEmailFromException(settings.Error_Emails__c.split(','), 'Commcare sync Error', 'Cannot fetch total count for Accountings : '
                                                 + this.serverSettings.Name + ' ' + this.suffix, e);
-            HqBatchJobHelper.endDomainJob();
-            throw e;
+            HqBatchJobHelper.endBatchJobs();
         }
 
         return totalCount;

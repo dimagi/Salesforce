@@ -40,6 +40,11 @@ public class HqMaltTablesBatch implements Database.Batchable<Integer>, Database.
 
     public Iterable<Integer> start(Database.BatchableContext BC) {
         Integer totalCount = this.getTotalCount();
+
+        if (totalCount == null) {
+            return new List<Integer>();
+        }
+
         List <Integer> listOffset = new List <Integer>();
         for(Integer i = 0; i <= totalCount / this.apiLimitParameter; i++) {
             listOffset.add(i * this.apiLimitParameter);
@@ -66,7 +71,7 @@ public class HqMaltTablesBatch implements Database.Batchable<Integer>, Database.
 
     public void finish(Database.BatchableContext info) {
         System.debug('this.domainsWam ' + this.domainsWam);
-        if (hqInt_BatchErrorLogger.checkErrorsLogged(info.getJobId()) == false) { // we don't want update this if there was and error (History for that field is enabled)
+        if (hqInt_BatchErrorLogger.checkErrorsLogged(info.getJobId()) == false && this.successfullyLoadedRecords > 0) { // we don't want update this if there was and error (History for that field is enabled)
             System.debug('No errors');
             Database.executeBatch(new UpdateMaltTablesStatisticsBatch(this.serverCode, this.domainsWam));
         }
@@ -122,7 +127,7 @@ public class HqMaltTablesBatch implements Database.Batchable<Integer>, Database.
     }
 
     private Integer getTotalCount() {
-        Integer totalCount = 0;
+        Integer totalCount = null;
 
         try {
             HTTPResponse res = request(1, 0);
@@ -139,7 +144,6 @@ public class HqMaltTablesBatch implements Database.Batchable<Integer>, Database.
             EmailHelper.sendEmailFromException(settings.Error_Emails__c.split(','), 'Commcare sync Error', 'Cannot fetch total count for Malt tables : '
                                                                                                 + this.serverSettings.Name, e);
             HqBatchJobHelper.endMaltJob();
-            throw e;
         }
 
         return totalCount;

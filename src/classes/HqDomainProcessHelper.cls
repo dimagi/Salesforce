@@ -18,7 +18,7 @@ public class HqDomainProcessHelper {
      * Returns total Domains number from HQ server.
      */
     public Integer getTotalCount() {
-        Integer totalCount = 0;
+        Integer totalCount = null;
 
         try {
             HTTPResponse res = request(1, 0);
@@ -34,7 +34,6 @@ public class HqDomainProcessHelper {
             Commcare_Job_Settings__c settings = Commcare_Job_Settings__c.getOrgDefaults();
             EmailHelper.sendEmailFromException(settings.Error_Emails__c.split(','), 'Commcare sync Error', 'Cannot fetch total count for Domains : ' + this.serverSettings.Name, e);
             HqBatchJobHelper.endDomainJob();
-            throw e;
         }
 
         return totalCount;

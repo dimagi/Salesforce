@@ -44,7 +44,10 @@ public class HqBatchFetchDataObjects implements Database.Batchable<Integer>, Dat
 
     public Iterable<Integer> start(Database.BatchableContext BC) {
         Integer totalCount = this.hqHelper.getTotalCount();
-        System.debug('total Count of records found --' + totalCount);
+
+        if (totalCount == null) {
+            return new List<Integer>();
+        }
 
         List<Integer> listOffset = new List<Integer>();
         for(Integer i = 0; i <= totalCount / this.apiLimitParameter; i++) {
@@ -64,7 +67,7 @@ public class HqBatchFetchDataObjects implements Database.Batchable<Integer>, Dat
             System.debug(e.getMessage() + ' ' + e.getStackTraceString());
             hqInt_BatchErrorLogger.logError(info.getJobId(), '\n Object : ' + this.customObject + ' failed at offset with limit param '
                     + this.apiLimitParameter +' : '+ String.valueOf(offsetList[0]), e.getMessage(), e.getStackTraceString());
-        } 
+        }
      }
 
     public void finish(Database.BatchableContext info) {
