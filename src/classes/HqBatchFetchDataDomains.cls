@@ -36,6 +36,11 @@ public class HqBatchFetchDataDomains implements Database.Batchable<Integer>, Dat
 
     public Iterable<Integer> start(Database.BatchableContext BC) {
         Integer totalCount = this.domainHelper.getTotalCount();
+
+        if (totalCount == null) {
+            return new List<Integer>();
+        }
+
         List <Integer> listOffset = new List <Integer>();
         for(Integer i = 0; i <= totalCount / this.apiLimitParameter; i++) {
             listOffset.add(i * this.apiLimitParameter);
