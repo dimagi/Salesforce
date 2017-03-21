@@ -5,7 +5,7 @@
  *
  */
 public class OpenOpportunityMailer {
-    
+
     private static final String EMAIL_SUBJECT = '<Name of User> | <Date> | Biz Dev Report';
     private static final String GLOBAL_RED_EMAIL_SUBJECT = 'Dimagi Overdue Opportunities';
     private static final String RED_EMAIL_SUBJECT = 'Your Overdue Opportunities';
@@ -14,51 +14,43 @@ public class OpenOpportunityMailer {
     public static void sendOpenOpportunitiesBatchReport(User user, String[] recipients, Map<String, Opportunity[]> stagedOpportunities) {
         
         Map<String, String> stageComments = new Map<String, String>();
-        for (String stageComment :stagedOpportunities.keySet()) {           
+        for (String stageComment :stagedOpportunities.keySet()) {
             stageComments.put(stageComment, '');
         }
-        
-        String content = OpenOpportunityEmailUtils.buildEmailContent(stagedOpportunities, false, stageComments);
-        
-        sendEmail(content, recipients, EMAIL_SUBJECT, user.Name);        
-    }
-    
-    public static void sendOpenOpportunitiesDailyReport(User[] users, Map<String, Opportunity[]> stagedOpportunities) {
-        
-        Map<String, String> stageComments = new Map<String, String>();
-        for (String stageComment :stagedOpportunities.keySet()) {           
-            stageComments.put(stageComment, '');
-        }
-        
-        String content = OpenOpportunityEmailUtils.buildEmailContent(stagedOpportunities, false, stageComments);
-        
-        sendEmails(content, users, EMAIL_SUBJECT);
-                
+
+        String content = OpenOpportunityEmailUtils.buildEmailContent(stagedOpportunities, true, stageComments);
+        sendEmail(content, recipients, EMAIL_SUBJECT, user.Name);
     }
 
-    public static void sendOpenOpportunitiesSingleReport(User[] users, String[] recipients, Map<String, String> stageComments) {        
-        
+    public static void sendOpenOpportunitiesDailyReport(User[] users, Map<String, Opportunity[]> stagedOpportunities) {
+        Map<String, String> stageComments = new Map<String, String>();
+        for (String stageComment :stagedOpportunities.keySet()) {
+            stageComments.put(stageComment, '');
+        }
+
+        String content = OpenOpportunityEmailUtils.buildEmailContent(stagedOpportunities, true, stageComments);
+
+        sendEmails(content, users, EMAIL_SUBJECT);
+    }
+
+    public static void sendOpenOpportunitiesSingleReport(User[] users, String[] recipients, Map<String, String> stageComments) {
         Id[] usersId = new Id[] {};
         String usersNameSubject = ' - ';
         for (User user :users) {
             usersId.add(user.Id);
             usersNameSubject += user.Name + ' - ';
         }
-        
+
         Map<String, Opportunity[]> stagedOpportunities = OpenOpportunityReportController.getInstance().getOpenOpportunitiesOrderByStage(usersId);
-        
         String content = OpenOpportunityEmailUtils.buildEmailContent(stagedOpportunities, true, stageComments);
-        
         sendEmail(content, recipients, EMAIL_SUBJECT, usersNameSubject);
     }
 
     private static Map<String, Opportunity[]> getRedStagedOpportunities(Map<String, Opportunity[]> stagedOpportunities) {
         Map<String, Opportunity[]> redStagedOpportunities = new Map<String, Opportunity[]>();
-
         Integer daysNotUpdatedLimit = Open_Opportunity_Settings__c.getOrgDefaults().Days_Not_Updated_Limit__c != null 
                                        ? Open_Opportunity_Settings__c.getOrgDefaults().Days_Not_Updated_Limit__c.intValue()
                                        : 30;
-
         Integer daysNotUpdatedLimitEarlyStages = Open_Opportunity_Settings__c.getOrgDefaults().Days_Not_Updated_Limit_Early_Stages__c != null 
                                        ? Open_Opportunity_Settings__c.getOrgDefaults().Days_Not_Updated_Limit_Early_Stages__c.intValue()
                                        : 10;
