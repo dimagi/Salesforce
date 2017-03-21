@@ -40,7 +40,6 @@ public class HqAccountingProcessHelper {
             System.debug('Error : ' + e);
             EmailHelper.sendEmailFromException(settings.Error_Emails__c.split(','), 'Commcare sync Error', 'Cannot fetch total count for Accountings : '
                                                 + this.serverSettings.Name + ' ' + this.suffix, e);
-            HqBatchJobHelper.endBatchJobs();
         }
 
         return totalCount;
