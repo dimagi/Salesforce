@@ -99,33 +99,29 @@ public class HqIntegrationTests {
         Database.executeBatch(new DomainMonthlySnapshotBatch());
         Test.stopTest();
 
-        Domain_Monthly_Snapshot__c domainSn = [SELECT Advanced_Active_Mobile_Users__c, Advanced_Forms__c, Advanced_Wam__c,
-                                               Community_Active_Mobile_Users__c, Community_Forms__c, Community_Wam__c,
-                                               Empty_Active_Mobile_Users__c, Empty_Forms__c, Empty_Wam__c,
-                                               Enterprise_Active_Mobile_Users__c, Enterprise_Forms__c, Enterprise_Wam__c,
-                                               Pro_Active_Mobile_Users__c, Pro_Forms__c, Pro_Wam__c,
-                                               Standard_Active_Mobile_Users__c, Standard_Forms__c, Standard_Wam__c, Snapshot_Date__c,
-                                               Pro_Scale_of_Programs__c, Community_Scale_of_Programs__c, Standard_Scale_of_Programs__c
-                                               FROM Domain_Monthly_Snapshot__c LIMIT 1];
-
         // Community => subscription1 AND subscription4 => Wam = 15 + 60 = 75, Mobile Users = 20 + 65 = 85, Forms = 325 + 370 = 695
         // Standard => subscription1 AND subscription4 => Wam = 30 + 75 = 105, Mobile Users = 35 + 80 = 115, Forms = 340 + 385 = 725
         // Pro => subscription1 AND subscription4 => Wam = 45, Mobile Users = 50, Forms = 355
+        Domain_Monthly_Snapshot__c domainSn = [SELECT Active_Mobile_Users__c, Forms__c, Wam__c, Scale_of_Programs__c
+                                               FROM Domain_Monthly_Snapshot__c WHERE Software_Plan_Edition__c = 'Community' LIMIT 1];
+        System.assertEquals(75, domainSn.Wam__c);
+        System.assertEquals(85, domainSn.Active_Mobile_Users__c);
+        System.assertEquals(695, domainSn.Forms__c);
+        System.assertEquals(2, domainSn.Scale_of_Programs__c);
 
-        System.assertEquals(75, domainSn.Community_Wam__c);
-        System.assertEquals(85, domainSn.Community_Active_Mobile_Users__c);
-        System.assertEquals(695, domainSn.Community_Forms__c);
-        System.assertEquals(2, domainSn.Community_Scale_of_Programs__c);
+        domainSn = [SELECT Active_Mobile_Users__c, Forms__c, Wam__c, Scale_of_Programs__c
+                                               FROM Domain_Monthly_Snapshot__c WHERE Software_Plan_Edition__c = 'Standard' LIMIT 1];
+        System.assertEquals(105, domainSn.Wam__c);
+        System.assertEquals(115, domainSn.Active_Mobile_Users__c);
+        System.assertEquals(725, domainSn.Forms__c);
+        System.assertEquals(2, domainSn.Scale_of_Programs__c);
 
-        System.assertEquals(105, domainSn.Standard_Wam__c);
-        System.assertEquals(115, domainSn.Standard_Active_Mobile_Users__c);
-        System.assertEquals(725, domainSn.Standard_Forms__c);
-        System.assertEquals(2, domainSn.Standard_Scale_of_Programs__c);
-
-        System.assertEquals(45, domainSn.Pro_Wam__c);
-        System.assertEquals(50, domainSn.Pro_Active_Mobile_Users__c);
-        System.assertEquals(355, domainSn.Pro_Forms__c);
-        System.assertEquals(1, domainSn.Pro_Scale_of_Programs__c);
+        domainSn = [SELECT Active_Mobile_Users__c, Forms__c, Wam__c, Scale_of_Programs__c
+                                               FROM Domain_Monthly_Snapshot__c WHERE Software_Plan_Edition__c = 'Pro' LIMIT 1];
+        System.assertEquals(45, domainSn.Wam__c);
+        System.assertEquals(50, domainSn.Active_Mobile_Users__c);
+        System.assertEquals(355, domainSn.Forms__c);
+        System.assertEquals(1, domainSn.Scale_of_Programs__c);
     }
 
     @isTest
