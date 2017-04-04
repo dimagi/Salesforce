@@ -41,9 +41,7 @@ public class DomainMonthlySnapshotBatch implements Database.Batchable<Accounting
                 this.wamMap.put(softwarePlan, wamMap.get(softwarePlan) + (sub.Accounting_subscriber_domain__r.Wam__c != null ? sub.Accounting_subscriber_domain__r.Wam__c : 0));
                 this.formsMap.put(softwarePlan, formsMap.get(softwarePlan) + (sub.Accounting_subscriber_domain__r.cpAllForms__c != null ? sub.Accounting_subscriber_domain__r.cpAllForms__c : 0));
                 this.mobileUsersMap.put(softwarePlan, mobileUsersMap.get(softwarePlan) + (sub.Accounting_subscriber_domain__r.cpActiveMobileUsers__c != null ? sub.Accounting_subscriber_domain__r.cpActiveMobileUsers__c : 0));
-                if ((sub.service_type__c == 'Self_service' || sub.service_type__c == 'Product') && sub.Accounting_subscriber_domain__r.InternalProp_self_started__c == true) {
-                    this.recordCountMap.put(softwarePlan, recordCountMap.get(softwarePlan) + 1);
-                }
+                this.recordCountMap.put(softwarePlan, recordCountMap.get(softwarePlan) + 1);
             }
         } catch (Exception e) {
             System.debug('Error: ' + e);
