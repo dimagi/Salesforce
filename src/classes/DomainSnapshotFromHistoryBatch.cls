@@ -94,10 +94,7 @@ public class DomainSnapshotFromHistoryBatch implements Database.Batchable<Accoun
                     this.wamMap.put(softwarePlan, wamMap.get(softwarePlan) + wam);
                     this.formsMap.put(softwarePlan, formsMap.get(softwarePlan) + forms);
                     this.mobileUsersMap.put(softwarePlan, mobileUsersMap.get(softwarePlan) + activeUsers);
-
-                    if ((sub.service_type__c == 'Self_service' || sub.service_type__c == 'Product') && sub.Accounting_subscriber_domain__r.InternalProp_self_started__c == true) {
-                        this.recordCountMap.put(softwarePlan, recordCountMap.get(softwarePlan) + 1);
-                    }
+                    this.recordCountMap.put(softwarePlan, recordCountMap.get(softwarePlan) + 1);
                 }
             }
             System.debug('subs total : ' + subs);
@@ -114,14 +111,14 @@ public class DomainSnapshotFromHistoryBatch implements Database.Batchable<Accoun
     public void finish(Database.BatchableContext context) {
         try {
             if (error == false) {
-                SObject sobj = (SObject) new Domain_Monthly_Snapshot__c();
-                sobj = setValues(sobj, wamMap, '_Wam__c');
-                sobj = setValues(sobj, formsMap, '_Forms__c');
-                sobj = setValues(sobj, mobileUsersMap, '_Active_Mobile_Users__c');
-                sobj = setValues(sobj, recordCountMap, '_Scale_of_Programs__c');
-                Domain_Monthly_Snapshot__c domainSnapshot = (Domain_Monthly_Snapshot__c) sobj;
-                domainSnapshot.Snapshot_Date__c = this.currentDate;
-                insert domainSnapshot;
+                List<Domain_Monthly_Snapshot__c> snapshots = new List<Domain_Monthly_Snapshot__c>();
+                for (String key : recordCountMap.keySet()) {
+                    Domain_Monthly_Snapshot__c snapshot = new Domain_Monthly_Snapshot__c(Software_Plan_Edition__c = key, Snapshot_Date__c = this.currentDate,
+                                                                Wam__c = wamMap.get(key), Forms__c = formsMap.get(key), Active_Mobile_Users__c = mobileUsersMap.get(key),
+                                                                Scale_of_Programs__c = recordCountMap.get(key));
+                    snapshots.add(snapshot);
+                }
+                insert snapshots;
             }
         } catch (Exception e) {
             System.debug('Error: ' + e);
@@ -185,24 +182,6 @@ public class DomainSnapshotFromHistoryBatch implements Database.Batchable<Accoun
         }
 
         return historyMap;
-    }
-
-    private SObject setValues(SObject obj, Map<String, Decimal> values, String suffix) {
-
-        for (String key : values.keySet()) {
-            String name = (key + suffix).toLowerCase();
-            Decimal value = values.get(key);
-            if (hasSObjectField(name, obj)) {
-                obj.put(name, value);
-            } else {
-                System.debug('Cannot find field with name : ' + name);
-                if (!Test.isRunningTest()) {
-                    EmailHelper.sendEmail(this.settings.Error_Emails__c.split(','), 'Cannot find sObject field for Domain Monthly Snapshot',
-                                    'Cannot find fields: ' + name);
-                }
-            }
-        }
-        return obj;
     }
 
     private Boolean hasSObjectField(String fieldName, SObject so) {
