@@ -9,6 +9,7 @@ public without sharing class GSOverallCalculationBatch implements Database.Batch
     private Double gsTotalOverall;
     private Double gsTotalSatisfaction;
     private Double gsTotalBudget;
+    private Set<Id> snapshots;
 
     public GSOverallCalculationBatch() {
         this.currentDate = Date.today();
@@ -40,6 +41,13 @@ public without sharing class GSOverallCalculationBatch implements Database.Batch
             this.endDate = thursDayListNextMonth[1];
         }
 
+        List<Project_Report_Out__c> pros = [SELECT Id, Contract_Snapshot__c FROM Project_Report_Out__c WHERE Contract_Snapshot__c != null
+                                                AND Report_Out_Date__c >=: this.startDate AND Report_Out_Date__c <: this.endDate];
+
+        this.snapshots = new Set<Id>();
+        for (Project_Report_Out__c pro : pros) {
+            this.snapshots.add(pro.Contract_Snapshot__c);
+        }
         return [SELECT Id, Name FROM Business_Unit__c];
     }
 
@@ -51,8 +59,13 @@ public without sharing class GSOverallCalculationBatch implements Database.Batch
             }
 
             AggregateResult[] groupedResults = [SELECT Contract__r.Prime_Contracting_Business_Unit__c, SUM(Project_Quality_Overall_Status__c), SUM(Customer_Satisfaction_of_services__c),
-                                                SUM(GS_Execution_Budget__c), SUM(GS_Revenue__c)
-                                                FROM PRO_Contract_Snapshot__c WHERE Contract__c != null AND Snapshot_Date__c >=: this.startDate AND Snapshot_Date__c <: this.endDate
+                                                SUM(GS_Execution_Budget__c)
+                                                FROM PRO_Contract_Snapshot__c WHERE Id IN: snapshots AND Contract__c != null AND Snapshot_Date__c >=: this.startDate
+                                                AND Snapshot_Date__c <: this.endDate
+                                                GROUP BY Contract__r.Prime_Contracting_Business_Unit__c];
+            AggregateResult[] groupedResultsRevenue = [SELECT Contract__r.Prime_Contracting_Business_Unit__c, SUM(GS_Revenue__c)
+                                                FROM PRO_Contract_Snapshot__c WHERE Contract__c != null AND Snapshot_Date__c >=: this.startDate
+                                                AND Snapshot_Date__c <: this.endDate
                                                 GROUP BY Contract__r.Prime_Contracting_Business_Unit__c];
 
             Sobject sobj = (Sobject) new Contract_Statistic__c(PRO_Cycle_Date__c = this.startDate , DLAC_GS_Customer_Sat__c = 0, DLAC_GS_Overall_Status__c = 0, DSA_GS_Customer_Sat__c = 0,
@@ -60,6 +73,28 @@ public without sharing class GSOverallCalculationBatch implements Database.Batch
                                             DWA_GS_Customer_Sat__c = 0, DWA_GS_Overall_Status__c = 0, Inc_GS_Customer_Sat__c = 0, Inc_GS_Overall_Status__c = 0, Myanmar_GS_Customer_Sat__c = 0,
                                             Myanmar_GS_Overall_Status__c = 0, GS_Quality_Total_Customer_Satisfaction__c = 0, GS_Quality_Total_Overall_Status__c = 0, DLAC_GS_Revenue__c = 0,
                                             DSA_GS_Revenue__c = 0, DSI_GS_Revenue__c = 0, DTZ_GS_Revenue__c = 0, DWA_GS_Revenue__c = 0, Inc_GS_Revenue__c = 0, Myanmar_GS_Revenue__c = 0);
+
+            for (AggregateResult result : groupedResultsRevenue) {
+                Id buId = (Id) result.get('Prime_Contracting_Business_Unit__c');
+                if (buId == null) {
+                    continue;
+                }
+                Double gsRevenue = (Double) result.get('expr0');
+                if (gsRevenue == null) {
+                    gsRevenue = 0;
+                }
+                String buName = buMapping.get(buId);
+                String revenueField = (buName + '_GS_Revenue__c').toLowerCase();
+                if (hasSObjectField(revenueField, sobj)) {
+                    sobj.put(revenueField, gsRevenue);
+                } else {
+                    System.debug('Cannot find field with name : ' + revenueField);
+                    if (!Test.isRunningTest()) {
+                        EmailHelper.sendEmail(BatchDefaultSettings__c.getOrgDefaults().Error_Emails__c.split(','), 'Cannot find sObject field for GS Quality',
+                                    'Cannot find fields: ' + revenueField);
+                    }
+                }
+            }
 
             System.debug('groupedResults'+ groupedResults);
             for (AggregateResult result : groupedResults) {
@@ -71,7 +106,6 @@ public without sharing class GSOverallCalculationBatch implements Database.Batch
                 Double gsOverall = (Double) result.get('expr0');
                 Double gsSatisfaction = (Double) result.get('expr1');
                 Double gsBudget = (Double) result.get('expr2');
-                Double gsRevenue = (Double) result.get('expr3');
 
                 this.gsTotalOverall += gsOverall != null ? gsOverall : 0;
                 this.gsTotalSatisfaction += gsSatisfaction != null ? gsSatisfaction : 0;
@@ -85,23 +119,17 @@ public without sharing class GSOverallCalculationBatch implements Database.Batch
                     gsSatisfaction = 100 * (gsSatisfaction / gsBudget);
                 }
 
-                if (gsRevenue == null) {
-                    gsRevenue = 0;
-                }
-
                 String buName = buMapping.get(buId);
                 String qualityField = (buName + '_GS_Overall_Status__c').toLowerCase();
                 String customerField = (buName + '_GS_Customer_Sat__c').toLowerCase();
-                String revenueField = (buName + '_GS_Revenue__c').toLowerCase();
                 if (hasSObjectField(qualityField, sobj) && hasSObjectField(customerField, sobj)) {
                     sobj.put(qualityField, gsOverall);
                     sobj.put(customerField, gsSatisfaction);
-                    sobj.put(revenueField, gsRevenue);
                 } else {
                     System.debug('Cannot find field with name : ' + qualityField + ' ' + customerField);
                     if (!Test.isRunningTest()) {
                         EmailHelper.sendEmail(BatchDefaultSettings__c.getOrgDefaults().Error_Emails__c.split(','), 'Cannot find sObject field for GS Quality',
-                                    'Cannot find fields: ' + qualityField + ', ' + customerField + ', ' + revenueField);
+                                    'Cannot find fields: ' + qualityField + ', ' + customerField);
                     }
                 }
             }
