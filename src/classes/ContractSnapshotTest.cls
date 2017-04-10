@@ -94,6 +94,43 @@ public class ContractSnapshotTest {
         System.assertEquals(3, psFromDB.Services_Spend_for_Period__c);
     }
 
+    static testMethod void shouldCalculateForPeriodInPipelineSnapshotOpp() {
+        Business_Unit__c bizUnit = new Business_Unit__c(Name = 'Test Business Unit 1');
+        //insert bizUnit;
+        Opportunity opp1 = new Opportunity(Name = 'Test Opportunity 1', Business_Unit_Owner__c = bizUnit.Id, StageName = 'Stage 5 - Submitted',
+                                                 CloseDate = date.today().addMonths(5), Probability = 30);
+        Opportunity opp2 = new Opportunity(Name = 'Test Opportunity 2', Business_Unit_Owner__c = bizUnit.Id, StageName = 'Stage 5 - Submitted',
+                                                 CloseDate = date.today().addMonths(5), Probability = 30);
+
+        insert opp1;
+        insert opp2;
+
+        Pipeline_Snapshot__c ps1 = new Pipeline_Snapshot__c(Source_Type__c = 'Opportunity', Month_Date__c = Date.today().addDays(-30), Opportunity__c = opp1.Id,
+                                                            Probability__c = 20, Expected_Buffer__c = 60, Amount_Minus_Expense_Income__c = 10000);
+        Pipeline_Snapshot__c ps2 = new Pipeline_Snapshot__c(Source_Type__c = 'Opportunity', Month_Date__c = Date.today(), Opportunity__c = opp1.Id,
+                                                            Probability__c = 40, Expected_Buffer__c = 80, Amount_Minus_Expense_Income__c = 10000);
+        Pipeline_Snapshot__c ps3 = new Pipeline_Snapshot__c(Source_Type__c = 'Opportunity', Month_Date__c = Date.today(), Opportunity__c = opp2.Id,
+                                                            Probability__c = 50, Expected_Buffer__c = 70, Amount_Minus_Expense_Income__c = 10000);
+
+        insert ps1;
+        insert ps2;
+        insert ps3;
+
+        Test.setCreatedDate(ps1.Id, DateTime.now().addDays(-30));
+
+        Test.startTest();
+        Database.executeBatch(new ForPeriodCalcSnapshotBatch(false, true), 50);
+        Test.stopTest();
+
+        // 80% * (10000 * 40%) - 60% * (10000 * 20%) = 2000
+        Pipeline_Snapshot__c psFromDB = [SELECT Id, Probability__c, Expected_Buffer__c, Amount_Minus_Expense_Income__c, Buffer_EV_for_Period__c
+                                         FROM Pipeline_Snapshot__c WHERE Id =: ps2.Id];
+        System.debug('Value : ' + psFromDB.Expected_Buffer__c * (psFromDB.Amount_Minus_Expense_Income__c * psFromDB.Probability__c));
+        System.assertEquals(2000, psFromDB.Buffer_EV_for_Period__c);
+        psFromDB = [SELECT Id, Buffer_EV_for_Period__c FROM Pipeline_Snapshot__c WHERE Id =: ps3.Id];
+        System.assertEquals(3500, psFromDB.Buffer_EV_for_Period__c);
+    }
+
     static testMethod void shouldCalculateGSRevenue() {
         Business_Unit__c bu = new Business_Unit__c(Name = 'Inc');
         insert bu;
