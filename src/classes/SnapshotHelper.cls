@@ -104,6 +104,36 @@ public class SnapshotHelper {
         return oldSnapShotsMap;
     }
 
+    public static Map<Id, Pipeline_Snapshot__c> getOldSnapshotsForOpp(List<Pipeline_Snapshot__c> snapshots, Boolean forTotal) {
+        Set<Id> opps = new Set<Id>();
+        for (Pipeline_Snapshot__c sn : snapshots) {
+            if (sn.Opportunity__c != null) {
+                opps.add(sn.Opportunity__c);
+            }
+        }
+
+        Date monthDate = snapshots.get(0).Month_Date__c;
+        List<Pipeline_Snapshot__c> oldSnapshots;
+        if (forTotal) {
+            oldSnapshots = [SELECT Id, Opportunity__c, Buffer_EV__c FROM Pipeline_Snapshot__c
+                            WHERE Opportunity__c IN: opps AND Month_Date__c < :monthDate AND Month_Date__c > :monthDate.addMonths(-6)
+                            AND Stage__c = 'Total' ORDER BY Month_Date__c DESC];
+        } else {
+            oldSnapshots = [SELECT Id, Opportunity__c, Buffer_EV__c FROM Pipeline_Snapshot__c
+                            WHERE Opportunity__c IN: opps AND Month_Date__c < :monthDate AND Month_Date__c > :monthDate.addMonths(-6)
+                            AND Stage__c != 'Total' ORDER BY Month_Date__c DESC];
+        }
+
+        Map<Id, Pipeline_Snapshot__c> oldSnapShotsMap = new Map<Id, Pipeline_Snapshot__c>();
+        for(Pipeline_Snapshot__c snapshotObject : oldSnapshots) {
+            if (!oldSnapShotsMap.containsKey(snapshotObject.Opportunity__c)) {
+                oldSnapShotsMap.put(snapshotObject.Opportunity__c, snapshotObject);
+            }
+        }
+
+        return oldSnapShotsMap;
+    }
+
     public static Pipeline_Snapshot__c calculateForPeriod(Pipeline_Snapshot__c sn, Pipeline_Snapshot__c oldSn) {
             sn.Work_Completed_for_Period__c = (sn.Work_Completed__c != null ? sn.Work_Completed__c : 0) - (oldSn.Work_Completed__c != null ? oldSn.Work_Completed__c : 0);
             sn.Services_Spend_for_Period__c = (sn.Services_Spend__c != null ? sn.Services_Spend__c : 0) - (oldSn.Services_Spend__c != null ? oldSn.Services_Spend__c : 0);
