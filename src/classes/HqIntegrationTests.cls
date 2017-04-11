@@ -112,7 +112,7 @@ public class HqIntegrationTests {
         // Community => subscription1 AND subscription4 => Wam = 15 + 60 = 75, Mobile Users = 20 + 65 = 85, Forms = 325 + 370 = 695 - last (250) = 445
         // Standard => subscription1 AND subscription4 => Wam = 30 + 75 = 105, Mobile Users = 35 + 80 = 115, Forms = 340 + 385 = 725 - last (25) = 700
         // Pro => subscription1 AND subscription4 => Wam = 45, Mobile Users = 50, Forms = 355
-        Domain_Monthly_Snapshot__c domainSn = [SELECT Active_Mobile_Users__c, Forms__c, Wam__c, Scale_of_Programs__c
+        Domain_Monthly_Snapshot__c domainSn = [SELECT Active_Mobile_Users__c, Forms__c, Wam__c, Scale_of_Programs__c, Forms_for_Period__c
                                                FROM Domain_Monthly_Snapshot__c WHERE Software_Plan_Edition__c = 'Community' ORDER BY Snapshot_Date__c DESC LIMIT 1];
         System.assertEquals(75, domainSn.Wam__c);
         System.assertEquals(85, domainSn.Active_Mobile_Users__c);
@@ -120,7 +120,7 @@ public class HqIntegrationTests {
         System.assertEquals(695, domainSn.Forms__c);
         System.assertEquals(2, domainSn.Scale_of_Programs__c);
 
-        domainSn = [SELECT Active_Mobile_Users__c, Forms__c, Wam__c, Scale_of_Programs__c
+        domainSn = [SELECT Active_Mobile_Users__c, Forms__c, Wam__c, Scale_of_Programs__c, Forms_for_Period__c
                                                FROM Domain_Monthly_Snapshot__c WHERE Software_Plan_Edition__c = 'Standard' ORDER BY Snapshot_Date__c DESC LIMIT 1];
         System.assertEquals(105, domainSn.Wam__c);
         System.assertEquals(115, domainSn.Active_Mobile_Users__c);
@@ -128,7 +128,7 @@ public class HqIntegrationTests {
         System.assertEquals(725, domainSn.Forms__c);
         System.assertEquals(2, domainSn.Scale_of_Programs__c);
 
-        domainSn = [SELECT Active_Mobile_Users__c, Forms__c, Wam__c, Scale_of_Programs__c
+        domainSn = [SELECT Active_Mobile_Users__c, Forms__c, Wam__c, Scale_of_Programs__c, Forms_for_Period__c
                                                FROM Domain_Monthly_Snapshot__c WHERE Software_Plan_Edition__c = 'Pro' ORDER BY Snapshot_Date__c DESC LIMIT 1];
         System.assertEquals(45, domainSn.Wam__c);
         System.assertEquals(50, domainSn.Active_Mobile_Users__c);
