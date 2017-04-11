@@ -57,10 +57,19 @@ public class DomainMonthlySnapshotBatch implements Database.Batchable<Accounting
     public void finish(Database.BatchableContext context) {
         try {
             if (error == false) {
+                List<Domain_Monthly_Snapshot__c> oldSnapshots = [SELECT Id, Software_Plan_Edition__c, Forms__c FROM Domain_Monthly_Snapshot__c
+                                                                 WHERE Snapshot_Date__c <: this.currentDate AND Snapshot_Date__c >: this.currentDate.addMonths(-3)
+                                                                 ORDER BY Snapshot_Date__c DESC];
+                Map<String, Decimal> oldSnMap = new Map<String, Decimal>();
+                for (Domain_Monthly_Snapshot__c oldSn : oldSnapshots) {
+                    if (!oldSnMap.containsKey(oldSn.Software_Plan_Edition__c)) {
+                        oldSnMap.put(oldSn.Software_Plan_Edition__c, oldSn.Forms__c);
+                    }
+                }
                 List<Domain_Monthly_Snapshot__c> snapshots = new List<Domain_Monthly_Snapshot__c>();
                 for (String key : recordCountMap.keySet()) {
-                    Domain_Monthly_Snapshot__c snapshot = new Domain_Monthly_Snapshot__c(Software_Plan_Edition__c = key, Snapshot_Date__c = this.currentDate,
-                                                                Wam__c = wamMap.get(key), Forms__c = formsMap.get(key), Active_Mobile_Users__c = mobileUsersMap.get(key),
+                    Domain_Monthly_Snapshot__c snapshot = new Domain_Monthly_Snapshot__c(Software_Plan_Edition__c = key, Snapshot_Date__c = this.currentDate, Forms__c = formsMap.get(key),
+                                                                Wam__c = wamMap.get(key), Forms_for_Period__c = (oldSnMap.get(key) != null ? formsMap.get(key) - oldSnMap.get(key) : formsMap.get(key)), Active_Mobile_Users__c = mobileUsersMap.get(key),
                                                                 Scale_of_Programs__c = recordCountMap.get(key));
                     snapshots.add(snapshot);
                 }
