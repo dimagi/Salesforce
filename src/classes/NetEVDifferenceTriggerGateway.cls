@@ -67,13 +67,13 @@ public class NetEVDifferenceTriggerGateway {
                 snapShotsDiff.Delta_Type__c = getDeltaType(snapShotsDiff);
             } else {
                 snapShotsDiff.Delta_Type__c = NEW_OPP;
-                snapShotsDiff.DIFF_12_Month_Cash_Minus_Expense_Income__c = 0;
-                snapShotsDiff.DIFF_18_Month_Cash_Minus_Expenses_Income__c = 0;
-                snapShotsDiff.DIFF_24_Month_Cash_Minus_Expense_Income__c = 0;
-                snapShotsDiff.DIFF_Amount_Minus_Expense_Income__c = 0;
-                snapShotsDiff.DIFF_Expected_Value_Minus_Expense__c = 0;
-                snapShotsDiff.Monthly_Recurring_Revenue_MRR__c = 0;
-                snapShotsDiff.Expected_Monthly_Recurring_Revenue_MRR__c = 0;
+                snapShotsDiff.DIFF_12_Month_Cash_Minus_Expense_Income__c = lastMonthSnapshot.X12_Month_Cash_Minus_Expense_Income_EV__c != null ? lastMonthSnapshot.X12_Month_Cash_Minus_Expense_Income_EV__c: 0;
+                snapShotsDiff.DIFF_18_Month_Cash_Minus_Expenses_Income__c = lastMonthSnapshot.X18_Month_Cash_Minus_Expenses_Income_EV__c != null ?  lastMonthSnapshot.X18_Month_Cash_Minus_Expenses_Income_EV__c: 0;
+                snapShotsDiff.DIFF_24_Month_Cash_Minus_Expense_Income__c = lastMonthSnapshot.X24_Month_Cash_Minus_Expense_Income_EV__c != null ? lastMonthSnapshot.X24_Month_Cash_Minus_Expense_Income_EV__c: 0;
+                snapShotsDiff.DIFF_Amount_Minus_Expense_Income__c = lastMonthSnapshot.Opportunity_Amount_Minus_Expense_Income__c != null ? lastMonthSnapshot.Opportunity_Amount_Minus_Expense_Income__c: 0;
+                snapShotsDiff.DIFF_Expected_Value_Minus_Expense__c = lastMonthSnapshot.Expected_Value_Minus_Expense__c != null ? lastMonthSnapshot.Expected_Value_Minus_Expense__c: 0;
+                snapShotsDiff.Monthly_Recurring_Revenue_MRR__c = lastMonthSnapshot.Monthly_Recurring_Revenue_MRR__c != null ? lastMonthSnapshot.Monthly_Recurring_Revenue_MRR__c: 0;
+                snapShotsDiff.Expected_Monthly_Recurring_Revenue_MRR__c = lastMonthSnapshot.Expected_Monthly_Recurring_Revenue_MRR__c != null ? lastMonthSnapshot.Expected_Monthly_Recurring_Revenue_MRR__c: 0;
             }
 
             snapShotDiffs.add(snapShotsDiff);
