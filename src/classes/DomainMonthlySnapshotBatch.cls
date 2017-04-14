@@ -14,10 +14,10 @@ public class DomainMonthlySnapshotBatch implements Database.Batchable<Accounting
 
     public DomainMonthlySnapshotBatch(Date currentDate) {
         this.currentDate = currentDate;
-        this.wamMap = new Map<String, Decimal> { 'Empty' => 0, 'Advanced' => 0, 'Community' => 0, 'Enterprise' => 0, 'Standard' => 0, 'Pro' => 0};
-        this.formsMap = new Map<String, Decimal> { 'Empty' => 0, 'Advanced' => 0, 'Community' => 0, 'Enterprise' => 0, 'Standard' => 0, 'Pro' => 0};
-        this.mobileUsersMap = new Map<String, Decimal> { 'Empty' => 0, 'Advanced' => 0, 'Community' => 0, 'Enterprise' => 0, 'Standard' => 0, 'Pro' => 0};
-        this.recordCountMap = new Map<String, Decimal> { 'Empty' => 0, 'Advanced' => 0, 'Community' => 0, 'Enterprise' => 0, 'Standard' => 0, 'Pro' => 0};
+        this.wamMap = new Map<String, Decimal> { 'Reseller' => 0, 'Managed Hosting' => 0, 'Empty' => 0, 'Advanced' => 0, 'Community' => 0, 'Enterprise' => 0, 'Standard' => 0, 'Pro' => 0};
+        this.formsMap = new Map<String, Decimal> { 'Reseller' => 0, 'Managed Hosting' => 0, 'Empty' => 0, 'Advanced' => 0, 'Community' => 0, 'Enterprise' => 0, 'Standard' => 0, 'Pro' => 0};
+        this.mobileUsersMap = new Map<String, Decimal> { 'Reseller' => 0, 'Managed Hosting' => 0, 'Empty' => 0, 'Advanced' => 0, 'Community' => 0, 'Enterprise' => 0, 'Standard' => 0, 'Pro' => 0};
+        this.recordCountMap = new Map<String, Decimal> { 'Reseller' => 0, 'Managed Hosting' => 0, 'Empty' => 0, 'Advanced' => 0, 'Community' => 0, 'Enterprise' => 0, 'Standard' => 0, 'Pro' => 0};
         this.error = false;
         this.settings = BatchDefaultSettings__c.getOrgDefaults();
     }

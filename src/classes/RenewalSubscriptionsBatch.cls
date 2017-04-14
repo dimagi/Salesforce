@@ -49,7 +49,7 @@ public without sharing class RenewalSubscriptionsBatch implements Database.Batch
         this.createdOppsForDomains = new Map<String, Date>();
         this.priceBookEntries = new Map<String, PricebookEntry>();
 
-        Set<String> productCodes = new Set<String> { 'Advanced', 'Community', 'Enterprise', 'Pro', 'Standard' };
+        Set<String> productCodes = new Set<String> { 'Reseller', 'Managed Hosting', 'Advanced', 'Community', 'Enterprise', 'Pro', 'Standard' };
         PriceBook2 dimagiPriceBook = [SELECT Id FROM PriceBook2 WHERE Name = 'Dimagi'];
         List<PricebookEntry> entries = [SELECT Id, ProductCode, UnitPrice FROM PricebookEntry WHERE ProductCode IN: ProductCodes AND Pricebook2Id =: dimagiPriceBook.Id];
 
