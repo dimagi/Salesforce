@@ -59,7 +59,7 @@ public without sharing class RenewalSubscriptionsBatch implements Database.Batch
 
         this.commCareEntry = [SELECT Id, ProductCode, UnitPrice FROM PricebookEntry WHERE ProductCode = 'CommCare' AND Pricebook2Id =: dimagiPriceBook.Id LIMIT 1];
 
-        if (entries.size() != 5 || this.commCareEntry == null) {
+        if (entries.size() != 7 || this.commCareEntry == null) {
             NoDataFoundException ex = new NoDataFoundException();
             ex.setMessage('Cannot find price book entries');
             throw ex;
@@ -71,6 +71,8 @@ public without sharing class RenewalSubscriptionsBatch implements Database.Batch
         this.salesPrices.put('Pro', this.settings.Pro__c != null ? this.settings.Pro__c : 500);
         this.salesPrices.put('Advanced', this.settings.Advanced__c != null ? this.settings.Advanced__c : 1000);
         this.salesPrices.put('Enterprise', this.settings.Enterprise__c != null ? this.settings.Enterprise__c : 2000);
+        this.salesPrices.put('Managed Hosting', this.settings.Managed_Hosting__c != null ? this.settings.Managed_Hosting__c : 2000);
+        this.salesPrices.put('Reseller', this.settings.Reseller__c != null ? this.settings.Reseller__c : 500);
 
         return getSubscriptionsForRenewal(domainsWithFutureSubscriptions);
     }

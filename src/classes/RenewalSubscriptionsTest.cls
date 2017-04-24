@@ -189,6 +189,10 @@ public class RenewalSubscriptionsTest {
         insert productPro;
         Product2 producStandard = new Product2(Name = 'Hosting: Standard', ProductCode = 'Standard', Family = 'Hosting');
         insert producStandard;
+        Product2 hosting = new Product2(Name = 'Managed Hosting', ProductCode = 'Managed Hosting', Family = 'Hosting');
+        insert hosting;
+        Product2 reseller = new Product2(Name = 'Reseller', ProductCode = 'Reseller', Family = 'Hosting');
+        insert reseller;
         Product2 commCare = new Product2(Name = 'CommCare', ProductCode = 'CommCare', Family = 'Product');
         insert commCare;
 
@@ -204,8 +208,12 @@ public class RenewalSubscriptionsTest {
         insert producStandardPrice;
         PricebookEntry producCommCarePrice = new PricebookEntry(Pricebook2Id = pricebookId, Product2Id = commCare.Id, UnitPrice = 650000, IsActive = true);
         insert producCommCarePrice;
+        PricebookEntry hostingPrice = new PricebookEntry(Pricebook2Id = pricebookId, Product2Id = hosting.Id, UnitPrice = 2000, IsActive = true);
+        insert hostingPrice;
+        PricebookEntry resellerPrice = new PricebookEntry(Pricebook2Id = pricebookId, Product2Id = reseller.Id, UnitPrice = 2000, IsActive = true);
+        insert resellerPrice;
 
-        Pricebook2 dimagiPB = new Pricebook2(Name='Dimagi', isActive=true);
+        Pricebook2 dimagiPB = new Pricebook2(Name = 'Dimagi', isActive = true);
         insert dimagiPB;
 
         PricebookEntry productAdvancedPrice2 = new PricebookEntry(Pricebook2Id = dimagiPB.Id, Product2Id = productAdvanced.Id, UnitPrice = 1000, IsActive = true);
@@ -220,5 +228,9 @@ public class RenewalSubscriptionsTest {
         insert producStandardPrice2;
         PricebookEntry producCommCarePrice2 = new PricebookEntry(Pricebook2Id = dimagiPB.Id, Product2Id = commCare.Id, UnitPrice = 650000, IsActive = true);
         insert producCommCarePrice2;
+        PricebookEntry hostingPrice2 = new PricebookEntry(Pricebook2Id = dimagiPB.Id, Product2Id = hosting.Id, UnitPrice = 2000, IsActive = true);
+        insert hostingPrice2;
+        PricebookEntry resellerPrice2 = new PricebookEntry(Pricebook2Id = dimagiPB.Id, Product2Id = reseller.Id, UnitPrice = 2000, IsActive = true);
+        insert resellerPrice2;
     }
 }
