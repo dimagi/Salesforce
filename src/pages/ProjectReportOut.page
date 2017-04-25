@@ -410,27 +410,27 @@
                             <apex:outputPanel >
                                 <apex:pageBlockTable value="{!proExpenseSpendList}" var="obj" id="proTable6" styleClass="tablesorter">
 
-                                   <apex:column headerValue="Budget Category" value="{!obj.categoryName}" style="{!if(obj.categoryName='Total Costs (not including subcontracts)' || obj.categoryName='Total Costs (including subcontracts)','font-weight: bold', '')}" />
+                                   <apex:column headerValue="Budget Category" value="{!obj.categoryName}" style="{!if(obj.categoryName='Total Costs (not including Internal subcontracts' || obj.categoryName='Total Costs (including Internal subcontracts','font-weight: bold', '')}" />
 
-                                   <apex:column headerValue="Amount In Contract" style="{!if(obj.categoryName='Total Costs (not including subcontracts)' || obj.categoryName='Total Costs (including subcontracts)','font-weight: bold', '')}">
+                                   <apex:column headerValue="Amount In Contract" style="{!if(obj.categoryName='Total Costs (not including Internal subcontracts' || obj.categoryName='Total Costs (including Internal subcontracts','font-weight: bold', '')}">
                                         <apex:outputText value="${0, number,###,###,###,###}">
                                             <apex:param value="{!obj.contractamount}" />
                                         </apex:outputText>
                                    </apex:column>
 
-                                   <apex:column headerValue="Amount Spent" style="{!if(obj.categoryName='Total Costs (not including subcontracts)' || obj.categoryName='Total Costs (including subcontracts)','font-weight: bold', '')}">
+                                   <apex:column headerValue="Amount Spent" style="{!if(obj.categoryName='Total Costs (not including Internal subcontracts' || obj.categoryName='Total Costs (including Internal subcontracts','font-weight: bold', '')}">
                                         <apex:outputText value="${0, number,###,###,###,###}">
                                             <apex:param value="{!obj.spentAmount}" />
                                         </apex:outputText>
                                    </apex:column>
 
-                                   <apex:column headerValue="Amount Remaining" style="{!if(obj.categoryName='Total Costs (not including subcontracts)' || obj.categoryName='Total Costs (including subcontracts)','font-weight: bold', '')}">
+                                   <apex:column headerValue="Amount Remaining" style="{!if(obj.categoryName='Total Costs (not including Internal subcontracts' || obj.categoryName='Total Costs (including Internal subcontracts','font-weight: bold', '')}">
                                         <apex:outputText value="${0, number,###,###,###,###}">
                                             <apex:param value="{!obj.throughSOWDeliverable}" />
                                         </apex:outputText>
                                    </apex:column>
 
-                                   <apex:column headerValue="% Budget Used" value="{!obj.prcntgUsed}%" style = "{!if(obj.prcntgUsed > 100,'background-color: red;', if(obj.prcntgUsed > 85,'background-color: yellow;',''))};{!if(obj.categoryName='Total Costs (not including subcontracts)' || obj.categoryName='Total Costs (including subcontracts)','font-weight: bold', '')}" />
+                                   <apex:column headerValue="% Budget Used" value="{!obj.prcntgUsed}%" style = "{!if(obj.prcntgUsed > 100,'background-color: red;', if(obj.prcntgUsed > 85,'background-color: yellow;',''))};{!if(obj.categoryName='Total Costs (not including Internal subcontracts' || obj.categoryName='Total Costs (including Internal subcontracts','font-weight: bold', '')}" />
 
                                 </apex:pageBlockTable>
                             </apex:outputPanel>

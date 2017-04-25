@@ -577,16 +577,11 @@ public with sharing class ProjectReportOutController {
             Decimal Percent_through_Contract = contractObj.Percent_through_Contract__c != null ? contractObj.Percent_through_Contract__c: 0 ;
             Decimal Percent_through_SOW_deliverables = contractObj.Percent_through_SOW_deliverables__c != null ? contractObj.Percent_through_SOW_deliverables__c: 0 ;
             Decimal Expected_Margin = contractObj.Expected_Margin__c != null ? contractObj.Expected_Margin__c: 0 ;
-            Decimal Project_Other_BUDGET = contractObj.Project_Other_BUDGET__c != null ? contractObj.Project_Other_BUDGET__c : 0 ;
 
             if(childContracts != null && childContracts.size() > 0) {
                 for(DContract__c childContract : childContracts) {
                     parentAndChildContractIds.add(childContract.Id);
-                    Product_Income_Budget += childContract.Product_Income_Budget__c != null ? childContract.Product_Income_Budget__c: 0 ;
-                    Product_Spend += childContract.Product_Spend__c != null ? childContract.Product_Spend__c: 0 ;
-                    Contract_Expense_BUDGET += childContract.Contract_Expense_BUDGET__c != null ? childContract.Contract_Expense_BUDGET__c: 0 ;
                     Direct_Costs_Total_Expenses += childContract.Direct_Costs_Total_Expenses__c != null ? childContract.Direct_Costs_Total_Expenses__c: 0 ;
-                    Project_Other_BUDGET += childContract.Project_Other_BUDGET__c != null ? childContract.Project_Other_BUDGET__c : 0 ;
                 }
             }
 
@@ -631,13 +626,13 @@ public with sharing class ProjectReportOutController {
             prbjObj2.prcntgUsed = a != 0 ? Math.round((b/a) * 100) : 0;
             proBudgetList.add(prbjObj2);
 
-            a = Contract_Expense_BUDGET + Project_Other_BUDGET;
+            a = Contract_Expense_BUDGET;
             b = Direct_Costs_Total_Expenses;
             PROProjectBudget prbjObj3 = new PROProjectBudget();
             prbjObj3.categoryName = 'Expense & Travel';
-            prbjObj3.contractamount = Integer.valueOf(Contract_Expense_BUDGET + Project_Other_BUDGET);
+            prbjObj3.contractamount = Integer.valueOf(Contract_Expense_BUDGET);
             prbjObj3.spentAmount = Integer.valueOf(Direct_Costs_Total_Expenses);
-            prbjObj3.amountRemaining = Integer.valueOf(Contract_Expense_BUDGET + Project_Other_BUDGET - Direct_Costs_Total_Expenses);
+            prbjObj3.amountRemaining = Integer.valueOf(Contract_Expense_BUDGET - Direct_Costs_Total_Expenses);
             prbjObj3.prcntgUsed = a != 0 ? Math.round((b/a) * 100) : 0;
             proBudgetList.add(prbjObj3);
 
@@ -678,11 +673,6 @@ public with sharing class ProjectReportOutController {
 
             if(childContracts != null) {
                 for(DContract__c childContract : childContracts) {
-                    Direct_Costs_Travel_BUDGET += childContract.Direct_Costs_Travel_BUDGET__c != null ? childContract.Direct_Costs_Travel_BUDGET__c : 0 ;
-                    Direct_Costs_Sub_Contract_BUDGET += childContract.Direct_Costs_Sub_Contract_BUDGET__c != null ? childContract.Direct_Costs_Sub_Contract_BUDGET__c : 0 ;
-                    Internal_Sub_contract_BUDGET += childContract.Internal_Sub_contract_BUDGET__c != null ? childContract.Internal_Sub_contract_BUDGET__c : 0 ;
-                    Project_Other_BUDGET += childContract.Project_Other_BUDGET__c != null ? childContract.Project_Other_BUDGET__c : 0 ;
-
                     Direct_Costs_Travel_Expenses += childContract.Direct_Costs_Travel_Expenses__c != null ? childContract.Direct_Costs_Travel_Expenses__c : 0 ;
                     Direct_Costs_Sub_contract_Expenses += childContract.Direct_Costs_Sub_contract_Expenses__c != null ? childContract.Direct_Costs_Sub_contract_Expenses__c : 0 ;
                     Internal_Sub_contract_Spend += childContract.Internal_Sub_contract_Spend__c != null ? childContract.Internal_Sub_contract_Spend__c : 0 ;
@@ -735,7 +725,7 @@ public with sharing class ProjectReportOutController {
             a = prbjObj1.contractamount + prbjObj2.contractamount + prbjObj3.contractamount;
             b = prbjObj1.spentAmount + prbjObj2.spentAmount + prbjObj3.spentAmount;
             PROProjectBudget prbjObj5 = new PROProjectBudget();
-            prbjObj5.categoryName = 'Total Costs (not including subcontracts)';
+            prbjObj5.categoryName = 'Total Costs (not including Internal subcontracts)';
             prbjObj5.contractamount = Integer.valueOf(a);
             prbjObj5.spentAmount = Integer.valueOf(b);
             prbjObj5.throughSOWDeliverable = Integer.valueOf( a - b );
@@ -745,7 +735,7 @@ public with sharing class ProjectReportOutController {
             a = prbjObj1.contractamount + prbjObj2.contractamount + prbjObj3.contractamount + prbjObj4.contractamount;
             b = prbjObj1.spentAmount + prbjObj2.spentAmount + prbjObj3.spentAmount + prbjObj4.spentAmount;
             PROProjectBudget prbjObj6 = new PROProjectBudget();
-            prbjObj6.categoryName = 'Total Costs (including subcontracts)';
+            prbjObj6.categoryName = 'Total Costs (including Internal subcontracts)';
             prbjObj6.contractamount = Integer.valueOf(a);
             prbjObj6.spentAmount = Integer.valueOf(b);
             prbjObj6.throughSOWDeliverable = Integer.valueOf( a - b );
