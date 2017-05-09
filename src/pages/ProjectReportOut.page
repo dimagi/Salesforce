@@ -197,9 +197,9 @@
                     chart.yAxis2.axisLabel('Avg # of Submissions (Thousands)');
                     chart.yDomain1([0, records.maxY1]);
                     chart.yDomain2([0, records.maxY2]);
-                    chart.xAxis.tickFormat(function(d) { 
+                    chart.xAxis.tickFormat(function(d) {
                             var dDate = new Date(d)
-                            return (monthNames[dDate.getMonth()] + ' ' + dDate.getFullYear()); 
+                            return (monthNames[dDate.getMonth()] + ' ' + dDate.getFullYear());
                         });
                     chart.xAxis.axisLabel('Date');
                     chart.xAxis.rotateLabels(-90);
@@ -223,9 +223,9 @@
                     chart.yAxis2.axisLabel('Avg # of Submissions (Thousands)');
                     chart.yDomain1([0, records.maxY1]);
                     chart.yDomain2([0, records.maxY2]);
-                    chart.xAxis.tickFormat(function(d) { 
+                    chart.xAxis.tickFormat(function(d) {
                             var dDate = new Date(d)
-                            return (monthNames[dDate.getMonth()] + ' ' + dDate.getFullYear()); 
+                            return (monthNames[dDate.getMonth()] + ' ' + dDate.getFullYear());
                         });
                     chart.xAxis.axisLabel('Date');
                     chart.xAxis.rotateLabels(-90);
@@ -742,13 +742,13 @@
                                     <apex:outputPanel styleClass="requiredInput" layout="block">
                                         <apex:inputHidden value="{!selectedProjectId}" id="selectedProjectId"/>
                                         <apex:actionFunction status="loadingDiv" name="readProjectCell" action="{!fillProjectDetails}" reRender="projectTabBlock"></apex:actionFunction>
-                                        <apex:pageBlockTable value="{!projectsList}" var="acc" onRowClick="clickProject(this);" style="width:300px" id="proTable1" styleClass="tablesorter" >   
+                                        <apex:pageBlockTable value="{!projectsList}" var="acc" onRowClick="clickProject(this);" style="width:300px" id="proTable1" styleClass="tablesorter" >
                                             <apex:column headerValue="" value="{!acc.Contract.Id}" styleClass="accId" style="display:none" headerClass="hedareClsNone"   />
                                             <apex:column headerValue="Project Name" value="{!acc.Contract.Name}"  styleClass="{!acc.CSSClass}"  />
                                             <apex:column headerValue="Last Report Out Date" value="{!acc.Contract.Last_Report_Out_Date__c}" styleClass="{!acc.CSSClass}"  />
                                         </apex:pageBlockTable>
                                     </apex:outputPanel>
-                                </apex:pageBlockSectionItem> 
+                                </apex:pageBlockSectionItem>
                             </apex:pageBlockSection>
 
                             <apex:pageBlockSection title="Roles" collapsible="false" columns="1">
@@ -779,7 +779,7 @@
 
                                 <apex:pageBlockSectionItem >
                                     <apex:outputLabel value="" />
-                                    <apex:commandButton action="{!saveProjectOnly}" value="Save Changes" 
+                                    <apex:commandButton action="{!saveProjectOnly}" value="Save Changes"
                                         disabled="{!!enableAddButton}" status="loadingDiv" reRender="projectTabBlock"/>
                                 </apex:pageBlockSectionItem>
                             </apex:pageBlockSection>
