@@ -1316,7 +1316,7 @@ public with sharing class ProjectReportOutController {
                                                      ORDER BY PRO_Cycle_Date__c ASC];
 
         for (Contract_Statistic__c conStats : contractStats) {
-            GraphData gp = new GraphData(conStats.PRO_Cycle_Date__c.year() + '-' + conStats.PRO_Cycle_Date__c.month() + '-' + conStats.PRO_Cycle_Date__c.day(),
+            GraphData gp = new GraphData(conStats.PRO_Cycle_Date__c.format(),
                                             conStats.GS_Quality_Total_Overall_Status__c,
                                             conStats.GS_Quality_Total_Customer_Satisfaction__c, 0, 0, 0, 0);
             this.gsData.add(gp);
@@ -1342,7 +1342,7 @@ public with sharing class ProjectReportOutController {
                     tmpData.value1 = tmpData.value1 / (tmpData.value4 != 0 ? tmpData.value4 : 1);
                     tmpData.value2 = tmpData.value2 / (tmpData.value4 != 0 ? tmpData.value4 : 1);
                     tmpData.value3 = tmpData.value3 / (tmpData.value4 != 0 ? tmpData.value4 : 1);
-                    tmpData.name = getDateText(lastDate);
+                    tmpData.name = lastDate.format();
                     this.performanceData.add(tmpData);
                     tmpData = new GraphData('', 0, 0, 0, 0, 0, 0);
                 }
@@ -1353,7 +1353,7 @@ public with sharing class ProjectReportOutController {
                 lastDate = rec.Date__c;
             }
             // we must add the last date from list:
-            tmpData.name = getDateText(lastDate);
+            tmpData.name = lastDate.format();
             tmpData.value1 = tmpData.value1 / (tmpData.value4 != 0 ? tmpData.value4 : 1);
             tmpData.value2 = tmpData.value2 / (tmpData.value4 != 0 ? tmpData.value4 : 1);
             tmpData.value3 = tmpData.value3 / (tmpData.value4 != 0 ? tmpData.value4 : 1);
