@@ -4,7 +4,7 @@
 public with sharing class ProjectReportOutController {
 
     public String oauth_token { get; set; }
-    public String selectedTab { get; set; }
+    public Integer selectedTab { get; set; }
 
     public String AUTH_URL = 'https://accounts.google.com/o/oauth2/auth';
     public String ACCESS_TOKEN_URL = 'https://accounts.google.com/o/oauth2/token';
@@ -43,14 +43,15 @@ public with sharing class ProjectReportOutController {
             frequencyMap.put(proSet.Name,Integer.valueOf(proSet.Frequency_In_Week__C));
         }
 
-        if (ApexPages.currentPage().getParameters().get('state') != null) {
+        if (ApexPages.currentPage().getParameters().get('state') != null
+                && ApexPages.currentPage().getParameters().get('state') != 'null') {
             projectId = ApexPages.currentPage().getParameters().get('state');
         }
 
         if (projectId != null) {
-             selectedTab = 'projectTab';
+            selectedTab = 2;
         } else {
-            selectedTab = 'reportTab';
+            selectedTab = 0;
         }
 
         sfInstanceName = ApexPages.currentPage().getHeaders().get('X-Salesforce-Forwarded-To');
@@ -156,12 +157,12 @@ public with sharing class ProjectReportOutController {
                                     Percent_through_SOW_deliverables__c , Percent_through_Contract__c, Margin_by_Contract_Dates__c,
                                     Margin_by_SOW_Completed__c, Expected_Margin__c, Execution_Efficiency__c
                                     FROM DContract__c
-                                    WHERE Requires_Report_Out__c = 'Yes' AND (
+                                    WHERE Requires_Report_Out__c = 'Yes'ORDER BY Name ]; /**AND (
                                         (In_Charge_Of_Report_Out__c = 'Project Manager' AND Project_Manager__r.Email =: currentLoginEmail) OR
                                         (In_Charge_Of_Report_Out__c = 'Field Manager' AND Field_Manager__r.Email =: currentLoginEmail) OR
                                         (In_Charge_Of_Report_Out__c = 'Backstop' AND Backstop__r.Email =: currentLoginEmail)
                                         OR Owner.Email =: currentLoginEmail)
-                                   ORDER BY Name];
+                                   ORDER BY Name];*/
 
         if (contracts.size() > 0 && reportContractId == null) {
             reportContractId = contracts[0].id;
@@ -399,9 +400,8 @@ public with sharing class ProjectReportOutController {
         loadProjectReport();
 
         PageReference newPage = new PageReference('/apex/ProjectReportOut');
-        newPage.getParameters().put('oauth_token',oauth_token);
+        newPage.getParameters().put('oauth_token', oauth_token);
         newPage.setRedirect(true);
-
         return newPage ;
     }
 
@@ -511,6 +511,8 @@ public with sharing class ProjectReportOutController {
 
             if(searchedProjects.size() == 0) {
                 searchError = 'No projects were found.';
+            } else {
+                searchError = '';
             }
         } else {
             searchedProjects.clear();
@@ -558,7 +560,7 @@ public with sharing class ProjectReportOutController {
         }
     }
 
-   public void loadContractBudgetAndSpentData() {
+    public void loadContractBudgetAndSpentData() {
         proBudgetList = new List<PROProjectBudget>();
         Map<Id,List<Time_Card__c>> contractIdTimeCardsMap = new Map<Id,List<Time_Card__c>>();
         if( contractMap.containsKey(financialContractId)) {
@@ -657,7 +659,7 @@ public with sharing class ProjectReportOutController {
         loadContractExpenseSpend();
     }
 
-     public void loadContractExpenseSpend() {
+    public void loadContractExpenseSpend() {
         proExpenseSpendList = new List<PROProjectBudget>();
 
         if( contractMap.containsKey(financialContractId) ){
@@ -911,7 +913,9 @@ public with sharing class ProjectReportOutController {
     private List<Contract_Contact__c> deleteContactList = new List<Contract_Contact__c>();
 
     public List<PROProject> getProjectsList() {
+
         List<PROProject> proList = new List<PROProject>();
+
         DContract__c[] contracts = [SELECT Id, Name, Requires_Developer_Work__c, Last_Report_Out_Date__c, Last_Report_Out_Status__c, Percent_through_Contract__c, Percent_through_SOW_deliverables__c
                                     FROM DContract__c
                                     WHERE Requires_Report_Out__c = 'Yes'
@@ -931,6 +935,7 @@ public with sharing class ProjectReportOutController {
             PROProject prObj = new PROProject();
             prObj.Contract = dc;
             if (selectedProjectId != null && selectedProjectId != '') {
+                messageErr = dc + ' ' + selectedProjectId;
                 prObj.cssClass = dc.id == selectedProjectId ? 'bgColorCls' : '';
             }
             proList.add(prObj);
@@ -1157,7 +1162,6 @@ public with sharing class ProjectReportOutController {
             authPage = new PageReference(authURL);
             authPage.setRedirect(false);
         }
-
         return authPage;
     }
 
@@ -1247,7 +1251,215 @@ public with sharing class ProjectReportOutController {
         return accessToken;
     }
 
+    /**
+     *
+     *
+     * Corporate Dashboard tab
+     *
+     *
+     **/
 
+    private List<GraphData> wamData;
+    private List<GraphData> formData;
+    private List<GraphData> userData;
+    private List<GraphData> programData;
+    private List<GraphData> performanceData;
+    private List<GraphData> gsData;
+
+    public List<GraphData> bufferedEVData { set; get;}
+
+    public String getGsGraphData() {
+        if (this.gsData != null) {
+            return JSON.serialize(this.gsData);
+        }
+        return '';
+    }
+    public void setGsGraphData(String gsValues) {}
+
+    public String getPerformanceGraphData() {
+        if (this.performanceData != null) {
+            return JSON.serialize(this.performanceData);
+        }
+        return '';
+    }
+    public void setPerformanceGraphData(String performanceValues) {}
+
+    public String getUserGraphData() {
+        if (this.userData != null) {
+            return JSON.serialize(this.userData);
+        }
+        return '';
+    }
+    public void setUserGraphData(String userValues) {}
+
+    public String getFormGraphData() {
+        if (this.formData != null) {
+            return JSON.serialize(this.formData);
+        }
+        return '';
+    }
+    public void setFormGraphData(String wamValues) {}
+
+    public String getWamGraphData() {
+        if (this.wamData != null) {
+            return JSON.serialize(this.wamData);
+        }
+        return '';
+    }
+    public void setWamGraphData(String programValues) {}
+
+    public String getProgramGraphData() {
+        if (this.programData != null) {
+            return JSON.serialize(this.programData);
+        }
+        return '';
+    }
+    public void setProgramGraphData(String programValues) {}
+
+    public void loadGSData() {
+        if (this.gsData != null) {
+            return;
+        }
+        this.gsData = new List<GraphData>();
+        Decimal months = Corporate_Dashboard_Settings__c.getOrgDefaults().GS_Graphs_number_of_months__c != null ? Corporate_Dashboard_Settings__c.getOrgDefaults().GS_Graphs_number_of_months__c : 6;
+        List<Contract_Statistic__c> contractStats = [SELECT PRO_Cycle_Date__c,GS_Quality_Total_Customer_Satisfaction__c, GS_Quality_Total_Overall_Status__c
+                                                     FROM Contract_Statistic__c WHERE PRO_Cycle_Date__c >=: Date.today().addMonths(((-1) * months).intValue()).toStartOfMonth()
+                                                     ORDER BY PRO_Cycle_Date__c ASC];
+
+        for (Contract_Statistic__c conStats : contractStats) {
+            GraphData gp = new GraphData(conStats.PRO_Cycle_Date__c.year() + '-' + conStats.PRO_Cycle_Date__c.month() + '-' + conStats.PRO_Cycle_Date__c.day(),
+                                            conStats.GS_Quality_Total_Overall_Status__c,
+                                            conStats.GS_Quality_Total_Customer_Satisfaction__c, 0, 0, 0, 0);
+            this.gsData.add(gp);
+        }
+    }
+
+    public void loadPerformanceData() {
+        if (this.performanceData != null) {
+            return;
+        }
+        this.performanceData = new List<GraphData>();
+        Decimal months = Corporate_Dashboard_Settings__c.getOrgDefaults().Performance_graphs_number_of_months__c != null ? Corporate_Dashboard_Settings__c.getOrgDefaults().Performance_graphs_number_of_months__c : 6;
+        List<CommCareHQ_Performance_Metrics__c> metrics = [SELECT Date__c, Server_Apdex__c, Number_of_Submissions__c, Avg_Page_Load__c
+                                                           FROM CommCareHQ_Performance_Metrics__c
+                                                           WHERE Date__c >=: Date.today().addMonths(((-1) * months).intValue()).toStartOfMonth()
+                                                           ORDER BY Date__c ASC];
+
+        if (metrics.size() > 0) {
+            GraphData tmpData = new GraphData('', 0, 0, 0, 0, 0, 0);
+            Date lastDate = metrics.get(0).Date__c;
+            for (CommCareHQ_Performance_Metrics__c rec : metrics) {
+                if (rec.Date__c.year() != lastDate.year() || rec.Date__c.month() != lastDate.month()) {
+                    tmpData.value1 = tmpData.value1 / (tmpData.value4 != 0 ? tmpData.value4 : 1);
+                    tmpData.value2 = tmpData.value2 / (tmpData.value4 != 0 ? tmpData.value4 : 1);
+                    tmpData.value3 = tmpData.value3 / (tmpData.value4 != 0 ? tmpData.value4 : 1);
+                    tmpData.name = getDateText(lastDate);
+                    this.performanceData.add(tmpData);
+                    tmpData = new GraphData('', 0, 0, 0, 0, 0, 0);
+                }
+                tmpData.value1 += rec.Number_of_Submissions__c;
+                tmpData.value2 += rec.Avg_Page_Load__c;
+                tmpData.value3 += rec.Server_Apdex__c;
+                tmpData.value4++;
+                lastDate = rec.Date__c;
+            }
+            // we must add the last date from list:
+            tmpData.name = getDateText(lastDate);
+            tmpData.value1 = tmpData.value1 / (tmpData.value4 != 0 ? tmpData.value4 : 1);
+            tmpData.value2 = tmpData.value2 / (tmpData.value4 != 0 ? tmpData.value4 : 1);
+            tmpData.value3 = tmpData.value3 / (tmpData.value4 != 0 ? tmpData.value4 : 1);
+            this.performanceData.add(tmpData);
+        }
+    }
+
+    /**
+     * Loads data needed to create Scale Wam graph on the page.
+     */
+    public PageReference loadScaleData() {
+        loadGSData();
+        loadPerformanceData();
+        if (this.wamData != null) {
+            return null;
+        }
+        this.wamData = new List<GraphData>();
+        this.formData = new List<GraphData>();
+        this.userData = new List<GraphData>();
+        this.programData = new List<GraphData>();
+
+        Set<String> planNames = new Set<String> { 'Advanced', 'Community', 'Enterprise', 'Pro', 'Standard', 'Empty'};
+        Decimal months = Corporate_Dashboard_Settings__c.getOrgDefaults().Scale_graphs_number_of_months__c != null ? Corporate_Dashboard_Settings__c.getOrgDefaults().Scale_graphs_number_of_months__c : 3;
+        List<Domain_Monthly_Snapshot__c> snapshots = [SELECT Id, Snapshot_Date__c, Software_Plan_Edition__c, Wam__c,
+                                                      Forms__c, Active_Mobile_Users__c, Scale_of_Programs__c FROM Domain_Monthly_Snapshot__c
+                                                      WHERE Snapshot_Date__c >: Date.today().addMonths(((-1) * months).intValue()).toStartOfMonth()
+                                                      AND Software_Plan_Edition__c IN: planNames
+                                                      ORDER BY Snapshot_Date__c ASC];
+
+        Integer startIdx = 0;
+        Integer endIdx = 6; // we have 6 editions
+        GraphData tmpWamData = new GraphData();
+        GraphData tmpFormData = new GraphData();
+        GraphData tmpUsersData = new GraphData();
+        GraphData tmpProgramsData = new GraphData();
+        while (endIdx <= snapshots.size()) {
+            Domain_Monthly_Snapshot__c sn = snapshots.get(startIdx);
+
+            if (sn.Software_Plan_Edition__c == 'Advanced') {
+                tmpWamData.value1 = sn.Wam__c;
+                tmpFormData.value1 = sn.Forms__c;
+                tmpUsersData.value1 = sn.Active_Mobile_Users__c;
+                tmpProgramsData.value1 = sn.Scale_of_Programs__c;
+            } else if (sn.Software_Plan_Edition__c == 'Community') {
+                tmpWamData.value2 = sn.Wam__c;
+                tmpFormData.value2 = sn.Forms__c;
+                tmpUsersData.value2 = sn.Active_Mobile_Users__c;
+                tmpProgramsData.value2 = sn.Scale_of_Programs__c;
+            } else if (sn.Software_Plan_Edition__c == 'Enterprise') {
+                tmpWamData.value3 = sn.Wam__c;
+                tmpFormData.value3 = sn.Forms__c;
+                tmpUsersData.value3 = sn.Active_Mobile_Users__c;
+                tmpProgramsData.value3 = sn.Scale_of_Programs__c;
+            } else if (sn.Software_Plan_Edition__c == 'Pro') {
+                tmpWamData.value4 = sn.Wam__c;
+                tmpFormData.value4 = sn.Forms__c;
+                tmpUsersData.value4 = sn.Active_Mobile_Users__c;
+                tmpProgramsData.value4 = sn.Scale_of_Programs__c;
+            } else if (sn.Software_Plan_Edition__c == 'Standard') {
+                tmpWamData.value5 = sn.Wam__c;
+                tmpFormData.value5 = sn.Forms__c;
+                tmpUsersData.value5 = sn.Active_Mobile_Users__c;
+                tmpProgramsData.value5 = sn.Scale_of_Programs__c;
+            } else { // Empty
+                tmpWamData.value6 = sn.Wam__c;
+                tmpFormData.value6 = sn.Forms__c;
+                tmpUsersData.value6 = sn.Active_Mobile_Users__c;
+                tmpProgramsData.value6 = sn.Scale_of_Programs__c;
+            }
+
+            startIdx++;
+            if (startIdx == endIdx) {
+                tmpWamData.name = getDateText(sn.Snapshot_Date__c);
+                tmpFormData.name = getDateText(sn.Snapshot_Date__c);
+                tmpUsersData.name = getDateText(sn.Snapshot_Date__c);
+                tmpProgramsData.name = getDateText(sn.Snapshot_Date__c);
+
+                this.wamData.add(tmpWamData);
+                this.formData.add(tmpFormData);
+                this.userData.add(tmpUsersData);
+                this.programData.add(tmpProgramsData);
+
+                tmpWamData = new GraphData();
+                tmpFormData = new GraphData();
+                tmpUsersData = new GraphData();
+                tmpProgramsData = new GraphData();
+                endIdx += 6;
+            }
+        }
+        return null;
+    }
+
+    public String getDateText(Date snDate) {
+        return DateTime.newInstance(snDate.year(), snDate.month(), snDate.day()).format('MMMM yyyy');
+    }
 
     /**
      *
@@ -1257,6 +1469,32 @@ public with sharing class ProjectReportOutController {
      *
      **/
 
+    /**
+     * Internal class used to create graphs on the page.
+     */
+    public class GraphData {
+
+        public String name { set; get;}
+        public Decimal value1 { set; get;}
+        public Decimal value2 { set; get;}
+        public Decimal value3 { set; get;}
+        public Decimal value4 { set; get;}
+        public Decimal value5 { set; get;}
+        public Decimal value6 { set; get;}
+
+        public GraphData() {
+        }
+
+        public GraphData(String name, Decimal value1, Decimal value2, Decimal value3, Decimal value4, Decimal value5, Decimal value6) {
+            this.name = name;
+            this.value1 = value1;
+            this.value2 = value2;
+            this.value3 = value3;
+            this.value4 = value4;
+            this.value5 = value5;
+            this.value6 = value6;
+        }
+    }
 
     public class PROProject {
 
