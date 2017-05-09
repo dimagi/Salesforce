@@ -82,6 +82,7 @@
                 $j("[id$=proTable]").tablesorter();
                 $j("[id$=proTable1]").tablesorter();
                 $j("[id$=proTable2]").tablesorter({headers: { 3: { sorter: false}}});
+                $j("[id$=theaddrs]").tablesorter({headers: { 3: { sorter: false}}});
             });
 
             function clickProProject(elem) {
@@ -458,6 +459,10 @@
                                         In &nbsp;<apex:outputLink target="_blank" value="https://docs.google.com/a/dimagi.com/spreadsheets/d/1Sn3S8O9qG0WPkoMkmCcEUnuy7ihWbErSWvu4QShebD4/edit#gid=1470786190">Global Capacity Planner</apex:outputLink>
                                     </apex:outputLabel>
                                     <apex:inputfield value="{!pro.Resource_Planning__c}"/>
+                                </apex:pageBlockSectionItem>
+
+                                <apex:pageBlockSectionItem >
+                                    <apex:outputLabel ></apex:outputLabel>
                                 </apex:pageBlockSectionItem>
 
                                 <apex:pageBlockSectionItem id="proCheckboxes">

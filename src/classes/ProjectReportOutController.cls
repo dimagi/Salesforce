@@ -157,12 +157,12 @@ public with sharing class ProjectReportOutController {
                                     Percent_through_SOW_deliverables__c , Percent_through_Contract__c, Margin_by_Contract_Dates__c,
                                     Margin_by_SOW_Completed__c, Expected_Margin__c, Execution_Efficiency__c
                                     FROM DContract__c
-                                    WHERE Requires_Report_Out__c = 'Yes'ORDER BY Name ]; /**AND (
+                                    WHERE Requires_Report_Out__c = 'Yes' AND (
                                         (In_Charge_Of_Report_Out__c = 'Project Manager' AND Project_Manager__r.Email =: currentLoginEmail) OR
                                         (In_Charge_Of_Report_Out__c = 'Field Manager' AND Field_Manager__r.Email =: currentLoginEmail) OR
                                         (In_Charge_Of_Report_Out__c = 'Backstop' AND Backstop__r.Email =: currentLoginEmail)
                                         OR Owner.Email =: currentLoginEmail)
-                                   ORDER BY Name];*/
+                                   ORDER BY Name];
 
         if (contracts.size() > 0 && reportContractId == null) {
             reportContractId = contracts[0].id;
@@ -925,7 +925,6 @@ public with sharing class ProjectReportOutController {
             PROProject prObj = new PROProject();
             prObj.Contract = dc;
             if (selectedProjectId != null && selectedProjectId != '') {
-                messageErr = dc + ' ' + selectedProjectId;
                 prObj.cssClass = dc.id == selectedProjectId ? 'bgColorCls' : '';
             }
             proList.add(prObj);
