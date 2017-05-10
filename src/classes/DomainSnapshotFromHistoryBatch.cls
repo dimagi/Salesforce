@@ -152,15 +152,15 @@ public class DomainSnapshotFromHistoryBatch implements Database.Batchable<Accoun
     }
 
     private Map<Id, Decimal> getHistoryValueForField(String fieldName, Set<Id> scope) {
-        Date beginM = this.currentDate.toStartOfMonth();
+        Date beginM = Date.newInstance(this.currentDate.year(), this.currentDate.month(), this.currentDate.day()).addMonths(1).toStartOfMonth();
         DateTime beginMDT = DateTime.newInstance(beginM.year(), beginM.month(),beginM.day());
-        DateTime endMDT = DateTime.newInstance(beginM.year(), beginM.month(), Date.daysInMonth(beginM.year(), beginM.month()));
+
         List<Domain__History> historyRecords = [SELECT ParentId, OldValue, NewValue, CreatedDate FROM Domain__History WHERE ParentId IN: scope AND CreatedDate >=: beginMDT
-                                                AND CreatedDate <=: endMDT AND Field =: fieldName ORDER BY CreatedDate DESC];
+                                                    AND Field =: fieldName ORDER BY CreatedDate ASC];
         Map<Id, Decimal> historyMap = new Map<Id, Decimal>();
         for (Domain__History hrec : historyRecords) {
             if (!historyMap.containsKey((Id) hrec.ParentId)) {
-                historyMap.put((Id) hrec.ParentId, hrec.NewValue != null ? (Decimal) hrec.NewValue : 0);
+                historyMap.put((Id) hrec.ParentId, hrec.OldValue != null ? (Decimal) hrec.OldValue : 0);
             }
         }
 
@@ -168,18 +168,17 @@ public class DomainSnapshotFromHistoryBatch implements Database.Batchable<Accoun
     }
 
     private Map<Id, Boolean> getBooleanHistoryValueForField(String fieldName, List<Accounting_Subscription__c> scope, Boolean forSub) {
-        Date beginM = this.currentDate.toStartOfMonth();
+        Date beginM = Date.newInstance(this.currentDate.year(), this.currentDate.month(), this.currentDate.day()).addMonths(1).toStartOfMonth();
         DateTime beginMDT = DateTime.newInstance(beginM.year(), beginM.month(),beginM.day());
-        DateTime endMDT = DateTime.newInstance(beginM.year(), beginM.month(), Date.daysInMonth(beginM.year(), beginM.month()));
 
         Map<Id, Boolean> historyMap = new Map<Id, Boolean>();
         if (forSub == true) {
             List<Accounting_Subscription__History> historyRecords = [SELECT ParentId, OldValue, NewValue, CreatedDate FROM Accounting_Subscription__History WHERE ParentId IN: scope AND CreatedDate >=: beginMDT
-                                                AND CreatedDate <=: endMDT AND Field =: fieldName ORDER BY CreatedDate DESC];
+                                                                        AND Field =: fieldName ORDER BY CreatedDate ASC];
 
             for (Accounting_Subscription__History hrec : historyRecords) {
                 if (!historyMap.containsKey((Id) hrec.ParentId)) {
-                    historyMap.put((Id) hrec.ParentId, hrec.NewValue != null ? (Boolean) hrec.NewValue : false);
+                    historyMap.put((Id) hrec.ParentId, hrec.OldValue != null ? (Boolean) hrec.OldValue : false);
                 }
             }
         } else {
@@ -188,11 +187,11 @@ public class DomainSnapshotFromHistoryBatch implements Database.Batchable<Accoun
                 domainsIds.add(sub.Accounting_subscriber_domain__c);
             }
             List<Domain__History> historyRecords = [SELECT ParentId, OldValue, NewValue, CreatedDate FROM Domain__History WHERE ParentId IN: domainsIds AND CreatedDate >=: beginMDT
-                                                AND CreatedDate <=: endMDT AND Field =: fieldName ORDER BY CreatedDate DESC];
+                                                        AND Field =: fieldName ORDER BY CreatedDate ASC];
 
             for (Domain__History hrec : historyRecords) {
                 if (!historyMap.containsKey((Id) hrec.ParentId)) {
-                    historyMap.put((Id) hrec.ParentId, hrec.NewValue != null ? (Boolean) hrec.NewValue : false);
+                    historyMap.put((Id) hrec.ParentId, hrec.OldValue != null ? (Boolean) hrec.OldValue : false);
                 }
             }
         }
