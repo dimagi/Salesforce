@@ -116,7 +116,7 @@ public class HqIntegrationTests {
                                                FROM Domain_Monthly_Snapshot__c WHERE Software_Plan_Edition__c = 'Community' ORDER BY Snapshot_Date__c DESC LIMIT 1];
         System.assertEquals(75, domainSn.Wam__c);
         System.assertEquals(85, domainSn.Active_Mobile_Users__c);
-        System.assertEquals(445, domainSn.Forms_for_Period__c);
+        System.assertEquals(0, domainSn.Forms_for_Period__c);
         System.assertEquals(695, domainSn.Forms__c);
         System.assertEquals(2, domainSn.Scale_of_Programs__c);
 
@@ -124,7 +124,7 @@ public class HqIntegrationTests {
                                                FROM Domain_Monthly_Snapshot__c WHERE Software_Plan_Edition__c = 'Standard' ORDER BY Snapshot_Date__c DESC LIMIT 1];
         System.assertEquals(105, domainSn.Wam__c);
         System.assertEquals(115, domainSn.Active_Mobile_Users__c);
-        System.assertEquals(700, domainSn.Forms_for_Period__c);
+        System.assertEquals(0, domainSn.Forms_for_Period__c);
         System.assertEquals(725, domainSn.Forms__c);
         System.assertEquals(2, domainSn.Scale_of_Programs__c);
 
@@ -132,7 +132,7 @@ public class HqIntegrationTests {
                                                FROM Domain_Monthly_Snapshot__c WHERE Software_Plan_Edition__c = 'Pro' ORDER BY Snapshot_Date__c DESC LIMIT 1];
         System.assertEquals(45, domainSn.Wam__c);
         System.assertEquals(50, domainSn.Active_Mobile_Users__c);
-        System.assertEquals(355, domainSn.Forms_for_Period__c);
+        System.assertEquals(0, domainSn.Forms_for_Period__c);
         System.assertEquals(355, domainSn.Forms__c);
         System.assertEquals(1, domainSn.Scale_of_Programs__c);
     }
