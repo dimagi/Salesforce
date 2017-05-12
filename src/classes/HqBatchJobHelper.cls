@@ -155,6 +155,7 @@ public class HqBatchJobHelper {
                                         'accounting_features/', nextServers), 1);
             } else {
                 HqBatchJobHelper.endBatchJobs();
+                Database.executeBatch(new CalculateDomainsLifeTimeMRRBatch(), 100);
             }
         } catch (Exception e) {
             HqBatchJobHelper.endBatchJobs();
