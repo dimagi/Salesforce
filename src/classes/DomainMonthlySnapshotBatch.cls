@@ -25,7 +25,7 @@ public class DomainMonthlySnapshotBatch implements Database.Batchable<Accounting
     }
 
     public List<Accounting_Subscription__c> start(Database.BatchableContext context) { // We cannot group by formula field
-       return [SELECT Id, Accounting_subscriber_domain__c, Software_Plan_Edition__c, Accounting_subscriber_domain__r.Wam__c, Accounting_subscriber_domain__r.cpActiveMobileUsers__c, service_type__c,
+       return [SELECT Id, Created_By__c, Accounting_subscriber_domain__c, Software_Plan_Edition__c, Accounting_subscriber_domain__r.Wam__c, Accounting_subscriber_domain__r.cpActiveMobileUsers__c, service_type__c,
                Accounting_subscriber_domain__r.cpAllForms__c, Accounting_subscriber_domain__r.InternalProp_self_started__c FROM Accounting_Subscription__c
                WHERE is_trial__c = false AND is_active__c = true AND Accounting_subscriber_domain__c != null AND
                Accounting_subscriber_domain__r.Likely_Real__c = true AND Accounting_subscriber_domain__r.is_test__c != 'true' AND
@@ -49,14 +49,20 @@ public class DomainMonthlySnapshotBatch implements Database.Batchable<Accounting
             DateTime beginMDT = DateTime.newInstance(beginM.year(), beginM.month(),beginM.day());
             DateTime endMDT = DateTime.newInstance(beginM.year(), beginM.month(), Date.daysInMonth(beginM.year(), beginM.month()));
 
-            List<Domain__History> historyRecords = [SELECT ParentId, OldValue, NewValue, CreatedDate FROM Domain__History WHERE ParentId IN: domainsSet AND CreatedDate >=: beginMDT
-                                                AND CreatedDate <=: endMDT AND Field = 'cpAllForms__c' ORDER BY CreatedDate ASC];
-
-            for (Domain__History hr : historyRecords) {
-                if (!domainStartMonthHistory.containsKey(hr.ParentId)) {
-                    domainStartMonthHistory.put(hr.ParentId, (Decimal) hr.OldValue); // we want the oldest value of the month
+            if (!Test.isRunningTest()) {
+                List<Domain__History> historyRecords = [SELECT ParentId, OldValue, NewValue, CreatedDate FROM Domain__History WHERE ParentId IN: domainsSet AND CreatedDate >=: beginMDT
+                                                            AND CreatedDate <=: endMDT AND Field = 'cpAllForms__c' ORDER BY CreatedDate ASC];
+                for (Domain__History hr : historyRecords) {
+                    if (!domainStartMonthHistory.containsKey(hr.ParentId)) {
+                        domainStartMonthHistory.put(hr.ParentId, (Decimal) (hr.OldValue != null ? hr.OldValue : 0)); // we want the oldest value of the month
+                    }
+                    domainEndMonthHistory.put(hr.ParentId, (Decimal) (hr.NewValue != null ? hr.NewValue : 0)); //we want latest value of the month
                 }
-                domainEndMonthHistory.put(hr.ParentId, (Decimal) hr.NewValue); //we want latest value of the month
+            } else {
+                domainStartMonthHistory = HqIntegrationTests.getTestDataForStartMonth(scope);
+                domainEndMonthHistory = HqIntegrationTests.getTestDataForEndMonth(scope);
+                System.debug('domainStartMonthHistory: ' + domainStartMonthHistory);
+                System.debug('domainEndMonthHistory: ' + domainEndMonthHistory);
             }
 
             for (Accounting_Subscription__c sub : scope) {
@@ -65,9 +71,17 @@ public class DomainMonthlySnapshotBatch implements Database.Batchable<Accounting
                     softwarePlan = 'Empty';
                 }
 
-                this.formsForPeriodMap.put(softwarePlan, this.formsForPeriodMap.get(softwarePlan)
-                                            + ((domainEndMonthHistory.containsKey(sub.Accounting_subscriber_domain__c) ? domainEndMonthHistory.get(sub.Accounting_subscriber_domain__c) : 0)
-                                             - (domainStartMonthHistory.containsKey(sub.Accounting_subscriber_domain__c) ? domainStartMonthHistory.get(sub.Accounting_subscriber_domain__c) : 0)));
+                Decimal forPeriodValue = (domainEndMonthHistory.containsKey(sub.Accounting_subscriber_domain__c) ? domainEndMonthHistory.get(sub.Accounting_subscriber_domain__c) : 0)
+                                         - (domainStartMonthHistory.containsKey(sub.Accounting_subscriber_domain__c) ? domainStartMonthHistory.get(sub.Accounting_subscriber_domain__c) : 0);
+                if (forPeriodValue < 0) {
+                    System.debug('Negative value!!: ' + forPeriodValue + ' in ' + sub.Accounting_subscriber_domain__c);
+                        EmailHelper.sendEmail(BatchDefaultSettings__c.getOrgDefaults().Error_Emails__c.split(','), 
+                            'Found Negative Value in Domain Snapshot', 'Negative value!!: ' + forPeriodValue + ' in ' + sub.Accounting_subscriber_domain__c);
+                } else {
+                    this.formsForPeriodMap.put(softwarePlan, this.formsForPeriodMap.get(softwarePlan)
+                                        + ((domainEndMonthHistory.containsKey(sub.Accounting_subscriber_domain__c) ? domainEndMonthHistory.get(sub.Accounting_subscriber_domain__c) : 0)
+                                         - (domainStartMonthHistory.containsKey(sub.Accounting_subscriber_domain__c) ? domainStartMonthHistory.get(sub.Accounting_subscriber_domain__c) : 0)));
+                }
                 this.wamMap.put(softwarePlan, wamMap.get(softwarePlan) + (sub.Accounting_subscriber_domain__r.Wam__c != null ? sub.Accounting_subscriber_domain__r.Wam__c : 0));
                 this.formsMap.put(softwarePlan, formsMap.get(softwarePlan) + (sub.Accounting_subscriber_domain__r.cpAllForms__c != null ? sub.Accounting_subscriber_domain__r.cpAllForms__c : 0));
                 this.mobileUsersMap.put(softwarePlan, mobileUsersMap.get(softwarePlan) + (sub.Accounting_subscriber_domain__r.cpActiveMobileUsers__c != null ? sub.Accounting_subscriber_domain__r.cpActiveMobileUsers__c : 0));
