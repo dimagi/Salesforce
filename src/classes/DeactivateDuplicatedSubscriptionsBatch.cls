@@ -31,7 +31,16 @@ public class DeactivateDuplicatedSubscriptionsBatch implements Database.Stateful
         }
 
         if (subscriptionsToUpdate.size() > 0) {
-            update subscriptionsToUpdate;
+            String message = '';
+            for (Accounting_Subscription__c sub : subscriptionsToUpdate) {
+                message += ' Subscription ID: ' + Id + '</br>';
+            }
+            if (!Test.isRunningTest()) {
+                EmailHelper.sendEmail(BatchDefaultSettings__c.getOrgDefaults().Error_Emails__c.split(','),
+                        'Duplicacted Subscriptions found', message);
+
+            }
+           update subscriptionsToUpdate;
         }
     }
 
