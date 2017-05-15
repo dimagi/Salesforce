@@ -18,93 +18,7 @@ public class HqIntegrationTests {
 
     @isTest
     static void shouldCreateDomainMonthlySnapshot() {
-        Accounting_SoftwareProductRate__c productRate1 = new Accounting_SoftwareProductRate__c(is_active__c = true,  monthly_fee__c = 150, Server_Name__c = 'CommCare HQ');
-        Accounting_SoftwareProductRate__c productRate2 = new Accounting_SoftwareProductRate__c(is_active__c = true,  monthly_fee__c = 75, Server_Name__c = 'CommCare HQ');
-        Accounting_SoftwareProductRate__c productRate3 = new Accounting_SoftwareProductRate__c(is_active__c = true,  monthly_fee__c = 25, Server_Name__c = 'CommCare HQ');
-
-        insert productRate1;
-        insert productRate2;
-        insert productRate3;
-
-        Accounting_Softwareplan__c softwarePlan1 = new Accounting_Softwareplan__c(Name = 'softwarePlan1', edition__c = 'Community', Server_Name__c = 'CommCare HQ');
-        Accounting_Softwareplan__c softwarePlan2 = new Accounting_Softwareplan__c(Name = 'softwarePlan2', edition__c = 'Standard', Server_Name__c = 'CommCare HQ');
-        Accounting_Softwareplan__c softwarePlan3 = new Accounting_Softwareplan__c(Name = 'softwarePlan3', edition__c = 'Pro', Server_Name__c = 'CommCare HQ');
-
-        insert softwarePlan1;
-        insert softwarePlan2;
-        insert softwarePlan3;
-
-        Accounting_SoftwarePlanVersion__c planVersion1 = new Accounting_SoftwarePlanVersion__c(is_active__c = true, Software_Product_Rate__c = productRate1.Id,
-                                                                                               Accounting_SoftwarePlan__c = softwarePlan1.Id, Server_Name__c = 'CommCare HQ');
-        Accounting_SoftwarePlanVersion__c planVersion2 = new Accounting_SoftwarePlanVersion__c(is_active__c = true, Software_Product_Rate__c = productRate2.Id,
-                                                                                               Accounting_SoftwarePlan__c = softwarePlan2.Id, Server_Name__c = 'CommCare HQ');
-        Accounting_SoftwarePlanVersion__c planVersion3 = new Accounting_SoftwarePlanVersion__c(is_active__c = true, Software_Product_Rate__c = productRate3.Id,
-                                                                                               Accounting_SoftwarePlan__c = softwarePlan3.Id, Server_Name__c = 'CommCare HQ');
-
-        insert planVersion1;
-        insert planVersion2;
-        insert planVersion3;
-
-        Internal_Properties__c InternalPropRec1 = new Internal_Properties__c(self_started__c = true, Server_Name__c = 'CommCare HQ');
-        Internal_Properties__c InternalPropRec2 = new Internal_Properties__c(self_started__c = true, Server_Name__c = 'CommCare HQ');
-        Internal_Properties__c InternalPropRec3 = new Internal_Properties__c(self_started__c = true, Server_Name__c = 'CommCare HQ');
-        Internal_Properties__c InternalPropRec4 = new Internal_Properties__c(self_started__c = true, Server_Name__c = 'CommCare HQ');
-        Internal_Properties__c InternalPropRec5 = new Internal_Properties__c(self_started__c = true, Server_Name__c = 'CommCare HQ');
-
-        insert InternalPropRec1;
-        insert InternalPropRec2;
-        insert InternalPropRec3;
-        insert InternalPropRec4;
-        insert InternalPropRec5;
-
-        Domain__c domain1 = new Domain__c(Name = 'Sample 1', Server_Name__c = 'CommCare HQ', is_test__c = 'false', cpIsActive__c = true,
-                                          Wam__c = 15, cpActiveMobileUsers__c = 20, cpAllForms__c = 325, Internal_Properties__c = InternalPropRec1.Id);
-        Domain__c domain2 = new Domain__c(Name = 'Sample 2', Server_Name__c = 'CommCare HQ', is_test__c = 'false', cpIsActive__c = true,
-                                          Wam__c = 30, cpActiveMobileUsers__c = 35, cpAllForms__c = 340, Internal_Properties__c = InternalPropRec2.Id);
-        Domain__c domain3 = new Domain__c(Name = 'Sample 3', Server_Name__c = 'CommCare HQ', is_test__c = 'false', cpIsActive__c = true,
-                                          Wam__c = 45, cpActiveMobileUsers__c = 50, cpAllForms__c = 355, Internal_Properties__c = InternalPropRec3.Id);
-        Domain__c domain4 = new Domain__c(Name = 'Sample 4', Server_Name__c = 'CommCare HQ', is_test__c = 'false', cpIsActive__c = true,
-                                          Wam__c = 60, cpActiveMobileUsers__c = 65, cpAllForms__c = 370, Internal_Properties__c = InternalPropRec4.Id);
-        Domain__c domain5 = new Domain__c(Name = 'Sample 5', Server_Name__c = 'CommCare HQ', is_test__c = 'false', cpIsActive__c = true,
-                                          Wam__c = 75, cpActiveMobileUsers__c = 80, cpAllForms__c = 385, Internal_Properties__c = InternalPropRec5.Id);
-
-        insert domain1;
-        insert domain2;
-        insert domain3;
-        insert domain4;
-        insert domain5;
-
-        Accounting_Subscription__c subscription1 = new Accounting_Subscription__c(date_start__c = Date.newInstance(2015, 11, 2), date_end__c = Date.newInstance(2016, 2 ,1), is_active__c = true,
-                                                          Accounting_subscriber_domain__c = domain1.Id, plan_version__c = planVersion1.Id, Server_Name__c = 'CommCare HQ',
-                                                          is_trial__c = false, service_type__c = 'Self_service');
-        insert subscription1;
-        Accounting_Subscription__c subscription2 = new Accounting_Subscription__c(date_start__c = Date.newInstance(2016, 1, 1), date_end__c = Date.newInstance(2016, 2 ,1), is_active__c = true,
-                                                          Accounting_subscriber_domain__c = domain2.Id, plan_version__c = planVersion2.Id, Server_Name__c = 'CommCare HQ',
-                                                          is_trial__c = false, service_type__c = 'Product');
-        insert subscription2;
-        Accounting_Subscription__c subscription3 = new Accounting_Subscription__c(date_start__c = Date.newInstance(2014, 1, 1), date_end__c = Date.newInstance(2014, 3 ,4), is_active__c = true,
-                                                          Accounting_subscriber_domain__c = domain3.Id, plan_version__c = planVersion3.Id, Server_Name__c = 'CommCare HQ',
-                                                          is_trial__c = false, service_type__c = 'Self_service');
-        insert subscription3;
-        Accounting_Subscription__c subscription4 = new Accounting_Subscription__c(date_start__c = Date.newInstance(2016, 1, 1), date_end__c = Date.newInstance(2016, 2 ,1), is_active__c = true,
-                                                          Accounting_subscriber_domain__c = domain4.Id, plan_version__c = planVersion1.Id, Server_Name__c = 'CommCare HQ',
-                                                          is_trial__c = false, service_type__c = 'Self_service');
-        insert subscription4;
-        Accounting_Subscription__c subscription5 = new Accounting_Subscription__c(date_start__c = Date.newInstance(2016, 1, 1), date_end__c = Date.newInstance(2016, 2 ,1), is_active__c = true,
-                                                          Accounting_subscriber_domain__c = domain5.Id, plan_version__c = planVersion2.Id, Server_Name__c = 'CommCare HQ',
-                                                          is_trial__c = false, service_type__c = 'Product');
-        insert subscription5;
-
-        Domain_Monthly_Snapshot__c oldSn1 = new Domain_Monthly_Snapshot__c(Software_Plan_Edition__c = 'Community',
-                                                    Snapshot_Date__c = Date.today().addMonths(-1), Forms__c = 250);
-        Domain_Monthly_Snapshot__c oldSn2 = new Domain_Monthly_Snapshot__c(Software_Plan_Edition__c = 'Community',
-                                                    Snapshot_Date__c = Date.today().addMonths(-2), Forms__c = 350);
-        Domain_Monthly_Snapshot__c oldSn3 = new Domain_Monthly_Snapshot__c(Software_Plan_Edition__c = 'Standard',
-                                                    Snapshot_Date__c = Date.today().addMonths(-1), Forms__c = 25);
-        insert oldSn1;
-        insert oldSn2;
-        insert oldSn3;
-
+        generateDataForDomainSnapshot();
         Test.startTest();
         Database.executeBatch(new DomainMonthlySnapshotBatch());
         Test.stopTest();
@@ -116,7 +30,7 @@ public class HqIntegrationTests {
                                                FROM Domain_Monthly_Snapshot__c WHERE Software_Plan_Edition__c = 'Community' ORDER BY Snapshot_Date__c DESC LIMIT 1];
         System.assertEquals(75, domainSn.Wam__c);
         System.assertEquals(85, domainSn.Active_Mobile_Users__c);
-        System.assertEquals(445, domainSn.Forms_for_Period__c);
+        System.assertEquals(325, domainSn.Forms_for_Period__c);
         System.assertEquals(695, domainSn.Forms__c);
         System.assertEquals(2, domainSn.Scale_of_Programs__c);
 
@@ -124,7 +38,7 @@ public class HqIntegrationTests {
                                                FROM Domain_Monthly_Snapshot__c WHERE Software_Plan_Edition__c = 'Standard' ORDER BY Snapshot_Date__c DESC LIMIT 1];
         System.assertEquals(105, domainSn.Wam__c);
         System.assertEquals(115, domainSn.Active_Mobile_Users__c);
-        System.assertEquals(700, domainSn.Forms_for_Period__c);
+        System.assertEquals(240, domainSn.Forms_for_Period__c);
         System.assertEquals(725, domainSn.Forms__c);
         System.assertEquals(2, domainSn.Scale_of_Programs__c);
 
@@ -132,7 +46,43 @@ public class HqIntegrationTests {
                                                FROM Domain_Monthly_Snapshot__c WHERE Software_Plan_Edition__c = 'Pro' ORDER BY Snapshot_Date__c DESC LIMIT 1];
         System.assertEquals(45, domainSn.Wam__c);
         System.assertEquals(50, domainSn.Active_Mobile_Users__c);
-        System.assertEquals(355, domainSn.Forms_for_Period__c);
+        System.assertEquals(205, domainSn.Forms_for_Period__c);
+        System.assertEquals(355, domainSn.Forms__c);
+        System.assertEquals(1, domainSn.Scale_of_Programs__c);
+    }
+
+    @isTest
+    static void shouldCreateDomainMonthlySnapshotFromHistory() {
+        generateDataForDomainSnapshot();
+
+        Test.startTest();
+        Database.executeBatch(new DomainSnapshotFromHistoryBatch(Date.newInstance(2017, 3, 31)));
+        Test.stopTest();
+
+        // Community => subscription1 AND subscription4 => Wam = 15 + 60 = 75, Mobile Users = 20 + 65 = 85, Forms = 325 + 370 = 695 - last (250) = 445
+        // Standard => subscription1 AND subscription4 => Wam = 30 + 75 = 105, Mobile Users = 35 + 80 = 115, Forms = 340 + 385 = 725 - last (25) = 700
+        // Pro => subscription1 AND subscription4 => Wam = 45, Mobile Users = 50, Forms = 355
+        Domain_Monthly_Snapshot__c domainSn = [SELECT Active_Mobile_Users__c, Forms__c, Wam__c, Scale_of_Programs__c, Forms_for_Period__c
+                                               FROM Domain_Monthly_Snapshot__c WHERE Software_Plan_Edition__c = 'Community' ORDER BY Snapshot_Date__c DESC LIMIT 1];
+        System.assertEquals(75, domainSn.Wam__c);
+        System.assertEquals(85, domainSn.Active_Mobile_Users__c);
+        System.assertEquals(325, domainSn.Forms_for_Period__c);
+        System.assertEquals(695, domainSn.Forms__c);
+        System.assertEquals(2, domainSn.Scale_of_Programs__c);
+
+        domainSn = [SELECT Active_Mobile_Users__c, Forms__c, Wam__c, Scale_of_Programs__c, Forms_for_Period__c
+                                               FROM Domain_Monthly_Snapshot__c WHERE Software_Plan_Edition__c = 'Standard' ORDER BY Snapshot_Date__c DESC LIMIT 1];
+        System.assertEquals(105, domainSn.Wam__c);
+        System.assertEquals(115, domainSn.Active_Mobile_Users__c);
+        System.assertEquals(240, domainSn.Forms_for_Period__c);
+        System.assertEquals(725, domainSn.Forms__c);
+        System.assertEquals(2, domainSn.Scale_of_Programs__c);
+
+        domainSn = [SELECT Active_Mobile_Users__c, Forms__c, Wam__c, Scale_of_Programs__c, Forms_for_Period__c
+                                               FROM Domain_Monthly_Snapshot__c WHERE Software_Plan_Edition__c = 'Pro' ORDER BY Snapshot_Date__c DESC LIMIT 1];
+        System.assertEquals(45, domainSn.Wam__c);
+        System.assertEquals(50, domainSn.Active_Mobile_Users__c);
+        System.assertEquals(205, domainSn.Forms_for_Period__c);
         System.assertEquals(355, domainSn.Forms__c);
         System.assertEquals(1, domainSn.Scale_of_Programs__c);
     }
@@ -1191,5 +1141,116 @@ public class HqIntegrationTests {
         Domain__c domainFromDb = d.createDbObject(null, 'CommCare HQ');
         insert domainFromDb;
         return domainFromDb;
+    }
+
+    static private void generateDataForDomainSnapshot() {
+        Accounting_SoftwareProductRate__c productRate1 = new Accounting_SoftwareProductRate__c(is_active__c = true,  monthly_fee__c = 150, Server_Name__c = 'CommCare HQ');
+        Accounting_SoftwareProductRate__c productRate2 = new Accounting_SoftwareProductRate__c(is_active__c = true,  monthly_fee__c = 75, Server_Name__c = 'CommCare HQ');
+        Accounting_SoftwareProductRate__c productRate3 = new Accounting_SoftwareProductRate__c(is_active__c = true,  monthly_fee__c = 25, Server_Name__c = 'CommCare HQ');
+
+        insert productRate1;
+        insert productRate2;
+        insert productRate3;
+
+        Accounting_Softwareplan__c softwarePlan1 = new Accounting_Softwareplan__c(Name = 'softwarePlan1', edition__c = 'Community', Server_Name__c = 'CommCare HQ');
+        Accounting_Softwareplan__c softwarePlan2 = new Accounting_Softwareplan__c(Name = 'softwarePlan2', edition__c = 'Standard', Server_Name__c = 'CommCare HQ');
+        Accounting_Softwareplan__c softwarePlan3 = new Accounting_Softwareplan__c(Name = 'softwarePlan3', edition__c = 'Pro', Server_Name__c = 'CommCare HQ');
+
+        insert softwarePlan1;
+        insert softwarePlan2;
+        insert softwarePlan3;
+
+        Accounting_SoftwarePlanVersion__c planVersion1 = new Accounting_SoftwarePlanVersion__c(is_active__c = true, Software_Product_Rate__c = productRate1.Id,
+                                                                                               Accounting_SoftwarePlan__c = softwarePlan1.Id, Server_Name__c = 'CommCare HQ');
+        Accounting_SoftwarePlanVersion__c planVersion2 = new Accounting_SoftwarePlanVersion__c(is_active__c = true, Software_Product_Rate__c = productRate2.Id,
+                                                                                               Accounting_SoftwarePlan__c = softwarePlan2.Id, Server_Name__c = 'CommCare HQ');
+        Accounting_SoftwarePlanVersion__c planVersion3 = new Accounting_SoftwarePlanVersion__c(is_active__c = true, Software_Product_Rate__c = productRate3.Id,
+                                                                                               Accounting_SoftwarePlan__c = softwarePlan3.Id, Server_Name__c = 'CommCare HQ');
+
+        insert planVersion1;
+        insert planVersion2;
+        insert planVersion3;
+
+        Internal_Properties__c InternalPropRec1 = new Internal_Properties__c(self_started__c = true, Server_Name__c = 'CommCare HQ');
+        Internal_Properties__c InternalPropRec2 = new Internal_Properties__c(self_started__c = true, Server_Name__c = 'CommCare HQ');
+        Internal_Properties__c InternalPropRec3 = new Internal_Properties__c(self_started__c = true, Server_Name__c = 'CommCare HQ');
+        Internal_Properties__c InternalPropRec4 = new Internal_Properties__c(self_started__c = true, Server_Name__c = 'CommCare HQ');
+        Internal_Properties__c InternalPropRec5 = new Internal_Properties__c(self_started__c = true, Server_Name__c = 'CommCare HQ');
+
+        insert InternalPropRec1;
+        insert InternalPropRec2;
+        insert InternalPropRec3;
+        insert InternalPropRec4;
+        insert InternalPropRec5;
+
+        Domain__c domain1 = new Domain__c(Name = 'Sample 1', Server_Name__c = 'CommCare HQ', is_test__c = 'false', cpIsActive__c = true,
+                                          Wam__c = 15, cpActiveMobileUsers__c = 20, cpAllForms__c = 325, Internal_Properties__c = InternalPropRec1.Id);
+        Domain__c domain2 = new Domain__c(Name = 'Sample 2', Server_Name__c = 'CommCare HQ', is_test__c = 'false', cpIsActive__c = true,
+                                          Wam__c = 30, cpActiveMobileUsers__c = 35, cpAllForms__c = 340, Internal_Properties__c = InternalPropRec2.Id);
+        Domain__c domain3 = new Domain__c(Name = 'Sample 3', Server_Name__c = 'CommCare HQ', is_test__c = 'false', cpIsActive__c = true,
+                                          Wam__c = 45, cpActiveMobileUsers__c = 50, cpAllForms__c = 355, Internal_Properties__c = InternalPropRec3.Id);
+        Domain__c domain4 = new Domain__c(Name = 'Sample 4', Server_Name__c = 'CommCare HQ', is_test__c = 'false', cpIsActive__c = true,
+                                          Wam__c = 60, cpActiveMobileUsers__c = 65, cpAllForms__c = 370, Internal_Properties__c = InternalPropRec4.Id);
+        Domain__c domain5 = new Domain__c(Name = 'Sample 5', Server_Name__c = 'CommCare HQ', is_test__c = 'false', cpIsActive__c = true,
+                                          Wam__c = 75, cpActiveMobileUsers__c = 80, cpAllForms__c = 385, Internal_Properties__c = InternalPropRec5.Id);
+
+        insert domain1;
+        insert domain2;
+        insert domain3;
+        insert domain4;
+        insert domain5;
+
+        Accounting_Subscription__c subscription1 = new Accounting_Subscription__c(Created_By__c = 'Sample 1', date_start__c = Date.newInstance(2015, 11, 2), date_end__c = Date.newInstance(2016, 2 ,1), is_active__c = true,
+                                                          Accounting_subscriber_domain__c = domain1.Id, plan_version__c = planVersion1.Id, Server_Name__c = 'CommCare HQ',
+                                                          is_trial__c = false, service_type__c = 'Self_service');
+        insert subscription1;
+        Accounting_Subscription__c subscription2 = new Accounting_Subscription__c(Created_By__c = 'Sample 2', date_start__c = Date.newInstance(2016, 1, 1), date_end__c = Date.newInstance(2016, 2 ,1), is_active__c = true,
+                                                          Accounting_subscriber_domain__c = domain2.Id, plan_version__c = planVersion2.Id, Server_Name__c = 'CommCare HQ',
+                                                          is_trial__c = false, service_type__c = 'Product');
+        insert subscription2;
+        Accounting_Subscription__c subscription3 = new Accounting_Subscription__c(Created_By__c = 'Sample 3', date_start__c = Date.newInstance(2014, 1, 1), date_end__c = Date.newInstance(2014, 3 ,4), is_active__c = true,
+                                                          Accounting_subscriber_domain__c = domain3.Id, plan_version__c = planVersion3.Id, Server_Name__c = 'CommCare HQ',
+                                                          is_trial__c = false, service_type__c = 'Self_service');
+        insert subscription3;
+        Accounting_Subscription__c subscription4 = new Accounting_Subscription__c(Created_By__c = 'Sample 4', date_start__c = Date.newInstance(2016, 1, 1), date_end__c = Date.newInstance(2016, 2 ,1), is_active__c = true,
+                                                          Accounting_subscriber_domain__c = domain4.Id, plan_version__c = planVersion1.Id, Server_Name__c = 'CommCare HQ',
+                                                          is_trial__c = false, service_type__c = 'Self_service');
+        insert subscription4;
+        Accounting_Subscription__c subscription5 = new Accounting_Subscription__c(Created_By__c = 'Sample 5', date_start__c = Date.newInstance(2016, 1, 1), date_end__c = Date.newInstance(2016, 2 ,1), is_active__c = true,
+                                                          Accounting_subscriber_domain__c = domain5.Id, plan_version__c = planVersion2.Id, Server_Name__c = 'CommCare HQ',
+                                                          is_trial__c = false, service_type__c = 'Product');
+        insert subscription5;
+    }
+
+    public static Map<Id, Decimal> getTestDataForEndMonth(List<Accounting_Subscription__c> scope) {
+        Map<Id, Decimal> result = new Map<Id, Decimal>();
+        for (Accounting_Subscription__c sub : scope) {
+            if (sub.Created_By__c == 'Sample 1') {
+                result.put(sub.Accounting_subscriber_domain__c, 325); //325 - 200 = 125
+            } else if (sub.Created_By__c == 'Sample 2') {
+                result.put(sub.Accounting_subscriber_domain__c, 340); //340 - 100 = 240
+            } else if (sub.Created_By__c == 'Sample 3') {
+                result.put(sub.Accounting_subscriber_domain__c, 355); //355 - 150 = 205
+            } else if (sub.Created_By__c == 'Sample 4') {
+                result.put(sub.Accounting_subscriber_domain__c, 370); //370 - 170 = 200
+            }
+        }
+        return result;
+    }
+
+    public static Map<Id, Decimal> getTestDataForStartMonth(List<Accounting_Subscription__c> scope) {
+        Map<Id, Decimal> result = new Map<Id, Decimal>();
+        for (Accounting_Subscription__c sub : scope) {
+            if (sub.Created_By__c == 'Sample 1') {
+                result.put(sub.Accounting_subscriber_domain__c, 200); //325 - 200 = 125
+            } else if (sub.Created_By__c == 'Sample 2') {
+                result.put(sub.Accounting_subscriber_domain__c, 100); //340 - 100 = 240
+            } else if (sub.Created_By__c == 'Sample 3') {
+                result.put(sub.Accounting_subscriber_domain__c, 150); //355 - 150 = 205
+            } else if (sub.Created_By__c == 'Sample 4') {
+                result.put(sub.Accounting_subscriber_domain__c, 170); //370 - 170 = 200
+            }
+        }
+        return result;
     }
 }

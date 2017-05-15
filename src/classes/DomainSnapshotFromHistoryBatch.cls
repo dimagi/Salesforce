@@ -5,6 +5,7 @@ public class DomainSnapshotFromHistoryBatch implements Database.Batchable<Accoun
 
     private Map<String, Decimal> wamMap;
     private Map<String, Decimal> formsMap;
+    private Map<String, Decimal> formsForPeriodMap;
     private Map<String, Decimal> mobileUsersMap;
     private Map<String, Decimal> recordCountMap;
     private Date currentDate;
@@ -20,10 +21,11 @@ public class DomainSnapshotFromHistoryBatch implements Database.Batchable<Accoun
         this.currentDate = currentDate;
         this.startDate = this.currentDate.toStartOfMonth();
 
-        this.wamMap = new Map<String, Decimal> { 'Empty' => 0, 'Advanced' => 0, 'Community' => 0, 'Enterprise' => 0, 'Standard' => 0, 'Pro' => 0};
-        this.formsMap = new Map<String, Decimal> { 'Empty' => 0, 'Advanced' => 0, 'Community' => 0, 'Enterprise' => 0, 'Standard' => 0, 'Pro' => 0};
-        this.mobileUsersMap = new Map<String, Decimal> { 'Empty' => 0, 'Advanced' => 0, 'Community' => 0, 'Enterprise' => 0, 'Standard' => 0, 'Pro' => 0};
-        this.recordCountMap = new Map<String, Decimal> { 'Empty' => 0, 'Advanced' => 0, 'Community' => 0, 'Enterprise' => 0, 'Standard' => 0, 'Pro' => 0};
+        this.wamMap = new Map<String, Decimal> { 'Reseller' => 0, 'Managed Hosting' => 0, 'Empty' => 0, 'Advanced' => 0, 'Community' => 0, 'Enterprise' => 0, 'Standard' => 0, 'Pro' => 0};
+        this.formsMap = new Map<String, Decimal> { 'Reseller' => 0, 'Managed Hosting' => 0, 'Empty' => 0, 'Advanced' => 0, 'Community' => 0, 'Enterprise' => 0, 'Standard' => 0, 'Pro' => 0};
+        this.mobileUsersMap = new Map<String, Decimal> { 'Reseller' => 0, 'Managed Hosting' => 0, 'Empty' => 0, 'Advanced' => 0, 'Community' => 0, 'Enterprise' => 0, 'Standard' => 0, 'Pro' => 0};
+        this.recordCountMap = new Map<String, Decimal> { 'Reseller' => 0, 'Managed Hosting' => 0, 'Empty' => 0, 'Advanced' => 0, 'Community' => 0, 'Enterprise' => 0, 'Standard' => 0, 'Pro' => 0};
+        this.formsForPeriodMap = new Map<String, Decimal> { 'Reseller' => 0, 'Managed Hosting' => 0, 'Empty' => 0, 'Advanced' => 0, 'Community' => 0, 'Enterprise' => 0, 'Standard' => 0, 'Pro' => 0};
         this.error = false;
         this.settings = BatchDefaultSettings__c.getOrgDefaults();
     }
@@ -31,7 +33,10 @@ public class DomainSnapshotFromHistoryBatch implements Database.Batchable<Accoun
     public List<Accounting_Subscription__c> start(Database.BatchableContext context) { // We cannot group by formula field
        DateTime dt = DateTime.newInstance(this.currentDate.year(), this.currentDate.month(),this.currentDate.day());
        dt.addDays(1);
-       return [SELECT Id, is_active__c, Software_Plan_Edition__c, Accounting_subscriber_domain__r.Wam__c, Accounting_subscriber_domain__r.cpActiveMobileUsers__c, service_type__c,
+       if (Test.isRunningTest()) {
+           dt = DateTime.now().addDays(1);
+       }
+       return [SELECT Id, Created_By__c, is_active__c, Software_Plan_Edition__c, Accounting_subscriber_domain__r.Wam__c, Accounting_subscriber_domain__r.cpActiveMobileUsers__c, service_type__c,
                Accounting_subscriber_domain__r.cpIsActive__c, Accounting_subscriber_domain__r.cpAllForms__c, Accounting_subscriber_domain__r.InternalProp_self_started__c, Accounting_subscriber_domain__c
                FROM Accounting_Subscription__c
                WHERE is_trial__c = false AND Accounting_subscriber_domain__c != null AND
@@ -58,15 +63,39 @@ public class DomainSnapshotFromHistoryBatch implements Database.Batchable<Accoun
                 }
             }
 
-            Map<Id, Decimal> wamHistory = getHistoryValueForField('Wam__c', scopeFiltered);
-            Map<Id, Decimal> formHistory = getHistoryValueForField('cpAllForms__c', scopeFiltered);
-            Map<Id, Decimal> activeUsersHistory = getHistoryValueForField('cpActiveMobileUsers__c', scopeFiltered);
+            Set<Id> domainsSet = new Set<Id>();
+            for (Accounting_Subscription__c sub : scope) {
+                System.debug(sub.Created_By__c);
+                domainsSet.add(sub.Accounting_subscriber_domain__c);
+            }
 
-            System.debug('wamHistory: ' + wamHistory);
-            System.debug('formHistory: ' + formHistory);
-            System.debug('activeUsersHistory: ' + activeUsersHistory);
+            Map<Id, Decimal> wamHistory = getHistoryValueForField('Wam__c', domainsSet);
+            Map<Id, Decimal> formHistory = getHistoryValueForField('cpAllForms__c', domainsSet);
+            Map<Id, Decimal> activeUsersHistory = getHistoryValueForField('cpActiveMobileUsers__c', domainsSet);
 
             Integer subs = 0;
+
+            Map<Id, Decimal> domainStartMonthHistory = new Map<Id, Decimal>();
+            Map<Id, Decimal> domainEndMonthHistory = new Map<Id, Decimal>();
+            Date beginM = this.currentDate.toStartOfMonth();
+            DateTime beginMDT = DateTime.newInstance(beginM.year(), beginM.month(),beginM.day());
+            DateTime endMDT = DateTime.newInstance(beginM.year(), beginM.month(), Date.daysInMonth(beginM.year(), beginM.month()));
+
+            if (!Test.isRunningTest()) {
+                List<Domain__History> historyRecords = [SELECT ParentId, OldValue, NewValue, CreatedDate FROM Domain__History WHERE ParentId IN: domainsSet AND CreatedDate >=: beginMDT
+                                                            AND CreatedDate <=: endMDT AND Field = 'cpAllForms__c' ORDER BY CreatedDate ASC];
+                for (Domain__History hr : historyRecords) {
+                    if (!domainStartMonthHistory.containsKey(hr.ParentId)) {
+                        domainStartMonthHistory.put(hr.ParentId, (Decimal) (hr.OldValue != null ? hr.OldValue : 0)); // we want the oldest value of the month
+                    }
+                    domainEndMonthHistory.put(hr.ParentId, (Decimal) (hr.NewValue != null ? hr.NewValue : 0)); //we want latest value of the month
+                }
+            } else {
+                domainStartMonthHistory = HqIntegrationTests.getTestDataForStartMonth(scope);
+                domainEndMonthHistory = HqIntegrationTests.getTestDataForEndMonth(scope);
+                System.debug('domainStartMonthHistory: ' + domainStartMonthHistory);
+                System.debug('domainEndMonthHistory: ' + domainEndMonthHistory);
+            }
 
             for (Accounting_Subscription__c sub : scopeFiltered) {
                 Decimal forms = sub.Accounting_subscriber_domain__r.cpAllForms__c != null ? sub.Accounting_subscriber_domain__r.cpAllForms__c : 0;
@@ -91,6 +120,17 @@ public class DomainSnapshotFromHistoryBatch implements Database.Batchable<Accoun
                         softwarePlan = 'Empty';
                     }
 
+                    Decimal forPeriodValue = (domainEndMonthHistory.containsKey(sub.Accounting_subscriber_domain__c) ? domainEndMonthHistory.get(sub.Accounting_subscriber_domain__c) : 0)
+                                             - (domainStartMonthHistory.containsKey(sub.Accounting_subscriber_domain__c) ? domainStartMonthHistory.get(sub.Accounting_subscriber_domain__c) : 0);
+                    if (forPeriodValue < 0) {
+                        System.debug('Negative value!!: ' + forPeriodValue + ' in ' + sub.Accounting_subscriber_domain__c);
+                        EmailHelper.sendEmail(BatchDefaultSettings__c.getOrgDefaults().Error_Emails__c.split(','), 
+                            'Found Negative Value in Domain Snapshot', 'Negative value!!: ' + forPeriodValue + ' in ' + sub.Accounting_subscriber_domain__c);
+                    } else {
+                        this.formsForPeriodMap.put(softwarePlan, this.formsForPeriodMap.get(softwarePlan)
+                                            + ((domainEndMonthHistory.containsKey(sub.Accounting_subscriber_domain__c) ? domainEndMonthHistory.get(sub.Accounting_subscriber_domain__c) : 0)
+                                             - (domainStartMonthHistory.containsKey(sub.Accounting_subscriber_domain__c) ? domainStartMonthHistory.get(sub.Accounting_subscriber_domain__c) : 0)));
+                    }
                     this.wamMap.put(softwarePlan, wamMap.get(softwarePlan) + wam);
                     this.formsMap.put(softwarePlan, formsMap.get(softwarePlan) + forms);
                     this.mobileUsersMap.put(softwarePlan, mobileUsersMap.get(softwarePlan) + activeUsers);
@@ -114,7 +154,7 @@ public class DomainSnapshotFromHistoryBatch implements Database.Batchable<Accoun
                 List<Domain_Monthly_Snapshot__c> snapshots = new List<Domain_Monthly_Snapshot__c>();
                 for (String key : recordCountMap.keySet()) {
                     Domain_Monthly_Snapshot__c snapshot = new Domain_Monthly_Snapshot__c(Software_Plan_Edition__c = key, Snapshot_Date__c = this.currentDate,
-                                                                Wam__c = wamMap.get(key), Forms__c = formsMap.get(key), Active_Mobile_Users__c = mobileUsersMap.get(key),
+                                                                Wam__c = wamMap.get(key), Forms_for_Period__c = this.formsForPeriodMap.get(key), Forms__c = formsMap.get(key), Active_Mobile_Users__c = mobileUsersMap.get(key),
                                                                 Scale_of_Programs__c = recordCountMap.get(key));
                     snapshots.add(snapshot);
                 }
@@ -129,41 +169,33 @@ public class DomainSnapshotFromHistoryBatch implements Database.Batchable<Accoun
         }
     }
 
-    private Map<Id, Decimal> getHistoryValueForField(String fieldName, List<Accounting_Subscription__c> scope) {
+    private Map<Id, Decimal> getHistoryValueForField(String fieldName, Set<Id> scope) {
         Date beginM = Date.newInstance(this.currentDate.year(), this.currentDate.month(), this.currentDate.day()).addMonths(1).toStartOfMonth();
         DateTime beginMDT = DateTime.newInstance(beginM.year(), beginM.month(),beginM.day());
-        DateTime endMDT = DateTime.newInstance(beginM.year(), beginM.month(), Date.daysInMonth(beginM.year(), beginM.month()));
 
-        Set<Id> domainsIds = new Set<Id>();
-        for (Accounting_Subscription__c sub : scope) {
-            domainsIds.add(sub.Accounting_subscriber_domain__c);
-        }
-
-        List<Domain__History> historyRecords = [SELECT ParentId, OldValue, NewValue, CreatedDate FROM Domain__History WHERE ParentId IN: domainsIds AND CreatedDate >=: beginMDT
-                                                AND CreatedDate <=: endMDT AND Field =: fieldName ORDER BY CreatedDate ASC];
+        List<Domain__History> historyRecords = [SELECT ParentId, OldValue, NewValue, CreatedDate FROM Domain__History WHERE ParentId IN: scope AND CreatedDate >=: beginMDT
+                                                        AND Field =: fieldName ORDER BY CreatedDate ASC];
         Map<Id, Decimal> historyMap = new Map<Id, Decimal>();
         for (Domain__History hrec : historyRecords) {
             if (!historyMap.containsKey((Id) hrec.ParentId)) {
                 historyMap.put((Id) hrec.ParentId, hrec.OldValue != null ? (Decimal) hrec.OldValue : 0);
             }
         }
-
         return historyMap;
     }
 
     private Map<Id, Boolean> getBooleanHistoryValueForField(String fieldName, List<Accounting_Subscription__c> scope, Boolean forSub) {
         Date beginM = Date.newInstance(this.currentDate.year(), this.currentDate.month(), this.currentDate.day()).addMonths(1).toStartOfMonth();
         DateTime beginMDT = DateTime.newInstance(beginM.year(), beginM.month(),beginM.day());
-        DateTime endMDT = DateTime.newInstance(beginM.year(), beginM.month(), Date.daysInMonth(beginM.year(), beginM.month()));
 
         Map<Id, Boolean> historyMap = new Map<Id, Boolean>();
         if (forSub == true) {
             List<Accounting_Subscription__History> historyRecords = [SELECT ParentId, OldValue, NewValue, CreatedDate FROM Accounting_Subscription__History WHERE ParentId IN: scope AND CreatedDate >=: beginMDT
-                                                AND CreatedDate <=: endMDT AND Field =: fieldName ORDER BY CreatedDate ASC];
+                                                                    AND Field =: fieldName ORDER BY CreatedDate ASC];
 
             for (Accounting_Subscription__History hrec : historyRecords) {
                 if (!historyMap.containsKey((Id) hrec.ParentId)) {
-                    historyMap.put((Id) hrec.ParentId, hrec.OldValue != null ? (Boolean) hrec.OldValue : false);
+                 historyMap.put((Id) hrec.ParentId, hrec.OldValue != null ? (Boolean) hrec.OldValue : false);
                 }
             }
         } else {
@@ -172,7 +204,7 @@ public class DomainSnapshotFromHistoryBatch implements Database.Batchable<Accoun
                 domainsIds.add(sub.Accounting_subscriber_domain__c);
             }
             List<Domain__History> historyRecords = [SELECT ParentId, OldValue, NewValue, CreatedDate FROM Domain__History WHERE ParentId IN: domainsIds AND CreatedDate >=: beginMDT
-                                                AND CreatedDate <=: endMDT AND Field =: fieldName ORDER BY CreatedDate ASC];
+                                                    AND Field =: fieldName ORDER BY CreatedDate ASC];
 
             for (Domain__History hrec : historyRecords) {
                 if (!historyMap.containsKey((Id) hrec.ParentId)) {
@@ -180,7 +212,6 @@ public class DomainSnapshotFromHistoryBatch implements Database.Batchable<Accoun
                 }
             }
         }
-
         return historyMap;
     }
 
