@@ -13,9 +13,13 @@ public class HqMaltTablesBatch implements Database.Batchable<Integer>, Database.
     private String startDate;
     private String endDate;
     private Map<String, Decimal> domainsWam;
+    private Map<String, Decimal> domainsFormsForPeriod;
+    private Boolean withDomainUpdate;
 
-    public HqMaltTablesBatch(String serverCode, List<String> nextServers, Date monthDate) {
+    public HqMaltTablesBatch(String serverCode, List<String> nextServers, Date monthDate, Boolean withDomainUpdate) {
+        this.withDomainUpdate = withDomainUpdate;
         this.domainsWam = new Map<String, Decimal>();
+        this.domainsFormsForPeriod = new Map<String, Decimal>();
         this.serverCode = serverCode;
         this.nextServers = nextServers;
         this.serverSettings = CommcareToSalesforceSettings__c.getInstance(serverCode);
@@ -25,7 +29,6 @@ public class HqMaltTablesBatch implements Database.Batchable<Integer>, Database.
         if (this.serverSettings == null || monthDate == null) {
             Commcare_Job_Settings__c settings = Commcare_Job_Settings__c.getOrgDefaults();
             EmailHelper.sendEmail(settings.Error_Emails__c.split(','), 'Commcare sync Error', 'Cannot find server settings/month date with name : ' + this.serverCode);
-            HqBatchJobHelper.endMaltJob();
             NoDataFoundException ex = new NoDataFoundException();
             ex.setMessage('Cannot find settings for server with given code : ' + serverCode);
             throw ex;
@@ -34,8 +37,9 @@ public class HqMaltTablesBatch implements Database.Batchable<Integer>, Database.
         this.monthDate.addDays(1);
         this.endDate = this.monthDate.year() + '-' + this.monthDate.month() + '-' + this.monthDate.day();
         this.endPoint = this.serverSettings.Server_URL__c + 'malt_tables/?format=json&limit=';
-        this.apiLimitParameter = this.serverSettings.API_Limit_Parameter__c != null ? Integer.valueOf(this.serverSettings.API_Limit_Parameter__c)
-                            : 10;
+        this.apiLimitParameter = 30; //this object is small so we can fetch 30 records in one time 
+        //this.serverSettings.API_Limit_Parameter__c != null ? Integer.valueOf(this.serverSettings.API_Limit_Parameter__c)
+                            //: 10;
     }
 
     public Iterable<Integer> start(Database.BatchableContext BC) {
@@ -59,9 +63,20 @@ public class HqMaltTablesBatch implements Database.Batchable<Integer>, Database.
     }
 
     public void execute(Database.BatchableContext info, List<Integer> offsetList) {
-        try {
-            this.successfullyLoadedRecords += this.processMaltTables(offsetList[0]);
-        } catch(Exception e) {
+        Boolean success = false;
+        Integer requests = 0;
+        Exception e; // we just neeed info that there was an error
+        while (!success && requests < 3) { // we want fetch a few times if there was an error
+            try {
+                this.successfullyLoadedRecords += this.processMaltTables(offsetList[0]);
+                success = true;
+            } catch(Exception ex) {
+                e = ex;
+                requests++;
+            }
+        }
+
+        if (success == false && e != null) {
             System.debug('Failed at offset with limit param ' + this.apiLimitParameter);
             System.debug(e.getMessage());
             hqInt_BatchErrorLogger.logError(info.getJobId(), '\n failed at offset with limit param ' + this.apiLimitParameter
@@ -71,9 +86,10 @@ public class HqMaltTablesBatch implements Database.Batchable<Integer>, Database.
 
     public void finish(Database.BatchableContext info) {
         System.debug('this.domainsWam ' + this.domainsWam);
-        if (hqInt_BatchErrorLogger.checkErrorsLogged(info.getJobId()) == false && this.successfullyLoadedRecords > 0) { // we don't want update this if there was and error (History for that field is enabled)
+        if (this.withDomainUpdate && hqInt_BatchErrorLogger.checkErrorsLogged(info.getJobId()) == false && this.successfullyLoadedRecords > 0) {
+            // we don't want update this if there was and error (History for fields is enabled)
             System.debug('No errors');
-            Database.executeBatch(new UpdateMaltTablesStatisticsBatch(this.serverCode, this.domainsWam));
+            Database.executeBatch(new UpdateMaltTablesStatisticsBatch(this.serverCode, this.domainsWam, this.domainsFormsForPeriod));
         }
 
         if(!Test.IsRunningTest()) {
@@ -85,9 +101,7 @@ public class HqMaltTablesBatch implements Database.Batchable<Integer>, Database.
         if (nextServers.size() > 0) {
             String nextServer = this.nextServers.get(0);
             this.nextServers.remove(0);
-            Database.executeBatch(new HqMaltTablesBatch(nextServer, this.nextServers, this.monthDate), 1);
-        } else {
-            HqBatchJobHelper.endMaltJob();
+            Database.executeBatch(new HqMaltTablesBatch(nextServer, this.nextServers, this.monthDate, this.withDomainUpdate), 1);
         }
     }
 
@@ -116,6 +130,13 @@ public class HqMaltTablesBatch implements Database.Batchable<Integer>, Database.
                             } else {
                                 this.domainsWam.put(objModel.domain_name, value);
                             }
+
+                            if (this.domainsFormsForPeriod.containsKey(objModel.domain_name)) {
+                                this.domainsFormsForPeriod.put(objModel.domain_name, this.domainsWam.get(objModel.domain_name) +
+                                                (objModel.num_of_forms != null ? objModel.num_of_forms : 0));
+                            } else {
+                                this.domainsFormsForPeriod.put(objModel.domain_name, objModel.num_of_forms != null ? objModel.num_of_forms : 0);
+                            }
                             size++;
                         }
                         parser.skipChildren();
@@ -143,7 +164,6 @@ public class HqMaltTablesBatch implements Database.Batchable<Integer>, Database.
             Commcare_Job_Settings__c settings = Commcare_Job_Settings__c.getOrgDefaults();
             EmailHelper.sendEmailFromException(settings.Error_Emails__c.split(','), 'Commcare sync Error', 'Cannot fetch total count for Malt tables : '
                                                                                                 + this.serverSettings.Name, e);
-            HqBatchJobHelper.endMaltJob();
         }
 
         return totalCount;
