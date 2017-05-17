@@ -61,7 +61,6 @@ public class HqIntegrationTests {
         System.assertEquals(1, domainSn.Scale_of_Programs__c);
     }
 
-    /**
     @isTest
     static void shouldCalculateWAM() {
         hqInt_Model_DomainClass d1 = new hqInt_Model_DomainClass();
@@ -89,11 +88,13 @@ public class HqIntegrationTests {
         }
         Test.stopTest();
 
-        Domain__c assertDomain = [SELECT Id, Wam__c FROM Domain__c WHERE Id =: domainFromDb1.Id];
-        System.assertEquals(2, assertDomain.Wam__c);
-        assertDomain = [SELECT Id, Wam__c FROM Domain__c WHERE Id =: domainFromDb2.Id];
-        System.assertEquals(3, assertDomain.Wam__c);
-    }*/
+        Domain__c assertDomain = [SELECT Id, Wam__c, Forms_For_Period__c FROM Domain__c WHERE Id =: domainFromDb1.Id];
+        System.assertEquals(52, assertDomain.Forms_For_Period__c);
+       // System.assertEquals(2, assertDomain.Wam__c);
+        assertDomain = [SELECT Id, Wam__c, Forms_For_Period__c FROM Domain__c WHERE Id =: domainFromDb2.Id];
+        System.assertEquals(39, assertDomain.Forms_For_Period__c);
+       //System.assertEquals(3, assertDomain.Wam__c);
+    }
 
     @isTest
     static void shouldSetPrimaryContactOnDomain() {

@@ -132,7 +132,7 @@ public class HqMaltTablesBatch implements Database.Batchable<Integer>, Database.
                             }
 
                             if (this.domainsFormsForPeriod.containsKey(objModel.domain_name)) {
-                                this.domainsFormsForPeriod.put(objModel.domain_name, this.domainsWam.get(objModel.domain_name) +
+                                this.domainsFormsForPeriod.put(objModel.domain_name, this.domainsFormsForPeriod.get(objModel.domain_name) +
                                                 (objModel.num_of_forms != null ? objModel.num_of_forms : 0));
                             } else {
                                 this.domainsFormsForPeriod.put(objModel.domain_name, objModel.num_of_forms != null ? objModel.num_of_forms : 0);
