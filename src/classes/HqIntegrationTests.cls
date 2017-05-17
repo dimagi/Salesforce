@@ -16,6 +16,56 @@ public class HqIntegrationTests {
         insert testCustomSetting;
     }
 
+    static void shouldDeactivateDoubleSubscriptions() {
+        Domain__c domain1 = new Domain__c(Name = 'Sample 1', Server_Name__c = 'CommCare HQ', is_test__c = 'false', cpIsActive__c = true,
+                                          Wam__c = 15, cpActiveMobileUsers__c = 20, cpAllForms__c = 325, Internal_Properties__c = InternalPropRec1.Id);
+        Domain__c domain2 = new Domain__c(Name = 'Sample 2', Server_Name__c = 'CommCare HQ', is_test__c = 'false', cpIsActive__c = true,
+                                          Wam__c = 30, cpActiveMobileUsers__c = 35, cpAllForms__c = 340, Internal_Properties__c = InternalPropRec2.Id);
+        insert domain1;
+        insert domain2;
+
+        Accounting_Subscription__c subscription1 = new Accounting_Subscription__c(date_start__c = Date.newInstance(2015, 11, 2), date_end__c = Date.newInstance(2016, 2 ,1), is_active__c = true,
+                                                          Accounting_subscriber_domain__c = domain1.Id, Server_Name__c = 'CommCare HQ',
+                                                          is_trial__c = false, service_type__c = 'Self_service');
+        insert subscription1;
+        Accounting_Subscription__c subscription2 = new Accounting_Subscription__c(date_start__c = Date.newInstance(2016, 1, 1), date_end__c = Date.newInstance(2016, 2 ,1), is_active__c = true,
+                                                          Accounting_subscriber_domain__c = domain1.Id, Server_Name__c = 'CommCare HQ',
+                                                          is_trial__c = false, service_type__c = 'Product');
+        insert subscription2;
+        Accounting_Subscription__c subscription3 = new Accounting_Subscription__c(date_start__c = Date.newInstance(2014, 1, 1), date_end__c = Date.newInstance(2014, 3 ,4), is_active__c = true,
+                                                          Accounting_subscriber_domain__c = domain2.Id, Server_Name__c = 'CommCare HQ',
+                                                          is_trial__c = false, service_type__c = 'Self_service');
+        insert subscription3;
+        Accounting_Subscription__c subscription4 = new Accounting_Subscription__c(date_start__c = Date.newInstance(2016, 1, 1), date_end__c = Date.newInstance(2016, 2 ,1), is_active__c = true,
+                                                          Accounting_subscriber_domain__c = domain2.Id, Server_Name__c = 'CommCare HQ',
+                                                          is_trial__c = false, service_type__c = 'Self_service');
+        insert subscription4;
+        Accounting_Subscription__c subscription5 = new Accounting_Subscription__c(date_start__c = Date.newInstance(2016, 1, 1), date_end__c = Date.newInstance(2016, 2 ,1), is_active__c = true,
+                                                          Accounting_subscriber_domain__c = domain2.Id, Server_Name__c = 'CommCare HQ',
+                                                          is_trial__c = false, service_type__c = 'Product');
+        insert subscription5;
+
+        Test.setCreatedDate(subscription1.Id, DateTime.newInstance(2017, 5, 9, 10, 10, 0)); // This should be deactivated
+        Test.setCreatedDate(subscription2.Id, DateTime.newInstance(2017, 5, 10, 10, 10, 0));
+        Test.setCreatedDate(subscription3.Id, DateTime.newInstance(2017, 5, 11, 10, 10, 0));
+        Test.setCreatedDate(subscription4.Id, DateTime.newInstance(2017, 5, 9, 11, 10, 0)); // This should be deactivated
+        Test.setCreatedDate(subscription5.Id, DateTime.newInstance(2017, 5, 9, 10, 10, 0)); // This should be deactivated
+
+        Test.startTest();
+        Test.stopTest();
+
+        Accounting_Subscription__c sub1 = [SELECT Id, is_active__c FROM Accounting_Subscription__c WHERE Id =: subscription1.Id LIMIT 1];
+        System.assertEquals(false, sub1.is_active__c);
+        Accounting_Subscription__c sub2 = [SELECT Id, is_active__c FROM Accounting_Subscription__c WHERE Id =: subscription2.Id LIMIT 1];
+        System.assertEquals(true, sub2.is_active__c);
+        Accounting_Subscription__c sub3 = [SELECT Id, is_active__c FROM Accounting_Subscription__c WHERE Id =: subscription3.Id LIMIT 1];
+        System.assertEquals(true, sub3.is_active__c);
+        Accounting_Subscription__c sub4 = [SELECT Id, is_active__c FROM Accounting_Subscription__c WHERE Id =: subscription4.Id LIMIT 1];
+        System.assertEquals(false, sub4.is_active__c);
+        Accounting_Subscription__c sub5 = [SELECT Id, is_active__c FROM Accounting_Subscription__c WHERE Id =: subscription5.Id LIMIT 1];
+        System.assertEquals(false, sub5.is_active__c);
+    }
+
     @isTest
     static void shouldCreateDomainMonthlySnapshot() {
         Accounting_SoftwareProductRate__c productRate1 = new Accounting_SoftwareProductRate__c(is_active__c = true,  monthly_fee__c = 150, Server_Name__c = 'CommCare HQ');
