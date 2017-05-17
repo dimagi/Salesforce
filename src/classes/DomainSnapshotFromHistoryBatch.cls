@@ -68,9 +68,9 @@ public class DomainSnapshotFromHistoryBatch implements Database.Batchable<Accoun
                 domainsSet.add(sub.Accounting_subscriber_domain__c);
             }
 
-            // TODO forms for period add !!!
             Map<Id, Decimal> formHistory = getHistoryValueForField('cpAllForms__c', domainsSet);
-            Map<Id, Decimal> wamHistory = getWamHistory(domainsSet);
+            Map<Id, Decimal> wamHistory = getWamOrFormHistory('Wam__c', domainsSet);
+            Map<Id, Decimal> formsForPeriodHistory = getWamOrFormHistory('Forms_for_Period__c', domainsSet);
             Map<Id, Decimal> activeUsersHistory = getHistoryValueForField('cpActiveMobileUsers__c', domainsSet);
 
             Integer subs = 0;
@@ -83,13 +83,18 @@ public class DomainSnapshotFromHistoryBatch implements Database.Batchable<Accoun
                 if (forms >= 300) { // Likely Real simulation
                     subs++;
 
-                    Decimal wam = 0;
-                    if (wamHistory.containsKey(sub.Accounting_subscriber_domain__c)) { // take value from history
+                    Decimal wam = sub.Accounting_subscriber_domain__r.Wam__c != null ? sub.Accounting_subscriber_domain__r.Wam__c : 0;
+                    if (wamHistory.containsKey(sub.Accounting_subscriber_domain__c)) {
                         wam = wamHistory.get(sub.Accounting_subscriber_domain__c);
                     }
 
+                    Decimal formsForPeriod = sub.Accounting_subscriber_domain__r.Forms_for_Period__c != null ? sub.Accounting_subscriber_domain__r.Forms_for_Period__c : 0;
+                    if (formsForPeriodHistory.containsKey(sub.Accounting_subscriber_domain__c)) {
+                        formsForPeriod = formsForPeriodHistory.get(sub.Accounting_subscriber_domain__c);
+                    }
+
                     Decimal activeUsers = sub.Accounting_subscriber_domain__r.cpActiveMobileUsers__c != null ? sub.Accounting_subscriber_domain__r.cpActiveMobileUsers__c : 0;
-                    if (activeUsersHistory.containsKey(sub.Accounting_subscriber_domain__c)) { // take value from history
+                    if (activeUsersHistory.containsKey(sub.Accounting_subscriber_domain__c)) {
                         activeUsers = activeUsersHistory.get(sub.Accounting_subscriber_domain__c);
                     }
 
@@ -99,9 +104,7 @@ public class DomainSnapshotFromHistoryBatch implements Database.Batchable<Accoun
                     }
 
                     this.wamMap.put(softwarePlan, this.wamMap.get(softwarePlan) + wam);
-                    // TODO - 
-                    this.formsForPeriodMap.put(softwarePlan, this.formsForPeriodMap.get(softwarePlan) + (sub.Accounting_subscriber_domain__r.Forms_for_Period__c != null
-                                                    ? sub.Accounting_subscriber_domain__r.Forms_for_Period__c : 0));
+                    this.formsForPeriodMap.put(softwarePlan, this.formsForPeriodMap.get(softwarePlan) + formsForPeriod);
                     this.formsMap.put(softwarePlan, formsMap.get(softwarePlan) + forms);
                     this.mobileUsersMap.put(softwarePlan, mobileUsersMap.get(softwarePlan) + activeUsers);
                     this.recordCountMap.put(softwarePlan, recordCountMap.get(softwarePlan) + 1);
@@ -139,12 +142,12 @@ public class DomainSnapshotFromHistoryBatch implements Database.Batchable<Accoun
         }
     }
 
-    private Map<Id, Decimal> getWamHistory(Set<Id> scope) {
+    private Map<Id, Decimal> getWamOrFormHistory(String fieldName, Set<Id> scope) {
         Date beginM = Date.newInstance(this.currentDate.year(), this.currentDate.month(), this.currentDate.day()).addMonths(1).toStartOfMonth();
         DateTime beginMDT = DateTime.newInstance(beginM.year(), beginM.month(), beginM.day());
         DateTime endMDT = DateTime.newInstance(beginM.year(), beginM.month(), Date.daysInMonth(beginM.year(), beginM.month()));
         List<Domain__History> historyRecords = [SELECT ParentId, OldValue, NewValue, CreatedDate FROM Domain__History WHERE ParentId IN: scope AND CreatedDate >=: beginMDT AND CreatedDate <=: endMDT
-                                                        AND Field = 'Wam__c' ORDER BY CreatedDate ASC];
+                                                        AND Field =: fieldName ORDER BY CreatedDate ASC];
         Map<Id, Decimal> historyMap = new Map<Id, Decimal>();
         for (Domain__History hrec : historyRecords) {
             if (!historyMap.containsKey((Id) hrec.ParentId)) {
