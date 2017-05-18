@@ -88,15 +88,19 @@ IF(CONTAINS(Area__c ,&quot;Meetings&quot;),&quot;Internal Meetings&quot;,
 
 IF(CONTAINS(Area__c ,&quot;Misc&quot;),&quot;Misc&quot;,
 
-IF(CONTAINS(Area__c ,&quot;Opportunity Mgmt - B2B&quot;),&quot;Opp Mgmt - B2B&quot;,
+IF(CONTAINS(Area__c ,&quot;Opportunity Mgmt - Innovation&quot;),&quot;Opp Mgmt - Competitive Bid&quot;, 
 
-IF(CONTAINS(Area__c ,&quot;Opportunity Mgmt - Innovation&quot;),&quot;Opp Mgmt - Innovation&quot;,
+IF(CONTAINS(Area__c ,&quot;Opportunity Mgmt - RFP&quot;),&quot;Opp Mgmt - Competitive Bid&quot;,
 
-IF(CONTAINS(Area__c ,&quot;Opportunity Mgmt - RFP&quot;),&quot;Opp Mgmt - RFP&quot;,
+IF(CONTAINS(Area__c ,&quot;Opportunity Mgmt - Competitive Bid&quot;),&quot;Opp Mgmt - Competitive Bid&quot;, 
 
-IF(CONTAINS(Area__c ,&quot;Opportunity Execution - RFP&quot;),&quot;Opp Mgmt - RFP&quot;,
+IF(CONTAINS(Area__c ,&quot;Opportunity Mgmt - Pre-Bid&quot;),&quot;Opp Mgmt - Pre-Bid&quot;,
+
+IF(CONTAINS(Area__c ,&quot;Opportunity Execution - RFP&quot;),&quot;Opp Mgmt - Competitive Bid&quot;, 
 
 IF(CONTAINS(Area__c ,&quot;Partnerships &amp; Resellers&quot;),&quot;Contact Mgmt&quot;,
+
+IF(CONTAINS(Area__c ,&quot;Opportunity Mgmt - B2B&quot;),&quot;Opp Mgmt - B2B&quot;,
 
 IF(CONTAINS(Area__c ,&quot;Stage 1 - Connect&quot;),&quot;Contact Mgmt&quot;,
 
@@ -116,7 +120,9 @@ IF(CONTAINS(Area__c ,&quot;Closed - Lost&quot;),&quot;Opp Mgmt - Misc&quot;,
 
 IF(CONTAINS(Area__c ,&quot;Closed - No Go&quot;),&quot;Opp Mgmt - Misc&quot;,
 
-&quot;ERROR&quot;)))))))))))))))))))))))</formula>
+IF(CONTAINS(Area__c ,&quot;Contract Negotiations&quot;),&quot;Opp Mgmt - Misc&quot;,
+
+&quot;ERROR&quot;))))))))))))))))))))))))))</formula>
         <label>BD Area Category</label>
         <required>false</required>
         <trackHistory>false</trackHistory>

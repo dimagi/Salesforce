@@ -195,28 +195,28 @@
         <picklist>
             <picklistValues>
                 <fullName>User didn&apos;t attend training</fullName>
-                <cssExposed>false</cssExposed>
                 <default>false</default>
+                <cssExposed>false</cssExposed>
             </picklistValues>
             <picklistValues>
                 <fullName>Complex functionality</fullName>
-                <cssExposed>false</cssExposed>
                 <default>false</default>
+                <cssExposed>false</cssExposed>
             </picklistValues>
             <picklistValues>
                 <fullName>Existing problem</fullName>
-                <cssExposed>false</cssExposed>
                 <default>false</default>
+                <cssExposed>false</cssExposed>
             </picklistValues>
             <picklistValues>
                 <fullName>Instructions not clear</fullName>
-                <cssExposed>false</cssExposed>
                 <default>false</default>
+                <cssExposed>false</cssExposed>
             </picklistValues>
             <picklistValues>
                 <fullName>New problem</fullName>
-                <cssExposed>false</cssExposed>
                 <default>false</default>
+                <cssExposed>false</cssExposed>
             </picklistValues>
             <sorted>false</sorted>
         </picklist>
@@ -226,27 +226,34 @@
         <type>Picklist</type>
     </fields>
     <fields>
+        <fullName>SourceId</fullName>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
         <fullName>Status</fullName>
         <picklist>
             <picklistValues>
                 <fullName>On Hold</fullName>
-                <closed>false</closed>
                 <default>false</default>
+                <closed>false</closed>
             </picklistValues>
             <picklistValues>
                 <fullName>Escalated</fullName>
-                <closed>false</closed>
                 <default>false</default>
+                <closed>false</closed>
             </picklistValues>
             <picklistValues>
                 <fullName>Closed</fullName>
-                <closed>true</closed>
                 <default>false</default>
+                <closed>true</closed>
             </picklistValues>
             <picklistValues>
                 <fullName>New</fullName>
-                <closed>false</closed>
                 <default>true</default>
+                <closed>false</closed>
             </picklistValues>
             <sorted>false</sorted>
         </picklist>

@@ -43,11 +43,31 @@
                 <default>true</default>
             </picklistValues>
             <picklistValues>
-                <fullName>Call - follow-up</fullName>
+                <fullName>Call - qualifying follow-up</fullName>
                 <default>false</default>
             </picklistValues>
             <picklistValues>
-                <fullName>Call - no-show</fullName>
+                <fullName>Call - exploratory no-show</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Call - opportunity follow-up</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Call - follow-up no show</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Call - Support</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Call - Unscheduled Exploratory</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Call - No call required (use this for exceptions that skip the call process)</fullName>
                 <default>false</default>
             </picklistValues>
             <sorted>false</sorted>
@@ -82,6 +102,104 @@
         <unique>false</unique>
     </fields>
     <fields>
+        <fullName>Call_Outcome__c</fullName>
+        <externalId>false</externalId>
+        <label>Call Outcome</label>
+        <picklist>
+            <picklistValues>
+                <fullName>1 Converted to Self-start opp</fullName>
+                <color>#A845DC</color>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>2 Converted to Enterprise opp</fullName>
+                <color>#F3D904</color>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>3 Converted to Services opp</fullName>
+                <color>#0B6FCE</color>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>4 Existing opportunity - stage change</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>5 Existing opportunity - no change</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>6 Need follow-up call - Unable to qualify</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>7 Passive &amp; Friendly - self-start</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>8 Passive &amp; Friendly - decided to use other solution</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>9 Passive &amp; Friendly - partner program</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>10 Passive &amp; Friendly - no opp</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>11 Archived &amp; Not Interested - hiring</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>12 Passive &amp; Friendly - existing client</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>13 Archived &amp; Not Interested - Not a good fit / not what they expected</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>14 Archived &amp; Not Interested - Competition</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>15 No-show</fullName>
+                <default>false</default>
+            </picklistValues>
+            <sorted>false</sorted>
+        </picklist>
+        <type>Picklist</type>
+    </fields>
+    <fields>
+        <fullName>Days_Overdue__c</fullName>
+        <description>The last modified date minus the completed date. Will be zero for uncompleted tasks, zero for tasks completed before or on time, and a positive number for the number of days last modified beyond the due date.</description>
+        <externalId>false</externalId>
+        <formula>ABS(DATEVALUE(LastModifiedDate) - ActivityDate)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <inlineHelpText>The last modified date minus the completed date. Will be blank for uncompleted tasks, zero for tasks completed before or on time, and a positive number for the number of days last modified beyond the due date.</inlineHelpText>
+        <label>Days Overdue</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Days_Since_Due_Date__c</fullName>
+        <externalId>false</externalId>
+        <formula>Today() - ActivityDate</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Days Since Due Date</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
         <fullName>Meeting_Count__c</fullName>
         <externalId>false</externalId>
         <formula>IF(
@@ -109,6 +227,62 @@
         <unique>false</unique>
     </fields>
     <fields>
+        <fullName>ScheduleOnce__Cancel_reschedule_reason__c</fullName>
+        <deprecated>false</deprecated>
+        <description>The Cancel/reschedule reason field allows you to track the cancel/reschedule reason provided by the Customer when canceling or rescheduling an activity.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Cancellation or rescheduling reason provided by the Customer when canceling an activity.</inlineHelpText>
+        <label>Cancel/reschedule reason</label>
+        <required>false</required>
+        <type>TextArea</type>
+    </fields>
+    <fields>
+        <fullName>ScheduleOnce__Event_status__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>Event status</label>
+        <picklist>
+            <picklistValues>
+                <fullName>Canceled (rescheduled by Customer)</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Canceled (reschedule requested by Owner)</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Canceled by Customer</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Canceled by Owner</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Completed</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>No-show</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Rescheduled by Customer</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Rescheduled by Owner</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Scheduled</fullName>
+                <default>false</default>
+            </picklistValues>
+            <sorted>false</sorted>
+        </picklist>
+        <type>Picklist</type>
+    </fields>
+    <fields>
         <fullName>Snooze_Activity__c</fullName>
         <description>Equals today&apos;s date</description>
         <externalId>false</externalId>
@@ -116,6 +290,18 @@
         <label>Snooze Activity</label>
         <required>false</required>
         <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>activitycount__c</fullName>
+        <externalId>false</externalId>
+        <formula>1</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>activitycount</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <type>Number</type>
+        <unique>false</unique>
     </fields>
     <fields>
         <fullName>cirrusadv__Created_by_Cirrus_Insight__c</fullName>
@@ -317,6 +503,34 @@
         <inlineHelpText>Indicates that opens of this email will be tracked and reported by Cirrus Insight.</inlineHelpText>
         <label>Tracked</label>
         <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>is_exploratory_call__c</fullName>
+        <description>Equals 1 if was scheduled as a first call (no matter whether it happened or was no show), 0 for other follow-up calls</description>
+        <externalId>false</externalId>
+        <formula>IF(OR(ISPICKVAL(ActivitySubtype__c, &quot;Call - exploratory&quot;), ISPICKVAL(ActivitySubtype__c, &quot;Call - exploratory no-show&quot;)) , 1, 0)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <inlineHelpText>Equals 1 if was scheduled as a first call (no matter whether it happened or was no show), 0 for other follow-up calls</inlineHelpText>
+        <label>is exploratory call</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>no_shows__c</fullName>
+        <description>Is equal to 1 if the call was a no-show, 0 otherwise</description>
+        <externalId>false</externalId>
+        <formula>IF(ISPICKVAL( ActivitySubtype__c, &quot;Call - exploratory no-show&quot;), 1, 0)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <inlineHelpText>Is equal to 1 if the call was a no-show, 0 otherwise</inlineHelpText>
+        <label>is no-shows</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <type>Number</type>
+        <unique>false</unique>
     </fields>
     <listViews>
         <fullName>MyActivities</fullName>

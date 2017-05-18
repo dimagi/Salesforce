@@ -52,7 +52,6 @@
         <inlineHelpText>The account that is the lead on implementing this project</inlineHelpText>
         <trackFeedHistory>false</trackFeedHistory>
         <trackHistory>true</trackHistory>
-        <trackTrending>false</trackTrending>
         <type>Lookup</type>
     </fields>
     <fields>
@@ -62,7 +61,6 @@
         <label>Account Name</label>
         <required>false</required>
         <trackHistory>false</trackHistory>
-        <trackTrending>false</trackTrending>
         <type>Text</type>
         <unique>false</unique>
     </fields>
@@ -71,7 +69,7 @@
         <inlineHelpText>This is the TOTAL amount of the expected contract, inclusive of all budget items. This is CALCULATED automatically when you add products.</inlineHelpText>
         <trackFeedHistory>true</trackFeedHistory>
         <trackHistory>true</trackHistory>
-        <trackTrending>false</trackTrending>
+        <trackTrending>true</trackTrending>
     </fields>
     <fields>
         <fullName>Amount_Minus_Expense_Income__c</fullName>
@@ -85,7 +83,6 @@
         <required>false</required>
         <scale>2</scale>
         <trackHistory>false</trackHistory>
-        <trackTrending>false</trackTrending>
         <type>Currency</type>
     </fields>
     <fields>
@@ -145,9 +142,22 @@
         </picklist>
         <trackFeedHistory>false</trackFeedHistory>
         <trackHistory>false</trackHistory>
-        <trackTrending>false</trackTrending>
         <type>MultiselectPicklist</type>
         <visibleLines>6</visibleLines>
+    </fields>
+    <fields>
+        <fullName>Buffer_Amount__c</fullName>
+        <description>Expected Buffer % * Amount minus Expense</description>
+        <externalId>false</externalId>
+        <formula>Expected_Buffer__c * Amount_Minus_Expense_Income__c</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <inlineHelpText>Expected Buffer % * Amount minus Expense</inlineHelpText>
+        <label>Buffer Amount ($)</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackHistory>false</trackHistory>
+        <type>Currency</type>
     </fields>
     <fields>
         <fullName>Buffer_EV__c</fullName>
@@ -161,7 +171,6 @@
         <required>false</required>
         <scale>0</scale>
         <trackHistory>false</trackHistory>
-        <trackTrending>false</trackTrending>
         <type>Currency</type>
     </fields>
     <fields>
@@ -172,7 +181,6 @@
         <label>Business Unit Owner Name</label>
         <required>false</required>
         <trackHistory>false</trackHistory>
-        <trackTrending>false</trackTrending>
         <type>Text</type>
         <unique>false</unique>
     </fields>
@@ -187,14 +195,12 @@
         <required>false</required>
         <trackFeedHistory>false</trackFeedHistory>
         <trackHistory>true</trackHistory>
-        <trackTrending>false</trackTrending>
         <type>Lookup</type>
     </fields>
     <fields>
         <fullName>CampaignId</fullName>
         <trackFeedHistory>false</trackFeedHistory>
         <trackHistory>false</trackHistory>
-        <trackTrending>false</trackTrending>
         <type>Lookup</type>
     </fields>
     <fields>
@@ -227,7 +233,7 @@ See https://confluence.dimagi.com/display/BD/BD+Channels</inlineHelpText>
                 <default>false</default>
             </picklistValues>
             <picklistValues>
-                <fullName>NIH Grant</fullName>
+                <fullName>NIH Prime Grant</fullName>
                 <default>false</default>
             </picklistValues>
             <picklistValues>
@@ -238,7 +244,6 @@ See https://confluence.dimagi.com/display/BD/BD+Channels</inlineHelpText>
         </picklist>
         <trackFeedHistory>false</trackFeedHistory>
         <trackHistory>true</trackHistory>
-        <trackTrending>false</trackTrending>
         <type>Picklist</type>
     </fields>
     <fields>
@@ -246,7 +251,7 @@ See https://confluence.dimagi.com/display/BD/BD+Channels</inlineHelpText>
         <inlineHelpText>This should be pretty accurate by the time you get to Stage 4 but will likely be a guess early in the process.</inlineHelpText>
         <trackFeedHistory>true</trackFeedHistory>
         <trackHistory>true</trackHistory>
-        <trackTrending>false</trackTrending>
+        <trackTrending>true</trackTrending>
     </fields>
     <fields>
         <fullName>Closed_lost_reason__c</fullName>
@@ -287,18 +292,24 @@ See https://confluence.dimagi.com/display/BD/BD+Channels</inlineHelpText>
                 <fullName>Stopped responding</fullName>
                 <default>false</default>
             </picklistValues>
+            <picklistValues>
+                <fullName>Project ended, no more needs</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Not satisfied with CommCare</fullName>
+                <default>false</default>
+            </picklistValues>
             <sorted>false</sorted>
         </picklist>
         <trackFeedHistory>false</trackFeedHistory>
         <trackHistory>false</trackHistory>
-        <trackTrending>false</trackTrending>
         <type>Picklist</type>
     </fields>
     <fields>
         <fullName>ContractId</fullName>
         <trackFeedHistory>false</trackFeedHistory>
         <trackHistory>false</trackHistory>
-        <trackTrending>false</trackTrending>
         <type>Lookup</type>
     </fields>
     <fields>
@@ -339,7 +350,6 @@ See https://confluence.dimagi.com/display/BD/BD+Channels</inlineHelpText>
         <required>false</required>
         <trackFeedHistory>false</trackFeedHistory>
         <trackHistory>false</trackHistory>
-        <trackTrending>false</trackTrending>
         <type>Lookup</type>
     </fields>
     <fields>
@@ -363,7 +373,6 @@ See https://confluence.dimagi.com/display/BD/BD+Channels</inlineHelpText>
         </picklist>
         <trackFeedHistory>false</trackFeedHistory>
         <trackHistory>false</trackHistory>
-        <trackTrending>false</trackTrending>
         <type>Picklist</type>
     </fields>
     <fields>
@@ -377,7 +386,6 @@ See https://confluence.dimagi.com/display/BD/BD+Channels</inlineHelpText>
         <required>false</required>
         <trackFeedHistory>false</trackFeedHistory>
         <trackHistory>false</trackHistory>
-        <trackTrending>false</trackTrending>
         <type>Lookup</type>
     </fields>
     <fields>
@@ -387,7 +395,6 @@ See https://confluence.dimagi.com/display/BD/BD+Channels</inlineHelpText>
         <label>Country Name</label>
         <required>false</required>
         <trackHistory>false</trackHistory>
-        <trackTrending>false</trackTrending>
         <type>Text</type>
         <unique>false</unique>
     </fields>
@@ -399,7 +406,6 @@ See https://confluence.dimagi.com/display/BD/BD+Channels</inlineHelpText>
         <required>false</required>
         <trackFeedHistory>false</trackFeedHistory>
         <trackHistory>false</trackHistory>
-        <trackTrending>false</trackTrending>
         <type>TextArea</type>
     </fields>
     <fields>
@@ -414,7 +420,6 @@ See https://confluence.dimagi.com/display/BD/BD+Channels</inlineHelpText>
         <required>false</required>
         <trackFeedHistory>false</trackFeedHistory>
         <trackHistory>false</trackHistory>
-        <trackTrending>false</trackTrending>
         <type>Lookup</type>
     </fields>
     <fields>
@@ -425,7 +430,6 @@ See https://confluence.dimagi.com/display/BD/BD+Channels</inlineHelpText>
         <length>32768</length>
         <trackFeedHistory>false</trackFeedHistory>
         <trackHistory>false</trackHistory>
-        <trackTrending>false</trackTrending>
         <type>LongTextArea</type>
         <visibleLines>3</visibleLines>
     </fields>
@@ -433,7 +437,21 @@ See https://confluence.dimagi.com/display/BD/BD+Channels</inlineHelpText>
         <fullName>Description</fullName>
         <trackFeedHistory>false</trackFeedHistory>
         <trackHistory>false</trackHistory>
-        <trackTrending>false</trackTrending>
+    </fields>
+    <fields>
+        <fullName>Domain_Name__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <description>looks up the project space name from the Domain object</description>
+        <externalId>false</externalId>
+        <inlineHelpText>DO NOT USE (CJ/AS TEST)</inlineHelpText>
+        <label>Domain Name</label>
+        <referenceTo>Domain__c</referenceTo>
+        <relationshipLabel>Opportunities</relationshipLabel>
+        <relationshipName>Opportunities</relationshipName>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <type>Lookup</type>
     </fields>
     <fields>
         <fullName>Due_Date__c</fullName>
@@ -444,7 +462,6 @@ See https://confluence.dimagi.com/display/BD/BD+Channels</inlineHelpText>
         <required>false</required>
         <trackFeedHistory>false</trackFeedHistory>
         <trackHistory>true</trackHistory>
-        <trackTrending>false</trackTrending>
         <type>Date</type>
     </fields>
     <fields>
@@ -457,7 +474,6 @@ See https://confluence.dimagi.com/display/BD/BD+Channels</inlineHelpText>
         <scale>0</scale>
         <trackFeedHistory>false</trackFeedHistory>
         <trackHistory>true</trackHistory>
-        <trackTrending>false</trackTrending>
         <type>Number</type>
         <unique>false</unique>
     </fields>
@@ -477,7 +493,6 @@ if((CloseDate + (30*Duration_months__c)) &lt; $Setup.Expected_Value__c.EV_Date_1
         <required>false</required>
         <scale>2</scale>
         <trackHistory>false</trackHistory>
-        <trackTrending>false</trackTrending>
         <type>Currency</type>
     </fields>
     <fields>
@@ -496,7 +511,6 @@ if((CloseDate + (30*Duration_months__c)) &lt; $Setup.Expected_Value__c.EV_Date_1
         <required>false</required>
         <scale>0</scale>
         <trackHistory>false</trackHistory>
-        <trackTrending>false</trackTrending>
         <type>Currency</type>
     </fields>
     <fields>
@@ -532,7 +546,6 @@ if((CloseDate + (30*Duration_months__c)) &lt; $Setup.Expected_Value__c.EV_Date_1
         </picklist>
         <trackFeedHistory>false</trackFeedHistory>
         <trackHistory>false</trackHistory>
-        <trackTrending>false</trackTrending>
         <type>Picklist</type>
     </fields>
     <fields>
@@ -544,7 +557,6 @@ if((CloseDate + (30*Duration_months__c)) &lt; $Setup.Expected_Value__c.EV_Date_1
         <label>Exclusivity Agreement? (Y/N)</label>
         <trackFeedHistory>false</trackFeedHistory>
         <trackHistory>false</trackHistory>
-        <trackTrending>false</trackTrending>
         <type>Checkbox</type>
     </fields>
     <fields>
@@ -559,13 +571,11 @@ if((CloseDate + (30*Duration_months__c)) &lt; $Setup.Expected_Value__c.EV_Date_1
         <required>false</required>
         <scale>1</scale>
         <trackHistory>false</trackHistory>
-        <trackTrending>false</trackTrending>
         <type>Number</type>
         <unique>false</unique>
     </fields>
     <fields>
         <fullName>ExpectedRevenue</fullName>
-        <trackTrending>false</trackTrending>
     </fields>
     <fields>
         <fullName>Expected_Buffer__c</fullName>
@@ -578,30 +588,25 @@ if((CloseDate + (30*Duration_months__c)) &lt; $Setup.Expected_Value__c.EV_Date_1
         <scale>0</scale>
         <trackFeedHistory>false</trackFeedHistory>
         <trackHistory>false</trackHistory>
-        <trackTrending>false</trackTrending>
         <type>Percent</type>
     </fields>
     <fields>
         <fullName>Expected_Monthly_Recurring_Revenue_MRR__c</fullName>
-        <description>Probability * MRR. This is only calculated for Implementation Type = Self Service.</description>
+        <description>Probability * MRR. This is only calculated for Implementation Type = Self Service, Managed Server, or Enterprise.</description>
         <externalId>false</externalId>
-        <formula>IF ( Renewal_expected__c,
-     IF ( ISPICKVAL(Implementation_Type__c, &quot;Self Service&quot; ),
+        <formula>IF ( OR(ISPICKVAL(Implementation_Type__c, &quot;Self Service&quot; ),ISPICKVAL(Implementation_Type__c, &quot;Enterprise&quot;),ISPICKVAL(Implementation_Type__c, &quot;Managed Server&quot; ) ),
           IF ( OR ( ISBLANK ( Amount ), ISBLANK ( Duration_months__c ) ),
                NULL,
                 Monthly_Recurring_Revenue_MRR__c  *  Fogbugz_Probability__c  
              ),
           NULL
-        ),
-     NULL
-   )</formula>
-        <inlineHelpText>Probability * MRR. This is only calculated for Implementation Type = Self Service.</inlineHelpText>
+        )</formula>
+        <inlineHelpText>Probability * MRR. This is only calculated for Implementation Type = Self Service, Managed Server, or Enterprise.</inlineHelpText>
         <label>Expected Monthly Recurring Revenue (MRR)</label>
         <precision>18</precision>
         <required>false</required>
         <scale>0</scale>
         <trackHistory>false</trackHistory>
-        <trackTrending>false</trackTrending>
         <type>Currency</type>
     </fields>
     <fields>
@@ -614,7 +619,6 @@ if((CloseDate + (30*Duration_months__c)) &lt; $Setup.Expected_Value__c.EV_Date_1
         <required>false</required>
         <scale>2</scale>
         <trackHistory>false</trackHistory>
-        <trackTrending>false</trackTrending>
         <type>Currency</type>
     </fields>
     <fields>
@@ -626,7 +630,6 @@ if((CloseDate + (30*Duration_months__c)) &lt; $Setup.Expected_Value__c.EV_Date_1
         <required>false</required>
         <scale>0</scale>
         <trackHistory>false</trackHistory>
-        <trackTrending>false</trackTrending>
         <type>Currency</type>
     </fields>
     <fields>
@@ -640,7 +643,6 @@ if((CloseDate + (30*Duration_months__c)) &lt; $Setup.Expected_Value__c.EV_Date_1
         <scale>2</scale>
         <trackFeedHistory>false</trackFeedHistory>
         <trackHistory>false</trackHistory>
-        <trackTrending>false</trackTrending>
         <type>Currency</type>
     </fields>
     <fields>
@@ -652,7 +654,6 @@ if((CloseDate + (30*Duration_months__c)) &lt; $Setup.Expected_Value__c.EV_Date_1
         <required>false</required>
         <trackFeedHistory>false</trackFeedHistory>
         <trackHistory>true</trackHistory>
-        <trackTrending>false</trackTrending>
         <type>Text</type>
         <unique>false</unique>
     </fields>
@@ -666,7 +667,6 @@ if((CloseDate + (30*Duration_months__c)) &lt; $Setup.Expected_Value__c.EV_Date_1
         <required>false</required>
         <trackFeedHistory>false</trackFeedHistory>
         <trackHistory>false</trackHistory>
-        <trackTrending>false</trackTrending>
         <type>Text</type>
         <unique>false</unique>
     </fields>
@@ -681,7 +681,6 @@ if((CloseDate + (30*Duration_months__c)) &lt; $Setup.Expected_Value__c.EV_Date_1
         <required>false</required>
         <scale>0</scale>
         <trackHistory>false</trackHistory>
-        <trackTrending>false</trackTrending>
         <type>Number</type>
         <unique>false</unique>
     </fields>
@@ -693,7 +692,6 @@ if((CloseDate + (30*Duration_months__c)) &lt; $Setup.Expected_Value__c.EV_Date_1
         <required>false</required>
         <trackFeedHistory>false</trackFeedHistory>
         <trackHistory>true</trackHistory>
-        <trackTrending>false</trackTrending>
         <type>DateTime</type>
     </fields>
     <fields>
@@ -705,7 +703,6 @@ if((CloseDate + (30*Duration_months__c)) &lt; $Setup.Expected_Value__c.EV_Date_1
         <label>Fogbugz Link</label>
         <required>false</required>
         <trackHistory>false</trackHistory>
-        <trackTrending>false</trackTrending>
         <type>Text</type>
         <unique>false</unique>
     </fields>
@@ -717,7 +714,6 @@ if((CloseDate + (30*Duration_months__c)) &lt; $Setup.Expected_Value__c.EV_Date_1
         <length>32768</length>
         <trackFeedHistory>false</trackFeedHistory>
         <trackHistory>false</trackHistory>
-        <trackTrending>false</trackTrending>
         <type>LongTextArea</type>
         <visibleLines>5</visibleLines>
     </fields>
@@ -729,7 +725,6 @@ if((CloseDate + (30*Duration_months__c)) &lt; $Setup.Expected_Value__c.EV_Date_1
         <required>false</required>
         <trackFeedHistory>false</trackFeedHistory>
         <trackHistory>false</trackHistory>
-        <trackTrending>false</trackTrending>
         <type>Text</type>
         <unique>false</unique>
     </fields>
@@ -762,7 +757,6 @@ if((CloseDate + (30*Duration_months__c)) &lt; $Setup.Expected_Value__c.EV_Date_1
         <label>Fogbugz Owner Mapping</label>
         <required>false</required>
         <trackHistory>false</trackHistory>
-        <trackTrending>false</trackTrending>
         <type>Text</type>
         <unique>false</unique>
     </fields>
@@ -775,7 +769,6 @@ if((CloseDate + (30*Duration_months__c)) &lt; $Setup.Expected_Value__c.EV_Date_1
         <scale>0</scale>
         <trackFeedHistory>false</trackFeedHistory>
         <trackHistory>false</trackHistory>
-        <trackTrending>false</trackTrending>
         <type>Percent</type>
     </fields>
     <fields>
@@ -787,7 +780,6 @@ if((CloseDate + (30*Duration_months__c)) &lt; $Setup.Expected_Value__c.EV_Date_1
         <required>false</required>
         <trackFeedHistory>false</trackFeedHistory>
         <trackHistory>false</trackHistory>
-        <trackTrending>false</trackTrending>
         <type>Text</type>
         <unique>false</unique>
     </fields>
@@ -803,7 +795,6 @@ if((CloseDate + (30*Duration_months__c)) &lt; $Setup.Expected_Value__c.EV_Date_1
         <required>false</required>
         <trackFeedHistory>false</trackFeedHistory>
         <trackHistory>false</trackHistory>
-        <trackTrending>false</trackTrending>
         <type>Lookup</type>
     </fields>
     <fields>
@@ -814,7 +805,6 @@ if((CloseDate + (30*Duration_months__c)) &lt; $Setup.Expected_Value__c.EV_Date_1
         <length>32768</length>
         <trackFeedHistory>false</trackFeedHistory>
         <trackHistory>false</trackHistory>
-        <trackTrending>false</trackTrending>
         <type>LongTextArea</type>
         <visibleLines>3</visibleLines>
     </fields>
@@ -836,7 +826,6 @@ Services_EV__c ,
         <required>false</required>
         <scale>0</scale>
         <trackHistory>false</trackHistory>
-        <trackTrending>false</trackTrending>
         <type>Currency</type>
     </fields>
     <fields>
@@ -857,7 +846,6 @@ Services_EV__c ,
         <required>false</required>
         <scale>0</scale>
         <trackHistory>false</trackHistory>
-        <trackTrending>false</trackTrending>
         <type>Currency</type>
     </fields>
     <fields>
@@ -878,7 +866,6 @@ Services_EV__c ,
         <required>false</required>
         <scale>0</scale>
         <trackHistory>false</trackHistory>
-        <trackTrending>false</trackTrending>
         <type>Currency</type>
     </fields>
     <fields>
@@ -899,7 +886,6 @@ if( (12*YEAR(today())+ MONTH(today()) + 3) &gt; (12*YEAR(CloseDate)+MONTH(CloseD
         <required>false</required>
         <scale>0</scale>
         <trackHistory>false</trackHistory>
-        <trackTrending>false</trackTrending>
         <type>Currency</type>
     </fields>
     <fields>
@@ -920,7 +906,6 @@ Services_EV__c ,
         <required>false</required>
         <scale>0</scale>
         <trackHistory>false</trackHistory>
-        <trackTrending>false</trackTrending>
         <type>Currency</type>
     </fields>
     <fields>
@@ -941,7 +926,6 @@ Services_EV__c ,
         <required>false</required>
         <scale>0</scale>
         <trackHistory>false</trackHistory>
-        <trackTrending>false</trackTrending>
         <type>Currency</type>
     </fields>
     <fields>
@@ -956,7 +940,6 @@ Services_EV__c ,
         <required>false</required>
         <scale>0</scale>
         <trackHistory>false</trackHistory>
-        <trackTrending>false</trackTrending>
         <type>Percent</type>
     </fields>
     <fields>
@@ -967,9 +950,19 @@ Services_EV__c ,
         <label>Ignore below field</label>
         <required>false</required>
         <trackHistory>false</trackHistory>
-        <trackTrending>false</trackTrending>
         <type>Text</type>
         <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Implementation_Services__c</fullName>
+        <defaultValue>false</defaultValue>
+        <description>Potentially interested in Implementation Services</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Potentially interested in Implementation Services</inlineHelpText>
+        <label>Implementation Services</label>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <type>Checkbox</type>
     </fields>
     <fields>
         <fullName>Implementation_Type__c</fullName>
@@ -996,7 +989,6 @@ Services_EV__c ,
         </picklist>
         <trackFeedHistory>false</trackFeedHistory>
         <trackHistory>true</trackHistory>
-        <trackTrending>false</trackTrending>
         <type>Picklist</type>
     </fields>
     <fields>
@@ -1011,7 +1003,6 @@ Services_EV__c ,
         <required>false</required>
         <trackFeedHistory>false</trackFeedHistory>
         <trackHistory>true</trackHistory>
-        <trackTrending>false</trackTrending>
         <type>Lookup</type>
     </fields>
     <fields>
@@ -1023,7 +1014,6 @@ Services_EV__c ,
         <scale>0</scale>
         <trackFeedHistory>false</trackFeedHistory>
         <trackHistory>false</trackHistory>
-        <trackTrending>false</trackTrending>
         <type>Currency</type>
     </fields>
     <fields>
@@ -1037,7 +1027,6 @@ Services_EV__c ,
         <required>false</required>
         <trackFeedHistory>false</trackFeedHistory>
         <trackHistory>false</trackHistory>
-        <trackTrending>false</trackTrending>
         <type>Lookup</type>
     </fields>
     <fields>
@@ -1089,44 +1078,34 @@ Services_EV__c ,
         </picklist>
         <trackFeedHistory>false</trackFeedHistory>
         <trackHistory>false</trackHistory>
-        <trackTrending>false</trackTrending>
         <type>Picklist</type>
     </fields>
     <fields>
         <fullName>IsPrivate</fullName>
         <trackFeedHistory>false</trackFeedHistory>
         <trackHistory>false</trackHistory>
-        <trackTrending>false</trackTrending>
     </fields>
     <fields>
         <fullName>LeadSource</fullName>
         <picklist>
             <picklistValues>
-                <fullName>Conference</fullName>
+                <fullName>Inbound - Contacted us directly</fullName>
                 <default>false</default>
             </picklistValues>
             <picklistValues>
-                <fullName>Outbound - Pulled from Forum</fullName>
+                <fullName>Inbound - Referred within same Org</fullName>
                 <default>false</default>
             </picklistValues>
             <picklistValues>
-                <fullName>Inbound - Called us directly</fullName>
+                <fullName>Inbound - Referred by another Org</fullName>
                 <default>false</default>
             </picklistValues>
             <picklistValues>
-                <fullName>Inbound - Consultation</fullName>
+                <fullName>Inbound - Referred by Dimagi staff</fullName>
                 <default>false</default>
             </picklistValues>
             <picklistValues>
-                <fullName>Inbound - Emailed us directly</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Inbound - HQ signup</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Inbound - information@dimagi.com</fullName>
+                <fullName>Outbound - Conference</fullName>
                 <default>false</default>
             </picklistValues>
             <picklistValues>
@@ -1134,7 +1113,15 @@ Services_EV__c ,
                 <default>false</default>
             </picklistValues>
             <picklistValues>
-                <fullName>Other</fullName>
+                <fullName>Outbound - Networking Event</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Outbound - Personal Contact</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Outbound - Pulled from Forum</fullName>
                 <default>false</default>
             </picklistValues>
             <picklistValues>
@@ -1146,30 +1133,57 @@ Services_EV__c ,
                 <default>false</default>
             </picklistValues>
             <picklistValues>
+                <fullName>Inbound - Emailed us directly DO NOT USE</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Inbound - Conference (came to us after)</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Inbound - Called us directly -DO NOT USE</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Inbound-Tried schedule call dir. DONT U</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Inbound - Contacted us on Social Media</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Inbound - Event Sign Up</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Inbound - HQ signup</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Inbound - Emailed info@ DO NOT USE</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
                 <fullName>Inbound - Referral</fullName>
                 <default>false</default>
             </picklistValues>
             <picklistValues>
-                <fullName>Webinar Sign Up</fullName>
+                <fullName>Inbound - Webinar Sign Up</fullName>
                 <default>false</default>
             </picklistValues>
             <picklistValues>
-                <fullName>Web Sign Up</fullName>
+                <fullName>Inbound- Workshop Sign Up</fullName>
                 <default>false</default>
             </picklistValues>
             <picklistValues>
-                <fullName>Workshop</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Inbound - Contacted Through Social Media</fullName>
+                <fullName>Other</fullName>
                 <default>false</default>
             </picklistValues>
             <sorted>false</sorted>
         </picklist>
         <trackFeedHistory>false</trackFeedHistory>
         <trackHistory>false</trackHistory>
-        <trackTrending>false</trackTrending>
         <type>Picklist</type>
     </fields>
     <fields>
@@ -1180,7 +1194,6 @@ Services_EV__c ,
         <required>false</required>
         <trackFeedHistory>false</trackFeedHistory>
         <trackHistory>true</trackHistory>
-        <trackTrending>false</trackTrending>
         <type>TextArea</type>
     </fields>
     <fields>
@@ -1205,43 +1218,50 @@ Services_EV__c ,
         </picklist>
         <trackFeedHistory>false</trackFeedHistory>
         <trackHistory>true</trackHistory>
-        <trackTrending>false</trackTrending>
         <type>Picklist</type>
     </fields>
     <fields>
-        <fullName>Monthly_Recurring_Revenue_MRR__c</fullName>
-        <description>Amount divided by Duration (months). The Amount of monthly recurring product revenue (absolute amount). MRR is only calculated for Implementation Type = Self Service</description>
+        <fullName>Major_Subcontractor__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <description>Only use this if you are priming an award and have 1 major subcontractor</description>
         <externalId>false</externalId>
-        <formula>IF ( Renewal_expected__c,
-     IF ( ISPICKVAL(Implementation_Type__c, &quot;Self Service&quot; ),
+        <label>Major Subcontractor</label>
+        <referenceTo>Account</referenceTo>
+        <relationshipLabel>Opportunities (Major Subcontractor)</relationshipLabel>
+        <relationshipName>Opportunities5</relationshipName>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>Monthly_Recurring_Revenue_MRR__c</fullName>
+        <description>Amount divided by Duration (months). The Amount of monthly recurring product revenue (absolute amount). MRR is only calculated for Implementation Type = Self Service, Enterprise or Managed Server.</description>
+        <externalId>false</externalId>
+        <formula>IF ( OR(ISPICKVAL(Implementation_Type__c, &quot;Self Service&quot; ),ISPICKVAL(Implementation_Type__c, &quot;Enterprise&quot; ),ISPICKVAL(Implementation_Type__c, &quot;Managed Server&quot; )),
           IF ( OR ( ISBLANK ( Amount ), ISBLANK ( Duration_months__c ) ),
                NULL,
                Amount / Duration_months__c
              ),
           NULL
-        ),
-     NULL
-   )</formula>
-        <inlineHelpText>Amount divided by Duration (months). The Amount of monthly recurring product revenue (absolute amount). MRR is only calculated for Implementation Type = Self Service</inlineHelpText>
+        )</formula>
+        <inlineHelpText>Amount divided by Duration (months). The Amount of monthly recurring product revenue (absolute amount). MRR is only calculated for Implementation Type = Self Service, Enterprise or Managed Server.</inlineHelpText>
         <label>Monthly Recurring Revenue (MRR)</label>
         <precision>18</precision>
         <required>false</required>
         <scale>0</scale>
         <trackHistory>false</trackHistory>
-        <trackTrending>false</trackTrending>
         <type>Currency</type>
     </fields>
     <fields>
         <fullName>Name</fullName>
         <trackFeedHistory>true</trackFeedHistory>
         <trackHistory>false</trackHistory>
-        <trackTrending>false</trackTrending>
     </fields>
     <fields>
         <fullName>NextStep</fullName>
         <trackFeedHistory>false</trackFeedHistory>
         <trackHistory>false</trackHistory>
-        <trackTrending>false</trackTrending>
     </fields>
     <fields>
         <fullName>Number_of_Users__c</fullName>
@@ -1254,9 +1274,81 @@ Services_EV__c ,
         <scale>0</scale>
         <trackFeedHistory>false</trackFeedHistory>
         <trackHistory>false</trackHistory>
-        <trackTrending>false</trackTrending>
         <type>Number</type>
         <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Offer_Expiration__c</fullName>
+        <description>Date of offer expiration.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Date of offer expiration.</inlineHelpText>
+        <label>Offer Expiration</label>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>Offer_Given_Notes__c</fullName>
+        <description>Notes on any offers given.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Notes on any offers given.</inlineHelpText>
+        <label>Offer Given - Notes</label>
+        <length>32768</length>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <type>LongTextArea</type>
+        <visibleLines>3</visibleLines>
+    </fields>
+    <fields>
+        <fullName>Offer_Given__c</fullName>
+        <description>Offer given.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Offer given.</inlineHelpText>
+        <label>Offer Given</label>
+        <picklist>
+            <picklistValues>
+                <fullName>One month free</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Onboarding - 1hr (Pro)</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Onboarding - 2hr (Advanced)</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Onboarding - 4hr (Enterprise)</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Extend Trial</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Report builder trial</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Two months free</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Coaching</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Other</fullName>
+                <default>false</default>
+            </picklistValues>
+            <sorted>false</sorted>
+        </picklist>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <type>MultiselectPicklist</type>
+        <visibleLines>4</visibleLines>
     </fields>
     <fields>
         <fullName>Onsite_Time_Required__c</fullName>
@@ -1266,7 +1358,6 @@ Services_EV__c ,
         <length>2000</length>
         <trackFeedHistory>false</trackFeedHistory>
         <trackHistory>false</trackHistory>
-        <trackTrending>false</trackTrending>
         <type>LongTextArea</type>
         <visibleLines>2</visibleLines>
     </fields>
@@ -1289,7 +1380,6 @@ Services_EV__c ,
         <label>Opp. Stage</label>
         <required>false</required>
         <trackHistory>false</trackHistory>
-        <trackTrending>false</trackTrending>
         <type>Text</type>
         <unique>false</unique>
     </fields>
@@ -1305,7 +1395,6 @@ Services_EV__c ,
         <required>false</required>
         <trackFeedHistory>false</trackFeedHistory>
         <trackHistory>true</trackHistory>
-        <trackTrending>false</trackTrending>
         <type>Lookup</type>
     </fields>
     <fields>
@@ -1328,7 +1417,7 @@ Services_EV__c ,
                 <default>false</default>
             </picklistValues>
             <picklistValues>
-                <fullName>Outbound (Called or Emailed)</fullName>
+                <fullName>Outbound - called or emailed contact</fullName>
                 <default>false</default>
             </picklistValues>
             <picklistValues>
@@ -1343,11 +1432,18 @@ Services_EV__c ,
                 <fullName>Existing client</fullName>
                 <default>false</default>
             </picklistValues>
+            <picklistValues>
+                <fullName>Outbound - called or emailed past client</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Applied directly to RFP</fullName>
+                <default>false</default>
+            </picklistValues>
             <sorted>false</sorted>
         </picklist>
         <trackFeedHistory>false</trackFeedHistory>
         <trackHistory>false</trackHistory>
-        <trackTrending>false</trackTrending>
         <type>Picklist</type>
     </fields>
     <fields>
@@ -1386,7 +1482,6 @@ Services_EV__c ,
         <label>Opportunity Validation</label>
         <required>false</required>
         <trackHistory>false</trackHistory>
-        <trackTrending>false</trackTrending>
         <type>Text</type>
         <unique>false</unique>
     </fields>
@@ -1405,8 +1500,20 @@ Services_EV__c ,
         </picklist>
         <trackFeedHistory>false</trackFeedHistory>
         <trackHistory>false</trackHistory>
-        <trackTrending>false</trackTrending>
         <type>Picklist</type>
+    </fields>
+    <fields>
+        <fullName>Ops_to_customer_lead_time__c</fullName>
+        <externalId>false</externalId>
+        <formula>IF(NOT(ISBLANK( CloseDate  )) &amp;&amp; NOT(ISBLANK(  CreatedDate  )),(((YEAR(  CloseDate  ) -YEAR(DATEVALUE(CreatedDate )) - 1) *12) + (12 - MONTH(DATEVALUE( CreatedDate )) +1) + MONTH( CloseDate  )),null)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Ops to customer lead time</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackHistory>false</trackHistory>
+        <type>Number</type>
+        <unique>false</unique>
     </fields>
     <fields>
         <fullName>Option_Year__c</fullName>
@@ -1417,15 +1524,51 @@ Services_EV__c ,
         <label>Option Year or Contract Extension?</label>
         <trackFeedHistory>false</trackFeedHistory>
         <trackHistory>false</trackHistory>
-        <trackTrending>false</trackTrending>
         <type>Checkbox</type>
     </fields>
     <fields>
         <fullName>OwnerId</fullName>
         <trackFeedHistory>true</trackFeedHistory>
         <trackHistory>true</trackHistory>
-        <trackTrending>false</trackTrending>
         <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>Plan__c</fullName>
+        <description>Best Guess at Software Plan</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Best Guess at Software Plan</inlineHelpText>
+        <label>Plan Budget</label>
+        <picklist>
+            <picklistValues>
+                <fullName>Unknown</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Community</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Standard</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Pro</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Advanced</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Enterprise</fullName>
+                <default>false</default>
+            </picklistValues>
+            <restrictedPicklist>true</restrictedPicklist>
+            <sorted>false</sorted>
+        </picklist>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <type>Picklist</type>
     </fields>
     <fields>
         <fullName>Potential_Prime_1__c</fullName>
@@ -1438,7 +1581,6 @@ Services_EV__c ,
         <required>false</required>
         <trackFeedHistory>false</trackFeedHistory>
         <trackHistory>false</trackHistory>
-        <trackTrending>false</trackTrending>
         <type>Lookup</type>
     </fields>
     <fields>
@@ -1452,12 +1594,10 @@ Services_EV__c ,
         <required>false</required>
         <trackFeedHistory>false</trackFeedHistory>
         <trackHistory>false</trackHistory>
-        <trackTrending>false</trackTrending>
         <type>Lookup</type>
     </fields>
     <fields>
         <fullName>Pricebook2Id</fullName>
-        <trackTrending>false</trackTrending>
         <type>Lookup</type>
     </fields>
     <fields>
@@ -1465,7 +1605,7 @@ Services_EV__c ,
         <inlineHelpText>Fill in the expected Probability that the opportunity will close into a contract (best guess).</inlineHelpText>
         <trackFeedHistory>false</trackFeedHistory>
         <trackHistory>true</trackHistory>
-        <trackTrending>false</trackTrending>
+        <trackTrending>true</trackTrending>
     </fields>
     <fields>
         <fullName>Product_Text__c</fullName>
@@ -1476,7 +1616,6 @@ Services_EV__c ,
         <required>false</required>
         <trackFeedHistory>false</trackFeedHistory>
         <trackHistory>true</trackHistory>
-        <trackTrending>false</trackTrending>
         <type>TextArea</type>
     </fields>
     <fields>
@@ -1487,7 +1626,6 @@ Services_EV__c ,
         <length>32768</length>
         <trackFeedHistory>false</trackFeedHistory>
         <trackHistory>false</trackHistory>
-        <trackTrending>false</trackTrending>
         <type>LongTextArea</type>
         <visibleLines>4</visibleLines>
     </fields>
@@ -1498,7 +1636,6 @@ Services_EV__c ,
         <required>false</required>
         <trackFeedHistory>false</trackFeedHistory>
         <trackHistory>false</trackHistory>
-        <trackTrending>false</trackTrending>
         <type>Url</type>
     </fields>
     <fields>
@@ -1509,7 +1646,6 @@ Services_EV__c ,
         <required>false</required>
         <trackFeedHistory>false</trackFeedHistory>
         <trackHistory>false</trackHistory>
-        <trackTrending>false</trackTrending>
         <type>TextArea</type>
     </fields>
     <fields>
@@ -1520,8 +1656,99 @@ Services_EV__c ,
         <label>Proposal Questions Sent?</label>
         <trackFeedHistory>false</trackFeedHistory>
         <trackHistory>false</trackHistory>
-        <trackTrending>false</trackTrending>
         <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Qualiftying_Authority__c</fullName>
+        <defaultValue>false</defaultValue>
+        <description>Check this box if the lead has clear authority for a sale.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Check this box if the lead has clear authority for a sale.</inlineHelpText>
+        <label>Qualiftying - Authority</label>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Qualifying_Authority_notes__c</fullName>
+        <description>Questions to ask - &quot;In addition to yourself, who else at your company is facing these problems? Are there any issues that they might be concerned with? What is your purchasing process?&quot;</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Questions to ask - &quot;In addition to yourself, who else at your company is facing these problems? Are there any issues that they might be concerned with? What is your purchasing process?&quot;</inlineHelpText>
+        <label>Qualifying - Authority notes</label>
+        <length>32768</length>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <type>LongTextArea</type>
+        <visibleLines>3</visibleLines>
+    </fields>
+    <fields>
+        <fullName>Qualifying_Budget__c</fullName>
+        <defaultValue>false</defaultValue>
+        <description>Check this box if the lead has clear budget available for a service or product. If they don&apos;t have budget or it is unclear, leave unchecked and put notes in the text field.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Check this box if the lead has clear budget available for a service or product. If they don&apos;t have budget or it is unclear, leave unchecked and put notes in the text field.</inlineHelpText>
+        <label>Qualifying - Budget</label>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Qualifying_Budget_notes__c</fullName>
+        <description>Describe any notes about budget, and any open questions to be answered. E.g. &quot;Are you responsible for establishing budget? Do you have budget allocated? Ideally, what are you looking to invest?&quot;</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Describe any notes about budget, and any open questions to be answered. E.g. &quot;Are you responsible for establishing budget? Do you have budget allocated? Ideally, what are you looking to invest?&quot;</inlineHelpText>
+        <label>Qualifying - Budget notes</label>
+        <length>32768</length>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <type>LongTextArea</type>
+        <visibleLines>3</visibleLines>
+    </fields>
+    <fields>
+        <fullName>Qualifying_Need__c</fullName>
+        <defaultValue>false</defaultValue>
+        <description>Check this box if the lead has clear need (business pain or challenges that CommCare solves).</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Check this box if the lead has clear need (business pain or challenges that CommCare solves).</inlineHelpText>
+        <label>Qualifying - Need</label>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Qualifying_Need_notes__c</fullName>
+        <description>Notes / open questions about the challenge the lead sees and fit with CommCare.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Notes / open questions about the challenge the lead sees and fit with CommCare.</inlineHelpText>
+        <label>Qualifying - Need notes</label>
+        <length>32768</length>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <type>LongTextArea</type>
+        <visibleLines>3</visibleLines>
+    </fields>
+    <fields>
+        <fullName>Qualifying_Timeline__c</fullName>
+        <defaultValue>false</defaultValue>
+        <description>Check this box if the timeline is clear and less than 6 months away.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Check this box if the timeline is clear and less than 6 months away.</inlineHelpText>
+        <label>Qualifying - Timeline</label>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Qualifying_Timeline_notes__c</fullName>
+        <description>Use this field to track notes / open questions about timeline.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Use this field to track notes / open questions about timeline.</inlineHelpText>
+        <label>Qualifying - Timeline notes</label>
+        <length>32768</length>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <type>LongTextArea</type>
+        <visibleLines>3</visibleLines>
     </fields>
     <fields>
         <fullName>RFP_Coordinator__c</fullName>
@@ -1534,7 +1761,6 @@ Services_EV__c ,
         <required>false</required>
         <trackFeedHistory>false</trackFeedHistory>
         <trackHistory>false</trackHistory>
-        <trackTrending>false</trackTrending>
         <type>Lookup</type>
     </fields>
     <fields>
@@ -1560,7 +1786,6 @@ Services_EV__c ,
         </picklist>
         <trackFeedHistory>false</trackFeedHistory>
         <trackHistory>true</trackHistory>
-        <trackTrending>false</trackTrending>
         <type>Picklist</type>
     </fields>
     <fields>
@@ -1572,7 +1797,6 @@ Services_EV__c ,
         <label>RFP Outreach Effort</label>
         <trackFeedHistory>false</trackFeedHistory>
         <trackHistory>false</trackHistory>
-        <trackTrending>false</trackTrending>
         <type>Checkbox</type>
     </fields>
     <fields>
@@ -1584,7 +1808,17 @@ Services_EV__c ,
         <label>Recommended Proposal Text</label>
         <trackFeedHistory>false</trackFeedHistory>
         <trackHistory>false</trackHistory>
-        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Remote_Support_Services__c</fullName>
+        <defaultValue>false</defaultValue>
+        <description>Potentially interested in Remote Support Services</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Potentially interested in Remote Support Services</inlineHelpText>
+        <label>Remote Support Services</label>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
         <type>Checkbox</type>
     </fields>
     <fields>
@@ -1596,7 +1830,17 @@ Services_EV__c ,
         <label>SaaS product renewal expected</label>
         <trackFeedHistory>false</trackFeedHistory>
         <trackHistory>false</trackHistory>
-        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Report_Builder__c</fullName>
+        <defaultValue>false</defaultValue>
+        <description>Potentially interested in Report Builder</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Potentially interested in Report Builder</inlineHelpText>
+        <label>Report Builder</label>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
         <type>Checkbox</type>
     </fields>
     <fields>
@@ -1607,7 +1851,6 @@ Services_EV__c ,
         <required>false</required>
         <trackFeedHistory>false</trackFeedHistory>
         <trackHistory>false</trackHistory>
-        <trackTrending>false</trackTrending>
         <type>TextArea</type>
     </fields>
     <fields>
@@ -1619,7 +1862,16 @@ Services_EV__c ,
         <label>Requires Dev Work</label>
         <trackFeedHistory>false</trackFeedHistory>
         <trackHistory>false</trackHistory>
-        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Resubmission__c</fullName>
+        <defaultValue>false</defaultValue>
+        <description>Is this proposal a resubmission?</description>
+        <externalId>false</externalId>
+        <label>Resubmission</label>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
         <type>Checkbox</type>
     </fields>
     <fields>
@@ -1631,7 +1883,6 @@ Services_EV__c ,
         <label>Salesforce Opportunity ID:</label>
         <required>false</required>
         <trackHistory>false</trackHistory>
-        <trackTrending>false</trackTrending>
         <type>Text</type>
         <unique>false</unique>
     </fields>
@@ -1646,7 +1897,6 @@ Services_EV__c ,
         <required>false</required>
         <scale>0</scale>
         <trackHistory>false</trackHistory>
-        <trackTrending>false</trackTrending>
         <type>Currency</type>
     </fields>
     <fields>
@@ -1656,7 +1906,6 @@ Services_EV__c ,
         <required>false</required>
         <trackFeedHistory>false</trackFeedHistory>
         <trackHistory>false</trackHistory>
-        <trackTrending>false</trackTrending>
         <type>TextArea</type>
     </fields>
     <fields>
@@ -1666,7 +1915,6 @@ Services_EV__c ,
         <length>2000</length>
         <trackFeedHistory>false</trackFeedHistory>
         <trackHistory>false</trackHistory>
-        <trackTrending>false</trackTrending>
         <type>LongTextArea</type>
         <visibleLines>3</visibleLines>
     </fields>
@@ -1678,7 +1926,6 @@ Services_EV__c ,
         <label>Snapshot Date</label>
         <required>false</required>
         <trackHistory>false</trackHistory>
-        <trackTrending>false</trackTrending>
         <type>Date</type>
     </fields>
     <fields>
@@ -1689,7 +1936,6 @@ Services_EV__c ,
         <label>Snapshot Name (Total)</label>
         <required>false</required>
         <trackHistory>false</trackHistory>
-        <trackTrending>false</trackTrending>
         <type>Text</type>
         <unique>false</unique>
     </fields>
@@ -1701,7 +1947,6 @@ Services_EV__c ,
         <label>Snapshot Name</label>
         <required>false</required>
         <trackHistory>false</trackHistory>
-        <trackTrending>false</trackTrending>
         <type>Text</type>
         <unique>false</unique>
     </fields>
@@ -1719,7 +1964,6 @@ Services_EV__c ,
         </picklist>
         <trackFeedHistory>false</trackFeedHistory>
         <trackHistory>false</trackHistory>
-        <trackTrending>false</trackTrending>
         <type>Picklist</type>
     </fields>
     <fields>
@@ -1729,7 +1973,6 @@ Services_EV__c ,
         <length>2000</length>
         <trackFeedHistory>false</trackFeedHistory>
         <trackHistory>false</trackHistory>
-        <trackTrending>false</trackTrending>
         <type>LongTextArea</type>
         <visibleLines>2</visibleLines>
     </fields>
@@ -1739,132 +1982,133 @@ Services_EV__c ,
         <picklist>
             <picklistValues>
                 <fullName>Stage 1 - Connect</fullName>
-                <closed>false</closed>
                 <color>#0B6FCE</color>
                 <default>false</default>
+                <description>Do not use</description>
+                <closed>false</closed>
                 <forecastCategory>Pipeline</forecastCategory>
                 <probability>0</probability>
                 <won>false</won>
             </picklistValues>
             <picklistValues>
                 <fullName>Stage 2 - Talking</fullName>
-                <closed>false</closed>
                 <color>#78C953</color>
                 <default>false</default>
                 <description>Talking with an org but there is no concrete opportunity yet.</description>
+                <closed>false</closed>
                 <forecastCategory>Pipeline</forecastCategory>
                 <probability>0</probability>
                 <won>false</won>
             </picklistValues>
             <picklistValues>
                 <fullName>Stage 3 - Prospect</fullName>
-                <closed>false</closed>
                 <color>#DDDDDD</color>
                 <default>false</default>
                 <description>There is a real discreet opportunity now. A Fogbugz ticket is created.</description>
+                <closed>false</closed>
                 <forecastCategory>Pipeline</forecastCategory>
                 <probability>0</probability>
                 <won>false</won>
             </picklistValues>
             <picklistValues>
                 <fullName>Stage 4 - Proposal Development</fullName>
-                <closed>false</closed>
                 <color>#BBBBBB</color>
                 <default>false</default>
                 <description>Developing a proposal.</description>
+                <closed>false</closed>
                 <forecastCategory>Pipeline</forecastCategory>
                 <probability>0</probability>
                 <won>false</won>
             </picklistValues>
             <picklistValues>
                 <fullName>Stage 5 - Submitted</fullName>
-                <closed>false</closed>
                 <color>#999999</color>
                 <default>false</default>
                 <description>You have submitted the proposal</description>
+                <closed>false</closed>
                 <forecastCategory>Pipeline</forecastCategory>
                 <probability>0</probability>
                 <won>false</won>
             </picklistValues>
             <picklistValues>
                 <fullName>Stage 6 - In Negotiations</fullName>
-                <closed>false</closed>
                 <color>#666666</color>
                 <default>false</default>
                 <description>Won the award and negotiating price.</description>
+                <closed>false</closed>
                 <forecastCategory>Pipeline</forecastCategory>
                 <probability>0</probability>
                 <won>false</won>
             </picklistValues>
             <picklistValues>
                 <fullName>Closed</fullName>
-                <closed>true</closed>
                 <color>#FF99FF</color>
                 <default>false</default>
+                <closed>true</closed>
                 <forecastCategory>Omitted</forecastCategory>
                 <probability>0</probability>
                 <won>false</won>
             </picklistValues>
             <picklistValues>
                 <fullName>Keep-Warm</fullName>
-                <closed>false</closed>
                 <color>#0B24BE</color>
                 <default>false</default>
+                <closed>false</closed>
                 <forecastCategory>Pipeline</forecastCategory>
                 <probability>0</probability>
                 <won>false</won>
             </picklistValues>
             <picklistValues>
                 <fullName>Closed - Won</fullName>
-                <closed>true</closed>
                 <color>#33CC00</color>
                 <default>false</default>
+                <closed>true</closed>
                 <forecastCategory>Closed</forecastCategory>
                 <probability>100</probability>
                 <won>true</won>
             </picklistValues>
             <picklistValues>
                 <fullName>Closed - Lost</fullName>
-                <closed>true</closed>
                 <color>#FF0000</color>
                 <default>false</default>
+                <closed>true</closed>
                 <forecastCategory>Omitted</forecastCategory>
                 <probability>0</probability>
                 <won>false</won>
             </picklistValues>
             <picklistValues>
                 <fullName>Cash on Hand</fullName>
-                <closed>false</closed>
                 <color>#641CCF</color>
                 <default>false</default>
+                <closed>false</closed>
                 <forecastCategory>Pipeline</forecastCategory>
                 <probability>100</probability>
                 <won>false</won>
             </picklistValues>
             <picklistValues>
                 <fullName>Closed - No Go</fullName>
-                <closed>true</closed>
                 <color>#660000</color>
                 <default>false</default>
+                <closed>true</closed>
                 <forecastCategory>Omitted</forecastCategory>
                 <probability>0</probability>
                 <won>false</won>
             </picklistValues>
             <picklistValues>
                 <fullName>Predicted pipeline</fullName>
-                <closed>false</closed>
                 <color>#2F5D85</color>
                 <default>false</default>
                 <description>This is the estimated,unplanned revenue for a given month.</description>
+                <closed>false</closed>
                 <forecastCategory>Pipeline</forecastCategory>
                 <probability>100</probability>
                 <won>false</won>
             </picklistValues>
             <picklistValues>
                 <fullName>Core run rate</fullName>
-                <closed>false</closed>
                 <color>#AFCADF</color>
                 <default>false</default>
+                <closed>false</closed>
                 <forecastCategory>Pipeline</forecastCategory>
                 <probability>100</probability>
                 <won>false</won>
@@ -1873,7 +2117,7 @@ Services_EV__c ,
         </picklist>
         <trackFeedHistory>true</trackFeedHistory>
         <trackHistory>true</trackHistory>
-        <trackTrending>false</trackTrending>
+        <trackTrending>true</trackTrending>
         <type>Picklist</type>
     </fields>
     <fields>
@@ -1886,7 +2130,6 @@ Services_EV__c ,
         <required>false</required>
         <scale>0</scale>
         <trackHistory>false</trackHistory>
-        <trackTrending>false</trackTrending>
         <type>Number</type>
         <unique>false</unique>
     </fields>
@@ -1897,7 +2140,6 @@ Services_EV__c ,
         <required>false</required>
         <trackFeedHistory>false</trackFeedHistory>
         <trackHistory>false</trackHistory>
-        <trackTrending>false</trackTrending>
         <type>Date</type>
     </fields>
     <fields>
@@ -1912,7 +2154,6 @@ Services_EV__c ,
         <required>false</required>
         <trackFeedHistory>false</trackFeedHistory>
         <trackHistory>false</trackHistory>
-        <trackTrending>false</trackTrending>
         <type>Lookup</type>
     </fields>
     <fields>
@@ -1927,7 +2168,6 @@ Services_EV__c ,
         <required>false</required>
         <trackFeedHistory>false</trackFeedHistory>
         <trackHistory>false</trackHistory>
-        <trackTrending>false</trackTrending>
         <type>Lookup</type>
     </fields>
     <fields>
@@ -2167,7 +2407,6 @@ Services_EV__c ,
         </picklist>
         <trackFeedHistory>false</trackFeedHistory>
         <trackHistory>false</trackHistory>
-        <trackTrending>false</trackTrending>
         <type>MultiselectPicklist</type>
         <visibleLines>8</visibleLines>
     </fields>
@@ -2216,9 +2455,23 @@ Services_EV__c ,
         </picklist>
         <trackFeedHistory>false</trackFeedHistory>
         <trackHistory>false</trackHistory>
-        <trackTrending>false</trackTrending>
         <type>MultiselectPicklist</type>
         <visibleLines>4</visibleLines>
+    </fields>
+    <fields>
+        <fullName>Subscription__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <description>Accounting subscription object that represents the new subscription that came out of the closed opp (only fill in if opp closed)</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Accounting subscription object that represents the new subscription that came out of the closed opp (only fill in if opp closed)</inlineHelpText>
+        <label>Accounting Subscription</label>
+        <referenceTo>Accounting_Subscription__c</referenceTo>
+        <relationshipLabel>Opportunities</relationshipLabel>
+        <relationshipName>Opportunities</relationshipName>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <type>Lookup</type>
     </fields>
     <fields>
         <fullName>Tag__c</fullName>
@@ -2228,7 +2481,6 @@ Services_EV__c ,
         <required>false</required>
         <trackFeedHistory>false</trackFeedHistory>
         <trackHistory>true</trackHistory>
-        <trackTrending>false</trackTrending>
         <type>TextArea</type>
     </fields>
     <fields>
@@ -2239,22 +2491,20 @@ Services_EV__c ,
         <length>32768</length>
         <trackFeedHistory>false</trackFeedHistory>
         <trackHistory>false</trackHistory>
-        <trackTrending>false</trackTrending>
         <type>LongTextArea</type>
         <visibleLines>5</visibleLines>
     </fields>
     <fields>
         <fullName>Tech_Services_Budget__c</fullName>
-        <description>Services Budget * (1 - % of Services budget for GS)</description>
+        <description>(1- Expected Buffer %) * EV of Non-Expense Budget * (1- % of Services budget for GS)</description>
         <externalId>false</externalId>
-        <formula>Services_EV__c *(1- of_Execution_budget_for_GS__c )</formula>
-        <inlineHelpText>Services Budget * (1 - % of Services budget for GS)</inlineHelpText>
+        <formula>(1-Expected_Buffer__c ) * Expected_Value_Minus_Income__c * (1-of_Execution_budget_for_GS__c)</formula>
+        <inlineHelpText>(1- Expected Buffer %) * EV of Non-Expense Budget * (1- % of Services budget for GS)</inlineHelpText>
         <label>Tech Services Budget</label>
         <precision>18</precision>
         <required>false</required>
         <scale>0</scale>
         <trackHistory>false</trackHistory>
-        <trackTrending>false</trackTrending>
         <type>Currency</type>
     </fields>
     <fields>
@@ -2269,7 +2519,6 @@ Services_EV__c ,
         <required>false</required>
         <trackFeedHistory>false</trackFeedHistory>
         <trackHistory>false</trackHistory>
-        <trackTrending>false</trackTrending>
         <type>Lookup</type>
     </fields>
     <fields>
@@ -2284,7 +2533,6 @@ Services_EV__c ,
         <required>false</required>
         <trackFeedHistory>false</trackFeedHistory>
         <trackHistory>false</trackHistory>
-        <trackTrending>false</trackTrending>
         <type>Lookup</type>
     </fields>
     <fields>
@@ -2303,14 +2551,12 @@ Services_EV__c ,
         <required>false</required>
         <scale>0</scale>
         <trackHistory>false</trackHistory>
-        <trackTrending>false</trackTrending>
         <type>Currency</type>
     </fields>
     <fields>
         <fullName>TotalOpportunityQuantity</fullName>
         <trackFeedHistory>false</trackFeedHistory>
         <trackHistory>false</trackHistory>
-        <trackTrending>false</trackTrending>
     </fields>
     <fields>
         <fullName>Total_Days_Not_Updated__c</fullName>
@@ -2324,7 +2570,6 @@ Services_EV__c ,
         <required>false</required>
         <scale>0</scale>
         <trackHistory>false</trackHistory>
-        <trackTrending>false</trackTrending>
         <type>Number</type>
         <unique>false</unique>
     </fields>
@@ -2344,7 +2589,6 @@ Services_EV__c ,
         <required>false</required>
         <scale>0</scale>
         <trackHistory>false</trackHistory>
-        <trackTrending>false</trackTrending>
         <type>Currency</type>
     </fields>
     <fields>
@@ -2362,7 +2606,6 @@ Services_EV__c ,
         </picklist>
         <trackFeedHistory>false</trackFeedHistory>
         <trackHistory>false</trackHistory>
-        <trackTrending>false</trackTrending>
         <type>Picklist</type>
     </fields>
     <fields>
@@ -2375,7 +2618,6 @@ Services_EV__c ,
         <required>false</required>
         <scale>1</scale>
         <trackHistory>false</trackHistory>
-        <trackTrending>false</trackTrending>
         <type>Number</type>
         <unique>false</unique>
     </fields>
@@ -2386,7 +2628,6 @@ Services_EV__c ,
         <length>32768</length>
         <trackFeedHistory>false</trackFeedHistory>
         <trackHistory>false</trackHistory>
-        <trackTrending>false</trackTrending>
         <type>LongTextArea</type>
         <visibleLines>3</visibleLines>
     </fields>
@@ -2398,7 +2639,6 @@ Services_EV__c ,
         <length>32768</length>
         <trackFeedHistory>false</trackFeedHistory>
         <trackHistory>false</trackHistory>
-        <trackTrending>false</trackTrending>
         <type>LongTextArea</type>
         <visibleLines>3</visibleLines>
     </fields>
@@ -2418,7 +2658,6 @@ if( (12*YEAR(today())+ MONTH(today()) + 12) &gt; (12*YEAR(CloseDate)+MONTH(Close
         <required>false</required>
         <scale>2</scale>
         <trackHistory>false</trackHistory>
-        <trackTrending>false</trackTrending>
         <type>Currency</type>
     </fields>
     <fields>
@@ -2437,7 +2676,6 @@ Expected_Value__c,
         <required>false</required>
         <scale>2</scale>
         <trackHistory>false</trackHistory>
-        <trackTrending>false</trackTrending>
         <type>Currency</type>
     </fields>
     <fields>
@@ -2456,7 +2694,6 @@ Expected_Value_Minus_Income__c ,
         <required>false</required>
         <scale>2</scale>
         <trackHistory>false</trackHistory>
-        <trackTrending>false</trackTrending>
         <type>Currency</type>
     </fields>
     <fields>
@@ -2475,7 +2712,6 @@ Expected_Value__c,
         <required>false</required>
         <scale>2</scale>
         <trackHistory>false</trackHistory>
-        <trackTrending>false</trackTrending>
         <type>Currency</type>
     </fields>
     <fields>
@@ -2494,7 +2730,6 @@ Expected_Value_Minus_Income__c ,
         <required>false</required>
         <scale>2</scale>
         <trackHistory>false</trackHistory>
-        <trackTrending>false</trackTrending>
         <type>Currency</type>
     </fields>
     <fields>
@@ -2513,7 +2748,6 @@ if( (12*YEAR(today())+ MONTH(today()) + 3) &gt; (12*YEAR(CloseDate)+MONTH(CloseD
         <required>false</required>
         <scale>2</scale>
         <trackHistory>false</trackHistory>
-        <trackTrending>false</trackTrending>
         <type>Currency</type>
     </fields>
     <fields>
@@ -2524,7 +2758,6 @@ if( (12*YEAR(today())+ MONTH(today()) + 3) &gt; (12*YEAR(CloseDate)+MONTH(CloseD
         <length>32768</length>
         <trackFeedHistory>false</trackFeedHistory>
         <trackHistory>false</trackHistory>
-        <trackTrending>false</trackTrending>
         <type>LongTextArea</type>
         <visibleLines>3</visibleLines>
     </fields>
@@ -2544,7 +2777,6 @@ Expected_Value__c,
         <required>false</required>
         <scale>2</scale>
         <trackHistory>false</trackHistory>
-        <trackTrending>false</trackTrending>
         <type>Currency</type>
     </fields>
     <fields>
@@ -2563,7 +2795,6 @@ Expected_Value_Minus_Income__c ,
         <required>false</required>
         <scale>2</scale>
         <trackHistory>false</trackHistory>
-        <trackTrending>false</trackTrending>
         <type>Currency</type>
     </fields>
     <fields>
@@ -2574,7 +2805,6 @@ Expected_Value_Minus_Income__c ,
         <length>32768</length>
         <trackFeedHistory>false</trackFeedHistory>
         <trackHistory>false</trackHistory>
-        <trackTrending>false</trackTrending>
         <type>LongTextArea</type>
         <visibleLines>3</visibleLines>
     </fields>
@@ -2586,7 +2816,6 @@ Expected_Value_Minus_Income__c ,
         <length>32768</length>
         <trackFeedHistory>false</trackFeedHistory>
         <trackHistory>false</trackHistory>
-        <trackTrending>false</trackTrending>
         <type>LongTextArea</type>
         <visibleLines>3</visibleLines>
     </fields>
@@ -2606,7 +2835,6 @@ Expected_Value__c,
         <required>false</required>
         <scale>2</scale>
         <trackHistory>false</trackHistory>
-        <trackTrending>false</trackTrending>
         <type>Currency</type>
     </fields>
     <fields>
@@ -2625,7 +2853,6 @@ Expected_Value_Minus_Income__c ,
         <required>false</required>
         <scale>2</scale>
         <trackHistory>false</trackHistory>
-        <trackTrending>false</trackTrending>
         <type>Currency</type>
     </fields>
     <fields>
@@ -2636,7 +2863,6 @@ Expected_Value_Minus_Income__c ,
         <length>32768</length>
         <trackFeedHistory>false</trackFeedHistory>
         <trackHistory>false</trackHistory>
-        <trackTrending>false</trackTrending>
         <type>LongTextArea</type>
         <visibleLines>5</visibleLines>
     </fields>
@@ -2649,7 +2875,6 @@ Expected_Value_Minus_Income__c ,
         <label>Created by Cirrus Insight</label>
         <trackFeedHistory>false</trackFeedHistory>
         <trackHistory>false</trackHistory>
-        <trackTrending>false</trackTrending>
         <type>Checkbox</type>
     </fields>
     <fields>
@@ -2661,8 +2886,21 @@ Expected_Value_Minus_Income__c ,
         <required>false</required>
         <trackFeedHistory>false</trackFeedHistory>
         <trackHistory>false</trackHistory>
-        <trackTrending>false</trackTrending>
         <type>TextArea</type>
+    </fields>
+    <fields>
+        <fullName>executive_sponsor__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <externalId>false</externalId>
+        <inlineHelpText>If this opportunity has innovation or strategic value not well captured through other impact, team, or profit metrics, it requires an executive sponsor.</inlineHelpText>
+        <label>Executive Sponsor</label>
+        <referenceTo>SFDC_Employee__c</referenceTo>
+        <relationshipLabel>Opportunities (Executive Sponsor)</relationshipLabel>
+        <relationshipName>opportunity_sponsor</relationshipName>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <type>Lookup</type>
     </fields>
     <fields>
         <fullName>long_wait__c</fullName>
@@ -2672,7 +2910,6 @@ Expected_Value_Minus_Income__c ,
         <label>Don&apos;t turn this red.</label>
         <trackFeedHistory>false</trackFeedHistory>
         <trackHistory>false</trackHistory>
-        <trackTrending>false</trackTrending>
         <type>Checkbox</type>
     </fields>
     <fields>
@@ -2687,7 +2924,6 @@ Expected_Value_Minus_Income__c ,
         <scale>0</scale>
         <trackFeedHistory>false</trackFeedHistory>
         <trackHistory>false</trackHistory>
-        <trackTrending>false</trackTrending>
         <type>Percent</type>
     </fields>
     <listViews>
@@ -2769,25 +3005,6 @@ Expected_Value_Minus_Income__c ,
         <label>All Open Opps</label>
     </listViews>
     <listViews>
-        <fullName>All_Opportunities</fullName>
-        <columns>OPPORTUNITY.CREATED_DATE</columns>
-        <columns>OPPORTUNITY.NAME</columns>
-        <columns>Opportunity_Owning_Entity__c</columns>
-        <columns>CORE.USERS.FULL_NAME</columns>
-        <columns>Snapshot_Name__c</columns>
-        <columns>OPPORTUNITY.STAGE_NAME</columns>
-        <columns>Project_Dates__c</columns>
-        <columns>X4_Budget_Size__c</columns>
-        <columns>Funding_Type__c</columns>
-        <columns>Implementing_Business_Unit__c</columns>
-        <columns>ACCOUNT.NAME</columns>
-        <columns>Fogbugz_Assigned_To__c</columns>
-        <columns>Fogbugz_Ticket_Number__c</columns>
-        <columns>Fogbugz_Link__c</columns>
-        <filterScope>Everything</filterScope>
-        <label>All Opportunities</label>
-    </listViews>
-    <listViews>
         <fullName>All_Opportunities1</fullName>
         <columns>OPPORTUNITY.CREATED_DATE</columns>
         <columns>OPPORTUNITY.NAME</columns>
@@ -2836,6 +3053,30 @@ Expected_Value_Minus_Income__c ,
         <label>All Opportunities 2</label>
     </listViews>
     <listViews>
+        <fullName>All_Opportunities_W</fullName>
+        <columns>Country_Name__c</columns>
+        <columns>OPPORTUNITY.NAME</columns>
+        <columns>Opportunity_Owning_Entity__c</columns>
+        <columns>CORE.USERS.FULL_NAME</columns>
+        <columns>OPPORTUNITY.STAGE_NAME</columns>
+        <columns>Implementing_Business_Unit__c</columns>
+        <columns>Country_Text__c</columns>
+        <columns>ACCOUNT.NAME</columns>
+        <columns>OPPORTUNITY.CLOSE_DATE</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>OPPORTUNITY.CLOSED</field>
+            <operation>equals</operation>
+            <value>1</value>
+        </filters>
+        <filters>
+            <field>OPPORTUNITY.STAGE_NAME</field>
+            <operation>equals</operation>
+            <value>Closed - Won</value>
+        </filters>
+        <label>All Opportunities Won by Country</label>
+    </listViews>
+    <listViews>
         <fullName>Awards_Tracker</fullName>
         <columns>OPPORTUNITY.NAME</columns>
         <columns>Channel_Response__c</columns>
@@ -2852,24 +3093,23 @@ Expected_Value_Minus_Income__c ,
         <label>Awards Tracker</label>
     </listViews>
     <listViews>
-        <fullName>CJ_Opp_View</fullName>
-        <booleanFilter>1 or 2</booleanFilter>
+        <fullName>Buffer_CJ</fullName>
+        <booleanFilter>1 AND (2 OR 3)</booleanFilter>
         <columns>OPPORTUNITY.NAME</columns>
         <columns>ACCOUNT.NAME</columns>
-        <columns>Channel_Response__c</columns>
-        <columns>OPPORTUNITY.CLOSE_DATE</columns>
-        <columns>Duration_months__c</columns>
-        <columns>Country__c</columns>
-        <columns>Contract_Owner_BU__c</columns>
-        <columns>Implementing_Business_Unit__c</columns>
-        <columns>Opportunity_Owning_Entity__c</columns>
-        <columns>OPPORTUNITY.STAGE_NAME</columns>
-        <columns>Tag__c</columns>
-        <columns>Fogbugz_Probability__c</columns>
         <columns>OPPORTUNITY.AMOUNT</columns>
+        <columns>of_Execution_budget_for_GS__c</columns>
+        <columns>Expected_Buffer__c</columns>
+        <columns>Amount_Minus_Expense_Income__c</columns>
         <columns>Product_Text__c</columns>
-        <columns>Implementation_Type__c</columns>
+        <columns>OPPORTUNITY.STAGE_NAME</columns>
+        <columns>OPPORTUNITY.CLOSE_DATE</columns>
+        <columns>CORE.USERS.ALIAS</columns>
         <filterScope>Mine</filterScope>
+        <filters>
+            <field>OPPORTUNITY.AMOUNT</field>
+            <operation>notEqual</operation>
+        </filters>
         <filters>
             <field>OPPORTUNITY.STAGE_NAME</field>
             <operation>equals</operation>
@@ -2880,7 +3120,7 @@ Expected_Value_Minus_Income__c ,
             <operation>equals</operation>
             <value>Stage 6 - In Negotiations</value>
         </filters>
-        <label>CJ Opp View</label>
+        <label>Buffer CJ</label>
     </listViews>
     <listViews>
         <fullName>CJ_Opp_View1</fullName>
@@ -3005,6 +3245,26 @@ Expected_Value_Minus_Income__c ,
         <label>Core Run Rate</label>
     </listViews>
     <listViews>
+        <fullName>DLAC_Execution</fullName>
+        <columns>OPPORTUNITY.NAME</columns>
+        <columns>ACCOUNT.NAME</columns>
+        <columns>OPPORTUNITY.AMOUNT</columns>
+        <columns>OPPORTUNITY.CLOSE_DATE</columns>
+        <columns>OPPORTUNITY.LAST_ACTIVITY</columns>
+        <columns>OPPORTUNITY.PROBABILITY</columns>
+        <columns>CORE.USERS.ALIAS</columns>
+        <columns>OPPORTUNITY.STAGE_NAME</columns>
+        <columns>Implementation_Type__c</columns>
+        <columns>Country__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Implementing_Business_Unit__c</field>
+            <operation>equals</operation>
+            <value>DLAC</value>
+        </filters>
+        <label>DLAC Execution</label>
+    </listViews>
+    <listViews>
         <fullName>DLAC_Upcoming_Contracts</fullName>
         <columns>OPPORTUNITY.NAME</columns>
         <columns>ACCOUNT.NAME</columns>
@@ -3117,6 +3377,42 @@ Expected_Value_Minus_Income__c ,
         <label>DWA Biz Dev</label>
     </listViews>
     <listViews>
+        <fullName>DWA_Resourcing_Pipeline</fullName>
+        <columns>OPPORTUNITY.NAME</columns>
+        <columns>OPPORTUNITY.AMOUNT</columns>
+        <columns>OPPORTUNITY.STAGE_NAME</columns>
+        <columns>OPPORTUNITY.PROBABILITY</columns>
+        <columns>Expected_Buffer__c</columns>
+        <columns>Country__c</columns>
+        <columns>OPPORTUNITY.CLOSE_DATE</columns>
+        <columns>CORE.USERS.ALIAS</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Implementing_Business_Unit__c</field>
+            <operation>equals</operation>
+            <value>DWA</value>
+        </filters>
+        <filters>
+            <field>OPPORTUNITY.STAGE_NAME</field>
+            <operation>notContain</operation>
+            <value>Closed</value>
+        </filters>
+        <label>DWA Resourcing Pipeline</label>
+        <sharedTo>
+            <group>All_Dimagi</group>
+        </sharedTo>
+    </listViews>
+    <listViews>
+        <fullName>Default_Opportunity_Pipeline</fullName>
+        <filterScope>Mine</filterScope>
+        <filters>
+            <field>OPPORTUNITY.CLOSE_DATE</field>
+            <operation>greaterOrEqual</operation>
+            <value>LAST_N_MONTHS:3</value>
+        </filters>
+        <label>Opportunity Pipeline</label>
+    </listViews>
+    <listViews>
         <fullName>FHI_Open_Opps</fullName>
         <columns>OPPORTUNITY.NAME</columns>
         <columns>ACCOUNT.NAME</columns>
@@ -3137,6 +3433,29 @@ Expected_Value_Minus_Income__c ,
             <value>FHI</value>
         </filters>
         <label>FHI Open Opps</label>
+    </listViews>
+    <listViews>
+        <fullName>Kenya1</fullName>
+        <columns>OPPORTUNITY.NAME</columns>
+        <columns>ACCOUNT.NAME</columns>
+        <columns>OPPORTUNITY.AMOUNT</columns>
+        <columns>OPPORTUNITY.CLOSE_DATE</columns>
+        <columns>OPPORTUNITY.STAGE_NAME</columns>
+        <columns>CORE.USERS.ALIAS</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Country__c</field>
+            <operation>equals</operation>
+            <value>Kenya</value>
+        </filters>
+        <label>Kenya</label>
+        <sharedTo>
+            <group>All_Dimagi</group>
+            <group>DSA</group>
+            <group>DSI</group>
+            <group>Inc</group>
+            <group>Moz</group>
+        </sharedTo>
     </listViews>
     <listViews>
         <fullName>KenyaBD</fullName>
@@ -3261,6 +3580,7 @@ Expected_Value_Minus_Income__c ,
     </listViews>
     <listViews>
         <fullName>My_opps_field_edits</fullName>
+        <booleanFilter>1 OR 2</booleanFilter>
         <columns>OPPORTUNITY.NAME</columns>
         <columns>ACCOUNT.NAME</columns>
         <columns>OPPORTUNITY.CLOSE_DATE</columns>
@@ -3275,8 +3595,18 @@ Expected_Value_Minus_Income__c ,
         <columns>Technical_Lead__c</columns>
         <columns>Number_of_Users__c</columns>
         <columns>Country__c</columns>
-        <columns>Cost_Lead__c</columns>
+        <columns>Tag__c</columns>
         <filterScope>Mine</filterScope>
+        <filters>
+            <field>OPPORTUNITY.STAGE_NAME</field>
+            <operation>equals</operation>
+            <value>Stage 3 - Prospect,Stage 4 - Proposal Development,Stage 5 - Submitted</value>
+        </filters>
+        <filters>
+            <field>OPPORTUNITY.STAGE_NAME</field>
+            <operation>equals</operation>
+            <value>Stage 6 - In Negotiations</value>
+        </filters>
         <label>My opps field edits</label>
     </listViews>
     <listViews>
@@ -3295,6 +3625,31 @@ Expected_Value_Minus_Income__c ,
             <value>MYANMAR,BURMA</value>
         </filters>
         <label>Myanmar</label>
+    </listViews>
+    <listViews>
+        <fullName>NIH_Opportunities</fullName>
+        <columns>OPPORTUNITY.NAME</columns>
+        <columns>ACCOUNT.NAME</columns>
+        <columns>OPPORTUNITY.AMOUNT</columns>
+        <columns>Fogbugz_Probability__c</columns>
+        <columns>Channel_Response__c</columns>
+        <columns>Opportunity_Source__c</columns>
+        <columns>Level_of_Effort__c</columns>
+        <columns>Due_Date__c</columns>
+        <columns>Funder_Account__c</columns>
+        <columns>OPPORTUNITY.CLOSE_DATE</columns>
+        <columns>Resubmission__c</columns>
+        <columns>Sub_1__c</columns>
+        <columns>OPPORTUNITY.STAGE_NAME</columns>
+        <columns>Country__c</columns>
+        <columns>CORE.USERS.ALIAS</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Channel_Response__c</field>
+            <operation>equals</operation>
+            <value>NIH Grant</value>
+        </filters>
+        <label>NIH Opportunities</label>
     </listViews>
     <listViews>
         <fullName>NewThisWeek</fullName>
@@ -3342,9 +3697,29 @@ Expected_Value_Minus_Income__c ,
         <filters>
             <field>CORE.USERS.FIRST_NAME</field>
             <operation>equals</operation>
-            <value>kara</value>
+            <value>Sarah</value>
         </filters>
         <label>Opportunities and Products</label>
+    </listViews>
+    <listViews>
+        <fullName>Opp_Field_Management_View_CJ</fullName>
+        <columns>OPPORTUNITY.NAME</columns>
+        <columns>ACCOUNT.NAME</columns>
+        <columns>Channel_Response__c</columns>
+        <columns>Opportunity_Source__c</columns>
+        <columns>Expected_Buffer__c</columns>
+        <columns>Duration_months__c</columns>
+        <columns>Country__c</columns>
+        <columns>OPPORTUNITY.STAGE_NAME</columns>
+        <columns>OPPORTUNITY.CLOSE_DATE</columns>
+        <columns>Contract_Owner_BU__c</columns>
+        <columns>Implementing_Business_Unit__c</columns>
+        <columns>Opportunity_Owning_Entity__c</columns>
+        <columns>Tag__c</columns>
+        <columns>Fogbugz_Probability__c</columns>
+        <columns>OPPORTUNITY.AMOUNT</columns>
+        <filterScope>Mine</filterScope>
+        <label>Opp Field Management View CJ</label>
     </listViews>
     <listViews>
         <fullName>Opportunities_without_Accounts</fullName>

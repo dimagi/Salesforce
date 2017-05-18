@@ -84,50 +84,6 @@
         <unique>false</unique>
     </fields>
     <fields>
-        <fullName>new_date_delay_invoicing__c</fullName>
-        <externalId>false</externalId>
-        <label>new_date_delay_invoicing</label>
-        <required>false</required>
-        <trackTrending>false</trackTrending>
-        <type>Date</type>
-    </fields>
-    <fields>
-        <fullName>new_date_end__c</fullName>
-        <externalId>false</externalId>
-        <label>new_date_end</label>
-        <required>false</required>
-        <trackTrending>false</trackTrending>
-        <type>Date</type>
-    </fields>
-    <fields>
-        <fullName>new_date_start__c</fullName>
-        <externalId>false</externalId>
-        <label>new_date_start</label>
-        <required>false</required>
-        <trackTrending>false</trackTrending>
-        <type>Date</type>
-    </fields>
-    <fields>
-        <fullName>new_salesforce_contract_id__c</fullName>
-        <externalId>false</externalId>
-        <label>new_salesforce_contract_id</label>
-        <length>255</length>
-        <required>false</required>
-        <trackTrending>false</trackTrending>
-        <type>Text</type>
-        <unique>false</unique>
-    </fields>
-    <fields>
-        <fullName>note__c</fullName>
-        <externalId>false</externalId>
-        <label>note</label>
-        <length>255</length>
-        <required>false</required>
-        <trackTrending>false</trackTrending>
-        <type>Text</type>
-        <unique>false</unique>
-    </fields>
-    <fields>
         <fullName>reason__c</fullName>
         <externalId>false</externalId>
         <label>reason</label>
@@ -148,16 +104,6 @@
         <required>false</required>
         <trackTrending>false</trackTrending>
         <type>Lookup</type>
-    </fields>
-    <fields>
-        <fullName>web_user__c</fullName>
-        <externalId>false</externalId>
-        <label>web_user</label>
-        <length>255</length>
-        <required>false</required>
-        <trackTrending>false</trackTrending>
-        <type>Text</type>
-        <unique>false</unique>
     </fields>
     <label>Accounting_SubscriptionAdjustment</label>
     <nameField>
