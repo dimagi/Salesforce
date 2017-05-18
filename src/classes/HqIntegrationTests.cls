@@ -17,46 +17,20 @@ public class HqIntegrationTests {
     }
 
     @isTest
-    static void shouldCreateDomainMonthlySnapshot() {
-        generateDataForDomainSnapshot();
-        Test.startTest();
-        Database.executeBatch(new DomainMonthlySnapshotBatch());
-        Test.stopTest();
-
-        // Community => subscription1 AND subscription4 => Wam = 15 + 60 = 75, Mobile Users = 20 + 65 = 85, Forms = 325 + 370 = 695 - last (250) = 445
-        // Standard => subscription1 AND subscription4 => Wam = 30 + 75 = 105, Mobile Users = 35 + 80 = 115, Forms = 340 + 385 = 725 - last (25) = 700
-        // Pro => subscription1 AND subscription4 => Wam = 45, Mobile Users = 50, Forms = 355
-        Domain_Monthly_Snapshot__c domainSn = [SELECT Active_Mobile_Users__c, Forms__c, Wam__c, Scale_of_Programs__c, Forms_for_Period__c
-                                               FROM Domain_Monthly_Snapshot__c WHERE Software_Plan_Edition__c = 'Community' ORDER BY Snapshot_Date__c DESC LIMIT 1];
-        System.assertEquals(75, domainSn.Wam__c);
-        System.assertEquals(85, domainSn.Active_Mobile_Users__c);
-        System.assertEquals(325, domainSn.Forms_for_Period__c);
-        System.assertEquals(695, domainSn.Forms__c);
-        System.assertEquals(2, domainSn.Scale_of_Programs__c);
-
-        domainSn = [SELECT Active_Mobile_Users__c, Forms__c, Wam__c, Scale_of_Programs__c, Forms_for_Period__c
-                                               FROM Domain_Monthly_Snapshot__c WHERE Software_Plan_Edition__c = 'Standard' ORDER BY Snapshot_Date__c DESC LIMIT 1];
-        System.assertEquals(105, domainSn.Wam__c);
-        System.assertEquals(115, domainSn.Active_Mobile_Users__c);
-        System.assertEquals(240, domainSn.Forms_for_Period__c);
-        System.assertEquals(725, domainSn.Forms__c);
-        System.assertEquals(2, domainSn.Scale_of_Programs__c);
-
-        domainSn = [SELECT Active_Mobile_Users__c, Forms__c, Wam__c, Scale_of_Programs__c, Forms_for_Period__c
-                                               FROM Domain_Monthly_Snapshot__c WHERE Software_Plan_Edition__c = 'Pro' ORDER BY Snapshot_Date__c DESC LIMIT 1];
-        System.assertEquals(45, domainSn.Wam__c);
-        System.assertEquals(50, domainSn.Active_Mobile_Users__c);
-        System.assertEquals(205, domainSn.Forms_for_Period__c);
-        System.assertEquals(355, domainSn.Forms__c);
-        System.assertEquals(1, domainSn.Scale_of_Programs__c);
-    }
-
-    @isTest
     static void shouldCreateDomainMonthlySnapshotFromHistory() {
         generateDataForDomainSnapshot();
 
         Test.startTest();
-        Database.executeBatch(new DomainSnapshotFromHistoryBatch(Date.newInstance(2017, 3, 31)));
+        /**Test.setMock(HttpCalloutMock.class, new hqInt_HttpMock());
+        Date current = Date.newInstance(2017, 3, 1);
+        List<String> servers = HqBatchJobHelper.getCommcareServers(false);
+        if (servers.size() > 0 && current != null) {
+            String serverCode = servers.get(0);
+            servers.remove(0);
+            Database.executeBatch(new HqMaltTablesBatch(serverCode, servers, current, false), 1);
+        }*/
+        Date current = Date.newInstance(2017, 3, 1);
+        Database.executeBatch(new DomainSnapshotFromHistoryBatch(current));
         Test.stopTest();
 
         // Community => subscription1 AND subscription4 => Wam = 15 + 60 = 75, Mobile Users = 20 + 65 = 85, Forms = 325 + 370 = 695 - last (250) = 445
@@ -66,7 +40,7 @@ public class HqIntegrationTests {
                                                FROM Domain_Monthly_Snapshot__c WHERE Software_Plan_Edition__c = 'Community' ORDER BY Snapshot_Date__c DESC LIMIT 1];
         System.assertEquals(75, domainSn.Wam__c);
         System.assertEquals(85, domainSn.Active_Mobile_Users__c);
-        System.assertEquals(325, domainSn.Forms_for_Period__c);
+        System.assertEquals(0, domainSn.Forms_for_Period__c);
         System.assertEquals(695, domainSn.Forms__c);
         System.assertEquals(2, domainSn.Scale_of_Programs__c);
 
@@ -74,7 +48,7 @@ public class HqIntegrationTests {
                                                FROM Domain_Monthly_Snapshot__c WHERE Software_Plan_Edition__c = 'Standard' ORDER BY Snapshot_Date__c DESC LIMIT 1];
         System.assertEquals(105, domainSn.Wam__c);
         System.assertEquals(115, domainSn.Active_Mobile_Users__c);
-        System.assertEquals(240, domainSn.Forms_for_Period__c);
+        System.assertEquals(0, domainSn.Forms_for_Period__c);
         System.assertEquals(725, domainSn.Forms__c);
         System.assertEquals(2, domainSn.Scale_of_Programs__c);
 
@@ -82,7 +56,7 @@ public class HqIntegrationTests {
                                                FROM Domain_Monthly_Snapshot__c WHERE Software_Plan_Edition__c = 'Pro' ORDER BY Snapshot_Date__c DESC LIMIT 1];
         System.assertEquals(45, domainSn.Wam__c);
         System.assertEquals(50, domainSn.Active_Mobile_Users__c);
-        System.assertEquals(205, domainSn.Forms_for_Period__c);
+        System.assertEquals(0, domainSn.Forms_for_Period__c);
         System.assertEquals(355, domainSn.Forms__c);
         System.assertEquals(1, domainSn.Scale_of_Programs__c);
     }
@@ -105,12 +79,20 @@ public class HqIntegrationTests {
 
         Test.startTest();
         Test.setMock(HttpCalloutMock.class, new hqInt_HttpMock());
-        HqBatchJobHelper.startMaltJob(Date.today());
+        Date current = Date.today();
+        List<String> servers = HqBatchJobHelper.getCommcareServers(false);
+        if (servers.size() > 0 && current != null) {
+            String serverCode = servers.get(0);
+            servers.remove(0);
+            Database.executeBatch(new HqMaltTablesBatch(serverCode, servers, current, true), 1);
+        }
         Test.stopTest();
 
-        Domain__c assertDomain = [SELECT Id, Wam__c FROM Domain__c WHERE Id =: domainFromDb1.Id];
+        Domain__c assertDomain = [SELECT Id, Wam__c, Forms_For_Period__c FROM Domain__c WHERE Id =: domainFromDb1.Id];
+        System.assertEquals(52, assertDomain.Forms_For_Period__c);
         System.assertEquals(2, assertDomain.Wam__c);
-        assertDomain = [SELECT Id, Wam__c FROM Domain__c WHERE Id =: domainFromDb2.Id];
+        assertDomain = [SELECT Id, Wam__c, Forms_For_Period__c FROM Domain__c WHERE Id =: domainFromDb2.Id];
+        System.assertEquals(39, assertDomain.Forms_For_Period__c);
         System.assertEquals(3, assertDomain.Wam__c);
     }
 
@@ -1183,15 +1165,15 @@ public class HqIntegrationTests {
         insert InternalPropRec4;
         insert InternalPropRec5;
 
-        Domain__c domain1 = new Domain__c(Name = 'Sample 1', Server_Name__c = 'CommCare HQ', is_test__c = 'false', cpIsActive__c = true,
+        Domain__c domain1 = new Domain__c(Name = 'domain_1', Server_Name__c = 'CommCare HQ', is_test__c = 'false', cpIsActive__c = true,
                                           Wam__c = 15, cpActiveMobileUsers__c = 20, cpAllForms__c = 325, Internal_Properties__c = InternalPropRec1.Id);
-        Domain__c domain2 = new Domain__c(Name = 'Sample 2', Server_Name__c = 'CommCare HQ', is_test__c = 'false', cpIsActive__c = true,
+        Domain__c domain2 = new Domain__c(Name = 'domain_2', Server_Name__c = 'CommCare HQ', is_test__c = 'false', cpIsActive__c = true,
                                           Wam__c = 30, cpActiveMobileUsers__c = 35, cpAllForms__c = 340, Internal_Properties__c = InternalPropRec2.Id);
-        Domain__c domain3 = new Domain__c(Name = 'Sample 3', Server_Name__c = 'CommCare HQ', is_test__c = 'false', cpIsActive__c = true,
+        Domain__c domain3 = new Domain__c(Name = 'domain_3', Server_Name__c = 'CommCare HQ', is_test__c = 'false', cpIsActive__c = true,
                                           Wam__c = 45, cpActiveMobileUsers__c = 50, cpAllForms__c = 355, Internal_Properties__c = InternalPropRec3.Id);
-        Domain__c domain4 = new Domain__c(Name = 'Sample 4', Server_Name__c = 'CommCare HQ', is_test__c = 'false', cpIsActive__c = true,
+        Domain__c domain4 = new Domain__c(Name = 'domain_4', Server_Name__c = 'CommCare HQ', is_test__c = 'false', cpIsActive__c = true,
                                           Wam__c = 60, cpActiveMobileUsers__c = 65, cpAllForms__c = 370, Internal_Properties__c = InternalPropRec4.Id);
-        Domain__c domain5 = new Domain__c(Name = 'Sample 5', Server_Name__c = 'CommCare HQ', is_test__c = 'false', cpIsActive__c = true,
+        Domain__c domain5 = new Domain__c(Name = 'domain_5', Server_Name__c = 'CommCare HQ', is_test__c = 'false', cpIsActive__c = true,
                                           Wam__c = 75, cpActiveMobileUsers__c = 80, cpAllForms__c = 385, Internal_Properties__c = InternalPropRec5.Id);
 
         insert domain1;

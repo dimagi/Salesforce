@@ -39,25 +39,6 @@ public class HqBatchJobHelper {
     }
 
     /**
-     * Starts MALT tables sunchronization.
-     */
-    public static void startMaltJob(Date monthDate) { // TODO
-        List<String> servers = getCommcareServers(false);
-        if (servers.size() > 0 && monthDate != null) {
-            String serverCode = servers.get(0);
-            servers.remove(0);
-            Database.executeBatch(new HqMaltTablesBatch(serverCode, servers, monthDate), 1);
-        }
-    }
-
-    /**
-     * Ends MALT tables synchronization.
-     */
-    public static void endMaltJob() {
-        //TODO in future we will add possibility to run job from UI
-    }
-
-    /**
      * Starts Accounting objects synchronization.
      */
     public static void startBatchJobs() {
