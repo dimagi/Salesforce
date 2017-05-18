@@ -99,28 +99,28 @@
         <picklist>
             <picklistValues>
                 <fullName>Not Started</fullName>
-                <closed>false</closed>
                 <default>true</default>
+                <closed>false</closed>
             </picklistValues>
             <picklistValues>
                 <fullName>In Progress</fullName>
-                <closed>false</closed>
                 <default>false</default>
+                <closed>false</closed>
             </picklistValues>
             <picklistValues>
                 <fullName>Completed</fullName>
-                <closed>true</closed>
                 <default>false</default>
+                <closed>true</closed>
             </picklistValues>
             <picklistValues>
                 <fullName>Waiting on someone else</fullName>
-                <closed>false</closed>
                 <default>false</default>
+                <closed>false</closed>
             </picklistValues>
             <picklistValues>
                 <fullName>Deferred</fullName>
-                <closed>false</closed>
                 <default>false</default>
+                <closed>false</closed>
             </picklistValues>
             <sorted>false</sorted>
         </picklist>

@@ -77,31 +77,23 @@
         <fullName>AccountSource</fullName>
         <picklist>
             <picklistValues>
-                <fullName>Conference</fullName>
+                <fullName>Inbound - Contacted us directly</fullName>
                 <default>false</default>
             </picklistValues>
             <picklistValues>
-                <fullName>Outbound - Pulled from Forum</fullName>
+                <fullName>Inbound - Referred within same Org</fullName>
                 <default>false</default>
             </picklistValues>
             <picklistValues>
-                <fullName>Inbound - Called us directly</fullName>
+                <fullName>Inbound - Referred by another Org</fullName>
                 <default>false</default>
             </picklistValues>
             <picklistValues>
-                <fullName>Inbound - Consultation</fullName>
+                <fullName>Inbound - Referred by Dimagi staff</fullName>
                 <default>false</default>
             </picklistValues>
             <picklistValues>
-                <fullName>Inbound - Emailed us directly</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Inbound - HQ signup</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Inbound - information@dimagi.com</fullName>
+                <fullName>Outbound - Conference</fullName>
                 <default>false</default>
             </picklistValues>
             <picklistValues>
@@ -109,7 +101,15 @@
                 <default>false</default>
             </picklistValues>
             <picklistValues>
-                <fullName>Other</fullName>
+                <fullName>Outbound - Networking Event</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Outbound - Personal Contact</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Outbound - Pulled from Forum</fullName>
                 <default>false</default>
             </picklistValues>
             <picklistValues>
@@ -121,23 +121,51 @@
                 <default>false</default>
             </picklistValues>
             <picklistValues>
+                <fullName>Inbound - Emailed us directly DO NOT USE</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Inbound - Conference (came to us after)</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Inbound - Called us directly -DO NOT USE</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Inbound-Tried schedule call dir. DONT U</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Inbound - Contacted us on Social Media</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Inbound - Event Sign Up</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Inbound - HQ signup</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Inbound - Emailed info@ DO NOT USE</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
                 <fullName>Inbound - Referral</fullName>
                 <default>false</default>
             </picklistValues>
             <picklistValues>
-                <fullName>Webinar Sign Up</fullName>
+                <fullName>Inbound - Webinar Sign Up</fullName>
                 <default>false</default>
             </picklistValues>
             <picklistValues>
-                <fullName>Web Sign Up</fullName>
+                <fullName>Inbound- Workshop Sign Up</fullName>
                 <default>false</default>
             </picklistValues>
             <picklistValues>
-                <fullName>Workshop</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Inbound - Contacted Through Social Media</fullName>
+                <fullName>Other</fullName>
                 <default>false</default>
             </picklistValues>
             <sorted>false</sorted>
@@ -2364,6 +2392,21 @@ Passive = remind every 3 months.</inlineHelpText>
         <label>Accounts in Moz</label>
     </listViews>
     <listViews>
+        <fullName>Accts_INC</fullName>
+        <columns>ACCOUNT.NAME</columns>
+        <columns>ACCOUNT.CREATED_DATE</columns>
+        <columns>Country__c</columns>
+        <columns>CORE.USERS.ALIAS</columns>
+        <columns>ACCOUNT.TYPE</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Owner_Business_Unit_Name__c</field>
+            <operation>equals</operation>
+            <value>DWA</value>
+        </filters>
+        <label>Accts DWA</label>
+    </listViews>
+    <listViews>
         <fullName>Ag_Push_South_Africa</fullName>
         <columns>ACCOUNT.NAME</columns>
         <columns>ACCOUNT.ADDRESS1_STATE</columns>
@@ -2982,6 +3025,11 @@ Passive = remind every 3 months.</inlineHelpText>
         <columns>ACCOUNT.TYPE</columns>
         <columns>CORE.USERS.ALIAS</columns>
         <filterScope>Everything</filterScope>
+        <filters>
+            <field>ACCOUNT.TYPE</field>
+            <operation>equals</operation>
+            <value>Deployment Partner (Reseller),Technology Partner (Reseller)</value>
+        </filters>
         <label>Resellers by Country</label>
     </listViews>
     <listViews>
@@ -2995,9 +3043,9 @@ Passive = remind every 3 months.</inlineHelpText>
         <filters>
             <field>ACCOUNT.TYPE</field>
             <operation>equals</operation>
-            <value>Reseller,Technology</value>
+            <value>Technology</value>
         </filters>
-        <label>Resellers by Country</label>
+        <label>Resellers (Technology Partne) by Country</label>
     </listViews>
     <listViews>
         <fullName>South_Africa_TB_Accounts</fullName>
