@@ -21,10 +21,6 @@
         <type>Default</type>
     </actionOverrides>
     <actionOverrides>
-        <actionName>Follow</actionName>
-        <type>Default</type>
-    </actionOverrides>
-    <actionOverrides>
         <actionName>List</actionName>
         <type>Default</type>
     </actionOverrides>
@@ -59,20 +55,23 @@
         <fullName>ABSO__c</fullName>
         <externalId>false</externalId>
         <label>Background Check on File</label>
-        <picklist>
-            <picklistValues>
-                <fullName>Yes</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>No</fullName>
-                <default>false</default>
-            </picklistValues>
-            <sorted>false</sorted>
-        </picklist>
+        <required>false</required>
         <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Picklist</type>
+        <valueSet>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>Yes</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>No</fullName>
+                    <default>false</default>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
     </fields>
     <fields>
         <fullName>Account_Number__c</fullName>
@@ -125,20 +124,23 @@
         <externalId>false</externalId>
         <inlineHelpText>Has the employee signed an At-Will Employment Agreement (as opposed to another type of contractual agreement)?</inlineHelpText>
         <label>At-Will Employment Agreement</label>
-        <picklist>
-            <picklistValues>
-                <fullName>No</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Yes</fullName>
-                <default>false</default>
-            </picklistValues>
-            <sorted>false</sorted>
-        </picklist>
+        <required>false</required>
         <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Picklist</type>
+        <valueSet>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>No</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Yes</fullName>
+                    <default>false</default>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
     </fields>
     <fields>
         <fullName>BU_Description__c</fullName>
@@ -166,20 +168,23 @@
         <fullName>Base_location__c</fullName>
         <externalId>false</externalId>
         <label>Base Location</label>
-        <picklist>
-            <picklistValues>
-                <fullName>Headquarters</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Remote</fullName>
-                <default>false</default>
-            </picklistValues>
-            <sorted>false</sorted>
-        </picklist>
+        <required>false</required>
         <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Picklist</type>
+        <valueSet>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>Headquarters</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Remote</fullName>
+                    <default>false</default>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
     </fields>
     <fields>
         <fullName>BizDev__c</fullName>
@@ -223,73 +228,76 @@
         <externalId>false</externalId>
         <inlineHelpText>Select the location used for payscale COL calculations</inlineHelpText>
         <label>COL Location</label>
-        <picklist>
-            <picklistValues>
-                <fullName>Antigua</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Boston</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Calgary</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Cape Town</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Dakar</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>DC</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Delhi</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Harare</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>LA/Seattle</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Lusaka</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Maputo</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Montreal</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Nairobi</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>San Jose</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Yangon</fullName>
-                <default>false</default>
-            </picklistValues>
-            <restrictedPicklist>true</restrictedPicklist>
-            <sorted>false</sorted>
-        </picklist>
+        <required>false</required>
         <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Picklist</type>
+        <valueSet>
+            <restricted>true</restricted>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>Antigua</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Boston</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Calgary</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Cape Town</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Dakar</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>DC</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Delhi</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Harare</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>LA/Seattle</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Lusaka</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Maputo</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Montreal</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Nairobi</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>San Jose</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Yangon</fullName>
+                    <default>false</default>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
     </fields>
     <fields>
         <fullName>Call_Center__c</fullName>
@@ -307,435 +315,449 @@
         <fullName>Citizenship_2__c</fullName>
         <externalId>false</externalId>
         <label>Citizenship 2</label>
-        <picklist>
-            <picklistValues>
-                <fullName>Afghanistan</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Argentina</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Australia</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Bangladesh</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Brazil</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Britain</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Burkina</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Cambodia</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Canada</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Chad</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Chile</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>China</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Colombia</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Costa Rica</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Czech Republic</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Denmark</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Dominican Republic</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Egypt</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>England</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Ethiopia</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>France</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Germany</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Ghana</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Guatemala</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Haiti</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Hungary</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Iceland</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>India</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Kenya</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Kuwait</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Mexico</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Nepal</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Netherlands</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>New Zealand</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Nigeria</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Pakistan</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Saudi Arabia</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Senegal</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>South Africa</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Spain</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Sri Lanka</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Tanzania</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Thailand</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Togo</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Ukraine</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>United Arab Emirates (UAE)</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>United Kingdom (UK)</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>United States of America (USA)</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Zambia</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Belgium</fullName>
-                <default>false</default>
-            </picklistValues>
-            <sorted>false</sorted>
-        </picklist>
+        <required>false</required>
         <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Picklist</type>
+        <valueSet>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>Afghanistan</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Argentina</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Australia</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Bangladesh</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Belgium</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Brazil</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Britain</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Burkina</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Cambodia</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Canada</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Chad</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Chile</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>China</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Colombia</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Costa Rica</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Czech Republic</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Denmark</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Dominican Republic</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Egypt</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>England</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Ethiopia</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>France</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Germany</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Ghana</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Guatemala</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Haiti</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Hungary</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Iceland</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>India</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Kenya</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Kuwait</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Mexico</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Nepal</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Netherlands</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>New Zealand</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Nigeria</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Pakistan</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Peru</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Saudi Arabia</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Senegal</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>South Africa</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Spain</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Sri Lanka</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Tanzania</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Thailand</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Togo</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Ukraine</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>United Arab Emirates (UAE)</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>United Kingdom (UK)</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>United States of America (USA)</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Zambia</fullName>
+                    <default>false</default>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
     </fields>
     <fields>
         <fullName>Citizenship__c</fullName>
         <externalId>false</externalId>
         <label>Citizenship</label>
-        <picklist>
-            <picklistValues>
-                <fullName>Afghanistan</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Argentina</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Australia</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Bangladesh</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Belgium</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Brazil</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Britain</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Burkina</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Cambodia</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Canada</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Chad</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Chile</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>China</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Colombia</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Costa Rica</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Czech Republic</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Denmark</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Dominican Republic</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Egypt</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>England</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Ethiopia</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>France</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Germany</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Ghana</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Guatemala</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Haiti</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Hungary</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Iceland</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>India</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Ireland</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Kenya</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Kuwait</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Mexico</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Nepal</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Netherlands</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>New Zealand</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Nigeria</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Pakistan</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Saudi Arabia</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Senegal</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>South Africa</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Spain</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Sri Lanka</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Tanzania</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Thailand</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Togo</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Ukraine</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>United Arab Emirates (UAE)</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>United Kingdom (UK)</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>United States of America (USA)</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Zambia</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Zimbabwe</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Tunisian</fullName>
-                <default>false</default>
-            </picklistValues>
-            <sorted>false</sorted>
-        </picklist>
+        <required>false</required>
         <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Picklist</type>
+        <valueSet>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>Afghanistan</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Argentina</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Australia</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Bangladesh</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Belgium</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Brazil</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Britain</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Burkina</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Cambodia</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Canada</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Chad</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Chile</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>China</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Colombia</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Costa Rica</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Czech Republic</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Denmark</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Dominican Republic</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Egypt</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>England</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Ethiopia</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>France</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Germany</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Ghana</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Guatemala</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Haiti</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Hungary</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Iceland</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>India</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Ireland</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Kenya</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Kuwait</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Mexico</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Nepal</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Netherlands</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>New Zealand</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Nigeria</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Pakistan</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Peru</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Saudi Arabia</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Senegal</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>South Africa</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Spain</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Sri Lanka</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Tanzania</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Thailand</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Togo</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Tunisian</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Ukraine</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>United Arab Emirates (UAE)</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>United Kingdom (UK)</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>United States of America (USA)</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Zambia</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Zimbabwe</fullName>
+                    <default>false</default>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
     </fields>
     <fields>
         <fullName>Consented_to_share_salary__c</fullName>
@@ -1083,56 +1105,59 @@
         <fullName>Education__c</fullName>
         <externalId>false</externalId>
         <label>Degrees</label>
-        <picklist>
-            <picklistValues>
-                <fullName>HS</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>AA</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>BS</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>BA</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>MBA</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>MSc</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>MA</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>MD</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>PhD</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>JD</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Other</fullName>
-                <default>false</default>
-            </picklistValues>
-            <sorted>false</sorted>
-        </picklist>
+        <required>false</required>
         <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>MultiselectPicklist</type>
+        <valueSet>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>HS</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>AA</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>BS</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>BA</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>MBA</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>MSc</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>MA</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>MD</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>PhD</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>JD</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Other</fullName>
+                    <default>false</default>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
         <visibleLines>3</visibleLines>
     </fields>
     <fields>
@@ -1176,28 +1201,31 @@
         <fullName>Emergency_Contact_Relationship__c</fullName>
         <externalId>false</externalId>
         <label>Emergency Contact Relationship</label>
-        <picklist>
-            <picklistValues>
-                <fullName>Significant Other</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Parent</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Child</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Other</fullName>
-                <default>false</default>
-            </picklistValues>
-            <sorted>false</sorted>
-        </picklist>
+        <required>false</required>
         <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Picklist</type>
+        <valueSet>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>Significant Other</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Parent</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Child</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Other</fullName>
+                    <default>false</default>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
     </fields>
     <fields>
         <fullName>Emergency_Email__c</fullName>
@@ -1276,97 +1304,109 @@
         <fullName>Employee_Status__c</fullName>
         <externalId>false</externalId>
         <label>Employee Status</label>
-        <picklist>
-            <picklistValues>
-                <fullName>Active</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>LOA</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Terminated</fullName>
-                <default>false</default>
-            </picklistValues>
-            <sorted>false</sorted>
-        </picklist>
+        <required>false</required>
         <trackHistory>true</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Picklist</type>
+        <valueSet>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>Active</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>LOA</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Terminated</fullName>
+                    <default>false</default>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
     </fields>
     <fields>
         <fullName>Employee_Type__c</fullName>
         <externalId>false</externalId>
         <label>Employee Type</label>
-        <picklist>
-            <picklistValues>
-                <fullName>Employee</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Contractor</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>External Contractor</fullName>
-                <default>false</default>
-            </picklistValues>
-            <sorted>false</sorted>
-        </picklist>
+        <required>false</required>
         <trackHistory>true</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Picklist</type>
+        <valueSet>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>Employee</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Contractor</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>External Contractor</fullName>
+                    <default>false</default>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
     </fields>
     <fields>
         <fullName>Entity__c</fullName>
         <externalId>false</externalId>
         <label>Entity</label>
-        <picklist>
-            <picklistValues>
-                <fullName>Dimagi, INC</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Dimagi Software Innovations</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Dimagi South Africa</fullName>
-                <default>false</default>
-            </picklistValues>
-            <sorted>false</sorted>
-        </picklist>
+        <required>false</required>
         <trackHistory>true</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Picklist</type>
+        <valueSet>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>Dimagi, INC</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Dimagi Software Innovations</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Dimagi South Africa</fullName>
+                    <default>false</default>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
     </fields>
     <fields>
         <fullName>Ethnicity__c</fullName>
         <externalId>false</externalId>
         <label>Ethnicity</label>
-        <picklist>
-            <picklistValues>
-                <fullName>Caucasion</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Afican-American</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Indian</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Asian</fullName>
-                <default>false</default>
-            </picklistValues>
-            <sorted>false</sorted>
-        </picklist>
+        <required>false</required>
         <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Picklist</type>
+        <valueSet>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>Caucasion</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Afican-American</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Indian</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Asian</fullName>
+                    <default>false</default>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
     </fields>
     <fields>
         <fullName>Exchange_Rate__c</fullName>
@@ -1439,20 +1479,23 @@
         <fullName>Gender__c</fullName>
         <externalId>false</externalId>
         <label>Gender</label>
-        <picklist>
-            <picklistValues>
-                <fullName>Male</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Female</fullName>
-                <default>false</default>
-            </picklistValues>
-            <sorted>false</sorted>
-        </picklist>
+        <required>false</required>
         <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Picklist</type>
+        <valueSet>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>Male</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Female</fullName>
+                    <default>false</default>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
     </fields>
     <fields>
         <fullName>Global_Services__c</fullName>
@@ -1575,59 +1618,65 @@
         <fullName>Insurance_Provider__c</fullName>
         <externalId>false</externalId>
         <label>Medical Insurance Provider</label>
-        <picklist>
-            <picklistValues>
-                <fullName>Aetna</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Bharti AXA</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Discovery</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>HPHC</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>NSIA</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Opt Out</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Cigna</fullName>
-                <default>false</default>
-            </picklistValues>
-            <sorted>false</sorted>
-        </picklist>
+        <required>false</required>
         <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Picklist</type>
+        <valueSet>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>Aetna</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Bharti AXA</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Discovery</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>HPHC</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>NSIA</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Opt Out</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Cigna</fullName>
+                    <default>false</default>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
     </fields>
     <fields>
         <fullName>IsAssistant__c</fullName>
         <externalId>false</externalId>
         <label>IsAssistant</label>
-        <picklist>
-            <picklistValues>
-                <fullName>0</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>1</fullName>
-                <default>false</default>
-            </picklistValues>
-            <sorted>false</sorted>
-        </picklist>
+        <required>false</required>
         <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Picklist</type>
+        <valueSet>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>0</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>1</fullName>
+                    <default>false</default>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
     </fields>
     <fields>
         <fullName>JPG__c</fullName>
@@ -1669,139 +1718,157 @@
         <fullName>Language_1_Proficiency__c</fullName>
         <externalId>false</externalId>
         <label>Language 1 Proficiency</label>
-        <picklist>
-            <picklistValues>
-                <fullName>Fluent</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Proficient</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Beginner</fullName>
-                <default>false</default>
-            </picklistValues>
-            <sorted>false</sorted>
-        </picklist>
+        <required>false</required>
         <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Picklist</type>
+        <valueSet>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>Fluent</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Proficient</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Beginner</fullName>
+                    <default>false</default>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
     </fields>
     <fields>
         <fullName>Language_2_Proficiency__c</fullName>
         <externalId>false</externalId>
         <label>Language 2 Proficiency</label>
-        <picklist>
-            <picklistValues>
-                <fullName>Fluent</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Proficient</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Beginner</fullName>
-                <default>false</default>
-            </picklistValues>
-            <sorted>false</sorted>
-        </picklist>
+        <required>false</required>
         <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Picklist</type>
+        <valueSet>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>Fluent</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Proficient</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Beginner</fullName>
+                    <default>false</default>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
     </fields>
     <fields>
         <fullName>Language_3_Proficiency__c</fullName>
         <externalId>false</externalId>
         <label>Language 3 Proficiency</label>
-        <picklist>
-            <picklistValues>
-                <fullName>Fluent</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Proficient</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Beginner</fullName>
-                <default>false</default>
-            </picklistValues>
-            <sorted>false</sorted>
-        </picklist>
+        <required>false</required>
         <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Picklist</type>
+        <valueSet>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>Fluent</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Proficient</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Beginner</fullName>
+                    <default>false</default>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
     </fields>
     <fields>
         <fullName>Language_4_Proficiency__c</fullName>
         <externalId>false</externalId>
         <label>Language 4 Proficiency</label>
-        <picklist>
-            <picklistValues>
-                <fullName>Fluent</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Proficient</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Beginner</fullName>
-                <default>false</default>
-            </picklistValues>
-            <sorted>false</sorted>
-        </picklist>
+        <required>false</required>
         <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Picklist</type>
+        <valueSet>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>Fluent</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Proficient</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Beginner</fullName>
+                    <default>false</default>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
     </fields>
     <fields>
         <fullName>Language_5_Proficiency__c</fullName>
         <externalId>false</externalId>
         <label>Language 5 Proficiency</label>
-        <picklist>
-            <picklistValues>
-                <fullName>Fluent</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Proficient</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Beginner</fullName>
-                <default>false</default>
-            </picklistValues>
-            <sorted>false</sorted>
-        </picklist>
+        <required>false</required>
         <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Picklist</type>
+        <valueSet>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>Fluent</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Proficient</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Beginner</fullName>
+                    <default>false</default>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
     </fields>
     <fields>
         <fullName>Language_6_Proficiency__c</fullName>
         <externalId>false</externalId>
         <label>Language 6 Proficiency</label>
-        <picklist>
-            <picklistValues>
-                <fullName>Fluent</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Proficient</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Beginner</fullName>
-                <default>false</default>
-            </picklistValues>
-            <sorted>false</sorted>
-        </picklist>
+        <required>false</required>
         <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Picklist</type>
+        <valueSet>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>Fluent</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Proficient</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Beginner</fullName>
+                    <default>false</default>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
     </fields>
     <fields>
         <fullName>Language_Spoken_2__c</fullName>
@@ -1881,9 +1948,9 @@
     <fields>
         <fullName>Loaded_Daily_Rate__c</fullName>
         <externalId>false</externalId>
-        <formula>(Annual_Salary_in_USD__c /260)* (1+0.30)*(1+0.52)*(1+0.10)*(1+0.10)</formula>
+        <formula>(Annual_Salary_in_USD__c /260)* (1+0.30)*(1+0.51)*(1+0.09)*(1+0.10)</formula>
         <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
-        <inlineHelpText>Annual Salary over 260 working days, with 30% Fringe, 52% Overhead, 10% G&amp;A, 10 % fee</inlineHelpText>
+        <inlineHelpText>Annual Salary over 260 working days, with 30% Fringe, 51% Overhead, 9% G&amp;A, 10 % fee</inlineHelpText>
         <label>Loaded Daily Rate</label>
         <precision>18</precision>
         <required>false</required>
@@ -1918,29 +1985,32 @@
         <description>Relationship to employee for local emergency contact</description>
         <externalId>false</externalId>
         <label>Local Emergency Contact Relationship</label>
-        <picklist>
-            <picklistValues>
-                <fullName>Significant Other</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Parent</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Child</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Other</fullName>
-                <default>false</default>
-            </picklistValues>
-            <restrictedPicklist>true</restrictedPicklist>
-            <sorted>false</sorted>
-        </picklist>
+        <required>false</required>
         <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Picklist</type>
+        <valueSet>
+            <restricted>true</restricted>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>Significant Other</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Parent</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Child</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Other</fullName>
+                    <default>false</default>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
     </fields>
     <fields>
         <fullName>Local_Loaded_Daily_Rate__c</fullName>
@@ -1987,24 +2057,27 @@
         <fullName>Marital_Status__c</fullName>
         <externalId>false</externalId>
         <label>Marital Status</label>
-        <picklist>
-            <picklistValues>
-                <fullName>Single</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Married</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Other</fullName>
-                <default>false</default>
-            </picklistValues>
-            <sorted>false</sorted>
-        </picklist>
+        <required>false</required>
         <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Picklist</type>
+        <valueSet>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>Single</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Married</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Other</fullName>
+                    <default>false</default>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
     </fields>
     <fields>
         <fullName>Marketing_Communications__c</fullName>
@@ -2021,24 +2094,27 @@
         <fullName>Med_Type__c</fullName>
         <externalId>false</externalId>
         <label>Medical Insurance Type</label>
-        <picklist>
-            <picklistValues>
-                <fullName>PPO</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>HMO</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Other</fullName>
-                <default>false</default>
-            </picklistValues>
-            <sorted>false</sorted>
-        </picklist>
+        <required>false</required>
         <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Picklist</type>
+        <valueSet>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>PPO</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>HMO</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Other</fullName>
+                    <default>false</default>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
     </fields>
     <fields>
         <fullName>Medical_Benefits__c</fullName>
@@ -2053,28 +2129,31 @@
         <fullName>Medical_Plan_Coverage_Type__c</fullName>
         <externalId>false</externalId>
         <label>Medical Plan Coverage Type</label>
-        <picklist>
-            <picklistValues>
-                <fullName>Single</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Dual</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Family</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>N/A</fullName>
-                <default>false</default>
-            </picklistValues>
-            <sorted>false</sorted>
-        </picklist>
+        <required>false</required>
         <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Picklist</type>
+        <valueSet>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>Single</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Dual</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Family</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>N/A</fullName>
+                    <default>false</default>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
     </fields>
     <fields>
         <fullName>Member_ID__c</fullName>
@@ -2091,28 +2170,31 @@
         <fullName>Method_of_Payment__c</fullName>
         <externalId>false</externalId>
         <label>Method of Payment</label>
-        <picklist>
-            <picklistValues>
-                <fullName>ACH</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>EFT</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Gusto</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Wire</fullName>
-                <default>false</default>
-            </picklistValues>
-            <sorted>false</sorted>
-        </picklist>
+        <required>false</required>
         <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Picklist</type>
+        <valueSet>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>ACH</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>EFT</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Gusto</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Wire</fullName>
+                    <default>false</default>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
     </fields>
     <fields>
         <fullName>Myanmar__c</fullName>
@@ -2151,40 +2233,63 @@
         <fullName>Org_Unit__c</fullName>
         <externalId>false</externalId>
         <label>Org Unit</label>
-        <picklist>
-            <picklistValues>
-                <fullName>Business Development</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Executive</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>DevOps</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Field Manager</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Engineer</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Operations</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Human Resources</fullName>
-                <default>false</default>
-            </picklistValues>
-            <sorted>false</sorted>
-        </picklist>
+        <required>false</required>
         <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Picklist</type>
+        <valueSet>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>Business Development</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Executive</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>DevOps</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Field Manager</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Engineer</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Operations</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Human Resources</fullName>
+                    <default>false</default>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+    <fields>
+        <fullName>Passport_2__c</fullName>
+        <externalId>false</externalId>
+        <label>Passport No 2</label>
+        <length>10</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Passport_Expiration_Date_2__c</fullName>
+        <externalId>false</externalId>
+        <label>Passport Expiration Date 2</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Date</type>
     </fields>
     <fields>
         <fullName>Passport_Expiration_Date__c</fullName>
@@ -2223,52 +2328,55 @@
         <fullName>Pay_Level__c</fullName>
         <externalId>false</externalId>
         <label>Pay Level</label>
-        <picklist>
-            <picklistValues>
-                <fullName>1</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>2</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>3</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>4</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>5</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>6</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>7</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>8</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>9</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>10</fullName>
-                <default>false</default>
-            </picklistValues>
-            <sorted>false</sorted>
-        </picklist>
+        <required>false</required>
         <trackHistory>true</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Picklist</type>
+        <valueSet>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>1</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>2</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>3</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>4</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>5</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>6</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>7</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>8</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>9</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>10</fullName>
+                    <default>false</default>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
     </fields>
     <fields>
         <fullName>Pay_Rate__c</fullName>
@@ -2286,20 +2394,23 @@
         <fullName>Payroll_Frequency__c</fullName>
         <externalId>false</externalId>
         <label>Payroll Frequency</label>
-        <picklist>
-            <picklistValues>
-                <fullName>Bi-Weekly</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Monthly</fullName>
-                <default>false</default>
-            </picklistValues>
-            <sorted>false</sorted>
-        </picklist>
+        <required>false</required>
         <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Picklist</type>
+        <valueSet>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>Bi-Weekly</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Monthly</fullName>
+                    <default>false</default>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
     </fields>
     <fields>
         <fullName>Payroll_Notes__c</fullName>
@@ -2316,20 +2427,23 @@
         <fullName>Pension_Plan__c</fullName>
         <externalId>false</externalId>
         <label>Pension Plan</label>
-        <picklist>
-            <picklistValues>
-                <fullName>No</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Yes</fullName>
-                <default>false</default>
-            </picklistValues>
-            <sorted>false</sorted>
-        </picklist>
+        <required>false</required>
         <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Picklist</type>
+        <valueSet>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>No</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Yes</fullName>
+                    <default>false</default>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
     </fields>
     <fields>
         <fullName>Personal_Phone_Number__c</fullName>
@@ -2423,32 +2537,35 @@
         <fullName>SI_Type__c</fullName>
         <externalId>false</externalId>
         <label>SI Type</label>
-        <picklist>
-            <picklistValues>
-                <fullName>BizDev</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Tech</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Comm</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Data</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Ops</fullName>
-                <default>false</default>
-            </picklistValues>
-            <sorted>false</sorted>
-        </picklist>
+        <required>false</required>
         <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Picklist</type>
+        <valueSet>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>BizDev</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Tech</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Comm</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Data</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Ops</fullName>
+                    <default>false</default>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
     </fields>
     <fields>
         <fullName>SSN_PAN_ID_Number__c</fullName>
@@ -2574,40 +2691,43 @@
         <fullName>Sub_Unit__c</fullName>
         <externalId>false</externalId>
         <label>Department</label>
-        <picklist>
-            <picklistValues>
-                <fullName>Global Services</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Mgmt</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Tech</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Ops</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Data</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Marketing &amp; Communications</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Business Development</fullName>
-                <default>false</default>
-            </picklistValues>
-            <sorted>false</sorted>
-        </picklist>
+        <required>false</required>
         <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Picklist</type>
+        <valueSet>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>Global Services</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Mgmt</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Tech</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Ops</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Data</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Marketing &amp; Communications</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Business Development</fullName>
+                    <default>false</default>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
     </fields>
     <fields>
         <fullName>Supervisor_Emp_ID__c</fullName>
@@ -2863,60 +2983,63 @@
         <fullName>VISA_Type__c</fullName>
         <externalId>false</externalId>
         <label>VISA Type</label>
-        <picklist>
-            <picklistValues>
-                <fullName>Tourist</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Intracompany</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Critical Skills</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>OCI</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Business</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Employment</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Other</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>TN</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>F-1/OPT</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>H-1B</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>L-1A/B</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>PERM/GC</fullName>
-                <default>false</default>
-            </picklistValues>
-            <sorted>false</sorted>
-        </picklist>
+        <required>false</required>
         <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Picklist</type>
+        <valueSet>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>Tourist</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Intracompany</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Critical Skills</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>OCI</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Business</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Employment</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Other</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>TN</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>F-1/OPT</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>H-1B</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>L-1A/B</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>PERM/GC</fullName>
+                    <default>false</default>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
     </fields>
     <fields>
         <fullName>Vacation_Days__c</fullName>
@@ -2965,20 +3088,23 @@
         <fullName>X401K__c</fullName>
         <externalId>false</externalId>
         <label>401K</label>
-        <picklist>
-            <picklistValues>
-                <fullName>No</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Yes</fullName>
-                <default>false</default>
-            </picklistValues>
-            <sorted>false</sorted>
-        </picklist>
+        <required>false</required>
         <trackHistory>true</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Picklist</type>
+        <valueSet>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>No</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Yes</fullName>
+                    <default>false</default>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
     </fields>
     <fields>
         <fullName>Yearly_Comp__c</fullName>
@@ -3069,20 +3195,16 @@
         <fullName>ExchangeRateHistoryValidation</fullName>
         <active>false</active>
         <errorConditionFormula>(ISNEW() &amp;&amp; (
-(ISNULL(Exchange_Rate__c) &amp;&amp; NOT(ISNULL(Effective_Exchange_Rate_Date__c))) ||
 (ISNULL(Effective_Exchange_Rate_Date__c) &amp;&amp; NOT(ISNULL(Exchange_Rate__c)))))
-|| (ISCHANGED(Exchange_Rate__c) &amp;&amp; NOT(ISCHANGED(Effective_Exchange_Rate_Date__c)))
-|| (NOT(ISCHANGED(Exchange_Rate__c)) &amp;&amp; ISCHANGED(Effective_Exchange_Rate_Date__c))</errorConditionFormula>
+|| (ISCHANGED(Exchange_Rate__c) &amp;&amp; NOT(ISCHANGED(Effective_Exchange_Rate_Date__c)))</errorConditionFormula>
         <errorMessage>You must update Exchange Rate with Exchange Rate Effective Date</errorMessage>
     </validationRules>
     <validationRules>
         <fullName>SalaryHistoryValidation</fullName>
         <active>false</active>
         <errorConditionFormula>(ISNEW() &amp;&amp; (
-(ISNULL(Salary__c) &amp;&amp; NOT(ISNULL(Effective_Salary_Date__c))) ||
 (ISNULL(Effective_Salary_Date__c) &amp;&amp; NOT(ISNULL(Salary__c)))))
-|| (ISCHANGED(Salary__c) &amp;&amp; NOT(ISCHANGED(Effective_Salary_Date__c)))
-|| (NOT(ISCHANGED(Salary__c)) &amp;&amp; ISCHANGED(Effective_Salary_Date__c))</errorConditionFormula>
+|| (ISCHANGED(Salary__c) &amp;&amp; NOT(ISCHANGED(Effective_Salary_Date__c)))</errorConditionFormula>
         <errorMessage>You must update Salary with Effective Date</errorMessage>
     </validationRules>
 </CustomObject>
