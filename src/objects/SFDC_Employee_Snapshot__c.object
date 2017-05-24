@@ -43,12 +43,12 @@
     <allowInChatterGroups>false</allowInChatterGroups>
     <compactLayoutAssignment>SYSTEM</compactLayoutAssignment>
     <deploymentStatus>Deployed</deploymentStatus>
-    <enableActivities>true</enableActivities>
+    <enableActivities>false</enableActivities>
     <enableBulkApi>true</enableBulkApi>
     <enableFeeds>false</enableFeeds>
-    <enableHistory>true</enableHistory>
-    <enableReports>true</enableReports>
-    <enableSearch>true</enableSearch>
+    <enableHistory>false</enableHistory>
+    <enableReports>false</enableReports>
+    <enableSearch>false</enableSearch>
     <enableSharing>true</enableSharing>
     <enableStreamingApi>true</enableStreamingApi>
     <fields>
@@ -56,7 +56,6 @@
         <externalId>false</externalId>
         <label>Background Check on File</label>
         <required>false</required>
-        <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Picklist</type>
         <valueSet>
@@ -79,7 +78,6 @@
         <label>Bank Account Number</label>
         <length>60</length>
         <required>false</required>
-        <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Text</type>
         <unique>false</unique>
@@ -90,7 +88,6 @@
         <label>Bank Account Type</label>
         <length>60</length>
         <required>false</required>
-        <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Text</type>
         <unique>false</unique>
@@ -100,7 +97,6 @@
         <externalId>false</externalId>
         <label>Additional Education</label>
         <length>32000</length>
-        <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>LongTextArea</type>
         <visibleLines>6</visibleLines>
@@ -108,13 +104,10 @@
     <fields>
         <fullName>Annual_Salary_in_USD__c</fullName>
         <externalId>false</externalId>
-        <formula>Salary__c / Exchange_Rate__c</formula>
-        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
         <label>Annual Salary in USD</label>
         <precision>18</precision>
         <required>false</required>
         <scale>2</scale>
-        <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Number</type>
         <unique>false</unique>
@@ -125,7 +118,6 @@
         <inlineHelpText>Has the employee signed an At-Will Employment Agreement (as opposed to another type of contractual agreement)?</inlineHelpText>
         <label>At-Will Employment Agreement</label>
         <required>false</required>
-        <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Picklist</type>
         <valueSet>
@@ -148,7 +140,6 @@
         <label>BU Description</label>
         <length>70</length>
         <required>false</required>
-        <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Text</type>
         <unique>false</unique>
@@ -159,7 +150,6 @@
         <label>Bank Name</label>
         <length>60</length>
         <required>false</required>
-        <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Text</type>
         <unique>false</unique>
@@ -169,7 +159,6 @@
         <externalId>false</externalId>
         <label>Base Location</label>
         <required>false</required>
-        <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Picklist</type>
         <valueSet>
@@ -193,20 +182,16 @@
         <precision>18</precision>
         <required>false</required>
         <scale>0</scale>
-        <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Percent</type>
     </fields>
     <fields>
         <fullName>Bonus_Potential__c</fullName>
         <externalId>false</externalId>
-        <formula>Salary__c  *  0.05</formula>
-        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
         <label>Bonus (Potential)</label>
         <precision>18</precision>
         <required>false</required>
         <scale>2</scale>
-        <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Currency</type>
     </fields>
@@ -216,10 +201,9 @@
         <externalId>false</externalId>
         <label>Business Unit</label>
         <referenceTo>Business_Unit__c</referenceTo>
-        <relationshipLabel>Employees</relationshipLabel>
-        <relationshipName>Employees</relationshipName>
+        <relationshipLabel>Employee Snapshots</relationshipLabel>
+        <relationshipName>Employee_Snapshots</relationshipName>
         <required>false</required>
-        <trackHistory>true</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Lookup</type>
     </fields>
@@ -229,11 +213,9 @@
         <inlineHelpText>Select the location used for payscale COL calculations</inlineHelpText>
         <label>COL Location</label>
         <required>false</required>
-        <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Picklist</type>
         <valueSet>
-            <restricted>true</restricted>
             <valueSetDefinition>
                 <sorted>false</sorted>
                 <value>
@@ -306,7 +288,6 @@
         <precision>6</precision>
         <required>false</required>
         <scale>0</scale>
-        <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Number</type>
         <unique>false</unique>
@@ -316,7 +297,6 @@
         <externalId>false</externalId>
         <label>Citizenship 2</label>
         <required>false</required>
-        <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Picklist</type>
         <valueSet>
@@ -534,7 +514,6 @@
         <externalId>false</externalId>
         <label>Citizenship</label>
         <required>false</required>
-        <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Picklist</type>
         <valueSet>
@@ -765,7 +744,6 @@
         <externalId>false</externalId>
         <inlineHelpText>Has the employee given written consent for Dimagi to share his or her salary information externally (e.g. to a new employer doing a background check)?</inlineHelpText>
         <label>Consented to Share Salary</label>
-        <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Checkbox</type>
     </fields>
@@ -775,21 +753,18 @@
         <externalId>false</externalId>
         <label>Contact</label>
         <referenceTo>Contact</referenceTo>
-        <relationshipLabel>Employees</relationshipLabel>
-        <relationshipName>Employees</relationshipName>
+        <relationshipLabel>Employee Snapshots</relationshipLabel>
+        <relationshipName>Employee_Snapshots</relationshipName>
         <required>false</required>
-        <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Lookup</type>
     </fields>
     <fields>
         <fullName>Corp_Photo__c</fullName>
         <externalId>false</externalId>
-        <formula>IMAGE(&quot;http://www.salesforceius.com/appx/staffpix/&quot;&amp;  JPG__c , Name )</formula>
-        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
         <label>Corp Photo</label>
+        <length>255</length>
         <required>false</required>
-        <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Text</type>
         <unique>false</unique>
@@ -800,10 +775,9 @@
         <externalId>false</externalId>
         <label>Country</label>
         <referenceTo>Country__c</referenceTo>
-        <relationshipLabel>Employees</relationshipLabel>
-        <relationshipName>Country</relationshipName>
+        <relationshipLabel>Employee Snapshots</relationshipLabel>
+        <relationshipName>Employee_Snapshots</relationshipName>
         <required>false</required>
-        <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Lookup</type>
     </fields>
@@ -813,7 +787,6 @@
         <label>Country of Visa</label>
         <length>60</length>
         <required>false</required>
-        <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Text</type>
         <unique>false</unique>
@@ -824,7 +797,6 @@
         <label>Local Currency</label>
         <length>80</length>
         <required>false</required>
-        <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Text</type>
         <unique>false</unique>
@@ -835,7 +807,6 @@
         <label>Current Address City</label>
         <length>60</length>
         <required>false</required>
-        <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Text</type>
         <unique>false</unique>
@@ -846,7 +817,6 @@
         <label>Current Address Country</label>
         <length>60</length>
         <required>false</required>
-        <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Text</type>
         <unique>false</unique>
@@ -857,7 +827,6 @@
         <label>Current Address State</label>
         <length>60</length>
         <required>false</required>
-        <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Text</type>
         <unique>false</unique>
@@ -868,7 +837,6 @@
         <label>Current Address Street</label>
         <length>60</length>
         <required>false</required>
-        <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Text</type>
         <unique>false</unique>
@@ -879,7 +847,6 @@
         <label>Current Address Zip/Postal Code</label>
         <length>60</length>
         <required>false</required>
-        <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Text</type>
         <unique>false</unique>
@@ -890,7 +857,6 @@
         <label>Current Address</label>
         <length>100</length>
         <required>false</required>
-        <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Text</type>
         <unique>false</unique>
@@ -902,7 +868,6 @@
         <precision>18</precision>
         <required>false</required>
         <scale>0</scale>
-        <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Percent</type>
     </fields>
@@ -913,7 +878,6 @@
         <precision>18</precision>
         <required>false</required>
         <scale>0</scale>
-        <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Percent</type>
     </fields>
@@ -922,7 +886,6 @@
         <externalId>false</externalId>
         <label>DOB</label>
         <required>false</required>
-        <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Date</type>
     </fields>
@@ -933,7 +896,6 @@
         <precision>18</precision>
         <required>false</required>
         <scale>0</scale>
-        <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Percent</type>
     </fields>
@@ -944,7 +906,6 @@
         <precision>18</precision>
         <required>false</required>
         <scale>0</scale>
-        <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Percent</type>
     </fields>
@@ -955,7 +916,6 @@
         <precision>18</precision>
         <required>false</required>
         <scale>0</scale>
-        <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Percent</type>
     </fields>
@@ -966,7 +926,6 @@
         <precision>18</precision>
         <required>false</required>
         <scale>0</scale>
-        <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Percent</type>
     </fields>
@@ -975,7 +934,6 @@
         <externalId>false</externalId>
         <label>Date of Joining</label>
         <required>false</required>
-        <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Date</type>
     </fields>
@@ -984,20 +942,16 @@
         <externalId>false</externalId>
         <label>Date of Policy Expiry</label>
         <required>false</required>
-        <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Date</type>
     </fields>
     <fields>
         <fullName>Days_Employed__c</fullName>
         <externalId>false</externalId>
-        <formula>TODAY () - Hire_Date__c</formula>
-        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
         <label>Days Employed</label>
         <precision>18</precision>
         <required>false</required>
         <scale>0</scale>
-        <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Number</type>
         <unique>false</unique>
@@ -1007,7 +961,6 @@
         <defaultValue>false</defaultValue>
         <externalId>false</externalId>
         <label>Dental Benefits</label>
-        <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Checkbox</type>
     </fields>
@@ -1016,7 +969,6 @@
         <defaultValue>false</defaultValue>
         <externalId>false</externalId>
         <label>Dental Insurance</label>
-        <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Checkbox</type>
     </fields>
@@ -1026,7 +978,6 @@
         <label>Desk Terminal</label>
         <length>5</length>
         <required>false</required>
-        <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Text</type>
         <unique>false</unique>
@@ -1038,7 +989,6 @@
         <precision>18</precision>
         <required>false</required>
         <scale>0</scale>
-        <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Number</type>
         <unique>false</unique>
@@ -1050,7 +1000,6 @@
         <precision>18</precision>
         <required>false</required>
         <scale>0</scale>
-        <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Percent</type>
     </fields>
@@ -1060,10 +1009,9 @@
         <externalId>false</externalId>
         <label>Direct Manager</label>
         <referenceTo>SFDC_Employee__c</referenceTo>
-        <relationshipLabel>Employees</relationshipLabel>
-        <relationshipName>Employees</relationshipName>
+        <relationshipLabel>Employee Snapshots</relationshipLabel>
+        <relationshipName>Employee_Snapshots</relationshipName>
         <required>false</required>
-        <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Lookup</type>
     </fields>
@@ -1073,7 +1021,6 @@
         <label>Direct Manager SF ID</label>
         <length>80</length>
         <required>false</required>
-        <trackHistory>true</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Text</type>
         <unique>false</unique>
@@ -1084,7 +1031,6 @@
         <label>EMERGENCY CONTACT</label>
         <length>50</length>
         <required>false</required>
-        <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Text</type>
         <unique>false</unique>
@@ -1096,7 +1042,6 @@
         <precision>15</precision>
         <required>false</required>
         <scale>0</scale>
-        <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Number</type>
         <unique>false</unique>
@@ -1106,7 +1051,6 @@
         <externalId>false</externalId>
         <label>Degrees</label>
         <required>false</required>
-        <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>MultiselectPicklist</type>
         <valueSet>
@@ -1165,7 +1109,6 @@
         <externalId>false</externalId>
         <label>Effective Exchange Rate Date</label>
         <required>false</required>
-        <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Date</type>
     </fields>
@@ -1174,7 +1117,6 @@
         <externalId>false</externalId>
         <label>Effective Salary Date</label>
         <required>false</required>
-        <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Date</type>
     </fields>
@@ -1183,7 +1125,6 @@
         <externalId>false</externalId>
         <label>Dimagi Email Address</label>
         <required>false</required>
-        <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Email</type>
         <unique>false</unique>
@@ -1193,7 +1134,6 @@
         <externalId>false</externalId>
         <label>Emergency Contact Phone</label>
         <required>false</required>
-        <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Phone</type>
     </fields>
@@ -1202,7 +1142,6 @@
         <externalId>false</externalId>
         <label>Emergency Contact Relationship</label>
         <required>false</required>
-        <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Picklist</type>
         <valueSet>
@@ -1232,7 +1171,6 @@
         <externalId>false</externalId>
         <label>Emergency Email</label>
         <required>false</required>
-        <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Email</type>
         <unique>false</unique>
@@ -1242,7 +1180,6 @@
         <externalId>false</externalId>
         <label>Employee Fax</label>
         <required>false</required>
-        <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Phone</type>
     </fields>
@@ -1252,7 +1189,6 @@
         <label>Employee First Name</label>
         <length>60</length>
         <required>false</required>
-        <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Text</type>
         <unique>false</unique>
@@ -1263,7 +1199,6 @@
         <label>Employee Folder Dropbox Location</label>
         <length>200</length>
         <required>false</required>
-        <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Text</type>
         <unique>false</unique>
@@ -1271,12 +1206,14 @@
     <fields>
         <fullName>Employee_ID__c</fullName>
         <description>Emp ID for charting</description>
-        <displayFormat>{0000000}</displayFormat>
         <externalId>false</externalId>
         <label>Employee ID</label>
-        <trackHistory>false</trackHistory>
+        <precision>16</precision>
+        <required>false</required>
+        <scale>0</scale>
         <trackTrending>false</trackTrending>
-        <type>AutoNumber</type>
+        <type>Number</type>
+        <unique>false</unique>
     </fields>
     <fields>
         <fullName>Employee_Last_Name__c</fullName>
@@ -1284,7 +1221,6 @@
         <label>Employee Last Name</label>
         <length>60</length>
         <required>false</required>
-        <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Text</type>
         <unique>false</unique>
@@ -1295,7 +1231,6 @@
         <label>Employee Middle Name</label>
         <length>255</length>
         <required>false</required>
-        <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Text</type>
         <unique>false</unique>
@@ -1305,7 +1240,6 @@
         <externalId>false</externalId>
         <label>Employee Status</label>
         <required>false</required>
-        <trackHistory>true</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Picklist</type>
         <valueSet>
@@ -1331,7 +1265,6 @@
         <externalId>false</externalId>
         <label>Employee Type</label>
         <required>false</required>
-        <trackHistory>true</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Picklist</type>
         <valueSet>
@@ -1357,7 +1290,6 @@
         <externalId>false</externalId>
         <label>Entity</label>
         <required>false</required>
-        <trackHistory>true</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Picklist</type>
         <valueSet>
@@ -1383,7 +1315,6 @@
         <externalId>false</externalId>
         <label>Ethnicity</label>
         <required>false</required>
-        <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Picklist</type>
         <valueSet>
@@ -1415,7 +1346,6 @@
         <precision>18</precision>
         <required>true</required>
         <scale>5</scale>
-        <trackHistory>true</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Number</type>
         <unique>false</unique>
@@ -1426,7 +1356,6 @@
         <label>Federal Tax Withholding</label>
         <length>80</length>
         <required>false</required>
-        <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Text</type>
         <unique>false</unique>
@@ -1437,7 +1366,6 @@
         <label>Field Location</label>
         <length>140</length>
         <required>false</required>
-        <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Text</type>
         <unique>false</unique>
@@ -1448,7 +1376,6 @@
         <label>Former Employer 1</label>
         <length>50</length>
         <required>false</required>
-        <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Text</type>
         <unique>false</unique>
@@ -1459,7 +1386,6 @@
         <label>Former Employer 3</label>
         <length>50</length>
         <required>false</required>
-        <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Text</type>
         <unique>false</unique>
@@ -1470,7 +1396,6 @@
         <label>Former Employer 2</label>
         <length>50</length>
         <required>false</required>
-        <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Text</type>
         <unique>false</unique>
@@ -1480,7 +1405,6 @@
         <externalId>false</externalId>
         <label>Gender</label>
         <required>false</required>
-        <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Picklist</type>
         <valueSet>
@@ -1504,7 +1428,6 @@
         <precision>18</precision>
         <required>false</required>
         <scale>0</scale>
-        <trackHistory>true</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Percent</type>
     </fields>
@@ -1515,7 +1438,6 @@
         <precision>4</precision>
         <required>false</required>
         <scale>0</scale>
-        <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Number</type>
         <unique>false</unique>
@@ -1525,7 +1447,6 @@
         <defaultValue>false</defaultValue>
         <externalId>false</externalId>
         <label>Gym Member</label>
-        <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Checkbox</type>
     </fields>
@@ -1534,7 +1455,6 @@
         <externalId>false</externalId>
         <label>Hire Date</label>
         <required>false</required>
-        <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Date</type>
     </fields>
@@ -1543,7 +1463,6 @@
         <externalId>false</externalId>
         <label>Home Address</label>
         <required>false</required>
-        <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>TextArea</type>
     </fields>
@@ -1552,7 +1471,6 @@
         <externalId>false</externalId>
         <label>Personal Email Address</label>
         <required>false</required>
-        <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Email</type>
         <unique>false</unique>
@@ -1565,7 +1483,6 @@
         <precision>18</precision>
         <required>false</required>
         <scale>2</scale>
-        <trackHistory>true</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Number</type>
         <unique>false</unique>
@@ -1577,7 +1494,6 @@
         <precision>18</precision>
         <required>false</required>
         <scale>2</scale>
-        <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Number</type>
         <unique>false</unique>
@@ -1589,7 +1505,6 @@
         <label>Hours Per Week</label>
         <length>20</length>
         <required>false</required>
-        <trackHistory>true</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Text</type>
         <unique>false</unique>
@@ -1601,7 +1516,6 @@
         <precision>18</precision>
         <required>false</required>
         <scale>0</scale>
-        <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Percent</type>
     </fields>
@@ -1610,7 +1524,6 @@
         <externalId>false</externalId>
         <label>Insurance Beneficiary</label>
         <required>false</required>
-        <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>TextArea</type>
     </fields>
@@ -1619,7 +1532,6 @@
         <externalId>false</externalId>
         <label>Medical Insurance Provider</label>
         <required>false</required>
-        <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Picklist</type>
         <valueSet>
@@ -1661,7 +1573,6 @@
         <externalId>false</externalId>
         <label>IsAssistant</label>
         <required>false</required>
-        <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Picklist</type>
         <valueSet>
@@ -1684,7 +1595,6 @@
         <label>JPG</label>
         <length>20</length>
         <required>false</required>
-        <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Text</type>
         <unique>false</unique>
@@ -1695,10 +1605,9 @@
         <externalId>false</externalId>
         <label>Job Function</label>
         <referenceTo>SFDC_Job_Function__c</referenceTo>
-        <relationshipLabel>Employees</relationshipLabel>
-        <relationshipName>R00N30000001eUPQEA2</relationshipName>
+        <relationshipLabel>Employee Snapshots</relationshipLabel>
+        <relationshipName>Employee_Snapshots</relationshipName>
         <required>false</required>
-        <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Lookup</type>
     </fields>
@@ -1709,7 +1618,6 @@
         <label>LOCAL EMERGENCY CONTACT</label>
         <length>50</length>
         <required>false</required>
-        <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Text</type>
         <unique>false</unique>
@@ -1719,7 +1627,6 @@
         <externalId>false</externalId>
         <label>Language 1 Proficiency</label>
         <required>false</required>
-        <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Picklist</type>
         <valueSet>
@@ -1745,7 +1652,6 @@
         <externalId>false</externalId>
         <label>Language 2 Proficiency</label>
         <required>false</required>
-        <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Picklist</type>
         <valueSet>
@@ -1771,7 +1677,6 @@
         <externalId>false</externalId>
         <label>Language 3 Proficiency</label>
         <required>false</required>
-        <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Picklist</type>
         <valueSet>
@@ -1797,7 +1702,6 @@
         <externalId>false</externalId>
         <label>Language 4 Proficiency</label>
         <required>false</required>
-        <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Picklist</type>
         <valueSet>
@@ -1823,7 +1727,6 @@
         <externalId>false</externalId>
         <label>Language 5 Proficiency</label>
         <required>false</required>
-        <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Picklist</type>
         <valueSet>
@@ -1849,7 +1752,6 @@
         <externalId>false</externalId>
         <label>Language 6 Proficiency</label>
         <required>false</required>
-        <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Picklist</type>
         <valueSet>
@@ -1876,7 +1778,6 @@
         <label>Language Spoken 2</label>
         <length>60</length>
         <required>false</required>
-        <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Text</type>
         <unique>false</unique>
@@ -1887,7 +1788,6 @@
         <label>Language Spoken 3</label>
         <length>60</length>
         <required>false</required>
-        <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Text</type>
         <unique>false</unique>
@@ -1898,7 +1798,6 @@
         <label>Language Spoken 4</label>
         <length>60</length>
         <required>false</required>
-        <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Text</type>
         <unique>false</unique>
@@ -1909,7 +1808,6 @@
         <label>Language Spoken 5</label>
         <length>60</length>
         <required>false</required>
-        <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Text</type>
         <unique>false</unique>
@@ -1920,7 +1818,6 @@
         <label>Language Spoken 6</label>
         <length>60</length>
         <required>false</required>
-        <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Text</type>
         <unique>false</unique>
@@ -1931,7 +1828,6 @@
         <label>Language Spoken 1</label>
         <length>120</length>
         <required>false</required>
-        <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Text</type>
         <unique>false</unique>
@@ -1941,21 +1837,16 @@
         <externalId>false</externalId>
         <label>Last Review Date</label>
         <required>false</required>
-        <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Date</type>
     </fields>
     <fields>
         <fullName>Loaded_Daily_Rate__c</fullName>
         <externalId>false</externalId>
-        <formula>(Annual_Salary_in_USD__c /260)* (1+0.30)*(1+0.51)*(1+0.09)*(1+0.10)</formula>
-        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
-        <inlineHelpText>Annual Salary over 260 working days, with 30% Fringe, 51% Overhead, 9% G&amp;A, 10 % fee</inlineHelpText>
         <label>Loaded Daily Rate</label>
         <precision>18</precision>
         <required>false</required>
         <scale>2</scale>
-        <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Currency</type>
     </fields>
@@ -1965,7 +1856,6 @@
         <externalId>false</externalId>
         <label>Local Emergency Contact Email</label>
         <required>false</required>
-        <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Email</type>
         <unique>false</unique>
@@ -1976,7 +1866,6 @@
         <externalId>false</externalId>
         <label>Local Emergency Contact Phone</label>
         <required>false</required>
-        <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Phone</type>
     </fields>
@@ -1986,11 +1875,9 @@
         <externalId>false</externalId>
         <label>Local Emergency Contact Relationship</label>
         <required>false</required>
-        <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Picklist</type>
         <valueSet>
-            <restricted>true</restricted>
             <valueSetDefinition>
                 <sorted>false</sorted>
                 <value>
@@ -2014,30 +1901,22 @@
     </fields>
     <fields>
         <fullName>Local_Loaded_Daily_Rate__c</fullName>
-        <description>Calculates the Daily loaded rate in local currency</description>
         <externalId>false</externalId>
-        <formula>Loaded_Daily_Rate__c*Exchange_Rate__c</formula>
-        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
         <label>Local Loaded Daily Rate</label>
         <precision>18</precision>
         <required>false</required>
         <scale>2</scale>
-        <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Number</type>
         <unique>false</unique>
     </fields>
     <fields>
         <fullName>Local_Unloaded_Daily_Rate__c</fullName>
-        <description>Calculates the Unloaded Daily Rate in local currency</description>
         <externalId>false</externalId>
-        <formula>Unloaded_Daily_Rate__c*Exchange_Rate__c</formula>
-        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
         <label>Local Unloaded Daily Rate</label>
         <precision>18</precision>
         <required>false</required>
         <scale>2</scale>
-        <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Number</type>
         <unique>false</unique>
@@ -2048,7 +1927,6 @@
         <label>Mail Drop</label>
         <length>10</length>
         <required>false</required>
-        <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Text</type>
         <unique>false</unique>
@@ -2058,7 +1936,6 @@
         <externalId>false</externalId>
         <label>Marital Status</label>
         <required>false</required>
-        <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Picklist</type>
         <valueSet>
@@ -2086,7 +1963,6 @@
         <precision>18</precision>
         <required>false</required>
         <scale>0</scale>
-        <trackHistory>true</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Percent</type>
     </fields>
@@ -2095,7 +1971,6 @@
         <externalId>false</externalId>
         <label>Medical Insurance Type</label>
         <required>false</required>
-        <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Picklist</type>
         <valueSet>
@@ -2121,7 +1996,6 @@
         <defaultValue>false</defaultValue>
         <externalId>false</externalId>
         <label>Medical Benefits</label>
-        <trackHistory>true</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Checkbox</type>
     </fields>
@@ -2130,7 +2004,6 @@
         <externalId>false</externalId>
         <label>Medical Plan Coverage Type</label>
         <required>false</required>
-        <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Picklist</type>
         <valueSet>
@@ -2161,7 +2034,6 @@
         <label>Medical Insurance Member ID</label>
         <length>20</length>
         <required>false</required>
-        <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Text</type>
         <unique>false</unique>
@@ -2171,7 +2043,6 @@
         <externalId>false</externalId>
         <label>Method of Payment</label>
         <required>false</required>
-        <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Picklist</type>
         <valueSet>
@@ -2203,7 +2074,6 @@
         <precision>18</precision>
         <required>false</required>
         <scale>0</scale>
-        <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Percent</type>
     </fields>
@@ -2213,7 +2083,6 @@
         <label>OCI No.</label>
         <length>10</length>
         <required>false</required>
-        <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Text</type>
         <unique>false</unique>
@@ -2225,7 +2094,6 @@
         <precision>18</precision>
         <required>false</required>
         <scale>0</scale>
-        <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Percent</type>
     </fields>
@@ -2234,7 +2102,6 @@
         <externalId>false</externalId>
         <label>Org Unit</label>
         <required>false</required>
-        <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Picklist</type>
         <valueSet>
@@ -2277,7 +2144,6 @@
         <label>Passport No 2</label>
         <length>10</length>
         <required>false</required>
-        <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Text</type>
         <unique>false</unique>
@@ -2287,7 +2153,6 @@
         <externalId>false</externalId>
         <label>Passport Expiration Date 2</label>
         <required>false</required>
-        <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Date</type>
     </fields>
@@ -2296,7 +2161,6 @@
         <externalId>false</externalId>
         <label>Passport Expiration Date</label>
         <required>false</required>
-        <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Date</type>
     </fields>
@@ -2306,7 +2170,6 @@
         <label>Passport No.</label>
         <length>10</length>
         <required>false</required>
-        <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Text</type>
         <unique>false</unique>
@@ -2319,7 +2182,6 @@
         <label>PayPal User ID</label>
         <length>255</length>
         <required>false</required>
-        <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Text</type>
         <unique>false</unique>
@@ -2329,7 +2191,6 @@
         <externalId>false</externalId>
         <label>Pay Level</label>
         <required>false</required>
-        <trackHistory>true</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Picklist</type>
         <valueSet>
@@ -2385,7 +2246,6 @@
         <precision>18</precision>
         <required>false</required>
         <scale>2</scale>
-        <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Number</type>
         <unique>false</unique>
@@ -2395,7 +2255,6 @@
         <externalId>false</externalId>
         <label>Payroll Frequency</label>
         <required>false</required>
-        <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Picklist</type>
         <valueSet>
@@ -2418,7 +2277,6 @@
         <label>Last Pay Update Note</label>
         <length>255</length>
         <required>false</required>
-        <trackHistory>true</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Text</type>
         <unique>false</unique>
@@ -2428,7 +2286,6 @@
         <externalId>false</externalId>
         <label>Pension Plan</label>
         <required>false</required>
-        <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Picklist</type>
         <valueSet>
@@ -2451,7 +2308,6 @@
         <label>Personal Phone (with Country Code)</label>
         <length>40</length>
         <required>false</required>
-        <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Text</type>
         <unique>false</unique>
@@ -2462,7 +2318,6 @@
         <label>Office Phone (with Country Code)</label>
         <length>40</length>
         <required>false</required>
-        <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Text</type>
         <unique>false</unique>
@@ -2473,7 +2328,6 @@
         <label>Medical Benefit Policy No.</label>
         <length>30</length>
         <required>false</required>
-        <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Text</type>
         <unique>false</unique>
@@ -2483,7 +2337,6 @@
         <externalId>false</externalId>
         <label>Position Date</label>
         <required>false</required>
-        <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Date</type>
     </fields>
@@ -2494,7 +2347,6 @@
         <precision>6</precision>
         <required>false</required>
         <scale>0</scale>
-        <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Number</type>
         <unique>false</unique>
@@ -2505,7 +2357,6 @@
         <label>Roth 401K Deduction ($ or %)</label>
         <length>60</length>
         <required>false</required>
-        <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Text</type>
         <unique>false</unique>
@@ -2516,7 +2367,6 @@
         <label>Routing Number</label>
         <length>60</length>
         <required>false</required>
-        <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Text</type>
         <unique>false</unique>
@@ -2527,9 +2377,8 @@
         <externalId>false</externalId>
         <label>SF User</label>
         <referenceTo>User</referenceTo>
-        <relationshipName>R00N30000001eUPVEA2</relationshipName>
+        <relationshipName>Employee_Snapshots</relationshipName>
         <required>false</required>
-        <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Lookup</type>
     </fields>
@@ -2538,7 +2387,6 @@
         <externalId>false</externalId>
         <label>SI Type</label>
         <required>false</required>
-        <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Picklist</type>
         <valueSet>
@@ -2573,7 +2421,6 @@
         <label>SSN/PAN/ID Number</label>
         <length>20</length>
         <required>false</required>
-        <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Text</type>
         <unique>false</unique>
@@ -2585,7 +2432,6 @@
         <precision>12</precision>
         <required>false</required>
         <scale>2</scale>
-        <trackHistory>true</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Number</type>
         <unique>false</unique>
@@ -2596,7 +2442,6 @@
         <label>Secondary Manager</label>
         <length>80</length>
         <required>false</required>
-        <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Text</type>
         <unique>false</unique>
@@ -2608,7 +2453,6 @@
         <precision>5</precision>
         <required>false</required>
         <scale>0</scale>
-        <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Number</type>
         <unique>false</unique>
@@ -2619,7 +2463,6 @@
         <description>Dimagi has electronic copy of employee&apos;s signature on file</description>
         <externalId>false</externalId>
         <label>Signature on File</label>
-        <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Checkbox</type>
     </fields>
@@ -2628,7 +2471,6 @@
         <defaultValue>false</defaultValue>
         <externalId>false</externalId>
         <label>Signed Travel Waiver</label>
-        <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Checkbox</type>
     </fields>
@@ -2638,7 +2480,6 @@
         <label>Skype ID</label>
         <length>40</length>
         <required>false</required>
-        <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Text</type>
         <unique>false</unique>
@@ -2648,7 +2489,6 @@
         <externalId>false</externalId>
         <label>Special Skills</label>
         <length>32000</length>
-        <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>LongTextArea</type>
         <visibleLines>6</visibleLines>
@@ -2659,7 +2499,6 @@
         <label>State Tax Withholding</label>
         <length>80</length>
         <required>false</required>
-        <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Text</type>
         <unique>false</unique>
@@ -2671,7 +2510,6 @@
         <precision>7</precision>
         <required>false</required>
         <scale>0</scale>
-        <trackHistory>true</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Number</type>
         <unique>false</unique>
@@ -2683,7 +2521,6 @@
         <precision>5</precision>
         <required>false</required>
         <scale>2</scale>
-        <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Currency</type>
     </fields>
@@ -2692,7 +2529,6 @@
         <externalId>false</externalId>
         <label>Department</label>
         <required>false</required>
-        <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Picklist</type>
         <valueSet>
@@ -2736,7 +2572,6 @@
         <precision>15</precision>
         <required>false</required>
         <scale>0</scale>
-        <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Number</type>
         <unique>false</unique>
@@ -2747,7 +2582,6 @@
         <label>Swift Code/IFSC Code</label>
         <length>60</length>
         <required>false</required>
-        <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Text</type>
         <unique>false</unique>
@@ -2761,7 +2595,6 @@
         <precision>18</precision>
         <required>false</required>
         <scale>2</scale>
-        <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Number</type>
         <unique>false</unique>
@@ -2775,7 +2608,6 @@
         <precision>18</precision>
         <required>false</required>
         <scale>2</scale>
-        <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Number</type>
         <unique>false</unique>
@@ -2786,7 +2618,6 @@
         <label>Tax Address City</label>
         <length>60</length>
         <required>false</required>
-        <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Text</type>
         <unique>false</unique>
@@ -2797,7 +2628,6 @@
         <label>Tax Address Country</label>
         <length>60</length>
         <required>false</required>
-        <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Text</type>
         <unique>false</unique>
@@ -2808,7 +2638,6 @@
         <label>Tax Address State</label>
         <length>60</length>
         <required>false</required>
-        <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Text</type>
         <unique>false</unique>
@@ -2819,7 +2648,6 @@
         <label>Tax Address Street</label>
         <length>60</length>
         <required>false</required>
-        <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Text</type>
         <unique>false</unique>
@@ -2830,7 +2658,6 @@
         <label>Tax Address Zip/Postal Code</label>
         <length>60</length>
         <required>false</required>
-        <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Text</type>
         <unique>false</unique>
@@ -2842,7 +2669,6 @@
         <precision>18</precision>
         <required>false</required>
         <scale>0</scale>
-        <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Percent</type>
     </fields>
@@ -2851,7 +2677,6 @@
         <externalId>false</externalId>
         <label>Termination Date</label>
         <required>false</required>
-        <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Date</type>
     </fields>
@@ -2861,7 +2686,6 @@
         <label>Title</label>
         <length>70</length>
         <required>false</required>
-        <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Text</type>
         <unique>false</unique>
@@ -2869,53 +2693,40 @@
     <fields>
         <fullName>Total_Business_Unit_Time_Split__c</fullName>
         <externalId>false</externalId>
-        <formula>DWA__c + Myanmar__c + DLAC__c + DMoz__c + DSI__c + INC__c + DSA__c</formula>
-        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
         <label>Total Business Unit Time Split</label>
         <precision>18</precision>
         <required>false</required>
-        <scale>0</scale>
-        <trackHistory>false</trackHistory>
+        <scale>2</scale>
         <trackTrending>false</trackTrending>
         <type>Percent</type>
     </fields>
     <fields>
         <fullName>Total_Department_Time_Split__c</fullName>
         <externalId>false</externalId>
-        <formula>Global_Services__c + Data__c + Tech__c + Ops__c + Marketing_Communications__c + BizDev__c</formula>
-        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
         <label>Total Department Time Split</label>
         <precision>18</precision>
         <required>false</required>
         <scale>2</scale>
-        <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Percent</type>
     </fields>
     <fields>
         <fullName>Total_Stock_Value__c</fullName>
         <externalId>false</externalId>
-        <formula>Stock_Value_Day_1__c   *   Stock_Options__c</formula>
-        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
         <label>Total Stock Value</label>
         <precision>18</precision>
         <required>false</required>
         <scale>2</scale>
-        <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Currency</type>
     </fields>
     <fields>
         <fullName>USD_Currency_Per_Pay_period__c</fullName>
         <externalId>false</externalId>
-        <formula>Pay_Rate__c/Exchange_Rate__c</formula>
-        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
-        <inlineHelpText>Pay per Period in Local Currency</inlineHelpText>
-        <label>USD_Currency_Per_Pay_period</label>
+        <label>USD Currency Per Pay period</label>
         <precision>18</precision>
         <required>false</required>
         <scale>2</scale>
-        <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Number</type>
         <unique>false</unique>
@@ -2926,7 +2737,6 @@
         <label>Unit</label>
         <length>20</length>
         <required>false</required>
-        <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Text</type>
         <unique>false</unique>
@@ -2934,14 +2744,10 @@
     <fields>
         <fullName>Unloaded_Daily_Rate__c</fullName>
         <externalId>false</externalId>
-        <formula>(Annual_Salary_in_USD__c /260)</formula>
-        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
-        <inlineHelpText>Calculated from Annual Salary USD over 260 working days</inlineHelpText>
         <label>Unloaded Daily Rate</label>
         <precision>18</precision>
         <required>false</required>
         <scale>2</scale>
-        <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Currency</type>
     </fields>
@@ -2951,7 +2757,6 @@
         <label>User ID</label>
         <length>10</length>
         <required>false</required>
-        <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Text</type>
         <unique>false</unique>
@@ -2962,9 +2767,8 @@
         <externalId>false</externalId>
         <label>User</label>
         <referenceTo>User</referenceTo>
-        <relationshipName>Employees</relationshipName>
+        <relationshipName>Employee_Snapshots1</relationshipName>
         <required>false</required>
-        <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Lookup</type>
     </fields>
@@ -2974,7 +2778,6 @@
         <label>VISA No.</label>
         <length>10</length>
         <required>false</required>
-        <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Text</type>
         <unique>false</unique>
@@ -2984,7 +2787,6 @@
         <externalId>false</externalId>
         <label>VISA Type</label>
         <required>false</required>
-        <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Picklist</type>
         <valueSet>
@@ -3048,7 +2850,6 @@
         <precision>4</precision>
         <required>false</required>
         <scale>2</scale>
-        <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Number</type>
         <unique>false</unique>
@@ -3058,7 +2859,6 @@
         <externalId>false</externalId>
         <label>Visa Expiration Date</label>
         <required>false</required>
-        <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Date</type>
     </fields>
@@ -3068,7 +2868,6 @@
         <label>Voter ID</label>
         <length>10</length>
         <required>false</required>
-        <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Text</type>
         <unique>false</unique>
@@ -3079,7 +2878,6 @@
         <label>Traditional 401K Deduction ($ or %)</label>
         <length>80</length>
         <required>false</required>
-        <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Text</type>
         <unique>false</unique>
@@ -3089,7 +2887,6 @@
         <externalId>false</externalId>
         <label>401K</label>
         <required>false</required>
-        <trackHistory>true</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Picklist</type>
         <valueSet>
@@ -3109,13 +2906,10 @@
     <fields>
         <fullName>Yearly_Comp__c</fullName>
         <externalId>false</externalId>
-        <formula>Salary__c  +  Bonus_Potential__c  +  Total_Stock_Value__c</formula>
-        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
         <label>Yearly Comp</label>
         <precision>18</precision>
         <required>false</required>
         <scale>2</scale>
-        <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Currency</type>
     </fields>
@@ -3126,85 +2920,16 @@
         <precision>4</precision>
         <required>false</required>
         <scale>2</scale>
-        <trackHistory>true</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Number</type>
         <unique>false</unique>
     </fields>
-    <label>Employee</label>
-    <listViews>
-        <fullName>Contractors</fullName>
-        <columns>NAME</columns>
-        <columns>Employee_Status__c</columns>
-        <columns>Hire_Date__c</columns>
-        <filterScope>Everything</filterScope>
-        <filters>
-            <field>Employee_Type__c</field>
-            <operation>equals</operation>
-            <value>Contract</value>
-        </filters>
-        <label>Contractors</label>
-    </listViews>
-    <listViews>
-        <fullName>Employees_by_Language</fullName>
-        <columns>NAME</columns>
-        <columns>Employee_First_Name__c</columns>
-        <columns>Employee_Last_Name__c</columns>
-        <columns>Language_1_Proficiency__c</columns>
-        <columns>Language_2_Proficiency__c</columns>
-        <columns>Language_3_Proficiency__c</columns>
-        <columns>Language_4_Proficiency__c</columns>
-        <columns>Language_5_Proficiency__c</columns>
-        <columns>Language_6_Proficiency__c</columns>
-        <columns>Languages_Spoken__c</columns>
-        <columns>Language_Spoken_2__c</columns>
-        <columns>Language_Spoken_3__c</columns>
-        <columns>Language_Spoken_4__c</columns>
-        <columns>Language_Spoken_5__c</columns>
-        <columns>Language_Spoken_6__c</columns>
-        <filterScope>Everything</filterScope>
-        <label>Employees by Language</label>
-    </listViews>
-    <listViews>
-        <fullName>FullTimeEmployees</fullName>
-        <columns>NAME</columns>
-        <columns>Title__c</columns>
-        <columns>SF_User__c</columns>
-        <columns>Email_Address__c</columns>
-        <filterScope>Everything</filterScope>
-        <label>Full Time Employees</label>
-    </listViews>
+    <label>Employee Snapshot</label>
     <nameField>
-        <label>Employee Name</label>
-        <trackHistory>false</trackHistory>
+        <label>Employee Snapshot Name</label>
         <type>Text</type>
     </nameField>
-    <pluralLabel>Employees</pluralLabel>
-    <searchLayouts>
-        <customTabListAdditionalFields>Title__c</customTabListAdditionalFields>
-        <customTabListAdditionalFields>Employee_ID__c</customTabListAdditionalFields>
-        <customTabListAdditionalFields>Hire_Date__c</customTabListAdditionalFields>
-        <customTabListAdditionalFields>Corp_Photo__c</customTabListAdditionalFields>
-        <lookupDialogsAdditionalFields>Employee_Status__c</lookupDialogsAdditionalFields>
-        <lookupDialogsAdditionalFields>Corp_Photo__c</lookupDialogsAdditionalFields>
-        <searchResultsAdditionalFields>Title__c</searchResultsAdditionalFields>
-        <searchResultsAdditionalFields>CREATED_DATE</searchResultsAdditionalFields>
-    </searchLayouts>
+    <pluralLabel>Employee Snapshots</pluralLabel>
+    <searchLayouts/>
     <sharingModel>ReadWrite</sharingModel>
-    <validationRules>
-        <fullName>ExchangeRateHistoryValidation</fullName>
-        <active>false</active>
-        <errorConditionFormula>(ISNEW() &amp;&amp; (
-(ISNULL(Effective_Exchange_Rate_Date__c) &amp;&amp; NOT(ISNULL(Exchange_Rate__c)))))
-|| (ISCHANGED(Exchange_Rate__c) &amp;&amp; NOT(ISCHANGED(Effective_Exchange_Rate_Date__c)))</errorConditionFormula>
-        <errorMessage>You must update Exchange Rate with Exchange Rate Effective Date</errorMessage>
-    </validationRules>
-    <validationRules>
-        <fullName>SalaryHistoryValidation</fullName>
-        <active>false</active>
-        <errorConditionFormula>(ISNEW() &amp;&amp; (
-(ISNULL(Effective_Salary_Date__c) &amp;&amp; NOT(ISNULL(Salary__c)))))
-|| (ISCHANGED(Salary__c) &amp;&amp; NOT(ISCHANGED(Effective_Salary_Date__c)))</errorConditionFormula>
-        <errorMessage>You must update Salary with Effective Date</errorMessage>
-    </validationRules>
 </CustomObject>
