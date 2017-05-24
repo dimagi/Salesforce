@@ -165,7 +165,7 @@
                     chart.xAxis.rotateLabels(-40);
                     chart.yAxis.tickFormat(d3.format(',.1f'));
                     chart.yAxis.ticks(6);
-                    chart.yAxis.axisLabel('Sum of Forms');
+                    chart.yAxis.axisLabel('Forms for Period');
                     chart.yAxis.axisLabelDistance(1);
                     var forms = $j("[id$=formGraphDataId]").val();
                     $j("[id$=forms").append("<svg></svg>");

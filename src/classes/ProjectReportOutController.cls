@@ -1377,7 +1377,7 @@ public with sharing class ProjectReportOutController {
 
         Set<String> planNames = new Set<String> { 'Advanced', 'Community', 'Enterprise', 'Pro', 'Standard', 'Empty'};
         Decimal months = Corporate_Dashboard_Settings__c.getOrgDefaults().Scale_graphs_number_of_months__c != null ? Corporate_Dashboard_Settings__c.getOrgDefaults().Scale_graphs_number_of_months__c : 3;
-        List<Domain_Monthly_Snapshot__c> snapshots = [SELECT Id, Snapshot_Date__c, Software_Plan_Edition__c, Wam__c,
+        List<Domain_Monthly_Snapshot__c> snapshots = [SELECT Id, Snapshot_Date__c, Software_Plan_Edition__c, Wam__c, Forms_for_Period__c,
                                                       Forms__c, Active_Mobile_Users__c, Scale_of_Programs__c FROM Domain_Monthly_Snapshot__c
                                                       WHERE Snapshot_Date__c >: Date.today().addMonths(((-1) * months).intValue()).toStartOfMonth()
                                                       AND Software_Plan_Edition__c IN: planNames
@@ -1394,32 +1394,32 @@ public with sharing class ProjectReportOutController {
 
             if (sn.Software_Plan_Edition__c == 'Advanced') {
                 tmpWamData.value1 = sn.Wam__c;
-                tmpFormData.value1 = sn.Forms__c;
+                tmpFormData.value1 = sn.Forms_for_Period__c;
                 tmpUsersData.value1 = sn.Active_Mobile_Users__c;
                 tmpProgramsData.value1 = sn.Scale_of_Programs__c;
             } else if (sn.Software_Plan_Edition__c == 'Community') {
                 tmpWamData.value2 = sn.Wam__c;
-                tmpFormData.value2 = sn.Forms__c;
+                tmpFormData.value2 = sn.Forms_for_Period__c;
                 tmpUsersData.value2 = sn.Active_Mobile_Users__c;
                 tmpProgramsData.value2 = sn.Scale_of_Programs__c;
             } else if (sn.Software_Plan_Edition__c == 'Enterprise') {
                 tmpWamData.value3 = sn.Wam__c;
-                tmpFormData.value3 = sn.Forms__c;
+                tmpFormData.value3 = sn.Forms_for_Period__c;
                 tmpUsersData.value3 = sn.Active_Mobile_Users__c;
                 tmpProgramsData.value3 = sn.Scale_of_Programs__c;
             } else if (sn.Software_Plan_Edition__c == 'Pro') {
                 tmpWamData.value4 = sn.Wam__c;
-                tmpFormData.value4 = sn.Forms__c;
+                tmpFormData.value4 = sn.Forms_for_Period__c;
                 tmpUsersData.value4 = sn.Active_Mobile_Users__c;
                 tmpProgramsData.value4 = sn.Scale_of_Programs__c;
             } else if (sn.Software_Plan_Edition__c == 'Standard') {
                 tmpWamData.value5 = sn.Wam__c;
-                tmpFormData.value5 = sn.Forms__c;
+                tmpFormData.value5 = sn.Forms_for_Period__c;
                 tmpUsersData.value5 = sn.Active_Mobile_Users__c;
                 tmpProgramsData.value5 = sn.Scale_of_Programs__c;
             } else { // Empty
                 tmpWamData.value6 = sn.Wam__c;
-                tmpFormData.value6 = sn.Forms__c;
+                tmpFormData.value6 = sn.Forms_for_Period__c;
                 tmpUsersData.value6 = sn.Active_Mobile_Users__c;
                 tmpProgramsData.value6 = sn.Scale_of_Programs__c;
             }
