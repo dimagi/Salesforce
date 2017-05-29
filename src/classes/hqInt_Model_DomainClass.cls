@@ -216,6 +216,16 @@ public class hqInt_Model_DomainClass {
             domainObj.cpHasApp__c = calculatedProperties.cp_has_app == null ? false : calculatedProperties.cp_has_app;
         }
 
+        if (deployment != null) {
+            domainObj.city__c = deployment.city;
+            domainObj.date__c = deployment.x_date;
+            domainObj.description__c = deployment.description;
+            domainObj.public__c = deployment.x_Public;
+            domainObj.region__c = deployment.region;
+            domainObj.country__c = deployment.country;
+            domainObj.countries__c = String.join(deployment.countries,',');
+        }
+
         domainObj.Server_Name__c = serverName;
 
         return domainobj;
