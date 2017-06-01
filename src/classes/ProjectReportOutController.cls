@@ -1514,7 +1514,7 @@ public with sharing class ProjectReportOutController {
                                                       ORDER BY Snapshot_Date__c ASC];
 
         Integer startIdx = 0;
-        Integer endIdx = 8; // we have 8 editions
+        Integer endIdx = 7; // we have 8 editions
         GraphData tmpWamData = new GraphData();
         GraphData tmpFormData = new GraphData();
         GraphData tmpUsersData = new GraphData();
@@ -1575,7 +1575,7 @@ public with sharing class ProjectReportOutController {
                 tmpFormData = new GraphData();
                 tmpUsersData = new GraphData();
                 tmpProgramsData = new GraphData();
-                endIdx += 8;
+                endIdx += 7;
             }
         }
         return null;

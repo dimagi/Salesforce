@@ -442,7 +442,7 @@
     <body>
 
         <apex:form >
-            <apex:outputPanel >
+            <apex:outputPanel rendered="{!isAuthenticated}">
             <apex:inputHidden id="projectId" value="{!projectId}"/>
             <apex:actionstatus id="loadingDiv">
                 <apex:facet name="start">
