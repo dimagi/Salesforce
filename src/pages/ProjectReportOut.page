@@ -46,12 +46,29 @@
                 width: 100%;
                 height: 550px;
             }
+            .graphTitle {
+                width: 400px;
+            }
+            .graphBottomTitle {
+                width: 400px;
+                display: table;
+            }
             .graph {
                 text-align: center;
                 display: inline-block;
                 height: 500px;
                 width: 24% !important;
             }
+            .gaugeGraph {
+                text-align: center;
+                display: inline-block;
+                height: 250px;
+                width: 24% !important;
+            }
+            .nvd3.nv-pie .nv-pie-title {
+                fill: black !important;
+            }
+
         </style>
 
         <apex:includeScript value="{!URLFOR($Resource.ProjectReportOut2, 'js/jquery.min.js')}"/>
@@ -128,119 +145,95 @@
             function ShowMessage() {
             }
 
-            var monthNames = ["January", "February", "March", "April", "May", "June",
-                "July", "August", "September", "October", "November", "December"];
+            var monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
+                arcRadius1 = [{ inner: 0.6, outer: 1 }, { inner: 0.65, outer: 0.95 }];
 
             function addGraphs() {
                 nv.addGraph(function() {
-                    var chart = nv.models.multiBarChart().stacked(true).height(400).width(400).legendPosition('bottom');
-                    chart.xAxis.rotateLabels(-40);
-                    chart.yAxis.tickFormat(d3.format(',.1f'));
-                    chart.yAxis.ticks(6);
-                    chart.yAxis.axisLabel('Sum of Active Mobile Users');
-                    chart.yAxis.axisLabelDistance(1);
-                    var activeUsers = $j("[id$=userGraphDataId]").val();
+                    var chart, activeUsers = $j("[id$=userGraphDataId]").val();
+                    chart = buildMultiBatChart('Sum of Active Mobile Users', 'Snapshot Date');
                     $j("[id$=activeUsers").append("<svg></svg>");
                     d3.select('#activeUsers svg').datum(fillGraphData(JSON.parse(activeUsers)))
                         .transition().duration(500).call(chart);
                     nv.utils.windowResize(chart.update);
                     return chart;
                 });
+
                 nv.addGraph(function() {
-                    var chart = nv.models.multiBarChart().stacked(true).height(400).width(400).legendPosition('bottom');
-                    chart.xAxis.rotateLabels(-40);
-                    chart.yAxis.tickFormat(d3.format(',.1f'));
-                    chart.yAxis.ticks(6);
-                    chart.yAxis.axisLabel('Sum of Wam');
-                    chart.yAxis.axisLabelDistance(1);
-                    var wams = $j("[id$=wamGraphDataId]").val();
+                    var chart, wams = $j("[id$=wamGraphDataId]").val();
+                    chart = buildMultiBatChart('Sum of Wam', 'Snapshot Date');
                     $j("[id$=wams").append("<svg></svg>");
                     d3.select('#wams svg').datum(fillGraphData(JSON.parse(wams)))
                         .transition().duration(500).call(chart);
                     nv.utils.windowResize(chart.update);
                     return chart;
                 });
+
                 nv.addGraph(function() {
-                    var chart = nv.models.multiBarChart().stacked(true).height(400).width(400).legendPosition('bottom');
-                    chart.xAxis.rotateLabels(-40);
-                    chart.yAxis.tickFormat(d3.format(',.1f'));
-                    chart.yAxis.ticks(6);
-                    chart.yAxis.axisLabel('Forms for Period');
-                    chart.yAxis.axisLabelDistance(1);
-                    var forms = $j("[id$=formGraphDataId]").val();
+                    var chart, forms = $j("[id$=formGraphDataId]").val();
+                    chart = buildMultiBatChart('Forms for Period', 'Snapshot Date');
                     $j("[id$=forms").append("<svg></svg>");
                     d3.select('#forms svg').datum(fillGraphData(JSON.parse(forms)))
                         .transition().duration(500).call(chart);
                     nv.utils.windowResize(chart.update);
                     return chart;
                 });
+
                 nv.addGraph(function() {
-                    var chart = nv.models.multiBarChart().stacked(true).height(400).width(400).legendPosition('bottom');
-                    chart.xAxis.rotateLabels(-40);
-                    chart.yAxis
-                        .tickFormat(d3.format(',.1f'));
-                    chart.yAxis.ticks(6);
-                    chart.yAxis.axisLabel('Sum of Scale of Programs');
-                    chart.yAxis.axisLabelDistance(1);
-                    var programs = $j("[id$=programGraphDataId]").val();
+                    var chart, programs = $j("[id$=programGraphDataId]").val();
+                    chart = buildMultiBatChart('Sum of Scale of Programs', 'Snapshot Date');
                     $j("[id$=programs").append("<svg></svg>");
                     d3.select('#programs svg').datum(fillGraphData(JSON.parse(programs)))
                         .transition().duration(500).call(chart);
                     nv.utils.windowResize(chart.update);
                     return chart;
                 });
+
                 nv.addGraph(function() {
-                    var chart = nv.models.multiChart().height(400).width(350);
-                    var records = fillPerformanceData(true);
-                    chart.yAxis1.tickFormat(d3.format(',.1f'));
-                    chart.yAxis1.axisLabel('Avg Page Load');
-                    chart.yAxis2.tickFormat(d3.format(',.1f'));
-                    chart.yAxis2.axisLabel('Avg # of Submissions (Thousands)');
-                    chart.yDomain1([0, records.maxY1]);
-                    chart.yDomain2([0, records.maxY2]);
-                    chart.xAxis.tickFormat(function(d) {
-                            var dDate = new Date(d)
-                            return (monthNames[dDate.getMonth()] + ' ' + dDate.getFullYear());
-                        });
-                    chart.xAxis.axisLabel('Date');
-                    chart.xAxis.rotateLabels(-90);
-                    var range = [];
+                    var chart, mrrRecs = $j("[id$=mrrDataId]").val();
+                    chart = buildMultiBatChart('Sum of Monthly fee (Thousands)', 'Invoice End Date');
+                    $j("[id$=mrr").append("<svg></svg>");
+                    d3.select('#mrr svg').datum(fillGraphData(JSON.parse(mrrRecs)))
+                        .transition().duration(500).call(chart);
+                    nv.utils.windowResize(chart.update);
+                    return chart;
+                });
+
+                nv.addGraph(function() {
+                    var chart = buildMultiBatChart('Sum of Buffer EV (Thousands)', 'Contract Start Date');
+                    $j("[id$=bufferEV").append("<svg></svg>");
+                    d3.select('#bufferEV svg').datum(fillBufferEVData())
+                        .transition().duration(500).call(chart);
+                    nv.utils.windowResize(chart.update);
+                    return chart;
+                });
+
+                nv.addGraph(function() {
+                    var chart, range = [], records = fillPerformanceData(true);
                     for (var i = 0; i < records.size; i++) {
                         range.push(records.data[0].values[i].x);
                     }
-                    chart.xAxis.tickValues(range);
+                    chart = buildMultiChart('Avg Page Load', records.maxY1, records.maxY2, range);
                     $j("[id$=performance1").append("<svg></svg>");
                     d3.select('#performance1 svg').datum(records.data)
                         .transition().duration(500).call(chart);
                     nv.utils.windowResize(chart.update);
                     return chart;
                 });
+
                 nv.addGraph(function() {
-                    var chart = nv.models.multiChart().height(400).width(350);
-                    var records = fillPerformanceData(false);
-                    chart.yAxis1.tickFormat(d3.format(',.1f'));
-                    chart.yAxis1.axisLabel('Avg Apdex');
-                    chart.yAxis2.tickFormat(d3.format(',.1f'));
-                    chart.yAxis2.axisLabel('Avg # of Submissions (Thousands)');
-                    chart.yDomain1([0, records.maxY1]);
-                    chart.yDomain2([0, records.maxY2]);
-                    chart.xAxis.tickFormat(function(d) {
-                            var dDate = new Date(d)
-                            return (monthNames[dDate.getMonth()] + ' ' + dDate.getFullYear());
-                        });
-                    chart.xAxis.axisLabel('Date');
-                    chart.xAxis.rotateLabels(-90);
-                    var range = [];
+                    var chart, range = [], records = fillPerformanceData(false);
                     for (var i = 0; i < records.size; i++) {
                         range.push(records.data[0].values[i].x);
                     }
-                    chart.xAxis.tickValues(range);
+                    chart = buildMultiChart('Avg Apdex', records.maxY1, records.maxY2, range);
                     $j("[id$=performance2").append("<svg></svg>");
                     d3.select('#performance2 svg').datum(records.data)
                         .transition().duration(500).call(chart);
                     nv.utils.windowResize(chart.update);
                     return chart;
                 });
+
                 nv.addGraph(function() {
                     var chart = nv.models.lineChart().height(400).width(400);
                     chart.legend.margin({top: 5});
@@ -274,6 +267,76 @@
                     nv.utils.windowResize(chart.update);
                     return chart;
                 });
+
+                nv.addGraph(function() {
+                    var per, gData, chart;
+                    gData = JSON.parse($j("[id$=oppExpecteId]").val());
+                    per = (100 * (gData.value1 / gData.value2)).toFixed(2);
+                    chart = buildPieChart('$' + (gData.value1).toFixed(2) + ' : ' + per + '%');
+                    chart.tooltip.valueFormatter(function (d) { 
+                                                    var percen = (d == gData.value1 ? per : 100 - per);
+                                                    return '$' + d.toFixed(2) + ' (' + percen + '%)';
+                                                 });
+                    $j("[id$=oppWonBottomValue").before("<svg></svg>");
+                    d3.select('#oppWon svg').datum([{key: "Opportunities Won", y: gData.value1}, {key: "Target Missing", y: gData.value2 - gData.value1}]).transition().duration(1200).call(chart);
+                    nv.utils.windowResize(chart.update);
+                    d3.selectAll('.nv-pieLabels text').style('fill', 'black');
+                    return chart;
+                });
+                nv.addGraph(function() {
+                    var pre, gData, chart;
+                    gData = JSON.parse($j("[id$=evExpectedId]").val());
+                    per = (100 * (gData.value1 / gData.value2)).toFixed(2);
+                    chart = buildPieChart('$' + (gData.value1).toFixed(2) + ' : ' + per + '%');
+                    chart.tooltip.valueFormatter(function (d) { 
+                                                    var percen = (d == gData.value1 ? per : 100 - per);
+                                                    return '$' + d.toFixed(2) + ' (' + percen + '%)';
+                                                 });
+                    $j("[id$=netEVBottomValue").before("<svg></svg>");
+                    d3.select('#netEV svg').datum([{key: "Changes in Net EV", y: gData.value1}, {key: "Target Missing", y: gData.value2 - gData.value1}]).transition().duration(1200).call(chart);
+                    nv.utils.windowResize(chart.update);
+                    return chart;
+                });
+            }
+
+            function buildMultiBatChart(labelTitleY, labelTitleX) {
+                var chart = nv.models.multiBarChart().stacked(true).height(400).width(400).legendPosition('bottom');
+                chart.legend.margin({"top": 22});
+                chart.xAxis.rotateLabels(-40);
+                chart.xAxis.axisLabel(labelTitleX);
+                chart.yAxis.tickFormat(d3.format(',.1f'));
+                chart.yAxis.ticks(6);
+                chart.yAxis.axisLabel(labelTitleY);
+                chart.yAxis.axisLabelDistance(1);
+                return chart;
+            }
+
+            function buildMultiChart(labelTitle, my1, my2, range) {
+                var chart = nv.models.multiChart().height(400).width(350);
+                chart.yAxis1.tickFormat(d3.format(',.1f'));
+                chart.yAxis1.axisLabel(labelTitle);
+                chart.yAxis2.tickFormat(d3.format(',.1f'));
+                chart.yAxis2.axisLabel('Avg # of Submissions (Thousands)');
+                chart.yDomain1([0, my1]);
+                chart.yDomain2([0, my2]);
+                chart.xAxis.tickFormat(function(d) {
+                            var dDate = new Date(d)
+                            return (monthNames[dDate.getMonth()] + ' ' + dDate.getFullYear());
+                        });
+                chart.xAxis.axisLabel('Date');
+                chart.xAxis.rotateLabels(-90);
+                chart.xAxis.tickValues(range);
+                return chart;
+            }
+
+            function buildPieChart(chartTitle) {
+                var chart = nv.models.pieChart().width(400).height(400).donut(true).showLabels(true).growOnHover(false).arcsRadius(arcRadius1);
+                chart.showLegend(true).showTooltipPercent(false).growOnHover(true);
+                chart.x(function (d) { return d.key });
+                chart.y(function (d) { return d.y });
+                chart.pie.startAngle(function(d) { return d.startAngle/2 -Math.PI/2 }).endAngle(function(d) { return d.endAngle/2 -Math.PI/2 });
+                chart.title(chartTitle);
+                return chart;
             }
 
             function fillPerformanceData(forPageLoad) {
@@ -330,6 +393,22 @@
                     };
              }
 
+            function fillBufferEVData() {
+                var i, inc = [], dsi = [], dsa = [], dwa = [], dlac = [], dtz = [], myanmar = [];
+                var graphData = JSON.parse($j("[id$=bufferEvGenDataId]").val());
+                for (i = 0; i < graphData.length; i++) {
+                    inc.push({x: graphData[i].name, y: graphData[i].value1});
+                    dsi.push({x: graphData[i].name, y: graphData[i].value2});
+                    dsa.push({x: graphData[i].name, y: graphData[i].value3});
+                    dwa.push({x: graphData[i].name, y: graphData[i].value4});
+                    dlac.push({x: graphData[i].name, y: graphData[i].value5});
+                    dtz.push({x: graphData[i].name, y: graphData[i].value6});
+                    myanmar.push({x: graphData[i].name, y: graphData[i].value7});
+                }
+                return [{ values: inc, key: "Inc"}, { values: dsi, key: "DSI"}, { values: dsa, key: "DSA"}, { values: dwa, key: "DWA"},
+                    { values: dlac, key: "DLAC"}, { values: dtz, key: "DTZ"}, { values: myanmar, key: "Myanmar"}];
+            }
+
             function fillGSData(graphData, forCustomer) {
                 var i, customerData = [], qualityData = [];
                 for (i = 0; i < graphData.length; i++) {
@@ -344,17 +423,18 @@
             }
 
             function fillGraphData(graphData) {
-                var i, advanced = [], community = [], enterprise = [], pro = [], standard = [], emptyRec = [];
+                var i, advanced = [], community = [], enterprise = [], pro = [], standard = [], managedHosting = [], reseller = [];
                 for (i = 0; i < graphData.length; i++) {
                     advanced.push({x: graphData[i].name, y: graphData[i].value1});
                     community.push({x: graphData[i].name, y: graphData[i].value2});
                     enterprise.push({x: graphData[i].name, y: graphData[i].value3});
                     pro.push({x: graphData[i].name, y: graphData[i].value4});
                     standard.push({x: graphData[i].name, y: graphData[i].value5});
-                    emptyRec.push({x: graphData[i].name, y: graphData[i].value6});
+                    reseller.push({x: graphData[i].name, y: graphData[i].value6});
+                    managedHosting.push({x: graphData[i].name, y: graphData[i].value7});
                 }
                 return [{ values: advanced, key: "Advanced"}, { values: community, key: "Community"}, { values: enterprise, key: "Enterprise"}, { values: pro, key: "Pro"},
-                    { values: standard, key: "Standard"}, { values: emptyRec, key: "Empty"}];
+                    { values: standard, key: "Standard"}, { values: reseller, key: "Reseller"}, { values: managedHosting, key: "Managed Hosting"}];
             }
         </script>
     </head>
@@ -362,7 +442,7 @@
     <body>
 
         <apex:form >
-            <apex:outputPanel rendered="{!isAuthenticated}" >
+            <apex:outputPanel >
             <apex:inputHidden id="projectId" value="{!projectId}"/>
             <apex:actionstatus id="loadingDiv">
                 <apex:facet name="start">
@@ -852,6 +932,7 @@
                     </div>
                 </section>
                 <section id="corporateDashboard" >
+
                     <apex:pageBlock title="Corporate Dashboard" id="corporateDashboardBlock">
                         <apex:inputHidden id="userGraphDataId" value="{!userGraphData}" />
                         <apex:inputHidden id="formGraphDataId" value="{!formGraphData}" />
@@ -859,41 +940,63 @@
                         <apex:inputHidden id="programGraphDataId" value="{!programGraphData}" />
                         <apex:inputHidden id="performanceGraphDataId" value="{!performanceGraphData}" />
                         <apex:inputHidden id="gsGraphDataId" value="{!gsGraphData}" />
+                        <apex:inputHidden id="bufferEvGenDataId" value="{!bufferEvGenData}" />
+                        <apex:inputHidden id="mrrDataId" value="{!mrrData}" />
+                        <apex:inputHidden id="evExpectedId" value="{!evExpected}" />
+                        <apex:inputHidden id="oppExpecteId" value="{!oppExpected}" />
                         <apex:pageBlockSection title="Scale" collapsible="false" columns="1" >
                         <div class="chartsData">
                             <div id="activeUsers" class="graph">
-                                <h2>Active Users</h2>
+                                <div class="graphTitle"><h2>Active Users</h2></div>
                             </div>
                             <div id="wams" class="graph">
-                                <h2>WAMs</h2>
+                                <div class="graphTitle"><h2>WAMs</h2></div>
                             </div>
                             <div id="forms" class="graph">
-                                <h2>Forms</h2>
+                                <div class="graphTitle"><h2>Forms</h2></div>
                             </div>
                             <div id="programs" class="graph">
-                                <h2>Scale of Programs</h2>
+                                <div class="graphTitle"><h2>Scale of Programs</h2></div>
                             </div>
                         </div>
+                        </apex:pageBlockSection>
+                        <apex:pageBlockSection title="Financial" collapsible="false" columns="1" >
+                            <div class="chartsData">
+                                <div id="netEV" class="gaugeGraph">
+                                    <div class="graphTitle"><h2>Change in Net EV - Target $9.9 million</h2></div>
+                                    <div id="netEVBottomValue" class="graphBottomTitle"><h2>Sum of DIFF-Expected Value Minus Expense (Millions)</h2></div>
+                                </div>
+                                <div id="bufferEV" class="graph">
+                                    <div class="graphTitle"><h2>Buffer EV generated</h2></div>
+                                </div>
+                                <div id="oppWon" class="gaugeGraph">
+                                    <div class="graphTitle"><h2>Opportunities Won - Target $ 6.9 million</h2></div>
+                                    <div id="oppWonBottomValue" class="graphBottomTitle"><h2>Sum of Expected Value Minus Expense Income (Millions)</h2></div>
+                                </div>
+                                <div id="mrr" class="graph">
+                                    <div class="graphTitle"><h2>MRR</h2></div>
+                                </div>
+                            </div>
                         </apex:pageBlockSection>
                         <apex:pageBlockSection title="Performance of Product" collapsible="false" columns="1" >
-                        <div class="chartsData">
-                            <div id="performance1" class="graph">
-                                <h2>Average Page Load Time</h2>
+                            <div class="chartsData">
+                                <div id="performance1" class="graph">
+                                    <div class="graphTitle"><h2>Average Page Load Time</h2></div>
+                                </div>
+                                <div id="performance2" class="graph">
+                                    <div class="graphTitle"><h2>Average Apdex</h2></div>
+                                </div>
                             </div>
-                            <div id="performance2" class="graph">
-                                <h2>Average Apdex</h2>
-                            </div>
-                        </div>
                         </apex:pageBlockSection>
                         <apex:pageBlockSection title="GS" collapsible="false" columns="1" >
-                        <div class="chartsData">
-                            <div id="quality" class="graph">
-                                <h2>GS Overall Project Status</h2>
+                            <div class="chartsData">
+                                <div id="quality" class="graph">
+                                    <div class="graphTitle"><h2>GS Overall Project Status</h2></div>
+                                </div>
+                                <div id="customers" class="graph">
+                                    <div class="graphTitle"><h2>GS Partner Relationship</h2></div>
+                                </div>
                             </div>
-                            <div id="customers" class="graph">
-                                <h2>GS Partner Relationship</h2>
-                            </div>
-                        </div>
                         </apex:pageBlockSection>
                     </apex:pageBlock>
                 </section>

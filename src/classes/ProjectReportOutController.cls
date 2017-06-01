@@ -1254,8 +1254,26 @@ public with sharing class ProjectReportOutController {
     private List<GraphData> programData;
     private List<GraphData> performanceData;
     private List<GraphData> gsData;
+    private List<GraphData> bufferEvGen;
+    private List<GraphData> mrr;
+    public String oppExpected { get; set;}
+    public String evExpected { get; set;}
 
-    public List<GraphData> bufferedEVData { set; get;}
+    public String getMrrData() {
+        if (this.mrr != null) {
+            return JSON.serialize(this.mrr);
+        }
+        return '';
+    }
+    public void setMrrData(String mrrValues) {}
+
+    public String getBufferEvGenData() {
+        if (this.bufferEvGen != null) {
+            return JSON.serialize(this.bufferEvGen);
+        }
+        return '';
+    }
+    public void setBufferEvGenData(String bfValues) {}
 
     public String getGsGraphData() {
         if (this.gsData != null) {
@@ -1318,7 +1336,7 @@ public with sharing class ProjectReportOutController {
         for (Contract_Statistic__c conStats : contractStats) {
             GraphData gp = new GraphData(conStats.PRO_Cycle_Date__c.format(),
                                             conStats.GS_Quality_Total_Overall_Status__c,
-                                            conStats.GS_Quality_Total_Customer_Satisfaction__c, 0, 0, 0, 0);
+                                            conStats.GS_Quality_Total_Customer_Satisfaction__c, 0, 0, 0, 0, 0, 0);
             this.gsData.add(gp);
         }
     }
@@ -1335,7 +1353,7 @@ public with sharing class ProjectReportOutController {
                                                            ORDER BY Date__c ASC];
 
         if (metrics.size() > 0) {
-            GraphData tmpData = new GraphData('', 0, 0, 0, 0, 0, 0);
+            GraphData tmpData = new GraphData();
             Date lastDate = metrics.get(0).Date__c;
             for (CommCareHQ_Performance_Metrics__c rec : metrics) {
                 if (rec.Date__c.year() != lastDate.year() || rec.Date__c.month() != lastDate.month()) {
@@ -1344,7 +1362,7 @@ public with sharing class ProjectReportOutController {
                     tmpData.value3 = tmpData.value3 / (tmpData.value4 != 0 ? tmpData.value4 : 1);
                     tmpData.name = lastDate.format();
                     this.performanceData.add(tmpData);
-                    tmpData = new GraphData('', 0, 0, 0, 0, 0, 0);
+                    tmpData = new GraphData();
                 }
                 tmpData.value1 += rec.Number_of_Submissions__c;
                 tmpData.value2 += rec.Avg_Page_Load__c;
@@ -1361,12 +1379,124 @@ public with sharing class ProjectReportOutController {
         }
     }
 
+    public void loadMrr() {
+        if (this.mrr != null) {
+            return;
+        }
+        this.mrr = new List<GraphData>();
+        Date fiscalYearStart = Corporate_Dashboard_Settings__c.getOrgDefaults().Fiscal_Year_Start__c;
+        Date fiscalYearEnd = Corporate_Dashboard_Settings__c.getOrgDefaults().Fiscal_year_End__c;
+        // TODO delete
+        fiscalYearStart = fiscalYearStart.addYears(-2);
+        fiscalYearEnd = fiscalYearEnd.addYears(-2);
+        if (fiscalYearStart == null || fiscalYearEnd == null) {
+            System.debug('Fiscal year data empty');
+            return;
+        }
+        List<Accounting_Invoice__c> invoices = [SELECT accounting_software_monthly_fee__c, accounting_softwareplan_edition__c, date_end__c FROM Accounting_Invoice__c
+                                                 WHERE (accounting_subscription_service_type__c = 'Self_service' OR accounting_subscription_service_type__c = 'Product')
+                                                 AND is_hidden__c = false
+                                                 AND is_hidden_to_ops__c = false
+                                                 AND calculated_MRR__c > 0
+                                                 AND Ops_Override__c = false
+                                                 AND date_end__c >=: fiscalYearStart
+                                                 AND date_end__c <=: fiscalYearEnd
+                                                 ORDER BY date_end__c];
+
+        if (invoices.size() == 0) {
+            return;
+        }
+        String month = getDateText(invoices.get(0).date_end__c);
+        Integer monthNum = invoices.get(0).date_end__c.month();
+        GraphData currentGraphData = new GraphData(month);
+        for (Accounting_Invoice__c inv : invoices) {
+            if (monthNum != inv.date_end__c.month()) {
+                this.mrr.add(currentGraphData);
+                monthNum = inv.date_end__c.month();
+                month = getDateText(inv.date_end__c);
+                currentGraphData = new GraphData(month);
+            }
+            currentGraphData = fillMrrData(currentGraphData, inv);
+        }
+        this.mrr.add(currentGraphData);
+        recalculateThousands(this.mrr);
+    }
+
+    public void loadEvExpectedValue() {
+        Date fiscalYearStart = Corporate_Dashboard_Settings__c.getOrgDefaults().Fiscal_Year_Start__c.addYears(-1);
+        Date fiscalYearEnd = Corporate_Dashboard_Settings__c.getOrgDefaults().Fiscal_year_End__c;
+        Decimal targetData = Corporate_Dashboard_Settings__c.getOrgDefaults().EV_Target__c;
+        AggregateResult[] groupedResults = [SELECT SUM(DIFF_Expected_Value_Minus_Expense__c) FROM Pipeline_Snapshot_EV_DIff__c]; /*WHERE Pipeline_Snapshot__r.Month_Date__c >=: fiscalYearStart
+                                            AND Pipeline_Snapshot__r.Month_Date__c <=: fiscalYearEnd
+                                            AND (Pipeline_Snapshot__r.Stage__c = 'Stage 4 - Proposal Development' OR Pipeline_Snapshot__r.Stage__c = 'Stage 5 - Submitted'
+                                                 OR Pipeline_Snapshot__r.Stage__c = 'Stage 6 - In Negotiations' OR Pipeline_Snapshot__r.Stage__c = 'Closed')
+                                            AND (NOT Name LIKE '%(Monthly)%')
+                                            AND (NOT Name LIKE '%- Total%')];**/
+        Decimal currentValue = 5500000;//(Decimal) groupedResults[0].get('expr0');
+        this.evExpected = JSON.serialize(new GraphData('', currentValue != null ? currentValue / 1000000.00 : 0, targetData / 1000000.00, 0, 0, 0, 0, 0, 0));
+    }
+
+    public void loadOppExpetedValue() {
+        Date fiscalYearStart = Corporate_Dashboard_Settings__c.getOrgDefaults().Fiscal_Year_Start__c;
+        Date fiscalYearEnd = Corporate_Dashboard_Settings__c.getOrgDefaults().Fiscal_year_End__c;
+        Decimal targetData = Corporate_Dashboard_Settings__c.getOrgDefaults().Opp_Won_Target__c;
+        AggregateResult[] groupedResults = [SELECT SUM(Expected_Value_Minus_Income__c) FROM Opportunity WHERE CloseDate >=: fiscalYearStart AND CloseDate <=: fiscalYearEnd AND Amount > 0 AND StageName = 'Closed - Won' AND (NOT Name LIKE '%Gates MOTECH Renewal%')];
+        Decimal currentValue = (Decimal) groupedResults[0].get('expr0');
+        this.oppExpected = JSON.serialize(new GraphData('', currentValue != null ? currentValue / 1000000.00 : 0, targetData / 1000000.00, 0, 0, 0, 0, 0, 0));
+    }
+
+    public void loadBufferEvGenerated() {
+        if (this.bufferEvGen != null) {
+            return;
+        }
+        this.bufferEvGen = new List<GraphData>();
+        Date fiscalYearStart = Corporate_Dashboard_Settings__c.getOrgDefaults().Fiscal_Year_Start__c;
+        Date fiscalYearEnd = Corporate_Dashboard_Settings__c.getOrgDefaults().Fiscal_year_End__c;
+
+        if (fiscalYearStart == null || fiscalYearEnd == null) {
+            System.debug('Fiscal year data empty');
+            return;
+        }
+        List<Contract_Opportunity__c> contrOpps = [SELECT Contract__r.Contract_Start_Date__c, Opportunity__r.Buffer_EV__c,
+                                                 Opportunity__r.Opportunity_Owning_Entity__r.Name FROM Contract_Opportunity__c
+                                                 WHERE Contract__c != null AND Opportunity__c != null
+                                                 AND Opportunity__r.StageName = 'Closed - Won'
+                                                 AND Contract__r.Contract_Start_Date__c != null
+                                                 AND Contract__r.Date_of_Contract_Execution__c >=: fiscalYearStart
+                                                 AND Contract__r.Date_of_Contract_Execution__c <=: fiscalYearEnd
+                                                 AND (NOT Contract__r.Name LIKE '%MOTECH%')
+                                                 ORDER BY Contract__r.Contract_Start_Date__c];
+
+        if (contrOpps.size() == 0) {
+            return;
+        }
+
+        String month = getDateText(contrOpps.get(0).Contract__r.Contract_Start_Date__c);
+        Integer monthNum = contrOpps.get(0).Contract__r.Contract_Start_Date__c.month();
+        GraphData currentGraphData = new GraphData(month);
+        for (Contract_Opportunity__c conOpp : contrOpps) {
+            if (monthNum != conOpp.Contract__r.Contract_Start_Date__c.month()) {
+                this.bufferEvGen.add(currentGraphData);
+                monthNum = conOpp.Contract__r.Contract_Start_Date__c.month();
+                month = getDateText(conOpp.Contract__r.Contract_Start_Date__c);
+                currentGraphData = new GraphData(month);
+            }
+            currentGraphData = fillEvData(currentGraphData, conOpp);
+        }
+        this.bufferEvGen.add(currentGraphData);
+        recalculateThousands(this.bufferEvGen);
+    }
+
     /**
      * Loads data needed to create Scale Wam graph on the page.
      */
     public PageReference loadScaleData() {
         loadGSData();
         loadPerformanceData();
+        loadBufferEvGenerated();
+        loadMrr();
+        loadOppExpetedValue();
+        loadEvExpectedValue();
         if (this.wamData != null) {
             return null;
         }
@@ -1450,6 +1580,61 @@ public with sharing class ProjectReportOutController {
         return DateTime.newInstance(snDate.year(), snDate.month(), snDate.day()).format('MMMM yyyy');
     }
 
+    private GraphData fillEvData(GraphData gData, Contract_Opportunity__c conOpp) {
+        Decimal value = conOpp.Opportunity__r.Buffer_EV__c != null ? conOpp.Opportunity__r.Buffer_EV__c : 0;
+        if (conOpp.Opportunity__r.Opportunity_Owning_Entity__r.Name == 'Inc') {
+            gData.value1 = gData.value1 + value;
+        } else if (conOpp.Opportunity__r.Opportunity_Owning_Entity__r.Name == 'DSI') {
+            gData.value2 = gData.value2 + value;
+        } else if (conOpp.Opportunity__r.Opportunity_Owning_Entity__r.Name == 'DSA') {
+            gData.value3 = gData.value3 + value;
+        } else if (conOpp.Opportunity__r.Opportunity_Owning_Entity__r.Name == 'DWA') {
+            gData.value4 = gData.value4 + value;
+        } else if (conOpp.Opportunity__r.Opportunity_Owning_Entity__r.Name == 'DLAC') {
+            gData.value5 = gData.value5 + value;
+        } else if (conOpp.Opportunity__r.Opportunity_Owning_Entity__r.Name == 'DTZ') {
+            gData.value6 = gData.value6 + value;
+        } else if (conOpp.Opportunity__r.Opportunity_Owning_Entity__r.Name == 'Myanmar') {
+            gData.value7 = gData.value7 + value;
+        }
+        return gData;
+    }
+
+    private void recalculateThousands(List<GraphData> gData) {
+        for (GraphData gd : gData) {
+            gd.value1 /= 1000.00;
+            gd.value2 /= 1000.00;
+            gd.value3 /= 1000.00;
+            gd.value4 /= 1000.00;
+            gd.value5 /= 1000.00;
+            gd.value6 /= 1000.00;
+            gd.value7 /= 1000.00;
+            gd.value8 /= 1000.00;
+        }
+    }
+
+    private GraphData fillMrrData(GraphData gData, Accounting_Invoice__c inv) {
+        Decimal value = inv.accounting_software_monthly_fee__c != null ? inv.accounting_software_monthly_fee__c : 0;
+        if (inv.accounting_softwareplan_edition__c == 'Advanced') {
+            gData.value1 = gData.value1 + value;
+        } else if (inv.accounting_softwareplan_edition__c == 'Community') {
+            gData.value2 = gData.value2 + value;
+        } else if (inv.accounting_softwareplan_edition__c == 'Enterprise') {
+            gData.value3 = gData.value3 + value;
+        } else if (inv.accounting_softwareplan_edition__c == 'Pro') {
+            gData.value4 = gData.value4 + value;
+        } else if (inv.accounting_softwareplan_edition__c == 'Standard') {
+            gData.value5 = gData.value5 + value;
+        } else if (inv.accounting_softwareplan_edition__c == 'Reseller') {
+            gData.value6 = gData.value6 + value;
+        } else if (inv.accounting_softwareplan_edition__c == 'Managed Hosting') {
+            gData.value7 = gData.value7 + value;
+        } else if (inv.accounting_softwareplan_edition__c == '' || inv.accounting_softwareplan_edition__c == null) {
+            gData.value8 = gData.value8 + value;
+        }
+        return gData;
+    }
+
     /**
      *
      *
@@ -1470,11 +1655,18 @@ public with sharing class ProjectReportOutController {
         public Decimal value4 { set; get;}
         public Decimal value5 { set; get;}
         public Decimal value6 { set; get;}
+        public Decimal value7 { set; get;}
+        public Decimal value8 { set; get;}
 
         public GraphData() {
+            this('');
         }
 
-        public GraphData(String name, Decimal value1, Decimal value2, Decimal value3, Decimal value4, Decimal value5, Decimal value6) {
+        public GraphData(String name) {
+            this(name, 0, 0, 0, 0, 0, 0, 0, 0);
+        }
+
+        public GraphData(String name, Decimal value1, Decimal value2, Decimal value3, Decimal value4, Decimal value5, Decimal value6, Decimal value7, Decimal value8) {
             this.name = name;
             this.value1 = value1;
             this.value2 = value2;
@@ -1482,6 +1674,8 @@ public with sharing class ProjectReportOutController {
             this.value4 = value4;
             this.value5 = value5;
             this.value6 = value6;
+            this.value7 = value7;
+            this.value8 = value8;
         }
     }
 
