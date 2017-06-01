@@ -1505,7 +1505,7 @@ public with sharing class ProjectReportOutController {
         this.userData = new List<GraphData>();
         this.programData = new List<GraphData>();
 
-        Set<String> planNames = new Set<String> { 'Advanced', 'Community', 'Enterprise', 'Pro', 'Standard', 'Empty'};
+        Set<String> planNames = new Set<String> { 'Reseller', 'Managed Hosting', 'Advanced', 'Community', 'Enterprise', 'Pro', 'Standard', 'Empty'};
         Decimal months = Corporate_Dashboard_Settings__c.getOrgDefaults().Scale_graphs_number_of_months__c != null ? Corporate_Dashboard_Settings__c.getOrgDefaults().Scale_graphs_number_of_months__c : 3;
         List<Domain_Monthly_Snapshot__c> snapshots = [SELECT Id, Snapshot_Date__c, Software_Plan_Edition__c, Wam__c, Forms_for_Period__c,
                                                       Forms__c, Active_Mobile_Users__c, Scale_of_Programs__c FROM Domain_Monthly_Snapshot__c
@@ -1514,7 +1514,7 @@ public with sharing class ProjectReportOutController {
                                                       ORDER BY Snapshot_Date__c ASC];
 
         Integer startIdx = 0;
-        Integer endIdx = 6; // we have 6 editions
+        Integer endIdx = 8; // we have 8 editions
         GraphData tmpWamData = new GraphData();
         GraphData tmpFormData = new GraphData();
         GraphData tmpUsersData = new GraphData();
@@ -1547,11 +1547,16 @@ public with sharing class ProjectReportOutController {
                 tmpFormData.value5 = sn.Forms_for_Period__c;
                 tmpUsersData.value5 = sn.Active_Mobile_Users__c;
                 tmpProgramsData.value5 = sn.Scale_of_Programs__c;
-            } else { // Empty
+            } else if (sn.Software_Plan_Edition__c == 'Reseller'){
                 tmpWamData.value6 = sn.Wam__c;
                 tmpFormData.value6 = sn.Forms_for_Period__c;
                 tmpUsersData.value6 = sn.Active_Mobile_Users__c;
                 tmpProgramsData.value6 = sn.Scale_of_Programs__c;
+            } else if (sn.Software_Plan_Edition__c == 'Managed Hosting') {
+                tmpWamData.value7 = sn.Wam__c;
+                tmpFormData.value7 = sn.Forms_for_Period__c;
+                tmpUsersData.value7 = sn.Active_Mobile_Users__c;
+                tmpProgramsData.value7 = sn.Scale_of_Programs__c;
             }
 
             startIdx++;
@@ -1570,7 +1575,7 @@ public with sharing class ProjectReportOutController {
                 tmpFormData = new GraphData();
                 tmpUsersData = new GraphData();
                 tmpProgramsData = new GraphData();
-                endIdx += 6;
+                endIdx += 8;
             }
         }
         return null;
