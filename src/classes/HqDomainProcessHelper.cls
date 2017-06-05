@@ -80,8 +80,6 @@ public class HqDomainProcessHelper {
     private Integer processJson(String jsonString, Integer offset) {
         List <HqIntModelProjectSpaceMetadata> projectSpaceMetadataList = new List <HqIntModelProjectSpaceMetadata>();
         List <Domain__c> listDomainRec = new List <Domain__c>();
-        List <hqInt_Model_DeploymentClass> listDeploymentObj = new List <hqInt_Model_DeploymentClass>();
-        List <Deployment__c> listDeploymentRec = new List <Deployment__c>();
         List <Internal_Properties__c> listInternalPropRec = new List <Internal_Properties__c>();
 
         //Process Response
@@ -100,7 +98,7 @@ public class HqDomainProcessHelper {
             }
         }
 
-        //Set for holding the external id field for domain object. It is used to fetch existing internal prop & deployment rec & delete those.
+        //Set for holding the external id field for domain object. It is used to fetch existing internal prop rec & delete those.
         Set<String> setDomainId = new Set<String>();
         //Below for loop is used to create sobject out of model object
         for (HqIntModelProjectSpaceMetadata projectSpaceMetadata : projectSpaceMetadataList) {
@@ -111,39 +109,28 @@ public class HqDomainProcessHelper {
 
             Internal_Properties__c InternalPropRec = projectSpaceMetadata.domain_properties.internal.createDbObject(this.serverSettings.Name);
             listInternalPropRec.add(InternalPropRec);
-
-            Deployment__c deploymentRec = projectSpaceMetadata.domain_properties.deployment.createDbObject(this.serverSettings.Name);
-            listDeploymentRec.add(deploymentRec);
         }
 
         insert listInternalPropRec;
-        insert listDeploymentRec;
+
 
         List <Internal_Properties__c> listInternalPropToBeDeleted = new List <Internal_Properties__c>();
-        List <Deployment__c> listDeploymentToBeDeleted = new List <Deployment__c>();
-
-        //fetch exisiting sf id of deployment and internal prop for deletion.
+        //fetch exisiting sf id of internal prop for deletion.
         Map<String, Id> externalIdMap = new Map<String, Id>();
-        for (Domain__c domain : [SELECT Id, Internal_Properties__c, Deployment__c, id__c FROM Domain__c WHERE id__c in :setDomainId AND Server_Name__c =: this.serverSettings.Name]) {
+        for (Domain__c domain : [SELECT Id, Internal_Properties__c, id__c FROM Domain__c WHERE id__c in :setDomainId AND Server_Name__c =: this.serverSettings.Name]) {
             if(domain.Internal_Properties__c != null) {
                 Internal_Properties__c InternalPropRec = new Internal_Properties__c(Id = domain.Internal_Properties__c);
                 listInternalPropToBeDeleted.add(InternalPropRec);
             }
-            if(domain.Deployment__c != null) {
-                Deployment__c deploymentRec = new Deployment__c(Id = domain.Deployment__c);
-                listDeploymentToBeDeleted.add(deploymentRec);
-            }
             externalIdMap.put(domain.id__c, domain.Id);
         }
 
-        //delete existing int prop and deployment records
+        //delete existing int prop records
         delete listInternalPropToBeDeleted;
-        delete listDeploymentToBeDeleted;
 
         //populate the lookup fields on domain obect
-        for (Integer i = 0; i < listDeploymentRec.size(); i++) {
+        for (Integer i = 0; i < listInternalPropRec.size(); i++) {
             listDomainRec[i].Internal_Properties__c = listInternalPropRec[i].Id;
-            listDomainRec[i].Deployment__c = listDeploymentRec[i].Id;
             if (externalIdMap.containsKey(listDomainRec[i].id__c)) {
                 listDomainRec[i].Id = externalIdMap.get(listDomainRec[i].id__c);
             }

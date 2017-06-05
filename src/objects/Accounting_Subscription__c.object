@@ -93,6 +93,85 @@
         <unique>false</unique>
     </fields>
     <fields>
+        <fullName>Lifespan_in_Months__c</fullName>
+        <description>Length of subscription in months. If no end date, length so far.</description>
+        <externalId>false</externalId>
+        <formula>(BLANKVALUE(date_end__c, TODAY()) -  date_start__c ) / 30.1</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <inlineHelpText>Length of subscription in months. If no end date, length so far.</inlineHelpText>
+        <label>Lifespan in Months</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Lifetime_MRR__c</fullName>
+        <description>The MRR of the subscription over its lifespan. Does not include non SMS or user fees. Assumes end date is today if there is no end date.</description>
+        <externalId>false</externalId>
+        <formula>(BLANKVALUE(date_end__c,TODAY()) - date_start__c) / 30.1 *  accounting_software_monthly_fee__c</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <inlineHelpText>The MRR of the subscription over its lifespan. Does not include non SMS or user fees. Assumes end date is today if there is no end date.</inlineHelpText>
+        <label>Lifetime MRR</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>Notes__c</fullName>
+        <description>This is a field for any qualitative notes on this particular subscription / account combination.  It is not on the domain as this can change from subscription to subscription and month to month.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>This is a field for any qualitative notes on this particular subscription / account combination.  It is not on the domain as this can change from subscription to subscription and month to month.</inlineHelpText>
+        <label>Notes</label>
+        <length>1000</length>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Html</type>
+        <visibleLines>10</visibleLines>
+    </fields>
+    <fields>
+        <fullName>Part_of_inside_sales_process__c</fullName>
+        <description>Inside Sales process means the lead source is inbound AND responded to at least one of the Sales team&apos;s email or directly contacted the Sales team</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Inside Sales process means the lead source is inbound AND responded to at least one of the Sales team&apos;s email or directly contacted the Sales team</inlineHelpText>
+        <label>Part of inside sales process</label>
+        <picklist>
+            <picklistValues>
+                <fullName>Yes</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>No</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Unsure</fullName>
+                <default>false</default>
+            </picklistValues>
+            <restrictedPicklist>true</restrictedPicklist>
+            <sorted>false</sorted>
+        </picklist>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+    </fields>
+    <fields>
+        <fullName>Real_Active_or_Paying__c</fullName>
+        <externalId>false</externalId>
+        <formula>is_active__c  ||  (Accounting_subscriber_domain__r.Likely_Real__c  &amp;&amp;  Accounting_subscriber_domain__r.cpIsActive__c)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Real &amp; Active or Paying</label>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
         <fullName>Software_Plan_Edition__c</fullName>
         <externalId>false</externalId>
         <formula>plan_version__r.Accounting_SoftwarePlan__r.edition__c</formula>
@@ -102,6 +181,21 @@
         <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Subscription_Length__c</fullName>
+        <description>Subscription length in months</description>
+        <externalId>false</externalId>
+        <formula>(BLANKVALUE(date_end__c, TODAY()) - date_start__c) / 30.1</formula>
+        <inlineHelpText>in months</inlineHelpText>
+        <label>Subscription Length</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
         <unique>false</unique>
     </fields>
     <fields>
@@ -223,7 +317,7 @@
         <defaultValue>false</defaultValue>
         <externalId>false</externalId>
         <label>is_active</label>
-        <trackHistory>false</trackHistory>
+        <trackHistory>true</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Checkbox</type>
     </fields>

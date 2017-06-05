@@ -718,6 +718,19 @@
         <trackHistory>true</trackHistory>
         <type>Currency</type>
     </fields>
+    <fields>
+        <fullName>executive_sponsor__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <externalId>false</externalId>
+        <inlineHelpText>If this opportunity has innovation or strategic value not well captured through other impact, team, or profit metrics, it requires an executive sponsor.</inlineHelpText>
+        <label>Executive Sponsor</label>
+        <referenceTo>SFDC_Employee__c</referenceTo>
+        <relationshipLabel>Contracts</relationshipLabel>
+        <relationshipName>contract_sponsor</relationshipName>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <type>Lookup</type>
+    </fields>
     <listViews>
         <fullName>AllActivatedContracts</fullName>
         <filterScope>Everything</filterScope>

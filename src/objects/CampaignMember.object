@@ -136,31 +136,23 @@
         <fullName>LeadSource</fullName>
         <picklist>
             <picklistValues>
-                <fullName>Conference</fullName>
+                <fullName>Inbound - Contacted us directly</fullName>
                 <default>false</default>
             </picklistValues>
             <picklistValues>
-                <fullName>Outbound - Pulled from Forum</fullName>
+                <fullName>Inbound - Referred within same Org</fullName>
                 <default>false</default>
             </picklistValues>
             <picklistValues>
-                <fullName>Inbound - Called us directly</fullName>
+                <fullName>Inbound - Referred by another Org</fullName>
                 <default>false</default>
             </picklistValues>
             <picklistValues>
-                <fullName>Inbound - Consultation</fullName>
+                <fullName>Inbound - Referred by Dimagi staff</fullName>
                 <default>false</default>
             </picklistValues>
             <picklistValues>
-                <fullName>Inbound - Emailed us directly</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Inbound - HQ signup</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Inbound - information@dimagi.com</fullName>
+                <fullName>Outbound - Conference</fullName>
                 <default>false</default>
             </picklistValues>
             <picklistValues>
@@ -168,7 +160,15 @@
                 <default>false</default>
             </picklistValues>
             <picklistValues>
-                <fullName>Other</fullName>
+                <fullName>Outbound - Networking Event</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Outbound - Personal Contact</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Outbound - Pulled from Forum</fullName>
                 <default>false</default>
             </picklistValues>
             <picklistValues>
@@ -180,23 +180,51 @@
                 <default>false</default>
             </picklistValues>
             <picklistValues>
+                <fullName>Inbound - Emailed us directly DO NOT USE</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Inbound - Conference (came to us after)</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Inbound - Called us directly -DO NOT USE</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Inbound-Tried schedule call dir. DONT U</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Inbound - Contacted us on Social Media</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Inbound - Event Sign Up</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Inbound - HQ signup</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Inbound - Emailed info@ DO NOT USE</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
                 <fullName>Inbound - Referral</fullName>
                 <default>false</default>
             </picklistValues>
             <picklistValues>
-                <fullName>Webinar Sign Up</fullName>
+                <fullName>Inbound - Webinar Sign Up</fullName>
                 <default>false</default>
             </picklistValues>
             <picklistValues>
-                <fullName>Web Sign Up</fullName>
+                <fullName>Inbound- Workshop Sign Up</fullName>
                 <default>false</default>
             </picklistValues>
             <picklistValues>
-                <fullName>Workshop</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Inbound - Contacted Through Social Media</fullName>
+                <fullName>Other</fullName>
                 <default>false</default>
             </picklistValues>
             <sorted>false</sorted>
@@ -365,6 +393,10 @@
                 <default>false</default>
             </picklistValues>
             <picklistValues>
+                <fullName>Responded and not interested</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
                 <fullName>Responded - Inquiry</fullName>
                 <default>false</default>
             </picklistValues>
@@ -373,7 +405,19 @@
                 <default>false</default>
             </picklistValues>
             <picklistValues>
+                <fullName>Responded - Intro&apos;ed to colleague</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Responded - Meeting</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
                 <fullName>Responded no Interest</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Responded - No Interest</fullName>
                 <default>false</default>
             </picklistValues>
             <picklistValues>
@@ -390,6 +434,10 @@
             </picklistValues>
             <picklistValues>
                 <fullName>Responded with Interest</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Responded with intro to colleague</fullName>
                 <default>false</default>
             </picklistValues>
             <picklistValues>

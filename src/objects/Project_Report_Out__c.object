@@ -175,7 +175,7 @@
         <externalId>false</externalId>
         <formula>Contract__r.Percent_through_SOW_deliverables__c</formula>
         <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
-        <label>% Deliverables Completed</label>
+        <label>% Work Completed</label>
         <precision>18</precision>
         <required>false</required>
         <scale>0</scale>
