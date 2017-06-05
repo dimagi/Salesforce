@@ -153,6 +153,12 @@ public class hqInt_Model_DomainClass {
 
         if (this.deployment != null && this.deployment.countries != null) {
             domainObj.Deployment_Countries__c = String.join(this.deployment.countries,',');
+            domainObj.Deployment_city__c = this.deployment.city;
+            domainObj.Deployment_date__c = this.deployment.x_date;
+            domainObj.Deployment_description__c = this.deployment.description;
+            domainObj.Deployment_public__c = this.deployment.x_Public;
+            domainObj.Deployment_region__c = this.deployment.region;
+            domainObj.Deployment_country__c = this.deployment.country;
         }
 
         // 2 options: 1 - field is and can be true or false, 2 - there is no field so we put false 
@@ -215,7 +221,6 @@ public class hqInt_Model_DomainClass {
             domainObj.cpFormsIn90Days__c = calculatedProperties.cp_n_forms_90_d;
             domainObj.cpHasApp__c = calculatedProperties.cp_has_app == null ? false : calculatedProperties.cp_has_app;
         }
-
         domainObj.Server_Name__c = serverName;
 
         return domainobj;
