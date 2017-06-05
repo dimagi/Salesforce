@@ -2,10 +2,9 @@
     <div style="padding-left:100px;">
         <apex:pageBlock mode="maindetail" >
             <apex:pageBlockSection >
-                <!-- TODO remove Deployment__r? -->
-                <apex:outputfield value="{!domain.Deployment__r.countries__c}"/>
+                <apex:outputfield value="{!domain.Deployment_Countries__c}"/>
                 <apex:outputText />
-                <apex:outputfield value="{!domain.Deployment__r.description__c}"/>
+                <apex:outputfield value="{!domain.Deployment_description__c}"/>
             </apex:pageBlockSection>
         </apex:pageBlock>
     </div>

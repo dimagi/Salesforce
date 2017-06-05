@@ -7,7 +7,6 @@ public with sharing class hqInt_InlineVfDeploymentFieldsController {
     // controller.
     public hqInt_InlineVfDeploymentFieldsController(ApexPages.StandardController stdController)  {
         this.domain = (Domain__c)stdController.getRecord();
-        // TODO
-        domain = [SELECT Id, Deployment__r.countries__c, Deployment__r.description__c, Internal_Properties__r.notes__c FROM Domain__c WHERE Id = :domain.Id LIMIT 1];
+        domain = [SELECT Id, Deployment_Countries__c, Deployment_description__c, Internal_Properties__r.notes__c FROM Domain__c WHERE Id = :domain.Id LIMIT 1];
     }
 }
