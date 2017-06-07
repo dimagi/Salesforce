@@ -151,7 +151,7 @@
             function addGraphs() {
                 nv.addGraph(function() {
                     var chart, activeUsers = $j("[id$=userGraphDataId]").val();
-                    chart = buildMultiBatChart('Sum of Active Mobile Users', 'Snapshot Date');
+                    chart = buildMultiBatChart('Sum of Active Mobile Users (Thousands)', 'Snapshot Date');
                     $j("[id$=activeUsers").append("<svg></svg>");
                     d3.select('#activeUsers svg').datum(fillGraphData(JSON.parse(activeUsers)))
                         .transition().duration(500).call(chart);
@@ -161,7 +161,7 @@
 
                 nv.addGraph(function() {
                     var chart, wams = $j("[id$=wamGraphDataId]").val();
-                    chart = buildMultiBatChart('Sum of Wam', 'Snapshot Date');
+                    chart = buildMultiBatChart('Sum of Wam (Thousands)', 'Snapshot Date');
                     $j("[id$=wams").append("<svg></svg>");
                     d3.select('#wams svg').datum(fillGraphData(JSON.parse(wams)))
                         .transition().duration(500).call(chart);
@@ -171,7 +171,7 @@
 
                 nv.addGraph(function() {
                     var chart, forms = $j("[id$=formGraphDataId]").val();
-                    chart = buildMultiBatChart('Forms for Period', 'Snapshot Date');
+                    chart = buildMultiBatChart('Forms for Period (Thousands)', 'Snapshot Date');
                     $j("[id$=forms").append("<svg></svg>");
                     d3.select('#forms svg').datum(fillGraphData(JSON.parse(forms)))
                         .transition().duration(500).call(chart);
@@ -194,15 +194,6 @@
                     chart = buildMultiBatChart('Sum of Monthly fee (Thousands)', 'Invoice End Date');
                     $j("[id$=mrr").append("<svg></svg>");
                     d3.select('#mrr svg').datum(fillGraphData(JSON.parse(mrrRecs)))
-                        .transition().duration(500).call(chart);
-                    nv.utils.windowResize(chart.update);
-                    return chart;
-                });
-
-                nv.addGraph(function() {
-                    var chart = buildMultiBatChart('Sum of Buffer EV (Thousands)', 'Contract Start Date');
-                    $j("[id$=bufferEV").append("<svg></svg>");
-                    d3.select('#bufferEV svg').datum(fillBufferEVData())
                         .transition().duration(500).call(chart);
                     nv.utils.windowResize(chart.update);
                     return chart;
@@ -269,31 +260,67 @@
                 });
 
                 nv.addGraph(function() {
-                    var per, gData, chart;
+                    var expected, per, gData, chart;
                     gData = JSON.parse($j("[id$=oppExpecteId]").val());
                     per = (100 * (gData.value1 / gData.value2)).toFixed(2);
                     chart = buildPieChart('$' + (gData.value1).toFixed(2) + ' : ' + per + '%');
                     chart.tooltip.valueFormatter(function (d) { 
-                                                    var percen = (d == gData.value1 ? per : 100 - per);
+                                                    var percen = (d == gData.value1 ? per : (100 - per).toFixed(2));
+                                                    if (percen < 0) {
+                                                        percen = 0;
+                                                    }
                                                     return '$' + d.toFixed(2) + ' (' + percen + '%)';
                                                  });
                     $j("[id$=oppWonBottomValue").before("<svg></svg>");
-                    d3.select('#oppWon svg').datum([{key: "Opportunities Won", y: gData.value1}, {key: "Target Missing", y: gData.value2 - gData.value1}]).transition().duration(1200).call(chart);
+                    expected = gData.value2 - gData.value1;
+                    if (expected < 0) {
+                        expected = 0;
+                    }
+                    d3.select('#oppWon svg').datum([{key: "Opportunities Won", y: gData.value1}, {key: "Target Missing", y: expected}]).transition().duration(1200).call(chart);
                     nv.utils.windowResize(chart.update);
-                    d3.selectAll('.nv-pieLabels text').style('fill', 'black');
                     return chart;
                 });
+
                 nv.addGraph(function() {
-                    var pre, gData, chart;
+                    var expected, per, gData, chart;
                     gData = JSON.parse($j("[id$=evExpectedId]").val());
                     per = (100 * (gData.value1 / gData.value2)).toFixed(2);
                     chart = buildPieChart('$' + (gData.value1).toFixed(2) + ' : ' + per + '%');
                     chart.tooltip.valueFormatter(function (d) { 
-                                                    var percen = (d == gData.value1 ? per : 100 - per);
+                                                    var percen = (d == gData.value1 ? per : (100 - per).toFixed(2));
+                                                    if (percen < 0) {
+                                                        percen = 0;
+                                                    }
                                                     return '$' + d.toFixed(2) + ' (' + percen + '%)';
                                                  });
                     $j("[id$=netEVBottomValue").before("<svg></svg>");
-                    d3.select('#netEV svg').datum([{key: "Changes in Net EV", y: gData.value1}, {key: "Target Missing", y: gData.value2 - gData.value1}]).transition().duration(1200).call(chart);
+                    expected = gData.value2 - gData.value1;
+                    if (expected < 0) {
+                        expected = 0;
+                    }
+                    d3.select('#netEV svg').datum([{key: "Changes in Net EV", y: gData.value1}, {key: "Target Missing", y: expected}]).transition().duration(1200).call(chart);
+                    nv.utils.windowResize(chart.update);
+                    return chart;
+                });
+
+                nv.addGraph(function() {
+                    var expected, per, gData, chart;
+                    gData = JSON.parse($j("[id$=bufferEvGenId]").val());
+                    per = (100 * (gData.value1 / gData.value2)).toFixed(2);
+                    chart = buildPieChart('$' + (gData.value1).toFixed(2) + ' : ' + per + '%');
+                    chart.tooltip.valueFormatter(function (d) { 
+                                                    var percen = (d == gData.value1 ? per : (100 - per).toFixed(2));
+                                                    if (percen < 0) {
+                                                        percen = 0;
+                                                    }
+                                                    return '$' + d.toFixed(2) + ' (' + percen + '%)';
+                                                 });
+                    $j("[id$=bufferEVBottomValue").before("<svg></svg>");
+                    expected = gData.value2 - gData.value1;
+                    if (expected < 0) {
+                        expected = 0;
+                    }
+                    d3.select('#bufferEV svg').datum([{key: "Buffer EV Generated", y: gData.value1}, {key: "Target Missing", y: expected}]).transition().duration(1200).call(chart);
                     nv.utils.windowResize(chart.update);
                     return chart;
                 });
@@ -393,22 +420,6 @@
                     };
              }
 
-            function fillBufferEVData() {
-                var i, inc = [], dsi = [], dsa = [], dwa = [], dlac = [], dtz = [], myanmar = [];
-                var graphData = JSON.parse($j("[id$=bufferEvGenDataId]").val());
-                for (i = 0; i < graphData.length; i++) {
-                    inc.push({x: graphData[i].name, y: graphData[i].value1});
-                    dsi.push({x: graphData[i].name, y: graphData[i].value2});
-                    dsa.push({x: graphData[i].name, y: graphData[i].value3});
-                    dwa.push({x: graphData[i].name, y: graphData[i].value4});
-                    dlac.push({x: graphData[i].name, y: graphData[i].value5});
-                    dtz.push({x: graphData[i].name, y: graphData[i].value6});
-                    myanmar.push({x: graphData[i].name, y: graphData[i].value7});
-                }
-                return [{ values: inc, key: "Inc"}, { values: dsi, key: "DSI"}, { values: dsa, key: "DSA"}, { values: dwa, key: "DWA"},
-                    { values: dlac, key: "DLAC"}, { values: dtz, key: "DTZ"}, { values: myanmar, key: "Myanmar"}];
-            }
-
             function fillGSData(graphData, forCustomer) {
                 var i, customerData = [], qualityData = [];
                 for (i = 0; i < graphData.length; i++) {
@@ -455,7 +466,7 @@
             </apex:actionstatus>
             <apex:actionFunction action="{!loadScaleData}" name="loadScaleDataJs" status="loadingDiv" oncomplete="addGraphs()" reRender="corporateDashboardBlock"/>
             <div id="tabs" >
-                <div>
+                <apex:outputPanel rendered="{!!disableTab}">
                     <ul>
                         <li id="reportTabLi">
                             <a href="#reportTab" >Report Out</a>
@@ -470,7 +481,20 @@
                             <a href="#corporateDashboard" >Corporate Dashboard</a>
                         </li>
                     </ul>
-                </div>
+                </apex:outputPanel>
+                <apex:outputPanel rendered="{!disableTab}">
+                    <ul>
+                        <li id="reportTabLi">
+                            <a href="#reportTab" >Report Out</a>
+                        </li>
+                        <li id="financialTabLi">
+                            <a href="#financialTab" >Project Financial Data</a>
+                        </li>
+                        <li id="projectTabLi">
+                            <a href="#projectTab">All Projects</a>
+                        </li>
+                    </ul>
+                </apex:outputPanel>
 
                 <section id="reportTab">
                     <div>
@@ -931,8 +955,8 @@
                         </apex:pageBlock>
                     </div>
                 </section>
-                <section id="corporateDashboard" >
 
+                <apex:outputPanel rendered="{!!disableTab}"><section id="corporateDashboard" rendered="{!if(currentLoginEmail == 'ltse@dimagi.com', true, false)}" >
                     <apex:pageBlock title="Corporate Dashboard" id="corporateDashboardBlock">
                         <apex:inputHidden id="userGraphDataId" value="{!userGraphData}" />
                         <apex:inputHidden id="formGraphDataId" value="{!formGraphData}" />
@@ -940,7 +964,7 @@
                         <apex:inputHidden id="programGraphDataId" value="{!programGraphData}" />
                         <apex:inputHidden id="performanceGraphDataId" value="{!performanceGraphData}" />
                         <apex:inputHidden id="gsGraphDataId" value="{!gsGraphData}" />
-                        <apex:inputHidden id="bufferEvGenDataId" value="{!bufferEvGenData}" />
+                        <apex:inputHidden id="bufferEvGenId" value="{!bufferEvGen}" />
                         <apex:inputHidden id="mrrDataId" value="{!mrrData}" />
                         <apex:inputHidden id="evExpectedId" value="{!evExpected}" />
                         <apex:inputHidden id="oppExpecteId" value="{!oppExpected}" />
@@ -956,7 +980,7 @@
                                 <div class="graphTitle"><h2>Forms</h2></div>
                             </div>
                             <div id="programs" class="graph">
-                                <div class="graphTitle"><h2>Scale of Programs</h2></div>
+                                <div class="graphTitle"><h2>Active Projects</h2></div>
                             </div>
                         </div>
                         </apex:pageBlockSection>
@@ -966,8 +990,9 @@
                                     <div class="graphTitle"><h2>Change in Net EV - Target $9.9 million</h2></div>
                                     <div id="netEVBottomValue" class="graphBottomTitle"><h2>Sum of DIFF-Expected Value Minus Expense (Millions)</h2></div>
                                 </div>
-                                <div id="bufferEV" class="graph">
+                                <div id="bufferEV" class="gaugeGraph">
                                     <div class="graphTitle"><h2>Buffer EV generated</h2></div>
+                                    <div id="bufferEVBottomValue" class="graphBottomTitle"><h2>Sum of DIFF-Expected Buffer (Millions)</h2></div>
                                 </div>
                                 <div id="oppWon" class="gaugeGraph">
                                     <div class="graphTitle"><h2>Opportunities Won - Target $ 6.9 million</h2></div>
@@ -999,7 +1024,7 @@
                             </div>
                         </apex:pageBlockSection>
                     </apex:pageBlock>
-                </section>
+                </section></apex:outputPanel>
             </div>
             </apex:outputPanel>
             <apex:pageBlock title="Project Report Out" rendered="{!NOT(isAuthenticated)}">
