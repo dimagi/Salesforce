@@ -327,7 +327,7 @@
             }
 
             function buildMultiBatChart(labelTitleY, labelTitleX) {
-                var chart = nv.models.multiBarChart().stacked(true).height(400).width(400).legendPosition('bottom');
+                var chart = nv.models.multiBarChart().stacked(true).height(400).width(400).legendPosition('bottom').reduceXTicks(false);
                 chart.legend.margin({"top": 22});
                 chart.xAxis.rotateLabels(-40);
                 chart.xAxis.axisLabel(labelTitleX);

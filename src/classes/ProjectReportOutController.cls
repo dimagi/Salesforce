@@ -271,11 +271,15 @@ public with sharing class ProjectReportOutController {
             }
         } catch(DmlException ex) {
              ApexPages.addMessage(new ApexPages.message(ApexPages.severity.ERROR,ex.getDmlMessage(0)));
-             EmailHelper.sendEmailFromException(new String[] { 'tstalka@soldevelo.com' }, 'PRO errors', 'PRO save error', ex);
+             if (!Test.isRunningTest()) {
+                EmailHelper.sendEmailFromException(BatchDefaultSettings__c.getOrgDefaults().Error_Emails__c.split(','), 'PRO errors', 'PRO save error', ex);
+             }
         } catch (Exception e) {
             System.debug(e);
             ApexPages.addMessage(new ApexPages.message(ApexPages.severity.ERROR,'There was an error trying to save. Please try again.'));
-            EmailHelper.sendEmailFromException(new String[] { 'tstalka@soldevelo.com' }, 'PRO errors', 'PRO save error', e);
+            if (!Test.isRunningTest()) {
+                EmailHelper.sendEmailFromException(BatchDefaultSettings__c.getOrgDefaults().Error_Emails__c.split(','), 'PRO errors', 'PRO save error', e);
+            }
         }
         return page;
     }
@@ -1359,24 +1363,32 @@ public with sharing class ProjectReportOutController {
             Date lastDate = metrics.get(0).Date__c;
             for (CommCareHQ_Performance_Metrics__c rec : metrics) {
                 if (rec.Date__c.year() != lastDate.year() || rec.Date__c.month() != lastDate.month()) {
-                    tmpData.value1 = (tmpData.value1 / (tmpData.value4 != 0 ? tmpData.value4 : 1)) / 1000.00;
-                    tmpData.value2 = tmpData.value2 / (tmpData.value4 != 0 ? tmpData.value4 : 1);
-                    tmpData.value3 = tmpData.value3 / (tmpData.value4 != 0 ? tmpData.value4 : 1);
+                    tmpData.value1 = (tmpData.value4 != 0 ? tmpData.value1 / tmpData.value4 : 0) / 1000.00;
+                    tmpData.value2 = (tmpData.value5 != 0 ? tmpData.value2 / tmpData.value5 : 0);
+                    tmpData.value3 = (tmpData.value6 != 0 ? tmpData.value3 / tmpData.value6 : 0);
                     tmpData.name = lastDate.format();
                     this.performanceData.add(tmpData);
                     tmpData = new GraphData();
                 }
-                tmpData.value1 += rec.Number_of_Submissions__c;
-                tmpData.value2 += rec.Avg_Page_Load__c;
-                tmpData.value3 += rec.Server_Apdex__c;
-                tmpData.value4++;
+                if (rec.Number_of_Submissions__c != null) {
+                    tmpData.value1 += rec.Number_of_Submissions__c;
+                    tmpData.value4++;
+                }
+                if (rec.Avg_Page_Load__c != null) {
+                    tmpData.value2 += rec.Avg_Page_Load__c;
+                    tmpData.value5++;
+                }
+                if (rec.Server_Apdex__c != null) {
+                    tmpData.value3 += rec.Server_Apdex__c;
+                    tmpData.value6++;
+                }
                 lastDate = rec.Date__c;
             }
             // we must add the last date from list:
             tmpData.name = lastDate.format();
-            tmpData.value1 = (tmpData.value1 / (tmpData.value4 != 0 ? tmpData.value4 : 1) / 1000.00);
-            tmpData.value2 = tmpData.value2 / (tmpData.value4 != 0 ? tmpData.value4 : 1);
-            tmpData.value3 = tmpData.value3 / (tmpData.value4 != 0 ? tmpData.value4 : 1);
+            tmpData.value1 = (tmpData.value4 != 0 ? tmpData.value1 / tmpData.value4 : 0) / 1000.00;
+            tmpData.value2 = (tmpData.value5 != 0 ? tmpData.value2 / tmpData.value5 : 0);
+            tmpData.value3 = (tmpData.value6 != 0 ? tmpData.value3 / tmpData.value6 : 0);
             this.performanceData.add(tmpData);
         }
     }
@@ -1449,17 +1461,9 @@ public with sharing class ProjectReportOutController {
         this.oppExpected = JSON.serialize(new GraphData('', currentValue != null ? currentValue / 1000000.00 : 0, targetData / 1000000.00, 0, 0, 0, 0, 0, 0));
     }
 
-    /**
-     * Loads data needed to create Scale Wam graph on the page.
-     */
-    public PageReference loadScaleData() {
-        loadGSData();
-        loadPerformanceData();
-        loadMrr();
-        loadOppExpetedValue();
-        loadEvExpectedValue();
+    public void loadDomainSnapshotData() {
         if (this.wamData != null) {
-            return null;
+            return;
         }
         this.wamData = new List<GraphData>();
         this.formData = new List<GraphData>();
@@ -1538,6 +1542,19 @@ public with sharing class ProjectReportOutController {
                 tmpProgramsData = new GraphData();
                 endIdx += 7;
             }
+        }
+    }
+
+    public PageReference loadScaleData() {
+        try {
+            loadGSData();
+            loadPerformanceData();
+            loadMrr();
+            loadOppExpetedValue();
+            loadEvExpectedValue();
+            loadDomainSnapshotData();
+        } catch (Exception ex) {
+             EmailHelper.sendEmailFromException(BatchDefaultSettings__c.getOrgDefaults().Error_Emails__c.split(','), 'PRO Corporate Dashboard errors', 'PRO Corporate Dashboard error', ex);
         }
         return null;
     }
