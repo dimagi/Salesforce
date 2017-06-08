@@ -16,7 +16,7 @@ public class HqIntegrationTests {
         insert testCustomSetting;
     }
 
-    @isTest
+    /*@isTest
     static void shouldDeactivateDoubleSubscriptions() {
         Domain__c domain1 = new Domain__c(Name = 'Sample 1', Server_Name__c = 'CommCare HQ', is_test__c = 'false', cpIsActive__c = true,
                                           Wam__c = 15, cpActiveMobileUsers__c = 20, cpAllForms__c = 325);
@@ -73,7 +73,7 @@ public class HqIntegrationTests {
         System.assertEquals(false, sub4.is_active__c);
         Accounting_Subscription__c sub5 = [SELECT Id, is_active__c FROM Accounting_Subscription__c WHERE Id =: subscription5.Id LIMIT 1];
         System.assertEquals(false, sub5.is_active__c);
-    }
+    }*/
 
     @isTest
     static void shouldCreateDomainMonthlySnapshotFromHistory() {

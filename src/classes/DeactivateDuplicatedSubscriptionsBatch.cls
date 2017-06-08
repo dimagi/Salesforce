@@ -11,37 +11,18 @@ public class DeactivateDuplicatedSubscriptionsBatch implements Database.Stateful
             domainsId.add(domainId);
         }
 
-        return [SELECT Id FROM Domain__c WHERE Id IN: domainsId];
+        return [SELECT Id, Name, Server_Name__c FROM Domain__c WHERE Id IN: domainsId];
     }
 
     public void execute(Database.BatchableContext context, List<Domain__c> domains) {
-        List<Accounting_Subscription__c> subscriptionsToUpdate = new List<Accounting_Subscription__c>();
+        String message = '';
         for (Domain__c domain : domains) {
-            List<Accounting_Subscription__c> domainSubsc = [SELECT Id, is_active__c, LastModifiedDate, CreatedDate FROM Accounting_Subscription__c
-                                                            WHERE is_active__c = true AND Accounting_subscriber_domain__c =: domain.Id
-                                                            ORDER BY LastModifiedDate ASC];
-            System.debug(domainSubsc);
-            if (domainSubsc.size() > 1) {
-                domainSubsc.remove(domainSubsc.size() - 1); // the last one is updated last time so we want
-                                                            // remove it from list and update others as inactive
-                for (Accounting_Subscription__c sub : domainSubsc) {
-                    sub.is_active__c = false;
-                }
-                subscriptionsToUpdate.addAll(domainSubsc);
-            }
+            message += (' Domain Name: ' + domain.Name + ' Server Name: ' + domain.Server_Name__c
+                                + ' Domain ID:  ' + domain.Id + '</br>');
         }
-
-        if (subscriptionsToUpdate.size() > 0) {
-            String message = '';
-            for (Accounting_Subscription__c sub : subscriptionsToUpdate) {
-                message += ' Subscription ID: ' + sub.Id + '</br>';
-            }
-            if (!Test.isRunningTest()) {
-                EmailHelper.sendEmail(BatchDefaultSettings__c.getOrgDefaults().Error_Emails__c.split(','),
+        if (!Test.isRunningTest() && message != '') {
+            EmailHelper.sendEmail(BatchDefaultSettings__c.getOrgDefaults().Error_Emails__c.split(','),
                         'Duplicacted Subscriptions found', message);
-
-            }
-           update subscriptionsToUpdate;
         }
     }
 
