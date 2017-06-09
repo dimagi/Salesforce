@@ -102,7 +102,7 @@ public class hqInt_Model_DomainClass {
         domainObj.show_invalid_survey_responses_in_chat__c = this.show_invalid_survey_responses_in_chat == null ? false : this.show_invalid_survey_responses_in_chat;
         domainObj.sms_case_registration_enabled__c = this.sms_case_registration_enabled == null ? false : this.sms_case_registration_enabled;
         domainObj.sms_mobile_worker_registration_enabled__c = this.sms_mobile_worker_registration_enabled == null ? false : this.sms_mobile_worker_registration_enabled;
-        domainObj.supports_multiple_locations_per_user__c = this.supports_multiple_locations_per_user == null;
+        domainObj.supports_multiple_locations_per_user__c = this.supports_multiple_locations_per_user == null ? false : this.supports_multiple_locations_per_user;
         domainObj.use_cloudcare_releases__c = this.use_cloudcare_releases == null ? false : this.use_cloudcare_releases;
         domainObj.use_default_sms_response__c = this.use_default_sms_response == null ? false : this.use_default_sms_response;
         domainObj.date_created__c = this.date_created;
