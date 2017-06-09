@@ -141,7 +141,7 @@ YEAR(DATEVALUE(accounting_billingaccount_date_created__c)) == YEAR(DATEVALUE(dat
     <fields>
         <fullName>Payment_Status__c</fullName>
         <externalId>false</externalId>
-        <formula>if( ISBLANK(date_paid__c ),&quot;Not Paid&quot;,&quot;Paid&quot;)</formula>
+        <formula>IF (ISBLANK(date_paid__c ), IF ( Write_Off__c == true, &quot;Write Off&quot;, &quot;Not Paid&quot;), &quot;Paid&quot;)</formula>
         <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
         <label>Payment Status</label>
         <required>false</required>
@@ -241,6 +241,26 @@ YEAR(DATEVALUE(accounting_billingaccount_date_created__c)) == YEAR(DATEVALUE(dat
         <type>Summary</type>
     </fields>
     <fields>
+        <fullName>Server_Name__c</fullName>
+        <externalId>false</externalId>
+        <label>Server Name</label>
+        <picklist>
+            <picklistValues>
+                <fullName>CommCareHQ</fullName>
+                <default>true</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>CommCareHQ India</fullName>
+                <default>false</default>
+            </picklistValues>
+            <sorted>false</sorted>
+        </picklist>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+    </fields>
+    <fields>
         <fullName>Total_Credits__c</fullName>
         <externalId>false</externalId>
         <label>Total Credits</label>
@@ -327,6 +347,17 @@ YEAR(DATEVALUE(accounting_billingaccount_date_created__c)) == YEAR(DATEVALUE(dat
         <trackTrending>false</trackTrending>
         <type>Text</type>
         <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Write_Off__c</fullName>
+        <defaultValue>false</defaultValue>
+        <description>This field is used by Product Ops to indicate real invoices that were triggered by HQ, that we do not expect will ever be paid. This is used to indicate invoices that we are writing off, most often for project spaces that were downgraded to Community through the automated process for downgraded unpaid subscriptions</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Check this box to indicate an invoice Dimagi is writing off. The invoice is real, but we do not expect to receive payment.</inlineHelpText>
+        <label>Write Off</label>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
     </fields>
     <fields>
         <fullName>accounting_BillingContact_Address_Line_1__c</fullName>
