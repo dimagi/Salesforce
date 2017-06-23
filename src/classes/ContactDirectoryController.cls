@@ -106,7 +106,7 @@ public class ContactDirectoryController{
                       from DContract__c where Status__c in('Draft','Active')];
           if(ContractList.size() > 0)
           {
-              ApexPages.addmessage(new ApexPages.message(ApexPages.severity.Info,' If any information is incorrect please contact ops@dimagi.com'));
+              ApexPages.addmessage(new ApexPages.message(ApexPages.severity.Info,' If any information is incorrect please contact people-ops@dimagi.com'));
           }
                       
     }
