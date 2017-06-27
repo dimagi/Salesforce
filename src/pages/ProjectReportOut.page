@@ -980,26 +980,26 @@
                                 <div class="graphTitle"><h2>Forms</h2></div>
                             </div>
                             <div id="programs" class="graph">
-                                <div class="graphTitle"><h2>Active Projects</h2></div>
+                                <div class="graphTitle"><h2># Active Domains</h2></div>
                             </div>
                         </div>
                         </apex:pageBlockSection>
                         <apex:pageBlockSection title="Financial" collapsible="false" columns="1" >
                             <div class="chartsData">
                                 <div id="netEV" class="gaugeGraph">
-                                    <div class="graphTitle"><h2>Change in Net EV - Target $9.9 million</h2></div>
+                                    <div class="graphTitle"><h2>2017 Change in Net EV - Target $9.9 million</h2></div>
                                     <div id="netEVBottomValue" class="graphBottomTitle"><h2>Sum of DIFF-Expected Value Minus Expense (Millions)</h2></div>
                                 </div>
                                 <div id="bufferEV" class="gaugeGraph">
-                                    <div class="graphTitle"><h2>Buffer EV generated</h2></div>
+                                    <div class="graphTitle"><h2>2017 Buffer EV generated</h2></div>
                                     <div id="bufferEVBottomValue" class="graphBottomTitle"><h2>Sum of DIFF-Expected Buffer (Millions)</h2></div>
                                 </div>
                                 <div id="oppWon" class="gaugeGraph">
-                                    <div class="graphTitle"><h2>Opportunities Won - Target $ 6.9 million</h2></div>
+                                    <div class="graphTitle"><h2>2017 Opportunities Won - Target $ 6.9 million</h2></div>
                                     <div id="oppWonBottomValue" class="graphBottomTitle"><h2>Sum of Expected Value Minus Expense Income (Millions)</h2></div>
                                 </div>
                                 <div id="mrr" class="graph">
-                                    <div class="graphTitle"><h2>MRR</h2></div>
+                                    <div class="graphTitle"><h2>Monthly Recurring Revenue</h2></div>
                                 </div>
                             </div>
                         </apex:pageBlockSection>
@@ -1009,17 +1009,17 @@
                                     <div class="graphTitle"><h2>Average Page Load Time</h2></div>
                                 </div>
                                 <div id="performance2" class="graph">
-                                    <div class="graphTitle"><h2>Average Apdex</h2></div>
+                                    <div class="graphTitle"><h2>Average Apdex (server response time)</h2></div>
                                 </div>
                             </div>
                         </apex:pageBlockSection>
-                        <apex:pageBlockSection title="GS" collapsible="false" columns="1" >
+                        <apex:pageBlockSection title="Global Services" collapsible="false" columns="1" >
                             <div class="chartsData">
                                 <div id="quality" class="graph">
-                                    <div class="graphTitle"><h2>GS Overall Project Status</h2></div>
+                                    <div class="graphTitle"><h2>GS Overall Project Status (% Green)</h2></div>
                                 </div>
                                 <div id="customers" class="graph">
-                                    <div class="graphTitle"><h2>GS Partner Relationship</h2></div>
+                                    <div class="graphTitle"><h2>GS Partner Relationship  (% Green)</h2></div>
                                 </div>
                             </div>
                         </apex:pageBlockSection>

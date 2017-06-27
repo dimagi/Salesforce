@@ -29,6 +29,10 @@ public without sharing class CorporateDashboardController {
         this.refreshing = false;
     }
 
+    public void resizeWindow() {
+        // we need this empty method to rerender apex charts on view
+    }
+
     public List<DoubleLineChartData> getData() {
         this.performanceData = new List<DoubleLineChartData>();
         Boolean error = false;
@@ -44,24 +48,33 @@ public without sharing class CorporateDashboardController {
                 Date lastDate = metrics.get(0).Date__c;
                 for (CommCareHQ_Performance_Metrics__c rec : metrics) {
                     if (rec.Date__c.year() != lastDate.year() || rec.Date__c.month() != lastDate.month()) {
-                        tmpData.avgSubmissions = (tmpData.avgSubmissions / (tmpData.recordCount != 0 ? tmpData.recordCount : 1)) / 1000.00;
-                        tmpData.avgPageLoad = tmpData.avgPageLoad / (tmpData.recordCount != 0 ? tmpData.recordCount : 1);
-                        tmpData.avgServerApdex = tmpData.avgServerApdex / (tmpData.recordCount != 0 ? tmpData.recordCount : 1);
+                        tmpData.avgSubmissions = (tmpData.recordCount1 != 0 ? tmpData.avgSubmissions / tmpData.recordCount1 : 0) / 1000.00;
+                        tmpData.avgPageLoad = (tmpData.recordCount2 != 0 ? tmpData.avgPageLoad / tmpData.recordCount2 : 0);
+                        tmpData.avgServerApdex = (tmpData.recordCount3 != 0 ? tmpData.avgServerApdex / tmpData.recordCount3 : 0);
                         tmpData.name = getDateText(lastDate);
                         this.performanceData.add(tmpData);
                         tmpData = new DoubleLineChartData('', 0, 0, 0);
                     }
-                    tmpData.avgSubmissions += rec.Number_of_Submissions__c != null ? rec.Number_of_Submissions__c : 0;
-                    tmpData.avgPageLoad += rec.Avg_Page_Load__c != null ? rec.Avg_Page_Load__c : 0;
-                    tmpData.avgServerApdex += rec.Server_Apdex__c != null ? rec.Server_Apdex__c : 0;
-                    tmpData.recordCount++;
+
+                    if (rec.Number_of_Submissions__c != null) {
+                        tmpData.avgSubmissions += rec.Number_of_Submissions__c;
+                        tmpData.recordCount1++;
+                    }
+                    if (rec.Avg_Page_Load__c != null) {
+                        tmpData.avgPageLoad += rec.Avg_Page_Load__c;
+                        tmpData.recordCount2++;
+                    }
+                    if (rec.Server_Apdex__c != null) {
+                        tmpData.avgServerApdex += rec.Server_Apdex__c;
+                        tmpData.recordCount3++;
+                    }
                     lastDate = rec.Date__c;
                 }
                 // we must add the last date from list:
                 tmpData.name = getDateText(lastDate);
-                tmpData.avgSubmissions = (tmpData.avgSubmissions / (tmpData.recordCount != 0 ? tmpData.recordCount : 1)) / 1000.00;
-                tmpData.avgPageLoad = tmpData.avgPageLoad / (tmpData.recordCount != 0 ? tmpData.recordCount : 1);
-                tmpData.avgServerApdex = tmpData.avgServerApdex / (tmpData.recordCount != 0 ? tmpData.recordCount : 1);
+                tmpData.avgSubmissions = (tmpData.recordCount1 != 0 ? tmpData.avgSubmissions / tmpData.recordCount1 : 0) / 1000.00;
+                tmpData.avgPageLoad = (tmpData.recordCount2 != 0 ? tmpData.avgPageLoad / tmpData.recordCount2 : 0);
+                tmpData.avgServerApdex = (tmpData.recordCount3 != 0 ? tmpData.avgServerApdex / tmpData.recordCount3 : 0);
                 this.performanceData.add(tmpData);
             }
         } catch(Exception e) {
@@ -89,7 +102,9 @@ public without sharing class CorporateDashboardController {
         public Decimal avgPageLoad { get; set; }
         public Decimal avgSubmissions { get; set; }
         public Decimal avgServerApdex { get; set; }
-        public Decimal recordCount { get; set;}
+        public Decimal recordCount1 { get; set;}
+        public Decimal recordCount2 { get; set;}
+        public Decimal recordCount3 { get; set;}
 
         public DoubleLineChartData() {
         }
@@ -99,7 +114,9 @@ public without sharing class CorporateDashboardController {
             this.avgPageLoad = avgPageLoad;
             this.avgSubmissions = avgSubmissions / 1000.00;
             this.avgServerApdex = avgServerApdex;
-            this.recordCount = 0;
+            this.recordCount1 = 0;
+            this.recordCount2 = 0;
+            this.recordCount3 = 0;
         }
     }
 }
