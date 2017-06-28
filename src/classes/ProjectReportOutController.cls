@@ -1439,8 +1439,8 @@ public with sharing class ProjectReportOutController {
         Decimal targetDataExpectedVal = Corporate_Dashboard_Settings__c.getOrgDefaults().EV_Target__c;
         Decimal targetDataExpectedBuffVal = Corporate_Dashboard_Settings__c.getOrgDefaults().EV_Expected_Buffer_Target__c;
         AggregateResult[] groupedResults = [SELECT SUM(DIFF_Expected_Value_Minus_Expense__c), SUM(Diff_expected_buffer__c) FROM Pipeline_Snapshot_EV_DIff__c
-                                            WHERE Pipeline_Snapshot__r.Month_Date__c >=: fiscalYearStart
-                                            AND Pipeline_Snapshot__r.Month_Date__c <=: fiscalYearEnd
+                                            WHERE Month_Date__c >=: fiscalYearStart
+                                            AND Month_Date__c <=: fiscalYearEnd
                                             AND (Pipeline_Snapshot__r.Stage__c = 'Stage 4 - Proposal Development' OR Pipeline_Snapshot__r.Stage__c = 'Stage 5 - Submitted'
                                                  OR Pipeline_Snapshot__r.Stage__c = 'Stage 6 - In Negotiations' OR Pipeline_Snapshot__r.Stage__c = 'Closed')
                                             AND (NOT Name LIKE '%(Monthly)%')
