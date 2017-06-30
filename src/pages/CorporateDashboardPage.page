@@ -37,7 +37,7 @@
     <apex:form styleClass="pageBackground">
         <apex:outputPanel styleClass="pageBackground">
             <apex:actionFunction action="{!resizeWindow}" name="resizeWindow" rerender="performance" />
-            <apex:pageBlock id="corporateDashboard" title="Corporate Dashboard" mode="edit" >
+            <apex:pageBlock id="corporateDashboard" title="Global Metrics" mode="edit" >
                 <apex:pageBlockButtons id="buttonPanel" styleClass="pageBackground">
                     <apex:commandButton disabled="{!refreshing}" action="{!refreshDashboard}" value="Refresh" reRender="corporateDashboard,buttonPanel"/>
                     <apex:image url="/img/loading32.gif" height="10px" rendered="{!refreshing}"/>
@@ -62,7 +62,7 @@
                         </div>
                         <div class="graphContainer">
                             <a href="/00Ob00000048BiR">
-                                <img class="graph" src="/servlet/servlet.ChartServer?rsid=0FLb00000019FqJ&ruid=005b0000001SrLL&did=01Zb0000000gCws&s=8&fs=12&tfg=12&tfs=-16777216&explode=0&c=column&cs=2&title=%23+Active+Domains&eh=no&compo=yes&fg=-16777216&bg1=-1&bg2=-1&bgdir=2&dl1=Snapshot+Date&dl2=Software+Plan+Edition&l=2&sax=yes&Yman=no&nc=0&actUrl=%2F00Ob00000048BiR&sd=1&scv=no&sct=no&spt=no&bd=yes&cu=USD&ab=X&u=0&vt=0&ab2=Y&u2=0&vt2=0&vl0=Sum+of+Scale+of+Programs&spoc=no&topn=no&gc0=-1&gc1=-1&gc2=-1&sona=0&refreshts=1498552110000" />
+                                <img class="graph" src="/servlet/servlet.ChartServer?rsid=0FLb00000019FqJ&ruid=005b0000001SrLL&did=01Zb0000000gCws&s=8&fs=12&tfg=12&tfs=-16777216&explode=0&c=column&cs=2&title=Active+Project+Spaces&eh=no&compo=yes&fg=-16777216&bg1=-1&bg2=-1&bgdir=2&dl1=Snapshot+Date&dl2=Software+Plan+Edition&l=2&sax=yes&Yman=no&nc=0&actUrl=%2F00Ob00000048BiR&sd=1&scv=no&sct=no&spt=no&bd=yes&cu=USD&ab=X&u=0&vt=0&ab2=Y&u2=0&vt2=0&vl0=Sum+of+Scale+of+Programs&spoc=no&topn=no&gc0=-1&gc1=-1&gc2=-1&sona=0&refreshts=1498682818000" />
                             </a>
                         </div>
                     </div>
