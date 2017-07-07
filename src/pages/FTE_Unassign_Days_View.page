@@ -1,10 +1,13 @@
 <apex:page controller="FTETrackerController" docType="html-5.0" action="{!loadEmployeeUnassMonth}">
     <style type="text/css">
-        .fteCell {
-            cursor: pointer;
-        }
-        .fteCell:hover {
-            background: #1797C0 !important;
+        .tooltipDays {
+            display: none;
+            position: fixed;
+            width: auto;
+            float: left;
+            z-index: 100;
+            padding: 2px 10px 2px 10px !important;
+            margin: 0px 0px !important;
         }
     </style>
 
@@ -14,7 +17,61 @@
 
     <script type="text/javascript">
         $j = jQuery.noConflict();
+
+        $j(document).ready(function() {
+            validateDaysValue();
+        });
+
+        function validateDaysValue() {
+            var daysValue, daysNum, tooltipElement = $j("[id$=tooltipDaysId]"), numberElement = $j("[id$=numberUnassign]");
+            daysValue = numberElement.val();
+            setTooltipPos(numberElement, tooltipElement);
+            try {
+                if (daysValue == null || daysValue == undefined || daysValue == '') {
+                    setTooltipMessage(tooltipElement, 'Hours cannot be empty');
+                    return;
+                }
+
+                if (!isFinite(daysValue)) {
+                    setTooltipMessage(tooltipElement, 'Wrong number format');
+                    return;
+                }
+
+                daysNum = new Number(daysValue);
+                if (daysNum < 0.25) {
+                    setTooltipMessage(tooltipElement, 'Minimum value is 0.25');
+                    return;
+                }
+
+                if (daysNum > 5) {
+                    setTooltipMessage(tooltipElement, 'Hours ovebilled!');
+                    return;
+                }
+                tooltipElement[0].style.display = 'none';
+                enableConfirmButton();
+            } catch (e) {
+                setTooltipMessage(tooltipElement, 'Unexpected error, during validation');
+                console.error(e);
+            }
+        }
+
+        function setTooltipPos(numberElement, tooltipElement) {
+            var numberRect = numberElement[0].getBoundingClientRect(), bodyRect = document.body.getBoundingClientRect();
+            tooltipElement[0].style.left = (numberRect.left + numberRect.width + 10) + 'px';
+            tooltipElement[0].style.top = (numberRect.top - bodyRect.top) + 'px';
+        }
+
+        function setTooltipMessage(tooltipElement, textMessage) {
+            disableConfirmButton();
+            tooltipElement[0].children[0].textContent = textMessage;
+            tooltipElement[0].style.display = 'block';
+        }
     </script>
+
+    <div class="tooltipDays message errorS1" id="tooltipDaysId">
+        <span>your message here</span>
+    </div>
+
     <apex:pageBlock title="Unassign Days">
         <apex:form >
             <apex:pageBlockSection columns="1" id="timeAssignId">
@@ -22,21 +79,27 @@
                     <apex:pageMessages />
                 </apex:outputPanel>
                 <apex:pageBlockSectionItem >
-                    <apex:outputLabel value="" for="numberAssigned"/>
-                    <apex:outputText id="numberAssigned" value="{!contractName}"/>
+                    <apex:outputLabel value="" for="monthName"/>
+                    <apex:outputText id="monthName" value="{!monthName}"/>
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="" for="contractName"/>
+                    <apex:outputText id="contractName" value="{!contractName}"/>
                 </apex:pageBlockSectionItem>
                 <apex:pageBlockSectionItem >
                     <apex:outputLabel value="Assigned" for="numberAssigned"/>
-                    <apex:outputText id="numberAssigned" value="{!fteHoursMax}"/>
+                    <apex:outputText id="numberAssigned" value="{!fteDaysMax}"/>
                 </apex:pageBlockSectionItem>
                 <apex:pageBlockSectionItem >
                     <apex:outputLabel value="Hours to Unassign" for="numberUnassign"/>
-                    <apex:input value="{!fteHours}" type="number" id="numberUnassign"/>
+                    <apex:input value="{!fteDays}" id="numberUnassign" onkeyup="validateDaysValue();" onchange="validateDaysValue();" />
                 </apex:pageBlockSectionItem>
                 <apex:pageBlockSectionItem >
                     <apex:commandButton action="{!goToEmployeeView}" value="Back" id="backButton" />
-                    <apex:commandButton action="{!moveTimeToUnassigned}" value="Confirm" id="confirmButton"/>
+                    <apex:commandButton action="{!moveTimeToUnassigned}" value="Confirm" id="confirmButton" disabled="{!notValidDays}"/>
                 </apex:pageBlockSectionItem>
+                <apex:actionFunction action="{!disableConfirmButton}" name="disableConfirmButton" reRender="confirmButton" />
+                <apex:actionFunction action="{!enableConfirmButton}" name="enableConfirmButton" reRender="confirmButton" />
             </apex:pageBlockSection>
         </apex:form>
     </apex:pageBlock>

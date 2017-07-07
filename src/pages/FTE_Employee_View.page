@@ -10,7 +10,20 @@
             cursor: pointer;
         }
         .fteProjectCell:hover {
-            background: #CFEEF8 !important;
+            background: #1797C0 !important;
+        }
+        .overbilled {
+            color: red !important;
+        }
+        .topTotal {
+            border-top-width: 3px !important;
+            border-top-color: black !important;
+        }
+        .totalNames {
+            border-top-width: 3px !important;
+        }
+        .employeeTable {
+            margin-top: 10px;
         }
     </style>
 
@@ -34,21 +47,35 @@
                         </div>
                     </apex:facet>
                 </apex:actionstatus>
-                <apex:pageBlockTable id="employeeHours" value="{!contractsTime}" var="empTime">
-                    <apex:column onclick="setProjectIndViewData();" headerValue="Contract Name" value="{!empTime.contractName}" styleClass="fteProjectCell"/>
-                    <apex:column onclick="setAssignViewData(0, '{!empTime.contractId}');" headerValue="Jan {!currentYear}" value="{!empTime.dataArray[0]}" styleClass="fteCell"/>
-                    <apex:column onclick="setAssignViewData(1, '{!empTime.contractId}');" headerValue="Feb {!currentYear}" value="{!empTime.dataArray[1]}" styleClass="fteCell"/>
-                    <apex:column onclick="setAssignViewData(2, '{!empTime.contractId}');" headerValue="Mar {!currentYear}" value="{!empTime.dataArray[2]}" styleClass="fteCell"/>
-                    <apex:column onclick="setAssignViewData(3, '{!empTime.contractId}');" headerValue="Apr {!currentYear}" value="{!empTime.dataArray[3]}" styleClass="fteCell"/>
-                    <apex:column onclick="setAssignViewData(4, '{!empTime.contractId}');" headerValue="May {!currentYear}" value="{!empTime.dataArray[4]}" styleClass="fteCell"/>
-                    <apex:column onclick="setAssignViewData(5, '{!empTime.contractId}');" headerValue="Jun {!currentYear}" value="{!empTime.dataArray[5]}" styleClass="fteCell"/>
-                    <apex:column onclick="setAssignViewData(6, '{!empTime.contractId}');" headerValue="Jul {!currentYear}" value="{!empTime.dataArray[6]}" styleClass="fteCell"/>
-                    <apex:column onclick="setAssignViewData(7, '{!empTime.contractId}');" headerValue="Aug {!currentYear}" value="{!empTime.dataArray[7]}" styleClass="fteCell"/>
-                    <apex:column onclick="setAssignViewData(8, '{!empTime.contractId}');" headerValue="Sep {!currentYear}" value="{!empTime.dataArray[8]}" styleClass="fteCell"/>
-                    <apex:column onclick="setAssignViewData(9, '{!empTime.contractId}');" headerValue="Ocb {!currentYear}" value="{!empTime.dataArray[9]}" styleClass="fteCell"/>
-                    <apex:column onclick="setAssignViewData(10, '{!empTime.contractId}');" headerValue="Nov {!currentYear}" value="{!empTime.dataArray[10]}" styleClass="fteCell"/>
-                    <apex:column onclick="setAssignViewData(11, '{!empTime.contractId}');" headerValue="Dec {!currentYear}" value="{!empTime.dataArray[11]}" styleClass="fteCell"/>
-                    <apex:column headerValue="Total" value="{!empTime.dataArray[12]}"/>
+                <apex:outputText id="employeeName" value="{!employee.Name}"/>
+                <apex:pageBlockTable id="employeeHours" value="{!contractsTime}" var="empTime" styleClass="employeeTable">
+                    <apex:column onclick="setProjectIndViewData();" headerValue="Contract Name" value="{!empTime.contractName}" styleClass="{!empTime.nameCss}"/>
+                    <apex:column onclick="if ('{!empTime.contractName}' !== 'Total Days Worked' && '{!empTime.contractName}' !== 'Total Assigned Days') {setAssignViewData(0, '{!empTime.contractId}');}"
+                                 headerValue="Jan {!currentYear}" value="{!empTime.daysArray[0]}" styleClass="{!empTime.cssStyle[0]}"/>
+                    <apex:column onclick="if ('{!empTime.contractName}' !== 'Total Days Worked' && '{!empTime.contractName}' !== 'Total Assigned Days') {setAssignViewData(1, '{!empTime.contractId}');}"
+                                 headerValue="Feb {!currentYear}" value="{!empTime.daysArray[1]}" styleClass="{!empTime.cssStyle[1]}"/>
+                    <apex:column onclick="if ('{!empTime.contractName}' !== 'Total Days Worked' && '{!empTime.contractName}' !== 'Total Assigned Days') {setAssignViewData(2, '{!empTime.contractId}');}"
+                                 headerValue="Mar {!currentYear}" value="{!empTime.daysArray[2]}" styleClass="{!empTime.cssStyle[2]}"/>
+                    <apex:column onclick="if ('{!empTime.contractName}' !== 'Total Days Worked' && '{!empTime.contractName}' !== 'Total Assigned Days') {setAssignViewData(3, '{!empTime.contractId}');}"
+                                 headerValue="Apr {!currentYear}" value="{!empTime.daysArray[3]}" styleClass="{!empTime.cssStyle[3]}"/>
+                    <apex:column onclick="if ('{!empTime.contractName}' !== 'Total Days Worked' && '{!empTime.contractName}' !== 'Total Assigned Days') {setAssignViewData(4, '{!empTime.contractId}');}"
+                                 headerValue="May {!currentYear}" value="{!empTime.daysArray[4]}" styleClass="{!empTime.cssStyle[4]}"/>
+                    <apex:column onclick="if ('{!empTime.contractName}' !== 'Total Days Worked' && '{!empTime.contractName}' !== 'Total Assigned Days') {setAssignViewData(5, '{!empTime.contractId}');}"
+                                 headerValue="Jun {!currentYear}" value="{!empTime.daysArray[5]}" styleClass="{!empTime.cssStyle[5]}"/>
+                    <apex:column onclick="if ('{!empTime.contractName}' !== 'Total Days Worked' && '{!empTime.contractName}' !== 'Total Assigned Days') {setAssignViewData(6, '{!empTime.contractId}');}"
+                                 headerValue="Jul {!currentYear}" value="{!empTime.daysArray[6]}" styleClass="{!empTime.cssStyle[6]}"/>
+                    <apex:column onclick="if ('{!empTime.contractName}' !== 'Total Days Worked' && '{!empTime.contractName}' !== 'Total Assigned Days') {setAssignViewData(7, '{!empTime.contractId}');}"
+                                 headerValue="Aug {!currentYear}" value="{!empTime.daysArray[7]}" styleClass="{!empTime.cssStyle[7]}"/>
+                    <apex:column onclick="if ('{!empTime.contractName}' !== 'Total Days Worked' && '{!empTime.contractName}' !== 'Total Assigned Days') {setAssignViewData(8, '{!empTime.contractId}');}"
+                                 headerValue="Sep {!currentYear}" value="{!empTime.daysArray[8]}" styleClass="{!empTime.cssStyle[8]}"/>
+                    <apex:column onclick="if ('{!empTime.contractName}' !== 'Total Days Worked' && '{!empTime.contractName}' !== 'Total Assigned Days') {setAssignViewData(9, '{!empTime.contractId}');}"
+                                 headerValue="Ocb {!currentYear}" value="{!empTime.daysArray[9]}" styleClass="{!empTime.cssStyle[9]}"/>
+                    <apex:column onclick="if ('{!empTime.contractName}' !== 'Total Days Worked' && '{!empTime.contractName}' !== 'Total Assigned Days') {setAssignViewData(10, '{!empTime.contractId}');}"
+                                 headerValue="Nov {!currentYear}" value="{!empTime.daysArray[10]}" styleClass="{!empTime.cssStyle[10]}"/>
+                    <apex:column onclick="if ('{!empTime.contractName}' !== 'Total Days Worked' && '{!empTime.contractName}' !== 'Total Assigned Days') {setAssignViewData(11, '{!empTime.contractId}');}"
+                                 headerValue="Dec {!currentYear}" value="{!empTime.daysArray[11]}" styleClass="{!empTime.cssStyle[11]}"/>
+                    <apex:column headerValue="Total" value="{!empTime.daysArray[12]}" styleClass="{!empTime.cssStyle[12]}"/>
+                    <apex:column headerValue="Labor Cost Estimates" value="$ {!empTime.daysArray[13]}" styleClass="{!empTime.cssStyle[13]}"/>
                 </apex:pageBlockTable>
                 <apex:actionFunction action="{!goToAssignView}" name="goToAssignView" />
                 <apex:actionFunction action="{!setViewData}" name="setAssignViewData" oncomplete="goToAssignView();">
