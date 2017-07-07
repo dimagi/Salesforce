@@ -1,0 +1,65 @@
+<apex:page controller="FTETrackerController" docType="html-5.0" action="{!loadEmployeeTimeHistory}">
+    <style type="text/css">
+        .fteCell {
+            cursor: pointer;
+        }
+        .fteCell:hover {
+            background: #1797C0 !important;
+        }
+        .fteProjectCell {
+            cursor: pointer;
+        }
+        .fteProjectCell:hover {
+            background: #CFEEF8 !important;
+        }
+    </style>
+
+    <apex:includeScript value="{!URLFOR($Resource.ProjectReportOut2, 'js/jquery.min.js')}"/>
+    <apex:includeScript value="{!URLFOR($Resource.ProjectReportOut2, 'js/jquery-ui.min.js')}"/>
+    <apex:stylesheet value="{!URLFOR($Resource.ProjectReportOut2, 'css/jquery-ui.min.css')}" />
+
+    <script type="text/javascript">
+        $j = jQuery.noConflict();
+    </script>
+
+    <apex:pageBlock title="FTE Tracker">
+        <apex:form >
+            <apex:outputPanel >
+                <apex:actionstatus id="loadingDiv">
+                    <apex:facet name="start">
+                        <div class="waitingSearchDiv" id="el_loading" style="background-color: #fbfbfb; height:100%;opacity:0.65;width:100%;">
+                            <div class="waitingHolder" style="left : 50%; top : 50%; position: fixed; width: 91px;">
+                                <img class="waitingImage" src="{!$Resource.BrokenCircle}" title="Please Wait..." />
+                            </div>
+                        </div>
+                    </apex:facet>
+                </apex:actionstatus>
+                <apex:pageBlockTable id="employeeHours" value="{!contractsTime}" var="empTime">
+                    <apex:column onclick="setProjectIndViewData();" headerValue="Contract Name" value="{!empTime.contractName}" styleClass="fteProjectCell"/>
+                    <apex:column onclick="setAssignViewData(0, '{!empTime.contractId}');" headerValue="Jan {!currentYear}" value="{!empTime.dataArray[0]}" styleClass="fteCell"/>
+                    <apex:column onclick="setAssignViewData(1, '{!empTime.contractId}');" headerValue="Feb {!currentYear}" value="{!empTime.dataArray[1]}" styleClass="fteCell"/>
+                    <apex:column onclick="setAssignViewData(2, '{!empTime.contractId}');" headerValue="Mar {!currentYear}" value="{!empTime.dataArray[2]}" styleClass="fteCell"/>
+                    <apex:column onclick="setAssignViewData(3, '{!empTime.contractId}');" headerValue="Apr {!currentYear}" value="{!empTime.dataArray[3]}" styleClass="fteCell"/>
+                    <apex:column onclick="setAssignViewData(4, '{!empTime.contractId}');" headerValue="May {!currentYear}" value="{!empTime.dataArray[4]}" styleClass="fteCell"/>
+                    <apex:column onclick="setAssignViewData(5, '{!empTime.contractId}');" headerValue="Jun {!currentYear}" value="{!empTime.dataArray[5]}" styleClass="fteCell"/>
+                    <apex:column onclick="setAssignViewData(6, '{!empTime.contractId}');" headerValue="Jul {!currentYear}" value="{!empTime.dataArray[6]}" styleClass="fteCell"/>
+                    <apex:column onclick="setAssignViewData(7, '{!empTime.contractId}');" headerValue="Aug {!currentYear}" value="{!empTime.dataArray[7]}" styleClass="fteCell"/>
+                    <apex:column onclick="setAssignViewData(8, '{!empTime.contractId}');" headerValue="Sep {!currentYear}" value="{!empTime.dataArray[8]}" styleClass="fteCell"/>
+                    <apex:column onclick="setAssignViewData(9, '{!empTime.contractId}');" headerValue="Ocb {!currentYear}" value="{!empTime.dataArray[9]}" styleClass="fteCell"/>
+                    <apex:column onclick="setAssignViewData(10, '{!empTime.contractId}');" headerValue="Nov {!currentYear}" value="{!empTime.dataArray[10]}" styleClass="fteCell"/>
+                    <apex:column onclick="setAssignViewData(11, '{!empTime.contractId}');" headerValue="Dec {!currentYear}" value="{!empTime.dataArray[11]}" styleClass="fteCell"/>
+                    <apex:column headerValue="Total" value="{!empTime.dataArray[12]}"/>
+                </apex:pageBlockTable>
+                <apex:actionFunction action="{!goToAssignView}" name="goToAssignView" />
+                <apex:actionFunction action="{!setViewData}" name="setAssignViewData" oncomplete="goToAssignView();">
+                    <apex:param name="employeeMonth" assignTo="{!employeeMonth}" value=""/>
+                    <apex:param name="contractId" assignTo="{!contractId}" value=""/>
+                </apex:actionFunction>
+                <apex:actionFunction action="{!goToIndividualProjectView}" name="goToIndividualProjectView" />
+                <apex:actionFunction action="{!setViewData}" name="setProjectIndViewData" oncomplete="goToIndividualProjectView();">
+                </apex:actionFunction>
+                <apex:commandButton action="{!removeAllTags}" status="loadingDiv" value="Reset Data" id="resetButton" reRender="employeeHours"/>
+            </apex:outputPanel>
+        </apex:form>
+    </apex:pageBlock>
+</apex:page>
