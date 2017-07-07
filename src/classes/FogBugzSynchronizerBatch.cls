@@ -104,7 +104,9 @@ global without sharing class FogBugzSynchronizerBatch implements Database.Batcha
                     FogBugzCase c = fbIdToCaseMap.get(caseId);
                     System.debug(LoggingLevel.INFO, 'Processing existent opportunity::' + o.Id + '-' + minTime + '-' + c.lastModifiedDate);
 
-                    if (minTime == null || c.lastModifiedDate == null || c.lastModifiedDate > minTime) {
+                    // before was c.lastModifiedDate > minTime, but sometimes some cases are not returned by filter or some errors can occurs
+                    // so we want check cases from last few hours to be sure all opps will be closed and updated
+                    if (minTime == null || c.lastModifiedDate == null || c.lastModifiedDate > minTime.addHours(-3)) {
                         allOpportunities.add(o);
                     }
                 } else {
