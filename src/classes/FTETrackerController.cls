@@ -89,45 +89,6 @@ public class FTETrackerController {
         return null;//return pageRef; // TODO FIX
     }
 
-    public class EmployeeTime {
-
-        public EmployeeTime (String contractName, Id contractId) {
-            this.contractName = contractName;
-            this.contractId = contractId;
-            this.hoursArray = new Decimal [] {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
-            this.daysArray = new Decimal [] {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
-            this.cssStyle = new String [] {'fteCell', 'fteCell', 'fteCell', 'fteCell', 'fteCell', 'fteCell', 'fteCell', 'fteCell', 'fteCell', 'fteCell',
-                                            'fteCell', 'fteCell', '', ''};
-            this.nameCss = 'fteProjectCell';
-        }
-
-        public void calculateDays(SFDC_Employee__c emp) {
-            for (Integer i = 0 ; i < this.hoursArray.size(); i++) {
-                this.daysArray[i] = roundtoDays(this.hoursArray[i]);
-            }
-            this.daysArray[13] = (this.hoursArray[12] * emp.Unloaded_Daily_Rate__c).setScale(2);
-        }
-
-        public void sumHours(EmployeeTime empTime) {
-            for (Integer i = 0 ; i < this.hoursArray.size(); i++) {
-                this.hoursArray[i] += empTime.hoursArray[i];
-            } 
-        }
-
-        public Decimal roundtoDays(Decimal hours) {
-            Decimal totalDays = (hours / 8.0).intValue();
-            Decimal restValue = hours - (totalDays * 8);
-            return totalDays + (0.25 * (restValue / 2.0).setScale(0, System.RoundingMode.HALF_UP));
-        }
-
-        public String contractName { get; set;}
-        public Id contractId { get; set;}
-        public List<Decimal> hoursArray { get; set;}
-        public List<Decimal> daysArray { get; set;}
-        public List<String> cssStyle { get; set;}
-        public String nameCss { get; set;}
-    }
-
     private void calculateLoggedTime(Boolean fteTracker, Id clientId, String clientName, Decimal loggedHours, Integer month) {
         EmployeeTime tmpHelper = this.unassigned;
         if (fteTracker == true) {
@@ -182,6 +143,45 @@ public class FTETrackerController {
         this.unassigned.nameCss = '';
     }
 
+    public class EmployeeTime {
+
+        public String contractName { get; set;}
+        public Id contractId { get; set;}
+        public List<Decimal> hoursArray { get; set;}
+        public List<Decimal> daysArray { get; set;}
+        public List<String> cssStyle { get; set;}
+        public String nameCss { get; set;}
+
+        public EmployeeTime (String contractName, Id contractId) {
+            this.contractName = contractName;
+            this.contractId = contractId;
+            this.hoursArray = new Decimal [] {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+            this.daysArray = new Decimal [] {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+            this.cssStyle = new String [] {'fteCell', 'fteCell', 'fteCell', 'fteCell', 'fteCell', 'fteCell', 'fteCell', 'fteCell', 'fteCell', 'fteCell',
+                                            'fteCell', 'fteCell', '', ''};
+            this.nameCss = 'fteProjectCell';
+        }
+
+        public void calculateDays(SFDC_Employee__c emp) {
+            for (Integer i = 0 ; i < this.hoursArray.size(); i++) {
+                this.daysArray[i] = roundtoDays(this.hoursArray[i]);
+            }
+            this.daysArray[13] = (this.hoursArray[12] * emp.Unloaded_Daily_Rate__c).setScale(2);
+        }
+
+        public void sumHours(EmployeeTime empTime) {
+            for (Integer i = 0 ; i < this.hoursArray.size(); i++) {
+                this.hoursArray[i] += empTime.hoursArray[i];
+            }
+        }
+
+        public Decimal roundtoDays(Decimal hours) {
+            Decimal totalDays = (hours / 8.0).intValue();
+            Decimal restValue = hours - (totalDays * 8);
+            return totalDays + (0.25 * (restValue / 2.0).setScale(0, System.RoundingMode.HALF_UP));
+        }
+    }
+
     /**
      * Unassign/Assign hours/days view
      */
@@ -194,6 +194,7 @@ public class FTETrackerController {
     public Integer employeeMonth { get; set;}
     public Decimal fteHoursMax { get; set;}
     public Decimal fteDaysMax { get; set;}
+    public Decimal userAvailableDays { get; set;}
     public Boolean assignViewError { get; set;}
     public Boolean notValidDays {get; set;}
     public String monthName {get; set;}
@@ -212,11 +213,17 @@ public class FTETrackerController {
         this.assignViewError = false;
         this.notValidDays = true;
         this.fteDays = '0.25';
+        this.userAvailableDays = 0;
 
         if (this.employeeMonth != null) {
             this.fteDaysMax = unassigned.daysArray[this.employeeMonth];
             this.fteHoursMax = unassigned.hoursArray[this.employeeMonth];
             this.monthName = DateTime.newInstance(this.currentYear, this.employeeMonth + 1, 1).format('MMMM yyyy');
+            this.userAvailableDays = 21 - this.totalAssignedDays.daysArray[this.employeeMonth] > 0 ? 21 -
+                                            this.totalAssignedDays.daysArray[this.employeeMonth] : 0;
+            //TODO network days
+            Decimal helperDecimal = 230 - this.totalAssignedDays.daysArray[12] > 0 ? 230 - this.totalAssignedDays.daysArray[12] : 0;
+            this.userAvailableDays = this.userAvailableDays < helperDecimal ? this.userAvailableDays : helperDecimal;
         } else {
             ApexPages.addMessage(new ApexPages.message(ApexPages.severity.ERROR, 'Cannot load month number'));
             this.assignViewError = true;

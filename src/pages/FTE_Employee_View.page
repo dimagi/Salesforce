@@ -35,7 +35,7 @@
         $j = jQuery.noConflict();
     </script>
 
-    <apex:pageBlock title="FTE Tracker">
+    <apex:pageBlock title="FTE Employee">
         <apex:form >
             <apex:outputPanel >
                 <apex:actionstatus id="loadingDiv">

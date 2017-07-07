@@ -23,9 +23,12 @@
         });
 
         function validateDaysValue() {
-            var daysValue, daysNum, tooltipElement = $j("[id$=tooltipDaysId]"), numberElement = $j("[id$=numberAssign]");
+            var fteDaysMax, empAvailableDays, daysValue, daysNum, tooltipElement = $j("[id$=tooltipDaysId]"), numberElement = $j("[id$=numberAssign]");
             daysValue = numberElement.val();
             setTooltipPos(numberElement, tooltipElement);
+            empAvailableDays = $j("[id$=userAvailableDaysId]").val();
+            fteDaysMax = $j("[id$=fteDaysMaxId]").val();
+
             try {
                 if (daysValue == null || daysValue == undefined || daysValue == '') {
                     setTooltipMessage(tooltipElement, 'Hours cannot be empty');
@@ -43,8 +46,13 @@
                     return;
                 }
 
-                if (daysNum > 5) {
-                    setTooltipMessage(tooltipElement, 'Hours ovebilled!');
+                if (daysNum > empAvailableDays) {
+                    setTooltipMessage(tooltipElement, 'Hours overbilled!');
+                    return;
+                }
+
+                if (daysNum > fteDaysMax) {
+                    setTooltipMessage(tooltipElement, 'Maximum value is ' + fteDaysMax);
                     return;
                 }
                 tooltipElement[0].style.display = 'none';
@@ -84,6 +92,8 @@
                 </apex:facet>
             </apex:actionstatus>
             <apex:pageBlockSection columns="1" id="timeAssignId">
+                <apex:inputHidden id="userAvailableDaysId" value="{!userAvailableDays}" />
+                <apex:inputHidden id="fteDaysMaxId" value="{!fteDaysMax}" />
                 <apex:outputPanel layout="block" id="messages">
                     <apex:pageMessages />
                 </apex:outputPanel>
