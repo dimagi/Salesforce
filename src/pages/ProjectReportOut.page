@@ -478,7 +478,7 @@
                             <a href="#projectTab">All Projects</a>
                         </li>
                         <li id="corporateDashboardTabLi">
-                            <a href="#corporateDashboard" >Corporate Dashboard</a>
+                            <a href="#corporateDashboard" >Global Metrics</a>
                         </li>
                     </ul>
                 </apex:outputPanel>
@@ -957,7 +957,7 @@
                 </section>
 
                 <apex:outputPanel rendered="{!!disableTab}"><section id="corporateDashboard" rendered="{!if(currentLoginEmail == 'ltse@dimagi.com', true, false)}" >
-                    <apex:pageBlock title="Corporate Dashboard" id="corporateDashboardBlock">
+                    <apex:pageBlock title="Global Metrics" id="corporateDashboardBlock">
                         <apex:inputHidden id="userGraphDataId" value="{!userGraphData}" />
                         <apex:inputHidden id="formGraphDataId" value="{!formGraphData}" />
                         <apex:inputHidden id="wamGraphDataId" value="{!wamGraphData}" />
@@ -980,7 +980,7 @@
                                 <div class="graphTitle"><h2>Forms</h2></div>
                             </div>
                             <div id="programs" class="graph">
-                                <div class="graphTitle"><h2># Active Domains</h2></div>
+                                <div class="graphTitle"><h2>Active Project Spaces</h2></div>
                             </div>
                         </div>
                         </apex:pageBlockSection>
