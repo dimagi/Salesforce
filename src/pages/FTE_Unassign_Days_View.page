@@ -1,0 +1,43 @@
+<apex:page controller="FTETrackerController" docType="html-5.0" action="{!loadEmployeeUnassMonth}">
+    <style type="text/css">
+        .fteCell {
+            cursor: pointer;
+        }
+        .fteCell:hover {
+            background: #1797C0 !important;
+        }
+    </style>
+
+    <apex:includeScript value="{!URLFOR($Resource.ProjectReportOut2, 'js/jquery.min.js')}"/>
+    <apex:includeScript value="{!URLFOR($Resource.ProjectReportOut2, 'js/jquery-ui.min.js')}"/>
+    <apex:stylesheet value="{!URLFOR($Resource.ProjectReportOut2, 'css/jquery-ui.min.css')}" />
+
+    <script type="text/javascript">
+        $j = jQuery.noConflict();
+    </script>
+    <apex:pageBlock title="Unassign Days">
+        <apex:form >
+            <apex:pageBlockSection columns="1" id="timeAssignId">
+                <apex:outputPanel layout="block" id="messages">
+                    <apex:pageMessages />
+                </apex:outputPanel>
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="" for="numberAssigned"/>
+                    <apex:outputText id="numberAssigned" value="{!contractName}"/>
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="Assigned" for="numberAssigned"/>
+                    <apex:outputText id="numberAssigned" value="{!fteHoursMax}"/>
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="Hours to Unassign" for="numberUnassign"/>
+                    <apex:input value="{!fteHours}" type="number" id="numberUnassign"/>
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem >
+                    <apex:commandButton action="{!goToEmployeeView}" value="Back" id="backButton" />
+                    <apex:commandButton action="{!moveTimeToUnassigned}" value="Confirm" id="confirmButton"/>
+                </apex:pageBlockSectionItem>
+            </apex:pageBlockSection>
+        </apex:form>
+    </apex:pageBlock>
+</apex:page>
