@@ -30,7 +30,7 @@
 
             try {
                 if (daysValue == null || daysValue == undefined || daysValue == '') {
-                    setTooltipMessage(tooltipElement, 'Hours cannot be empty');
+                    setTooltipMessage(tooltipElement, 'Days cannot be empty');
                     return;
                 }
 
@@ -49,6 +49,7 @@
                     setTooltipMessage(tooltipElement, 'Maximum value is ' + fteDaysMax);
                     return;
                 }
+
                 tooltipElement[0].style.display = 'none';
                 enableConfirmButton();
             } catch (e) {
@@ -94,11 +95,11 @@
                     <apex:outputText id="numberAssigned" value="{!fteDaysMax}"/>
                 </apex:pageBlockSectionItem>
                 <apex:pageBlockSectionItem >
-                    <apex:outputLabel value="Hours to Unassign" for="numberUnassign"/>
+                    <apex:outputLabel value="Days to Unassign" for="numberUnassign"/>
                     <apex:input value="{!fteDays}" id="numberUnassign" onkeyup="validateDaysValue();" onchange="validateDaysValue();" />
                 </apex:pageBlockSectionItem>
                 <apex:pageBlockSectionItem >
-                    <apex:commandButton action="{!goToEmployeeView}" value="Back" id="backButton" />
+                    <apex:commandButton action="{!backToEmployeeView}" value="Back" id="backButton" />
                     <apex:commandButton action="{!moveTimeToUnassigned}" value="Confirm" id="confirmButton" disabled="{!notValidDays}"/>
                 </apex:pageBlockSectionItem>
                 <apex:actionFunction action="{!disableConfirmButton}" name="disableConfirmButton" reRender="confirmButton" />

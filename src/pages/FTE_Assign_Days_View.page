@@ -31,7 +31,7 @@
 
             try {
                 if (daysValue == null || daysValue == undefined || daysValue == '') {
-                    setTooltipMessage(tooltipElement, 'Hours cannot be empty');
+                    setTooltipMessage(tooltipElement, 'Days cannot be empty');
                     return;
                 }
 
@@ -47,7 +47,7 @@
                 }
 
                 if (daysNum > empAvailableDays) {
-                    setTooltipMessage(tooltipElement, 'Hours overbilled!');
+                    setTooltipMessage(tooltipElement, 'Days overbilled!');
                     return;
                 }
 
@@ -116,10 +116,9 @@
                     </apex:selectList>
                 </apex:pageBlockSectionItem>
                 <apex:pageBlockSectionItem >
-                    <apex:commandButton action="{!goToEmployeeView}" value="Back" id="backButton" />
+                    <apex:commandButton action="{!backToEmployeeView}" value="Back" id="backButton" />
                     <apex:commandButton action="{!moveTimeFromUnassigned}" value="Confirm" id="confirmButton" disabled="{!notValidDays}"/>
                 </apex:pageBlockSectionItem>
-                <apex:actionFunction action="{!goToEmployeeView}" name="goToEmployeeView" />
                 <apex:actionFunction action="{!disableConfirmButton}" name="disableConfirmButton" reRender="confirmButton" />
                 <apex:actionFunction action="{!enableConfirmButton}" name="enableConfirmButton" reRender="confirmButton" />
             </apex:pageBlockSection>

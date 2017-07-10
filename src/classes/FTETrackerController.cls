@@ -5,7 +5,6 @@ public class FTETrackerController {
 
     private Id testEmployeeId = 'a0Tm0000001h6iy';
 
-    public SFDC_Employee__c employee { get; set;}
     public Integer currentYear { get; set;}
     public Date yearBegin { get; set;}
     public Date yearEnd { get; set;}
@@ -17,9 +16,81 @@ public class FTETrackerController {
         this.currentYear = currentDate.year();
     }
 
+    public void setViewData() {
+        // We need this empty method to set values before loading new view.
+    }
+
+    public class EmployeeTime {
+
+        public String name { get; set;}
+        public Id objId { get; set;}
+        public List<Decimal> hoursArray { get; set;}
+        public List<Decimal> daysArray { get; set;}
+        public List<String> cssStyle { get; set;}
+        public String nameCss { get; set;}
+
+        public EmployeeTime (String name, Id objId) {
+            this.name = name;
+            this.objId = objId;
+            this.hoursArray = new Decimal [] {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+            this.daysArray = new Decimal [] {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+            this.cssStyle = new String [] {'fteCell', 'fteCell', 'fteCell', 'fteCell', 'fteCell', 'fteCell', 'fteCell', 'fteCell', 'fteCell', 'fteCell',
+                                            'fteCell', 'fteCell', '', ''};
+            this.nameCss = 'fteProjectCell';
+        }
+
+        public void calculateDays(SFDC_Employee__c emp) {
+            for (Integer i = 0 ; i < this.hoursArray.size(); i++) {
+                this.daysArray[i] = roundtoDays(this.hoursArray[i]);
+            }
+            this.daysArray[13] = (this.hoursArray[12] * emp.Unloaded_Daily_Rate__c).setScale(2);
+        }
+
+        public void sumHours(EmployeeTime empTime) {
+            for (Integer i = 0 ; i < this.hoursArray.size(); i++) {
+                this.hoursArray[i] += empTime.hoursArray[i];
+            }
+        }
+
+        public Decimal roundtoDays(Decimal hours) {
+            Decimal totalDays = (hours / 8.0).intValue();
+            Decimal restValue = hours - (totalDays * 8);
+            return totalDays + (0.25 * (restValue / 2.0).setScale(0, System.RoundingMode.HALF_UP));
+        }
+    }
+
+    /**
+     * Employee List View
+     */
+
+    public List<EmployeeTime> employees { get; set;}
+
+    public void loadEmployeeListTimeHistory() {
+       List<SFDC_Employee__c> employeesFromDB = [SELECT Id, Name, Unloaded_Daily_Rate__c FROM SFDC_Employee__c WHERE Employee_Status__c = 'Active' ORDER BY Name];
+       this.employees = new List<EmployeeTime>();
+       for (SFDC_Employee__c emp : employeesFromDB) {
+           this.employees.add(new EmployeeTime(emp.Name, emp.Id));
+       }
+    }
+
+    public PageReference goToEmployeeView() {
+        PageReference pageRef = null;
+        if (String.isBlank(this.employeeId)) {
+            ApexPages.addMessage(new ApexPages.message(ApexPages.severity.ERROR, 'Empty FTE Contract ID'));
+        } else {
+            pageRef = Page.FTE_Employee_List_View;
+            pageRef.setRedirect(false); 
+        }
+
+        return pageRef;
+    }
+
     /**
      * Employee view
      */
+
+    public Id employeeId { get; set;}
+    public SFDC_Employee__c employee { get; set;}
     public EmployeeTime unassigned { get; set;}
     public EmployeeTime totalAssignedDays { get; set;}
     public EmployeeTime totalDaysWorked { get; set;}
@@ -67,10 +138,6 @@ public class FTETrackerController {
             this.contractsTime.add(this.totalAssignedDays);
             this.contractsTime.add(this.totalDaysWorked);
         }
-    }
-
-    public void setViewData() {
-        // We need this empty method to set values before loading new view.
     }
 
     public PageReference goToAssignView() {
@@ -143,45 +210,6 @@ public class FTETrackerController {
         this.unassigned.nameCss = '';
     }
 
-    public class EmployeeTime {
-
-        public String contractName { get; set;}
-        public Id contractId { get; set;}
-        public List<Decimal> hoursArray { get; set;}
-        public List<Decimal> daysArray { get; set;}
-        public List<String> cssStyle { get; set;}
-        public String nameCss { get; set;}
-
-        public EmployeeTime (String contractName, Id contractId) {
-            this.contractName = contractName;
-            this.contractId = contractId;
-            this.hoursArray = new Decimal [] {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
-            this.daysArray = new Decimal [] {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
-            this.cssStyle = new String [] {'fteCell', 'fteCell', 'fteCell', 'fteCell', 'fteCell', 'fteCell', 'fteCell', 'fteCell', 'fteCell', 'fteCell',
-                                            'fteCell', 'fteCell', '', ''};
-            this.nameCss = 'fteProjectCell';
-        }
-
-        public void calculateDays(SFDC_Employee__c emp) {
-            for (Integer i = 0 ; i < this.hoursArray.size(); i++) {
-                this.daysArray[i] = roundtoDays(this.hoursArray[i]);
-            }
-            this.daysArray[13] = (this.hoursArray[12] * emp.Unloaded_Daily_Rate__c).setScale(2);
-        }
-
-        public void sumHours(EmployeeTime empTime) {
-            for (Integer i = 0 ; i < this.hoursArray.size(); i++) {
-                this.hoursArray[i] += empTime.hoursArray[i];
-            }
-        }
-
-        public Decimal roundtoDays(Decimal hours) {
-            Decimal totalDays = (hours / 8.0).intValue();
-            Decimal restValue = hours - (totalDays * 8);
-            return totalDays + (0.25 * (restValue / 2.0).setScale(0, System.RoundingMode.HALF_UP));
-        }
-    }
-
     /**
      * Unassign/Assign hours/days view
      */
@@ -241,7 +269,7 @@ public class FTETrackerController {
         this.assignViewError = false;
         this.fteDays = '0.25';
         if (this.employeeMonth != null && this.contractId != null) {
-            this.contractName = this.assignedMap.get(this.contractId).contractName;
+            this.contractName = this.assignedMap.get(this.contractId).name;
             this.fteHoursMax = this.assignedMap.get(this.contractId).hoursArray[this.employeeMonth];
             this.fteDaysMax = this.assignedMap.get(this.contractId).daysArray[this.employeeMonth];
             this.monthName = DateTime.newInstance(this.currentYear, this.employeeMonth + 1, 1).format('MMMM yyyy');
@@ -349,7 +377,7 @@ public class FTETrackerController {
                                                 AND Date__c >=: monthStart AND Date__c <=: endMonth LIMIT 1];
                 if (timeCardsFromDB.size() > 0) {
                     Time_Card__c tc = timeCardsFromDB.get(0);
-                    tc.FTE_Contract__c = this.unassignedMap.values()[getContractIndex()].contractId;
+                    tc.FTE_Contract__c = this.unassignedMap.values()[getContractIndex()].objId;
                     tc.FTE_hours__c = hoursToUnassign;
                     timeCardsToUpdate.add(tc);
                     stopUpdating = true;
@@ -360,14 +388,14 @@ public class FTETrackerController {
             if (stopUpdating == false) {
                 Time_Card__c tc = new Time_Card__c(Client__c = this.contractId, Employee__c = this.employee.Id, Date__c = monthStart,
                                                        FTE_only__c = true, Total__c = 0, FTE_hours__c = hoursToUnassign,
-                                                       FTE_Contract__c = this.unassignedMap.values()[getContractIndex()].contractId);
+                                                       FTE_Contract__c = this.unassignedMap.values()[getContractIndex()].objId);
                 timeCardsToUpdate.add(tc);
                 stopUpdating = true;
             }
 
             upsert timeCardsToUpdate;
             if (this.assignViewError == false) {
-                return goToEmployeeView();
+                return backToEmployeeView();
             }
         } catch (Exception e) {
             this.assignViewError = true;
@@ -529,7 +557,7 @@ public class FTETrackerController {
             upsert timeCardsToUpdate;
 
             if (this.assignViewError == false) {
-                return goToEmployeeView();
+                return backToEmployeeView();
             }
         } catch (Exception e) {
             this.assignViewError = true;
@@ -538,7 +566,7 @@ public class FTETrackerController {
         return null;
     }
 
-    public PageReference goToEmployeeView() {
+    public PageReference backToEmployeeView() {
         clearViewData();
         PageReference pageRef = Page.FTE_Employee_View;
         pageRef.setRedirect(false); 
