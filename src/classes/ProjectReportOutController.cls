@@ -1273,9 +1273,18 @@ public with sharing class ProjectReportOutController {
     private List<GraphData> performanceData;
     private List<GraphData> gsData;
     private List<GraphData> mrr;
+    private List<GraphData> aggregateEff;
     public String oppExpected { get; set;}
     public String evExpected { get; set;}
     public String bufferEvGen { get; set;}
+
+    public String getAggregateEffData() {
+        if (this.aggregateEff != null) {
+            return JSON.serialize(this.aggregateEff);
+        }
+        return '';
+    }
+    public void setAggregateEffData(String aggValues) {}
 
     public String getMrrData() {
         if (this.mrr != null) {
@@ -1552,6 +1561,47 @@ public with sharing class ProjectReportOutController {
         }
     }
 
+    public void loadAggregateEff() {
+        this.aggregateEff = new List<GraphData>();
+        AggregateResult[] resultContr = [SELECT Efficiency_Owner_BU__r.Name, Implementation_Type__c, SUM(Services_Budget__c), SUM(Weighted_Efficiency__c), SUM(Services_Budget__c) FROM DContract__c
+                                        WHERE (NOT Name LIKE '%internal%') AND Total_Amount_of_Contract__c > 0
+                                        AND (NOT Name LIKE '%MOTECH suite%') AND Implementation_Type__c != 'Self Service'
+                                        AND Implementation_Type__c != '' AND Efficiency_Owner_BU__c != null
+                                        AND Intracompany_Sub_contract__c = 'No' AND Percent_through_SOW_deliverables__c != 100
+                                        GROUP BY Efficiency_Owner_BU__r.Name, Implementation_Type__c ORDER BY Efficiency_Owner_BU__r.Name];
+
+        GraphData graphHelper = new GraphData();
+        if (resultContr.size() == 0) {
+            return;
+        }
+
+        String lastName = (String) resultContr[0].get('Name');
+        for (AggregateResult ar : resultContr) {
+            String currName = (String) ar.get('Name');
+            if (lastName != currName) {
+                this.aggregateEff.add(graphHelper);
+                graphHelper = new GraphData();
+            }
+            graphHelper.name = currName;
+            Decimal sumServices = (Decimal) ar.get('expr0');
+            Integer valuetoSet = 1;
+            String impType = (String) ar.get('Implementation_Type__c');
+
+            if (sumServices > 0) {
+                Decimal a = (Decimal) ar.get('expr1');
+                Decimal b = (Decimal) ar.get('expr2');
+                valuetoSet = (b != 0 ? a/b : 0).intValue();
+            }
+
+            if (impType == 'Enterprise') {
+                graphHelper.value1 = valuetoSet;
+            } else if (impType == 'Bundles and Services') {
+                graphHelper.value2 = valuetoSet;
+            }
+        }
+        this.aggregateEff.add(graphHelper);
+    }
+
     public PageReference loadScaleData() {
         try {
             loadGSData();
@@ -1560,6 +1610,7 @@ public with sharing class ProjectReportOutController {
             loadOppExpetedValue();
             loadEvExpectedValue();
             loadDomainSnapshotData();
+            loadAggregateEff();
         } catch (Exception ex) {
              EmailHelper.sendEmailFromException(BatchDefaultSettings__c.getOrgDefaults().Error_Emails__c.split(','), 'PRO Corporate Dashboard errors', 'PRO Corporate Dashboard error', ex);
         }
