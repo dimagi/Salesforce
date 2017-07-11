@@ -417,7 +417,7 @@ public class HqAccountingProcessHelper {
         List <hqInt_ModelClass.Accounting_Invoice> listModelObj = new List <hqInt_ModelClass.Accounting_Invoice>();
         List <Accounting_Invoice__c> listSobject = new List <Accounting_Invoice__c>();
         Set <String> parentObjectIdSet = new Set <String>(); //PARENT=Subscription
-        Map <String, Id> mapJsonIdToSfId = new Map <String,Id>();
+        Map <String, Accounting_Subscription__c> mapJsonIdToSfId = new Map <String, Accounting_Subscription__c>();
         Set <String> setFeatureRates = new Set <String>();
         Map <String, String> mapSubscriptionJsonIdToFeatureRatesJsonId = new Map <String, String>();
         Map <String, String> mapFeatureRateJsonIdToSfId = new Map <String, String>();
@@ -451,9 +451,10 @@ public class HqAccountingProcessHelper {
         }
 
         Map <String, String> mapASubscriptionJsonIdToDomainId = new Map <String, String>();
-        for (Accounting_Subscription__c parentObj : [SELECT Id, Accounting_Subscriber__r.domain_lookup__c, id__c, plan_version__r.FeatureRates__c, account__c
+        for (Accounting_Subscription__c parentObj : [SELECT Id, Accounting_Subscriber__r.domain_lookup__c, id__c, plan_version__r.FeatureRates__c, account__c,
+                                                     plan_version__r.Accounting_SoftwarePlan__r.edition__c
                                                      FROM Accounting_Subscription__c WHERE id__c in :parentObjectIdSet AND Server_Name__c =: this.serverSettings.Name]) {
-            mapJsonIdToSfId.put(parentObj.id__c, parentObj.Id);
+            mapJsonIdToSfId.put(parentObj.id__c, parentObj);
             if (String.isNotBlank(parentObj.plan_version__r.FeatureRates__c)) {
                 setFeatureRates.addAll(parentObj.plan_version__r.FeatureRates__c.split(','));
                 mapSubscriptionJsonIdToFeatureRatesJsonId.put(parentObj.id__c, parentObj.plan_version__r.FeatureRates__c);
@@ -472,8 +473,11 @@ public class HqAccountingProcessHelper {
 
         for (hqInt_ModelClass.Accounting_Invoice invoice : listModelObj) {
             Id parentId;
+            String softPlan = '';
             if(mapJsonIdToSfId.containsKey(invoice.subscription)) {
-                parentId = mapJsonIdToSfId.get(invoice.subscription);
+                Accounting_Subscription__c subObj = mapJsonIdToSfId.get(invoice.subscription);
+                parentId = subObj.Id;
+                softPlan = subObj.plan_version__r.Accounting_SoftwarePlan__r.edition__c;
             }
 
             Id domainId;
@@ -481,7 +485,7 @@ public class HqAccountingProcessHelper {
                 domainId = mapASubscriptionJsonIdToDomainId.get(invoice.subscription);
             }
 
-            Accounting_Invoice__c sobj = invoice.createDbObject(parentId, domainId, this.serverSettings.Name);
+            Accounting_Invoice__c sobj = invoice.createDbObject(parentId, domainId, softPlan, this.serverSettings.Name);
             if (externalIdMap.containsKey(sobj.id__c)) {
                 sobj.Id = externalIdMap.get(sobj.id__c);
             }
