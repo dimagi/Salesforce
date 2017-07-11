@@ -29,6 +29,10 @@ public with sharing class ProjectReportOutController {
     public string seachProjectName { get; set; }
     public List<DContract__c> searchedProjects { get; set; }
 
+    public ProjectReportOutController(Boolean forTest) {
+        // constructor added for tests
+    }
+
     public ProjectReportOutController() {
         disableTab = true;
         List<PRO_OAuth_Settings__c> googleSettings = PRO_OAuth_Settings__c.getALL().values();
@@ -1404,7 +1408,8 @@ public with sharing class ProjectReportOutController {
             System.debug('Fiscal year data empty');
             return;
         }
-        List<Accounting_Invoice__c> invoices = [SELECT accounting_software_monthly_fee__c, accounting_softwareplan_edition__c, date_end__c FROM Accounting_Invoice__c
+        AggregateResult[] resultInv = [SELECT CALENDAR_MONTH(date_end__c), Softwareplan_Edition__c, SUM(accounting_software_monthly_fee__c)
+                                                 FROM Accounting_Invoice__c
                                                  WHERE (accounting_subscription_service_type__c = 'Self_service' OR accounting_subscription_service_type__c = 'Product')
                                                  AND is_hidden__c = false
                                                  AND is_hidden_to_ops__c = false
@@ -1412,25 +1417,27 @@ public with sharing class ProjectReportOutController {
                                                  AND Ops_Override__c = false
                                                  AND date_end__c >=: fiscalYearStart
                                                  AND date_end__c <=: fiscalYearEnd
-                                                 ORDER BY date_end__c];
+                                                 GROUP BY CALENDAR_MONTH(date_end__c), Softwareplan_Edition__c
+                                                 ORDER BY CALENDAR_MONTH(date_end__c)];
 
-        if (invoices.size() == 0) {
+        if (resultInv.size() == 0) {
             return;
         }
-        String month = getDateText(invoices.get(0).date_end__c);
-        Integer monthNum = invoices.get(0).date_end__c.month();
+
+        Integer monthNum = Integer.valueOf(resultInv[0].get('expr0'));
+        String month = getDateText(Date.newInstance(fiscalYearStart.year(), monthNum, 1));
         GraphData currentGraphData = new GraphData(month);
-        for (Accounting_Invoice__c inv : invoices) {
-            if (monthNum != inv.date_end__c.month()) {
+        for (AggregateResult ar : resultInv) {
+            Integer currentNum = Integer.valueOf(ar.get('expr0'));
+            if (monthNum != currentNum) {
                 this.mrr.add(currentGraphData);
-                monthNum = inv.date_end__c.month();
-                month = getDateText(inv.date_end__c);
+                monthNum = Integer.valueOf(ar.get('expr0'));
+                month = getDateText(Date.newInstance(fiscalYearStart.year(), monthNum, 1));
                 currentGraphData = new GraphData(month);
             }
-            currentGraphData = fillMrrData(currentGraphData, inv);
+            currentGraphData = fillMrrData(currentGraphData, (Decimal) ar.get('expr1'), (String) ar.get('Softwareplan_Edition__c'));
         }
         this.mrr.add(currentGraphData);
-        recalculateThousands(this.mrr);
     }
 
     public void loadEvExpectedValue() {
@@ -1563,37 +1570,21 @@ public with sharing class ProjectReportOutController {
         return DateTime.newInstance(snDate.year(), snDate.month(), snDate.day()).format('MMMM yyyy');
     }
 
-    private void recalculateThousands(List<GraphData> gData) {
-        for (GraphData gd : gData) {
-            gd.value1 /= 1000.00;
-            gd.value2 /= 1000.00;
-            gd.value3 /= 1000.00;
-            gd.value4 /= 1000.00;
-            gd.value5 /= 1000.00;
-            gd.value6 /= 1000.00;
-            gd.value7 /= 1000.00;
-            gd.value8 /= 1000.00;
-        }
-    }
-
-    private GraphData fillMrrData(GraphData gData, Accounting_Invoice__c inv) {
-        Decimal value = inv.accounting_software_monthly_fee__c != null ? inv.accounting_software_monthly_fee__c : 0;
-        if (inv.accounting_softwareplan_edition__c == 'Advanced') {
-            gData.value1 = gData.value1 + value;
-        } else if (inv.accounting_softwareplan_edition__c == 'Community') {
-            gData.value2 = gData.value2 + value;
-        } else if (inv.accounting_softwareplan_edition__c == 'Enterprise') {
-            gData.value3 = gData.value3 + value;
-        } else if (inv.accounting_softwareplan_edition__c == 'Pro') {
-            gData.value4 = gData.value4 + value;
-        } else if (inv.accounting_softwareplan_edition__c == 'Standard') {
-            gData.value5 = gData.value5 + value;
-        } else if (inv.accounting_softwareplan_edition__c == 'Reseller') {
-            gData.value6 = gData.value6 + value;
-        } else if (inv.accounting_softwareplan_edition__c == 'Managed Hosting') {
-            gData.value7 = gData.value7 + value;
-        } else if (inv.accounting_softwareplan_edition__c == '' || inv.accounting_softwareplan_edition__c == null) {
-            gData.value8 = gData.value8 + value;
+    private GraphData fillMrrData(GraphData gData, Decimal value, String softwarePlan) {
+        if (softwarePlan == 'Advanced') {
+            gData.value1 = value / 1000.00;
+        } else if (softwarePlan == 'Community') {
+            gData.value2 = value / 1000.00;
+        } else if (softwarePlan == 'Enterprise') {
+            gData.value3 = value / 1000.00;
+        } else if (softwarePlan == 'Pro') {
+            gData.value4 = value / 1000.00;
+        } else if (softwarePlan == 'Standard') {
+            gData.value5 = value / 1000.00;
+        } else if (softwarePlan == 'Reseller') {
+            gData.value6 = value / 1000.00;
+        } else if (softwarePlan == 'Managed Hosting') {
+            gData.value7 = value / 1000.00;
         }
         return gData;
     }

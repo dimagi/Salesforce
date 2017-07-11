@@ -18,7 +18,7 @@ public class hqInt_ModelClass {
         public Double applied_credit;
         public Double subtotal;
 
-        public Accounting_Invoice__c createDbObject(Id subscriptionId, Id domainId, String serverName) {
+        public Accounting_Invoice__c createDbObject(Id subscriptionId, Id domainId, String softPlan, String serverName) {
             Accounting_Invoice__c accountingInvoiceObj = new Accounting_Invoice__c();
             accountingInvoiceObj.id__c = this.id;
             accountingInvoiceObj.Accounting_Subscription__c = subscriptionId;
@@ -36,6 +36,7 @@ public class hqInt_ModelClass {
             accountingInvoiceObj.Total_Credits__c = applied_credit;
             accountingInvoiceObj.Project_Space__c = domainId;
             accountingInvoiceObj.Server_Name__c = serverName;
+            accountingInvoiceObj.Softwareplan_Edition__c = softPlan;
 
             return accountingInvoiceObj;
         }

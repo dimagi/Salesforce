@@ -1147,7 +1147,7 @@ public class HqIntegrationTests {
         a.id = 'external_id_' + i;
         a.is_hidden = false;
         a.is_hidden_to_ops = false;
-        Accounting_Invoice__c aFromDB  = a.createDbObject(subsciptionId, domainId, 'CommCare HQ');
+        Accounting_Invoice__c aFromDB  = a.createDbObject(subsciptionId, domainId, 'Pro', 'CommCare HQ');
         insert aFromDb;
         return aFromDb;
     }
