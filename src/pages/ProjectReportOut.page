@@ -324,6 +324,32 @@
                     nv.utils.windowResize(chart.update);
                     return chart;
                 });
+                nv.addGraph(function() {
+                    var aggData, chart = nv.models.multiBarChart().stacked(false).height(400).width(400).legendPosition('bottom').reduceXTicks(false);
+                    chart.legend.margin({"top": 22});
+                    chart.xAxis.axisLabel('Efficiency Owner (BU)');
+                    chart.yAxis.tickFormat(d3.format('%'));
+                    chart.yAxis.ticks(6);
+                    chart.yAxis.axisLabel('Aggregate Weighted Efficiency');
+                    chart.yAxis.axisLabelDistance(1);
+                    aggData = $j("[id$=aggregateEffId]").val();
+
+                    $j("[id$=aggregateExecution").append("<svg></svg>");
+                    d3.select('#aggregateExecution svg').datum(fillAggregateData(JSON.parse(aggData)))
+                        .transition().duration(500).call(chart);
+                    nv.utils.windowResize(chart.update);
+                    return chart;
+                });
+            }
+
+            function fillAggregateData(graphData) {
+                var i, bundles = [], enterprise = [];
+                for (i = 0; i < graphData.length; i++) {
+                    bundles.push({x: graphData[i].name, y: graphData[i].value2});
+                    enterprise.push({x: graphData[i].name, y: graphData[i].value1});
+                }
+
+                return [{"values": bundles, "key": "Bundles and Services"}, {"values": enterprise, "key": "Enterprise"}];
             }
 
             function buildMultiBatChart(labelTitleY, labelTitleX) {
@@ -968,6 +994,8 @@
                         <apex:inputHidden id="mrrDataId" value="{!mrrData}" />
                         <apex:inputHidden id="evExpectedId" value="{!evExpected}" />
                         <apex:inputHidden id="oppExpecteId" value="{!oppExpected}" />
+                        <apex:inputHidden id="aggregateEffId" value="{!AggregateEffData}" />
+
                         <apex:pageBlockSection title="Scale" collapsible="false" columns="1" >
                         <div class="chartsData">
                             <div id="activeUsers" class="graph">
@@ -1015,6 +1043,9 @@
                         </apex:pageBlockSection>
                         <apex:pageBlockSection title="Global Services" collapsible="false" columns="1" >
                             <div class="chartsData">
+                                <div id="aggregateExecution" class="graph">
+                                    <div class="graphTitle"><h2>Aggregate Execution Efficiency</h2></div>
+                                </div>
                                 <div id="quality" class="graph">
                                     <div class="graphTitle"><h2>GS Overall Project Status (% Green)</h2></div>
                                 </div>
