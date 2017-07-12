@@ -345,8 +345,8 @@
             function fillAggregateData(graphData) {
                 var i, bundles = [], enterprise = [];
                 for (i = 0; i < graphData.length; i++) {
-                    bundles.push({x: graphData[i].name, y: graphData[i].value2 / 100.00});
-                    enterprise.push({x: graphData[i].name, y: graphData[i].value1 / 100.00});
+                    bundles.push({x: graphData[i].name, y: graphData[i].value2});
+                    enterprise.push({x: graphData[i].name, y: graphData[i].value1});
                 }
 
                 return [{"values": bundles, "key": "Bundles and Services"}, {"values": enterprise, "key": "Enterprise"}];

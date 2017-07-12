@@ -1584,13 +1584,13 @@ public with sharing class ProjectReportOutController {
             }
             graphHelper.name = currName;
             Decimal sumServices = (Decimal) ar.get('expr0');
-            Integer valuetoSet = 1;
+            Decimal valuetoSet = 1;
             String impType = (String) ar.get('Implementation_Type__c');
 
             if (sumServices > 0) {
                 Decimal a = (Decimal) ar.get('expr1');
                 Decimal b = (Decimal) ar.get('expr2');
-                valuetoSet = (b != 0 ? a/b : 0).intValue();
+                valuetoSet = (b != 0 ? a/b : 0);
             }
 
             if (impType == 'Enterprise') {
