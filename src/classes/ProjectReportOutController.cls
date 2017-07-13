@@ -1266,19 +1266,63 @@ public with sharing class ProjectReportOutController {
      *
      **/
 
-    private List<GraphData> wamData;
-    private List<GraphData> formData;
-    private List<GraphData> userData;
-    private List<GraphData> programData;
-    private List<GraphData> performanceData;
-    private List<GraphData> gsData;
-    private List<GraphData> mrr;
-    private List<GraphData> aggregateEff;
-    public String oppExpected { get; set;}
-    public String evExpected { get; set;}
-    public String bufferEvGen { get; set;}
+    private List<Global_Metric_Graph__c> wamData;
+    private List<Global_Metric_Graph__c> formData;
+    private List<Global_Metric_Graph__c> userData;
+    private List<Global_Metric_Graph__c> programData;
+    private List<Global_Metric_Graph__c> performanceData;
+    private List<Global_Metric_Graph__c> gsData;
+    private List<Global_Metric_Graph__c> mrr;
+    private List<Global_Metric_Graph__c> aggregateEff;
+    private Global_Metric_Graph__c oppExpectedRec;
+    private Global_Metric_Graph__c evExpectedRec;
+    private Global_Metric_Graph__c bufferEvGenRec;
+    public DateTime dashboardRefreshTime { get; set;}
+
+    public String getEvExpected() {
+        if (this.evExpectedRec == null) {
+            List<Global_Metric_Graph__c> rList = [SELECT X_Text__c, Graph_Value_1__c, Graph_Value_2__c FROM Global_Metric_Graph__c
+                                 WHERE Name =: CorporateDashboardHelper.EV_EXPECTED_GRAPH];
+            this.evExpectedRec = rList.size () > 0 ? rList.get(0) : null;
+        }
+        if (this.evExpectedRec != null) {
+            return JSON.serialize(this.evExpectedRec);
+        }
+        return '';
+    }
+    public void setEvExpected(String evValues) {}
+
+    public String getOppExpected() {
+        if (this.oppExpectedRec == null) {
+            List<Global_Metric_Graph__c> rList = [SELECT X_Text__c, Graph_Value_1__c, Graph_Value_2__c FROM Global_Metric_Graph__c
+                                 WHERE Name =: CorporateDashboardHelper.OPP_EXPECTED_GRAPH];
+            this.oppExpectedRec = rList.size () > 0 ? rList.get(0) : null;
+        }
+        if (this.oppExpectedRec != null) {
+            return JSON.serialize(this.oppExpectedRec);
+        }
+        return '';
+    }
+    public void setOppExpected(String oppValues) {}
+
+    public String getBufferEvGen() {
+        if (this.bufferEvGenRec == null) {
+            List<Global_Metric_Graph__c> rList = [SELECT X_Text__c, Graph_Value_1__c, Graph_Value_2__c FROM Global_Metric_Graph__c
+                                 WHERE Name =: CorporateDashboardHelper.EV_BUFFER_GEN_GRAPH];
+            this.bufferEvGenRec = rList.size () > 0 ? rList.get(0) : null;
+        }
+        if (this.bufferEvGenRec != null) {
+            return JSON.serialize(this.bufferEvGenRec);
+        }
+        return '';
+    }
+    public void setBufferEvGen(String buffValues) {}
 
     public String getAggregateEffData() {
+        if (this.aggregateEff == null) {
+            this.aggregateEff = [SELECT X_Text__c, Graph_Value_1__c, Graph_Value_2__c FROM Global_Metric_Graph__c
+                                 WHERE Name =: CorporateDashboardHelper.AGGREGATE_EFF_GRAPH];
+        }
         if (this.aggregateEff != null) {
             return JSON.serialize(this.aggregateEff);
         }
@@ -1287,6 +1331,10 @@ public with sharing class ProjectReportOutController {
     public void setAggregateEffData(String aggValues) {}
 
     public String getMrrData() {
+        if (this.mrr == null) {
+            this.mrr = [SELECT X_Text__c, Graph_Value_1__c, Graph_Value_2__c, Graph_Value_3__c, Graph_Value_4__c, Graph_Value_5__c, Graph_Value_6__c, Graph_Value_7__c
+                        FROM Global_Metric_Graph__c WHERE Name =: CorporateDashboardHelper.MRR_GRAPH ORDER BY Helper_Date__c];
+        }
         if (this.mrr != null) {
             return JSON.serialize(this.mrr);
         }
@@ -1295,6 +1343,10 @@ public with sharing class ProjectReportOutController {
     public void setMrrData(String mrrValues) {}
 
     public String getGsGraphData() {
+        if (this.gsData == null) {
+            this.gsData = [SELECT X_Text__c, Graph_Value_1__c, Graph_Value_2__c FROM Global_Metric_Graph__c
+                                 WHERE Name =: CorporateDashboardHelper.GS_GRAPHS ORDER BY Helper_Date__c];
+        }
         if (this.gsData != null) {
             return JSON.serialize(this.gsData);
         }
@@ -1303,6 +1355,11 @@ public with sharing class ProjectReportOutController {
     public void setGsGraphData(String gsValues) {}
 
     public String getPerformanceGraphData() {
+        if (this.performanceData == null) {
+            this.performanceData = [SELECT X_Text__c, Graph_Value_1__c, Graph_Value_2__c, Graph_Value_3__c, Graph_Value_4__c, Graph_Value_5__c, Graph_Value_6__c, Graph_Value_7__c
+                                    FROM Global_Metric_Graph__c WHERE Name =: CorporateDashboardHelper.PERFORMANCE_GRAPHS ORDER BY Helper_Date__c];
+        }
+
         if (this.performanceData != null) {
             return JSON.serialize(this.performanceData);
         }
@@ -1311,6 +1368,10 @@ public with sharing class ProjectReportOutController {
     public void setPerformanceGraphData(String performanceValues) {}
 
     public String getUserGraphData() {
+        if (this.userData == null) {
+            this.userData = [SELECT X_Text__c, Graph_Value_1__c, Graph_Value_2__c, Graph_Value_3__c, Graph_Value_4__c, Graph_Value_5__c, Graph_Value_6__c, Graph_Value_7__c
+                             FROM Global_Metric_Graph__c WHERE Name =: CorporateDashboardHelper.USER_GRAPH ORDER BY Helper_Date__c];
+        }
         if (this.userData != null) {
             return JSON.serialize(this.userData);
         }
@@ -1319,6 +1380,10 @@ public with sharing class ProjectReportOutController {
     public void setUserGraphData(String userValues) {}
 
     public String getFormGraphData() {
+        if (this.formData == null) {
+            this.formData = [SELECT X_Text__c, Graph_Value_1__c, Graph_Value_2__c, Graph_Value_3__c, Graph_Value_4__c, Graph_Value_5__c, Graph_Value_6__c, Graph_Value_7__c
+                             FROM Global_Metric_Graph__c WHERE Name =: CorporateDashboardHelper.FORM_GRAPH ORDER BY Helper_Date__c];
+        }
         if (this.formData != null) {
             return JSON.serialize(this.formData);
         }
@@ -1327,6 +1392,10 @@ public with sharing class ProjectReportOutController {
     public void setFormGraphData(String wamValues) {}
 
     public String getWamGraphData() {
+        if (this.wamData == null) {
+            this.wamData = [SELECT X_Text__c, Graph_Value_1__c, Graph_Value_2__c, Graph_Value_3__c, Graph_Value_4__c, Graph_Value_5__c, Graph_Value_6__c, Graph_Value_7__c
+                             FROM Global_Metric_Graph__c WHERE Name =: CorporateDashboardHelper.WAM_GRAPH ORDER BY Helper_Date__c];
+        }
         if (this.wamData != null) {
             return JSON.serialize(this.wamData);
         }
@@ -1335,6 +1404,10 @@ public with sharing class ProjectReportOutController {
     public void setWamGraphData(String programValues) {}
 
     public String getProgramGraphData() {
+        if (this.programData == null) {
+            this.programData = [SELECT X_Text__c, Graph_Value_1__c, Graph_Value_2__c, Graph_Value_3__c, Graph_Value_4__c, Graph_Value_5__c, Graph_Value_6__c, Graph_Value_7__c
+                             FROM Global_Metric_Graph__c WHERE Name =: CorporateDashboardHelper.PROGRAMS_GRAPH ORDER BY Helper_Date__c];
+        }
         if (this.programData != null) {
             return JSON.serialize(this.programData);
         }
@@ -1342,303 +1415,19 @@ public with sharing class ProjectReportOutController {
     }
     public void setProgramGraphData(String programValues) {}
 
-    public void loadGSData() {
-        if (this.gsData != null) {
-            return;
-        }
-        this.gsData = new List<GraphData>();
-        Decimal months = Corporate_Dashboard_Settings__c.getOrgDefaults().GS_Graphs_number_of_months__c != null ? Corporate_Dashboard_Settings__c.getOrgDefaults().GS_Graphs_number_of_months__c : 6;
-        List<Contract_Statistic__c> contractStats = [SELECT PRO_Cycle_Date__c,GS_Quality_Total_Customer_Satisfaction__c, GS_Quality_Total_Overall_Status__c
-                                                     FROM Contract_Statistic__c WHERE PRO_Cycle_Date__c >=: Date.today().addMonths(((-1) * months).intValue()).toStartOfMonth()
-                                                     ORDER BY PRO_Cycle_Date__c ASC];
-
-        for (Contract_Statistic__c conStats : contractStats) {
-            GraphData gp = new GraphData(conStats.PRO_Cycle_Date__c.format(),
-                                            conStats.GS_Quality_Total_Overall_Status__c,
-                                            conStats.GS_Quality_Total_Customer_Satisfaction__c, 0, 0, 0, 0, 0, 0);
-            this.gsData.add(gp);
-        }
-    }
-
-    public void loadPerformanceData() {
-        if (this.performanceData != null) {
-            return;
-        }
-        this.performanceData = new List<GraphData>();
-        Decimal months = Corporate_Dashboard_Settings__c.getOrgDefaults().Performance_graphs_number_of_months__c != null ? Corporate_Dashboard_Settings__c.getOrgDefaults().Performance_graphs_number_of_months__c : 6;
-        List<CommCareHQ_Performance_Metrics__c> metrics = [SELECT Date__c, Server_Apdex__c, Number_of_Submissions__c, Avg_Page_Load__c
-                                                           FROM CommCareHQ_Performance_Metrics__c
-                                                           WHERE Date__c >=: Date.today().addMonths(((-1) * months).intValue()).toStartOfMonth()
-                                                           ORDER BY Date__c ASC];
-
-        if (metrics.size() > 0) {
-            GraphData tmpData = new GraphData();
-            Date lastDate = metrics.get(0).Date__c;
-            for (CommCareHQ_Performance_Metrics__c rec : metrics) {
-                if (rec.Date__c.year() != lastDate.year() || rec.Date__c.month() != lastDate.month()) {
-                    tmpData.value1 = (tmpData.value4 != 0 ? tmpData.value1 / tmpData.value4 : 0) / 1000.00;
-                    tmpData.value2 = (tmpData.value5 != 0 ? tmpData.value2 / tmpData.value5 : 0);
-                    tmpData.value3 = (tmpData.value6 != 0 ? tmpData.value3 / tmpData.value6 : 0);
-                    tmpData.name = lastDate.format();
-                    this.performanceData.add(tmpData);
-                    tmpData = new GraphData();
-                }
-                if (rec.Number_of_Submissions__c != null) {
-                    tmpData.value1 += rec.Number_of_Submissions__c;
-                    tmpData.value4++;
-                }
-                if (rec.Avg_Page_Load__c != null) {
-                    tmpData.value2 += rec.Avg_Page_Load__c;
-                    tmpData.value5++;
-                }
-                if (rec.Server_Apdex__c != null) {
-                    tmpData.value3 += rec.Server_Apdex__c;
-                    tmpData.value6++;
-                }
-                lastDate = rec.Date__c;
-            }
-            // we must add the last date from list:
-            tmpData.name = lastDate.format();
-            tmpData.value1 = (tmpData.value4 != 0 ? tmpData.value1 / tmpData.value4 : 0) / 1000.00;
-            tmpData.value2 = (tmpData.value5 != 0 ? tmpData.value2 / tmpData.value5 : 0);
-            tmpData.value3 = (tmpData.value6 != 0 ? tmpData.value3 / tmpData.value6 : 0);
-            this.performanceData.add(tmpData);
-        }
-    }
-
-    public void loadMrr() {
-        if (this.mrr != null) {
-            return;
-        }
-        this.mrr = new List<GraphData>();
-        Date fiscalYearStart = Corporate_Dashboard_Settings__c.getOrgDefaults().Fiscal_Year_Start__c;
-        Date fiscalYearEnd = Corporate_Dashboard_Settings__c.getOrgDefaults().Fiscal_year_End__c;
-        if (fiscalYearStart == null || fiscalYearEnd == null) {
-            System.debug('Fiscal year data empty');
-            return;
-        }
-        AggregateResult[] resultInv = [SELECT CALENDAR_MONTH(date_end__c), Softwareplan_Edition__c, SUM(accounting_software_monthly_fee__c)
-                                                 FROM Accounting_Invoice__c
-                                                 WHERE (accounting_subscription_service_type__c = 'Self_service' OR accounting_subscription_service_type__c = 'Product')
-                                                 AND is_hidden__c = false
-                                                 AND is_hidden_to_ops__c = false
-                                                 AND calculated_MRR__c > 0
-                                                 AND Ops_Override__c = false
-                                                 AND date_end__c >=: fiscalYearStart
-                                                 AND date_end__c <=: fiscalYearEnd
-                                                 GROUP BY CALENDAR_MONTH(date_end__c), Softwareplan_Edition__c
-                                                 ORDER BY CALENDAR_MONTH(date_end__c)];
-
-        if (resultInv.size() == 0) {
-            return;
-        }
-
-        Integer monthNum = Integer.valueOf(resultInv[0].get('expr0'));
-        String month = getDateText(Date.newInstance(fiscalYearStart.year(), monthNum, 1));
-        GraphData currentGraphData = new GraphData(month);
-        for (AggregateResult ar : resultInv) {
-            Integer currentNum = Integer.valueOf(ar.get('expr0'));
-            if (monthNum != currentNum) {
-                this.mrr.add(currentGraphData);
-                monthNum = Integer.valueOf(ar.get('expr0'));
-                month = getDateText(Date.newInstance(fiscalYearStart.year(), monthNum, 1));
-                currentGraphData = new GraphData(month);
-            }
-            currentGraphData = fillMrrData(currentGraphData, (Decimal) ar.get('expr1'), (String) ar.get('Softwareplan_Edition__c'));
-        }
-        this.mrr.add(currentGraphData);
-    }
-
-    public void loadEvExpectedValue() {
-        Date fiscalYearStart = Corporate_Dashboard_Settings__c.getOrgDefaults().Fiscal_Year_Start__c;
-        Date fiscalYearEnd = Corporate_Dashboard_Settings__c.getOrgDefaults().Fiscal_year_End__c;
-        Decimal targetDataExpectedVal = Corporate_Dashboard_Settings__c.getOrgDefaults().EV_Target__c;
-        Decimal targetDataExpectedBuffVal = Corporate_Dashboard_Settings__c.getOrgDefaults().EV_Expected_Buffer_Target__c;
-        AggregateResult[] groupedResults = [SELECT SUM(DIFF_Expected_Value_Minus_Expense__c), SUM(Diff_expected_buffer__c) FROM Pipeline_Snapshot_EV_DIff__c
-                                            WHERE Month_Date__c >=: fiscalYearStart
-                                            AND Month_Date__c <=: fiscalYearEnd
-                                            AND (Pipeline_Snapshot__r.Stage__c = 'Stage 4 - Proposal Development' OR Pipeline_Snapshot__r.Stage__c = 'Stage 5 - Submitted'
-                                                 OR Pipeline_Snapshot__r.Stage__c = 'Stage 6 - In Negotiations' OR Pipeline_Snapshot__r.Stage__c = 'Closed')
-                                            AND (NOT Name LIKE '%(Monthly)%')
-                                            AND (NOT Name LIKE '%- Total%')];
-        Decimal currentValueExpectedVal = (Decimal) groupedResults[0].get('expr0');
-        Decimal currentValueExpectedBuffVal = (Decimal) groupedResults[0].get('expr1');
-        this.evExpected = JSON.serialize(new GraphData('', currentValueExpectedVal != null ? currentValueExpectedVal / 1000000.00 : 0, targetDataExpectedVal / 1000000.00, 0, 0, 0, 0, 0, 0));
-        this.bufferEvGen = JSON.serialize(new GraphData('', currentValueExpectedBuffVal != null ? currentValueExpectedBuffVal / 1000000.00 : 0, targetDataExpectedBuffVal / 1000000.00, 0, 0, 0, 0, 0, 0));
-    }
-
-    public void loadOppExpetedValue() {
-        Date fiscalYearStart = Corporate_Dashboard_Settings__c.getOrgDefaults().Fiscal_Year_Start__c;
-        Date fiscalYearEnd = Corporate_Dashboard_Settings__c.getOrgDefaults().Fiscal_year_End__c;
-        Decimal targetData = Corporate_Dashboard_Settings__c.getOrgDefaults().Opp_Won_Target__c;
-        AggregateResult[] groupedResults = [SELECT SUM(Expected_Value_Minus_Income__c) FROM Opportunity WHERE CloseDate >=: fiscalYearStart AND CloseDate <=: fiscalYearEnd AND Amount > 0 AND StageName = 'Closed - Won'
-                                                AND (NOT Name LIKE '%Gates MOTECH Renewal%')];
-        Decimal currentValue = (Decimal) groupedResults[0].get('expr0');
-        this.oppExpected = JSON.serialize(new GraphData('', currentValue != null ? currentValue / 1000000.00 : 0, targetData / 1000000.00, 0, 0, 0, 0, 0, 0));
-    }
-
-    public void loadDomainSnapshotData() {
-        if (this.wamData != null) {
-            return;
-        }
-        this.wamData = new List<GraphData>();
-        this.formData = new List<GraphData>();
-        this.userData = new List<GraphData>();
-        this.programData = new List<GraphData>();
-
-        Set<String> planNames = new Set<String> { 'Reseller', 'Managed Hosting', 'Advanced', 'Community', 'Enterprise', 'Pro', 'Standard', 'Empty'};
-        Decimal months = Corporate_Dashboard_Settings__c.getOrgDefaults().Scale_graphs_number_of_months__c != null ? Corporate_Dashboard_Settings__c.getOrgDefaults().Scale_graphs_number_of_months__c : 3;
-        List<Domain_Monthly_Snapshot__c> snapshots = [SELECT Id, Snapshot_Date__c, Software_Plan_Edition__c, Wam__c, Forms_for_Period__c,
-                                                      Forms__c, Active_Mobile_Users__c, Scale_of_Programs__c FROM Domain_Monthly_Snapshot__c
-                                                      WHERE Snapshot_Date__c >: Date.today().addMonths(((-1) * months).intValue()).toStartOfMonth()
-                                                      AND Software_Plan_Edition__c IN: planNames
-                                                      ORDER BY Snapshot_Date__c ASC];
-
-        Integer startIdx = 0;
-        Integer endIdx = 7; // we have 7 editions
-        GraphData tmpWamData = new GraphData();
-        GraphData tmpFormData = new GraphData();
-        GraphData tmpUsersData = new GraphData();
-        GraphData tmpProgramsData = new GraphData();
-        while (endIdx <= snapshots.size()) {
-            Domain_Monthly_Snapshot__c sn = snapshots.get(startIdx);
-
-            if (sn.Software_Plan_Edition__c == 'Advanced') {
-                tmpWamData.value1 = sn.Wam__c != null ? sn.Wam__c / 1000.00 : 0;
-                tmpFormData.value1 = sn.Forms_for_Period__c != null ? sn.Forms_for_Period__c / 1000.00 : 0;
-                tmpUsersData.value1 = sn.Active_Mobile_Users__c != null ? sn.Active_Mobile_Users__c / 1000.00 : 0;
-                tmpProgramsData.value1 = sn.Scale_of_Programs__c;
-            } else if (sn.Software_Plan_Edition__c == 'Community') {
-                tmpWamData.value2 = sn.Wam__c != null ? sn.Wam__c / 1000.00 : 0;
-                tmpFormData.value2 = sn.Forms_for_Period__c != null ? sn.Forms_for_Period__c / 1000.00 : 0;
-                tmpUsersData.value2 = sn.Active_Mobile_Users__c != null ? sn.Active_Mobile_Users__c / 1000.00 : 0;
-                tmpProgramsData.value2 = sn.Scale_of_Programs__c;
-            } else if (sn.Software_Plan_Edition__c == 'Enterprise') {
-                tmpWamData.value3 = sn.Wam__c != null ? sn.Wam__c / 1000.00 : 0;
-                tmpFormData.value3 = sn.Forms_for_Period__c != null ? sn.Forms_for_Period__c / 1000.00 : 0;
-                tmpUsersData.value3 = sn.Active_Mobile_Users__c != null ? sn.Active_Mobile_Users__c / 1000.00 : 0;
-                tmpProgramsData.value3 = sn.Scale_of_Programs__c;
-            } else if (sn.Software_Plan_Edition__c == 'Pro') {
-                tmpWamData.value4 = sn.Wam__c != null ? sn.Wam__c / 1000.00 : 0;
-                tmpFormData.value4 = sn.Forms_for_Period__c != null ? sn.Forms_for_Period__c / 1000.00 : 0;
-                tmpUsersData.value4 = sn.Active_Mobile_Users__c != null ? sn.Active_Mobile_Users__c / 1000.00 : 0;
-                tmpProgramsData.value4 = sn.Scale_of_Programs__c;
-            } else if (sn.Software_Plan_Edition__c == 'Standard') {
-                tmpWamData.value5 = sn.Wam__c != null ? sn.Wam__c / 1000.00 : 0;
-                tmpFormData.value5 = sn.Forms_for_Period__c != null ? sn.Forms_for_Period__c / 1000.00 : 0;
-                tmpUsersData.value5 = sn.Active_Mobile_Users__c != null ? sn.Active_Mobile_Users__c / 1000.00 : 0;
-                tmpProgramsData.value5 = sn.Scale_of_Programs__c;
-            } else if (sn.Software_Plan_Edition__c == 'Reseller'){
-                tmpWamData.value6 = sn.Wam__c != null ? sn.Wam__c / 1000.00 : 0;
-                tmpFormData.value6 = sn.Forms_for_Period__c != null ? sn.Forms_for_Period__c / 1000.00 : 0;
-                tmpUsersData.value6 = sn.Active_Mobile_Users__c != null ? sn.Active_Mobile_Users__c / 1000.00 : 0;
-                tmpProgramsData.value6 = sn.Scale_of_Programs__c;
-            } else if (sn.Software_Plan_Edition__c == 'Managed Hosting') {
-                tmpWamData.value7 = sn.Wam__c != null ? sn.Wam__c / 1000.00 : 0;
-                tmpFormData.value7 = sn.Forms_for_Period__c != null ? sn.Forms_for_Period__c / 1000.00 : 0;
-                tmpUsersData.value7 = sn.Active_Mobile_Users__c != null ? sn.Active_Mobile_Users__c / 1000.00 : 0;
-                tmpProgramsData.value7 = sn.Scale_of_Programs__c;
-            }
-
-            startIdx++;
-            if (startIdx == endIdx) {
-                tmpWamData.name = getDateText(sn.Snapshot_Date__c);
-                tmpFormData.name = getDateText(sn.Snapshot_Date__c);
-                tmpUsersData.name = getDateText(sn.Snapshot_Date__c);
-                tmpProgramsData.name = getDateText(sn.Snapshot_Date__c);
-
-                this.wamData.add(tmpWamData);
-                this.formData.add(tmpFormData);
-                this.userData.add(tmpUsersData);
-                this.programData.add(tmpProgramsData);
-
-                tmpWamData = new GraphData();
-                tmpFormData = new GraphData();
-                tmpUsersData = new GraphData();
-                tmpProgramsData = new GraphData();
-                endIdx += 7;
-            }
-        }
-    }
-
-    public void loadAggregateEff() {
-        this.aggregateEff = new List<GraphData>();
-        AggregateResult[] resultContr = [SELECT Efficiency_Owner_BU__r.Name, Implementation_Type__c, SUM(Services_Budget__c), SUM(Weighted_Efficiency__c), SUM(Services_Budget__c) FROM DContract__c
-                                        WHERE (NOT Name LIKE '%internal%') AND Total_Amount_of_Contract__c > 0
-                                        AND (NOT Name LIKE '%MOTECH suite%') AND Implementation_Type__c != 'Self Service'
-                                        AND Implementation_Type__c != '' AND Efficiency_Owner_BU__c != null
-                                        AND Intracompany_Sub_contract__c = 'No' AND Percent_through_SOW_deliverables__c != 100
-                                        GROUP BY Efficiency_Owner_BU__r.Name, Implementation_Type__c ORDER BY Efficiency_Owner_BU__r.Name];
-
-        GraphData graphHelper = new GraphData();
-        if (resultContr.size() == 0) {
-            return;
-        }
-
-        String lastName = (String) resultContr[0].get('Name');
-        for (AggregateResult ar : resultContr) {
-            String currName = (String) ar.get('Name');
-            if (lastName != currName) {
-                this.aggregateEff.add(graphHelper);
-                graphHelper = new GraphData();
-            }
-            graphHelper.name = currName;
-            Decimal sumServices = (Decimal) ar.get('expr0');
-            Decimal valuetoSet = 1;
-            String impType = (String) ar.get('Implementation_Type__c');
-
-            if (sumServices > 0) {
-                Decimal a = (Decimal) ar.get('expr1');
-                Decimal b = (Decimal) ar.get('expr2');
-                valuetoSet = (b != 0 ? a/b : 0);
-            }
-
-            if (impType == 'Enterprise') {
-                graphHelper.value1 = valuetoSet;
-            } else if (impType == 'Bundles and Services') {
-                graphHelper.value2 = valuetoSet;
-            }
-        }
-        this.aggregateEff.add(graphHelper);
-    }
-
     public PageReference loadScaleData() {
         try {
-            loadGSData();
-            loadPerformanceData();
-            loadMrr();
-            loadOppExpetedValue();
-            loadEvExpectedValue();
-            loadDomainSnapshotData();
-            loadAggregateEff();
+            List<Global_Metric_Graph__c> metrics = [SELECT Id, CreatedDate FROM Global_Metric_Graph__c LIMIT 1];
+            if (metrics.size() > 0) {
+                this.dashboardRefreshTime = metrics.get(0).CreatedDate;
+            }
         } catch (Exception ex) {
              EmailHelper.sendEmailFromException(BatchDefaultSettings__c.getOrgDefaults().Error_Emails__c.split(','), 'PRO Corporate Dashboard errors', 'PRO Corporate Dashboard error', ex);
         }
         return null;
     }
 
-    public String getDateText(Date snDate) {
-        return DateTime.newInstance(snDate.year(), snDate.month(), snDate.day()).format('MMMM yyyy');
-    }
 
-    private GraphData fillMrrData(GraphData gData, Decimal value, String softwarePlan) {
-        if (softwarePlan == 'Advanced') {
-            gData.value1 = value / 1000.00;
-        } else if (softwarePlan == 'Community') {
-            gData.value2 = value / 1000.00;
-        } else if (softwarePlan == 'Enterprise') {
-            gData.value3 = value / 1000.00;
-        } else if (softwarePlan == 'Pro') {
-            gData.value4 = value / 1000.00;
-        } else if (softwarePlan == 'Standard') {
-            gData.value5 = value / 1000.00;
-        } else if (softwarePlan == 'Reseller') {
-            gData.value6 = value / 1000.00;
-        } else if (softwarePlan == 'Managed Hosting') {
-            gData.value7 = value / 1000.00;
-        }
-        return gData;
-    }
 
     /**
      *
@@ -1647,42 +1436,6 @@ public with sharing class ProjectReportOutController {
      *
      *
      **/
-
-    /**
-     * Internal class used to create graphs on the page.
-     */
-    public class GraphData {
-
-        public String name { set; get;}
-        public Decimal value1 { set; get;}
-        public Decimal value2 { set; get;}
-        public Decimal value3 { set; get;}
-        public Decimal value4 { set; get;}
-        public Decimal value5 { set; get;}
-        public Decimal value6 { set; get;}
-        public Decimal value7 { set; get;}
-        public Decimal value8 { set; get;}
-
-        public GraphData() {
-            this('');
-        }
-
-        public GraphData(String name) {
-            this(name, 0, 0, 0, 0, 0, 0, 0, 0);
-        }
-
-        public GraphData(String name, Decimal value1, Decimal value2, Decimal value3, Decimal value4, Decimal value5, Decimal value6, Decimal value7, Decimal value8) {
-            this.name = name;
-            this.value1 = value1;
-            this.value2 = value2;
-            this.value3 = value3;
-            this.value4 = value4;
-            this.value5 = value5;
-            this.value6 = value6;
-            this.value7 = value7;
-            this.value8 = value8;
-        }
-    }
 
     public class PROProject {
 

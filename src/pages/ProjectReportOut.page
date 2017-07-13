@@ -226,34 +226,42 @@
                 });
 
                 nv.addGraph(function() {
-                    var chart = nv.models.lineChart().height(400).width(400);
+                    var graphData = fillGSData(JSON.parse($j("[id$=gsGraphDataId]").val())), range = [], chart = nv.models.lineChart().height(400).width(400);
                     chart.legend.margin({top: 5});
+                    for (var i = 0; i < graphData[0].values.length; i++) {
+                        range.push(graphData[0].values[i].x);
+                    }
+                    chart.xAxis.tickValues(range);
                     chart.xAxis.axisLabel('PRO Cycle Date')
-                        .rotateLabels(-40).tickFormat(function(d) {
+                        .rotateLabels(-90).tickFormat(function(d) {
                             var dDate = new Date(d)
-                            return (dDate.getDay() + ' ' + monthNames[dDate.getMonth()] + ' ' + dDate.getFullYear());
+                            return (dDate.getDate() + ' ' + monthNames[dDate.getMonth()] + ' ' + dDate.getFullYear());
                         });
                     chart.yDomain([0, 1]);
                     chart.yAxis.axisLabel('GS Quality Overall Status').tickFormat(d3.format('%'));
                     $j("[id$=quality").append("<svg></svg>");
-                    d3.select('#quality svg').datum(fillGSData(JSON.parse($j("[id$=gsGraphDataId]").val()), false))
+                    d3.select('#quality svg').datum(graphData, false)
                         .transition().duration(500).call(chart);
                     nv.utils.windowResize(chart.update);
                     return chart;
                 });
 
                 nv.addGraph(function() {
-                    var chart = nv.models.lineChart().height(400).width(400);
+                    var graphData = fillGSData(JSON.parse($j("[id$=gsGraphDataId]").val())), range = [], chart = nv.models.lineChart().height(400).width(400);
                     chart.legend.margin({top: 5});
-                    chart.xAxis.axisLabel('PRO Cycle Date').rotateLabels(-40)
+                    for (var i = 0; i < graphData[0].values.length; i++) {
+                        range.push(graphData[0].values[i].x);
+                    }
+                    chart.xAxis.tickValues(range);
+                    chart.xAxis.axisLabel('PRO Cycle Date').rotateLabels(-90)
                         .tickFormat(function(d) {
                             var dDate = new Date(d)
-                            return (dDate.getDay() + ' ' + monthNames[dDate.getMonth()] + ' ' + dDate.getFullYear());
+                            return (dDate.getDate() + ' ' + monthNames[dDate.getMonth()] + ' ' + dDate.getFullYear());
                         });
                         chart.yDomain([0, 1]);
                     chart.yAxis.axisLabel('GS Quality Customer Satisfaction').tickFormat(d3.format('%'));
                     $j("[id$=customers").append("<svg></svg>");
-                    d3.select('#customers svg').datum(fillGSData(JSON.parse($j("[id$=gsGraphDataId]").val()), true))
+                    d3.select('#customers svg').datum(graphData, true)
                         .transition().duration(500).call(chart);
                     nv.utils.windowResize(chart.update);
                     return chart;
@@ -262,21 +270,21 @@
                 nv.addGraph(function() {
                     var expected, per, gData, chart;
                     gData = JSON.parse($j("[id$=oppExpecteId]").val());
-                    per = (100 * (gData.value1 / gData.value2)).toFixed(2);
-                    chart = buildPieChart('$' + (gData.value1).toFixed(2) + ' : ' + per + '%');
+                    per = (100 * (gData.Graph_Value_1__c / gData.Graph_Value_2__c)).toFixed(2);
+                    chart = buildPieChart('$' + (gData.Graph_Value_1__c).toFixed(2) + ' : ' + per + '%');
                     chart.tooltip.valueFormatter(function (d) { 
-                                                    var percen = (d == gData.value1 ? per : (100 - per).toFixed(2));
+                                                    var percen = (d == gData.Graph_Value_1__c ? per : (100 - per).toFixed(2));
                                                     if (percen < 0) {
                                                         percen = 0;
                                                     }
                                                     return '$' + d.toFixed(2) + ' (' + percen + '%)';
                                                  });
                     $j("[id$=oppWonBottomValue").before("<svg></svg>");
-                    expected = gData.value2 - gData.value1;
+                    expected = gData.Graph_Value_2__c - gData.Graph_Value_1__c;
                     if (expected < 0) {
                         expected = 0;
                     }
-                    d3.select('#oppWon svg').datum([{key: "Opportunities Won", y: gData.value1}, {key: "Target Missing", y: expected}]).transition().duration(1200).call(chart);
+                    d3.select('#oppWon svg').datum([{key: "Opportunities Won", y: gData.Graph_Value_1__c}, {key: "Target Missing", y: expected}]).transition().duration(1200).call(chart);
                     nv.utils.windowResize(chart.update);
                     return chart;
                 });
@@ -284,21 +292,21 @@
                 nv.addGraph(function() {
                     var expected, per, gData, chart;
                     gData = JSON.parse($j("[id$=evExpectedId]").val());
-                    per = (100 * (gData.value1 / gData.value2)).toFixed(2);
-                    chart = buildPieChart('$' + (gData.value1).toFixed(2) + ' : ' + per + '%');
+                    per = (100 * (gData.Graph_Value_1__c / gData.Graph_Value_2__c)).toFixed(2);
+                    chart = buildPieChart('$' + (gData.Graph_Value_1__c).toFixed(2) + ' : ' + per + '%');
                     chart.tooltip.valueFormatter(function (d) { 
-                                                    var percen = (d == gData.value1 ? per : (100 - per).toFixed(2));
+                                                    var percen = (d == gData.Graph_Value_1__c ? per : (100 - per).toFixed(2));
                                                     if (percen < 0) {
                                                         percen = 0;
                                                     }
                                                     return '$' + d.toFixed(2) + ' (' + percen + '%)';
                                                  });
                     $j("[id$=netEVBottomValue").before("<svg></svg>");
-                    expected = gData.value2 - gData.value1;
+                    expected = gData.Graph_Value_2__c - gData.Graph_Value_1__c;
                     if (expected < 0) {
                         expected = 0;
                     }
-                    d3.select('#netEV svg').datum([{key: "Changes in Net EV", y: gData.value1}, {key: "Target Missing", y: expected}]).transition().duration(1200).call(chart);
+                    d3.select('#netEV svg').datum([{key: "Changes in Net EV", y: gData.Graph_Value_1__c}, {key: "Target Missing", y: expected}]).transition().duration(1200).call(chart);
                     nv.utils.windowResize(chart.update);
                     return chart;
                 });
@@ -306,21 +314,21 @@
                 nv.addGraph(function() {
                     var expected, per, gData, chart;
                     gData = JSON.parse($j("[id$=bufferEvGenId]").val());
-                    per = (100 * (gData.value1 / gData.value2)).toFixed(2);
-                    chart = buildPieChart('$' + (gData.value1).toFixed(2) + ' : ' + per + '%');
+                    per = (100 * (gData.Graph_Value_1__c / gData.Graph_Value_2__c)).toFixed(2);
+                    chart = buildPieChart('$' + (gData.Graph_Value_1__c).toFixed(2) + ' : ' + per + '%');
                     chart.tooltip.valueFormatter(function (d) { 
-                                                    var percen = (d == gData.value1 ? per : (100 - per).toFixed(2));
+                                                    var percen = (d == gData.Graph_Value_1__c ? per : (100 - per).toFixed(2));
                                                     if (percen < 0) {
                                                         percen = 0;
                                                     }
                                                     return '$' + d.toFixed(2) + ' (' + percen + '%)';
                                                  });
                     $j("[id$=bufferEVBottomValue").before("<svg></svg>");
-                    expected = gData.value2 - gData.value1;
+                    expected = gData.Graph_Value_2__c - gData.Graph_Value_1__c;
                     if (expected < 0) {
                         expected = 0;
                     }
-                    d3.select('#bufferEV svg').datum([{key: "Buffer EV Generated", y: gData.value1}, {key: "Target Missing", y: expected}]).transition().duration(1200).call(chart);
+                    d3.select('#bufferEV svg').datum([{key: "Buffer EV Generated", y: gData.Graph_Value_1__c}, {key: "Target Missing", y: expected}]).transition().duration(1200).call(chart);
                     nv.utils.windowResize(chart.update);
                     return chart;
                 });
@@ -345,8 +353,8 @@
             function fillAggregateData(graphData) {
                 var i, bundles = [], enterprise = [];
                 for (i = 0; i < graphData.length; i++) {
-                    bundles.push({x: graphData[i].name, y: graphData[i].value2});
-                    enterprise.push({x: graphData[i].name, y: graphData[i].value1});
+                    bundles.push({x: graphData[i].X_Text__c, y: graphData[i].Graph_Value_2__c});
+                    enterprise.push({x: graphData[i].X_Text__c, y: graphData[i].Graph_Value_1__c});
                 }
 
                 return [{"values": bundles, "key": "Bundles and Services"}, {"values": enterprise, "key": "Enterprise"}];
@@ -397,18 +405,18 @@
                 var i, maxY1 = 0, maxY2 = 0, maxY3 = 0, count = 0, submissions = [], pageLoad = [], apdex = [];
                 for (i = 0; i < graphData.length; i++) {
                     count++;
-                    if (maxY1 < graphData[i].value1) {
-                        maxY1 = graphData[i].value1;
+                    if (maxY1 < graphData[i].Graph_Value_1__c) {
+                        maxY1 = graphData[i].Graph_Value_1__c;
                     }
-                    if (maxY2 < graphData[i].value2) {
-                        maxY2 = graphData[i].value2;
+                    if (maxY2 < graphData[i].Graph_Value_2__c) {
+                        maxY2 = graphData[i].Graph_Value_2__c;
                     }
-                    if (maxY3 < graphData[i].value3) {
-                        maxY3 = graphData[i].value3;
+                    if (maxY3 < graphData[i].Graph_Value_3__c) {
+                        maxY3 = graphData[i].Graph_Value_3__c;
                     }
-                    submissions.push({x: new Date(graphData[i].name).getTime(), y: graphData[i].value1});
-                    pageLoad.push({x: new Date(graphData[i].name).getTime(), y: graphData[i].value2});
-                    apdex.push({x: new Date(graphData[i].name).getTime(), y: graphData[i].value3});
+                    submissions.push({x: new Date(graphData[i].X_Text__c).getTime(), y: graphData[i].Graph_Value_1__c});
+                    pageLoad.push({x: new Date(graphData[i].X_Text__c).getTime(), y: graphData[i].Graph_Value_2__c});
+                    apdex.push({x: new Date(graphData[i].X_Text__c).getTime(), y: graphData[i].Graph_Value_3__c});
                 }
                 if (forPageLoad == true) {
                     return {"size": count,
@@ -449,8 +457,8 @@
             function fillGSData(graphData, forCustomer) {
                 var i, customerData = [], qualityData = [];
                 for (i = 0; i < graphData.length; i++) {
-                    qualityData.push({x: new Date(graphData[i].name).getTime(), y: graphData[i].value1 / 100.00});
-                    customerData.push({x: new Date(graphData[i].name).getTime(), y: graphData[i].value2 / 100.00});
+                    qualityData.push({x: new Date(graphData[i].X_Text__c).getTime(), y: graphData[i].Graph_Value_1__c / 100.00});
+                    customerData.push({x: new Date(graphData[i].X_Text__c).getTime(), y: graphData[i].Graph_Value_2__c / 100.00});
                 }
 
                 if (forCustomer == true) {
@@ -462,13 +470,13 @@
             function fillGraphData(graphData) {
                 var i, advanced = [], community = [], enterprise = [], pro = [], standard = [], managedHosting = [], reseller = [];
                 for (i = 0; i < graphData.length; i++) {
-                    advanced.push({x: graphData[i].name, y: graphData[i].value1});
-                    community.push({x: graphData[i].name, y: graphData[i].value2});
-                    enterprise.push({x: graphData[i].name, y: graphData[i].value3});
-                    pro.push({x: graphData[i].name, y: graphData[i].value4});
-                    standard.push({x: graphData[i].name, y: graphData[i].value5});
-                    reseller.push({x: graphData[i].name, y: graphData[i].value6});
-                    managedHosting.push({x: graphData[i].name, y: graphData[i].value7});
+                    advanced.push({x: graphData[i].X_Text__c, y: graphData[i].Graph_Value_1__c});
+                    community.push({x: graphData[i].X_Text__c, y: graphData[i].Graph_Value_2__c});
+                    enterprise.push({x: graphData[i].X_Text__c, y: graphData[i].Graph_Value_3__c});
+                    pro.push({x: graphData[i].X_Text__c, y: graphData[i].Graph_Value_4__c});
+                    standard.push({x: graphData[i].X_Text__c, y: graphData[i].Graph_Value_5__c});
+                    reseller.push({x: graphData[i].X_Text__c, y: graphData[i].Graph_Value_6__c});
+                    managedHosting.push({x: graphData[i].X_Text__c, y: graphData[i].Graph_Value_7__c});
                 }
                 return [{ values: advanced, key: "Advanced"}, { values: community, key: "Community"}, { values: enterprise, key: "Enterprise"}, { values: pro, key: "Pro"},
                     { values: standard, key: "Standard"}, { values: reseller, key: "Reseller"}, { values: managedHosting, key: "Managed Hosting"}];
@@ -996,6 +1004,7 @@
                         <apex:inputHidden id="oppExpecteId" value="{!oppExpected}" />
                         <apex:inputHidden id="aggregateEffId" value="{!AggregateEffData}" />
 
+                       <apex:outputText value="Dashboard refreshed at : {!dashboardRefreshTime}" />
                         <apex:pageBlockSection title="Scale" collapsible="false" columns="1" >
                         <div class="chartsData">
                             <div id="activeUsers" class="graph">
