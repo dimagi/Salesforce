@@ -96,6 +96,8 @@ public without sharing class FogBugzUtils {
                 if (o.StageName == 'Closed - Won') { // When User will close Opp in SF then 100% is set as default, so we must
                                                      // do this also when Opp is closed in FB
                     o.Probability = 100;
+                } else if (o.StageName == 'Closed' || o.StageName == 'Closed - No Go' || o.StageName == 'Closed - Lost') {
+                    o.Probability = 0;
                 }
                 o.Fogbugz_Assigned_To__c = fbCase.assignedTo;
                 o.Name = fbCase.title == null ? null : (fbCase.title.length() > 120 ? fbCase.title.substring(0, 120) : fbCase.title);
