@@ -23,6 +23,10 @@
         display: inline-block;
         width: 23% !important;
     }
+    .qLabel {
+        width: 100% !important;
+        display: inline-block;
+    }
     </style>
 
     <script>
@@ -73,21 +77,25 @@
                             <a href="/00Ob00000047qYz">
                                 <img class="graph" src="/servlet/servlet.ChartServer?rsid=0FLb0000001pMFd&ruid=005b0000001SrLL&did=01Zb0000000gCws&s=8&fs=12&tfg=12&tfs=-16777216&explode=0&c=gauge&cs=0&title=2017+Change+in+Net+-+Target+%249.9+million&eh=no&compo=no&fg=-16777216&bg1=-1&bg2=-1&bgdir=2&dl1=Month_Date&dl2=&l=2&sax=yes&Yman=no&nc=0&actUrl=%2F00Ob00000047qYz&sd=1&scv=no&sct=yes&spt=yes&bd=yes&cu=USD&ab=X&u=0&vt=0&ab2=Y&u2=4&vt2=2&vl0=Sum+of+DIFF-Expected+Value+Minus+Expense&spoc=no&topn=no&gm=0.0&gc0=-11250494&gm0=4950000.0&gc1=-4013484&gm1=7400000.0&gc2=-11222444&gm2=9900000.0&sona=0&refreshts=1498552096000" />
                             </a>
+                            <span class="qLabel">Q2 target: $4.95 million, Q3 target: $7.40 million, Q4 target: $9.90 million</span>
                         </div>
                         <div class="graphContainer">
                             <a href="/00Ob00000047qYz">
                                 <img class="graph" src="/servlet/servlet.ChartServer?rsid=0FLb0000001HAGl&ruid=005b0000001SrLL&did=01Zb0000000gCws&s=8&fs=12&tfg=12&tfs=-16777216&explode=0&c=gauge&cs=0&title=2017+Buffer+EV+Generated&eh=no&compo=no&fg=-16777216&bg1=-1&bg2=-1&bgdir=2&dl1=Month_Date&dl2=&l=2&sax=yes&Yman=no&nc=0&actUrl=%2F00Ob00000047qYz&sd=1&scv=no&sct=yes&spt=yes&bd=yes&cu=USD&ab=X&u=0&vt=0&ab2=Y&u2=0&vt2=2&vl0=Sum+of+Diff+-+expected+buffer&spoc=no&topn=no&gm=0.0&gc0=-11250494&gm0=2093343.0&gc1=-4013484&gm1=3140015.0&gc2=-11222444&gm2=4186687.0&sona=0&refreshts=1498552086000" />
                             </a>
+                            <span class="qLabel">Q2 target: $2.09 million, Q3 target: $3.14 million, Q4 target: $4.19 million</span>
                         </div>
                         <div class="graphContainer">
                             <a href="/00Ob00000048GVF">
                                 <img class="graph" src="/servlet/servlet.ChartServer?rsid=0FLb0000001pMFe&ruid=005b0000001SrLL&did=01Zb0000000gCws&s=8&fs=12&tfg=12&tfs=-16777216&explode=0&c=gauge&cs=0&title=Opportunities+Won+-+Target+%246.9+million&eh=no&compo=no&fg=-16777216&bg1=-1&bg2=-1&bgdir=2&dl1=Last+Stage+Change+Date&dl2=&l=2&sax=yes&Yman=no&nc=0&actUrl=%2F00Ob00000048GVF&sd=1&scv=no&sct=yes&spt=yes&bd=yes&cu=USD&ab=X&u=0&vt=0&ab2=Y&u2=4&vt2=2&vl0=Sum+of+Expected+Value+Minus+Expense+Income&spoc=no&topn=no&gm=0.0&gc0=-11250494&gm0=3457030.0&gc1=-4013484&gm1=5185545.0&gc2=-11222444&gm2=6914060.0&sona=0&refreshts=1498552111000" />
                             </a>
+                            <span class="qLabel">Q2 target: $3.46 million, Q3 target: $5.19 million, Q4 target: $6.91 million</span>
                         </div>
                         <div class="graphContainer">
                             <a href="/00Ob00000048Bib">
                                 <img class="graph" src="/servlet/servlet.ChartServer?rsid=0FLb00000019FrR&ruid=005b0000001SrLL&did=01Zb0000000gCws&s=8&fs=12&tfg=12&tfs=-16777216&explode=0&c=column&cs=2&title=Monthly+Recurring+Revenue&eh=no&compo=yes&fg=-16777216&bg1=-1&bg2=-1&bgdir=2&dl1=Invoice+End+Date&dl2=Edition&l=2&sax=yes&Yman=no&nc=0&actUrl=%2F00Ob00000048Bib&sd=1&scv=no&sct=no&spt=no&bd=yes&cu=USD&ab=X&u=0&vt=0&ab2=Y&u2=0&vt2=2&vl0=Sum+of+Monthly+fee&spoc=no&topn=no&gc0=-1&gc1=-1&gc2=-1&sona=0&refreshts=1498552129000" />
                             </a>
+                            <span class="qLabel"></span>
                         </div>
                     </div>
                 </apex:pageBlock>
@@ -141,6 +149,11 @@
                 </apex:pageBlock>
                 <apex:pageBlock id="gs" title="Global Services" mode="edit" >
                     <div class="chartsDataContainer">
+                        <div class="graphContainer">
+                            <a href="/00Ob0000004Mfu8">
+                                <img class="graph" src="/servlet/servlet.ChartServer?rsid=0FLb0000001HQDx&ruid=005b0000001SrLL&did=01Zb0000000gCws&s=8&fs=12&tfg=12&tfs=-16777216&explode=0&c=col_line&cs=1&title=Aggregate+Execution+Efficiency&eh=no&compo=yes&fg=-16777216&bg1=-1&bg2=-1&bgdir=2&dl1=Efficiency+Owner+%28BU%29&dl2=Implementation+Type&l=2&sax=yes&Yman=no&nc=0&actUrl=%2F00Ob0000004Mfu8&sd=1&scv=no&sct=no&spt=no&bd=yes&cu=USD&ab=X&u=0&vt=0&ab2=Y&u2=0&vt2=1&vl0=Aggregate+Weighted+Efficiency&vl1=Aggregate+Weighted+Efficiency&spoc=no&topn=no&gc0=-1&gc1=-1&gc2=-1&sona=0&refreshts=1499456003000" />
+                            </a>
+                        </div>
                         <div class="graphContainer">
                             <a href="/00Ob000000481sq">
                                 <img class="graph" src="/servlet/servlet.ChartServer?rsid=0FLb00000018yfi&ruid=005b0000001SrLL&did=01Zb0000000gCws&s=8&fs=12&tfg=12&tfs=-16777216&explode=0&c=line&cs=0&title=GS+Overall+Project+Status+%28%25+Green%29&eh=no&compo=yes&fg=-16777216&bg1=-1&bg2=-1&bgdir=2&dl1=PRO+Cycle+Date&dl2=&l=2&sax=yes&Yman=no&nc=0&actUrl=%2F00Ob000000481sq&sd=1&scv=no&sct=no&spt=no&bd=yes&cu=USD&ab=X&u=0&vt=0&ab2=Y&u2=0&vt2=1&vl0=GS+Quality+Overall+Status&spoc=no&topn=no&gc0=-1&gc1=-1&gc2=-1&sona=0&refreshts=1498552146000" />
