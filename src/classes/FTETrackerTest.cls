@@ -1,0 +1,118 @@
+@isTest
+public class FTETrackerTest {
+
+    @testSetup
+    static void setup() {
+        Date currentDate = Date.today();
+        SFDC_Employee__c testEmployee = addEmployee('FTE Employee');
+        Dcontract__c fteContract1 = addContract('FTE Contract 1', 'Yes');
+        addTimeCard(fteContract1.Id, testEmployee.Id, Date.newInstance(currentDate.year(), currentDate.month(), 1), 5);
+        addTimeCard(fteContract1.Id, testEmployee.Id, Date.newInstance(currentDate.year(), currentDate.month(), 2), 6);
+        addTimeCard(fteContract1.Id, testEmployee.Id, Date.newInstance(currentDate.year(), currentDate.month(), 3), 7);
+        addTimeCard(fteContract1.Id, testEmployee.Id, Date.newInstance(currentDate.year(), currentDate.month(), 4), 4.3);
+        addTimeCard(fteContract1.Id, testEmployee.Id, Date.newInstance(currentDate.year(), currentDate.month(), 5), 3.3);
+
+        Dcontract__c fteContract2 = addContract('FTE Contract 2', 'Yes');
+        addTimeCard(fteContract2.Id, testEmployee.Id, Date.newInstance(currentDate.year(), currentDate.month(), 6), 5);
+        addTimeCard(fteContract2.Id, testEmployee.Id, Date.newInstance(currentDate.year(), currentDate.month(), 7), 6);
+        addTimeCard(fteContract2.Id, testEmployee.Id, Date.newInstance(currentDate.year(), currentDate.month(), 8), 7);
+        addTimeCard(fteContract2.Id, testEmployee.Id, Date.newInstance(currentDate.year(), currentDate.month(), 9), 4.3);
+        addTimeCard(fteContract2.Id, testEmployee.Id, Date.newInstance(currentDate.year(), currentDate.month(), 10), 3.3);
+
+        Dcontract__c fteContract3 = addContract('FTE Contract 3', 'Yes');
+        addTimeCard(fteContract3.Id, testEmployee.Id, Date.newInstance(currentDate.year(), currentDate.month(), 11), 2);
+        addTimeCard(fteContract3.Id, testEmployee.Id, Date.newInstance(currentDate.year(), currentDate.month(), 12), 2);
+        addTimeCard(fteContract3.Id, testEmployee.Id, Date.newInstance(currentDate.year(), currentDate.month(), 13), 2);
+        addTimeCard(fteContract3.Id, testEmployee.Id, Date.newInstance(currentDate.year(), currentDate.month(), 14), 1);
+        addTimeCard(fteContract3.Id, testEmployee.Id, Date.newInstance(currentDate.year(), currentDate.month(), 15), 3.3);
+
+        Dcontract__c fteContract4 = addContract('FTE Contract 4', 'Yes');
+        addTimeCard(fteContract4.Id, testEmployee.Id, Date.newInstance(currentDate.year(), currentDate.month(), 16), 5);
+        addTimeCard(fteContract4.Id, testEmployee.Id, Date.newInstance(currentDate.year(), currentDate.month(), 17), 9);
+        addTimeCard(fteContract4.Id, testEmployee.Id, Date.newInstance(currentDate.year(), currentDate.month(), 18), 9);
+        addTimeCard(fteContract4.Id, testEmployee.Id, Date.newInstance(currentDate.year(), currentDate.month(), 19), 4.3);
+        addTimeCard(fteContract4.Id, testEmployee.Id, Date.newInstance(currentDate.year(), currentDate.month(), 20), 3.3);
+
+        Dcontract__c unassignedContract1 = addContract('Unassigned Contract 1', 'No');
+        addTimeCard(unassignedContract1.Id, testEmployee.Id, Date.newInstance(currentDate.year(), currentDate.month(), 21), 5);
+        addTimeCard(unassignedContract1.Id, testEmployee.Id, Date.newInstance(currentDate.year(), currentDate.month(), 22), 6);
+        addTimeCard(unassignedContract1.Id, testEmployee.Id, Date.newInstance(currentDate.year(), currentDate.month(), 23), 1);
+        addTimeCard(unassignedContract1.Id, testEmployee.Id, Date.newInstance(currentDate.year(), currentDate.month(), 24), 4);
+        addTimeCard(unassignedContract1.Id, testEmployee.Id, Date.newInstance(currentDate.year(), currentDate.month(), 25), 3.3);
+
+        Dcontract__c unassignedContract2 = addContract('Unassigned Contract 2', 'No');
+        addTimeCard(unassignedContract2.Id, testEmployee.Id, Date.newInstance(currentDate.year(), currentDate.month(), 1), 3);
+        addTimeCard(unassignedContract2.Id, testEmployee.Id, Date.newInstance(currentDate.year(), currentDate.month(), 2), 8);
+        addTimeCard(unassignedContract2.Id, testEmployee.Id, Date.newInstance(currentDate.year(), currentDate.month(), 3), 9);
+        addTimeCard(unassignedContract2.Id, testEmployee.Id, Date.newInstance(currentDate.year(), currentDate.month(), 4), 4.3);
+        addTimeCard(unassignedContract2.Id, testEmployee.Id, Date.newInstance(currentDate.year(), currentDate.month(), 5), 3.3);
+    }
+
+    @isTest
+    public static void shouldMoveHoursToUnassigned() {
+        Date currentDate = Date.today();
+        SFDC_Employee__c employee = [SELECT Id FROM SFDC_Employee__c WHERE Name = 'FTE Employee'];
+        FTETrackerController controller = new FTETrackerController();
+        controller.testEmployeeId = employee.Id;
+        controller.loadEmployeeTimeHistory();
+        controller.employeeMonth = currentDate.month() - 1;
+        controller.loadEmployeeUnassMonth();
+
+    }
+
+    @isTest
+    public static void shouldMoveHoursFromUnassigned() {
+        Date currentDate = Date.today();
+        SFDC_Employee__c employee = [SELECT Id FROM SFDC_Employee__c WHERE Name = 'FTE Employee'];
+        FTETrackerController controller = new FTETrackerController();
+        controller.testEmployeeId = employee.Id;
+        controller.loadEmployeeTimeHistory();
+        controller.employeeMonth = currentDate.month() - 1;
+        controller.contractId = [SELECT Id FROM DContract__c WHERE Name = 'FTE Contract 3' LIMIT 1].Id;
+        controller.loadEmployeeMonth();
+    }
+
+    @isTest
+    public static void shouldGenerateEmployeeHours() {
+        Date currentDate = Date.today();
+        SFDC_Employee__c employee = [SELECT Id FROM SFDC_Employee__c WHERE Name = 'FTE Employee'];
+        FTETrackerController controller = new FTETrackerController();
+        controller.testEmployeeId = employee.Id;
+        controller.loadEmployeeTimeHistory();
+        System.assertEquals(46.9, controller.unassigned.hoursArray[currentDate.month() - 1]);
+        System.assertEquals(5.75, controller.unassigned.daysArray[currentDate.month() - 1]);
+        System.assertEquals(92.1, controller.totalAssignedDays.hoursArray[currentDate.month() - 1]);
+        System.assertEquals(11.5, controller.totalAssignedDays.daysArray[currentDate.month() - 1]);
+    }
+
+    private static SFDC_Employee__c addEmployee(String employeeName) {
+        SFDC_Employee__c employeeObj = new SFDC_Employee__c(
+            Name = employeeName,
+            Salary__c = 50000,
+            Exchange_Rate__c = 1
+        );
+        insert employeeObj;
+        return employeeObj;
+    }
+
+    private static DContract__c addContract(String contractName, String fteTracker) {
+        DContract__c contractObj = new DContract__c(
+            Name = contractName,
+            FTE_Tracker__c = fteTracker,
+            Status__c = 'Active'
+        );
+        insert contractObj;
+        return contractObj;
+    }
+
+    private static Time_Card__c addTimeCard(Id contractId, Id employeeId, Date timeCardDate, Decimal hours) {
+        Time_Card__c timeCardObj = new Time_Card__c(
+            Total__c = hours,
+            Date__c = timeCardDate,
+            Employee__c = employeeId,
+            Client__c = contractId
+        );
+        insert timeCardObj;
+        return timeCardObj;
+    }
+}

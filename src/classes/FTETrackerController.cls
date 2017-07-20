@@ -3,7 +3,7 @@
  */
 public class FTETrackerController {
 
-    private Id testEmployeeId = 'a0Tm0000001h6iy';
+    public Id testEmployeeId = 'a0Tm0000001h6iy';
 
     public Integer currentYear { get; set;}
     public Date yearBegin { get; set;}
