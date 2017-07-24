@@ -12,9 +12,19 @@ global without sharing class FogBugzSynchronizerBatch implements Database.Batcha
     private DateTime jobStartDateTime;
     private Boolean syncSuccess;
     private String[] errorEmailAdress;
+    private Integer filterId;
+    private Boolean lastJob;
 
-    public FogBugzSynchronizerBatch(Boolean testMode) {
+    public FogBugzSynchronizerBatch(Integer filterId, Boolean testMode) {
         this.testMode = testMode;
+        this.filterId = filterId;
+        this.lastJob = false;
+    }
+
+    public FogBugzSynchronizerBatch(Integer filterId, Boolean lastJob, Boolean testMode) {
+        this.testMode = testMode;
+        this.filterId = filterId;
+        this.lastJob = lastJob;
     }
 
     global Iterable<Opportunity> start(Database.BatchableContext BC) {
@@ -83,7 +93,7 @@ global without sharing class FogBugzSynchronizerBatch implements Database.Batcha
         FogBugzAPI api = new FogBugzAPI();
 
         if (!testMode) {
-            api.setCurrentFilter(fbSettings.Sync_Filter__c.intValue());
+            api.setCurrentFilter(this.filterId);
         }
 
         Map<String, FogBugzCase> fbIdToCaseMap = testMode ?
@@ -135,14 +145,23 @@ global without sharing class FogBugzSynchronizerBatch implements Database.Batcha
 
     global void finish(Database.BatchableContext bc) {
         FogBugz_Settings__c fbSettings = FogBugz_Settings__c.getOrgDefaults();
-        fbSettings.Sync_Script_Running__c = false;
-        if (this.syncSuccess) { // we can update sync date when all cases was updated
-            fbSettings.Last_Time_Sync_Ran__c = this.jobStartDateTime;
+        if (!this.lastJob) {
+            this.lastJob = fbSettings.Sync_Filter_Closed__c != null ? this.lastJob : true;
         }
-        update fbSettings;
+
+        if (this.lastJob) {
+            fbSettings.Sync_Script_Running__c = false;
+            if (this.syncSuccess) { // we can update sync date when all cases was updated
+                fbSettings.Last_Time_Sync_Ran__c = this.jobStartDateTime;
+            }
+            update fbSettings;
+        } else {
+            Database.executeBatch(new FogBugzSynchronizerBatch(fbSettings.Sync_Filter_Closed__c.intValue(), true, false), 1);
+        }
 
         if(!test.isRunningTest()) {
-            hqInt_BatchErrorLogger.sendErrorEmails(BC.getJobId(), 'Fogbugz Success & Errors', 'Fogbugz Batch Run Results Logs:');
+            hqInt_BatchErrorLogger.sendErrorEmails(BC.getJobId(), 'Fogbugz Success & Errors Filter: '
+                                                        + this.filterId, 'Fogbugz Batch Run Results Logs:');
         }
     }
 
@@ -160,7 +179,7 @@ global without sharing class FogBugzSynchronizerBatch implements Database.Batcha
             emailBody += '<tr><td>' + fbCase.caseId + '</td><td>Last modified date: ' + fbCase.lastModifiedDate + '</td></tr>';
         }
         emailBody += '</table>';
-        EmailHelper.sendEmail(this.errorEmailAdress, 'Fogbugz Sync - Cases listed by FB filter', emailBody);
+        EmailHelper.sendEmail(this.errorEmailAdress, 'Fogbugz Sync - Cases listed by FB filter: ' + this.filterId, emailBody);
     }
 
     /**
