@@ -216,8 +216,8 @@ public class CorporateDashboardHelper {
                 String impType = (String) ar.get('Implementation_Type__c');
 
                 if (sumServices > 0) {
-                    Decimal a = (Decimal) ar.get('expr1');
-                    Decimal b = (Decimal) ar.get('expr2');
+                    Decimal a = ar.get('expr1') != null ? (Decimal) ar.get('expr1') : 0;
+                    Decimal b = ar.get('expr2') != null ? (Decimal) ar.get('expr2') : 0;
                     valuetoSet = (b != 0 ? a/b : 0);
                 }
 
