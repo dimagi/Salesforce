@@ -31,41 +31,35 @@ public class TestFogBugzAPI {
     public final static String UPSERT_CASE_RESPONSE = '<?xml version="1.0" encoding="UTF-8"?><response>' +
                                                       '<case ixBug="testFBId" operations="edit,assign,resolve,email,remind"></response>';
 
-    /*
-    static testMethod void testSetCurrentFilter() {
+    /**static testMethod void testSetCurrentFilter() {
         FogBugzHTTPMock fakeHTTP = new FogBugzHTTPMock(SET_CURRENT_FILTER_RESPONSE);
         Test.setMock(HttpCalloutMock.class, fakeHTTP);
-        
+
         FogBugzAPI api = new FogBugzAPI();
         System.assertEquals(SET_CURRENT_FILTER_RESPONSE, api.setCurrentFilter(1), 'setCurrentFilter failed');
     }
-    
+
     static testMethod void testListCases() {
         FogBugzHTTPMock fakeHTTP = new FogBugzHTTPMock(GET_CASES_RESPONSE);
         Test.setMock(HttpCalloutMock.class, fakeHTTP);
-        
+
         FogBugzAPI api = new FogBugzAPI();
         Map<String, FogBugzCase> cases = api.listCases();
-        
+
         System.assertEquals(1, cases.size(), 'Number of cases do not match');
 
-        
         FogBugzCase fbCase = cases.values()[0];
-        
         System.assertEquals(TEST_FB_ID, fbCase.caseId, 'FB case id does not match');
         System.assertEquals('1', fbCase.ixPersonOpenedBy, 'FB person opened by does not match');
-        
     }
 
     static testMethod void testGetCase() {
-        
         FogBugzHTTPMock fakeHTTP = new FogBugzHTTPMock(GET_CASES_RESPONSE);
         Test.setMock(HttpCalloutMock.class, fakeHTTP);
-        
-        
+
         FogBugzAPI api = new FogBugzAPI();
         FogBugzCase fbCase = api.getCase(TEST_FB_ID);
-        
+
         System.assertNotEquals(null, fbCase, 'FB case was not retrieved');
         System.assertEquals(TEST_FB_ID, fbCase.caseId, 'FB case id does not match');
         System.assertEquals('Test title', fbCase.title, 'FB case title does not match');
@@ -82,9 +76,8 @@ public class TestFogBugzAPI {
     static testMethod void testCreateCase() {
         FogBugzHTTPMock fakeHTTP = new FogBugzHTTPMock(UPSERT_CASE_RESPONSE);
         Test.setMock(HttpCalloutMock.class, fakeHTTP);
-        
         FogBugzAPI api = new FogBugzAPI();
-        
+
         FogBugzCase fbCase = new FogBugzCase();
         fbCase.externalBugID = TEST_SF_ID;
         fbCase.project = 'Test project';
@@ -93,43 +86,34 @@ public class TestFogBugzAPI {
         fbCase.status = 'Test status';
         fbCase.priority = 1;
         fbCase.title = 'Test title';
-        
-        
         api.createCase(fbCase);
-        
         System.assertEquals(TEST_FB_ID, fbCase.caseId, 'FB case id does not match');
-        
     }
 
     static testMethod void testEditCase() {
         FogBugzHTTPMock fakeHTTP = new FogBugzHTTPMock(UPSERT_CASE_RESPONSE);
         Test.setMock(HttpCalloutMock.class, fakeHTTP);
-        
+
         FogBugzAPI api = new FogBugzAPI();
-        
+
         FogBugzCase fbCase = new FogBugzCase();
         fbCase.externalBugID = TEST_SF_ID;
         fbCase.caseId = TEST_FB_ID;
-        
+
         System.assertEquals(TEST_FB_ID, api.updateCase(fbCase), 'FB case id does not match');
     }
 
     static testMethod void testAddNote() {
         FogBugzHTTPMock fakeHTTP = new FogBugzHTTPMock(UPSERT_CASE_RESPONSE);
         Test.setMock(HttpCalloutMock.class, fakeHTTP);
-        
+
         FogBugzAPI api = new FogBugzAPI();
         System.assertEquals(TEST_FB_ID, api.addNote(TEST_FB_ID, 'Dummy text'), 'Something went wrong while adding notes');
-    }
-    */
+    }*/
 
     static testMethod void testParseCases() {
-    	
         FogBugzAPI api = new FogBugzAPI();
         api.parseCases(GET_CASES_RESPONSE);
-        api.parseCaseList(GET_CASES_RESPONSE);    	    	
-    	
+        api.parseCaseList(GET_CASES_RESPONSE);
     }
-    
-
 }

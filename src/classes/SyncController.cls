@@ -21,7 +21,7 @@ public with sharing class SyncController {
         if (fbSettings.Sync_Script_Running__c) {
             ApexPages.addMessage(new ApexPages.Message(ApexPages.Severity.WARNING, 'The synchronization script is currently running'));
         } else {
-            Database.executeBatch(new FogBugzSynchronizerBatch(false), 1);
+            Database.executeBatch(new FogBugzSynchronizerBatch(fbSettings.Sync_Filter__c.intValue(), false), 1);
             ApexPages.addMessage(new ApexPages.Message(ApexPages.Severity.INFO,
                                     'Check the opportunities in SF to see if they were updated, ' +
                                     'and check FB to see if the externalBugId was set for cases created in FB'));

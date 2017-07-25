@@ -60,7 +60,7 @@ public class TestFogBugzSynchronization {
         Opportunity o = createTestOpportunity(TestFogBugzAPI.TEST_FB_ID);
 
         Test.startTest();
-        Database.executeBatch(new FogBugzSynchronizerBatch(true), 1);
+        Database.executeBatch(new FogBugzSynchronizerBatch(1, true), 1);
         Test.stopTest();
 
         Opportunity refreshed = [SELECT Id, Name, StageName, Fogbugz_Ticket_Number__c, Fogbugz_Assigned_To__c, Fogbugz_Last_Updated_Date__c, Amount,
@@ -82,7 +82,7 @@ public class TestFogBugzSynchronization {
 
         FogBugzHTTPMock fakeHTTP = new FogBugzHTTPMock(TestFogBugzAPI.GET_CASES_RESPONSE);
         Test.setMock(HttpCalloutMock.class, fakeHTTP);
-        Database.executeBatch(new FogBugzSynchronizerBatch(true), 1);
+        Database.executeBatch(new FogBugzSynchronizerBatch(1, true), 1);
 
         Test.stopTest();
     }
