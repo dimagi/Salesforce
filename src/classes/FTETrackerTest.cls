@@ -56,8 +56,37 @@ public class FTETrackerTest {
         controller.testEmployeeId = employee.Id;
         controller.loadEmployeeTimeHistory();
         controller.employeeMonth = currentDate.month() - 1;
+        controller.contractId = [SELECT Id FROM DContract__c WHERE Name = 'FTE Contract 2' LIMIT 1].Id;
         controller.loadEmployeeUnassMonth();
+        controller.fteDays = '3';
+        controller.moveTimeToUnassigned();
+        controller.backToEmployeeView();
+        controller.loadEmployeeTimeHistory();
+        System.assertEquals(70.9, controller.unassigned.hoursArray[currentDate.month() - 1]);
+        System.assertEquals(8.75, controller.unassigned.daysArray[currentDate.month() - 1]);
+        System.assertEquals(68.1, controller.totalAssignedDays.hoursArray[currentDate.month() - 1]);
+        System.assertEquals(8.5, controller.totalAssignedDays.daysArray[currentDate.month() - 1]);
+    }
 
+    @isTest
+    public static void shouldAddErrorWhenMovingHoursToUnassigned() {
+        Date currentDate = Date.today();
+        SFDC_Employee__c employee = [SELECT Id FROM SFDC_Employee__c WHERE Name = 'FTE Employee'];
+        FTETrackerController controller = new FTETrackerController();
+        controller.testEmployeeId = employee.Id;
+        controller.loadEmployeeTimeHistory();
+        controller.employeeMonth = currentDate.month() - 1;
+        controller.contractId = [SELECT Id FROM DContract__c WHERE Name = 'FTE Contract 2' LIMIT 1].Id;
+        controller.loadEmployeeUnassMonth();
+        controller.fteDays = '13';
+        controller.moveTimeToUnassigned();
+
+        List<Apexpages.Message> msgs = ApexPages.getMessages();
+        Boolean b = false;
+        for(Apexpages.Message msg:msgs){
+            if (msg.getDetail().contains('Too much hours to assign / hours cannot be negative')) b = true;
+        }
+        System.assert(b);
     }
 
     @isTest
@@ -68,8 +97,36 @@ public class FTETrackerTest {
         controller.testEmployeeId = employee.Id;
         controller.loadEmployeeTimeHistory();
         controller.employeeMonth = currentDate.month() - 1;
-        controller.contractId = [SELECT Id FROM DContract__c WHERE Name = 'FTE Contract 3' LIMIT 1].Id;
         controller.loadEmployeeMonth();
+        controller.fteDays = '2.5';
+        controller.selectedFteContract = [SELECT Id FROM DContract__c WHERE Name = 'FTE Contract 1' LIMIT 1].Id;
+        controller.moveTimeFromUnassigned();
+        controller.backToEmployeeView();
+        controller.loadEmployeeTimeHistory();
+        System.assertEquals(26.9, controller.unassigned.hoursArray[currentDate.month() - 1]);
+        System.assertEquals(3.25, controller.unassigned.daysArray[currentDate.month() - 1]);
+        System.assertEquals(112.1, controller.totalAssignedDays.hoursArray[currentDate.month() - 1]);
+        System.assertEquals(14, controller.totalAssignedDays.daysArray[currentDate.month() - 1]);
+    }
+
+    @isTest
+    public static void shouldAddErrorWhenMovingHoursFromUnassigned() {
+        Date currentDate = Date.today();
+        SFDC_Employee__c employee = [SELECT Id FROM SFDC_Employee__c WHERE Name = 'FTE Employee'];
+        FTETrackerController controller = new FTETrackerController();
+        controller.testEmployeeId = employee.Id;
+        controller.loadEmployeeTimeHistory();
+        controller.employeeMonth = currentDate.month() - 1;
+        controller.loadEmployeeMonth();
+        controller.fteDays = '6';
+        controller.moveTimeFromUnassigned();
+
+        List<Apexpages.Message> msgs = ApexPages.getMessages();
+        Boolean b = false;
+        for(Apexpages.Message msg:msgs){
+            if (msg.getDetail().contains('Too much hours to assign / hours cannot be negative')) b = true;
+        }
+        System.assert(b);
     }
 
     @isTest
