@@ -47,10 +47,10 @@
                 height: 550px;
             }
             .graphTitle {
-                width: 400px;
+                width: 100%;
             }
             .graphBottomTitle {
-                width: 400px;
+                width: 100%;
                 display: table;
             }
             .graph {
@@ -226,7 +226,7 @@
                 });
 
                 nv.addGraph(function() {
-                    var graphData = fillGSData(JSON.parse($j("[id$=gsGraphDataId]").val())), range = [], chart = nv.models.lineChart().height(400).width(400);
+                    var graphData = fillGSData(JSON.parse($j("[id$=gsGraphDataId]").val())), range = [], chart = nv.models.lineChart().height(400);
                     chart.legend.margin({top: 5});
                     for (var i = 0; i < graphData[0].values.length; i++) {
                         range.push(graphData[0].values[i].x);
@@ -247,7 +247,7 @@
                 });
 
                 nv.addGraph(function() {
-                    var graphData = fillGSData(JSON.parse($j("[id$=gsGraphDataId]").val())), range = [], chart = nv.models.lineChart().height(400).width(400);
+                    var graphData = fillGSData(JSON.parse($j("[id$=gsGraphDataId]").val())), range = [], chart = nv.models.lineChart().height(400);
                     chart.legend.margin({top: 5});
                     for (var i = 0; i < graphData[0].values.length; i++) {
                         range.push(graphData[0].values[i].x);
@@ -333,7 +333,7 @@
                     return chart;
                 });
                 nv.addGraph(function() {
-                    var aggData, chart = nv.models.multiBarChart().stacked(false).height(400).width(400).legendPosition('bottom').reduceXTicks(false);
+                    var aggData, chart = nv.models.multiBarChart().stacked(false).height(400).legendPosition('bottom').reduceXTicks(false);
                     chart.legend.margin({"top": 22});
                     chart.xAxis.axisLabel('Efficiency Owner (BU)');
                     chart.yAxis.tickFormat(d3.format('%'));
@@ -361,7 +361,7 @@
             }
 
             function buildMultiBatChart(labelTitleY, labelTitleX) {
-                var chart = nv.models.multiBarChart().stacked(true).height(400).width(400).legendPosition('bottom').reduceXTicks(false);
+                var chart = nv.models.multiBarChart().stacked(true).height(400).legendPosition('bottom').reduceXTicks(false);
                 chart.legend.margin({"top": 22});
                 chart.xAxis.rotateLabels(-40);
                 chart.xAxis.axisLabel(labelTitleX);
@@ -373,7 +373,8 @@
             }
 
             function buildMultiChart(labelTitle, my1, my2, range) {
-                var chart = nv.models.multiChart().height(400).width(350);
+                var chart = nv.models.multiChart().height(400);
+                chart.margin({"right": 90});
                 chart.yAxis1.tickFormat(d3.format(',.1f'));
                 chart.yAxis1.axisLabel(labelTitle);
                 chart.yAxis2.tickFormat(d3.format(',.1f'));
@@ -391,7 +392,7 @@
             }
 
             function buildPieChart(chartTitle) {
-                var chart = nv.models.pieChart().width(400).height(400).donut(true).showLabels(true).growOnHover(false).arcsRadius(arcRadius1);
+                var chart = nv.models.pieChart().height(400).donut(true).showLabels(true).growOnHover(false).arcsRadius(arcRadius1);
                 chart.showLegend(true).showTooltipPercent(false).growOnHover(true);
                 chart.x(function (d) { return d.key });
                 chart.y(function (d) { return d.y });
