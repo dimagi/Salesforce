@@ -1090,7 +1090,7 @@
                                     <div id="netEVBottomValue" class="graphBottomTitle"><h2>Sum of DIFF-Expected Value Minus Expense (Millions)</h2></div>
                                 </div>
                                 <div id="bufferEV" class="gaugeGraph">
-                                    <div class="graphTitle"><h2>YTD Buffer EV generated</h2></div>
+                                    <div class="graphTitle"><h2>YTD Buffer EV generated - Target $4.2 million</h2></div>
                                     <div id="bufferEVBottomValue" class="graphBottomTitle"><h2>Sum of DIFF-Expected Buffer (Millions)</h2></div>
                                 </div>
                                 <div id="oppWon" class="gaugeGraph">
