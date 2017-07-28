@@ -348,6 +348,52 @@
                     nv.utils.windowResize(chart.update);
                     return chart;
                 });
+                nv.addGraph(function() {
+                    var chart = buildDiscBatChart('Sum of Active Mobile Users (Thousands)');
+                    $j("[id$=activeUsersICDS").append("<svg></svg>");
+                    d3.select('#activeUsersICDS svg').datum(loadICDSData('users')).call(chart);
+                    nv.utils.windowResize(chart.update);
+                    return chart;
+                });
+                nv.addGraph(function() {
+                    var chart = buildDiscBatChart('Sum of Wam');
+                    $j("[id$=wamsICDS").append("<svg></svg>");
+                    d3.select('#wamsICDS svg').datum(loadICDSData('wams')).call(chart);
+                    nv.utils.windowResize(chart.update);
+                    return chart;
+                });
+                nv.addGraph(function() {
+                    var chart = buildDiscBatChart('Forms for period (Thousands)');
+                    $j("[id$=formsICDS").append("<svg></svg>");
+                    d3.select('#formsICDS svg').datum(loadICDSData('forms')).call(chart)
+                        .transition().duration(500);
+                    nv.utils.windowResize(chart.update);
+                    return chart;
+                });
+            }
+
+            function buildDiscBatChart(yLabel) {
+                var chart = nv.models.discreteBarChart().height(400);
+                chart.xAxis.rotateLabels(-40);
+                chart.xAxis.axisLabel('Snapshot Date');
+                chart.yAxis.axisLabel(yLabel);
+                chart.x(function(d) { return d.label }).y(function(d) { return d.value });
+                return chart;
+            }
+
+            function loadICDSData(graphName) {
+                var tmp, records = [], graphData = JSON.parse($j("[id$=icdsDataId]").val());
+                for (i = 0; i < graphData.length; i++) {
+                if (graphName == 'users') {
+                    tmp = graphData[i].Graph_Value_1__c;
+                } else if (graphName == 'wams') {
+                    tmp = graphData[i].Graph_Value_2__c;
+                } else {
+                    tmp = graphData[i].Graph_Value_3__c;
+                }
+                    records.push({label: graphData[i].X_Text__c, value: tmp});
+                }
+                return [{key: graphName, values: records}];
             }
 
             function fillAggregateData(graphData) {
@@ -1004,6 +1050,8 @@
                         <apex:inputHidden id="evExpectedId" value="{!evExpected}" />
                         <apex:inputHidden id="oppExpecteId" value="{!oppExpected}" />
                         <apex:inputHidden id="aggregateEffId" value="{!AggregateEffData}" />
+                        <apex:inputHidden id="icdsDataId" value="{!icdsData}" />
+
 
                        <apex:outputText value="Dashboard refreshed at : {!dashboardRefreshTime}" />
                         <apex:pageBlockSection title="Scale" collapsible="false" columns="1" >
@@ -1019,6 +1067,19 @@
                             </div>
                             <div id="programs" class="graph">
                                 <div class="graphTitle"><h2>Active Project Spaces</h2></div>
+                            </div>
+                        </div>
+                        </apex:pageBlockSection>
+                        <apex:pageBlockSection title="Scale (ICDS-CAS)" collapsible="false" columns="1" >
+                        <div class="chartsData">
+                            <div id="activeUsersICDS" class="graph">
+                                <div class="graphTitle"><h2>Active Users</h2></div>
+                            </div>
+                            <div id="wamsICDS" class="graph">
+                                <div class="graphTitle"><h2>WAMs</h2></div>
+                            </div>
+                            <div id="formsICDS" class="graph">
+                                <div class="graphTitle"><h2>Forms</h2></div>
                             </div>
                         </div>
                         </apex:pageBlockSection>

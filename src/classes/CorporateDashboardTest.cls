@@ -17,6 +17,25 @@ public class CorporateDashboardTest {
     }
 
     @isTest
+    public static void shouldLoadICDSGraphs() {
+        Date currentDate = Date.today();
+        insert new ICDS_Domain_Snapshot__c(Active_Users__c = 45000, Forms__c = 13000000, WAMs__c = 345, Date__c = currentDate.addMonths(-2));
+        insert new ICDS_Domain_Snapshot__c(Active_Users__c = 55000, Forms__c = 14000000, WAMs__c = 365, Date__c = currentDate.addMonths(-1));
+        insert new ICDS_Domain_Snapshot__c(Active_Users__c = 65000, Forms__c = 15000000, WAMs__c = 385, Date__c = currentDate);
+
+        Test.startTest();
+        CorporateDashboardHelper.refreshAllGraphs();
+        Test.stopTest();
+
+        List<Global_Metric_Graph__c> icdsGraphs = [SELECT X_Text__c, Graph_Value_1__c, Graph_Value_2__c, Graph_Value_3__c
+                                                   FROM Global_Metric_Graph__c WHERE Name =: CorporateDashboardHelper.ICDS_GRAPHS
+                                                   ORDER BY Helper_Date__c];
+        System.assertEquals(45, icdsGraphs.get(0).Graph_Value_1__c);
+        System.assertEquals(365, icdsGraphs.get(1).Graph_Value_2__c);
+        System.assertEquals(15000, icdsGraphs.get(2).Graph_Value_3__c);
+    }
+
+    @isTest
     public static void shouldLoadDomainSnapshotGraphs() {
         setUpMonthlySnapshotData();
 
