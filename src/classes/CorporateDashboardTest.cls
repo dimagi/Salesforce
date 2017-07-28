@@ -19,9 +19,9 @@ public class CorporateDashboardTest {
     @isTest
     public static void shouldLoadICDSGraphs() {
         Date currentDate = Date.today();
-        insert new ICDS_Domain_Snapshot__c(Active_Users__c = 45000, Forms__c = 13000000, WAMs__c = 345, Date__c = currentDate.addMonths(-2));
-        insert new ICDS_Domain_Snapshot__c(Active_Users__c = 55000, Forms__c = 14000000, WAMs__c = 365, Date__c = currentDate.addMonths(-1));
-        insert new ICDS_Domain_Snapshot__c(Active_Users__c = 65000, Forms__c = 15000000, WAMs__c = 385, Date__c = currentDate);
+        insert new ICDS_Domain_Snapshot__c(Active_Users__c = 45000, Forms__c = 13000000, WAMs__c = 345000, Date__c = currentDate.addMonths(-2));
+        insert new ICDS_Domain_Snapshot__c(Active_Users__c = 55000, Forms__c = 14000000, WAMs__c = 365000, Date__c = currentDate.addMonths(-1));
+        insert new ICDS_Domain_Snapshot__c(Active_Users__c = 65000, Forms__c = 15000000, WAMs__c = 385000, Date__c = currentDate);
 
         Test.startTest();
         CorporateDashboardHelper.refreshAllGraphs();

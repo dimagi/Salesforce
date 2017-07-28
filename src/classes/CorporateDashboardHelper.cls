@@ -343,7 +343,7 @@ public class CorporateDashboardHelper {
 
         for (ICDS_Domain_Snapshot__c icdsSnp : snapshots) {
             icdsData.add(new Global_Metric_Graph__c(X_Text__c = getDateText(icdsSnp.Date__c), Name = ICDS_GRAPHS, Helper_Date__c = icdsSnp.Date__c,
-                                                    Graph_Value_1__c = icdsSnp.Active_Users__c / 1000.00, Graph_Value_2__c = icdsSnp.WAMs__c,
+                                                    Graph_Value_1__c = icdsSnp.Active_Users__c / 1000.00, Graph_Value_2__c = icdsSnp.WAMs__c / 1000.00,
                                                     Graph_Value_3__c = icdsSnp.Forms__c / 1000.00));
         }
 

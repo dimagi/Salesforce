@@ -356,7 +356,7 @@
                     return chart;
                 });
                 nv.addGraph(function() {
-                    var chart = buildDiscBatChart('Sum of Wam');
+                    var chart = buildDiscBatChart('Sum of Wam (Thousands)');
                     $j("[id$=wamsICDS").append("<svg></svg>");
                     d3.select('#wamsICDS svg').datum(loadICDSData('wams')).call(chart);
                     nv.utils.windowResize(chart.update);
@@ -1086,15 +1086,15 @@
                         <apex:pageBlockSection title="Financial" collapsible="false" columns="1" >
                             <div class="chartsData">
                                 <div id="netEV" class="gaugeGraph">
-                                    <div class="graphTitle"><h2>2017 Change in Net EV - Target $9.9 million</h2></div>
+                                    <div class="graphTitle"><h2>YTD Change in Net EV - Target $9.9 million</h2></div>
                                     <div id="netEVBottomValue" class="graphBottomTitle"><h2>Sum of DIFF-Expected Value Minus Expense (Millions)</h2></div>
                                 </div>
                                 <div id="bufferEV" class="gaugeGraph">
-                                    <div class="graphTitle"><h2>2017 Buffer EV generated</h2></div>
+                                    <div class="graphTitle"><h2>YTD Buffer EV generated</h2></div>
                                     <div id="bufferEVBottomValue" class="graphBottomTitle"><h2>Sum of DIFF-Expected Buffer (Millions)</h2></div>
                                 </div>
                                 <div id="oppWon" class="gaugeGraph">
-                                    <div class="graphTitle"><h2>2017 Opportunities Won - Target $ 6.9 million</h2></div>
+                                    <div class="graphTitle"><h2>YTD Opportunities Won - Target $ 6.9 million</h2></div>
                                     <div id="oppWonBottomValue" class="graphBottomTitle"><h2>Sum of Expected Value Minus Expense Income (Millions)</h2></div>
                                 </div>
                                 <div id="mrr" class="graph">
