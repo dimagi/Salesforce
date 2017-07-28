@@ -14,6 +14,7 @@ public class CorporateDashboardHelper {
     public static final String FORM_GRAPH = 'Domain Form';
     public static final String USER_GRAPH = 'Domain User';
     public static final String PROGRAMS_GRAPH = 'Domain Programs';
+    public static final String ICDS_GRAPHS = 'Domain ICDS';
 
     @future
     public static void refreshAllGraphsFuture() {
@@ -29,6 +30,7 @@ public class CorporateDashboardHelper {
             loadOppExpetedValue();
             loadAggregateEff();
             loadDomainSnapshotData();
+            loadICDSDomainSnapshotData();
             loadMrr();
         } catch (Exception ex) {
             System.debug('CorporateDashboardHelper error : ' + ex);
@@ -328,6 +330,24 @@ public class CorporateDashboardHelper {
         deleteAndAddMetrics(formData, FORM_GRAPH);
         deleteAndAddMetrics(userData, USER_GRAPH);
         deleteAndAddMetrics(programData, PROGRAMS_GRAPH);
+    }
+
+    public static void loadICDSDomainSnapshotData() {
+        Corporate_Dashboard_Settings__c corporateDashboardSettings = Corporate_Dashboard_Settings__c.getOrgDefaults();
+        List<Global_Metric_Graph__c> icdsData = new List<Global_Metric_Graph__c>();
+        Decimal months = corporateDashboardSettings.ICDS_Number_of_months__c != null ? corporateDashboardSettings.ICDS_Number_of_months__c : 6;
+        List<ICDS_Domain_Snapshot__c> snapshots = [SELECT Id, Active_Users__c, Forms__c, WAMs__c, Date__c
+                                                      FROM ICDS_Domain_Snapshot__c
+                                                      WHERE Date__c >: Date.today().addMonths(((-1) * months).intValue()).toStartOfMonth()
+                                                      ORDER BY Date__c ASC];
+
+        for (ICDS_Domain_Snapshot__c icdsSnp : snapshots) {
+            icdsData.add(new Global_Metric_Graph__c(X_Text__c = getDateText(icdsSnp.Date__c), Name = ICDS_GRAPHS, Helper_Date__c = icdsSnp.Date__c,
+                                                    Graph_Value_1__c = icdsSnp.Active_Users__c / 1000.00, Graph_Value_2__c = icdsSnp.WAMs__c / 1000.00,
+                                                    Graph_Value_3__c = icdsSnp.Forms__c / 1000.00));
+        }
+
+        deleteAndAddMetrics(icdsData, ICDS_GRAPHS);
     }
 
     public static String getDateText(Date snDate) {

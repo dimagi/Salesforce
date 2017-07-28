@@ -1274,10 +1274,23 @@ public with sharing class ProjectReportOutController {
     private List<Global_Metric_Graph__c> gsData;
     private List<Global_Metric_Graph__c> mrr;
     private List<Global_Metric_Graph__c> aggregateEff;
+    private List<Global_Metric_Graph__c> icds;
     private Global_Metric_Graph__c oppExpectedRec;
     private Global_Metric_Graph__c evExpectedRec;
     private Global_Metric_Graph__c bufferEvGenRec;
     public DateTime dashboardRefreshTime { get; set;}
+
+    public String getIcdsData() {
+        if (this.icds == null) {
+            this.icds = [SELECT X_Text__c, Graph_Value_1__c, Graph_Value_2__c, Graph_Value_3__c
+                        FROM Global_Metric_Graph__c WHERE Name =: CorporateDashboardHelper.ICDS_GRAPHS ORDER BY Helper_Date__c];
+        }
+        if (this.icds != null) {
+            return JSON.serialize(this.icds);
+        }
+        return '';
+    }
+    public void setIcdsData(String icds) {}
 
     public String getEvExpected() {
         if (this.evExpectedRec == null) {
