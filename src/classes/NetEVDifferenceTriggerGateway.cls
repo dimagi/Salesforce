@@ -83,16 +83,16 @@ public class NetEVDifferenceTriggerGateway {
      */
     @future
     public static void processPriorMonthSnapshotsWithClosedStatusHistory(Date executeDate) {
-        try {
         Date firstDate = executeDate.toStartOfMonth();
         Date lastDate = firstDate.addDays(date.daysInMonth(firstDate.year() , firstDate.month())).addDays(-1);
 
         Map<Id, Pipeline_Snapshot__c> priorMonthSnapshotRecords = getSnapshotsForClosedDelta(executeDate);
         Set<Id> opportunityIds = priorMonthSnapshotRecords.keySet();
 
-        Map<Id, Decimal> amountHistory = getDecimalHistory('Duration_months__c', lastDate, opportunityIds);
-        Map<Id, Decimal> durationHistory = getDecimalHistory('Amount', lastDate, opportunityIds);
+        Map<Id, Decimal> amountHistory = getDecimalHistory('Amount', lastDate, opportunityIds);
+        Map<Id, Decimal> durationHistory = getDecimalHistory('Duration_months__c', lastDate, opportunityIds);
         Map<Id, String> implementationHistory = getStringHistory('Implementation_Type__c', lastDate, opportunityIds);
+        Map<Id, String> stageHistory = getStringHistory('StageName', lastDate, opportunityIds);
         Map<Id, Date> closeHistory = getDateHistory('CloseDate', lastDate, opportunityIds);
 
         List<Pipeline_Snapshot_EV_DIff__c> snapShotDiffs = new List<Pipeline_Snapshot_EV_DIff__c>();
@@ -113,6 +113,8 @@ public class NetEVDifferenceTriggerGateway {
             snapShotsDiff.Pipeline_Snapshot__c = snapshot.Id;
             snapShotsDiff.Prior_Snapshot_date__c = snapshot.Month_Date__c;
 
+            String stage = stageHistory.containsKey(snapshot.Opportunity__c) ?  stageHistory.get(snapshot.Opportunity__c) :
+                            snapshot.Opportunity__r.StageName != null ? snapshot.Opportunity__r.StageName : 'Closed';
             Decimal amount = amountHistory.containsKey(snapshot.Opportunity__c) ? amountHistory.get(snapshot.Opportunity__c) :
                                 snapshot.Opportunity__r.Amount != null ? snapshot.Opportunity__r.Amount : 0;
             Decimal durationMonths = durationHistory.containsKey(snapshot.Opportunity__c) ? durationHistory.get(snapshot.Opportunity__c) :
@@ -126,7 +128,7 @@ public class NetEVDifferenceTriggerGateway {
             Decimal mrr = (implementationType == 'Self Service' || implementationType == 'Enterprise' || implementationType == 'Managed Server')
                                     ? (durationMonths != 0 ? amount / durationMonths : 0) : 0;
 
-            if(snapshot.Opportunity__r.StageName == 'Closed - Won') {
+            if(stage == 'Closed - Won') {
                 probability = 1;
                 snapShotsDiff.Delta_Type__c = WON;
                 snapShotDiffs.add(snapShotsDiff);
@@ -155,16 +157,10 @@ public class NetEVDifferenceTriggerGateway {
             snapShotsDiff.DIFF_24_Month_Cash_Minus_Expense_Income__c = calculateXMonthCashe(lastDate, closedDate, 24, amount, durationMonths, probability, expenseIncome)
                                      - (snapshot.X24_Month_Cash_Minus_Expense_Income_EV__c != null ? snapshot.X24_Month_Cash_Minus_Expense_Income_EV__c : 0);
         }
-        } catch (Exception ex) {
-            if (!Test.isRunningTest()) {
-                BatchDefaultSettings__c settings = BatchDefaultSettings__c.getOrgDefaults();
-                EmailHelper.sendEmailFromException(settings.Error_Emails__c.split(','), 'NET EV TEST error', 'Unknow', ex);
-            }
-        }
-        // Check no errors
-        /**if (snapShotDiffs.size() > 0) {
+
+        if (snapShotDiffs.size() > 0) {
             insert snapShotDiffs;
-        }*/
+        }
     }
 
     /**
@@ -238,6 +234,8 @@ public class NetEVDifferenceTriggerGateway {
 
         List<Pipeline_Snapshot__c> lastMonthSnapShotsList = [SELECT Name, Opportunity__c, Opportunity__r.StageName,
                                                    Month_Date__c, Amount_Minus_Expense_Income__c, Opportunity_Name__c,
+                                                   Opportunity__r.Amount, Opportunity__r.Implementation_Type__c,
+                                                   Opportunity__r.Duration_months__c, 
                                                    X12_Month_Cash_Minus_Expense_Income_EV__c ,
                                                    X18_Month_Cash_Minus_Expenses_Income_EV__c,
                                                    X24_Month_Cash_Minus_Expense_Income_EV__c,
@@ -278,7 +276,10 @@ public class NetEVDifferenceTriggerGateway {
                 Opportunity__r.Amount_Minus_Expense_Income__c,
                 Opportunity__r.Expected_Value_Minus_Income__c,
                 Opportunity__r.Expected_Monthly_Recurring_Revenue_MRR__c,
-                Opportunity__r.Monthly_Recurring_Revenue_MRR__c
+                Opportunity__r.Monthly_Recurring_Revenue_MRR__c,
+                Opportunity__r.Amount, Opportunity__r.Implementation_Type__c,
+                Opportunity__r.Duration_months__c, Opportunity__r.CloseDate,
+                Opportunity__r.Expense_Income__c
                 FROM Pipeline_Snapshot__c
                 WHERE Month_Date__c >= :firstDate AND Month_Date__c <= :lastDate
                 AND Source_Type__c = 'Opportunity'
@@ -314,7 +315,25 @@ public class NetEVDifferenceTriggerGateway {
                                                      AND CreatedDate >=: lastDate ORDER BY CreatedDate];
         for (OpportunityFieldHistory ofh : historyList) {
             if (!historyMap.containsKey(ofh.OpportunityId)) {
-                historyMap.put(ofh.OpportunityId, ofh.OldValue != null ? (Decimal) ofh.OldValue : 0);
+                if (fieldName == 'Amount') {
+                    String sValue = (String) ofh.OldValue;
+                    historyMap.put(ofh.OpportunityId, sValue != null && sValue != '' ? Decimal.valueOf(sValue) : 0);
+                } else {
+                    historyMap.put(ofh.OpportunityId, ofh.OldValue != null ? (Decimal) ofh.OldValue : 0);
+                }
+            }
+        }
+        return historyMap;
+    }
+
+    private static Map<Id, String> getSageHistory(Date lastDate, Set<Id> opportunityIds) {
+        Map<Id, String> historyMap = new Map<Id, String>();
+        List<OpportunityFieldHistory> historyList = [SELECT OpportunityId, CreatedDate, Field, NewValue, OldValue FROM OpportunityFieldHistory
+                                                     WHERE Field = 'StageName' AND OpportunityId IN: opportunityIds
+                                                     AND CreatedDate >=: lastDate AND CreatedDate <=: lastDate.addMonths(1) ORDER BY CreatedDate DESC];
+        for (OpportunityFieldHistory ofh : historyList) {
+            if (!historyMap.containsKey(ofh.OpportunityId)) {
+                historyMap.put(ofh.OpportunityId, ofh.NewValue != null ? (String) ofh.NewValue : '');
             }
         }
         return historyMap;
@@ -353,8 +372,8 @@ public class NetEVDifferenceTriggerGateway {
 
         List<Pipeline_Snapshot__c> records = [SELECT Id, Name, Opportunity__c, Opportunity__r.StageName,
                             Month_Date__c, Amount_Minus_Expense_Income__c, Opportunity_Name__c,
-                            Opportunity__r.Amount, Opportunity__r.Implementation_Type__c,
-                            Opportunity__r.Duration_months__c, 
+                            Opportunity__r.Amount, Opportunity__r.Implementation_Type__c, Opportunity__r.Expense_Income__c,
+                            Opportunity__r.Duration_months__c, Opportunity__r.CloseDate,
                             X12_Month_Cash_Minus_Expense_Income_EV__c ,
                             X18_Month_Cash_Minus_Expenses_Income_EV__c,
                             X24_Month_Cash_Minus_Expense_Income_EV__c,
