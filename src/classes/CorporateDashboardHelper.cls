@@ -247,7 +247,7 @@ public class CorporateDashboardHelper {
         Decimal months = corporateDashboardSettings.Scale_graphs_number_of_months__c != null ? Corporate_Dashboard_Settings__c.getOrgDefaults().Scale_graphs_number_of_months__c : 3;
         List<Domain_Monthly_Snapshot__c> snapshots = [SELECT Id, Snapshot_Date__c, Software_Plan_Edition__c, Wam__c, Forms_for_Period__c,
                                                       Forms__c, Active_Mobile_Users__c, Scale_of_Programs__c FROM Domain_Monthly_Snapshot__c
-                                                      WHERE Snapshot_Date__c >: Date.today().addMonths(((-1) * months).intValue()).toStartOfMonth()
+                                                      WHERE Snapshot_Date__c >=: Date.today().addMonths(((-1) * months).intValue()).toStartOfMonth()
                                                       AND Software_Plan_Edition__c IN: planNames
                                                       ORDER BY Snapshot_Date__c ASC];
 
