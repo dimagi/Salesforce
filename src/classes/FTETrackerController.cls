@@ -60,9 +60,90 @@ public class FTETrackerController {
     }
 
     /**
+     * Project List View
+     */
+    public List<DContract__c> fteContractList { get; set;}
+    public List<DContract__c> fteContractSearchList { get; set;}
+    public String searchError { get; set;}
+    public String seachProjectName { get; set;}
+    public Id contractToAdd { get; set;}
+    public Id contractToRemove { get; set;}
+
+    public void loadContractList() {
+       this.fteContractList = [SELECT Id, Name, FTE_Tracker__c FROM DContract__c
+                                                 WHERE FTE_Tracker__c = 'Yes' ORDER BY Name];
+       this.seachProjectName = '';
+       this.searchError = '';
+       this.fteContractSearchList = new List<DContract__c>();
+    }
+
+    public void searchProject() {
+        if (this.seachProjectName != null && this.seachProjectName != '') {
+            String soql = 'SELECT Id, Name, Status__c FROM DContract__c WHERE FTE_Tracker__c != \'Yes\'';
+            soql += ' AND Name LIKE \'' + String.escapeSingleQuotes(seachProjectName) + '%\'';
+            soql += ' LIMIT 20';
+            System.debug('Final query: ' + soql);
+            this.fteContractSearchList = Database.query(soql);
+            if(this.fteContractSearchList.size() == 0) {
+                this.searchError = 'No projects were found.';
+            } else {
+                this.searchError = '';
+            }
+        } else {
+            this.fteContractSearchList.clear();
+            this.searchError = 'Name cannot be empty';
+        }
+    }
+
+    public void addProjectToFteTracker() {
+        if (contractToAdd != null) {
+            List<DContract__c> recordsFromDb = [SELECT Id, FTE_Tracker__c FROM DContract__c WHERE Id =: this.contractToAdd];
+            if (recordsFromDb.size() > 0) {
+                DContract__c toUpdate = recordsFromDb.get(0);
+                toUpdate.FTE_Tracker__c = 'Yes';
+                try {
+                    update toUpdate;
+                } catch (Exception e) {
+                    ApexPages.addMessage(new ApexPages.message(ApexPages.severity.ERROR, 'Cannot add project to FTE Tracker: '
+                                                                                            +  e.getMessage()));
+                }
+                loadContractList();
+            }
+        }
+    }
+
+    public void removeProjectFromFteTracker() {
+        if (contractToRemove != null) {
+            List<DContract__c> recordsFromDb = [SELECT Id, FTE_Tracker__c FROM DContract__c WHERE Id =: this.contractToRemove];
+            if (recordsFromDb.size() > 0) {
+                DContract__c toUpdate = recordsFromDb.get(0);
+                toUpdate.FTE_Tracker__c = 'No';
+                try {
+                    update toUpdate;
+                } catch (Exception e) {
+                    ApexPages.addMessage(new ApexPages.message(ApexPages.severity.ERROR, 'Cannot remove project from FTE Tracker: '
+                                                                                            +  e.getMessage()));
+                }
+                loadContractList();
+            }
+        }
+    }
+
+    public PageReference goToIndividualProjectView() {
+        PageReference pageRef = null;
+        if (String.isBlank(this.employeeId)) {
+            ApexPages.addMessage(new ApexPages.message(ApexPages.severity.ERROR, 'Empty FTE Contract ID'));
+        } else {
+            pageRef = Page.FTE_Employee_List_View;
+            pageRef.setRedirect(false);
+        }
+
+        return pageRef;
+    }
+
+    /**
      * Employee List View
      */
-
     public List<EmployeeTime> employees { get; set;}
 
     public void loadEmployeeListTimeHistory() {
@@ -71,6 +152,9 @@ public class FTETrackerController {
        for (SFDC_Employee__c emp : employeesFromDB) {
            this.employees.add(new EmployeeTime(emp.Name, emp.Id));
        }
+       /*System.debug('Employees Data Size : ' + employeesFromDB.size());
+       List<Time_Card__c> timeCards = [SELECT Id, Total__c, Client__c FROM Time_Card__c WHERE Employee__c IN: employeesFromDB AND Date__c >= 2016-01-01 AND Date__c <= 2016-12-31];
+       System.debug('Time Data Size : ' + timeCards.size());**/
     }
 
     public PageReference goToEmployeeView() {
@@ -150,7 +234,7 @@ public class FTETrackerController {
         return pageRef;
     }
 
-    public PageReference goToIndividualProjectView() {
+    public PageReference goToIndividualProjectFromEmplView() {
         PageReference pageRef = Page.FTE_Individual_Project_View;
         pageRef.setRedirect(false); 
         return null;//return pageRef; // TODO FIX
@@ -567,16 +651,26 @@ public class FTETrackerController {
     }
 
     public PageReference backToEmployeeView() {
-        clearViewData();
+        clearAssignUnassignViewData();
         PageReference pageRef = Page.FTE_Employee_View;
         pageRef.setRedirect(false); 
         return pageRef;
     }
 
-    private void clearViewData() {
+    private void clearAssignUnassignViewData() {
         this.contractId = null;
         this.fteHoursMax = 0;
         this.employeeMonth = null;
+        this.fteContracts = null;
+        this.fteContractsOptions.clear();
+        this.selectedFteContract = null;
+        this.fteDays = '';
+        this.contractName = null;
+        this.fteDaysMax = 0;
+        this.userAvailableDays = 0;
+        this.assignViewError = false;
+        this.notValidDays = false;
+        this.monthName = null;
     }
 
     private Integer getContractIndex() {
@@ -590,8 +684,8 @@ public class FTETrackerController {
     }
 
     public void removeAllTags() {
-        List<Time_Card__c> tagsTC = [SELECT Id, FTE_Contract__c, FTE_hours__c, FTE_only__c FROM Time_Card__c WHERE (FTE_Contract__c != null 
-                                        AND FTE_Contract__c != '') OR FTE_hours__c > 0];
+        List<Time_Card__c> tagsTC = [SELECT Id, FTE_Contract__c, FTE_hours__c, FTE_only__c FROM Time_Card__c
+                                     WHERE (FTE_Contract__c != null AND FTE_Contract__c != '') OR FTE_hours__c > 0];
         List<Time_Card__c> toUpdate = new List<Time_Card__c>();
         List<Time_Card__c> toRemove = new List<Time_Card__c>();
 
