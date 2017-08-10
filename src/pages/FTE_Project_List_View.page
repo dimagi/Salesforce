@@ -40,12 +40,17 @@
                     <apex:pageMessages />
                 </apex:outputPanel>
 
+                <apex:actionFunction action="{!goToIndividualProjectView}" name="goToIndividualProjectView" />
+                <apex:actionFunction action="{!setViewData}" name="setIndividualProjectViewData" oncomplete="goToIndividualProjectView();">
+                    <apex:param name="contractId" assignTo="{!contractId}" value=""/>
+                </apex:actionFunction>
+
                 <apex:pageBlockSection columns="1">
                 <apex:pageBlockTable id="fteContractList" value="{!fteContractList}" var="fteProject" styleClass="projectTable">
-                    <apex:column headerValue="FTE Project Name" value="{!fteProject.name}" styleClass="fteProjectCell" />
+                    <apex:column headerValue="FTE Project Name" value="{!fteProject.name}" styleClass="fteProjectCell" onclick="setIndividualProjectViewData('{!fteProject.Id}');" />
                     <apex:column headerValue="Action" >
                         <apex:commandLink status="loadingDiv" value=" Remove " action="{!removeProjectFromFteTracker}" reRender="projectList" >
-                            <apex:param name="contractToRemove" assignTo="{!contractToRemove}" value="{!fteProject.Id}"/>
+                            <apex:param name="contractToRemove" assignTo="{!contractId}" value="{!fteProject.Id}"/>
                         </apex:commandLink>
                     </apex:column>
                 </apex:pageBlockTable>
@@ -68,7 +73,7 @@
                 <apex:outputPanel styleClass="requiredInput" layout="block">
                     <apex:actionFunction action="{!addProjectToFteTracker}" name="addProjectToFteTracker" status="loadingDiv"
                                 reRender="projectList">
-                        <apex:param name="contractToAdd" assignTo="{!contractToAdd}" value=""/>
+                        <apex:param name="contractToAdd" assignTo="{!contractId}" value=""/>
                     </apex:actionFunction>
                     <apex:pageBlockTable value="{!fteContractSearchList}" var="obj" id="searchResultTable" styleClass="projectTable" >
                         <apex:column onclick="addProjectToFteTracker('{!obj.Id}');" headerValue="Project Name" value="{!obj.Name}" 

@@ -8,6 +8,7 @@ public class FTETrackerController {
     public Integer currentYear { get; set;}
     public Date yearBegin { get; set;}
     public Date yearEnd { get; set;}
+    public Id contractId { get; set;}
 
     public FTETrackerController () {
         Date currentDate = Date.today();
@@ -66,8 +67,6 @@ public class FTETrackerController {
     public List<DContract__c> fteContractSearchList { get; set;}
     public String searchError { get; set;}
     public String seachProjectName { get; set;}
-    public Id contractToAdd { get; set;}
-    public Id contractToRemove { get; set;}
 
     public void loadContractList() {
        this.fteContractList = [SELECT Id, Name, FTE_Tracker__c FROM DContract__c
@@ -96,8 +95,8 @@ public class FTETrackerController {
     }
 
     public void addProjectToFteTracker() {
-        if (contractToAdd != null) {
-            List<DContract__c> recordsFromDb = [SELECT Id, FTE_Tracker__c FROM DContract__c WHERE Id =: this.contractToAdd];
+        if (this.contractId != null) {
+            List<DContract__c> recordsFromDb = [SELECT Id, FTE_Tracker__c FROM DContract__c WHERE Id =: this.contractId];
             if (recordsFromDb.size() > 0) {
                 DContract__c toUpdate = recordsFromDb.get(0);
                 toUpdate.FTE_Tracker__c = 'Yes';
@@ -110,11 +109,12 @@ public class FTETrackerController {
                 loadContractList();
             }
         }
+        this.contractId = null;
     }
 
     public void removeProjectFromFteTracker() {
-        if (contractToRemove != null) {
-            List<DContract__c> recordsFromDb = [SELECT Id, FTE_Tracker__c FROM DContract__c WHERE Id =: this.contractToRemove];
+        if (this.contractId != null) {
+            List<DContract__c> recordsFromDb = [SELECT Id, FTE_Tracker__c FROM DContract__c WHERE Id =: this.contractId];
             if (recordsFromDb.size() > 0) {
                 DContract__c toUpdate = recordsFromDb.get(0);
                 toUpdate.FTE_Tracker__c = 'No';
@@ -127,18 +127,88 @@ public class FTETrackerController {
                 loadContractList();
             }
         }
+        this.contractId = null;
     }
 
     public PageReference goToIndividualProjectView() {
         PageReference pageRef = null;
-        if (String.isBlank(this.employeeId)) {
+        if (String.isBlank(this.contractId)) {
             ApexPages.addMessage(new ApexPages.message(ApexPages.severity.ERROR, 'Empty FTE Contract ID'));
         } else {
-            pageRef = Page.FTE_Employee_List_View;
+            pageRef = Page.FTE_Individual_Project_View;
             pageRef.setRedirect(false);
         }
 
         return pageRef;
+    }
+
+    /**
+     * Individual Project View
+     */
+
+    public List<EmployeeTime> individualContractDataList { get; set;}
+
+    public void loadIndividualProject() {
+        this.individualContractDataList = new List<EmployeeTime>();
+        if (this.contractId == null) {
+            ApexPages.addMessage(new ApexPages.message(ApexPages.severity.ERROR, 'Empty FTE Contract ID'));
+            return;
+        }
+
+        Map<Id, EmployeeTime> projectTimeMap = new Map<Id, EmployeeTime>();
+
+        Date currentDate = Date.today();
+        Integer currentMonth = currentDate.month();
+        Integer currentYear = currentDate.year();
+        Integer oneMonthAgo = currentDate.addMonths(-1).month();
+        Integer oneMonthAgoYear = currentDate.addMonths(-1).year();
+        Integer twoMonthAgo = currentDate.addMonths(-2).month();
+        Integer twoMonthAgoYear = currentDate.addMonths(-2).year();
+        Integer threeMonthAgo = currentDate.addMonths(-3).month();
+        Integer threeMonthAgoYear = currentDate.addMonths(-3).year();
+
+        Decimal currentMonthTotalhours = 0;
+        Decimal firstMonthTotalhours = 0;
+        Decimal secondMonthTotalhours = 0;
+        Decimal thirdMonthTotalhours = 0;
+        Decimal moreThanThreeMonthTotalhours = 0;
+        Decimal totalHours = 0;
+        Decimal totalCost = 0;
+
+        List<Time_Card__c> contractTimeCards = [SELECT Id, Employee__c, Employee__r.Name, Date__c, Total__c FROM Time_Card__c WHERE Client__c =: this.contractId];
+
+        for (Time_Card__c timeCard : contractTimeCards) {
+            EmployeeTime tmpHelper;
+            if (projectTimeMap.containsKey(timeCard.Employee__c)) {
+                tmpHelper = projectTimeMap.get(timeCard.Employee__c);
+            } else {
+                tmpHelper = new EmployeeTime(timeCard.Employee__r.Name, timeCard.Employee__c);
+            }
+
+            Date entryDate = timeCard.Date__c != null ? timeCard.Date__c : Date.today();
+            Integer entryDateMonth = timeCard.Date__c != null ? timeCard.Date__c.month() : 0;
+            Integer entryDateYear = timeCard.Date__c != null ? timeCard.Date__c.year() : 0;
+
+            if (entryDateMonth == currentMonth && entryDateYear == currentYear) {
+                tmpHelper.hoursArray[0] += timeCard.Total__c != null ? timeCard.Total__c : 0;
+            } else if(entryDateMonth == oneMonthAgo && entryDateYear == oneMonthAgoYear ){
+                tmpHelper.hoursArray[1] += timeCard.Total__c != null ? timeCard.Total__c : 0;
+            } else if(entryDateMonth == twoMonthAgo && entryDateYear == twoMonthAgoYear ) {
+                tmpHelper.hoursArray[2] += timeCard.Total__c != null ? timeCard.Total__c : 0;
+            } else if(entryDateMonth == threeMonthAgo && entryDateYear == threeMonthAgoYear ) {
+                tmpHelper.hoursArray[3] += timeCard.Total__c != null ? timeCard.Total__c : 0;
+            } else {
+                tmpHelper.hoursArray[4] += timeCard.Total__c != null ? timeCard.Total__c : 0;
+            }
+            projectTimeMap.put(timeCard.Employee__c, tmpHelper);
+        }
+        this.individualContractDataList = projectTimeMap.values();
+        //TODO sort ?
+        /**for (EmployeeTime empT : this.individualContractDataList) {
+            empT.calculateDays(employee);
+            this.totalAssignedDays.sumHours(empT);
+            this.totalDaysWorked.sumHours(empT);
+        }*/
     }
 
     /**
@@ -301,7 +371,6 @@ public class FTETrackerController {
     public List<SelectOption> fteContractsOptions { get;set; }
     public Id selectedFteContract { get; set;}
     public String fteDays { get; set;}
-    public Id contractId { get; set;}
     public String contractName { get; set;}
     public Integer employeeMonth { get; set;}
     public Decimal fteHoursMax { get; set;}
