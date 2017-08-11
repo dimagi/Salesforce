@@ -84,6 +84,7 @@
                 </apex:actionFunction>
                 <apex:actionFunction action="{!goToIndividualProjectFromEmplView}" name="goToIndividualProjectView" />
                 <apex:actionFunction action="{!setViewData}" name="setProjectIndViewData" oncomplete="goToIndividualProjectView();">
+                    <apex:param name="contractId" assignTo="{!contractId}" value=""/>
                 </apex:actionFunction>
                 <apex:commandButton action="{!removeAllTags}" status="loadingDiv" value="Reset Data" id="resetButton" reRender="employeeHours"/>
             </apex:outputPanel>

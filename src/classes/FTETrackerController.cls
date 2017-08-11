@@ -3,12 +3,12 @@
  */
 public class FTETrackerController {
 
-    public Id testEmployeeId = 'a0Tm0000001h6iy';
-
     public Integer currentYear { get; set;}
     public Date yearBegin { get; set;}
     public Date yearEnd { get; set;}
     public Id contractId { get; set;}
+    public Id employeeId { get; set;}
+    public String contractName { get; set;}
 
     public FTETrackerController () {
         Date currentDate = Date.today();
@@ -22,7 +22,6 @@ public class FTETrackerController {
     }
 
     public class EmployeeTime {
-
         public String name { get; set;}
         public Id objId { get; set;}
         public List<Decimal> hoursArray { get; set;}
@@ -38,6 +37,12 @@ public class FTETrackerController {
             this.cssStyle = new String [] {'fteCell', 'fteCell', 'fteCell', 'fteCell', 'fteCell', 'fteCell', 'fteCell', 'fteCell', 'fteCell', 'fteCell',
                                             'fteCell', 'fteCell', '', ''};
             this.nameCss = 'fteProjectCell';
+        }
+
+        public void calculateDays() {
+            for (Integer i = 0 ; i < this.hoursArray.size(); i++) {
+                this.daysArray[i] = roundtoDays(this.hoursArray[i]);
+            }
         }
 
         public void calculateDays(SFDC_Employee__c emp) {
@@ -135,11 +140,19 @@ public class FTETrackerController {
         if (String.isBlank(this.contractId)) {
             ApexPages.addMessage(new ApexPages.message(ApexPages.severity.ERROR, 'Empty FTE Contract ID'));
         } else {
+            clearProjectListViewData();
             pageRef = Page.FTE_Individual_Project_View;
             pageRef.setRedirect(false);
         }
 
         return pageRef;
+    }
+
+    private void clearProjectListViewData() {
+        this.fteContractList = null;
+        this.fteContractSearchList = null;
+        this.searchError = '';
+        this.seachProjectName = '';
     }
 
     /**
@@ -155,6 +168,13 @@ public class FTETrackerController {
             return;
         }
 
+        List<DContract__c> contractList = [SELECT Id, Name FROM DContract__c WHERE Id =: this.contractId];
+        if (contractList.size() == 0) {
+            ApexPages.addMessage(new ApexPages.message(ApexPages.severity.ERROR, 'Cannot load FTE Contract'));
+            return;
+        }
+
+        this.contractName = contractList.get(0).Name;
         Map<Id, EmployeeTime> projectTimeMap = new Map<Id, EmployeeTime>();
 
         Date currentDate = Date.today();
@@ -175,8 +195,10 @@ public class FTETrackerController {
         Decimal totalHours = 0;
         Decimal totalCost = 0;
 
-        List<Time_Card__c> contractTimeCards = [SELECT Id, Employee__c, Employee__r.Name, Date__c, Total__c FROM Time_Card__c WHERE Client__c =: this.contractId];
+        List<Time_Card__c> contractTimeCards = [SELECT Id, Employee__c, Employee__r.Name, Date__c, Total__c FROM Time_Card__c WHERE
+                                                Client__c =: this.contractId AND Date__c <=: Date.today()];
 
+        EmployeeTime totalProjectTime = new EmployeeTime('Total', null);
         for (Time_Card__c timeCard : contractTimeCards) {
             EmployeeTime tmpHelper;
             if (projectTimeMap.containsKey(timeCard.Employee__c)) {
@@ -200,15 +222,54 @@ public class FTETrackerController {
             } else {
                 tmpHelper.hoursArray[4] += timeCard.Total__c != null ? timeCard.Total__c : 0;
             }
+            tmpHelper.hoursArray[12] += timeCard.Total__c != null ? timeCard.Total__c : 0;
             projectTimeMap.put(timeCard.Employee__c, tmpHelper);
         }
         this.individualContractDataList = projectTimeMap.values();
-        //TODO sort ?
-        /**for (EmployeeTime empT : this.individualContractDataList) {
-            empT.calculateDays(employee);
-            this.totalAssignedDays.sumHours(empT);
-            this.totalDaysWorked.sumHours(empT);
-        }*/
+        Map<Id, SFDC_Employee__c> empMap = new Map<Id, SFDC_Employee__c>([SELECT Id, Name, Unloaded_Daily_Rate__c 
+                        FROM SFDC_Employee__c WHERE Id IN: projectTimeMap.keySet()]);
+        for (EmployeeTime empT : this.individualContractDataList) {
+            empT.calculateDays(empMap.get(empT.objId));
+            totalProjectTime.daysArray[13] += empT.daysArray[13];
+            totalProjectTime.sumHours(empT);
+        }
+        totalProjectTime.calculateDays();
+        totalProjectTime.cssStyle[0] = 'topTotal';
+        totalProjectTime.cssStyle[1] = 'topTotal';
+        totalProjectTime.cssStyle[2] = 'topTotal';
+        totalProjectTime.cssStyle[3] = 'topTotal';
+        totalProjectTime.cssStyle[4] = 'topTotal';
+        totalProjectTime.cssStyle[12] = 'topTotal';
+        totalProjectTime.cssStyle[13] = 'topTotal';
+        totalProjectTime.nameCss = 'topTotal';
+        this.individualContractDataList.add(totalProjectTime);
+    }
+
+    public PageReference goToEmployeeViewFromProjectView() {
+        PageReference pageRef = null;
+        if (String.isBlank(this.employeeId)) {
+            ApexPages.addMessage(new ApexPages.message(ApexPages.severity.ERROR, 'Empty FTE Employee ID'));
+        } else {
+            clearProjectIndividualData();
+            pageRef = Page.FTE_Employee_View;
+            pageRef.setRedirect(false);
+        }
+
+        return pageRef;
+    }
+
+    public PageReference goToProjectListViewFromProjectView() {
+        clearProjectIndividualData();
+        PageReference pageRef = Page.FTE_Project_List_View;
+        pageRef.setRedirect(false);
+
+        return pageRef;
+    }
+
+    private void clearProjectIndividualData() {
+        this.individualContractDataList = null;
+        this.contractId = null;
+        this.contractName = '';
     }
 
     /**
@@ -230,7 +291,7 @@ public class FTETrackerController {
     public PageReference goToEmployeeView() {
         PageReference pageRef = null;
         if (String.isBlank(this.employeeId)) {
-            ApexPages.addMessage(new ApexPages.message(ApexPages.severity.ERROR, 'Empty FTE Contract ID'));
+            ApexPages.addMessage(new ApexPages.message(ApexPages.severity.ERROR, 'Empty FTE Employee ID'));
         } else {
             pageRef = Page.FTE_Employee_List_View;
             pageRef.setRedirect(false); 
@@ -242,8 +303,6 @@ public class FTETrackerController {
     /**
      * Employee view
      */
-
-    public Id employeeId { get; set;}
     public SFDC_Employee__c employee { get; set;}
     public EmployeeTime unassigned { get; set;}
     public EmployeeTime totalAssignedDays { get; set;}
@@ -254,7 +313,7 @@ public class FTETrackerController {
 
     public void loadEmployeeTimeHistory() {
         // Load employee logged time this year
-        this.employee = [SELECT Id, Name, Unloaded_Daily_Rate__c FROM SFDC_Employee__c WHERE Id =: testEmployeeId LIMIT 1];
+        this.employee = [SELECT Id, Name, Unloaded_Daily_Rate__c FROM SFDC_Employee__c WHERE Id =: this.employeeId LIMIT 1];
         List<Time_Card__c> timeCards = [SELECT Id, Client__c, Client__r.FTE_Tracker__c, Client__r.Name,
                                         Total__c, FTE_hours__c, FTE_Contract__c,
                                         FTE_Contract__r.FTE_Tracker__c, FTE_Contract__r.Name,
@@ -305,9 +364,26 @@ public class FTETrackerController {
     }
 
     public PageReference goToIndividualProjectFromEmplView() {
-        PageReference pageRef = Page.FTE_Individual_Project_View;
-        pageRef.setRedirect(false); 
-        return null;//return pageRef; // TODO FIX
+        PageReference pageRef = null;
+        if (String.isBlank(this.contractId)) {
+            ApexPages.addMessage(new ApexPages.message(ApexPages.severity.ERROR, 'Empty FTE Contract ID'));
+        } else {
+            clearEmployeeViewData();
+            pageRef = Page.FTE_Individual_Project_View;
+            pageRef.setRedirect(false);
+        }
+
+        return pageRef;
+    }
+
+    private void clearEmployeeViewData() {
+        this.employee = null;
+        this.unassigned = null;
+        this.totalAssignedDays = null;
+        this.totalDaysWorked = null;
+        this.assignedMap = null;
+        this.contractsTime = null;
+        this.unassignedMap = null;
     }
 
     private void calculateLoggedTime(Boolean fteTracker, Id clientId, String clientName, Decimal loggedHours, Integer month) {
@@ -371,7 +447,6 @@ public class FTETrackerController {
     public List<SelectOption> fteContractsOptions { get;set; }
     public Id selectedFteContract { get; set;}
     public String fteDays { get; set;}
-    public String contractName { get; set;}
     public Integer employeeMonth { get; set;}
     public Decimal fteHoursMax { get; set;}
     public Decimal fteDaysMax { get; set;}
