@@ -252,4 +252,115 @@ public class BatchCalculateTotalHoursOfTimeCardTest {
         dcontractFromDB = [SELECT Id, Name, Services_Spend__c FROM DContract__c WHERE Id =: child4.Id];
         System.assertEquals(459.84, dcontractFromDB.Services_Spend__c);
     }
+
+    @isTest
+    public static void shouldRemoveOnlyDuplicatedTimeCards() {
+        SFDC_Employee__c employeeObj1 = new SFDC_Employee__c(
+            name = 'Sample Employee',
+            Salary__c = 50000,
+            Exchange_Rate__c = 1,
+            Effective_Salary_Date__c = Date.newInstance(2016, 2, 24),
+            Effective_Exchange_Rate_Date__c = Date.newInstance(2016, 2, 24)
+        );
+        insert employeeObj1;
+        DContract__c dcontract1 = new DContract__c(
+            Name = 'Sample Test Name',
+            Status__c = 'Active',
+            Requires_Report_Out__c = 'No',
+            Intracompany_Sub_contract__c = 'No'
+        );
+        insert dcontract1;
+        SFDC_Employee__c employeeObj2 = new SFDC_Employee__c(
+            name = 'Sample Employee',
+            Salary__c = 50000,
+            Exchange_Rate__c = 1,
+            Effective_Salary_Date__c = Date.newInstance(2016, 2, 24),
+            Effective_Exchange_Rate_Date__c = Date.newInstance(2016, 2, 24)
+        );
+        insert employeeObj2;
+        DContract__c dcontract2 = new DContract__c(
+            Name = 'Sample Test Name',
+            Status__c = 'Active',
+            Requires_Report_Out__c = 'No',
+            Intracompany_Sub_contract__c = 'No'
+        );
+        insert dcontract2;
+
+        insert new Time_Card__c(Total__c = 4, Date__c = Date.newInstance(2017, 3 ,1), Employee__c = employeeObj1.Id, Client__c = dcontract1.Id, Case__c = 'Test Case 1'); // ok
+        insert new Time_Card__c(Total__c = 4, Date__c = Date.newInstance(2017, 3 ,1), Employee__c = employeeObj1.Id, Client__c = dcontract1.Id, Case__c = 'Test Case 2'); // ok
+        insert new Time_Card__c(Total__c = 4, Date__c = Date.newInstance(2017, 3 ,2), Employee__c = employeeObj1.Id, Client__c = dcontract1.Id, Case__c = 'Test Case 1'); // ok
+        insert new Time_Card__c(Total__c = 4, Date__c = Date.newInstance(2017, 3 ,2), Employee__c = employeeObj1.Id, Client__c = dcontract1.Id, Case__c = 'Test Case 1'); // remove
+        insert new Time_Card__c(Total__c = 4, Date__c = Date.newInstance(2017, 3 ,2), Employee__c = employeeObj1.Id, Client__c = dcontract1.Id, Case__c = 'Test Case 2'); // ok
+        insert new Time_Card__c(Total__c = 4, Date__c = Date.newInstance(2017, 3 ,2), Employee__c = employeeObj1.Id, Client__c = dcontract1.Id, Case__c = 'Test Case 2'); // remove
+        insert new Time_Card__c(Total__c = 4, Date__c = Date.newInstance(2017, 3 ,2), Employee__c = employeeObj1.Id, Client__c = dcontract1.Id, Case__c = 'Test Case 2'); // remove
+        insert new Time_Card__c(Total__c = 4, Date__c = Date.newInstance(2017, 3 ,3), Employee__c = employeeObj1.Id, Client__c = dcontract1.Id, Case__c = 'Test Case 3'); // ok
+        insert new Time_Card__c(Total__c = 4, Date__c = Date.newInstance(2017, 3 ,3), Employee__c = employeeObj1.Id, Client__c = dcontract1.Id, Case__c = 'Test Case 3'); // remove
+        insert new Time_Card__c(Total__c = 4, Date__c = Date.newInstance(2017, 3 ,3), Employee__c = employeeObj1.Id, Client__c = dcontract1.Id, Case__c = 'Test Case 3'); // remove
+
+        insert new Time_Card__c(Total__c = 4, Date__c = Date.newInstance(2017, 3 ,1), Employee__c = employeeObj2.Id, Client__c = dcontract1.Id, Case__c = 'Test Case 1'); // ok
+        insert new Time_Card__c(Total__c = 4, Date__c = Date.newInstance(2017, 3 ,1), Employee__c = employeeObj2.Id, Client__c = dcontract1.Id, Case__c = 'Test Case 2'); // ok
+        insert new Time_Card__c(Total__c = 4, Date__c = Date.newInstance(2017, 3 ,2), Employee__c = employeeObj2.Id, Client__c = dcontract1.Id, Case__c = 'Test Case 1'); // ok
+        insert new Time_Card__c(Total__c = 4, Date__c = Date.newInstance(2017, 3 ,2), Employee__c = employeeObj2.Id, Client__c = dcontract1.Id, Case__c = 'Test Case 1'); // remove
+        insert new Time_Card__c(Total__c = 4, Date__c = Date.newInstance(2017, 3 ,2), Employee__c = employeeObj2.Id, Client__c = dcontract1.Id, Case__c = 'Test Case 2'); // ok
+        insert new Time_Card__c(Total__c = 4, Date__c = Date.newInstance(2017, 3 ,2), Employee__c = employeeObj2.Id, Client__c = dcontract1.Id, Case__c = 'Test Case 2'); // remove
+        insert new Time_Card__c(Total__c = 4, Date__c = Date.newInstance(2017, 3 ,2), Employee__c = employeeObj2.Id, Client__c = dcontract1.Id, Case__c = 'Test Case 2'); // remove
+        insert new Time_Card__c(Total__c = 4, Date__c = Date.newInstance(2017, 3 ,3), Employee__c = employeeObj2.Id, Client__c = dcontract1.Id, Case__c = 'Test Case 2'); // ok
+        insert new Time_Card__c(Total__c = 4, Date__c = Date.newInstance(2017, 3 ,3), Employee__c = employeeObj2.Id, Client__c = dcontract1.Id, Case__c = 'Test Case 2'); // remove
+        insert new Time_Card__c(Total__c = 4, Date__c = Date.newInstance(2017, 3 ,3), Employee__c = employeeObj2.Id, Client__c = dcontract1.Id, Case__c = 'Test Case 2'); // remove
+
+        insert new Time_Card__c(Total__c = 4, Date__c = Date.newInstance(2017, 3 ,1), Employee__c = employeeObj1.Id, Client__c = dcontract2.Id, Case__c = 'Test Case 4'); // ok
+        insert new Time_Card__c(Total__c = 4, Date__c = Date.newInstance(2017, 3 ,1), Employee__c = employeeObj1.Id, Client__c = dcontract2.Id, Case__c = 'Test Case 5'); // ok
+        insert new Time_Card__c(Total__c = 4, Date__c = Date.newInstance(2017, 3 ,2), Employee__c = employeeObj1.Id, Client__c = dcontract2.Id, Case__c = 'Test Case 6'); // ok
+        insert new Time_Card__c(Total__c = 4, Date__c = Date.newInstance(2017, 3 ,2), Employee__c = employeeObj1.Id, Client__c = dcontract2.Id, Case__c = 'Test Case 6'); // remove
+        insert new Time_Card__c(Total__c = 4, Date__c = Date.newInstance(2017, 3 ,2), Employee__c = employeeObj1.Id, Client__c = dcontract2.Id, Case__c = 'Test Case 6'); // remove
+        insert new Time_Card__c(Total__c = 4, Date__c = Date.newInstance(2017, 3 ,2), Employee__c = employeeObj1.Id, Client__c = dcontract2.Id, Case__c = 'Test Case 4'); // ok
+        insert new Time_Card__c(Total__c = 4, Date__c = Date.newInstance(2017, 3 ,2), Employee__c = employeeObj1.Id, Client__c = dcontract2.Id, Case__c = 'Test Case 4'); // remove
+        insert new Time_Card__c(Total__c = 4, Date__c = Date.newInstance(2017, 3 ,3), Employee__c = employeeObj1.Id, Client__c = dcontract2.Id, Case__c = 'Test Case 4'); // ok
+        insert new Time_Card__c(Total__c = 4, Date__c = Date.newInstance(2017, 3 ,3), Employee__c = employeeObj1.Id, Client__c = dcontract2.Id, Case__c = 'Test Case 5'); // ok
+        insert new Time_Card__c(Total__c = 4, Date__c = Date.newInstance(2017, 3 ,3), Employee__c = employeeObj1.Id, Client__c = dcontract2.Id, Case__c = 'Test Case 5'); // remove
+
+        Test.startTest();
+
+        RemoveDuplicatedTimeCardsBatch obj = new RemoveDuplicatedTimeCardsBatch(Date.newInstance(2017, 3, 1), Date.newInstance(2017, 3, 31));
+        Database.executeBatch(obj, 50);
+
+        Test.stopTest();
+
+        List<Time_Card__c> allTimeCards = [SELECT Id FROM Time_Card__c];
+        System.assertEquals(16, allTimeCards.size());
+        List<Time_Card__c> timeCards = [SELECT Id FROM Time_Card__c WHERE Date__c =: Date.newInstance(2017, 3, 1) AND Employee__c =: employeeObj1.Id AND Case__c = 'Test Case 1'];
+        System.assertEquals(1, timeCards.size());
+        timeCards = [SELECT Id FROM Time_Card__c WHERE Date__c =: Date.newInstance(2017, 3, 1) AND Employee__c =: employeeObj1.Id AND Case__c = 'Test Case 2'];
+        System.assertEquals(1, timeCards.size());
+        timeCards = [SELECT Id FROM Time_Card__c WHERE Date__c =: Date.newInstance(2017, 3, 2) AND Employee__c =: employeeObj1.Id AND Case__c = 'Test Case 1'];
+        System.assertEquals(1, timeCards.size());
+        timeCards = [SELECT Id FROM Time_Card__c WHERE Date__c =: Date.newInstance(2017, 3, 2) AND Employee__c =: employeeObj1.Id AND Case__c = 'Test Case 2'];
+        System.assertEquals(1, timeCards.size());
+        timeCards = [SELECT Id FROM Time_Card__c WHERE Date__c =: Date.newInstance(2017, 3, 3) AND Employee__c =: employeeObj1.Id AND Case__c = 'Test Case 3'];
+        System.assertEquals(1, timeCards.size());
+
+        timeCards = [SELECT Id FROM Time_Card__c WHERE Date__c =: Date.newInstance(2017, 3, 1) AND Employee__c =: employeeObj2.Id AND Case__c = 'Test Case 1'];
+        System.assertEquals(1, timeCards.size());
+        timeCards = [SELECT Id FROM Time_Card__c WHERE Date__c =: Date.newInstance(2017, 3, 1) AND Employee__c =: employeeObj2.Id AND Case__c = 'Test Case 2'];
+        System.assertEquals(1, timeCards.size());
+        timeCards = [SELECT Id FROM Time_Card__c WHERE Date__c =: Date.newInstance(2017, 3, 2) AND Employee__c =: employeeObj2.Id AND Case__c = 'Test Case 1'];
+        System.assertEquals(1, timeCards.size());
+        timeCards = [SELECT Id FROM Time_Card__c WHERE Date__c =: Date.newInstance(2017, 3, 2) AND Employee__c =: employeeObj2.Id AND Case__c = 'Test Case 2'];
+        System.assertEquals(1, timeCards.size());
+        timeCards = [SELECT Id FROM Time_Card__c WHERE Date__c =: Date.newInstance(2017, 3, 3) AND Employee__c =: employeeObj2.Id AND Case__c = 'Test Case 2'];
+        System.assertEquals(1, timeCards.size());
+
+        timeCards = [SELECT Id FROM Time_Card__c WHERE Date__c =: Date.newInstance(2017, 3, 1) AND Employee__c =: employeeObj1.Id AND Case__c = 'Test Case 4'];
+        System.assertEquals(1, timeCards.size());
+        timeCards = [SELECT Id FROM Time_Card__c WHERE Date__c =: Date.newInstance(2017, 3, 1) AND Employee__c =: employeeObj1.Id AND Case__c = 'Test Case 5'];
+        System.assertEquals(1, timeCards.size());
+        timeCards = [SELECT Id FROM Time_Card__c WHERE Date__c =: Date.newInstance(2017, 3, 2) AND Employee__c =: employeeObj1.Id AND Case__c = 'Test Case 6'];
+        System.assertEquals(1, timeCards.size());
+        timeCards = [SELECT Id FROM Time_Card__c WHERE Date__c =: Date.newInstance(2017, 3, 2) AND Employee__c =: employeeObj1.Id AND Case__c = 'Test Case 4'];
+        System.assertEquals(1, timeCards.size());
+        timeCards = [SELECT Id FROM Time_Card__c WHERE Date__c =: Date.newInstance(2017, 3, 3) AND Employee__c =: employeeObj1.Id AND Case__c = 'Test Case 4'];
+        System.assertEquals(1, timeCards.size());
+        timeCards = [SELECT Id FROM Time_Card__c WHERE Date__c =: Date.newInstance(2017, 3, 3) AND Employee__c =: employeeObj1.Id AND Case__c = 'Test Case 5'];
+        System.assertEquals(1, timeCards.size());
+    }
 }
