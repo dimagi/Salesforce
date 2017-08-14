@@ -34,7 +34,7 @@ public with sharing class ProjectReportOutController {
     }
 
     public ProjectReportOutController() {
-        disableTab = true;
+        this.disableTab = false;
         List<PRO_OAuth_Settings__c> googleSettings = PRO_OAuth_Settings__c.getALL().values();
         if (googleSettings != null && googleSettings.size() > 0) {
             clientId = googleSettings[0].ClientID__c;
@@ -1219,13 +1219,14 @@ public with sharing class ProjectReportOutController {
         String response = getFromJSON(responseJSON, 'name');
         currentLoginEmail = getFromJSON(responseJSON, 'email');
 
-        String[] emails = Corporate_Dashboard_Settings__c.getOrgDefaults().Emails__c != null ? Corporate_Dashboard_Settings__c.getOrgDefaults().Emails__c.split(',') : new String[]{};
+        //Uncomment when want enable graphs for particular users.
+        /**String[] emails = Corporate_Dashboard_Settings__c.getOrgDefaults().Emails__c != null ? Corporate_Dashboard_Settings__c.getOrgDefaults().Emails__c.split(',') : new String[]{};
         for (String em: emails) {
             if (em == currentLoginEmail) {
                 disableTab = false;
                 break;
             }
-        }
+        }*/
 
         return response;
     }
