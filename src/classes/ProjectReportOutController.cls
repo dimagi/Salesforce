@@ -1272,6 +1272,7 @@ public with sharing class ProjectReportOutController {
     private List<Global_Metric_Graph__c> userData;
     private List<Global_Metric_Graph__c> programData;
     private List<Global_Metric_Graph__c> performanceData;
+    private List<Global_Metric_Graph__c> upTime;
     private List<Global_Metric_Graph__c> gsData;
     private List<Global_Metric_Graph__c> mrr;
     private List<Global_Metric_Graph__c> aggregateEff;
@@ -1331,6 +1332,18 @@ public with sharing class ProjectReportOutController {
         return '';
     }
     public void setBufferEvGen(String buffValues) {}
+
+    public String getServerUpTime() {
+        if (this.upTime == null) {
+            this.upTime = [SELECT X_Text__c, Graph_Value_1__c, Graph_Value_2__c, Graph_Value_3__c FROM Global_Metric_Graph__c
+                                 WHERE Name =: CorporateDashboardHelper.UP_TIME_GRAPHS ORDER BY Helper_Date__c];
+        }
+        if (this.upTime != null) {
+            return JSON.serialize(this.upTime);
+        }
+        return '';
+    }
+    public void setServerUpTime(String upTimeData) {}
 
     public String getAggregateEffData() {
         if (this.aggregateEff == null) {

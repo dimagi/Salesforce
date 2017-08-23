@@ -106,6 +106,29 @@ public class CorporateDashboardTest {
     }
 
     @isTest
+    public static void shouldLoadUpTimeGraph() {
+        setUpUpTimeData();
+
+        Test.startTest();
+        CorporateDashboardHelper.refreshAllGraphs();
+        Test.stopTest();
+
+        List<Global_Metric_Graph__c> performanceGraph = [SELECT X_Text__c, Graph_Value_1__c, Graph_Value_2__c, Graph_Value_3__c
+                                                         FROM Global_Metric_Graph__c WHERE Name =: CorporateDashboardHelper.UP_TIME_GRAPHS
+                                                         ORDER BY Helper_Date__c];
+        System.assertEquals(3, performanceGraph.size());
+        System.assertEquals(0.92, performanceGraph.get(0).Graph_Value_1__c);
+        System.assertEquals(0.95, performanceGraph.get(0).Graph_Value_2__c);
+        System.assertEquals(0.55, performanceGraph.get(0).Graph_Value_3__c);
+        System.assertEquals(1.0, performanceGraph.get(1).Graph_Value_1__c);
+        System.assertEquals(0.98, performanceGraph.get(1).Graph_Value_2__c);
+        System.assertEquals(0.75, performanceGraph.get(1).Graph_Value_3__c);
+        System.assertEquals(0.99, performanceGraph.get(2).Graph_Value_1__c);
+        System.assertEquals(0.99, performanceGraph.get(2).Graph_Value_2__c);
+        System.assertEquals(0.75, performanceGraph.get(2).Graph_Value_3__c);
+    }
+
+    @isTest
     public static void shouldMrrGraph() {
         setUpMrrData();
 
@@ -190,6 +213,31 @@ public class CorporateDashboardTest {
         insert performance4;
         insert performance5;
         insert performance6;
+    }
+
+    private static void setUpUpTimeData() {
+        Date currentDay = Date.today();
+        CommCareHQ_Performance_Metrics__c performance1 = new CommCareHQ_Performance_Metrics__c(Date__c = currentDay.addMonths(-3),
+                                                                                               ICDS_Uptime__c = 55,
+                                                                                               India_Server_Uptime__c = 95,
+                                                                                               Prod_Uptime__c = 92);
+        CommCareHQ_Performance_Metrics__c performance2 = new CommCareHQ_Performance_Metrics__c(Date__c = currentDay.addMonths(-2),
+                                                                                               ICDS_Uptime__c = 75,
+                                                                                               India_Server_Uptime__c = 98,
+                                                                                               Prod_Uptime__c = 100);
+        CommCareHQ_Performance_Metrics__c performance3 = new CommCareHQ_Performance_Metrics__c(Date__c = currentDay.addMonths(-1),
+                                                                                               ICDS_Uptime__c = 50,
+                                                                                               India_Server_Uptime__c = 99,
+                                                                                               Prod_Uptime__c = 99);
+        CommCareHQ_Performance_Metrics__c performance4 = new CommCareHQ_Performance_Metrics__c(Date__c = currentDay.addMonths(-1),
+                                                                                               ICDS_Uptime__c = 100,
+                                                                                               India_Server_Uptime__c = 99,
+                                                                                               Prod_Uptime__c = 99);
+
+        insert performance1;
+        insert performance2;
+        insert performance3;
+        insert performance4;
     }
 
     private static void setUpGSData() {

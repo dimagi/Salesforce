@@ -5,6 +5,7 @@ public class CorporateDashboardHelper {
 
     public static final String GS_GRAPHS = 'Gs';
     public static final String PERFORMANCE_GRAPHS = 'CommCare Performance';
+    public static final String UP_TIME_GRAPHS = 'Server Up Time';
     public static final String MRR_GRAPH = 'Mrr';
     public static final String OPP_EXPECTED_GRAPH = 'Opp Expected';
     public static final String EV_EXPECTED_GRAPH = 'Ev Expected';
@@ -26,6 +27,7 @@ public class CorporateDashboardHelper {
         try {
             loadGSData();
             loadPerformanceData();
+            loadServerUpTimeData();
             loadEvExpectedValue();
             loadOppExpetedValue();
             loadAggregateEff();
@@ -59,6 +61,56 @@ public class CorporateDashboardHelper {
         }
 
         deleteAndAddMetrics(gsData, GS_GRAPHS);
+    }
+
+    public static void loadServerUpTimeData() {
+        Corporate_Dashboard_Settings__c corporateDashboardSettings = Corporate_Dashboard_Settings__c.getOrgDefaults();
+        List<Global_Metric_Graph__c> upTimeData = new List<Global_Metric_Graph__c>();
+        Decimal months = corporateDashboardSettings.Performance_graphs_number_of_months__c != null ? corporateDashboardSettings.Performance_graphs_number_of_months__c : 6;
+        List<CommCareHQ_Performance_Metrics__c> metrics = [SELECT Date__c, ICDS_Uptime__c, Prod_Uptime__c, India_Server_Uptime__c
+                                                           FROM CommCareHQ_Performance_Metrics__c
+                                                           WHERE Date__c >=: Date.today().addMonths(((-1) * months).intValue()).toStartOfMonth() AND Prod_Uptime__c != null
+                                                           ORDER BY Date__c ASC];
+
+        if (metrics.size() > 0) {
+            Global_Metric_Graph__c tmpData = new Global_Metric_Graph__c(Name = UP_TIME_GRAPHS, Graph_Value_1__c = 0, Graph_Value_2__c = 0, Graph_Value_3__c = 0,
+                                                                        Graph_Value_4__c = 0, Graph_Value_5__c = 0, Graph_Value_6__c = 0, Graph_Value_7__c = 0);
+            Date lastDate = metrics.get(0).Date__c;
+            for (CommCareHQ_Performance_Metrics__c rec : metrics) {
+                if (rec.Date__c.year() != lastDate.year() || rec.Date__c.month() != lastDate.month()) {
+                    tmpData.Graph_Value_1__c = (tmpData.Graph_Value_4__c != 0 ? tmpData.Graph_Value_1__c / tmpData.Graph_Value_4__c : 0) / 100.00;
+                    tmpData.Graph_Value_2__c = (tmpData.Graph_Value_5__c != 0 ? tmpData.Graph_Value_2__c / tmpData.Graph_Value_5__c : 0) / 100.00;
+                    tmpData.Graph_Value_3__c = (tmpData.Graph_Value_6__c != 0 ? tmpData.Graph_Value_3__c / tmpData.Graph_Value_6__c : 0) / 100.00;
+                    tmpData.X_Text__c = getDateText(lastDate);
+                    tmpData.Helper_Date__c = lastDate;
+                    upTimeData.add(tmpData);
+                    tmpData = new Global_Metric_Graph__c(Name = UP_TIME_GRAPHS, Graph_Value_1__c = 0, Graph_Value_2__c = 0, Graph_Value_3__c = 0,
+                                                         Graph_Value_4__c = 0, Graph_Value_5__c = 0, Graph_Value_6__c = 0, Graph_Value_7__c = 0);
+                }
+                if (rec.Prod_Uptime__c != null) {
+                    tmpData.Graph_Value_1__c += rec.Prod_Uptime__c;
+                    tmpData.Graph_Value_4__c++;
+                }
+                if (rec.India_Server_Uptime__c != null) {
+                    tmpData.Graph_Value_2__c += rec.India_Server_Uptime__c;
+                    tmpData.Graph_Value_5__c++;
+                }
+                if (rec.ICDS_Uptime__c != null) {
+                    tmpData.Graph_Value_3__c += rec.ICDS_Uptime__c;
+                    tmpData.Graph_Value_6__c++;
+                }
+                lastDate = rec.Date__c;
+            }
+
+            tmpData.X_Text__c = getDateText(lastDate);
+            tmpData.Helper_Date__c = lastDate;
+            tmpData.Graph_Value_1__c = (tmpData.Graph_Value_4__c != 0 ? tmpData.Graph_Value_1__c / tmpData.Graph_Value_4__c : 0) / 100.00;
+            tmpData.Graph_Value_2__c = (tmpData.Graph_Value_5__c != 0 ? tmpData.Graph_Value_2__c / tmpData.Graph_Value_5__c : 0) / 100.00;
+            tmpData.Graph_Value_3__c = (tmpData.Graph_Value_6__c != 0 ? tmpData.Graph_Value_3__c / tmpData.Graph_Value_6__c : 0) / 100.00;
+            upTimeData.add(tmpData);
+        }
+
+        deleteAndAddMetrics(upTimeData, UP_TIME_GRAPHS);
     }
 
     public static void loadPerformanceData() {
