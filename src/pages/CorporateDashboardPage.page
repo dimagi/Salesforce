@@ -27,6 +27,10 @@
         width: 100% !important;
         display: inline-block;
     }
+    .alignTop {
+        vertical-align: top !important;
+    }
+
     </style>
 
     <script>
@@ -120,7 +124,7 @@
                 </apex:pageBlock>
                 <apex:pageBlock id="performance" title="Performance of Product" mode="edit" >
                     <div class="chartsDataContainer">
-                        <div class="graphContainer">
+                        <div class="graphContainer alignTop">
                             <h2>Average Page Load Time</h2>
                             <apex:chart data="{!data}" height="400" width="90%">
                                 <apex:legend position="bottom"/>
@@ -142,7 +146,7 @@
                                 </apex:lineSeries>
                             </apex:chart>
                         </div>
-                        <div class="graphContainer">
+                        <div class="graphContainer alignTop">
                             <h2>Average Apdex (server response time)</h2>
                             <apex:chart data="{!data}" height="400" width="90%">
                                 <apex:legend position="bottom"/>
@@ -163,6 +167,11 @@
                                     <apex:chartTips height="20" width="200"/>
                                 </apex:lineSeries>
                             </apex:chart>
+                        </div>
+                        <div class="graphContainer alignTop">
+                            <a href="/00Ob0000004eXeG">
+                                <img class="graph" src="/servlet/servlet.ChartServer?rsid=0FLb0000001Hhr1&ruid=005b0000001SrLL&did=01Zb0000000gCws&s=8&fs=12&tfg=12&tfs=-16777216&explode=0&c=column&cs=0&title=Server+Uptime&eh=no&compo=yes&fg=-16777216&bg1=-1&bg2=-1&bgdir=2&dl1=Date&dl2=&l=2&sax=yes&Yman=no&nc=0&actUrl=%2F00Ob0000004eXeG&sd=1&scv=no&sct=no&spt=no&bd=yes&cu=USD&ab=X&u=0&vt=0&ab2=Y&u2=0&vt2=1&vl0=Average+ICDS+Uptime&vl1=Average+India+Server+Uptime&vl2=Average+Prod+Uptime&spoc=no&topn=no&gc0=-1&gc1=-1&gc2=-1&sona=0&refreshts=1502868881000" />
+                            </a>
                         </div>
                     </div>
                 </apex:pageBlock>

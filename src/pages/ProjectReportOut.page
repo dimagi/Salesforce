@@ -370,6 +370,23 @@
                     nv.utils.windowResize(chart.update);
                     return chart;
                 });
+                nv.addGraph(function() {
+                    var serverUpTimeData, chart = nv.models.multiBarChart().stacked(false).height(400).legendPosition('bottom').reduceXTicks(false);
+                    chart.legend.margin({"top": 22});
+                    chart.xAxis.axisLabel('Date');
+                    chart.xAxis.rotateLabels(-40);
+                    chart.yAxis.tickFormat(d3.format('%'));
+                    chart.yAxis.ticks(6);
+                    chart.yAxis.axisLabel('Server Uptime');
+                    chart.yAxis.axisLabelDistance(1);
+                    serverUpTimeData = $j("[id$=serverUpTimeId]").val();
+
+                    $j("[id$=serverUpTime").append("<svg></svg>");
+                    d3.select('#serverUpTime svg').datum(fillServerUpTimeData(JSON.parse(serverUpTimeData)))
+                        .transition().duration(500).call(chart);
+                    nv.utils.windowResize(chart.update);
+                    return chart;
+                });
             }
 
             function buildDiscBatChart(yLabel) {
@@ -394,6 +411,17 @@
                     records.push({label: graphData[i].X_Text__c, value: tmp});
                 }
                 return [{key: graphName, values: records}];
+            }
+
+            function fillServerUpTimeData(graphData) {
+                var i, prod = [], icds = [], india = [];
+                for (i = 0; i < graphData.length; i++) {
+                    prod.push({x: graphData[i].X_Text__c, y: graphData[i].Graph_Value_1__c});
+                    india.push({x: graphData[i].X_Text__c, y: graphData[i].Graph_Value_2__c});
+                    icds.push({x: graphData[i].X_Text__c, y: graphData[i].Graph_Value_3__c});
+                }
+
+                return [{"values": prod, "key": "Average Prod Uptime"}, {"values": india, "key": "Average India Uptime"}, {"values": icds, "key": "Average ICDS Uptime"}];
             }
 
             function fillAggregateData(graphData) {
@@ -1051,7 +1079,7 @@
                         <apex:inputHidden id="oppExpecteId" value="{!oppExpected}" />
                         <apex:inputHidden id="aggregateEffId" value="{!AggregateEffData}" />
                         <apex:inputHidden id="icdsDataId" value="{!icdsData}" />
-
+                        <apex:inputHidden id="serverUpTimeId" value="{!serverUpTime}" />
 
                        <apex:outputText value="Dashboard refreshed at : {!dashboardRefreshTime}" />
                         <apex:pageBlockSection title="Scale" collapsible="false" columns="1" >
@@ -1159,6 +1187,13 @@
                                     <div class="graphTitle">
                                         <h2>
                                             <a href="https://dimagi.my.salesforce.com/00Ob00000047rxW" target="blank">Average Apdex (server response time)</a>
+                                        </h2>
+                                    </div>
+                                </div>
+                                <div id="serverUpTime" class="graph">
+                                    <div class="graphTitle">
+                                        <h2>
+                                            <a href="https://dimagi.my.salesforce.com/00Ob0000004eXeG" target="blank">Server Uptime</a>
                                         </h2>
                                     </div>
                                 </div>
