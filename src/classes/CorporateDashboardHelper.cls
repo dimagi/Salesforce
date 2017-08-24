@@ -295,7 +295,7 @@ public class CorporateDashboardHelper {
         List<Global_Metric_Graph__c> userData = new List<Global_Metric_Graph__c>();
         List<Global_Metric_Graph__c> programData = new List<Global_Metric_Graph__c>();
 
-        Set<String> planNames = new Set<String> { 'Reseller', 'Managed Hosting', 'Advanced', 'Community', 'Enterprise', 'Pro', 'Standard' };
+        Set<String> planNames = new Set<String> { 'Advanced', 'Community', 'Enterprise', 'Pro', 'Standard' };
         Decimal months = corporateDashboardSettings.Scale_graphs_number_of_months__c != null ? Corporate_Dashboard_Settings__c.getOrgDefaults().Scale_graphs_number_of_months__c : 3;
         List<Domain_Monthly_Snapshot__c> snapshots = [SELECT Id, Snapshot_Date__c, Software_Plan_Edition__c, Wam__c, Forms_for_Period__c,
                                                       Forms__c, Active_Mobile_Users__c, Scale_of_Programs__c FROM Domain_Monthly_Snapshot__c
@@ -304,7 +304,7 @@ public class CorporateDashboardHelper {
                                                       ORDER BY Snapshot_Date__c ASC];
 
         Integer startIdx = 0;
-        Integer endIdx = 7; // we have 7 editions
+        Integer endIdx = 5; // we have 5 editions
         Global_Metric_Graph__c tmpWamData = new Global_Metric_Graph__c(Name = WAM_GRAPH, Graph_Value_1__c = 0, Graph_Value_2__c = 0, Graph_Value_3__c = 0,
                                                                        Graph_Value_4__c = 0, Graph_Value_5__c = 0, Graph_Value_6__c = 0, Graph_Value_7__c = 0);
         Global_Metric_Graph__c tmpFormData = new Global_Metric_Graph__c(Name = FORM_GRAPH, Graph_Value_1__c = 0, Graph_Value_2__c = 0, Graph_Value_3__c = 0,
@@ -341,16 +341,6 @@ public class CorporateDashboardHelper {
                 tmpFormData.Graph_Value_5__c = sn.Forms_for_Period__c != null ? sn.Forms_for_Period__c / 1000.00 : 0;
                 tmpUsersData.Graph_Value_5__c = sn.Active_Mobile_Users__c != null ? sn.Active_Mobile_Users__c / 1000.00 : 0;
                 tmpProgramsData.Graph_Value_5__c = sn.Scale_of_Programs__c;
-            } else if (sn.Software_Plan_Edition__c == 'Reseller'){
-                tmpWamData.Graph_Value_6__c = sn.Wam__c != null ? sn.Wam__c / 1000.00 : 0;
-                tmpFormData.Graph_Value_6__c = sn.Forms_for_Period__c != null ? sn.Forms_for_Period__c / 1000.00 : 0;
-                tmpUsersData.Graph_Value_6__c = sn.Active_Mobile_Users__c != null ? sn.Active_Mobile_Users__c / 1000.00 : 0;
-                tmpProgramsData.Graph_Value_6__c = sn.Scale_of_Programs__c;
-            } else if (sn.Software_Plan_Edition__c == 'Managed Hosting') {
-                tmpWamData.Graph_Value_7__c = sn.Wam__c != null ? sn.Wam__c / 1000.00 : 0;
-                tmpFormData.Graph_Value_7__c = sn.Forms_for_Period__c != null ? sn.Forms_for_Period__c / 1000.00 : 0;
-                tmpUsersData.Graph_Value_7__c = sn.Active_Mobile_Users__c != null ? sn.Active_Mobile_Users__c / 1000.00 : 0;
-                tmpProgramsData.Graph_Value_7__c = sn.Scale_of_Programs__c;
             }
 
             startIdx++;
@@ -429,10 +419,6 @@ public class CorporateDashboardHelper {
             gData.Graph_Value_4__c = value / 1000.00;
         } else if (softwarePlan == 'Standard') {
             gData.Graph_Value_5__c = value / 1000.00;
-        } else if (softwarePlan == 'Reseller') {
-            gData.Graph_Value_6__c = value / 1000.00;
-        } else if (softwarePlan == 'Managed Hosting') {
-            gData.Graph_Value_7__c = value / 1000.00;
         }
         return gData;
     }

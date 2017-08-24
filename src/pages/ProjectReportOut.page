@@ -543,18 +543,16 @@
             }
 
             function fillGraphData(graphData) {
-                var i, advanced = [], community = [], enterprise = [], pro = [], standard = [], managedHosting = [], reseller = [];
+                var i, advanced = [], community = [], enterprise = [], pro = [], standard = [];
                 for (i = 0; i < graphData.length; i++) {
                     advanced.push({x: graphData[i].X_Text__c, y: graphData[i].Graph_Value_1__c});
                     community.push({x: graphData[i].X_Text__c, y: graphData[i].Graph_Value_2__c});
                     enterprise.push({x: graphData[i].X_Text__c, y: graphData[i].Graph_Value_3__c});
                     pro.push({x: graphData[i].X_Text__c, y: graphData[i].Graph_Value_4__c});
                     standard.push({x: graphData[i].X_Text__c, y: graphData[i].Graph_Value_5__c});
-                    reseller.push({x: graphData[i].X_Text__c, y: graphData[i].Graph_Value_6__c});
-                    managedHosting.push({x: graphData[i].X_Text__c, y: graphData[i].Graph_Value_7__c});
                 }
                 return [{ values: advanced, key: "Advanced"}, { values: community, key: "Community"}, { values: enterprise, key: "Enterprise"}, { values: pro, key: "Pro"},
-                    { values: standard, key: "Standard"}, { values: reseller, key: "Reseller"}, { values: managedHosting, key: "Managed Hosting"}];
+                    { values: standard, key: "Standard"}];
             }
         </script>
     </head>

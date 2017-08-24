@@ -43,13 +43,13 @@ public class CorporateDashboardTest {
         CorporateDashboardHelper.refreshAllGraphs();
         Test.stopTest();
 
-        List<Global_Metric_Graph__c> userGraph = [SELECT X_Text__c, Graph_Value_1__c, Graph_Value_2__c, Graph_Value_3__c, Graph_Value_4__c, Graph_Value_5__c, Graph_Value_6__c, Graph_Value_7__c
+        List<Global_Metric_Graph__c> userGraph = [SELECT X_Text__c, Graph_Value_1__c, Graph_Value_2__c, Graph_Value_3__c, Graph_Value_4__c, Graph_Value_5__c
                                                   FROM Global_Metric_Graph__c WHERE Name =: CorporateDashboardHelper.USER_GRAPH ORDER BY Helper_Date__c];
-        List<Global_Metric_Graph__c> formGraph = [SELECT X_Text__c, Graph_Value_1__c, Graph_Value_2__c, Graph_Value_3__c, Graph_Value_4__c, Graph_Value_5__c, Graph_Value_6__c, Graph_Value_7__c
+        List<Global_Metric_Graph__c> formGraph = [SELECT X_Text__c, Graph_Value_1__c, Graph_Value_2__c, Graph_Value_3__c, Graph_Value_4__c, Graph_Value_5__c
                                                   FROM Global_Metric_Graph__c WHERE Name =: CorporateDashboardHelper.FORM_GRAPH ORDER BY Helper_Date__c];
-        List<Global_Metric_Graph__c> wamGraph = [SELECT X_Text__c, Graph_Value_1__c, Graph_Value_2__c, Graph_Value_3__c, Graph_Value_4__c, Graph_Value_5__c, Graph_Value_6__c, Graph_Value_7__c
+        List<Global_Metric_Graph__c> wamGraph = [SELECT X_Text__c, Graph_Value_1__c, Graph_Value_2__c, Graph_Value_3__c, Graph_Value_4__c, Graph_Value_5__c
                                                   FROM Global_Metric_Graph__c WHERE Name =: CorporateDashboardHelper.WAM_GRAPH ORDER BY Helper_Date__c];
-        List<Global_Metric_Graph__c> programsGraph = [SELECT X_Text__c, Graph_Value_1__c, Graph_Value_2__c, Graph_Value_3__c, Graph_Value_4__c, Graph_Value_5__c, Graph_Value_6__c, Graph_Value_7__c
+        List<Global_Metric_Graph__c> programsGraph = [SELECT X_Text__c, Graph_Value_1__c, Graph_Value_2__c, Graph_Value_3__c, Graph_Value_4__c, Graph_Value_5__c
                                                   FROM Global_Metric_Graph__c WHERE Name =: CorporateDashboardHelper.PROGRAMS_GRAPH ORDER BY Helper_Date__c];
 
         System.assertEquals(3, userGraph.size());
@@ -62,8 +62,6 @@ public class CorporateDashboardTest {
         System.assertEquals(12, wamGraph.get(0).Graph_Value_3__c);
         System.assertEquals(11, wamGraph.get(0).Graph_Value_2__c);
         System.assertEquals(66, formGraph.get(0).Graph_Value_1__c);
-        System.assertEquals(52, formGraph.get(0).Graph_Value_6__c);
-        System.assertEquals(12, programsGraph.get(0).Graph_Value_7__c);
         System.assertEquals(33, programsGraph.get(0).Graph_Value_1__c);
     }
 
@@ -290,18 +288,6 @@ public class CorporateDashboardTest {
                                                                         Scale_of_Programs__c = 44, Snapshot_Date__c = currentDay.addMonths(-2));
         Domain_Monthly_Snapshot__c sn15 = new Domain_Monthly_Snapshot__c(Software_Plan_Edition__c = 'Advanced', Wam__c = 1000, Forms_for_Period__c = 66000, Active_Mobile_Users__c = 1300,
                                                                         Scale_of_Programs__c = 33, Snapshot_Date__c = currentDay.addMonths(-3));
-        Domain_Monthly_Snapshot__c sn16 = new Domain_Monthly_Snapshot__c(Software_Plan_Edition__c = 'Managed Hosting', Wam__c = 1000, Forms_for_Period__c = 50000, Active_Mobile_Users__c = 1300,
-                                                                        Scale_of_Programs__c = 22, Snapshot_Date__c = currentDay.addMonths(-1));
-        Domain_Monthly_Snapshot__c sn17 = new Domain_Monthly_Snapshot__c(Software_Plan_Edition__c = 'Managed Hosting', Wam__c = 1000, Forms_for_Period__c = 50000, Active_Mobile_Users__c = 1300,
-                                                                        Scale_of_Programs__c = 11, Snapshot_Date__c = currentDay.addMonths(-2));
-        Domain_Monthly_Snapshot__c sn18 = new Domain_Monthly_Snapshot__c(Software_Plan_Edition__c = 'Managed Hosting', Wam__c = 1000, Forms_for_Period__c = 50000, Active_Mobile_Users__c = 1300,
-                                                                        Scale_of_Programs__c = 12, Snapshot_Date__c = currentDay.addMonths(-3));
-        Domain_Monthly_Snapshot__c sn19 = new Domain_Monthly_Snapshot__c(Software_Plan_Edition__c = 'Reseller', Wam__c = 1000, Forms_for_Period__c = 50000, Active_Mobile_Users__c = 1300,
-                                                                        Scale_of_Programs__c = 13, Snapshot_Date__c = currentDay.addMonths(-1));
-        Domain_Monthly_Snapshot__c sn20 = new Domain_Monthly_Snapshot__c(Software_Plan_Edition__c = 'Reseller', Wam__c = 1000, Forms_for_Period__c = 50000, Active_Mobile_Users__c = 1300,
-                                                                        Scale_of_Programs__c = 14, Snapshot_Date__c = currentDay.addMonths(-2));
-        Domain_Monthly_Snapshot__c sn21 = new Domain_Monthly_Snapshot__c(Software_Plan_Edition__c = 'Reseller', Wam__c = 1000, Forms_for_Period__c = 52000, Active_Mobile_Users__c = 1300,
-                                                                        Scale_of_Programs__c = 1, Snapshot_Date__c = currentDay.addMonths(-3));
         insert sn1;
         insert sn2;
         insert sn3;
@@ -317,11 +303,5 @@ public class CorporateDashboardTest {
         insert sn13;
         insert sn14;
         insert sn15;
-        insert sn16;
-        insert sn17;
-        insert sn18;
-        insert sn19;
-        insert sn20;
-        insert sn21;
     }
 }
