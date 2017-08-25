@@ -370,19 +370,29 @@
                     nv.utils.windowResize(chart.update);
                     return chart;
                 });
+
                 nv.addGraph(function() {
-                    var serverUpTimeData, chart = nv.models.multiBarChart().stacked(false).height(400).legendPosition('bottom').reduceXTicks(false);
-                    chart.legend.margin({"top": 22});
+                    var range = [], serverUpTimeData, chart = nv.models.lineChart().height(400);
+                    serverUpTimeData = fillServerUpTimeData(JSON.parse($j("[id$=serverUpTimeId]").val()));
+                    chart.legend.margin({top: 5});
                     chart.xAxis.axisLabel('Date');
-                    chart.xAxis.rotateLabels(-40);
+                    chart.xAxis.rotateLabels(-90);
+                    chart.xAxis.tickFormat(function(d) {
+                            var dDate = new Date(d)
+                            return (monthNames[dDate.getMonth()] + ' ' + dDate.getFullYear());
+                        });
+                    for (var i = 0; i < serverUpTimeData[0].values.length; i++) {
+                        range.push(serverUpTimeData[0].values[i].x);
+                    }
+                    chart.xAxis.tickValues(range);
                     chart.yAxis.tickFormat(d3.format('%'));
-                    chart.yAxis.ticks(6);
                     chart.yAxis.axisLabel('Server Uptime');
-                    chart.yAxis.axisLabelDistance(1);
-                    serverUpTimeData = $j("[id$=serverUpTimeId]").val();
+                    chart.tooltip.valueFormatter(function (d) { 
+                                               return (new Number(d) * 100).toFixed(2) + '%';
+                                           });
 
                     $j("[id$=serverUpTime").append("<svg></svg>");
-                    d3.select('#serverUpTime svg').datum(fillServerUpTimeData(JSON.parse(serverUpTimeData)))
+                    d3.select('#serverUpTime svg').datum(serverUpTimeData)
                         .transition().duration(500).call(chart);
                     nv.utils.windowResize(chart.update);
                     return chart;
@@ -416,9 +426,9 @@
             function fillServerUpTimeData(graphData) {
                 var i, prod = [], icds = [], india = [];
                 for (i = 0; i < graphData.length; i++) {
-                    prod.push({x: graphData[i].X_Text__c, y: graphData[i].Graph_Value_1__c});
-                    india.push({x: graphData[i].X_Text__c, y: graphData[i].Graph_Value_2__c});
-                    icds.push({x: graphData[i].X_Text__c, y: graphData[i].Graph_Value_3__c});
+                    prod.push({x: new Date(graphData[i].X_Text__c).getTime(), y: (graphData[i].Graph_Value_1__c / 100.00).toFixed(4)});
+                    india.push({x: new Date(graphData[i].X_Text__c).getTime(), y: (graphData[i].Graph_Value_2__c / 100.00).toFixed(4)});
+                    icds.push({x: new Date(graphData[i].X_Text__c).getTime(), y: (graphData[i].Graph_Value_3__c / 100.00).toFixed(4)});
                 }
 
                 return [{"values": prod, "key": "Average Prod Uptime"}, {"values": india, "key": "Average India Uptime"}, {"values": icds, "key": "Average ICDS Uptime"}];

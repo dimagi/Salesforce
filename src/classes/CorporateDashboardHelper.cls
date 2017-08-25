@@ -78,10 +78,10 @@ public class CorporateDashboardHelper {
             Date lastDate = metrics.get(0).Date__c;
             for (CommCareHQ_Performance_Metrics__c rec : metrics) {
                 if (rec.Date__c.year() != lastDate.year() || rec.Date__c.month() != lastDate.month()) {
-                    tmpData.Graph_Value_1__c = (tmpData.Graph_Value_4__c != 0 ? tmpData.Graph_Value_1__c / tmpData.Graph_Value_4__c : 0) / 100.00;
-                    tmpData.Graph_Value_2__c = (tmpData.Graph_Value_5__c != 0 ? tmpData.Graph_Value_2__c / tmpData.Graph_Value_5__c : 0) / 100.00;
-                    tmpData.Graph_Value_3__c = (tmpData.Graph_Value_6__c != 0 ? tmpData.Graph_Value_3__c / tmpData.Graph_Value_6__c : 0) / 100.00;
-                    tmpData.X_Text__c = getDateText(lastDate);
+                    tmpData.Graph_Value_1__c = (tmpData.Graph_Value_4__c != 0 ? tmpData.Graph_Value_1__c / tmpData.Graph_Value_4__c : 0);
+                    tmpData.Graph_Value_2__c = (tmpData.Graph_Value_5__c != 0 ? tmpData.Graph_Value_2__c / tmpData.Graph_Value_5__c : 0);
+                    tmpData.Graph_Value_3__c = (tmpData.Graph_Value_6__c != 0 ? tmpData.Graph_Value_3__c / tmpData.Graph_Value_6__c : 0);
+                    tmpData.X_Text__c = Date.newInstance(lastDate.year(), lastDate.month(), Date.daysInMonth(lastDate.year(), lastDate.month())).format();
                     tmpData.Helper_Date__c = lastDate;
                     upTimeData.add(tmpData);
                     tmpData = new Global_Metric_Graph__c(Name = UP_TIME_GRAPHS, Graph_Value_1__c = 0, Graph_Value_2__c = 0, Graph_Value_3__c = 0,
@@ -102,11 +102,11 @@ public class CorporateDashboardHelper {
                 lastDate = rec.Date__c;
             }
 
-            tmpData.X_Text__c = getDateText(lastDate);
+            tmpData.X_Text__c = Date.newInstance(lastDate.year(), lastDate.month(), Date.daysInMonth(lastDate.year(), lastDate.month())).format();
             tmpData.Helper_Date__c = lastDate;
-            tmpData.Graph_Value_1__c = (tmpData.Graph_Value_4__c != 0 ? tmpData.Graph_Value_1__c / tmpData.Graph_Value_4__c : 0) / 100.00;
-            tmpData.Graph_Value_2__c = (tmpData.Graph_Value_5__c != 0 ? tmpData.Graph_Value_2__c / tmpData.Graph_Value_5__c : 0) / 100.00;
-            tmpData.Graph_Value_3__c = (tmpData.Graph_Value_6__c != 0 ? tmpData.Graph_Value_3__c / tmpData.Graph_Value_6__c : 0) / 100.00;
+            tmpData.Graph_Value_1__c = (tmpData.Graph_Value_4__c != 0 ? tmpData.Graph_Value_1__c / tmpData.Graph_Value_4__c : 0);
+            tmpData.Graph_Value_2__c = (tmpData.Graph_Value_5__c != 0 ? tmpData.Graph_Value_2__c / tmpData.Graph_Value_5__c : 0);
+            tmpData.Graph_Value_3__c = (tmpData.Graph_Value_6__c != 0 ? tmpData.Graph_Value_3__c / tmpData.Graph_Value_6__c : 0);
             upTimeData.add(tmpData);
         }
 
@@ -216,6 +216,7 @@ public class CorporateDashboardHelper {
         AggregateResult[] groupedResults = [SELECT SUM(DIFF_Expected_Value_Minus_Expense__c), SUM(Diff_expected_buffer__c) FROM Pipeline_Snapshot_EV_DIff__c
                                             WHERE Month_Date__c >=: fiscalYearStart
                                             AND Month_Date__c <=: fiscalYearEnd
+                                            AND (NOT Name LIKE '%(Monthly)%') AND (NOT Name LIKE '%- Total%')
                                             AND (Pipeline_Snapshot__r.Stage__c = 'Stage 4 - Proposal Development' OR Pipeline_Snapshot__r.Stage__c = 'Stage 5 - Submitted'
                                                  OR Pipeline_Snapshot__r.Stage__c = 'Stage 6 - In Negotiations' OR Pipeline_Snapshot__r.Stage__c = 'Closed')
                                             AND Pipeline_Snapshot__r.Current_Channel__c != 'Core Funding (Gates)'

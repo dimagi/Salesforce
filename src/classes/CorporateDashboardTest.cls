@@ -115,15 +115,15 @@ public class CorporateDashboardTest {
                                                          FROM Global_Metric_Graph__c WHERE Name =: CorporateDashboardHelper.UP_TIME_GRAPHS
                                                          ORDER BY Helper_Date__c];
         System.assertEquals(3, performanceGraph.size());
-        System.assertEquals(0.92, performanceGraph.get(0).Graph_Value_1__c);
-        System.assertEquals(0.95, performanceGraph.get(0).Graph_Value_2__c);
-        System.assertEquals(0.55, performanceGraph.get(0).Graph_Value_3__c);
-        System.assertEquals(1.0, performanceGraph.get(1).Graph_Value_1__c);
-        System.assertEquals(0.98, performanceGraph.get(1).Graph_Value_2__c);
-        System.assertEquals(0.75, performanceGraph.get(1).Graph_Value_3__c);
-        System.assertEquals(0.99, performanceGraph.get(2).Graph_Value_1__c);
-        System.assertEquals(0.99, performanceGraph.get(2).Graph_Value_2__c);
-        System.assertEquals(0.75, performanceGraph.get(2).Graph_Value_3__c);
+        System.assertEquals(92, performanceGraph.get(0).Graph_Value_1__c);
+        System.assertEquals(95, performanceGraph.get(0).Graph_Value_2__c);
+        System.assertEquals(55, performanceGraph.get(0).Graph_Value_3__c);
+        System.assertEquals(100, performanceGraph.get(1).Graph_Value_1__c);
+        System.assertEquals(98, performanceGraph.get(1).Graph_Value_2__c);
+        System.assertEquals(75, performanceGraph.get(1).Graph_Value_3__c);
+        System.assertEquals(99, performanceGraph.get(2).Graph_Value_1__c);
+        System.assertEquals(99, performanceGraph.get(2).Graph_Value_2__c);
+        System.assertEquals(75, performanceGraph.get(2).Graph_Value_3__c);
     }
 
     @isTest
