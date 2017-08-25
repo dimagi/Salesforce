@@ -153,7 +153,7 @@
                     var chart, activeUsers = $j("[id$=userGraphDataId]").val();
                     chart = buildMultiBatChart('Sum of Active Mobile Users (Thousands)', 'Snapshot Date');
                     $j("[id$=activeUsers").append("<svg></svg>");
-                    d3.select('#activeUsers svg').datum(fillGraphData(JSON.parse(activeUsers)))
+                    d3.select('#activeUsers svg').datum(fillGraphData(JSON.parse(activeUsers), false))
                         .transition().duration(500).call(chart);
                     nv.utils.windowResize(chart.update);
                     return chart;
@@ -163,7 +163,7 @@
                     var chart, wams = $j("[id$=wamGraphDataId]").val();
                     chart = buildMultiBatChart('Sum of Wam (Thousands)', 'Snapshot Date');
                     $j("[id$=wams").append("<svg></svg>");
-                    d3.select('#wams svg').datum(fillGraphData(JSON.parse(wams)))
+                    d3.select('#wams svg').datum(fillGraphData(JSON.parse(wams), false))
                         .transition().duration(500).call(chart);
                     nv.utils.windowResize(chart.update);
                     return chart;
@@ -173,7 +173,7 @@
                     var chart, forms = $j("[id$=formGraphDataId]").val();
                     chart = buildMultiBatChart('Forms for Period (Thousands)', 'Snapshot Date');
                     $j("[id$=forms").append("<svg></svg>");
-                    d3.select('#forms svg').datum(fillGraphData(JSON.parse(forms)))
+                    d3.select('#forms svg').datum(fillGraphData(JSON.parse(forms), false))
                         .transition().duration(500).call(chart);
                     nv.utils.windowResize(chart.update);
                     return chart;
@@ -183,7 +183,7 @@
                     var chart, programs = $j("[id$=programGraphDataId]").val();
                     chart = buildMultiBatChart('Sum of Scale of Programs', 'Snapshot Date');
                     $j("[id$=programs").append("<svg></svg>");
-                    d3.select('#programs svg').datum(fillGraphData(JSON.parse(programs)))
+                    d3.select('#programs svg').datum(fillGraphData(JSON.parse(programs), false))
                         .transition().duration(500).call(chart);
                     nv.utils.windowResize(chart.update);
                     return chart;
@@ -193,7 +193,7 @@
                     var chart, mrrRecs = $j("[id$=mrrDataId]").val();
                     chart = buildMultiBatChart('Sum of Monthly fee (Thousands)', 'Invoice End Date');
                     $j("[id$=mrr").append("<svg></svg>");
-                    d3.select('#mrr svg').datum(fillGraphData(JSON.parse(mrrRecs)))
+                    d3.select('#mrr svg').datum(fillGraphData(JSON.parse(mrrRecs), true))
                         .transition().duration(500).call(chart);
                     nv.utils.windowResize(chart.update);
                     return chart;
@@ -552,19 +552,25 @@
                 return [{"values": qualityData, "key": "GS Quality Customer Satisfaction"}];
             }
 
-            function fillGraphData(graphData) {
-                var i, advanced = [], community = [], enterprise = [], pro = [], standard = [], managedHosting = [], reseller = [];
+            function fillGraphData(graphData, forMrr) {
+                var i, advanced = [], community = [], enterprise = [], pro = [], standard = [], reseller = [], managedHosting = [];
                 for (i = 0; i < graphData.length; i++) {
                     advanced.push({x: graphData[i].X_Text__c, y: graphData[i].Graph_Value_1__c});
                     community.push({x: graphData[i].X_Text__c, y: graphData[i].Graph_Value_2__c});
                     enterprise.push({x: graphData[i].X_Text__c, y: graphData[i].Graph_Value_3__c});
                     pro.push({x: graphData[i].X_Text__c, y: graphData[i].Graph_Value_4__c});
                     standard.push({x: graphData[i].X_Text__c, y: graphData[i].Graph_Value_5__c});
-                    reseller.push({x: graphData[i].X_Text__c, y: graphData[i].Graph_Value_6__c});
-                    managedHosting.push({x: graphData[i].X_Text__c, y: graphData[i].Graph_Value_7__c});
+                    if (forMrr == true) {
+                        reseller.push({x: graphData[i].X_Text__c, y: graphData[i].Graph_Value_6__c});
+                        managedHosting.push({x: graphData[i].X_Text__c, y: graphData[i].Graph_Value_7__c});
+                    }
+                }
+                if (forMrr == true) {
+                    return [{ values: advanced, key: "Advanced"}, { values: community, key: "Community"}, { values: enterprise, key: "Enterprise"}, { values: pro, key: "Pro"},
+                        { values: standard, key: "Standard"}, { values: reseller, key: "Reseller"}, { values: managedHosting, key: "Managed Hosting"}];
                 }
                 return [{ values: advanced, key: "Advanced"}, { values: community, key: "Community"}, { values: enterprise, key: "Enterprise"}, { values: pro, key: "Pro"},
-                    { values: standard, key: "Standard"}, { values: reseller, key: "Reseller"}, { values: managedHosting, key: "Managed Hosting"}];
+                    { values: standard, key: "Standard"}];
             }
         </script>
     </head>

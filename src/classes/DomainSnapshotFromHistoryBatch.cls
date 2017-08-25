@@ -20,11 +20,11 @@ public class DomainSnapshotFromHistoryBatch implements Database.Batchable<Accoun
         this.currentDate = Date.newInstance(currentDate.year(), currentDate.month(),
                                 Date.daysInMonth(currentDate.year(), currentDate.month()));
 
-        this.wamMap = new Map<String, Decimal> { 'Reseller' => 0, 'Managed Hosting' => 0, 'Advanced' => 0, 'Community' => 0, 'Enterprise' => 0, 'Standard' => 0, 'Pro' => 0};
-        this.formsMap = new Map<String, Decimal> { 'Reseller' => 0, 'Managed Hosting' => 0, 'Advanced' => 0, 'Community' => 0, 'Enterprise' => 0, 'Standard' => 0, 'Pro' => 0};
-        this.mobileUsersMap = new Map<String, Decimal> { 'Reseller' => 0, 'Managed Hosting' => 0, 'Advanced' => 0, 'Community' => 0, 'Enterprise' => 0, 'Standard' => 0, 'Pro' => 0};
-        this.recordCountMap = new Map<String, Decimal> { 'Reseller' => 0, 'Managed Hosting' => 0, 'Advanced' => 0, 'Community' => 0, 'Enterprise' => 0, 'Standard' => 0, 'Pro' => 0};
-        this.formsForPeriodMap = new Map<String, Decimal> { 'Reseller' => 0, 'Managed Hosting' => 0, 'Advanced' => 0, 'Community' => 0, 'Enterprise' => 0, 'Standard' => 0, 'Pro' => 0};
+        this.wamMap = new Map<String, Decimal> { 'Advanced' => 0, 'Community' => 0, 'Enterprise' => 0, 'Standard' => 0, 'Pro' => 0};
+        this.formsMap = new Map<String, Decimal> { 'Advanced' => 0, 'Community' => 0, 'Enterprise' => 0, 'Standard' => 0, 'Pro' => 0};
+        this.mobileUsersMap = new Map<String, Decimal> { 'Advanced' => 0, 'Community' => 0, 'Enterprise' => 0, 'Standard' => 0, 'Pro' => 0};
+        this.recordCountMap = new Map<String, Decimal> { 'Advanced' => 0, 'Community' => 0, 'Enterprise' => 0, 'Standard' => 0, 'Pro' => 0};
+        this.formsForPeriodMap = new Map<String, Decimal> { 'Advanced' => 0, 'Community' => 0, 'Enterprise' => 0, 'Standard' => 0, 'Pro' => 0};
         this.error = false;
         this.settings = BatchDefaultSettings__c.getOrgDefaults();
     }
@@ -75,6 +75,10 @@ public class DomainSnapshotFromHistoryBatch implements Database.Batchable<Accoun
 
             Integer subs = 0;
             for (Accounting_Subscription__c sub : scopeFiltered) {
+                String softwarePlan = sub.Software_Plan_Edition__c;
+                if (softwarePlan == '' || softwarePlan == null || softwarePlan == '-' || softwarePlan == 'Reseller' || softwarePlan == 'Managed Hosting') {
+                    continue; // we want skip empty plan
+                }
                 Decimal forms = sub.Accounting_subscriber_domain__r.cpAllForms__c != null ? sub.Accounting_subscriber_domain__r.cpAllForms__c : 0;
                 if (formHistory.containsKey(sub.Accounting_subscriber_domain__c)) { // take value from history
                     forms = formHistory.get(sub.Accounting_subscriber_domain__c);
@@ -96,11 +100,6 @@ public class DomainSnapshotFromHistoryBatch implements Database.Batchable<Accoun
                     Decimal activeUsers = sub.Accounting_subscriber_domain__r.cpActiveMobileUsers__c != null ? sub.Accounting_subscriber_domain__r.cpActiveMobileUsers__c : 0;
                     if (activeUsersHistory.containsKey(sub.Accounting_subscriber_domain__c)) {
                         activeUsers = activeUsersHistory.get(sub.Accounting_subscriber_domain__c);
-                    }
-
-                    String softwarePlan = sub.Software_Plan_Edition__c;
-                    if (softwarePlan == '' || softwarePlan == null || softwarePlan == '-') {
-                        continue; // we want skip empty plan
                     }
 
                     this.wamMap.put(softwarePlan, this.wamMap.get(softwarePlan) + wam);
