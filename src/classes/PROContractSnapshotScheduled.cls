@@ -13,11 +13,5 @@ global class PROContractSnapshotScheduled implements Schedulable {
             PROContractSnapshotBatch proContractSnapshotBatch = new PROContractSnapshotBatch();
             database.executeBatch(proContractSnapshotBatch, 50);
         }
-
-        Integer numberOfDays = Date.daysInMonth(currentDate.year(), currentDate.month());
-        Date lastDayOfMonth = Date.newInstance(currentDate.year(), currentDate.month(), numberOfDays);
-        if (currentDate.isSameDay(lastDayOfMonth)) {
-            Database.executeBatch(new DomainMonthlySnapshotBatch());
-        }
     }
 }

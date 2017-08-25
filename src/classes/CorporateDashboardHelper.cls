@@ -368,7 +368,7 @@ public class CorporateDashboardHelper {
                                                           Graph_Value_4__c = 0, Graph_Value_5__c = 0, Graph_Value_6__c = 0, Graph_Value_7__c = 0);
                 tmpProgramsData = new Global_Metric_Graph__c(Name = PROGRAMS_GRAPH, Graph_Value_1__c = 0, Graph_Value_2__c = 0, Graph_Value_3__c = 0,
                                                              Graph_Value_4__c = 0, Graph_Value_5__c = 0, Graph_Value_6__c = 0, Graph_Value_7__c = 0);
-                endIdx += 7;
+                endIdx += 5;
             }
         }
         deleteAndAddMetrics(wamData, WAM_GRAPH);
