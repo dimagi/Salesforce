@@ -43,7 +43,7 @@ global without sharing class FogBugzSynchronizerBatch implements Database.Batcha
             this.syncSuccess = false;
             EmailHelper.sendEmailFromException(this.errorEmailAdress, 'Fogbugz Sync - Error in start method',
                                                 'Last sync date time wasn\'t updated, we catch following exception', e);
-            return null;
+            return new OpportunityIterable(new Opportunity[]{});
         }
     }
 
