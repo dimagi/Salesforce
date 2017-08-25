@@ -420,6 +420,10 @@ public class CorporateDashboardHelper {
             gData.Graph_Value_4__c = value / 1000.00;
         } else if (softwarePlan == 'Standard') {
             gData.Graph_Value_5__c = value / 1000.00;
+        } else if (softwarePlan == 'Reseller') {
+            gData.Graph_Value_6__c = value / 1000.00;
+        } else if (softwarePlan == 'Managed Hosting') {
+            gData.Graph_Value_7__c = value / 1000.00;
         }
         return gData;
     }
