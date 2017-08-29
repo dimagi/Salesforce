@@ -547,7 +547,7 @@ public class FTETrackerController {
 
             List<Time_Card__c> timeCardsToUpdate = new List<Time_Card__c>();
             List<Time_Card__c> timeCardsFromDB = [SELECT Id, Client__c, Client__r.FTE_Tracker__c, Client__r.Name,
-                                                        Total__c, FTE_hours__c, FTE_Contract__c, FTE_Available_Hours__c,
+                                                        Total__c, FTE_hours__c, FTE_Contract__c,
                                                         FTE_Contract__r.FTE_Tracker__c, FTE_Contract__r.Name,
                                                         Date__c FROM Time_Card__c
                                                         WHERE Employee__c =: this.employee.Id AND Client__c != null
@@ -576,7 +576,7 @@ public class FTETrackerController {
             // If we already have tag from assigned we want take more hours from that tag, we need only one time card we can move hours to one contract
             if (stopUpdating == false) {
                 timeCardsFromDB = [SELECT Id, Client__c, Client__r.FTE_Tracker__c, Client__r.Name,
-                                                Total__c, FTE_hours__c, FTE_Contract__c, FTE_Available_Hours__c,
+                                                Total__c, FTE_hours__c, FTE_Contract__c,
                                                 FTE_Contract__r.FTE_Tracker__c, FTE_Contract__r.Name,
                                                 Date__c FROM Time_Card__c
                                                 WHERE Employee__c =: this.employee.Id AND Client__c != null
@@ -596,7 +596,7 @@ public class FTETrackerController {
             // If we don't have any tag we need add new one in time card
             if (stopUpdating == false) {
                 timeCardsFromDB = [SELECT Id, Client__c, Client__r.FTE_Tracker__c, Client__r.Name,
-                                                Total__c, FTE_hours__c, FTE_Contract__c, FTE_Available_Hours__c,
+                                                Total__c, FTE_hours__c, FTE_Contract__c,
                                                 FTE_Contract__r.FTE_Tracker__c, FTE_Contract__r.Name,
                                                 Date__c FROM Time_Card__c
                                                 WHERE Employee__c =: this.employee.Id AND Client__c != null
@@ -671,7 +671,7 @@ public class FTETrackerController {
 
             List<Time_Card__c> timeCardsToUpdate = new List<Time_Card__c>();
             List<Time_Card__c> timeCardsFromDB = [SELECT Id, Client__c, Client__r.FTE_Tracker__c, Client__r.Name,
-                                                Total__c, FTE_hours__c, FTE_Contract__c, FTE_Available_Hours__c,
+                                                Total__c, FTE_hours__c, FTE_Contract__c,
                                                 FTE_Contract__r.FTE_Tracker__c, FTE_Contract__r.Name,
                                                 Date__c FROM Time_Card__c
                                                 WHERE Employee__c =: this.employee.Id AND Client__c != null
@@ -705,7 +705,7 @@ public class FTETrackerController {
             // If we already have tag from unassigned we want take more hours from that tag
             if (stopUpdating == false) {
                 timeCardsFromDB = [SELECT Id, Client__c, Client__r.FTE_Tracker__c, Client__r.Name,
-                                                Total__c, FTE_hours__c, FTE_Contract__c, FTE_Available_Hours__c,
+                                                Total__c, FTE_hours__c, FTE_Contract__c,
                                                 FTE_Contract__r.FTE_Tracker__c, FTE_Contract__r.Name,
                                                 Date__c FROM Time_Card__c
                                                 WHERE Employee__c =: this.employee.Id AND Client__c != null
@@ -806,7 +806,7 @@ public class FTETrackerController {
         this.fteHoursMax = 0;
         this.employeeMonth = null;
         this.fteContracts = null;
-        this.fteContractsOptions.clear();
+        this.fteContractsOptions = null;
         this.selectedFteContract = null;
         this.fteDays = '';
         this.contractName = null;

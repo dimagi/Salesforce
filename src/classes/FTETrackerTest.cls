@@ -53,7 +53,7 @@ public class FTETrackerTest {
         Date currentDate = Date.today();
         SFDC_Employee__c employee = [SELECT Id FROM SFDC_Employee__c WHERE Name = 'FTE Employee'];
         FTETrackerController controller = new FTETrackerController();
-        controller.testEmployeeId = employee.Id;
+        controller.employeeId = employee.Id;
         controller.loadEmployeeTimeHistory();
         controller.employeeMonth = currentDate.month() - 1;
         controller.contractId = [SELECT Id FROM DContract__c WHERE Name = 'FTE Contract 2' LIMIT 1].Id;
@@ -73,7 +73,7 @@ public class FTETrackerTest {
         Date currentDate = Date.today();
         SFDC_Employee__c employee = [SELECT Id FROM SFDC_Employee__c WHERE Name = 'FTE Employee'];
         FTETrackerController controller = new FTETrackerController();
-        controller.testEmployeeId = employee.Id;
+        controller.employeeId = employee.Id;
         controller.loadEmployeeTimeHistory();
         controller.employeeMonth = currentDate.month() - 1;
         controller.contractId = [SELECT Id FROM DContract__c WHERE Name = 'FTE Contract 2' LIMIT 1].Id;
@@ -94,7 +94,7 @@ public class FTETrackerTest {
         Date currentDate = Date.today();
         SFDC_Employee__c employee = [SELECT Id FROM SFDC_Employee__c WHERE Name = 'FTE Employee'];
         FTETrackerController controller = new FTETrackerController();
-        controller.testEmployeeId = employee.Id;
+        controller.employeeId = employee.Id;
         controller.loadEmployeeTimeHistory();
         controller.employeeMonth = currentDate.month() - 1;
         controller.loadEmployeeMonth();
@@ -114,7 +114,7 @@ public class FTETrackerTest {
         Date currentDate = Date.today();
         SFDC_Employee__c employee = [SELECT Id FROM SFDC_Employee__c WHERE Name = 'FTE Employee'];
         FTETrackerController controller = new FTETrackerController();
-        controller.testEmployeeId = employee.Id;
+        controller.employeeId = employee.Id;
         controller.loadEmployeeTimeHistory();
         controller.employeeMonth = currentDate.month() - 1;
         controller.loadEmployeeMonth();
@@ -134,7 +134,7 @@ public class FTETrackerTest {
         Date currentDate = Date.today();
         SFDC_Employee__c employee = [SELECT Id FROM SFDC_Employee__c WHERE Name = 'FTE Employee'];
         FTETrackerController controller = new FTETrackerController();
-        controller.testEmployeeId = employee.Id;
+        controller.employeeId = employee.Id;
         controller.loadEmployeeTimeHistory();
         System.assertEquals(46.9, controller.unassigned.hoursArray[currentDate.month() - 1]);
         System.assertEquals(5.75, controller.unassigned.daysArray[currentDate.month() - 1]);

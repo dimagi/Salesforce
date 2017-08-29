@@ -49,7 +49,7 @@
                 </apex:actionstatus>
                 <apex:outputText id="employeeName" value="{!employee.Name}"/>
                 <apex:pageBlockTable id="employeeHours" value="{!contractsTime}" var="empTime" styleClass="employeeTable">
-                    <apex:column onclick="setProjectIndViewData();" headerValue="Contract Name" value="{!empTime.name}" styleClass="{!empTime.nameCss}"/>
+                    <apex:column onclick="setProjectIndViewData('{!empTime.objId}');" headerValue="Contract Name" value="{!empTime.name}" styleClass="{!empTime.nameCss}"/>
                     <apex:column onclick="if ('{!empTime.name}' !== 'Total Days Worked' && '{!empTime.name}' !== 'Total Assigned Days') {setAssignViewData(0, '{!empTime.objId}');}"
                                  headerValue="Jan {!currentYear}" value="{!empTime.daysArray[0]}" styleClass="{!empTime.cssStyle[0]}"/>
                     <apex:column onclick="if ('{!empTime.name}' !== 'Total Days Worked' && '{!empTime.name}' !== 'Total Assigned Days') {setAssignViewData(1, '{!empTime.objId}');}"
