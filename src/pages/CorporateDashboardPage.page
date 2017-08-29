@@ -125,7 +125,7 @@
                 <apex:pageBlock id="performance" title="Performance of Product" mode="edit" >
                     <div class="chartsDataContainer">
                         <div class="graphContainer">
-                            <h2><a href="https://dimagi.my.salesforce.com/00Ob00000047rxW" target="blank">Average Page Load Time</a></h2>
+                            <h2><a href="https://dimagi.my.salesforce.com/00Ob00000047rxW" target="_blank">Average Page Load Time</a></h2>
                             <apex:chart data="{!data}" height="400" width="90%">
                                 <apex:legend position="bottom" font="9px Helvetica, sans-serif"/>
                                 <apex:axis type="Numeric" position="left" fields="graphValue1" >
@@ -147,7 +147,7 @@
                             </apex:chart>
                         </div>
                         <div class="graphContainer">
-                            <h2><a href="https://dimagi.my.salesforce.com/00Ob00000047rxW" target="blank">Average Apdex (server response time)</a></h2>
+                            <h2><a href="https://dimagi.my.salesforce.com/00Ob00000047rxW" target="_blank">Average Apdex (server response time)</a></h2>
                             <apex:chart data="{!data}" height="400" width="90%">
                                 <apex:legend position="bottom" font="9px Helvetica, sans-serif"/>
                                 <apex:axis type="Numeric" position="left" fields="graphValue3" >
@@ -169,7 +169,7 @@
                             </apex:chart>
                         </div>
                         <div class="graphContainer">
-                            <h2><a href="https://dimagi.my.salesforce.com/00Ob0000004eXeG" target="blank">Server Uptime %</a></h2>
+                            <h2><a href="https://dimagi.my.salesforce.com/00Ob0000004eXeG" target="_blank">Server Uptime %</a></h2>
                             <apex:chart data="{!upData}" height="400" width="90%">
                                 <apex:legend position="bottom" font="9px Helvetica, sans-serif"/>
                                 <apex:axis type="Numeric" position="left" fields="graphValue1,graphValue2,graphValue3" >
