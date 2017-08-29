@@ -1097,34 +1097,36 @@
                         <apex:inputHidden id="icdsDataId" value="{!icdsData}" />
                         <apex:inputHidden id="serverUpTimeId" value="{!serverUpTime}" />
 
+                        <a href="https://confluence.dimagi.com/display/internal/Global+Metrics" target="_blank"><h2>Graph definitions</h2></a><br /><br />
+
                        <apex:outputText value="Dashboard refreshed at : {!dashboardRefreshTime}" />
                         <apex:pageBlockSection title="Scale" collapsible="false" columns="1" >
                         <div class="chartsData">
                             <div id="activeUsers" class="graph">
                                 <div class="graphTitle">
                                     <h2>
-                                        <a href="https://dimagi.my.salesforce.com/00Ob00000048BiR" target="blank">Active Users</a>
+                                        <a href="https://dimagi.my.salesforce.com/00Ob00000048BiR" target="_blank">Active Users</a>
                                     </h2>
                                 </div>
                             </div>
                             <div id="wams" class="graph">
                                 <div class="graphTitle">
                                     <h2>
-                                        <a href="https://dimagi.my.salesforce.com/00Ob00000048BiR" target="blank">WAMs</a>
+                                        <a href="https://dimagi.my.salesforce.com/00Ob00000048BiR" target="_blank">WAMs</a>
                                     </h2>
                                 </div>
                             </div>
                             <div id="forms" class="graph">
                                 <div class="graphTitle">
                                     <h2>
-                                        <a href="https://dimagi.my.salesforce.com/00Ob00000048BiR" target="blank">Forms</a>
+                                        <a href="https://dimagi.my.salesforce.com/00Ob00000048BiR" target="_blank">Forms</a>
                                     </h2>
                                 </div>
                             </div>
                             <div id="programs" class="graph">
                                 <div class="graphTitle">
                                     <h2>
-                                        <a href="https://dimagi.my.salesforce.com/00Ob00000048BiR" target="blank">Active Project Spaces</a>
+                                        <a href="https://dimagi.my.salesforce.com/00Ob00000048BiR" target="_blank">Active Project Spaces</a>
                                     </h2>
                                 </div>
                             </div>
@@ -1135,21 +1137,21 @@
                             <div id="activeUsersICDS" class="graph">
                                 <div class="graphTitle">
                                     <h2>
-                                        <a href="https://dimagi.my.salesforce.com/00Ob0000004eTF2" target="blank">Active Users - ICDS</a>
+                                        <a href="https://dimagi.my.salesforce.com/00Ob0000004eTF2" target="_blank">Active Users - ICDS</a>
                                     </h2>
                                 </div>
                             </div>
                             <div id="wamsICDS" class="graph">
                                 <div class="graphTitle">
                                     <h2>
-                                        <a href="https://dimagi.my.salesforce.com/00Ob0000004eTF2" target="blank">WAMs - ICDS</a>
+                                        <a href="https://dimagi.my.salesforce.com/00Ob0000004eTF2" target="_blank">WAMs - ICDS</a>
                                     </h2>
                                 </div>
                             </div>
                             <div id="formsICDS" class="graph">
                                 <div class="graphTitle">
                                     <h2>
-                                        <a href="https://dimagi.my.salesforce.com/00Ob0000004eTF2" target="blank">Forms - ICDS</a>
+                                        <a href="https://dimagi.my.salesforce.com/00Ob0000004eTF2" target="_blank">Forms - ICDS</a>
                                     </h2>
                                 </div>
                             </div>
@@ -1160,7 +1162,7 @@
                                 <div id="netEV" class="gaugeGraph">
                                     <div class="graphTitle">
                                         <h2>
-                                            <a href="https://dimagi.my.salesforce.com/00Ob00000047qYz" target="blank">YTD Change in Net EV - Target $9.9 million</a>
+                                            <a href="https://dimagi.my.salesforce.com/00Ob00000047qYz" target="_blank">YTD Change in Net EV - Target $9.9 million</a>
                                         </h2>
                                     </div>
                                     <div id="netEVBottomValue" class="graphBottomTitle"><h2>Sum of DIFF-Expected Value Minus Expense (Millions)</h2></div>
@@ -1168,7 +1170,7 @@
                                 <div id="bufferEV" class="gaugeGraph">
                                     <div class="graphTitle">
                                         <h2>
-                                            <a href="https://dimagi.my.salesforce.com/00Ob00000047qYz" target="blank">YTD Buffer EV generated - Target $4.2 million</a>
+                                            <a href="https://dimagi.my.salesforce.com/00Ob00000047qYz" target="_blank">YTD Buffer EV generated - Target $4.2 million</a>
                                         </h2>
                                     </div>
                                     <div id="bufferEVBottomValue" class="graphBottomTitle"><h2>Sum of DIFF-Expected Buffer (Millions)</h2></div>
@@ -1176,7 +1178,7 @@
                                 <div id="oppWon" class="gaugeGraph">
                                     <div class="graphTitle">
                                         <h2>
-                                            <a href="https://dimagi.my.salesforce.com/00Ob00000048GVF" target="blank">YTD Opportunities Won - Target $ 6.9 million</a>
+                                            <a href="https://dimagi.my.salesforce.com/00Ob00000048GVF" target="_blank">YTD Opportunities Won - Target $ 6.9 million</a>
                                         </h2>
                                     </div>
                                     <div id="oppWonBottomValue" class="graphBottomTitle"><h2>Sum of Expected Value Minus Expense Income (Millions)</h2></div>
@@ -1184,7 +1186,7 @@
                                 <div id="mrr" class="graph">
                                     <div class="graphTitle">
                                         <h2>
-                                            <a href="https://dimagi.my.salesforce.com/00Ob00000048Bib" target="blank">Monthly Recurring Revenue</a>
+                                            <a href="https://dimagi.my.salesforce.com/00Ob00000048Bib" target="_blank">Monthly Recurring Revenue</a>
                                         </h2>
                                     </div>
                                 </div>
@@ -1195,21 +1197,21 @@
                                 <div id="performance1" class="graph">
                                     <div class="graphTitle">
                                         <h2>
-                                            <a href="https://dimagi.my.salesforce.com/00Ob00000047rxW" target="blank">Average Page Load Time</a>
+                                            <a href="https://dimagi.my.salesforce.com/00Ob00000047rxW" target="_blank">Average Page Load Time</a>
                                         </h2>
                                     </div>
                                 </div>
                                 <div id="performance2" class="graph">
                                     <div class="graphTitle">
                                         <h2>
-                                            <a href="https://dimagi.my.salesforce.com/00Ob00000047rxW" target="blank">Average Apdex (server response time)</a>
+                                            <a href="https://dimagi.my.salesforce.com/00Ob00000047rxW" target="_blank">Average Apdex (server response time)</a>
                                         </h2>
                                     </div>
                                 </div>
                                 <div id="serverUpTime" class="graph">
                                     <div class="graphTitle">
                                         <h2>
-                                            <a href="https://dimagi.my.salesforce.com/00Ob0000004eXeG" target="blank">Server Uptime</a>
+                                            <a href="https://dimagi.my.salesforce.com/00Ob0000004eXeG" target="_blank">Server Uptime</a>
                                         </h2>
                                     </div>
                                 </div>
@@ -1220,21 +1222,21 @@
                                 <div id="aggregateExecution" class="graph">
                                     <div class="graphTitle">
                                         <h2>
-                                            <a href="https://dimagi.my.salesforce.com/00Ob0000004Mfu8" target="blank">Aggregate Execution Efficiency</a>
+                                            <a href="https://dimagi.my.salesforce.com/00Ob0000004Mfu8" target="_blank">Aggregate Execution Efficiency</a>
                                         </h2>
                                     </div>
                                 </div>
                                 <div id="quality" class="graph">
                                     <div class="graphTitle">
                                         <h2>
-                                            <a href="https://dimagi.my.salesforce.com/00Ob000000481sq" target="blank">GS Overall Project Status (% Green)</a>
+                                            <a href="https://dimagi.my.salesforce.com/00Ob000000481sq" target="_blank">GS Overall Project Status (% Green)</a>
                                         </h2>
                                     </div>
                                 </div>
                                 <div id="customers" class="graph">
                                     <div class="graphTitle">
                                         <h2>
-                                            <a href="https://dimagi.my.salesforce.com/00Ob000000481sq" target="blank">GS Partner Relationship  (% Green)</a>
+                                            <a href="https://dimagi.my.salesforce.com/00Ob000000481sq" target="_blank">GS Partner Relationship  (% Green)</a>
                                         </h2>
                                     </div>
                                 </div>
