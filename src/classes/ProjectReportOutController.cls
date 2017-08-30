@@ -1267,6 +1267,7 @@ public with sharing class ProjectReportOutController {
      *
      **/
 
+    private List<Global_Metric_Graph__c> headCount;
     private List<Global_Metric_Graph__c> wamData;
     private List<Global_Metric_Graph__c> formData;
     private List<Global_Metric_Graph__c> userData;
@@ -1281,6 +1282,18 @@ public with sharing class ProjectReportOutController {
     private Global_Metric_Graph__c evExpectedRec;
     private Global_Metric_Graph__c bufferEvGenRec;
     public DateTime dashboardRefreshTime { get; set;}
+
+    public String getHeadCountData() {
+        if (this.headCount == null) {
+            this.headCount = [SELECT X_Text__c, Graph_Value_1__c, Graph_Value_2__c, Graph_Value_3__c, Graph_Value_4__c, Graph_Value_5__c, Graph_Value_6__c, Graph_Value_7__c
+                        FROM Global_Metric_Graph__c WHERE Name =: CorporateDashboardHelper.GS_HEADCOUNT ORDER BY Helper_Date__c];
+        }
+        if (this.headCount != null) {
+            return JSON.serialize(this.headCount);
+        }
+        return '';
+    }
+    public void setHeadCountData(String headCount) {}
 
     public String getIcdsData() {
         if (this.icds == null) {

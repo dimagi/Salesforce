@@ -370,7 +370,6 @@
                     nv.utils.windowResize(chart.update);
                     return chart;
                 });
-
                 nv.addGraph(function() {
                     var range = [], serverUpTimeData, chart = nv.models.lineChart().height(400);
                     serverUpTimeData = fillServerUpTimeData(JSON.parse($j("[id$=serverUpTimeId]").val()));
@@ -397,6 +396,39 @@
                     nv.utils.windowResize(chart.update);
                     return chart;
                 });
+                nv.addGraph(function() {
+                    var range =[], headcountData, chart = nv.models.multiChart().height(400);
+                    chart.legend.rightAlign = false;
+                    chart.legend.align(false);
+                    headcountData = loadHeadCountData();
+                    for (var i = 0; i < headcountData[0].values.length; i++) {
+                        range.push(headcountData[0].values[i].x);
+                    }
+                    chart.xAxis.tickValues(range);
+                    chart.xAxis.tickFormat(function(d) {
+                            return 'CY' + d
+                        });
+                    chart.xAxis.axisLabel('Hire Date');
+                    $j("[id$=headcount").append("<svg></svg>");
+                    d3.select('#headcount svg').datum(headcountData).call(chart)
+                        .transition().duration(500);
+                    nv.utils.windowResize(chart.update);
+                    return chart;
+                });
+            }
+
+            function loadHeadCountData() {
+                var graphData = JSON.parse($j("[id$=headCountDataId]").val());
+                var total = [], inc = [], dwa = [], dsi = [], dsa = [];
+                for (i = 0; i < graphData.length; i++) {
+                    total.push({x: new Number(graphData[i].Graph_Value_7__c), y: graphData[i].Graph_Value_1__c});
+                    inc.push({x: new Number(graphData[i].Graph_Value_7__c), y: graphData[i].Graph_Value_2__c});
+                    dwa.push({x: new Number(graphData[i].Graph_Value_7__c), y: graphData[i].Graph_Value_3__c});
+                    dsi.push({x: new Number(graphData[i].Graph_Value_7__c), y: graphData[i].Graph_Value_4__c});
+                    dsa.push({x: new Number(graphData[i].Graph_Value_7__c), y: graphData[i].Graph_Value_5__c});
+                }
+                return [ {key: "Record Count", yAxis: 1, type: "line", values: total}, {key: "Record Count: Inc", yAxis: 1, type: "bar", values: inc}, {key: "Record Count: DWA", yAxis: 1, type: "bar", values: dwa},
+                         {key: "Record Count: DSI", yAxis: 1, type: "bar", values: dsi}, {key: "Record Count: DSA", yAxis: 1, type: "bar", values: dsa} ];
             }
 
             function buildDiscBatChart(yLabel) {
@@ -1096,6 +1128,7 @@
                         <apex:inputHidden id="aggregateEffId" value="{!AggregateEffData}" />
                         <apex:inputHidden id="icdsDataId" value="{!icdsData}" />
                         <apex:inputHidden id="serverUpTimeId" value="{!serverUpTime}" />
+                        <apex:inputHidden id="headCountDataId" value="{!headCountData}" />
 
                         <a href="https://confluence.dimagi.com/display/internal/Global+Metrics" target="_blank"><h2>Graph definitions</h2></a><br /><br />
 
@@ -1219,7 +1252,7 @@
                         </apex:pageBlockSection>
                         <apex:pageBlockSection title="Global Services" collapsible="false" columns="1" >
                             <div class="chartsData">
-                                <div id="aggregateExecution" class="graph">
+                                <div id="aggregateExecution" class="graph">HeadCountData
                                     <div class="graphTitle">
                                         <h2>
                                             <a href="https://dimagi.my.salesforce.com/00Ob0000004Mfu8" target="_blank">Aggregate Execution Efficiency</a>
@@ -1237,6 +1270,13 @@
                                     <div class="graphTitle">
                                         <h2>
                                             <a href="https://dimagi.my.salesforce.com/00Ob000000481sq" target="_blank">GS Partner Relationship  (% Green)</a>
+                                        </h2>
+                                    </div>
+                                </div>
+                                <div id="headcount" class="graph">
+                                    <div class="graphTitle">
+                                        <h2>
+                                            <a href="https://dimagi.my.salesforce.com/00Ob00000047xrP" target="_blank">GS Headcount</a>
                                         </h2>
                                     </div>
                                 </div>
