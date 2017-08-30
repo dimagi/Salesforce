@@ -4,6 +4,7 @@
 public class CorporateDashboardHelper {
 
     public static final String GS_GRAPHS = 'Gs';
+    public static final String GS_HEADCOUNT = 'Gs Headcount';
     public static final String PERFORMANCE_GRAPHS = 'CommCare Performance';
     public static final String UP_TIME_GRAPHS = 'Server Up Time';
     public static final String MRR_GRAPH = 'Mrr';
@@ -25,6 +26,7 @@ public class CorporateDashboardHelper {
     public static void refreshAllGraphs() {
         BatchDefaultSettings__c batchSettings = BatchDefaultSettings__c.getOrgDefaults();
         try {
+            loadGsHeadcountData();
             loadGSData();
             loadPerformanceData();
             loadServerUpTimeData();
@@ -42,6 +44,46 @@ public class CorporateDashboardHelper {
                 EmailHelper.sendEmailFromException(settings.Error_Emails__c.split(','), 'CorporateDashboardHelper error', 'Cannot refresh all graphs', ex);
             }
         }
+    }
+
+    public static void loadGsHeadcountData() {
+        Date startHireDate = Date.newInstance(2012, 1, 2);
+        List<Global_Metric_Graph__c> headcountData = new List<Global_Metric_Graph__c>();
+        AggregateResult[] records = [SELECT CALENDAR_YEAR(Hire_Date__c), Business_Unit__r.Name, Count(Id)
+                                     FROM SFDC_Employee__c WHERE Sub_Unit__c = 'Global Services' AND Hire_Date__c >=: startHireDate
+                                     AND (Employee_Status__c = 'Active' OR Employee_Status__c = 'Terminated') AND (NOT Title__c LIKE '%Intern%')
+                                     GROUP BY CALENDAR_YEAR(Hire_Date__c), Business_Unit__r.Name ORDER BY CALENDAR_YEAR(Hire_Date__c)];
+
+        System.debug('Employee Data : ' + records);
+        if (records.size() > 0) {
+            Integer hireYear = Integer.valueOf(records[0].get('expr0'));
+            Global_Metric_Graph__c helper = new Global_Metric_Graph__c(Name = GS_HEADCOUNT, X_Text__c = hireYear.format(), Graph_Value_1__c = 0, Graph_Value_2__c = 0, Graph_Value_3__c = 0,
+                                                        Graph_Value_4__c = 0, Graph_Value_5__c = 0, Graph_Value_6__c = 0, Graph_Value_7__c = hireYear, Helper_Date__c = Date.newInstance(hireYear, 1, 1));
+            for (AggregateResult ar : records) {
+                Integer currentHireYear = Integer.valueOf(ar.get('expr0'));
+                String buName = (String) ar.get('Name');
+                Integer countRecords = Integer.valueOf(ar.get('expr1'));
+                System.debug('Record : ' + currentHireYear + ' ' + buName + ' ' + countRecords);
+                if (hireYear != currentHireYear) {
+                    hireYear = currentHireYear;
+                    headcountData.add(helper);
+                    helper = new Global_Metric_Graph__c(Name = GS_HEADCOUNT, X_Text__c = hireYear.format(), Graph_Value_1__c = 0, Graph_Value_2__c = 0, Graph_Value_3__c = 0,
+                                                        Graph_Value_4__c = 0, Graph_Value_5__c = 0, Graph_Value_6__c = 0, Graph_Value_7__c = hireYear, Helper_Date__c = Date.newInstance(hireYear, 1, 1));
+                }
+                helper.Graph_Value_1__c += countRecords;
+                if (buName == 'Inc') {
+                    helper.Graph_Value_2__c = countRecords;
+                } else if (buName == 'DWA') {
+                    helper.Graph_Value_3__c = countRecords;
+                } else if (buName == 'DSI') {
+                    helper.Graph_Value_4__c = countRecords;
+                } else if (buName == 'DSA') {
+                    helper.Graph_Value_5__c = countRecords;
+                }
+            }
+            headcountData.add(helper);
+        }
+        deleteAndAddMetrics(headcountData, GS_HEADCOUNT);
     }
 
     public static void loadGSData() {
