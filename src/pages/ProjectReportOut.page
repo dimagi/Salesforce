@@ -1252,7 +1252,7 @@
                         </apex:pageBlockSection>
                         <apex:pageBlockSection title="Global Services" collapsible="false" columns="1" >
                             <div class="chartsData">
-                                <div id="aggregateExecution" class="graph">HeadCountData
+                                <div id="aggregateExecution" class="graph">
                                     <div class="graphTitle">
                                         <h2>
                                             <a href="https://dimagi.my.salesforce.com/00Ob0000004Mfu8" target="_blank">Aggregate Execution Efficiency</a>
@@ -1276,7 +1276,7 @@
                                 <div id="headcount" class="graph">
                                     <div class="graphTitle">
                                         <h2>
-                                            <a href="https://dimagi.my.salesforce.com/00Ob00000047xrP" target="_blank">GS Headcount</a>
+                                            <a href="https://dimagi.my.salesforce.com/00Ob00000047xrP" target="_blank">GS Hires</a>
                                         </h2>
                                     </div>
                                 </div>
