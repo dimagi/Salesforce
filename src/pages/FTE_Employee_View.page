@@ -24,6 +24,7 @@
         }
         .employeeTable {
             margin-top: 10px;
+            margin-bottom: 10px;
         }
     </style>
 
@@ -86,6 +87,8 @@
                 <apex:actionFunction action="{!setViewData}" name="setProjectIndViewData" oncomplete="goToIndividualProjectView();">
                     <apex:param name="contractId" assignTo="{!contractId}" value=""/>
                 </apex:actionFunction>
+                <apex:commandButton action="{!goToEmployeeListViewFromEmployeeView}" value="Employee List" id="backEButton" />
+                <apex:commandButton action="{!goToProjectListViewFromEmployeeView}" value="Project List" id="backPButton" />
                 <apex:commandButton action="{!removeAllTags}" status="loadingDiv" value="Reset Data" id="resetButton" reRender="employeeHours"/>
             </apex:outputPanel>
         </apex:form>

@@ -11,7 +11,7 @@
         }
         .projectTable {
             margin-top: 15px;
-            margin-bottom: 15px;
+            margin-bottom: 10px;
         }
     </style>
 
@@ -54,6 +54,7 @@
                         </apex:commandLink>
                     </apex:column>
                 </apex:pageBlockTable>
+                <apex:commandButton action="{!goToEmployeeListViewFromProjectListView}" value="Employee List" id="backButton" />
                 </apex:pageBlockSection>
 
                 <apex:pageBlockSection columns="1" id="serachSection">

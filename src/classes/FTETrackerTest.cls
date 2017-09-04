@@ -49,6 +49,21 @@ public class FTETrackerTest {
     }
 
     @isTest
+    public static void shouldGenerateWorkCards() {
+        Test.startTest();
+        Database.executeBatch(new FTEGenerateEmployeesWorkCardBatch(Date.today().year()));
+        Test.stopTest();
+        List<SFDC_Employee__c> employees = [SELECT Id, Name, Unloaded_Daily_Rate__c FROM SFDC_Employee__c WHERE Employee_Status__c = 'Active' ORDER BY Name];
+        System.assertEquals(1, employees.size());
+        List<FTE_Work_Card__c> workCards = [SELECT Id, Employee__c, Employee__r.Name, Employee__r.Unloaded_Daily_Rate__c, Month_1__c, Month_2__c, Month_3__c,
+                                   Month_4__c, Month_5__c, Month_6__c, Month_7__c, Month_8__c, Month_9__c, Month_10__c, Month_11__c, Month_12__c,
+                                   Total__c, Total_Hours__c, Year__c FROM FTE_Work_Card__c ORDER BY Employee__r.Name];
+        System.assertEquals(1, workCards.size());
+        System.assertEquals(92.1, workCards.get(0).Total_Hours__c, 1);
+        System.assertEquals(11.5, workCards.get(0).Total__c, 1);
+    }
+
+    @isTest
     public static void shouldMoveHoursToUnassigned() {
         Date currentDate = Date.today();
         SFDC_Employee__c employee = [SELECT Id FROM SFDC_Employee__c WHERE Name = 'FTE Employee'];
@@ -146,6 +161,7 @@ public class FTETrackerTest {
         SFDC_Employee__c employeeObj = new SFDC_Employee__c(
             Name = employeeName,
             Salary__c = 50000,
+            Employee_Status__c = 'Active',
             Exchange_Rate__c = 1
         );
         insert employeeObj;

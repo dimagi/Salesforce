@@ -135,6 +135,13 @@ public class FTETrackerController {
         this.contractId = null;
     }
 
+    public PageReference goToEmployeeListViewFromProjectListView() {
+        PageReference pageRef = Page.FTE_Employee_List_View;
+        pageRef.setRedirect(false);
+        clearProjectListViewData();
+        return pageRef;
+    }
+
     public PageReference goToIndividualProjectView() {
         PageReference pageRef = null;
         if (String.isBlank(this.contractId)) {
@@ -278,14 +285,43 @@ public class FTETrackerController {
     public List<EmployeeTime> employees { get; set;}
 
     public void loadEmployeeListTimeHistory() {
-       List<SFDC_Employee__c> employeesFromDB = [SELECT Id, Name, Unloaded_Daily_Rate__c FROM SFDC_Employee__c WHERE Employee_Status__c = 'Active' ORDER BY Name];
        this.employees = new List<EmployeeTime>();
-       for (SFDC_Employee__c emp : employeesFromDB) {
-           this.employees.add(new EmployeeTime(emp.Name, emp.Id));
+       List<FTE_Work_Card__c> workCards = [SELECT Id, Employee__c, Employee__r.Name, Employee__r.Unloaded_Daily_Rate__c, Month_1__c, Month_2__c, Month_3__c,
+                                           Month_4__c, Month_5__c, Month_6__c, Month_7__c, Month_8__c, Month_9__c, Month_10__c, Month_11__c, Month_12__c,
+                                           Total__c, Total_Hours__c, Year__c FROM FTE_Work_Card__c ORDER BY Employee__r.Name];
+       for (FTE_Work_Card__c workCard : workCards) {
+           EmployeeTime empTime = new EmployeeTime(workCard.Employee__r.Name, workCard.Employee__c);
+           empTime.daysArray[0] = workCard.Month_1__c;
+           empTime.daysArray[1] = workCard.Month_2__c;
+           empTime.daysArray[2] = workCard.Month_3__c;
+           empTime.daysArray[3] = workCard.Month_4__c;
+           empTime.daysArray[4] = workCard.Month_5__c;
+           empTime.daysArray[5] = workCard.Month_6__c;
+           empTime.daysArray[6] = workCard.Month_7__c;
+           empTime.daysArray[7] = workCard.Month_8__c;
+           empTime.daysArray[8] = workCard.Month_9__c;
+           empTime.daysArray[9] = workCard.Month_10__c;
+           empTime.daysArray[10] = workCard.Month_11__c;
+           empTime.daysArray[11] = workCard.Month_12__c;
+           empTime.daysArray[12] = workCard.Total__c;
+           if (workCard.Total__c > 230) {
+               empTime.cssStyle[12] = 'fteCell overbilled';
+           }
+           for (Integer i = 0; i < 12; i++) {
+               if (empTime.daysArray[i] > 21) {
+                   empTime.cssStyle[i] = 'fteCell overbilled';
+               }
+           }
+           empTime.daysArray[13] = (workCard.Total_Hours__c * workCard.Employee__r.Unloaded_Daily_Rate__c).setScale(2);
+           this.employees.add(empTime);
        }
-       /*System.debug('Employees Data Size : ' + employeesFromDB.size());
-       List<Time_Card__c> timeCards = [SELECT Id, Total__c, Client__c FROM Time_Card__c WHERE Employee__c IN: employeesFromDB AND Date__c >= 2016-01-01 AND Date__c <= 2016-12-31];
-       System.debug('Time Data Size : ' + timeCards.size());**/
+    }
+
+    public PageReference goToProjectListViewFromEmployeeListView() {
+        PageReference pageRef = Page.FTE_Project_List_View;
+        pageRef.setRedirect(false);
+        clearEmployeeListData();
+        return pageRef;
     }
 
     public PageReference goToEmployeeView() {
@@ -293,11 +329,16 @@ public class FTETrackerController {
         if (String.isBlank(this.employeeId)) {
             ApexPages.addMessage(new ApexPages.message(ApexPages.severity.ERROR, 'Empty FTE Employee ID'));
         } else {
-            pageRef = Page.FTE_Employee_List_View;
-            pageRef.setRedirect(false); 
+            pageRef = Page.FTE_Employee_View;
+            pageRef.setRedirect(false);
+            clearEmployeeListData();
         }
 
         return pageRef;
+    }
+
+    private void clearEmployeeListData() {
+        this.employees = null;
     }
 
     /**
@@ -320,7 +361,7 @@ public class FTETrackerController {
                                         Date__c FROM Time_Card__c
                                         WHERE Employee__c =: this.employee.Id AND Client__c != null
                                         AND Date__c >=: this.yearBegin AND Date__c <=: this.yearEnd
-                                        ORDER BY Date__c];
+                                        ORDER BY Client__r.Name];
 
         this.assignedMap = new Map<Id, EmployeeTime>();
         this.unassignedMap = new Map<Id, EmployeeTime>();
@@ -359,7 +400,21 @@ public class FTETrackerController {
             pageRef = Page.FTE_Assign_Days_View;
         }
 
-        pageRef.setRedirect(false); 
+        pageRef.setRedirect(false);
+        return pageRef;
+    }
+
+    public PageReference goToEmployeeListViewFromEmployeeView () {
+        PageReference pageRef = Page.FTE_Employee_List_View;
+        clearEmployeeViewData();
+        pageRef.setRedirect(false);
+        return pageRef;
+    }
+
+    public PageReference goToProjectListViewFromEmployeeView() {
+        PageReference pageRef = Page.FTE_Project_List_View;
+        clearEmployeeViewData();
+        pageRef.setRedirect(false);
         return pageRef;
     }
 
@@ -486,7 +541,7 @@ public class FTETrackerController {
             this.fteHoursMax = 0;
         }
 
-        this.fteContracts = [SELECT Id, Name FROM DContract__c WHERE FTE_Tracker__c = 'Yes'];
+        this.fteContracts = [SELECT Id, Name FROM DContract__c WHERE FTE_Tracker__c = 'Yes' ORDER BY Name];
         this.fteContractsOptions = new List<SelectOption>();
         for (DContract__c con : this.fteContracts) {
             this.fteContractsOptions.add(new SelectOption(con.Id, con.Name));
@@ -797,7 +852,7 @@ public class FTETrackerController {
     public PageReference backToEmployeeView() {
         clearAssignUnassignViewData();
         PageReference pageRef = Page.FTE_Employee_View;
-        pageRef.setRedirect(false); 
+        pageRef.setRedirect(false);
         return pageRef;
     }
 
