@@ -68,6 +68,7 @@ public class NetEVDifferenceTriggerGateway {
                 snapShotsDiff.DIFF_Expected_Value_Minus_Expense__c = lastMonthSnapshot.Expected_Value_Minus_Expense__c != null ? lastMonthSnapshot.Expected_Value_Minus_Expense__c: 0;
                 snapShotsDiff.Monthly_Recurring_Revenue_MRR__c = lastMonthSnapshot.Monthly_Recurring_Revenue_MRR__c != null ? lastMonthSnapshot.Monthly_Recurring_Revenue_MRR__c: 0;
                 snapShotsDiff.Expected_Monthly_Recurring_Revenue_MRR__c = lastMonthSnapshot.Expected_Monthly_Recurring_Revenue_MRR__c != null ? lastMonthSnapshot.Expected_Monthly_Recurring_Revenue_MRR__c: 0;
+                snapShotsDiff.Diff_Buffer_EV__c = lastMonthSnapshot.Buffer_EV__c;
             }
 
             snapShotDiffs.add(snapShotsDiff);
@@ -196,6 +197,7 @@ public class NetEVDifferenceTriggerGateway {
                                      - (snapshot.Expected_Value_Minus_Expense__c != null ? snapshot.Expected_Value_Minus_Expense__c : 0);
                 snapShotsDiff.Expected_Monthly_Recurring_Revenue_MRR__c = (snapshot.Opportunity__r.Expected_Monthly_Recurring_Revenue_MRR__c != null ? snapshot.Opportunity__r.Expected_Monthly_Recurring_Revenue_MRR__c : 0)
                                      - (snapshot.Expected_Monthly_Recurring_Revenue_MRR__c != null ? snapshot.Expected_Monthly_Recurring_Revenue_MRR__c : 0);
+                snapShotsDiff.Diff_Buffer_EV__c = snapshot.Opportunity__r.Buffer_EV__c - snapshot.Buffer_EV__c;
             } else {
                 snapShotsDiff.Delta_Type__c = LOST;
                 snapShotDiffs.add(snapShotsDiff);
@@ -205,6 +207,7 @@ public class NetEVDifferenceTriggerGateway {
                                     - (snapshot.Expected_Value_Minus_Expense__c != null ? snapshot.Expected_Value_Minus_Expense__c : 0);
                 snapShotsDiff.Expected_Monthly_Recurring_Revenue_MRR__c = 0 -
                                      - (snapshot.Expected_Monthly_Recurring_Revenue_MRR__c != null ? snapshot.Expected_Monthly_Recurring_Revenue_MRR__c : 0);
+                snapShotsDiff.Diff_Buffer_EV__c = 0 - snapshot.Buffer_EV__c;
             }
 
             snapShotsDiff.DIFF_Amount_Minus_Expense_Income__c = (snapshot.Opportunity__r.Amount_Minus_Expense_Income__c != null ? snapshot.Opportunity__r.Amount_Minus_Expense_Income__c : 0 )
@@ -241,7 +244,7 @@ public class NetEVDifferenceTriggerGateway {
                                                    X24_Month_Cash_Minus_Expense_Income_EV__c,
                                                    Opportunity_Amount_Minus_Expense_Income__c,
                                                    Expected_Value_Minus_Expense__c, Monthly_Recurring_Revenue_MRR__c,
-                                                   Expected_Monthly_Recurring_Revenue_MRR__c
+                                                   Expected_Monthly_Recurring_Revenue_MRR__c, Buffer_EV__c
                                                    FROM Pipeline_Snapshot__c
                                                    WHERE Month_Date__c >= :firstDate AND Month_Date__c <= :lastDate
                                                    AND Opportunity__c in :opps AND Stage__c != 'Total'];
@@ -264,12 +267,13 @@ public class NetEVDifferenceTriggerGateway {
 
         List<Pipeline_Snapshot__c> lastMonthSnapShotsList = [SELECT Name, Opportunity__c, Opportunity__r.StageName,
                 Month_Date__c, Amount_Minus_Expense_Income__c, Opportunity_Name__c,
-                X12_Month_Cash_Minus_Expense_Income_EV__c ,
+                X12_Month_Cash_Minus_Expense_Income_EV__c , Buffer_EV__c,
                 X18_Month_Cash_Minus_Expenses_Income_EV__c,
                 X24_Month_Cash_Minus_Expense_Income_EV__c,
                 Opportunity_Amount_Minus_Expense_Income__c,
                 Expected_Value_Minus_Expense__c, Monthly_Recurring_Revenue_MRR__c,
                 Expected_Monthly_Recurring_Revenue_MRR__c,
+                Opportunity__r.Buffer_EV__c,
                 Opportunity__r.X12Month_Cash_Minus_Expenses_EV__c,
                 Opportunity__r.X18_Month_Cash_Minus_Expenses_EV__c,
                 Opportunity__r.X24_Month_Cash_Minus_Expense_EV__c,
@@ -374,7 +378,7 @@ public class NetEVDifferenceTriggerGateway {
                             Month_Date__c, Amount_Minus_Expense_Income__c, Opportunity_Name__c,
                             Opportunity__r.Amount, Opportunity__r.Implementation_Type__c, Opportunity__r.Expense_Income__c,
                             Opportunity__r.Duration_months__c, Opportunity__r.CloseDate,
-                            X12_Month_Cash_Minus_Expense_Income_EV__c ,
+                            X12_Month_Cash_Minus_Expense_Income_EV__c , Buffer_EV__c,
                             X18_Month_Cash_Minus_Expenses_Income_EV__c,
                             X24_Month_Cash_Minus_Expense_Income_EV__c,
                             Opportunity_Amount_Minus_Expense_Income__c,
@@ -405,7 +409,7 @@ public class NetEVDifferenceTriggerGateway {
         diff.Prior_Snapshot_date__c = priorSnapshot.Month_Date__c;
         diff.Monthly_Recurring_Revenue_MRR__c = (lastSnapshot.Monthly_Recurring_Revenue_MRR__c != null ? lastSnapshot.Monthly_Recurring_Revenue_MRR__c : 0) - (priorSnapshot.Monthly_Recurring_Revenue_MRR__c != null ? priorSnapshot.Monthly_Recurring_Revenue_MRR__c : 0);
         diff.Expected_Monthly_Recurring_Revenue_MRR__c = (lastSnapshot.Expected_Monthly_Recurring_Revenue_MRR__c != null ? lastSnapshot.Expected_Monthly_Recurring_Revenue_MRR__c : 0) - (priorSnapshot.Expected_Monthly_Recurring_Revenue_MRR__c != null ? priorSnapshot.Expected_Monthly_Recurring_Revenue_MRR__c : 0);
-
+        diff.Diff_Buffer_EV__c = lastSnapshot.Buffer_EV__c - priorSnapshot.Buffer_EV__c;
         return diff;
     }
 
