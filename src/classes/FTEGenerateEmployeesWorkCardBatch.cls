@@ -1,13 +1,38 @@
 public without sharing class FTEGenerateEmployeesWorkCardBatch implements Database.Batchable<SFDC_Employee__c>, Database.Stateful {
 
     private Integer calculationYear;
+    private Id contractId;
 
     public FTEGenerateEmployeesWorkCardBatch(Integer year) {
         this.calculationYear = year;
     }
 
+    public FTEGenerateEmployeesWorkCardBatch(Id contractId, Integer year) {
+        this.contractId = contractId;
+        this.calculationYear = year;
+    }
+
     public List<SFDC_Employee__c> start(Database.BatchableContext BC) {
-        return [SELECT Id, Name, Unloaded_Daily_Rate__c FROM SFDC_Employee__c WHERE Employee_Status__c = 'Active' ORDER BY Name];
+        try {
+            if (this.contractId == null) {
+                return [SELECT Id, Name, Unloaded_Daily_Rate__c FROM SFDC_Employee__c WHERE Employee_Status__c = 'Active' ORDER BY Name];
+            }
+            List<Time_Card__c> contractTimeCards = [SELECT Id, Employee__c FROM Time_Card__c WHERE
+                                                        Client__c =: this.contractId AND CALENDAR_YEAR(Date__c) =: this.calculationYear];
+            Set<Id> employees = new Set<Id>();
+            for (Time_Card__c tc : contractTimeCards) {
+                if (!employees.contains(tc.Employee__c)) {
+                    employees.add(tc.Employee__c);
+                }
+            }
+            return [SELECT Id, Name, Unloaded_Daily_Rate__c FROM SFDC_Employee__c WHERE Id IN: employees AND Employee_Status__c = 'Active' ORDER BY Name];
+        } catch (Exception ex) {
+            if (!Test.isRunningTest()) {
+                EmailHelper.sendEmailFromException(BatchDefaultSettings__c.getOrgDefaults().Error_Emails__c.split(','), 'Cannot calculate Employee FTE Work Card', 'Error : ', ex);
+            }
+        }
+        // We need return empty list to avoid errors with sending email about exception
+        return new List<SFDC_Employee__c>();
     }
 
     public void execute(Database.BatchableContext BC, List<SFDC_Employee__c> scope) {

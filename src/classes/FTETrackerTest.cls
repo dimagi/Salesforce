@@ -59,8 +59,31 @@ public class FTETrackerTest {
                                    Month_4__c, Month_5__c, Month_6__c, Month_7__c, Month_8__c, Month_9__c, Month_10__c, Month_11__c, Month_12__c,
                                    Total__c, Total_Hours__c, Year__c FROM FTE_Work_Card__c ORDER BY Employee__r.Name];
         System.assertEquals(1, workCards.size());
-        System.assertEquals(92.1, workCards.get(0).Total_Hours__c, 1);
-        System.assertEquals(11.5, workCards.get(0).Total__c, 1);
+        System.assertEquals(92.1, workCards.get(0).Total_Hours__c);
+        System.assertEquals(11.5, workCards.get(0).Total__c);
+    }
+
+    @isTest
+    public static void triggerShouldGenerateWorkCards() {
+        Test.startTest();
+        DContract__c contractToUpdate1 = [SELECT Id, FTE_Tracker__c FROM DContract__c WHERE Name = 'Unassigned Contract 1' LIMIT 1];
+        contractToUpdate1.FTE_Tracker__c = 'Yes';
+        DContract__c contractToUpdate2 = [SELECT Id, FTE_Tracker__c FROM DContract__c WHERE Name = 'FTE Contract 1' LIMIT 1];
+        contractToUpdate2.FTE_Tracker__c = 'No';
+        List<DContract__c> contractsToUpdate = new List<DContract__c>();
+        contractsToUpdate.add(contractToUpdate1);
+        contractsToUpdate.add(contractToUpdate2);
+        update contractsToUpdate;
+        Test.stopTest();
+
+        List<SFDC_Employee__c> employees = [SELECT Id, Name, Unloaded_Daily_Rate__c FROM SFDC_Employee__c WHERE Employee_Status__c = 'Active' ORDER BY Name];
+        System.assertEquals(1, employees.size());
+        List<FTE_Work_Card__c> workCards = [SELECT Id, Employee__c, Employee__r.Name, Employee__r.Unloaded_Daily_Rate__c, Month_1__c, Month_2__c, Month_3__c,
+                                   Month_4__c, Month_5__c, Month_6__c, Month_7__c, Month_8__c, Month_9__c, Month_10__c, Month_11__c, Month_12__c,
+                                   Total__c, Total_Hours__c, Year__c FROM FTE_Work_Card__c ORDER BY Employee__r.Name];
+        System.assertEquals(1, workCards.size());
+        System.assertEquals(85.8, workCards.get(0).Total_Hours__c); // -25,6 + 19,3
+        System.assertEquals(10.75, workCards.get(0).Total__c);
     }
 
     @isTest
