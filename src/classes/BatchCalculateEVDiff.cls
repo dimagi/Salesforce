@@ -19,7 +19,8 @@ public class BatchCalculateEVDiff implements Database.Batchable<Pipeline_Snapsho
                             Opportunity_Amount_Minus_Expense_Income__c,
                             Expected_Value_Minus_Expense__c,
                             Stage__c, Monthly_Recurring_Revenue_MRR__c,
-                            Expected_Monthly_Recurring_Revenue_MRR__c
+                            Expected_Monthly_Recurring_Revenue_MRR__c,
+                            Buffer_EV__c
                             FROM Pipeline_Snapshot__c
                             WHERE Month_Date__c >=: firstDate
                             AND Month_Date__c <=: lastDate
