@@ -228,6 +228,44 @@ public class NetEVDifferenceTriggerGateway {
     }
 
     /**
+     * Method should be edited and used to recalculate new fields added to EV object
+     */
+    @future
+    public static void recalculateDiffs(Date executeDate) {
+        try {
+            List<Pipeline_Snapshot_EV_DIff__c> evDiffs = [SELECT Id, Delta_Type__c, Month_Date__c, Diff_Buffer_EV__c, Opportunity__c, Opportunity__r.Buffer_EV__c, 
+                                                      Pipeline_Snapshot__c, Pipeline_Snapshot__r.Buffer_EV__c
+                                                      FROM Pipeline_Snapshot_EV_DIff__c WHERE Month_Date__c =: executeDate];
+            if (evDiffs.size() == 0) {
+                return;
+            }
+
+            Map<Id, Pipeline_Snapshot__c> oldSnapshots = getPriorMonthSnapshotsForDate(executeDate);
+
+            for (Pipeline_Snapshot_EV_DIff__c evSn : evDiffs) {
+                Pipeline_Snapshot__c oldSn = oldSnapshots.get(evSn.Opportunity__c);
+
+                if (evSn.Delta_Type__c == NEW_OPP || oldSn == null) {
+                    evSn.Diff_Buffer_EV__c = evSn.Pipeline_Snapshot__r.Buffer_EV__c;
+                } else if (evSn.Delta_Type__c == LOST) {
+                    evSn.Diff_Buffer_EV__c = 0 - oldSn.Buffer_EV__c;
+                } else if (evSn.Delta_Type__c == WON) {
+                    evSn.Diff_Buffer_EV__c = evSn.Opportunity__r.Buffer_EV__c - oldSn.Buffer_EV__c;
+	            } else {
+	                evSn.Diff_Buffer_EV__c = evSn.Pipeline_Snapshot__r.Buffer_EV__c - oldSn.Buffer_EV__c;
+                }
+            }
+
+            update evDiffs;
+        } catch (Exception ex) {
+            if (!Test.isRunningTest()) {
+                BatchDefaultSettings__c settings = BatchDefaultSettings__c.getOrgDefaults();
+                EmailHelper.sendEmailFromException(settings.Error_Emails__c.split(','), 'Recalculate Diff Buffer EV error', 'Cannot update EV diffs', ex);
+            }
+        }
+    }
+
+    /**
      * Returns prior month snapshots for given date and Opportunity set.
      */
     public Map<Id, Pipeline_Snapshot__c> getPriorMonthSnapshots(Date currentDate, Set<Id> opps) {
