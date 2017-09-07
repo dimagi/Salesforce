@@ -677,6 +677,8 @@ public class FTETrackerController {
             }
 
             upsert timeCardsToUpdate;
+            moveHoursInFTEWorkCard((-1) * fteDaysdecimal, this.employeeMonth + 1, this.employee.Id);
+
             if (this.assignViewError == false) {
                 return backToEmployeeView();
             }
@@ -838,6 +840,7 @@ public class FTETrackerController {
             }
 
             upsert timeCardsToUpdate;
+            moveHoursInFTEWorkCard(fteDaysdecimal, this.employeeMonth + 1, this.employee.Id);
 
             if (this.assignViewError == false) {
                 return backToEmployeeView();
@@ -854,6 +857,22 @@ public class FTETrackerController {
         PageReference pageRef = Page.FTE_Employee_View;
         pageRef.setRedirect(false);
         return pageRef;
+    }
+
+    private void moveHoursInFTEWorkCard(Decimal daysValue, Integer month, Id EmployeeId) {
+        List<FTE_Work_Card__c> workCards = [SELECT Id, Month_1__c, Month_2__c, Month_3__c, Month_4__c, Month_5__c, Month_6__c, Month_7__c, Month_8__c, Month_9__c, Month_10__c, Month_11__c,
+                            Month_12__c, Total__c, Total_Hours__c FROM FTE_Work_Card__c WHERE Employee__c =: EmployeeId];
+        if (workCards.size() > 0) {
+            Decimal totalValue = workCards.get(0).Total__c;
+            Decimal totalHoursValue = workCards.get(0).Total_Hours__c;
+            SObject workCard = workCards.get(0);
+            Decimal monthValue = (Decimal) workCard.get('Month_' + month + '__c');
+
+            workCard.put('Total__c', TotalValue + daysValue);
+            workCard.put('Total_Hours__c', totalHoursValue + (daysValue * 8));
+            workCard.put('Month_' + month + '__c', monthValue + daysValue);
+            update workCard;
+        }
     }
 
     private void clearAssignUnassignViewData() {

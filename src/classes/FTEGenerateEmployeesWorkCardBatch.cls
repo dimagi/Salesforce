@@ -15,7 +15,7 @@ public without sharing class FTEGenerateEmployeesWorkCardBatch implements Databa
     public List<SFDC_Employee__c> start(Database.BatchableContext BC) {
         try {
             if (this.contractId == null) {
-                return [SELECT Id, Name, Unloaded_Daily_Rate__c FROM SFDC_Employee__c WHERE Employee_Status__c = 'Active' ORDER BY Name];
+                return [SELECT Id, Name FROM SFDC_Employee__c WHERE Employee_Status__c = 'Active' ORDER BY Name];
             }
             List<Time_Card__c> contractTimeCards = [SELECT Id, Employee__c FROM Time_Card__c WHERE
                                                         Client__c =: this.contractId AND CALENDAR_YEAR(Date__c) =: this.calculationYear];
@@ -25,7 +25,7 @@ public without sharing class FTEGenerateEmployeesWorkCardBatch implements Databa
                     employees.add(tc.Employee__c);
                 }
             }
-            return [SELECT Id, Name, Unloaded_Daily_Rate__c FROM SFDC_Employee__c WHERE Id IN: employees AND Employee_Status__c = 'Active' ORDER BY Name];
+            return [SELECT Id, Name FROM SFDC_Employee__c WHERE Id IN: employees AND Employee_Status__c = 'Active' ORDER BY Name];
         } catch (Exception ex) {
             if (!Test.isRunningTest()) {
                 EmailHelper.sendEmailFromException(BatchDefaultSettings__c.getOrgDefaults().Error_Emails__c.split(','), 'Cannot calculate Employee FTE Work Card', 'Error : ', ex);
