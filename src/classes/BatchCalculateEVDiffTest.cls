@@ -138,6 +138,8 @@ public class BatchCalculateEVDiffTest {
         marchBatch.execute(null, marchBatch.start(null));
         febBatch.execute(null, febBatch.start(null));
         NetEVDifferenceTriggerGateway.processPriorMonthSnapshotsWithClosedStatus(Date.newInstance(2016, 3, 25));
+        NetEVDifferenceTriggerGateway.processPriorMonthSnapshotsWithClosedStatus(Date.newInstance(2016, 3, 25));
+        NetEVDifferenceTriggerGateway.processPriorMonthSnapshotsWithClosedStatus(Date.newInstance(2016, 3, 25));
         Test.stopTest();
 
         List<Pipeline_Snapshot_EV_DIff__c> snapShotsEVDiffAll = [SELECT Delta_Type__c, DIFF_12_Month_Cash_Minus_Expense_Income__c, DIFF_18_Month_Cash_Minus_Expenses_Income__c,
@@ -173,5 +175,4 @@ public class BatchCalculateEVDiffTest {
         System.assertEquals(NetEVDifferenceTriggerGateway.LOST , snapShotsEVDiffAll.get(2).Delta_Type__c);
         System.assertEquals(Date.newInstance(2016, 3, 31) , snapShotsEVDiffAll.get(2).Month_Date__c);
     }
-
 }

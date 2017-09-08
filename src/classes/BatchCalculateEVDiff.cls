@@ -3,15 +3,20 @@ public class BatchCalculateEVDiff implements Database.Batchable<Pipeline_Snapsho
     private Date currentDate;
     private Boolean forClosed;
 
+    public BatchCalculateEVDiff () {}
+
     public BatchCalculateEVDiff (Date currentDate) {
         this.currentDate = currentDate;
     }
 
     public List<Pipeline_Snapshot__c> start(Database.BatchableContext BC) {
-        Date firstDate = this.currentDate.toStartOfMonth();
-        Date lastDate = firstDate.addDays(Date.daysInMonth(this.currentDate.year() , this.currentDate.month())).addDays(-1);
+        List<Pipeline_Snapshot__c> yesterdaySnapshots = [SELECT Id, Month_Date__c FROM Pipeline_Snapshot__c WHERE CreatedDate = YESTERDAY LIMIT 1];
+        if (yesterdaySnapshots.size() > 0 || this.currentDate != null) {
+            this.currentDate = this.currentDate != null ? this.currentDate : yesterdaySnapshots.get(0).Month_Date__c;
+            Date firstDate = this.currentDate.toStartOfMonth();
+            Date lastDate = firstDate.addDays(Date.daysInMonth(this.currentDate.year() , this.currentDate.month())).addDays(-1);
 
-        List<Pipeline_Snapshot__c> records = [SELECT Id, Name, Opportunity__c, Opportunity__r.StageName,
+            List<Pipeline_Snapshot__c> records = [SELECT Id, Name, Opportunity__c, Opportunity__r.StageName,
                             Month_Date__c, Amount_Minus_Expense_Income__c, Opportunity_Name__c,
                             X12_Month_Cash_Minus_Expense_Income_EV__c ,
                             X18_Month_Cash_Minus_Expenses_Income_EV__c,
@@ -26,7 +31,9 @@ public class BatchCalculateEVDiff implements Database.Batchable<Pipeline_Snapsho
                             AND Month_Date__c <=: lastDate
                             AND Source_Type__c = 'Opportunity'
                             AND Stage__c != 'Total'];
-        return records;
+            return records;
+        }
+        return new List<Pipeline_Snapshot__c>();
     }
 
     public void execute(Database.BatchableContext BC, List<Pipeline_Snapshot__c> scope) {
