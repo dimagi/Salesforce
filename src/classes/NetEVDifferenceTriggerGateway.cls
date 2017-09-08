@@ -172,8 +172,21 @@ public class NetEVDifferenceTriggerGateway {
         Date firstDate = executeDate.toStartOfMonth();
         Date lastDate = firstDate.addDays(date.daysInMonth(firstDate.year() , firstDate.month())).addDays(-1);
         Map<Id, Pipeline_Snapshot__c> priorMonthSnapshotRecords = getSnapshotsForClosedDelta(executeDate);
+
+        List<Pipeline_Snapshot_EV_DIff__c> oldDiffs = [SELECT Id, Pipeline_Snapshot__c FROM Pipeline_Snapshot_EV_DIff__c WHERE Month_Date__c >=: firstDate
+                            AND Month_Date__c <=: lastDate];
+        Set<Id> pipelineSnapshotsToSkip = new Set<Id>();
+        for (Pipeline_Snapshot_EV_DIff__c evDiff : oldDiffs) {
+            pipelineSnapshotsToSkip.add(evDiff.Pipeline_Snapshot__c);
+        }
+
         List<Pipeline_Snapshot_EV_DIff__c> snapShotDiffs = new List<Pipeline_Snapshot_EV_DIff__c>();
         for (Pipeline_Snapshot__c snapshot : priorMonthSnapshotRecords.values()) {
+            // We don't want duplicates for Snapshots
+            if (pipelineSnapshotsToSkip.contains(snapshot.Id)) {
+                continue;
+            }
+
             Pipeline_Snapshot_EV_DIff__c snapShotsDiff = new Pipeline_Snapshot_EV_DIff__c();
             String nameSuffix = ' - ' + lastDate.month() + '/' + lastDate.year();
             String namePrefix = snapshot.Opportunity_Name__c;
