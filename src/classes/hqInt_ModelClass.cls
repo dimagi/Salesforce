@@ -58,6 +58,7 @@ public class hqInt_ModelClass {
         public Boolean auto_generate_credits;
         public Boolean is_trial;
         public Boolean is_hidden_to_ops;
+        public Boolean skip_auto_downgrade;
         public String service_type;
         public String pro_bono_status;
         public String funding_source;
@@ -79,6 +80,7 @@ public class hqInt_ModelClass {
             accountingSubscriptionObj.service_type__c = this.service_type;
             accountingSubscriptionObj.pro_bono_status__c = this.pro_bono_status;
             accountingSubscriptionObj.funding_source__c = this.funding_source;
+            accountingSubscriptionObj.skip_auto_downgrade__c = this.skip_auto_downgrade == null ? false : this.skip_auto_downgrade;
             accountingSubscriptionObj.account__c = billingAccountId;
             accountingSubscriptionObj.plan_version__c = softPlanVerId;
             accountingSubscriptionObj.Accounting_Subscriber__c = subscriberId;
