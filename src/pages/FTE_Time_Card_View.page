@@ -1,0 +1,27 @@
+<apex:page controller="FTETrackerController" docType="html-5.0" action="{!loadExportTimeCards}">
+
+    <apex:pageBlock title="FTE Employee">
+        <apex:form >
+            <apex:outputPanel >
+                <apex:actionstatus id="loadingDiv">
+                    <apex:facet name="start">
+                        <div class="waitingSearchDiv" id="el_loading" style="background-color: #fbfbfb; height:100%;opacity:0.65;width:100%;">
+                            <div class="waitingHolder" style="left : 50%; top : 50%; position: fixed; width: 91px;">
+                                <img class="waitingImage" src="{!$Resource.BrokenCircle}" title="Please Wait..." />
+                            </div>
+                        </div>
+                    </apex:facet>
+                </apex:actionstatus>
+
+                <apex:pageBlockTable value="{!objectforquery}" var="displaydata">
+                    <apex:repeat value="{!fieldapiname}" var="displayfieldname">
+                        <apex:column value="{!displaydata[displayfieldname]}"/>
+                    </apex:repeat>
+                </apex:pageBlockTable>
+
+                <apex:commandButton action="{!goToEmployeeViewFromTimeCardView}" value="Employee View" id="backEButton" />
+            </apex:outputPanel>
+        </apex:form>
+    </apex:pageBlock>
+
+</apex:page>

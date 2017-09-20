@@ -431,6 +431,22 @@ public class FTETrackerController {
         return pageRef;
     }
 
+    public PageReference goToEmployeeViewFromTimeCardView() {
+        PageReference pageRef = null;
+        pageRef = Page.FTE_Employee_View;
+        pageRef.setRedirect(false);
+        return pageRef;
+    }
+
+    public PageReference goToTimeCardView() {
+        PageReference pageRef = null;
+        if (exportMonth != null) {
+            pageRef = Page.FTE_Time_Card_View;
+            pageRef.setRedirect(false);
+        }
+        return pageRef;
+    }
+
     private void clearEmployeeViewData() {
         this.employee = null;
         this.unassigned = null;
@@ -493,6 +509,22 @@ public class FTETrackerController {
         this.totalDaysWorked.nameCss = '';
         this.totalAssignedDays.nameCss = 'topTotal';
         this.unassigned.nameCss = '';
+    }
+
+    /**
+     * Time Card Generation View
+     */
+
+    public Integer exportMonth {get; set;}
+    public Integer monthDays {get; set;}
+    public List<FTEMonthTimeCard> employeeMonthProjects { get; set;}
+
+    public void loadExportTimeCards() {
+        this.monthDays = Date.daysInMonth(currentYear, exportMonth);
+        if (exportMonth != null) {
+            FTETimeCardGenerator generator = new FTETimeCardGenerator(this.exportMonth, this.employeeId);
+            this.employeeMonthProjects = generator.generateMonthTimeCards();
+        }
     }
 
     /**

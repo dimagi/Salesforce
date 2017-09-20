@@ -26,6 +26,12 @@
             margin-top: 10px;
             margin-bottom: 10px;
         }
+        #chooseMonthButton {
+            height: 22px;
+            width: auto;
+            padding-right:5px;
+            padding-left:5px;
+        }
     </style>
 
     <apex:includeScript value="{!URLFOR($Resource.ProjectReportOut2, 'js/jquery.min.js')}"/>
@@ -34,6 +40,20 @@
 
     <script type="text/javascript">
         $j = jQuery.noConflict();
+        $j(document).ready(function() {
+            $j("#tcExport").dialog({ autoOpen: false, modal: true, closeOnEscape: true, width: 220, height: 120 });
+        });
+
+        function showDialog(){
+            $j("#tcExport").dialog('open');
+            $j('#tcExport').dialog('option' , 'title' , 'Generate Time Cards');
+            return false;
+        }
+
+        function setExportMonth() {
+            var monthNum = $j('#monthList').val();
+            setExportMonthData(monthNum);
+        }
     </script>
 
     <apex:pageBlock title="FTE Employee">
@@ -50,7 +70,8 @@
                 </apex:actionstatus>
                 <apex:outputText id="employeeName" value="{!employee.Name}"/>
                 <apex:pageBlockTable id="employeeHours" value="{!contractsTime}" var="empTime" styleClass="employeeTable">
-                    <apex:column onclick="setProjectIndViewData('{!empTime.objId}');" headerValue="Contract Name" value="{!empTime.name}" styleClass="{!empTime.nameCss}"/>
+                    <apex:column onclick="if ('{!empTime.name}' !== 'Unassigned' && '{!empTime.name}' !== 'Total Days Worked' && '{!empTime.name}' !== 'Total Assigned Days') {setProjectIndViewData('{!empTime.objId}');}"
+                                 headerValue="Contract Name" value="{!empTime.name}" styleClass="{!empTime.nameCss}"/>
                     <apex:column onclick="if ('{!empTime.name}' !== 'Total Days Worked' && '{!empTime.name}' !== 'Total Assigned Days') {setAssignViewData(0, '{!empTime.objId}');}"
                                  headerValue="Jan {!currentYear}" value="{!empTime.daysArray[0]}" styleClass="{!empTime.cssStyle[0]}"/>
                     <apex:column onclick="if ('{!empTime.name}' !== 'Total Days Worked' && '{!empTime.name}' !== 'Total Assigned Days') {setAssignViewData(1, '{!empTime.objId}');}"
@@ -87,9 +108,37 @@
                 <apex:actionFunction action="{!setViewData}" name="setProjectIndViewData" oncomplete="goToIndividualProjectView();">
                     <apex:param name="contractId" assignTo="{!contractId}" value=""/>
                 </apex:actionFunction>
+                <apex:actionFunction action="{!setViewData}" name="setExportMonthData" oncomplete="goToTimeCardView();">
+                    <apex:param name="exportMonth" assignTo="{!exportMonth}" value=""/>
+                </apex:actionFunction>
+                <apex:actionFunction action="{!goToTimeCardView}" name="goToTimeCardView" />
+                <div id="tcExport" >
+                    <div style="float:left">
+                        <label for="monthList">Select a month : </label>
+                        <select name="monthList" id="monthList">
+                            <option value="1" selected="selected">January</option>
+                            <option value="2">February</option>
+                            <option value="3">March</option>
+                            <option value="4">April</option>
+                            <option value="5">May</option>
+                            <option value="6">June</option>
+                            <option value="7">July</option>
+                            <option value="8">August</option>
+                            <option value="9">September</option>
+                            <option value="10">October</option>
+                            <option value="11">November</option>
+                            <option value="12">December</option>
+                        </select>
+                    </div>
+                    <button id="chooseMonthButton" class="ui-button ui-widget ui-corner-all" onclick="setExportMonth();" >
+                        Generate Time Cards
+                    </button>
+                </div>
+                <apex:commandButton onclick="return showDialog();" value="Export Time Cards" id="tcButton" />
                 <apex:commandButton action="{!goToEmployeeListViewFromEmployeeView}" value="Employee List" id="backEButton" />
                 <apex:commandButton action="{!goToProjectListViewFromEmployeeView}" value="Project List" id="backPButton" />
                 <apex:commandButton action="{!removeAllTags}" status="loadingDiv" value="Reset Data" id="resetButton" reRender="employeeHours"/>
+
             </apex:outputPanel>
         </apex:form>
     </apex:pageBlock>
