@@ -1,6 +1,16 @@
 <apex:page controller="FTETrackerController" docType="html-5.0" action="{!loadExportTimeCards}">
+    <style type="text/css">
+        .topTotal {
+            border-top-width: 3px !important;
+            border-top-color: black !important;
+        }
+        .employeeTable {
+            margin-top: 10px;
+            margin-bottom: 10px;
+        }
+    </style>
 
-    <apex:pageBlock title="FTE Employee">
+    <apex:pageBlock title="FTE Time Cards : {!employee.Name} {!monthYearText}">
         <apex:form >
             <apex:outputPanel >
                 <apex:actionstatus id="loadingDiv">
@@ -13,15 +23,16 @@
                     </apex:facet>
                 </apex:actionstatus>
 
-                <apex:pageBlockTable value="{!objectforquery}" var="displaydata">
-                    <apex:repeat value="{!fieldapiname}" var="displayfieldname">
-                        <apex:column value="{!displaydata[displayfieldname]}"/>
+                <apex:pageBlockTable value="{!employeeMonthProjects}" var="record" styleClass="employeeTable">
+                    <apex:column headerValue="Projects" value="{!record.name}" styleClass="{!IF(record.name='Overhead',"topTotal", "")}"/>
+                    <apex:repeat value="{!exportMonthDays}" var="monthId">
+                        <apex:column headerValue="{!monthId + 1}" value="{!record.hours[monthId]}" styleClass="{!IF(record.name='Overhead',"topTotal", "")}"/>
                     </apex:repeat>
                 </apex:pageBlockTable>
 
                 <apex:commandButton action="{!goToEmployeeViewFromTimeCardView}" value="Employee View" id="backEButton" />
+                <a class="btn" style="text-decoration:none;" href="apex/FTE_Download_File?employeeId={!employee.Id}&employeeMonth={!exportMonth}" target="_blank">Download CSV</a>
             </apex:outputPanel>
         </apex:form>
     </apex:pageBlock>
-
 </apex:page>

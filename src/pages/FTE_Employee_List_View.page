@@ -58,7 +58,6 @@
                 </apex:actionFunction>
                 <apex:actionFunction action="{!goToEmployeeView}" name="goToEmployeeView" />
                 <apex:commandButton action="{!goToProjectListViewFromEmployeeListView}" value="Project List" id="backButton" />
-                <a href="apex/FTE_Download_File?employeeId=a0T9E000001DO23&employeeMonth=1" target="_blank"> Fetch month work card</a>
             </apex:outputPanel>
         </apex:form>
     </apex:pageBlock>

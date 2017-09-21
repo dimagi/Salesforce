@@ -518,9 +518,16 @@ public class FTETrackerController {
     public Integer exportMonth {get; set;}
     public Integer monthDays {get; set;}
     public List<FTEMonthTimeCard> employeeMonthProjects { get; set;}
+    public List<Integer> exportMonthDays {get; set;}
+    public String monthYearText {get; set;}
 
     public void loadExportTimeCards() {
-        this.monthDays = Date.daysInMonth(currentYear, exportMonth);
+        this.monthDays = Date.daysInMonth(currentYear, this.exportMonth);
+        this.exportMonthDays = new List<Integer>();
+        this.monthYearText = DateTime.newInstance(currentYear, this.exportMonth, 1).format('MMMM yyyy');
+        for (Integer i = 0; i < this.monthDays; i++) {
+            this.exportMonthDays.add(i); // We need something to iterate if we want add dynamic columns on UI
+        }
         if (exportMonth != null) {
             FTETimeCardGenerator generator = new FTETimeCardGenerator(this.exportMonth, this.employeeId);
             this.employeeMonthProjects = generator.generateMonthTimeCards();
