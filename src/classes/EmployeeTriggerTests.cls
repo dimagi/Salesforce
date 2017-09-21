@@ -3,10 +3,10 @@ public class EmployeeTriggerTests {
     @testsetup static void setup() {
         Id p = [select id from profile where name='System Administrator'].id;
        
-        User user = new User(alias = 'test123', email='test123@noemail.com',
+        User user = new User(alias = 'test1234', email='test1234@no1email.com',
                 emailencodingkey='UTF-8', lastname='Testing', languagelocalekey='en_US',
                 localesidkey='en_US', profileid = p, country='United States',IsActive =true,
-                timezonesidkey='America/Los_Angeles', username='tester@noemail.com');
+                timezonesidkey='America/Los_Angeles', username='tester1234@no1email.com');
        
         insert user;
         
@@ -22,7 +22,7 @@ public class EmployeeTriggerTests {
         test.startTest();
         SFDC_Employee__c emp = new SFDC_Employee__c(
             Name = 'test employee', 
-            Email_Address__c = 'tester@noemail.com', 
+            Email_Address__c = 'tester1234@no1email.com', 
             Business_Unit__c = businessUnits[0].Id,
             Salary__c = 5000,
             Exchange_Rate__c = 10,

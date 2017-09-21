@@ -28,8 +28,8 @@ public class ContactDirectoryController{
                oauth_token=getFromJSON(getAuthorizedReqToken(oauth_code),'access_token');
            }
            
-           if(oauth_token!=null){
-               isAuthenticated =true;
+           if(oauth_token != null && oauth_token != ''){
+               isAuthenticated = true;
            }
     }
     
@@ -42,8 +42,8 @@ public class ContactDirectoryController{
     
             if (oauth_code != null){
                oauth_token=getFromJSON(getAuthorizedReqToken(oauth_code),'access_token');
-               if(oauth_token!=null){
-                   isAuthenticated =true;
+               if(oauth_token != null && oauth_token != ''){
+                   isAuthenticated = true;
                    
                }
             }
