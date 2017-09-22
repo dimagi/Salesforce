@@ -107,7 +107,7 @@
                 </apex:pageBlockSectionItem>
                 <apex:pageBlockSectionItem >
                     <apex:outputLabel value="Days to assign" for="numberAssign"/>
-                    <apex:input value="{!fteDays}" id="numberAssign" onkeyup="validateDaysValue();" onchange="validateDaysValue();" />
+                    <apex:input value="{!fteDays}" id="numberAssign" onkeyup="validateDaysValue();" onchange="validateDaysValue();" onkeydown="if(event.keyCode == 13) { this.blur(); confirmJs(); }"/>
                 </apex:pageBlockSectionItem>
                 <apex:pageBlockSectionItem >
                     <apex:outputLabel value="Project to Assign Days to" for="fteContractAssign"/>
@@ -121,6 +121,7 @@
                 </apex:pageBlockSectionItem>
                 <apex:actionFunction action="{!disableConfirmButton}" name="disableConfirmButton" reRender="confirmButton" />
                 <apex:actionFunction action="{!enableConfirmButton}" name="enableConfirmButton" reRender="confirmButton" />
+                <apex:actionFunction action="{!moveTimeFromUnassigned}" name="confirmJs" />
             </apex:pageBlockSection>
         </apex:form>
     </apex:pageBlock>

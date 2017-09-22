@@ -96,7 +96,7 @@
                 </apex:pageBlockSectionItem>
                 <apex:pageBlockSectionItem >
                     <apex:outputLabel value="Days to Unassign" for="numberUnassign"/>
-                    <apex:input value="{!fteDays}" id="numberUnassign" onkeyup="validateDaysValue();" onchange="validateDaysValue();" />
+                    <apex:input value="{!fteDays}" id="numberUnassign" onkeyup="validateDaysValue();" onchange="validateDaysValue();" onkeydown="if(event.keyCode == 13) { this.blur(); confirmJs(); }"/>
                 </apex:pageBlockSectionItem>
                 <apex:pageBlockSectionItem >
                     <apex:commandButton action="{!backToEmployeeView}" value="Back" id="backButton" />
@@ -104,6 +104,7 @@
                 </apex:pageBlockSectionItem>
                 <apex:actionFunction action="{!disableConfirmButton}" name="disableConfirmButton" reRender="confirmButton" />
                 <apex:actionFunction action="{!enableConfirmButton}" name="enableConfirmButton" reRender="confirmButton" />
+                <apex:actionFunction action="{!moveTimeToUnassigned}" name="confirmJs" />
             </apex:pageBlockSection>
         </apex:form>
     </apex:pageBlock>

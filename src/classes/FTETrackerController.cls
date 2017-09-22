@@ -194,16 +194,11 @@ public class FTETrackerController {
         Integer threeMonthAgo = currentDate.addMonths(-3).month();
         Integer threeMonthAgoYear = currentDate.addMonths(-3).year();
 
-        Decimal currentMonthTotalhours = 0;
-        Decimal firstMonthTotalhours = 0;
-        Decimal secondMonthTotalhours = 0;
-        Decimal thirdMonthTotalhours = 0;
-        Decimal moreThanThreeMonthTotalhours = 0;
         Decimal totalHours = 0;
         Decimal totalCost = 0;
 
-        List<Time_Card__c> contractTimeCards = [SELECT Id, Employee__c, Employee__r.Name, Date__c, Total__c FROM Time_Card__c WHERE
-                                                Client__c =: this.contractId AND Date__c <=: Date.today()];
+        List<Time_Card__c> contractTimeCards = [SELECT Id, Employee__c, Employee__r.Name, Date__c, Total__c, FTE_hours__c, FTE_Contract__c FROM Time_Card__c WHERE
+                                                (Client__c =: this.contractId OR FTE_Contract__c =: this.contractId) AND Date__c <=: Date.today()];
 
         EmployeeTime totalProjectTime = new EmployeeTime('Total', null);
         for (Time_Card__c timeCard : contractTimeCards) {
@@ -218,18 +213,25 @@ public class FTETrackerController {
             Integer entryDateMonth = timeCard.Date__c != null ? timeCard.Date__c.month() : 0;
             Integer entryDateYear = timeCard.Date__c != null ? timeCard.Date__c.year() : 0;
 
-            if (entryDateMonth == currentMonth && entryDateYear == currentYear) {
-                tmpHelper.hoursArray[0] += timeCard.Total__c != null ? timeCard.Total__c : 0;
-            } else if(entryDateMonth == oneMonthAgo && entryDateYear == oneMonthAgoYear ){
-                tmpHelper.hoursArray[1] += timeCard.Total__c != null ? timeCard.Total__c : 0;
-            } else if(entryDateMonth == twoMonthAgo && entryDateYear == twoMonthAgoYear ) {
-                tmpHelper.hoursArray[2] += timeCard.Total__c != null ? timeCard.Total__c : 0;
-            } else if(entryDateMonth == threeMonthAgo && entryDateYear == threeMonthAgoYear ) {
-                tmpHelper.hoursArray[3] += timeCard.Total__c != null ? timeCard.Total__c : 0;
-            } else {
-                tmpHelper.hoursArray[4] += timeCard.Total__c != null ? timeCard.Total__c : 0;
+            Decimal realHours = timeCard.Total__c != null ? timeCard.Total__c : 0;
+            if (timeCard.FTE_Contract__c != null && timeCard.FTE_Contract__c != this.contractId) {
+                realHours = realHours - timeCard.FTE_hours__c;
+            } else if (timeCard.FTE_Contract__c != null && timeCard.FTE_Contract__c == this.contractId) {
+                realHours = timeCard.FTE_hours__c;
             }
-            tmpHelper.hoursArray[12] += timeCard.Total__c != null ? timeCard.Total__c : 0;
+
+            if (entryDateMonth == currentMonth && entryDateYear == currentYear) {
+                tmpHelper.hoursArray[0] += realHours;
+            } else if(entryDateMonth == oneMonthAgo && entryDateYear == oneMonthAgoYear ){
+                tmpHelper.hoursArray[1] += realHours;
+            } else if(entryDateMonth == twoMonthAgo && entryDateYear == twoMonthAgoYear ) {
+                tmpHelper.hoursArray[2] += realHours;
+            } else if(entryDateMonth == threeMonthAgo && entryDateYear == threeMonthAgoYear ) {
+                tmpHelper.hoursArray[3] += realHours;
+            } else {
+                tmpHelper.hoursArray[4] += realHours;
+            }
+            tmpHelper.hoursArray[12] += realHours;
             projectTimeMap.put(timeCard.Employee__c, tmpHelper);
         }
         this.individualContractDataList = projectTimeMap.values();
@@ -431,13 +433,6 @@ public class FTETrackerController {
         return pageRef;
     }
 
-    public PageReference goToEmployeeViewFromTimeCardView() {
-        PageReference pageRef = null;
-        pageRef = Page.FTE_Employee_View;
-        pageRef.setRedirect(false);
-        return pageRef;
-    }
-
     public PageReference goToTimeCardView() {
         PageReference pageRef = null;
         if (exportMonth != null) {
@@ -534,6 +529,19 @@ public class FTETrackerController {
         }
     }
 
+    public PageReference goToEmployeeViewFromTimeCardView() {
+        PageReference pageRef = null;
+        pageRef = Page.FTE_Employee_View;
+        clearTimeCardViewData();
+        pageRef.setRedirect(false);
+        return pageRef;
+    }
+
+    private void clearTimeCardViewData() {
+        this.employeeMonthProjects = null;
+        this.exportMonthDays = null;
+    }
+
     /**
      * Unassign/Assign hours/days view
      */
@@ -603,6 +611,9 @@ public class FTETrackerController {
     }
 
     public PageReference moveTimeToUnassigned() {
+        if (notValidDays) {
+            return null;
+        }
         this.assignViewError = false;
         if (this.employeeMonth == null) {
             ApexPages.addMessage(new ApexPages.message(ApexPages.severity.ERROR, 'Cannot load month number'));
@@ -729,6 +740,9 @@ public class FTETrackerController {
     }
 
     public PageReference moveTimeFromUnassigned() {
+        if (notValidDays) {
+            return null;
+        }
         this.assignViewError = false;
         if (this.employeeMonth == null) {
             ApexPages.addMessage(new ApexPages.message(ApexPages.severity.ERROR, 'Cannot load month number'));

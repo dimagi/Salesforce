@@ -44,6 +44,7 @@
                 <apex:actionFunction action="{!setViewData}" name="setIndividualProjectViewData" oncomplete="goToIndividualProjectView();">
                     <apex:param name="contractId" assignTo="{!contractId}" value=""/>
                 </apex:actionFunction>
+                <apex:actionFunction action="{!searchProject}" name="searchProjectJs" status="loadingDiv" reRender="projectList" />
 
                 <apex:pageBlockSection columns="1">
                 <apex:pageBlockTable id="fteContractList" value="{!fteContractList}" var="fteProject" styleClass="projectTable">
@@ -60,9 +61,8 @@
                 <apex:pageBlockSection columns="1" id="serachSection">
                 <apex:outputLabel value="Search Project    " />
                 <apex:outputPanel >
-                    <apex:inputText value="{!seachProjectName}" id="searchProjectText"/>
-                    <apex:commandButton value="Search" action="{!searchProject}" status="loadingDiv" id="searchProjects" 
-                           reRender="projectList" />
+                    <apex:inputText value="{!seachProjectName}" id="searchProjectText" onkeydown="if(event.keyCode == 13) { this.blur(); searchProjectJs(); }"/>
+                    <apex:commandButton value="Search" action="{!searchProject}" status="loadingDiv" id="searchProjects" reRender="projectList" />
                     <apex:outputText rendered="{!searchError!=''}">
                     <div class="errorMsg"><strong>Error:</strong>&nbsp;{!searchError}</div>
                         </apex:outputText>

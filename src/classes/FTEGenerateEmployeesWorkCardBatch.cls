@@ -52,9 +52,10 @@ public without sharing class FTEGenerateEmployeesWorkCardBatch implements Databa
             Decimal monthHours = 0;
             Decimal monthDays = 0;
             Integer month = 1;
-            List<Time_Card__c> employeeYearTimeCards = [SELECT Id, Total__c, Date__c FROM Time_Card__c WHERE Employee__c =: employee.Id
-                                                        AND Client__r.FTE_Tracker__c = 'Yes'AND CALENDAR_YEAR(Date__c) =: this.calculationYear
-                                                        AND Total__c != null ORDER BY Date__c];
+            List<Time_Card__c> employeeYearTimeCards = [SELECT Id, Total__c, Date__c, Client__r.FTE_Tracker__c, FTE_hours__c, FTE_Contract__c, FTE_Contract__r.FTE_Tracker__c FROM Time_Card__c
+                                                        WHERE Employee__c =: employee.Id AND CALENDAR_YEAR(Date__c) =: this.calculationYear AND (Client__r.FTE_Tracker__c = 'Yes'
+                                                        OR (Client__r.FTE_Tracker__c != 'Yes' AND FTE_Contract__r.FTE_Tracker__c = 'Yes'))
+                                                        AND Total__c != null ORDER BY Date__c]; // we need only fetch timcards assigned and unassigned which are moving time to assigned
             System.debug('TC List: ' + employeeYearTimeCards.size());
             for (Time_Card__c tc : employeeYearTimeCards) {
                 System.debug('TC Date: ' + tc.Date__c);
@@ -65,8 +66,16 @@ public without sharing class FTEGenerateEmployeesWorkCardBatch implements Databa
                     month = tc.Date__c.month();
                     monthHours = 0;
                 }
-                monthHours += tc.Total__c;
-                totalHours += tc.Total__c;
+                Decimal realHours = tc.Total__c;
+
+                if (tc.Client__r.FTE_Tracker__c == 'Yes' && tc.FTE_Contract__c != null && tc.FTE_Contract__r.FTE_Tracker__c != 'Yes') { // We must substract hours if moved to unassigned
+                    realHours = realHours - tc.FTE_hours__c;
+                } else if (tc.Client__r.FTE_Tracker__c != 'Yes' && tc.FTE_Contract__c != null && tc.FTE_Contract__r.FTE_Tracker__c == 'Yes') { // we must move hours from unassigned
+                    realHours = tc.FTE_hours__c;
+                }
+
+                monthHours += realHours;
+                totalHours += realHours;
             }
             monthDays = roundtoDays(monthHours);
             sObj.put('Month_' + month + '__c', monthDays);
