@@ -46,6 +46,10 @@ public class FTETrackerTest {
         addTimeCard(unassignedContract2.Id, testEmployee.Id, Date.newInstance(currentDate.year(), currentDate.month(), 3), 9);
         addTimeCard(unassignedContract2.Id, testEmployee.Id, Date.newInstance(currentDate.year(), currentDate.month(), 4), 4.3);
         addTimeCard(unassignedContract2.Id, testEmployee.Id, Date.newInstance(currentDate.year(), currentDate.month(), 5), 3.3);
+
+        FTE_Tracker_Settings__c settings = FTE_Tracker_Settings__c.getOrgDefaults();
+        settings.FTE_Year__c = Date.today().year();
+        insert settings;
     }
 
     @isTest

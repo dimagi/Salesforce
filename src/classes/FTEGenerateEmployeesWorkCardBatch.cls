@@ -1,3 +1,6 @@
+/**
+ * Batch job for createing FTE Work Cards for FTE Employee List View.
+ */
 public without sharing class FTEGenerateEmployeesWorkCardBatch implements Database.Batchable<SFDC_Employee__c>, Database.Stateful {
 
     private Integer calculationYear;
@@ -14,6 +17,10 @@ public without sharing class FTEGenerateEmployeesWorkCardBatch implements Databa
 
     public List<SFDC_Employee__c> start(Database.BatchableContext BC) {
         try {
+            List<FTE_Work_Card__c> oldCards = [SELECT Id FROM FTE_Work_Card__c WHERE Employee__r.Employee_Status__c != 'Active'];
+            if (oldCards.size() > 0) {
+                delete oldCards;
+            }
             if (this.contractId == null) {
                 return [SELECT Id, Name FROM SFDC_Employee__c WHERE Employee_Status__c = 'Active' ORDER BY Name];
             }

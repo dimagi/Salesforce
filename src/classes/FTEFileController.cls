@@ -1,3 +1,6 @@
+/**
+ * Controller used to generate FTE Time Cards as csv file body.
+ */
 public class FTEFileController {
 
     public String fileName {get; set;}

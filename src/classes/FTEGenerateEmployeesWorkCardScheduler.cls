@@ -6,6 +6,7 @@ public without sharing class FTEGenerateEmployeesWorkCardScheduler implements Sc
     public FTEGenerateEmployeesWorkCardScheduler() {}
 
     public void execute(SchedulableContext sc) {
-       Database.executeBatch(new FTEGenerateEmployeesWorkCardBatch(Date.today().year()), 1);
+       Integer fteYear = (FTE_Tracker_Settings__c.getOrgDefaults().FTE_Year__c != null ? FTE_Tracker_Settings__c.getOrgDefaults().FTE_Year__c.intValue() : Date.today().year());
+       Database.executeBatch(new FTEGenerateEmployeesWorkCardBatch(fteYear), 1);
     }
 }

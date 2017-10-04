@@ -25,7 +25,7 @@ public class FTETimeCardGenerator {
     }
 
     public List<FTEMonthTimeCard> generateMonthTimeCards() {
-        Integer fteYear = 2017; // TODO ADD settings
+        Integer fteYear = FTE_Tracker_Settings__c.getOrgDefaults().FTE_Year__c != null ? FTE_Tracker_Settings__c.getOrgDefaults().FTE_Year__c.intValue() : Date.today().year();
 
         SFDC_Employee__c employee = [SELECT Id, Name, Unloaded_Daily_Rate__c FROM SFDC_Employee__c WHERE Id =: employeeId LIMIT 1];
         this.employeeName = employee.Name;
@@ -37,7 +37,6 @@ public class FTETimeCardGenerator {
                                         FROM Time_Card__c WHERE Employee__c =: this.employeeId AND Client__c != null
                                         AND CALENDAR_YEAR(Date__c) =: fteYear AND CALENDAR_MONTH(Date__c) =: this.employeeMonth
                                         ORDER BY Client__r.Name];
-
 
         this.monthDays = Date.daysInMonth(fteYear, employeeMonth);
         this.unassignedHours = new FTEMonthTimeCard('Overhead', this.monthDays);
@@ -131,10 +130,10 @@ public class FTETimeCardGenerator {
         }
 
         this.csvFile += CSV_LONG_EMPTY_ROW + NEW_LINE;
-        this.csvFile += '"Total Assigned",';
+        this.csvFile += '"Total Project Hours",';
         this.csvFile += '"' + total + '",';
         this.csvFile += CSV_SHORT_EMPTY_ROW + NEW_LINE;
-        this.csvFile += '"Total Overhead",';
+        this.csvFile += '"Total Overhead Hours",';
         this.csvFile += '"' + totalUnassigned + '",';
         this.csvFile += CSV_SHORT_EMPTY_ROW + NEW_LINE;
     }

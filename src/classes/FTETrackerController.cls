@@ -11,10 +11,9 @@ public class FTETrackerController {
     public String contractName { get; set;}
 
     public FTETrackerController () {
-        Date currentDate = Date.today();
-        this.yearBegin = Date.newInstance(currentDate.year(), 1, 1);
-        this.yearEnd = Date.newInstance(currentDate.year(), 12, 31);
-        this.currentYear = currentDate.year();
+        this.currentYear = FTE_Tracker_Settings__c.getOrgDefaults().FTE_Year__c != null ? FTE_Tracker_Settings__c.getOrgDefaults().FTE_Year__c.intValue() : Date.today().year();
+        this.yearBegin = Date.newInstance(this.currentYear, 1, 1);
+        this.yearEnd = Date.newInstance(this.currentYear, 12, 31);
     }
 
     public void setViewData() {
@@ -288,10 +287,11 @@ public class FTETrackerController {
 
     public void loadEmployeeListTimeHistory() {
        this.employees = new List<EmployeeTime>();
-       List<FTE_Work_Card__c> workCards = [SELECT Id, Employee__c, Employee__r.Name, Employee__r.Unloaded_Daily_Rate__c, Month_1__c, Month_2__c, Month_3__c,
+       List<FTE_Work_Card__c> workCards = [SELECT Id, Employee__c, Employee__r.Hire_Date__c, Employee__r.Name, Employee__r.Unloaded_Daily_Rate__c, Month_1__c, Month_2__c, Month_3__c,
                                            Month_4__c, Month_5__c, Month_6__c, Month_7__c, Month_8__c, Month_9__c, Month_10__c, Month_11__c, Month_12__c,
                                            Total__c, Total_Hours__c, Year__c FROM FTE_Work_Card__c ORDER BY Employee__r.Name];
        for (FTE_Work_Card__c workCard : workCards) {
+           Integer empNetworkDays = getNetworkDays(workCard.Employee__r.Hire_Date__c);
            EmployeeTime empTime = new EmployeeTime(workCard.Employee__r.Name, workCard.Employee__c);
            empTime.daysArray[0] = workCard.Month_1__c;
            empTime.daysArray[1] = workCard.Month_2__c;
@@ -306,7 +306,7 @@ public class FTETrackerController {
            empTime.daysArray[10] = workCard.Month_11__c;
            empTime.daysArray[11] = workCard.Month_12__c;
            empTime.daysArray[12] = workCard.Total__c;
-           if (workCard.Total__c > 230) {
+           if (workCard.Total__c > empNetworkDays) {
                empTime.cssStyle[12] = 'fteCell overbilled';
            }
            for (Integer i = 0; i < 12; i++) {
@@ -354,9 +354,12 @@ public class FTETrackerController {
     public List<EmployeeTime> contractsTime { get; set;}
     public Map<Id, EmployeeTime> unassignedMap { get; set;}
 
+    private Integer employeeNetworkDays = 0;
+
     public void loadEmployeeTimeHistory() {
         // Load employee logged time this year
-        this.employee = [SELECT Id, Name, Unloaded_Daily_Rate__c FROM SFDC_Employee__c WHERE Id =: this.employeeId LIMIT 1];
+        this.employee = [SELECT Id, Name, Unloaded_Daily_Rate__c, Hire_Date__c FROM SFDC_Employee__c WHERE Id =: this.employeeId LIMIT 1];
+        this.employeeNetworkDays = getNetworkDays(this.employee.Hire_Date__c);
         List<Time_Card__c> timeCards = [SELECT Id, Client__c, Client__r.FTE_Tracker__c, Client__r.Name,
                                         Total__c, FTE_hours__c, FTE_Contract__c,
                                         FTE_Contract__r.FTE_Tracker__c, FTE_Contract__r.Name,
@@ -374,7 +377,7 @@ public class FTETrackerController {
             Decimal loggedTime = (timeCard.Total__c != null ? timeCard.Total__c : 0);
             Decimal movedTime = (timeCard.FTE_hours__c != null ? timeCard.FTE_hours__c : 0);
 
-            // "Moved from" partthis.contractsTime.add(this.unassigned);
+            // "Moved from" part this.contractsTime.add(this.unassigned);
             calculateLoggedTime(timeCard.Client__r.FTE_Tracker__c == 'Yes', timeCard.Client__c, timeCard.Client__r.Name, (loggedTime - movedTime), timeCard.Date__c.month());
             // If no FTE Tag values we don't need to process moved hours
             if (timeCard.FTE_Contract__c == null || movedTime == 0) {
@@ -493,7 +496,7 @@ public class FTETrackerController {
             }
             this.totalDaysWorked.cssStyle[i] = '';
         }
-        if (totalAssignedDays.daysArray[12] > 230) { // todo network days
+        if (totalAssignedDays.daysArray[12] > employeeNetworkDays) {
             this.totalAssignedDays.cssStyle[12] = 'topTotal overbilled';
         } else {
             this.totalAssignedDays.cssStyle[12] = 'topTotal';
@@ -579,8 +582,8 @@ public class FTETrackerController {
             this.monthName = DateTime.newInstance(this.currentYear, this.employeeMonth + 1, 1).format('MMMM yyyy');
             this.userAvailableDays = 21 - this.totalAssignedDays.daysArray[this.employeeMonth] > 0 ? 21 -
                                             this.totalAssignedDays.daysArray[this.employeeMonth] : 0;
-            //TODO network days
-            Decimal helperDecimal = 230 - this.totalAssignedDays.daysArray[12] > 0 ? 230 - this.totalAssignedDays.daysArray[12] : 0;
+            Decimal helperDecimal = employeeNetworkDays - this.totalAssignedDays.daysArray[12] > 0 ?
+                employeeNetworkDays - this.totalAssignedDays.daysArray[12] : 0;
             this.userAvailableDays = this.userAvailableDays < helperDecimal ? this.userAvailableDays : helperDecimal;
         } else {
             ApexPages.addMessage(new ApexPages.message(ApexPages.severity.ERROR, 'Cannot load month number'));
@@ -678,7 +681,8 @@ public class FTETrackerController {
                 }
             }
 
-            // If we already have tag from assigned we want take more hours from that tag, we need only one time card we can move hours to one contract
+            // If we already have tag from assigned we want take more hours from that tag,
+            // we need only one time card we can move hours to one contract
             if (stopUpdating == false) {
                 timeCardsFromDB = [SELECT Id, Client__c, Client__r.FTE_Tracker__c, Client__r.Name,
                                                 Total__c, FTE_hours__c, FTE_Contract__c,
@@ -688,7 +692,6 @@ public class FTETrackerController {
                                                 AND Client__c =: this.contractId AND FTE_Contract__c != null
                                                 AND (FTE_Contract__r.FTE_Tracker__c = 'No' OR FTE_Contract__r.FTE_Tracker__c = '')
                                                 AND Date__c >=: monthStart AND Date__c <=: endMonth LIMIT 1];
-                ApexPages.addMessage(new ApexPages.message(ApexPages.severity.ERROR, 'Time 1 cards: ' + timeCardsFromDB.size()));
 
                 if (timeCardsFromDB.size() > 0) {
                     Time_Card__c tc = timeCardsFromDB.get(0);
@@ -698,7 +701,7 @@ public class FTETrackerController {
                 }
             }
 
-            // If we don't have any tag we need add new one in time card
+            // If we don't have any tag we need add one in time cards
             if (stopUpdating == false) {
                 timeCardsFromDB = [SELECT Id, Client__c, Client__r.FTE_Tracker__c, Client__r.Name,
                                                 Total__c, FTE_hours__c, FTE_Contract__c,
@@ -708,6 +711,7 @@ public class FTETrackerController {
                                                 AND Client__c =: this.contractId
                                                 AND FTE_Contract__c = null
                                                 AND Date__c >=: monthStart AND Date__c <=: endMonth LIMIT 1];
+
                 if (timeCardsFromDB.size() > 0) {
                     Time_Card__c tc = timeCardsFromDB.get(0);
                     tc.FTE_Contract__c = this.unassignedMap.values()[getContractIndex()].objId;
@@ -790,6 +794,7 @@ public class FTETrackerController {
                                                 AND (FTE_Contract__r.FTE_Tracker__c = 'No' OR FTE_Contract__r.FTE_Tracker__c  = '')
                                                 AND Date__c >=: monthStart AND Date__c <=: endMonth];
 
+            Set<Id> emptyContracts = new Set<Id>();
             // If we have moved hours from assigned to unassigned we want take these hours back.
             for (Time_Card__c tc : timeCardsFromDB) {
                 Decimal freeHours = this.unassignedMap.get(tc.FTE_Contract__c).hoursArray[this.employeeMonth];
@@ -811,7 +816,6 @@ public class FTETrackerController {
                 }
             }
 
-            Set<Id> emptyContracts = new Set<Id>();
             // If we already have tag from unassigned we want take more hours from that tag
             if (stopUpdating == false) {
                 timeCardsFromDB = [SELECT Id, Client__c, Client__r.FTE_Tracker__c, Client__r.Name,
@@ -829,6 +833,7 @@ public class FTETrackerController {
                         Decimal toAssign = hoursToAssign > hours ? hours : hoursToAssign;
                         tc.FTE_hours__c = tc.FTE_hours__c != null ? tc.FTE_hours__c + toAssign : toAssign;
                         hoursToAssign -= toAssign;
+                        this.unassignedMap.get(tc.Client__c).hoursArray[this.employeeMonth] -= toAssign;
                         timeCardsToUpdate.add(tc);
                         if (hoursToAssign <= 0) {
                             stopUpdating = true;
@@ -859,6 +864,7 @@ public class FTETrackerController {
                         tc.FTE_hours__c = tc.FTE_hours__c != null ? tc.FTE_hours__c + toAssign : toAssign;
                         tc.FTE_Contract__c = this.selectedFteContract;
                         hoursToAssign -= toAssign;
+                        this.unassignedMap.get(tc.Client__c).hoursArray[this.employeeMonth] -= toAssign;
                         timeCardsToUpdate.add(tc);
                         if (hoursToAssign <= 0) {
                             stopUpdating = true;
@@ -942,6 +948,13 @@ public class FTETrackerController {
         this.assignViewError = false;
         this.notValidDays = false;
         this.monthName = null;
+    }
+
+    private Integer getNetworkDays(Date hireDate) {
+        if (hireDate != null && hireDate.year() == this.currentYear) {
+            return FTETrackerHelper.getWorkingDays(hireDate, Date.newInstance(this.currentYear, 12 ,1));
+        }
+        return 230;
     }
 
     private Integer getContractIndex() {
