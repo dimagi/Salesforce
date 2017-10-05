@@ -572,7 +572,7 @@ public class FTETrackerController {
 
     public void loadEmployeeMonth() {
         this.assignViewError = false;
-        this.notValidDays = true;
+        this.notValidDays = false;
         this.fteDays = '0.25';
         this.userAvailableDays = 0;
 
@@ -600,6 +600,7 @@ public class FTETrackerController {
 
     public void loadEmployeeUnassMonth() {
         this.assignViewError = false;
+        this.notValidDays = false;
         this.fteDays = '0.25';
         if (this.employeeMonth != null && this.contractId != null) {
             this.contractName = this.assignedMap.get(this.contractId).name;
