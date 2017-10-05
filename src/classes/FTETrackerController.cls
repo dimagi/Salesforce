@@ -721,7 +721,7 @@ public class FTETrackerController {
                 }
             }
 
-            // If we don't have any empty time card we need create a empty one to move hours
+            // If we don't have any empty time card we need create a empty one to move hours 
             if (stopUpdating == false) {
                 Time_Card__c tc = new Time_Card__c(Client__c = this.contractId, Employee__c = this.employee.Id, Date__c = monthStart,
                                                        FTE_only__c = true, Total__c = 0, FTE_hours__c = hoursToUnassign,

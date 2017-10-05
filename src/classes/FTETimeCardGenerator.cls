@@ -42,21 +42,88 @@ public class FTETimeCardGenerator {
         this.unassignedHours = new FTEMonthTimeCard('Overhead', this.monthDays);
         this.contractMap = new Map<Id, FTEMonthTimeCard>();
 
+        List<Time_Card__c> fteCards = new List<Time_Card__c>();
         for (Time_Card__c timeCard : timeCards) {
-            Decimal loggedTime = (timeCard.Total__c != null ? timeCard.Total__c : 0);
-            Decimal movedTime = (timeCard.FTE_hours__c != null ? timeCard.FTE_hours__c : 0);
-            // "Moved from" part
-            calculateLoggedTime(timeCard.Client__r.FTE_Tracker__c == 'Yes', timeCard.Client__c, timeCard.Client__r.Name, (loggedTime - movedTime), timeCard.Date__c.day());
-            // If no FTE Tag values we don't need to process moved hours
-            if (timeCard.FTE_Contract__c == null || movedTime == 0) {
-                continue;
+            addLoggedTime(timeCard);
+            if (timeCard.FTE_Contract__c != null) {
+                fteCards.add(timeCard);
             }
-            // "Moved to" part
-            calculateLoggedTime(timeCard.FTE_Contract__r.FTE_Tracker__c == 'Yes', timeCard.FTE_Contract__c, timeCard.FTE_Contract__r.Name, movedTime, timeCard.Date__c.day());
         }
+
+        //we want do this in separate loop to know how much hours we can move for given day
+        //it will allow us to avoid negative hours
+        for (Time_Card__c fteCard : fteCards) {
+            if (fteCard.Client__r.FTE_Tracker__c != 'Yes' && fteCard.FTE_Contract__r.FTE_Tracker__c == 'Yes') { // From Unassigned to Assigned
+                FTEMonthTimeCard monthCard = this.contractMap.get(fteCard.FTE_Contract__c);
+                Decimal hoursHelper = fteCard.FTE_hours__c;
+                for (Integer i = 0; i < this.monthDays; i++) {
+                    Decimal hoursToMove = unassignedHours.hours[i] < hoursHelper ? unassignedHours.hours[i] : hoursHelper;
+                    monthCard.hours[i] += hoursToMove;
+                    unassignedHours.hours[i] -= hoursToMove;
+                    hoursHelper -= hoursToMove;
+                    this.totalUnassigned -= hoursToMove;
+                    this.total += hoursToMove;
+                    if (hoursHelper <= 0) {
+                        break;
+                    }
+                }
+            } else if (fteCard.Client__r.FTE_Tracker__c == 'Yes' && fteCard.FTE_Contract__r.FTE_Tracker__c != 'Yes') { //From Assigned to Unassigned
+                FTEMonthTimeCard monthCard = this.contractMap.get(fteCard.Client__c);
+                Decimal hoursHelper = fteCard.FTE_hours__c;
+                for (Integer i = 0; i < this.monthDays; i++) {
+                    Decimal hoursToMove = monthCard.hours[i] < hoursHelper ? monthCard.hours[i] : hoursHelper;
+                    monthCard.hours[i] -= hoursToMove;
+                    unassignedHours.hours[i] += hoursToMove;
+                    hoursHelper -= hoursToMove;
+                    this.totalUnassigned += hoursToMove;
+                    this.total -= hoursToMove;
+                    if (hoursHelper <= 0) {
+                        break;
+                    }
+                }
+            } else if (fteCard.Client__r.FTE_Tracker__c == 'Yes' && fteCard.FTE_Contract__r.FTE_Tracker__c == 'Yes') {
+                FTEMonthTimeCard monthCardFrom = this.contractMap.get(fteCard.Client__c);
+                FTEMonthTimeCard monthCardTo = this.contractMap.get(fteCard.FTE_Contract__c);
+                Decimal hoursHelper = fteCard.FTE_hours__c;
+                for (Integer i = 0; i < this.monthDays; i++) {
+                    Decimal hoursToMove = monthCardFrom.hours[i] < hoursHelper ? monthCardFrom.hours[i] : hoursHelper;
+                    monthCardFrom.hours[i] -= hoursToMove;
+                    monthCardTo.hours[i] += hoursToMove;
+                    hoursHelper -= hoursToMove;
+                    if (hoursHelper <= 0) {
+                        break;
+                    }
+                }
+            } //From Unassigned to Unassigned is not important, we have sum as Overhead
+        }
+
+        // Generate list for UI and csv file
         List<FTEMonthTimeCard> result = this.contractMap.values();
         result.add(unassignedHours);
         return result;
+    }
+
+    private void addLoggedTime(Time_Card__c tc) {
+        Integer day = tc.Date__c.day();
+        if (tc.Client__r.FTE_Tracker__c == 'Yes') {
+            if (!this.contractMap.containsKey(tc.Client__c)) {
+                this.contractMap.put(tc.Client__c, new FTEMonthTimeCard(tc.Client__r.Name, this.monthDays));
+            }
+            FTEMonthTimeCard monthCard = this.contractMap.get(tc.Client__c);
+            if (monthCard.hours[day - 1] != null) {
+                monthCard.hours[day - 1] += tc.Total__c;
+            } else {
+                monthCard.hours[day - 1] = tc.Total__c;
+            }
+            this.total += tc.Total__c;
+        } else {
+            if (unassignedHours.hours[day - 1] != null) {
+                unassignedHours.hours[day - 1] += tc.Total__c;
+            } else {
+                unassignedHours.hours[day - 1] = tc.Total__c;
+            }
+            this.totalUnassigned += tc.Total__c;
+        }
     }
 
     private void calculateLoggedTime(Boolean fteTracker, Id clientId, String clientName, Decimal loggedHours, Integer day) {
