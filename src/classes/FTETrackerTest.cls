@@ -62,6 +62,9 @@ public class FTETrackerTest {
         addTimeCard(unassignedContract1.Id, testEmployee2.Id, Date.newInstance(currentDate.year(), currentDate.month(), 24), 4);
         addTimeCard(unassignedContract1.Id, testEmployee2.Id, Date.newInstance(currentDate.year(), currentDate.month(), 25), 3.3);
 
+        addTimeCard(fteContract4.Id, testEmployee2.Id, Date.newInstance(currentDate.year(), currentDate.month(), 16), 5, 2,
+                                                                                                unassignedContract2.Id);
+
         FTE_Tracker_Settings__c settings = FTE_Tracker_Settings__c.getOrgDefaults();
         settings.FTE_Year__c = Date.today().year();
         insert settings;
@@ -265,6 +268,49 @@ public class FTETrackerTest {
         System.assertEquals('Other Employee' ,testTag.Employee__r.Name);
         System.assertEquals(6.5 ,testTag.Hours__c);
         System.assertEquals('Unassigned Contract 1' ,testTag.TC_Contract__r.Name);
+    }
+
+    @isTest
+    public static void batchShouldMoveRemovedFTETags() {
+        Id cont1 = [SELECT Id FROM DContract__c WHERE Name = 'FTE Contract 1' LIMIT 1].Id;
+        Id cont4 = [SELECT Id FROM DContract__c WHERE Name = 'FTE Contract 4' LIMIT 1].Id;
+
+        Date currentDate = Date.today();
+
+        FTE_Tracker_Settings__c settings = FTE_Tracker_Settings__c.getOrgDefaults();
+        settings.FTE_Trigger__c = true;
+        update settings;
+
+        Test.startTest();
+
+        Time_Card__c tc1 = [SELECT Id, FTE_Contract__c, Total__c, FTE_Hours__c FROM Time_Card__c WHERE
+                            Client__c =: cont1 AND DAY_IN_MONTH(Date__c) = 1 AND Employee__r.Name = 'Other Employee' LIMIT 1];
+        Time_Card__c tc2 = [SELECT Id, FTE_Contract__c, Total__c, FTE_Hours__c FROM Time_Card__c WHERE
+                            Client__c =: cont4 AND DAY_IN_MONTH(Date__c) = 16 AND Employee__r.Name = 'Other Employee' LIMIT 1];
+
+        List<Time_Card__c> triggerDelete = new List<Time_Card__c>();
+        triggerDelete.add(tc1);
+        triggerDelete.add(tc2);
+        delete triggerDelete;
+
+        Database.executeBatch(new FTEUpdateTagsBatch());
+
+        Test.stopTest();
+
+        Id contUn1 = [SELECT Id FROM DContract__c WHERE Name = 'Unassigned Contract 1' LIMIT 1].Id;
+        Id contUn2 = [SELECT Id FROM DContract__c WHERE Name = 'Unassigned Contract 2' LIMIT 1].Id;
+
+        Time_Card__c tc1b = [SELECT Id, FTE_only__c, FTE_Contract__c, Total__c, FTE_Hours__c FROM Time_Card__c WHERE
+                            Client__c =: cont1 AND Employee__r.Name = 'Other Employee' AND FTE_Contract__c != null];
+        System.assertEquals(false, tc1b.FTE_only__c);
+        System.assertEquals(5, tc1b.FTE_Hours__c);
+        System.assertEquals(contUn1, tc1b.FTE_Contract__c);
+
+        Time_Card__c tc2b = [SELECT Id, FTE_Only__c, FTE_Contract__c, Total__c, FTE_Hours__c FROM Time_Card__c WHERE
+                            Client__c =: cont4 AND Employee__r.Name = 'Other Employee' AND FTE_Contract__c != null];
+        System.assertEquals(true, tc2b.FTE_only__c);
+        System.assertEquals(2, tc2b.FTE_Hours__c);
+        System.assertEquals(contUn2, tc2b.FTE_Contract__c);
     }
 
     @isTest
