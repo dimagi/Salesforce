@@ -65,6 +65,40 @@ public class FTETrackerTest {
         addTimeCard(fteContract4.Id, testEmployee2.Id, Date.newInstance(currentDate.year(), currentDate.month(), 16), 5, 2,
                                                                                                 unassignedContract2.Id);
 
+        SFDC_Employee__c testEmployee3 = addEmployee('Yyy Employee');
+
+        addTimeCard(fteContract1.Id, testEmployee3.Id, Date.newInstance(currentDate.year(), currentDate.month(), 1), 3, 8,
+                                                                                                unassignedContract1.Id);
+        addTimeCard(fteContract1.Id, testEmployee3.Id, Date.newInstance(currentDate.year(), currentDate.month(), 2), 4);
+        addTimeCard(fteContract1.Id, testEmployee3.Id, Date.newInstance(currentDate.year(), currentDate.month(), 3), 5);
+        addTimeCard(fteContract1.Id, testEmployee3.Id, Date.newInstance(currentDate.year(), currentDate.month(), 4), 4.6);
+        addTimeCard(fteContract1.Id, testEmployee3.Id, Date.newInstance(currentDate.year(), currentDate.month(), 5), 2.5);
+
+        addTimeCard(fteContract2.Id, testEmployee3.Id, Date.newInstance(currentDate.year(), currentDate.month(), 6), 8);
+        addTimeCard(fteContract2.Id, testEmployee3.Id, Date.newInstance(currentDate.year(), currentDate.month(), 8), 8, 7,
+                                                                                                unassignedContract1.Id);
+
+        addTimeCard(fteContract3.Id, testEmployee3.Id, Date.newInstance(currentDate.year(), currentDate.month(), 9), 4);
+        addTimeCard(fteContract3.Id, testEmployee3.Id, Date.newInstance(currentDate.year(), currentDate.month(), 10), 3, 5,
+                                                                                                fteContract2.Id);
+
+        addTimeCard(fteContract4.Id, testEmployee3.Id, Date.newInstance(currentDate.year(), currentDate.month(), 16), 0.5, 3,
+                                                                                                fteContract3.Id);
+        addTimeCard(fteContract4.Id, testEmployee3.Id, Date.newInstance(currentDate.year(), currentDate.month(), 17), 1.5);
+        addTimeCard(fteContract4.Id, testEmployee3.Id, Date.newInstance(currentDate.year(), currentDate.month(), 18), 2);
+        addTimeCard(fteContract4.Id, testEmployee3.Id, Date.newInstance(currentDate.year(), currentDate.month(), 19), 1);
+        addTimeCard(fteContract4.Id, testEmployee3.Id, Date.newInstance(currentDate.year(), currentDate.month(), 20), 2);
+        addTimeCard(fteContract4.Id, testEmployee3.Id, Date.newInstance(currentDate.year(), currentDate.month(), 21), 1);
+
+        addTimeCard(unassignedContract1.Id, testEmployee3.Id, Date.newInstance(currentDate.year(), currentDate.month(), 21), 3);
+
+        addTimeCard(unassignedContract2.Id, testEmployee3.Id, Date.newInstance(currentDate.year(), currentDate.month(), 21), 6, 16,
+                                                                                                fteContract3.Id);
+        addTimeCard(unassignedContract2.Id, testEmployee3.Id, Date.newInstance(currentDate.year(), currentDate.month(), 21), 5);
+        addTimeCard(unassignedContract2.Id, testEmployee3.Id, Date.newInstance(currentDate.year(), currentDate.month(), 21), 7, 2,
+                                                                                                fteContract4.Id);
+        addTimeCard(unassignedContract2.Id, testEmployee3.Id, Date.newInstance(currentDate.year(), currentDate.month(), 21), 4);
+
         FTE_Tracker_Settings__c settings = FTE_Tracker_Settings__c.getOrgDefaults();
         settings.FTE_Year__c = Date.today().year();
         insert settings;
@@ -76,11 +110,11 @@ public class FTETrackerTest {
         Database.executeBatch(new FTEGenerateEmployeesWorkCardBatch(Date.today().year()));
         Test.stopTest();
         List<SFDC_Employee__c> employees = [SELECT Id, Name, Unloaded_Daily_Rate__c FROM SFDC_Employee__c WHERE Employee_Status__c = 'Active' ORDER BY Name];
-        System.assertEquals(2, employees.size());
+        System.assertEquals(3, employees.size());
         List<FTE_Work_Card__c> workCards = [SELECT Id, Employee__c, Employee__r.Name, Employee__r.Unloaded_Daily_Rate__c, Month_1__c, Month_2__c, Month_3__c,
                                    Month_4__c, Month_5__c, Month_6__c, Month_7__c, Month_8__c, Month_9__c, Month_10__c, Month_11__c, Month_12__c,
                                    Total__c, Total_Hours__c, Year__c FROM FTE_Work_Card__c ORDER BY Employee__r.Name];
-        System.assertEquals(2, workCards.size());
+        System.assertEquals(3, workCards.size());
         System.assertEquals(92.1, workCards.get(0).Total_Hours__c);
         System.assertEquals(11.5, workCards.get(0).Total__c);
     }
@@ -99,11 +133,11 @@ public class FTETrackerTest {
         Test.stopTest();
 
         List<SFDC_Employee__c> employees = [SELECT Id, Name, Unloaded_Daily_Rate__c FROM SFDC_Employee__c WHERE Employee_Status__c = 'Active' ORDER BY Name];
-        System.assertEquals(2, employees.size());
+        System.assertEquals(3, employees.size());
         List<FTE_Work_Card__c> workCards = [SELECT Id, Employee__c, Employee__r.Name, Employee__r.Unloaded_Daily_Rate__c, Month_1__c, Month_2__c, Month_3__c,
                                    Month_4__c, Month_5__c, Month_6__c, Month_7__c, Month_8__c, Month_9__c, Month_10__c, Month_11__c, Month_12__c,
                                    Total__c, Total_Hours__c, Year__c FROM FTE_Work_Card__c ORDER BY Employee__r.Name];
-        System.assertEquals(2, workCards.size());
+        System.assertEquals(3, workCards.size());
         System.assertEquals(85.8, workCards.get(0).Total_Hours__c); // -25,6 + 19,3
         System.assertEquals(10.75, workCards.get(0).Total__c);
     }
@@ -293,24 +327,140 @@ public class FTETrackerTest {
         triggerDelete.add(tc2);
         delete triggerDelete;
 
-        Database.executeBatch(new FTEUpdateTagsBatch());
+        Database.executeBatch(new FTEUpdateTagsBatch(false));
 
         Test.stopTest();
+
+        List<Time_Card__c> testTimeCards = [SELECT Id, FTE_Only__c, Client__r.Name, FTE_Contract__r.Name, Total__c, FTE_Hours__c FROM Time_Card__c WHERE Employee__r.Name = 'Other Employee'];
 
         Id contUn1 = [SELECT Id FROM DContract__c WHERE Name = 'Unassigned Contract 1' LIMIT 1].Id;
         Id contUn2 = [SELECT Id FROM DContract__c WHERE Name = 'Unassigned Contract 2' LIMIT 1].Id;
 
         Time_Card__c tc1b = [SELECT Id, FTE_only__c, FTE_Contract__c, Total__c, FTE_Hours__c FROM Time_Card__c WHERE
-                            Client__c =: cont1 AND Employee__r.Name = 'Other Employee' AND FTE_Contract__c != null];
+                            Client__c =: cont1 AND Employee__r.Name = 'Other Employee' AND FTE_Contract__c != null LIMIT 1];
         System.assertEquals(false, tc1b.FTE_only__c);
         System.assertEquals(5, tc1b.FTE_Hours__c);
         System.assertEquals(contUn1, tc1b.FTE_Contract__c);
 
-        Time_Card__c tc2b = [SELECT Id, FTE_Only__c, FTE_Contract__c, Total__c, FTE_Hours__c FROM Time_Card__c WHERE
-                            Client__c =: cont4 AND Employee__r.Name = 'Other Employee' AND FTE_Contract__c != null];
+        Time_Card__c tc2b = [SELECT Id, FTE_Only__c, FTE_Contract__c, Total__c, FTE_Hours__c, Client__c FROM Time_Card__c WHERE
+                            Client__r.Name = 'FTE Contract 4' AND Employee__r.Name = 'Other Employee' LIMIT 1];
+        System.assertEquals(cont4, tc2b.Client__c);
         System.assertEquals(true, tc2b.FTE_only__c);
         System.assertEquals(2, tc2b.FTE_Hours__c);
         System.assertEquals(contUn2, tc2b.FTE_Contract__c);
+    }
+
+    @isTest
+    public static void batchShouldFilleeNegativeFTETags1() {
+        SFDC_Employee__c employee = [SELECT Id FROM SFDC_Employee__c WHERE Name = 'Other Employee'];
+        Id cont1 = [SELECT Id FROM DContract__c WHERE Name = 'FTE Contract 1' LIMIT 1].Id;
+        Id cont4 = [SELECT Id FROM DContract__c WHERE Name = 'FTE Contract 4' LIMIT 1].Id;
+        Id contUn1 = [SELECT Id FROM DContract__c WHERE Name = 'Unassigned Contract 1' LIMIT 1].Id;
+        Id contUn2 = [SELECT Id FROM DContract__c WHERE Name = 'Unassigned Contract 2' LIMIT 1].Id;
+
+        FTE_Tracker_Settings__c settings = FTE_Tracker_Settings__c.getOrgDefaults();
+        settings.FTE_Trigger__c = true;
+        update settings;
+
+        Test.startTest();
+
+        List<Time_Card__c> toDel = new List<Time_Card__c>();
+        List<Time_Card__c> toUpd = new List<Time_Card__c>();
+
+        Time_Card__c tc1 = [SELECT Id, Total__c FROM Time_Card__c WHERE Employee__c =: employee.Id AND Client__c =: cont4 LIMIT 1];
+        Time_Card__c tc2 = [SELECT Id, Total__c FROM Time_Card__c WHERE Employee__c =: employee.Id AND Client__c =: cont1 AND Total__c = 6 LIMIT 1];
+        toDel.add(tc1);
+        toDel.add(tc2);
+
+        Time_Card__c tc3 = [SELECT Id, Total__c FROM Time_Card__c WHERE Employee__c =: employee.Id AND Client__c =: cont1 AND Total__c = 4.3 LIMIT 1];
+        Time_Card__c tc4 = [SELECT Id, Total__c FROM Time_Card__c WHERE Employee__c =: employee.Id AND Client__c =: cont1 AND Total__c = 3.3 LIMIT 1];
+        tc3.Total__c = 1.3;
+        tc4.Total__c = 2.3;
+        toUpd.add(tc3);
+        toUpd.add(tc4);
+
+        delete toDel;
+        update toUpd;
+
+        Database.executeBatch(new FTEUpdateTagsBatch(true));
+
+        Test.stopTest();
+
+        List<Time_Card__c> testTimeCards = [SELECT Id, Total__c, FTE_Hours__c, FTE_Contract__c FROM Time_Card__c WHERE Client__c =: cont1 AND Employee__r.Name = 'Other Employee'];
+
+        Decimal hoursTotalSum = 0;
+        Decimal hoursMovedSum = 0;
+        for (Time_Card__c tc : testTimeCards) {
+            hoursTotalSum += tc.Total__c;
+            if (tc.FTE_Contract__c != null) {
+                hoursMovedSum += tc.FTE_Hours__c;
+            }
+        }
+
+        System.assertEquals(18.6, hoursTotalSum);
+        System.assertEquals(5, hoursMovedSum);
+
+        Time_Card__c tc2b = [SELECT Id, FTE_Only__c, FTE_Contract__c, Total__c, FTE_Hours__c, Client__c FROM Time_Card__c WHERE
+                            Client__r.Name = 'FTE Contract 4' AND Employee__r.Name = 'Other Employee' LIMIT 1];
+        System.assertEquals(cont4, tc2b.Client__c);
+        System.assertEquals(true, tc2b.FTE_only__c);
+        System.assertEquals(0, tc2b.FTE_Hours__c);
+        System.assertEquals(null, tc2b.FTE_Contract__c);
+    }
+
+    @isTest
+    public static void batchShouldFilleeNegativeFTETags2() {
+        SFDC_Employee__c employee = [SELECT Id FROM SFDC_Employee__c WHERE Name = 'Other Employee'];
+        Id cont1 = [SELECT Id FROM DContract__c WHERE Name = 'FTE Contract 1' LIMIT 1].Id;
+        Id cont4 = [SELECT Id FROM DContract__c WHERE Name = 'FTE Contract 4' LIMIT 1].Id;
+        Id contUn1 = [SELECT Id FROM DContract__c WHERE Name = 'Unassigned Contract 1' LIMIT 1].Id;
+        Id contUn2 = [SELECT Id FROM DContract__c WHERE Name = 'Unassigned Contract 2' LIMIT 1].Id;
+
+        FTE_Tracker_Settings__c settings = FTE_Tracker_Settings__c.getOrgDefaults();
+        settings.FTE_Trigger__c = true;
+        update settings;
+
+        Test.startTest();
+
+        List<Time_Card__c> toDel = new List<Time_Card__c>();
+        List<Time_Card__c> toUpd = new List<Time_Card__c>();
+
+        Time_Card__c tc1 = [SELECT Id, Total__c FROM Time_Card__c WHERE Employee__c =: employee.Id AND Client__c =: cont4 LIMIT 1];
+        Time_Card__c tc2 = [SELECT Id, Total__c FROM Time_Card__c WHERE Employee__c =: employee.Id AND Client__c =: cont1 AND Total__c = 6 LIMIT 1];
+        Time_Card__c tc3 = [SELECT Id, Total__c FROM Time_Card__c WHERE Employee__c =: employee.Id AND Client__c =: cont1 AND Total__c = 8 LIMIT 1];
+        Time_Card__c tc4 = [SELECT Id, Total__c FROM Time_Card__c WHERE Employee__c =: employee.Id AND Client__c =: cont1 AND Total__c = 7 LIMIT 1];
+        Time_Card__c tc5 = [SELECT Id, Total__c FROM Time_Card__c WHERE Employee__c =: employee.Id AND Client__c =: cont1 AND Total__c = 4.3 LIMIT 1];
+        toDel.add(tc1);
+        toDel.add(tc2);
+        toDel.add(tc3);
+        toDel.add(tc4);
+        toDel.add(tc5);
+
+        delete toDel;
+        Database.executeBatch(new FTEUpdateTagsBatch(true));
+
+        Test.stopTest();
+
+        List<Time_Card__c> testTimeCards = [SELECT Id, Total__c, FTE_Hours__c, FTE_Contract__c FROM Time_Card__c WHERE Client__c =: cont1 AND Employee__r.Name = 'Other Employee'];
+
+        Decimal hoursTotalSum = 0;
+        Decimal hoursMovedSum = 0;
+        for (Time_Card__c tc : testTimeCards) {
+            hoursTotalSum += tc.Total__c;
+            if (tc.FTE_Contract__c != null) {
+                hoursMovedSum += tc.FTE_Hours__c;
+            }
+        }
+
+        System.assertEquals(3.3, hoursTotalSum);
+        System.assertEquals(3.3, hoursMovedSum);
+
+        Time_Card__c tc2b = [SELECT Id, FTE_Only__c, FTE_Contract__c, Total__c, FTE_Hours__c, Client__c FROM Time_Card__c WHERE
+                            Client__r.Name = 'FTE Contract 4' AND Employee__r.Name = 'Other Employee' LIMIT 1];
+        System.assertEquals(cont4, tc2b.Client__c);
+        System.assertEquals(true, tc2b.FTE_only__c);
+        System.assertEquals(0, tc2b.FTE_Hours__c);
+        System.assertEquals(null, tc2b.FTE_Contract__c);
     }
 
     @isTest
