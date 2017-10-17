@@ -15,7 +15,8 @@ public class AggregateExecutionEfficiencySnpJob {
         Decimal totalSumServices = 0;
         Decimal totalSumEff = 0;
 
-        Aggregate_Execution_Efficiency_Snapshot__c snapshot = new Aggregate_Execution_Efficiency_Snapshot__c(Date__c = Date.today());
+        Aggregate_Execution_Efficiency_Snapshot__c snapshot = new Aggregate_Execution_Efficiency_Snapshot__c(Date__c = Date.today(), DLAC__c = 0, DSA__c = 0, DSI__c = 0,
+                                                                                DWA__c = 0, INC__c = 0, Total_Aggregate_Execution_Efficiency__c = 0);
         SObject sObjSnapshot = (SObject) snapshot;
 
         if (resultContr.size() > 0) {
@@ -29,10 +30,8 @@ public class AggregateExecutionEfficiencySnpJob {
                 totalSumEff += sumEff;
                 Decimal valuetoSet = 1;
 
-                if (sumServices > 0 && totalSumEff != 0) {
-                    valuetoSet = (sumServices / sumEff) * 100.00;
-                } else if (sumEff == 0) {
-                    valuetoSet = 0;
+                if (sumServices > 0) {
+                    valuetoSet = (sumEff / sumServices) * 100.00;
                 }
 
                 String fieldName = (currName + '__c').toLowerCase();
@@ -43,10 +42,8 @@ public class AggregateExecutionEfficiencySnpJob {
         }
 
         Decimal totalValue = 1;
-        if (totalSumServices > 0 && totalSumEff != 0) {
-            totalValue = (totalSumServices / totalSumEff) * 100.00;
-        } else if (totalSumEff == 0) {
-            totalValue = 0;
+        if (totalSumServices > 0) {
+            totalValue = (totalSumEff / totalSumServices) * 100.00;
         }
 
         snapshot = (Aggregate_Execution_Efficiency_Snapshot__c) sObjSnapshot;
