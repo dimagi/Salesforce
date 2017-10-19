@@ -1,7 +1,7 @@
 public class BatchCalculateEVDiff implements Database.Batchable<Pipeline_Snapshot__c>, Database.Stateful {
 
     private Date currentDate;
-    private Boolean forClosed;
+    private Boolean wasData;
 
     public BatchCalculateEVDiff () {}
 
@@ -11,6 +11,9 @@ public class BatchCalculateEVDiff implements Database.Batchable<Pipeline_Snapsho
 
     public List<Pipeline_Snapshot__c> start(Database.BatchableContext BC) {
         List<Pipeline_Snapshot__c> yesterdaySnapshots = [SELECT Id, Month_Date__c FROM Pipeline_Snapshot__c WHERE CreatedDate = YESTERDAY LIMIT 1];
+        if (yesterdaySnapshots.size() > 0) {
+            this.wasData = true;
+        }
         if (yesterdaySnapshots.size() > 0 || this.currentDate != null) {
             this.currentDate = this.currentDate != null ? this.currentDate : yesterdaySnapshots.get(0).Month_Date__c;
             Date firstDate = this.currentDate.toStartOfMonth();
@@ -42,5 +45,8 @@ public class BatchCalculateEVDiff implements Database.Batchable<Pipeline_Snapsho
     }
 
     public void finish(Database.BatchableContext BC) {
+        if (this.wasData) {
+            NetEVDifferenceTriggerGateway.processPriorMonthSnapshotsWithClosedStatusHistory(this.currentDate);
+        }
     }
 }
