@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <customSettingsType>Hierarchy</customSettingsType>
+    <enableFeeds>false</enableFeeds>
+    <fields>
+        <fullName>EV_Expected_Buffer_Target__c</fullName>
+        <externalId>false</externalId>
+        <label>EV Expected Buffer Target</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>EV_Target__c</fullName>
+        <externalId>false</externalId>
+        <label>EV Target</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>Emails__c</fullName>
+        <externalId>false</externalId>
+        <label>Emails</label>
+        <length>255</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Fiscal_Year_Start__c</fullName>
+        <externalId>false</externalId>
+        <label>Fiscal Year Start</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>Fiscal_year_End__c</fullName>
+        <externalId>false</externalId>
+        <label>Fiscal year End</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>GS_Graphs_number_of_months__c</fullName>
+        <externalId>false</externalId>
+        <label>GS Graphs number of months</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>ICDS_Number_of_months__c</fullName>
+        <externalId>false</externalId>
+        <label>ICDS Number of months</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Opp_Won_Target__c</fullName>
+        <externalId>false</externalId>
+        <label>Opp Won Target</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>Performance_graphs_number_of_months__c</fullName>
+        <externalId>false</externalId>
+        <label>Performance graphs number of months</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Scale_graphs_number_of_months__c</fullName>
+        <externalId>false</externalId>
+        <label>Scale graphs number of months</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <label>Corporate Dashboard Settings</label>
+    <visibility>Protected</visibility>
+</CustomObject>

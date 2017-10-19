@@ -1,0 +1,300 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <actionOverrides>
+        <actionName>Accept</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>CancelEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Clone</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Delete</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Edit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>List</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>New</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>SaveEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Tab</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>View</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <allowInChatterGroups>false</allowInChatterGroups>
+    <compactLayoutAssignment>SYSTEM</compactLayoutAssignment>
+    <deploymentStatus>Deployed</deploymentStatus>
+    <enableActivities>false</enableActivities>
+    <enableBulkApi>true</enableBulkApi>
+    <enableFeeds>false</enableFeeds>
+    <enableHistory>false</enableHistory>
+    <enableReports>false</enableReports>
+    <enableSearch>true</enableSearch>
+    <enableSharing>true</enableSharing>
+    <enableStreamingApi>true</enableStreamingApi>
+    <fields>
+        <fullName>DLAC_GS_Customer_Sat__c</fullName>
+        <externalId>false</externalId>
+        <label>GS Quality DLAC (Customer Sat)</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackTrending>false</trackTrending>
+        <type>Percent</type>
+    </fields>
+    <fields>
+        <fullName>DLAC_GS_Overall_Status__c</fullName>
+        <externalId>false</externalId>
+        <label>GS Quality DLAC (Overall Status)</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackTrending>false</trackTrending>
+        <type>Percent</type>
+    </fields>
+    <fields>
+        <fullName>DLAC_GS_Revenue__c</fullName>
+        <externalId>false</externalId>
+        <label>GS Revenue DLAC</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>DSA_GS_Customer_Sat__c</fullName>
+        <externalId>false</externalId>
+        <label>GS Quality DSA (Customer Sat)</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackTrending>false</trackTrending>
+        <type>Percent</type>
+    </fields>
+    <fields>
+        <fullName>DSA_GS_Overall_Status__c</fullName>
+        <externalId>false</externalId>
+        <label>GS Quality DSA (Overall Status)</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackTrending>false</trackTrending>
+        <type>Percent</type>
+    </fields>
+    <fields>
+        <fullName>DSA_GS_Revenue__c</fullName>
+        <externalId>false</externalId>
+        <label>GS Revenue DSA</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>DSI_GS_Customer_Sat__c</fullName>
+        <externalId>false</externalId>
+        <label>GS Quality DSI (Customer Sat)</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackTrending>false</trackTrending>
+        <type>Percent</type>
+    </fields>
+    <fields>
+        <fullName>DSI_GS_Overall_Status__c</fullName>
+        <externalId>false</externalId>
+        <label>GS Quality DSI (Overall Status)</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackTrending>false</trackTrending>
+        <type>Percent</type>
+    </fields>
+    <fields>
+        <fullName>DSI_GS_Revenue__c</fullName>
+        <externalId>false</externalId>
+        <label>GS Revenue DSI</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>DTZ_GS_Customer_Sat__c</fullName>
+        <externalId>false</externalId>
+        <label>GS Quality DTZ (Customer Sat)</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackTrending>false</trackTrending>
+        <type>Percent</type>
+    </fields>
+    <fields>
+        <fullName>DTZ_GS_Overall_Status__c</fullName>
+        <externalId>false</externalId>
+        <label>GS Quality DTZ (Overall Status)</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackTrending>false</trackTrending>
+        <type>Percent</type>
+    </fields>
+    <fields>
+        <fullName>DTZ_GS_Revenue__c</fullName>
+        <externalId>false</externalId>
+        <label>GS Revenue DTZ</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>DWA_GS_Customer_Sat__c</fullName>
+        <externalId>false</externalId>
+        <label>GS Quality DWA (Customer Sat)</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackTrending>false</trackTrending>
+        <type>Percent</type>
+    </fields>
+    <fields>
+        <fullName>DWA_GS_Overall_Status__c</fullName>
+        <externalId>false</externalId>
+        <label>GS Quality DWA (Overall Status)</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackTrending>false</trackTrending>
+        <type>Percent</type>
+    </fields>
+    <fields>
+        <fullName>DWA_GS_Revenue__c</fullName>
+        <externalId>false</externalId>
+        <label>GS Revenue DWA</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>GS_Quality_Total_Customer_Satisfaction__c</fullName>
+        <externalId>false</externalId>
+        <label>GS Quality Total (Customer Satisfaction)</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackTrending>false</trackTrending>
+        <type>Percent</type>
+    </fields>
+    <fields>
+        <fullName>GS_Quality_Total_Overall_Status__c</fullName>
+        <externalId>false</externalId>
+        <label>GS Quality Total (Overall Status)</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackTrending>false</trackTrending>
+        <type>Percent</type>
+    </fields>
+    <fields>
+        <fullName>Inc_GS_Customer_Sat__c</fullName>
+        <externalId>false</externalId>
+        <label>GS Quality Inc (Customer Sat)</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackTrending>false</trackTrending>
+        <type>Percent</type>
+    </fields>
+    <fields>
+        <fullName>Inc_GS_Overall_Status__c</fullName>
+        <externalId>false</externalId>
+        <label>GS Quality Inc (Overall Status)</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackTrending>false</trackTrending>
+        <type>Percent</type>
+    </fields>
+    <fields>
+        <fullName>Inc_GS_Revenue__c</fullName>
+        <externalId>false</externalId>
+        <label>GS Revenue Inc</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>Myanmar_GS_Customer_Sat__c</fullName>
+        <externalId>false</externalId>
+        <label>GS Quality Myanmar (Customer Sat)</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackTrending>false</trackTrending>
+        <type>Percent</type>
+    </fields>
+    <fields>
+        <fullName>Myanmar_GS_Overall_Status__c</fullName>
+        <externalId>false</externalId>
+        <label>GS Quality Myanmar (Overall Status)</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackTrending>false</trackTrending>
+        <type>Percent</type>
+    </fields>
+    <fields>
+        <fullName>Myanmar_GS_Revenue__c</fullName>
+        <externalId>false</externalId>
+        <label>GS Revenue Myanmar</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>PRO_Cycle_Date__c</fullName>
+        <externalId>false</externalId>
+        <label>PRO Cycle Date</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Date</type>
+    </fields>
+    <label>Contract Statistic</label>
+    <nameField>
+        <label>Contract Statistic Name</label>
+        <type>Text</type>
+    </nameField>
+    <pluralLabel>Contracts Statistic</pluralLabel>
+    <searchLayouts/>
+    <sharingModel>ReadWrite</sharingModel>
+</CustomObject>
