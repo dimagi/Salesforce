@@ -15,7 +15,7 @@ public class AggregateExecutionEfficiencySnpJob {
         Decimal totalSumServices = 0;
         Decimal totalSumEff = 0;
 
-        Aggregate_Execution_Efficiency_Snapshot__c snapshot = new Aggregate_Execution_Efficiency_Snapshot__c(Date__c = Date.today(), DLAC__c = 0, DSA__c = 0, DSI__c = 0,
+        Aggregate_Execution_Efficiency_Snapshot__c snapshot = new Aggregate_Execution_Efficiency_Snapshot__c(Date__c = Date.today().addDays(-1), DLAC__c = 0, DSA__c = 0, DSI__c = 0,
                                                                                 DWA__c = 0, INC__c = 0, Total_Aggregate_Execution_Efficiency__c = 0);
         SObject sObjSnapshot = (SObject) snapshot;
 
