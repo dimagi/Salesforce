@@ -637,6 +637,9 @@
                         <li id="corporateDashboardTabLi">
                             <a href="#corporateDashboard" >Global Metrics</a>
                         </li>
+                        <li id="employeeRedFormLi">
+                            <a href="#employeeRedForm" >Employee Red Form</a>
+                        </li>
                     </ul>
                 </apex:outputPanel>
                 <apex:outputPanel rendered="{!disableTab}">
@@ -649,6 +652,9 @@
                         </li>
                         <li id="projectTabLi">
                             <a href="#projectTab">All Projects</a>
+                        </li>
+                        <li id="employeeRedFormLi">
+                            <a href="#employeeRedForm" >Employee Red Form</a>
                         </li>
                     </ul>
                 </apex:outputPanel>
@@ -1284,6 +1290,11 @@
                         </apex:pageBlockSection>
                     </apex:pageBlock>
                 </section></apex:outputPanel>
+                <section id="employeeRedForm" >
+                    <div>
+                        <c:RedFormComponent employeeEmailComp="mpalmer@test.com" />
+                    </div>
+                </section>
             </div>
             </apex:outputPanel>
             <apex:pageBlock title="Project Report Out" rendered="{!NOT(isAuthenticated)}">

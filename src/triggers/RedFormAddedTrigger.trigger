@@ -10,7 +10,9 @@ trigger RedFormAddedTrigger on Record_of_Emergency_Data_Form__c (after insert) {
                                             Emergency_Email__c, Emergency_Contact_Relationship__c, Emergency_Contact_next_of_kin__c,
                                             Local_Emerg_Cont_Country_of_Residence__c, Local_Emergency_Contact_next_of_kin__c,
                                             LOCAL_EMERGENCY_CONTACT__c, Local_Emergency_Contact_Relationship__c, Local_Emergency_Contact_Phone__c,
-                                            Local_Emergency_Contact_Email__c, Red_Form_Filled_Date__c
+                                            Local_Emergency_Contact_Email__c, Red_Form_Filled_Date__c, Height__c, Eye_Colour__c, Blood_Group__c,
+                                            Religion_Impact__c, Distinguishing_Features__c, Medical_Conditions_Allergies__c,
+                                            Regular_Medication__c, Medical_Permission__c, Additional_Comments__c
                                             FROM SFDC_Employee__c WHERE Id =: newRedForm.Employee__c];
 
         if (employees.size() > 0) {
@@ -68,10 +70,6 @@ trigger RedFormAddedTrigger on Record_of_Emergency_Data_Form__c (after insert) {
                 redFormsToDel.add(newRedForm);
             }
         }
-    }
-
-    if (redFormsToDel.size() > 0) {
-        delete redFormsToDel;
     }
 
     if (employeesToUpdate.size() > 0) {
