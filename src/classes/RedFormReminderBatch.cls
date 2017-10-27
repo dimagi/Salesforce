@@ -38,7 +38,7 @@ public without sharing class RedFormReminderBatch implements Database.Batchable<
                 if (employee.Hire_Date__c == Date.today()) {
                     emailsToSend.add(buildEmailMessage(employee.Name, getFirstEmailTemplate(employee.Name, null)));
                 } else {
-                    if (daysDiff == 7) {
+                    if (Math.mod(daysDiff, 7) == 0 && daysDiff > 1) {
                         emailsToSend.add(buildEmailMessage(employee.Name, getOpsReminderEmailTemplate(employee.Name, null)));
                     }
                     if (Math.mod(daysDiff, 2) == 0 && daysDiff > 1) {
@@ -47,11 +47,10 @@ public without sharing class RedFormReminderBatch implements Database.Batchable<
                 }
             }
         }
-        // choose method for creeate email and ready
     }
 
     public void finish(Database.BatchableContext context) {
-        if (emailsToSend.size() > 0) {
+        if (!Test.isRunningTest() && emailsToSend.size() > 0) {
             Messaging.sendEmail(emailsToSend);
         }
     }

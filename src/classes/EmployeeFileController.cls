@@ -4,19 +4,8 @@
 public class EmployeeFileController {
 
     public String employeeEmail {get; set;}
-    public Record_of_Emergency_Data_Form__c redForm {
-        get {
-            if (this.redForm == null) {
-                this.redForm = new Record_of_Emergency_Data_Form__c();
-                if (this.employeeEmail != null) {
-                    copyEmployeeData();
-                }
-            }
-            return this.redForm;
-        }
-        set;
-    }
 
+    private Record_of_Emergency_Data_Form__c redForm;
     private Id employeeId;
     private SFDC_Employee__c userEmployeeObj;
 
@@ -27,16 +16,12 @@ public class EmployeeFileController {
         this.employeeEmail = employeeEmail;
     }
 
-    public void loadRedForm() {
-
-    }
-
     public void saveREDForm() {
         if (this.userEmployeeObj != null && this.employeeEmail != null) {
             redForm.Employee__c = userEmployeeObj.Id;
             redForm.Filled_Date__c = Date.today();
             insert this.redForm;
-            delete this.redForm;
+            delete this.redForm; // we must delete it here, we cannot delete this record in Trigger
             this.redForm.Id = null; // we want each time add a new record, Trigger is working only after instert
             ApexPages.addMessage(new ApexPages.message(ApexPages.severity.CONFIRM, 'Your Record of Emergency Data Form was added.'));
         } else {
@@ -105,5 +90,19 @@ public class EmployeeFileController {
         } else {
             ApexPages.addMessage(new ApexPages.message(ApexPages.severity.ERROR, 'Cannot Find Employee.'));
         }
+    }
+
+    public Record_of_Emergency_Data_Form__c getRedForm() {
+        if (this.redForm == null) {
+            this.redForm = new Record_of_Emergency_Data_Form__c();
+            if (this.employeeEmail != null) {
+                copyEmployeeData();
+            }
+        }
+        return this.redForm;
+    }
+
+    public void setRedForm(Record_of_Emergency_Data_Form__c redForm) {
+        this.redForm = redForm;
     }
 }
