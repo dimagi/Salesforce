@@ -3,6 +3,8 @@
  */
 public class BatchCalculateEVDiffSch implements Schedulable {
 
+    public BatchCalculateEVDiffSch() {}
+
     public void execute(SchedulableContext sc) {
         Database.executeBatch(new BatchCalculateEVDiff());
     }

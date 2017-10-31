@@ -225,7 +225,7 @@ public without sharing class SalaryHistoryHelper {
                 break;
             }
 
-            result.add(new SalaryHistoryRecord(calculatePerHourSalary(currentSalary, currentSettings.getSettings()), toAdd));
+            result.add(new SalaryHistoryRecord(calculatePerHourSalary(currentSalary, currentSettings.getSettings(), employee.Working_Days__c), toAdd));
 
             if (salaryIndex  >= salary.size() && settingsIndex  >= this.dailyRateSettings.size()) {
                 break;
@@ -240,8 +240,12 @@ public without sharing class SalaryHistoryHelper {
         return Decimal.valueOf(result).setScale(2);
     }
 
-    public static Decimal calculatePerHourSalary(Decimal sal, Loaded_Daily_Rate_Settings__c settings) {
-        Double result = ((sal / settings.Working_Days__c) * (1 + settings.Fringe__c / 100.0)
+    public static Decimal calculatePerHourSalary(Decimal sal, Loaded_Daily_Rate_Settings__c settings, Decimal workingDays) {
+        Decimal calcWorkingDays = settings.Working_Days__c;
+        if (workingDays != null) {
+            calcWorkingDays = workingDays;
+        }
+        Double result = ((sal / calcWorkingDays) * (1 + settings.Fringe__c / 100.0)
                             * (1 + settings.Overhead__c / 100.0) * (1 + settings.Fee__c / 100.0)
                             * (1 + settings.G_A__c / 100.0)) / 8.0;
         return Decimal.valueOf(result).setScale(2);
