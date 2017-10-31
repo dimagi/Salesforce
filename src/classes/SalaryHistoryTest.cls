@@ -119,23 +119,23 @@ public class SalaryHistoryTest {
                                                                                    Working_Days__c = 260, Fringe__c = 30,
                                                                                    Overhead__c = 52, Fee__c = 10, G_A__c = 10);
 
-        System.assertEquals(SalaryHistoryHelper.calculatePerHourSalary(SalaryHistoryHelper.calculateSalary(20000, 2), settings),
+        System.assertEquals(SalaryHistoryHelper.calculatePerHourSalary(SalaryHistoryHelper.calculateSalary(20000, 2), settings, null),
                             historyList.get(0).getValue());
         System.assertEquals(Date.newInstance(1900, 1, 1), historyList.get(0).getValueDate());
 
-        System.assertEquals(SalaryHistoryHelper.calculatePerHourSalary(SalaryHistoryHelper.calculateSalary(40000, 2), settings),
+        System.assertEquals(SalaryHistoryHelper.calculatePerHourSalary(SalaryHistoryHelper.calculateSalary(40000, 2), settings, null),
                             historyList.get(1).getValue());
         System.assertEquals(Date.newInstance(2011, 1, 1), historyList.get(1).getValueDate());
 
-        System.assertEquals(SalaryHistoryHelper.calculatePerHourSalary(SalaryHistoryHelper.calculateSalary(40000, 3), settings),
+        System.assertEquals(SalaryHistoryHelper.calculatePerHourSalary(SalaryHistoryHelper.calculateSalary(40000, 3), settings, null),
                             historyList.get(2).getValue());
         System.assertEquals(Date.newInstance(2011, 2, 14), historyList.get(2).getValueDate());
 
-        System.assertEquals(SalaryHistoryHelper.calculatePerHourSalary(SalaryHistoryHelper.calculateSalary(60000, 3), settings),
+        System.assertEquals(SalaryHistoryHelper.calculatePerHourSalary(SalaryHistoryHelper.calculateSalary(60000, 3), settings, null),
                             historyList.get(3).getValue());
         System.assertEquals(Date.newInstance(2011, 11, 1), historyList.get(3).getValueDate());
 
-        System.assertEquals(SalaryHistoryHelper.calculatePerHourSalary(SalaryHistoryHelper.calculateSalary(60000, 2), settings),
+        System.assertEquals(SalaryHistoryHelper.calculatePerHourSalary(SalaryHistoryHelper.calculateSalary(60000, 2), settings, null),
                             historyList.get(4).getValue());
         System.assertEquals(Date.newInstance(2012, 1, 1), historyList.get(4).getValueDate());
 
@@ -157,7 +157,7 @@ public class SalaryHistoryTest {
         List<SalaryHistoryRecord> historyList = salaryHelper.mergeSalaryHistory(employee);
 
         System.assertEquals(1, historyList.size());
-        System.assertEquals(SalaryHistoryHelper.calculatePerHourSalary(SalaryHistoryHelper.calculateSalary(45000, 2), settings),
+        System.assertEquals(SalaryHistoryHelper.calculatePerHourSalary(SalaryHistoryHelper.calculateSalary(45000, 2), settings, null),
                             historyList.get(0).getValue());
         System.assertEquals(Date.newInstance(1900, 1, 1), historyList.get(0).getValueDate());
 
@@ -179,11 +179,11 @@ public class SalaryHistoryTest {
         List<SalaryHistoryRecord> historyList = salaryHelper.mergeSalaryHistory(employee);
 
         System.assertEquals(2, historyList.size());
-        System.assertEquals(SalaryHistoryHelper.calculatePerHourSalary(SalaryHistoryHelper.calculateSalary(200000, 4), settings),
+        System.assertEquals(SalaryHistoryHelper.calculatePerHourSalary(SalaryHistoryHelper.calculateSalary(200000, 4), settings, null),
                             historyList.get(0).getValue());
         System.assertEquals(Date.newInstance(1900, 1, 1), historyList.get(0).getValueDate());
 
-        System.assertEquals(SalaryHistoryHelper.calculatePerHourSalary(SalaryHistoryHelper.calculateSalary(200000, 2), settings),
+        System.assertEquals(SalaryHistoryHelper.calculatePerHourSalary(SalaryHistoryHelper.calculateSalary(200000, 2), settings, null),
                             historyList.get(1).getValue());
         System.assertEquals(Date.newInstance(2013, 6, 1), historyList.get(1).getValueDate());
 
@@ -195,12 +195,12 @@ public class SalaryHistoryTest {
         Loaded_Daily_Rate_Settings__c settings = new Loaded_Daily_Rate_Settings__c(Settings_Effective_Date__c = Date.newInstance(1900, 1, 1),
                                                                                    Working_Days__c = 260, Fringe__c = 30,
                                                                                    Overhead__c = 52, Fee__c = 10, G_A__c = 10);
-        System.assertEquals(11.50, SalaryHistoryHelper.calculatePerHourSalary(SalaryHistoryHelper.calculateSalary(20000, 2), settings));
-        System.assertEquals(22.99, SalaryHistoryHelper.calculatePerHourSalary(SalaryHistoryHelper.calculateSalary(40000, 2), settings));
-        System.assertEquals(15.33, SalaryHistoryHelper.calculatePerHourSalary(SalaryHistoryHelper.calculateSalary(40000, 3), settings));
-        System.assertEquals(34.48, SalaryHistoryHelper.calculatePerHourSalary(SalaryHistoryHelper.calculateSalary(60000, 2), settings));
-        System.assertEquals(22.25, SalaryHistoryHelper.calculatePerHourSalary(SalaryHistoryHelper.calculateSalary(60000, 3.1), settings));
-        System.assertEquals(71.96, SalaryHistoryHelper.calculatePerHourSalary(SalaryHistoryHelper.calculateSalary(457000, 7.3), settings));
+        System.assertEquals(11.50, SalaryHistoryHelper.calculatePerHourSalary(SalaryHistoryHelper.calculateSalary(20000, 2), settings, null));
+        System.assertEquals(22.99, SalaryHistoryHelper.calculatePerHourSalary(SalaryHistoryHelper.calculateSalary(40000, 2), settings, null));
+        System.assertEquals(15.33, SalaryHistoryHelper.calculatePerHourSalary(SalaryHistoryHelper.calculateSalary(40000, 3), settings, null));
+        System.assertEquals(34.48, SalaryHistoryHelper.calculatePerHourSalary(SalaryHistoryHelper.calculateSalary(60000, 2), settings, null));
+        System.assertEquals(22.25, SalaryHistoryHelper.calculatePerHourSalary(SalaryHistoryHelper.calculateSalary(60000, 3.1), settings, null));
+        System.assertEquals(71.96, SalaryHistoryHelper.calculatePerHourSalary(SalaryHistoryHelper.calculateSalary(457000, 7.3), settings, null));
 
         Test.stopTest();
     }
@@ -556,15 +556,15 @@ public class SalaryHistoryTest {
         List<SalaryHistoryRecord> empHistory = helper.mergeSalaryHistory(employee_1);
         System.debug(empHistory);
         System.assertEquals(5, empHistory.size());
-        System.assertEquals(SalaryHistoryHelper.calculatePerHourSalary(5700.83, settings_1), empHistory.get(0).getValue());
+        System.assertEquals(SalaryHistoryHelper.calculatePerHourSalary(5700.83, settings_1, null), empHistory.get(0).getValue());
         System.assertEquals(Date.newInstance(1900, 1, 1), empHistory.get(0).getValueDate());
-        System.assertEquals(SalaryHistoryHelper.calculatePerHourSalary(5700.83, settings_3), empHistory.get(1).getValue());
+        System.assertEquals(SalaryHistoryHelper.calculatePerHourSalary(5700.83, settings_3, null), empHistory.get(1).getValue());
         System.assertEquals(Date.newInstance(2014, 1, 1), empHistory.get(1).getValueDate());
-        System.assertEquals(SalaryHistoryHelper.calculatePerHourSalary(11300.39, settings_3), empHistory.get(2).getValue());
+        System.assertEquals(SalaryHistoryHelper.calculatePerHourSalary(11300.39, settings_3, null), empHistory.get(2).getValue());
         System.assertEquals(Date.newInstance(2015, 11, 12), empHistory.get(2).getValueDate());
-        System.assertEquals(SalaryHistoryHelper.calculatePerHourSalary(11300.39, settings_2), empHistory.get(3).getValue());
+        System.assertEquals(SalaryHistoryHelper.calculatePerHourSalary(11300.39, settings_2, null), empHistory.get(3).getValue());
         System.assertEquals(Date.newInstance(2016, 1, 1), empHistory.get(3).getValueDate());
-        System.assertEquals(SalaryHistoryHelper.calculatePerHourSalary(101854.98, settings_2), empHistory.get(4).getValue());
+        System.assertEquals(SalaryHistoryHelper.calculatePerHourSalary(101854.98, settings_2, null), empHistory.get(4).getValue());
         System.assertEquals(Date.newInstance(2016, 2, 24), empHistory.get(4).getValueDate());
     }
 }

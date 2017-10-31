@@ -44,7 +44,8 @@ public without sharing class BatchRecalculateTimeCardCost implements Database.Ba
 
             if (tc.Employee__c != this.lastEmployee) {
                 this.lastEmployee = tc.Employee__c;
-                this.employeeSalaryHistory = this.salaryHistoryHelper.mergeSalaryHistory([SELECT Name, Salary__c, Effective_Salary_Date__c, Exchange_Rate__c, Effective_Exchange_Rate_Date__c FROM SFDC_Employee__c WHERE Id =: tc.Employee__c]);
+                this.employeeSalaryHistory = this.salaryHistoryHelper.mergeSalaryHistory([SELECT Name, Salary__c, Effective_Salary_Date__c, Exchange_Rate__c, Effective_Exchange_Rate_Date__c,
+                                                                                            Working_Days__c FROM SFDC_Employee__c WHERE Id =: tc.Employee__c]);
                 System.debug('New employee : ' + tc.Employee__c);
                 lastToSalaryDate = this.employeeSalaryHistory.size() > 1 ? this.employeeSalaryHistory.get(1).getValueDate() : Date.today().addYears(1);
                 lastSalary = this.employeeSalaryHistory.get(0).getValue();
