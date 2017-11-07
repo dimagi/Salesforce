@@ -967,29 +967,4 @@ public class FTETrackerController {
         Integer rand = Math.round(Math.random()*1000);
         return Math.mod(rand, upperLimit);
     }
-
-    public void removeAllTags() {
-        List<Time_Card__c> tagsTC = [SELECT Id, FTE_Contract__c, FTE_hours__c, FTE_only__c FROM Time_Card__c
-                                     WHERE (FTE_Contract__c != null AND FTE_Contract__c != '') OR FTE_hours__c > 0];
-        List<Time_Card__c> toUpdate = new List<Time_Card__c>();
-        List<Time_Card__c> toRemove = new List<Time_Card__c>();
-
-        for (Time_Card__c tc : tagsTC) {
-            if (tc.FTE_only__c == true) {
-                toRemove.add(tc);
-            } else {
-                tc.FTE_hours__c = 0;
-                tc.FTE_Contract__c = null;
-                toUpdate.add(tc);
-            }
-        }
-
-        if (toRemove.size() > 0) {
-            delete toRemove;
-        }
-        if (toUpdate.size() > 0) {
-            update toUpdate;
-        }
-        loadEmployeeTimeHistory();
-    }
 }

@@ -4,28 +4,28 @@
 public without sharing class FTEGenerateEmployeesWorkCardBatch implements Database.Batchable<SFDC_Employee__c>, Database.Stateful {
 
     private Integer calculationYear;
-    private Id contractId;
+    private Set<Id> contractsId;
 
     public FTEGenerateEmployeesWorkCardBatch(Integer year) {
         this.calculationYear = year;
     }
 
-    public FTEGenerateEmployeesWorkCardBatch(Id contractId, Integer year) {
-        this.contractId = contractId;
+    public FTEGenerateEmployeesWorkCardBatch(Set<Id> contractsId, Integer year) {
+        this.contractsId = contractsId;
         this.calculationYear = year;
     }
 
     public List<SFDC_Employee__c> start(Database.BatchableContext BC) {
         try {
-            List<FTE_Work_Card__c> oldCards = [SELECT Id FROM FTE_Work_Card__c WHERE Employee__r.Employee_Status__c != 'Active'];
-            if (oldCards.size() > 0) {
-                delete oldCards;
-            }
-            if (this.contractId == null) {
+            if (this.contractsId == null) {
+                List<FTE_Work_Card__c> oldCards = [SELECT Id FROM FTE_Work_Card__c WHERE Employee__r.Employee_Status__c != 'Active'];
+                if (oldCards.size() > 0) {
+                    delete oldCards;
+                }
                 return [SELECT Id, Name FROM SFDC_Employee__c WHERE Employee_Status__c = 'Active' ORDER BY Name];
             }
             List<Time_Card__c> contractTimeCards = [SELECT Id, Employee__c FROM Time_Card__c WHERE
-                                                        Client__c =: this.contractId AND CALENDAR_YEAR(Date__c) =: this.calculationYear];
+                                                        Client__c IN: this.contractsId AND CALENDAR_YEAR(Date__c) =: this.calculationYear];
             Set<Id> employees = new Set<Id>();
             for (Time_Card__c tc : contractTimeCards) {
                 if (!employees.contains(tc.Employee__c)) {

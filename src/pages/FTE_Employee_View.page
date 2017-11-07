@@ -138,8 +138,6 @@
                 <apex:commandButton onclick="return showDialog();" value="Export Time Cards" id="tcButton" />
                 <apex:commandButton action="{!goToEmployeeListViewFromEmployeeView}" value="Employee List" id="backEButton" />
                 <apex:commandButton action="{!goToProjectListViewFromEmployeeView}" value="Project List" id="backPButton" />
-                <apex:commandButton action="{!removeAllTags}" status="loadingDiv" value="Reset Data" id="resetButton" reRender="employeeHours"/>
-
             </apex:outputPanel>
         </apex:form>
     </apex:pageBlock>
