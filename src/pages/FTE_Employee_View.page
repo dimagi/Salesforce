@@ -1,0 +1,144 @@
+<apex:page controller="FTETrackerController" docType="html-5.0" action="{!loadEmployeeTimeHistory}">
+    <style type="text/css">
+        .fteCell {
+            cursor: pointer;
+        }
+        .fteCell:hover {
+            background: #1797C0 !important;
+        }
+        .fteProjectCell {
+            cursor: pointer;
+        }
+        .fteProjectCell:hover {
+            background: #1797C0 !important;
+        }
+        .overbilled {
+            color: red !important;
+        }
+        .topTotal {
+            border-top-width: 3px !important;
+            border-top-color: black !important;
+        }
+        .totalNames {
+            border-top-width: 3px !important;
+        }
+        .employeeTable {
+            margin-top: 10px;
+            margin-bottom: 10px;
+        }
+        #chooseMonthButton {
+            height: 22px;
+            width: auto;
+            padding-right:5px;
+            padding-left:5px;
+            margin-top: 10px;
+        }
+    </style>
+
+    <apex:includeScript value="{!URLFOR($Resource.ProjectReportOut2, 'js/jquery.min.js')}"/>
+    <apex:includeScript value="{!URLFOR($Resource.ProjectReportOut2, 'js/jquery-ui.min.js')}"/>
+    <apex:stylesheet value="{!URLFOR($Resource.ProjectReportOut2, 'css/jquery-ui.min.css')}" />
+
+    <script type="text/javascript">
+        $j = jQuery.noConflict();
+        $j(document).ready(function() {
+            $j("#tcExport").dialog({ autoOpen: false, modal: true, closeOnEscape: true, width: 220, height: 120 });
+        });
+
+        function showDialog(){
+            $j("#tcExport").dialog('open');
+            $j('#tcExport').dialog('option' , 'title' , 'Generate Time Cards');
+            return false;
+        }
+
+        function setExportMonth() {
+            var monthNum = $j('#monthList').val();
+            setExportMonthData(monthNum);
+        }
+    </script>
+
+    <apex:pageBlock title="FTE Employee">
+        <apex:form >
+            <apex:outputPanel >
+                <apex:actionstatus id="loadingDiv">
+                    <apex:facet name="start">
+                        <div class="waitingSearchDiv" id="el_loading" style="background-color: #fbfbfb; height:100%;opacity:0.65;width:100%;">
+                            <div class="waitingHolder" style="left : 50%; top : 50%; position: fixed; width: 91px;">
+                                <img class="waitingImage" src="{!$Resource.BrokenCircle}" title="Please Wait..." />
+                            </div>
+                        </div>
+                    </apex:facet>
+                </apex:actionstatus>
+                <apex:outputText id="employeeName" value="{!employee.Name}"/>
+                <apex:pageBlockTable id="employeeHours" value="{!contractsTime}" var="empTime" styleClass="employeeTable">
+                    <apex:column onclick="if ('{!empTime.name}' !== 'Unassigned' && '{!empTime.name}' !== 'Total Days Worked' && '{!empTime.name}' !== 'Total Assigned Days') {setProjectIndViewData('{!empTime.objId}');}"
+                                 headerValue="Contract Name" value="{!empTime.name}" styleClass="{!empTime.nameCss}"/>
+                    <apex:column onclick="if ('{!empTime.name}' !== 'Total Days Worked' && '{!empTime.name}' !== 'Total Assigned Days') {setAssignViewData(0, '{!empTime.objId}');}"
+                                 headerValue="Jan {!currentYear}" value="{!empTime.daysArray[0]}" styleClass="{!empTime.cssStyle[0]}"/>
+                    <apex:column onclick="if ('{!empTime.name}' !== 'Total Days Worked' && '{!empTime.name}' !== 'Total Assigned Days') {setAssignViewData(1, '{!empTime.objId}');}"
+                                 headerValue="Feb {!currentYear}" value="{!empTime.daysArray[1]}" styleClass="{!empTime.cssStyle[1]}"/>
+                    <apex:column onclick="if ('{!empTime.name}' !== 'Total Days Worked' && '{!empTime.name}' !== 'Total Assigned Days') {setAssignViewData(2, '{!empTime.objId}');}"
+                                 headerValue="Mar {!currentYear}" value="{!empTime.daysArray[2]}" styleClass="{!empTime.cssStyle[2]}"/>
+                    <apex:column onclick="if ('{!empTime.name}' !== 'Total Days Worked' && '{!empTime.name}' !== 'Total Assigned Days') {setAssignViewData(3, '{!empTime.objId}');}"
+                                 headerValue="Apr {!currentYear}" value="{!empTime.daysArray[3]}" styleClass="{!empTime.cssStyle[3]}"/>
+                    <apex:column onclick="if ('{!empTime.name}' !== 'Total Days Worked' && '{!empTime.name}' !== 'Total Assigned Days') {setAssignViewData(4, '{!empTime.objId}');}"
+                                 headerValue="May {!currentYear}" value="{!empTime.daysArray[4]}" styleClass="{!empTime.cssStyle[4]}"/>
+                    <apex:column onclick="if ('{!empTime.name}' !== 'Total Days Worked' && '{!empTime.name}' !== 'Total Assigned Days') {setAssignViewData(5, '{!empTime.objId}');}"
+                                 headerValue="Jun {!currentYear}" value="{!empTime.daysArray[5]}" styleClass="{!empTime.cssStyle[5]}"/>
+                    <apex:column onclick="if ('{!empTime.name}' !== 'Total Days Worked' && '{!empTime.name}' !== 'Total Assigned Days') {setAssignViewData(6, '{!empTime.objId}');}"
+                                 headerValue="Jul {!currentYear}" value="{!empTime.daysArray[6]}" styleClass="{!empTime.cssStyle[6]}"/>
+                    <apex:column onclick="if ('{!empTime.name}' !== 'Total Days Worked' && '{!empTime.name}' !== 'Total Assigned Days') {setAssignViewData(7, '{!empTime.objId}');}"
+                                 headerValue="Aug {!currentYear}" value="{!empTime.daysArray[7]}" styleClass="{!empTime.cssStyle[7]}"/>
+                    <apex:column onclick="if ('{!empTime.name}' !== 'Total Days Worked' && '{!empTime.name}' !== 'Total Assigned Days') {setAssignViewData(8, '{!empTime.objId}');}"
+                                 headerValue="Sep {!currentYear}" value="{!empTime.daysArray[8]}" styleClass="{!empTime.cssStyle[8]}"/>
+                    <apex:column onclick="if ('{!empTime.name}' !== 'Total Days Worked' && '{!empTime.name}' !== 'Total Assigned Days') {setAssignViewData(9, '{!empTime.objId}');}"
+                                 headerValue="Ocb {!currentYear}" value="{!empTime.daysArray[9]}" styleClass="{!empTime.cssStyle[9]}"/>
+                    <apex:column onclick="if ('{!empTime.name}' !== 'Total Days Worked' && '{!empTime.name}' !== 'Total Assigned Days') {setAssignViewData(10, '{!empTime.objId}');}"
+                                 headerValue="Nov {!currentYear}" value="{!empTime.daysArray[10]}" styleClass="{!empTime.cssStyle[10]}"/>
+                    <apex:column onclick="if ('{!empTime.name}' !== 'Total Days Worked' && '{!empTime.name}' !== 'Total Assigned Days') {setAssignViewData(11, '{!empTime.objId}');}"
+                                 headerValue="Dec {!currentYear}" value="{!empTime.daysArray[11]}" styleClass="{!empTime.cssStyle[11]}"/>
+                    <apex:column headerValue="Total" value="{!empTime.daysArray[12]}" styleClass="{!empTime.cssStyle[12]}"/>
+                    <apex:column headerValue="Labor Cost Estimates" value="$ {!empTime.daysArray[13]}" styleClass="{!empTime.cssStyle[13]}"/>
+                </apex:pageBlockTable>
+                <apex:actionFunction action="{!goToAssignView}" name="goToAssignView" />
+                <apex:actionFunction action="{!setViewData}" name="setAssignViewData" oncomplete="goToAssignView();">
+                    <apex:param name="employeeMonth" assignTo="{!employeeMonth}" value=""/>
+                    <apex:param name="contractId" assignTo="{!contractId}" value=""/>
+                </apex:actionFunction>
+                <apex:actionFunction action="{!goToIndividualProjectFromEmplView}" name="goToIndividualProjectView" />
+                <apex:actionFunction action="{!setViewData}" name="setProjectIndViewData" oncomplete="goToIndividualProjectView();">
+                    <apex:param name="contractId" assignTo="{!contractId}" value=""/>
+                </apex:actionFunction>
+                <apex:actionFunction action="{!setViewData}" name="setExportMonthData" oncomplete="goToTimeCardView();">
+                    <apex:param name="exportMonth" assignTo="{!exportMonth}" value=""/>
+                </apex:actionFunction>
+                <apex:actionFunction action="{!goToTimeCardView}" name="goToTimeCardView" />
+                <div id="tcExport" >
+                    <div style="float:left">
+                        <label for="monthList">Select a month : </label>
+                        <select name="monthList" id="monthList">
+                            <option value="1" selected="selected">January</option>
+                            <option value="2">February</option>
+                            <option value="3">March</option>
+                            <option value="4">April</option>
+                            <option value="5">May</option>
+                            <option value="6">June</option>
+                            <option value="7">July</option>
+                            <option value="8">August</option>
+                            <option value="9">September</option>
+                            <option value="10">October</option>
+                            <option value="11">November</option>
+                            <option value="12">December</option>
+                        </select>
+                    </div>
+                    <button id="chooseMonthButton" class="ui-button ui-widget ui-corner-all" onclick="setExportMonth();" >
+                        Generate Time Cards
+                    </button>
+                </div>
+                <apex:commandButton onclick="return showDialog();" value="Export Time Cards" id="tcButton" />
+                <apex:commandButton action="{!goToEmployeeListViewFromEmployeeView}" value="Employee List" id="backEButton" />
+                <apex:commandButton action="{!goToProjectListViewFromEmployeeView}" value="Project List" id="backPButton" />
+            </apex:outputPanel>
+        </apex:form>
+    </apex:pageBlock>
+</apex:page>

@@ -1,0 +1,75 @@
+<apex:page controller="FTETrackerController" docType="html-5.0" action="{!loadIndividualProject}">
+    <style type="text/css">
+        .fteCell {
+            cursor: pointer;
+        }
+        .fteCell:hover {
+            background: #1797C0 !important;
+        }
+        .fteProjectCell {
+            cursor: pointer;
+        }
+        .fteProjectCell:hover {
+            background: #1797C0 !important;
+        }
+        .topTotal {
+            border-top-width: 3px !important;
+            border-top-color: black !important;
+        }
+        .employeeTable {
+            margin-top: 10px;
+            margin-bottom: 10px;
+        }
+    </style>
+
+    <apex:includeScript value="{!URLFOR($Resource.ProjectReportOut2, 'js/jquery.min.js')}"/>
+    <apex:includeScript value="{!URLFOR($Resource.ProjectReportOut2, 'js/jquery-ui.min.js')}"/>
+    <apex:stylesheet value="{!URLFOR($Resource.ProjectReportOut2, 'css/jquery-ui.min.css')}" />
+
+    <script type="text/javascript">
+        $j = jQuery.noConflict();
+    </script>
+
+    <apex:pageBlock title="FTE Individual Project List">
+        <apex:form >
+            <apex:outputPanel id="projectList">
+                <apex:actionstatus id="loadingDiv">
+                    <apex:facet name="start">
+                        <div class="waitingSearchDiv" id="el_loading" style="background-color: #fbfbfb; height:100%;opacity:0.65;width:100%;">
+                            <div class="waitingHolder" style="left : 50%; top : 50%; position: fixed; width: 91px;">
+                                <img class="waitingImage" src="{!$Resource.BrokenCircle}" title="Please Wait..." />
+                            </div>
+                        </div>
+                    </apex:facet>
+                </apex:actionstatus>
+
+                <apex:outputPanel layout="block" id="messages">
+                    <apex:pageMessages />
+                </apex:outputPanel>
+
+                <apex:outputText id="contractName" value="{!contractName}"/>
+                <apex:pageBlockTable id="employeeHours" value="{!individualContractDataList}" var="empTime" styleClass="employeeTable">
+                    <apex:column onclick="if ('{!empTime.name}' !== 'Total') {setEmployeeViewData('{!empTime.objId}');}"
+                                headerValue="Name" value="{!empTime.name}" styleClass="{!empTime.nameCss}"/>
+                    <apex:column headerValue="Current Month" value="{!empTime.daysArray[0]}" styleClass="{!empTime.cssStyle[12]}" />
+                    <apex:column headerValue="Last Month" value="{!empTime.daysArray[1]}" styleClass="{!empTime.cssStyle[12]}" />
+                    <apex:column headerValue="2 Months Ago" value="{!empTime.daysArray[2]}" styleClass="{!empTime.cssStyle[12]}" />
+                    <apex:column headerValue="3 Months Ago" value="{!empTime.daysArray[3]}" styleClass="{!empTime.cssStyle[12]}" />
+                    <apex:column headerValue="More Than 3 Ago" value="{!empTime.daysArray[4]}" styleClass="{!empTime.cssStyle[12]}" />
+                    <apex:column headerValue="Total Hours to Date" value="{!empTime.daysArray[12]}" styleClass="{!empTime.cssStyle[12]}" />
+                    <apex:column headerValue="Labor Cost Estimate (USD)" styleClass="{!empTime.cssStyle[13]}">
+                        <apex:outputText value="${0, number,###,###,###,###}">
+                            <apex:param value="{!empTime.daysArray[13]}" />
+                        </apex:outputText>
+                    </apex:column>
+                </apex:pageBlockTable>
+
+                <apex:actionFunction action="{!setViewData}" name="setEmployeeViewData" oncomplete="goToEmployeeViewFromProjectView();">
+                    <apex:param name="employeeId" assignTo="{!employeeId}" value=""/>
+                </apex:actionFunction>
+                <apex:actionFunction action="{!goToEmployeeViewFromProjectView}" name="goToEmployeeViewFromProjectView" />
+                <apex:commandButton action="{!goToProjectListViewFromProjectView}" value="Project List" id="backButton" />
+            </apex:outputPanel>
+        </apex:form>
+    </apex:pageBlock>
+</apex:page>
