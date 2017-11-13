@@ -9,8 +9,10 @@ public class FTETrackerController {
     public Id contractId { get; set;}
     public Id employeeId { get; set;}
     public String contractName { get; set;}
+    public JobWrapper workCardJobStatus {get; set;}
 
     public FTETrackerController () {
+        this.workCardJobStatus = new JobWrapper(false);
         this.currentYear = FTE_Tracker_Settings__c.getOrgDefaults().FTE_Year__c != null ? FTE_Tracker_Settings__c.getOrgDefaults().FTE_Year__c.intValue() : Date.today().year();
         this.yearBegin = Date.newInstance(this.currentYear, 1, 1);
         this.yearEnd = Date.newInstance(this.currentYear, 12, 31);
@@ -61,6 +63,22 @@ public class FTETrackerController {
             Decimal totalDays = (hours / 8.0).intValue();
             Decimal restValue = hours - (totalDays * 8);
             return totalDays + (0.25 * (restValue / 2.0).setScale(0, System.RoundingMode.HALF_UP));
+        }
+    }
+
+    public void loadWorkCardJobStatus() { // We want block FTE Tracker until all Work Cards will be generated from time cards
+        ApexClass batchClass = [SELECT Id FROM ApexClass WHERE Name='FTEGenerateEmployeesWorkCardBatch' LIMIT 1];
+        AsyncApexJob[] batchClassJobList = [SELECT Id, JobItemsProcessed, TotalJobItems, createdDate FROM AsyncApexJob WHERE ApexClassID = :batchClass.Id
+                                            AND Status IN ('Holding', 'Queued', 'Preparing', 'Processing') ORDER BY createdDate DESC LIMIT 1];
+
+        if(batchClassJobList != null && batchClassJobList.size() > 0) {
+            workCardJobStatus.batchIsRunning = true;
+            workCardJobStatus.batchClassJob = batchClassJobList[0];
+            workCardJobStatus.batchSubmittedDate = batchClassJobList[0].createdDate.format();
+            workCardJobStatus.jobItemsProcessed = batchClassJobList[0].JobItemsProcessed;
+            workCardJobStatus.totalJobItems = batchClassJobList[0].TotalJobItems;
+        } else {
+            workCardJobStatus.batchIsRunning = false;
         }
     }
 
