@@ -6,8 +6,10 @@ public without sharing class CorporateDashboardController {
     public Boolean refreshing { get; set;}
     public List<LineChartData> performanceData { get; set;}
     public List<LineChartData> upTimeData { get; set;}
+    public String randomParam {get; set;}
 
     public CorporateDashboardController() {
+        this.randomParam = '' + DateTime.now().getTime();
         this.refreshing = false;
     }
 
