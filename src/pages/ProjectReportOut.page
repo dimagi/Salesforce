@@ -68,6 +68,10 @@
             .nvd3.nv-pie .nv-pie-title {
                 fill: black !important;
             }
+            #tabs .ui-tabs-nav .ui-icon {
+                display: inline-block;
+                vertical-align: text-bottom;
+            }
 
         </style>
 
@@ -626,19 +630,19 @@
                 <apex:outputPanel rendered="{!!disableTab}">
                     <ul>
                         <li id="reportTabLi">
-                            <a href="#reportTab" >Report Out</a>
+                            <a href="#reportTab" ><span class="ui-icon ui-icon-blank"></span>Report Out<span class="ui-icon ui-icon-blank"></span></a>
                         </li>
                         <li id="financialTabLi">
-                            <a href="#financialTab" >Project Financial Data</a>
+                            <a href="#financialTab" ><span class="ui-icon ui-icon-blank"></span>Project Financial Data<span class="ui-icon ui-icon-blank"></span></a>
                         </li>
                         <li id="projectTabLi">
-                            <a href="#projectTab">All Projects</a>
+                            <a href="#projectTab"><span class="ui-icon ui-icon-blank"></span>All Projects<span class="ui-icon ui-icon-blank"></span></a>
                         </li>
                         <li id="corporateDashboardTabLi">
-                            <a href="#corporateDashboard" >Global Metrics</a>
+                            <a href="#corporateDashboard" ><span class="ui-icon ui-icon-blank"></span>Global Metrics<span class="ui-icon ui-icon-blank"></span></a>
                         </li>
                         <li id="employeeRedFormLi">
-                            <a href="#employeeRedForm" >Employee Red Form</a>
+                            <a href="#employeeRedForm" ><span class="ui-icon ui-icon-blank"></span>Employee Red Form<span class="ui-icon ui-icon-blank"></span></a>
                         </li>
                     </ul>
                 </apex:outputPanel>
@@ -654,7 +658,7 @@
                             <a href="#projectTab">All Projects</a>
                         </li>
                         <li id="employeeRedFormLi">
-                            <a href="#employeeRedForm" >Employee Red Form</a>
+                            <a href="#employeeRedForm" ><span class="ui-icon ui-icon-flag"></span>Employee Red Form</a>
                         </li>
                     </ul>
                 </apex:outputPanel>
