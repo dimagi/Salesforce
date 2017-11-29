@@ -613,9 +613,8 @@
 
     <body>
 
-        <apex:form >
             <apex:outputPanel rendered="{!isAuthenticated}">
-            <apex:inputHidden id="projectId" value="{!projectId}"/>
+
             <apex:actionstatus id="loadingDiv">
                 <apex:facet name="start">
                     <div class="waitingSearchDiv" id="el_loading" style="background-color: #fbfbfb; height:100%;opacity:0.65;width:100%;">
@@ -625,7 +624,7 @@
                     </div>
                 </apex:facet>
             </apex:actionstatus>
-            <apex:actionFunction action="{!loadScaleData}" name="loadScaleDataJs" status="loadingDiv" oncomplete="addGraphs()" reRender="corporateDashboardBlock"/>
+
             <div id="tabs" >
                 <apex:outputPanel rendered="{!!disableTab}">
                     <ul>
@@ -664,6 +663,7 @@
                 </apex:outputPanel>
 
                 <section id="reportTab">
+                <apex:form >
                     <div>
                         <input type="text" style="width:0;opacity:0;height:0" />
                         <apex:pageBlock title="Project Report Out" id="reportOutTabId">
@@ -827,9 +827,11 @@
                             </apex:pageBlockSection>
                         </apex:pageBlock>
                     </div>
+                </apex:form>
                 </section>
 
                 <section id="financialTab">
+                <apex:form >
                     <div>
                         <apex:pageBlock title="Projects" id="financialTabBlock">
                             <apex:outputPanel layout="block" id="messages">
@@ -1000,8 +1002,11 @@
                             </apex:pageBlockSection>
                         </apex:pageBlock>
                     </div>
+                    </apex:form>
                 </section>
                 <section id="projectTab" >
+                <apex:form >
+                    <apex:inputHidden id="projectId" value="{!projectId}"/>
                     <div>
                         <apex:pageBlock title="All Projects" id="projectTabBlock">
                             <apex:pageBlockButtons >
@@ -1121,189 +1126,199 @@
                             </apex:pageBlockSection>
                         </apex:pageBlock>
                     </div>
+                    </apex:form>
                 </section>
 
-                <apex:outputPanel rendered="{!!disableTab}"><section id="corporateDashboard" rendered="{!if(currentLoginEmail == 'ltse@dimagi.com', true, false)}" >
-                    <apex:pageBlock title="Global Metrics" id="corporateDashboardBlock">
-                        <apex:inputHidden id="userGraphDataId" value="{!userGraphData}" />
-                        <apex:inputHidden id="formGraphDataId" value="{!formGraphData}" />
-                        <apex:inputHidden id="wamGraphDataId" value="{!wamGraphData}" />
-                        <apex:inputHidden id="programGraphDataId" value="{!programGraphData}" />
-                        <apex:inputHidden id="performanceGraphDataId" value="{!performanceGraphData}" />
-                        <apex:inputHidden id="gsGraphDataId" value="{!gsGraphData}" />
-                        <apex:inputHidden id="bufferEvGenId" value="{!bufferEvGen}" />
-                        <apex:inputHidden id="mrrDataId" value="{!mrrData}" />
-                        <apex:inputHidden id="evExpectedId" value="{!evExpected}" />
-                        <apex:inputHidden id="oppExpecteId" value="{!oppExpected}" />
-                        <apex:inputHidden id="aggregateEffId" value="{!AggregateEffData}" />
-                        <apex:inputHidden id="icdsDataId" value="{!icdsData}" />
-                        <apex:inputHidden id="serverUpTimeId" value="{!serverUpTime}" />
-                        <apex:inputHidden id="headCountDataId" value="{!headCountData}" />
+                <apex:outputPanel rendered="{!!disableTab}">
+                    <section id="corporateDashboard" rendered="{!if(currentLoginEmail == 'ltse@dimagi.com', true, false)}" >
+                        <apex:form >
+                            <apex:actionFunction action="{!loadScaleData}" name="loadScaleDataJs" status="loadingDiv" oncomplete="addGraphs()" reRender="corporateDashboardBlock"/>
+                            <apex:pageBlock title="Global Metrics" id="corporateDashboardBlock">
+                            <apex:inputHidden id="userGraphDataId" value="{!userGraphData}" />
+                            <apex:inputHidden id="formGraphDataId" value="{!formGraphData}" />
+                            <apex:inputHidden id="wamGraphDataId" value="{!wamGraphData}" />
+                            <apex:inputHidden id="programGraphDataId" value="{!programGraphData}" />
+                            <apex:inputHidden id="performanceGraphDataId" value="{!performanceGraphData}" />
+                            <apex:inputHidden id="gsGraphDataId" value="{!gsGraphData}" />
+                            <apex:inputHidden id="bufferEvGenId" value="{!bufferEvGen}" />
+                            <apex:inputHidden id="mrrDataId" value="{!mrrData}" />
+                            <apex:inputHidden id="evExpectedId" value="{!evExpected}" />
+                            <apex:inputHidden id="oppExpecteId" value="{!oppExpected}" />
+                            <apex:inputHidden id="aggregateEffId" value="{!AggregateEffData}" />
+                            <apex:inputHidden id="icdsDataId" value="{!icdsData}" />
+                            <apex:inputHidden id="serverUpTimeId" value="{!serverUpTime}" />
+                            <apex:inputHidden id="headCountDataId" value="{!headCountData}" />
 
-                        <a href="https://confluence.dimagi.com/display/internal/Global+Metrics" target="_blank"><h2>Graph definitions</h2></a><br /><br />
+                            <a href="https://confluence.dimagi.com/display/internal/Global+Metrics" target="_blank"><h2>Graph definitions</h2></a><br /><br />
 
-                       <apex:outputText value="Dashboard refreshed at : {!dashboardRefreshTime}" />
-                        <apex:pageBlockSection title="Scale" collapsible="false" columns="1" >
-                        <div class="chartsData">
-                            <div id="activeUsers" class="graph">
-                                <div class="graphTitle">
-                                    <h2>
-                                        <a href="https://dimagi.my.salesforce.com/00Ob00000048BiR" target="_blank">Active Users</a>
-                                    </h2>
-                                </div>
-                            </div>
-                            <div id="wams" class="graph">
-                                <div class="graphTitle">
-                                    <h2>
-                                        <a href="https://dimagi.my.salesforce.com/00Ob00000048BiR" target="_blank">WAMs</a>
-                                    </h2>
-                                </div>
-                            </div>
-                            <div id="forms" class="graph">
-                                <div class="graphTitle">
-                                    <h2>
-                                        <a href="https://dimagi.my.salesforce.com/00Ob00000048BiR" target="_blank">Forms</a>
-                                    </h2>
-                                </div>
-                            </div>
-                            <div id="programs" class="graph">
-                                <div class="graphTitle">
-                                    <h2>
-                                        <a href="https://dimagi.my.salesforce.com/00Ob00000048BiR" target="_blank">Active Project Spaces</a>
-                                    </h2>
-                                </div>
-                            </div>
-                        </div>
-                        </apex:pageBlockSection>
-                        <apex:pageBlockSection title="Scale (ICDS-CAS)" collapsible="false" columns="1" >
-                        <div class="chartsData">
-                            <div id="activeUsersICDS" class="graph">
-                                <div class="graphTitle">
-                                    <h2>
-                                        <a href="https://dimagi.my.salesforce.com/00Ob0000004eTF2" target="_blank">Active Users - ICDS</a>
-                                    </h2>
-                                </div>
-                            </div>
-                            <div id="wamsICDS" class="graph">
-                                <div class="graphTitle">
-                                    <h2>
-                                        <a href="https://dimagi.my.salesforce.com/00Ob0000004eTF2" target="_blank">WAMs - ICDS</a>
-                                    </h2>
-                                </div>
-                            </div>
-                            <div id="formsICDS" class="graph">
-                                <div class="graphTitle">
-                                    <h2>
-                                        <a href="https://dimagi.my.salesforce.com/00Ob0000004eTF2" target="_blank">Forms - ICDS</a>
-                                    </h2>
-                                </div>
-                            </div>
-                        </div>
-                        </apex:pageBlockSection>
-                        <apex:pageBlockSection title="Financial" collapsible="false" columns="1" >
-                            <div class="chartsData">
-                                <div id="netEV" class="gaugeGraph">
-                                    <div class="graphTitle">
-                                        <h2>
-                                            <a href="https://dimagi.my.salesforce.com/00Ob00000047qYz" target="_blank">YTD Change in Net EV - Target $9.9 million</a>
-                                        </h2>
+                            <apex:outputText value="Dashboard refreshed at : {!dashboardRefreshTime}" />
+                                <apex:pageBlockSection title="Scale" collapsible="false" columns="1" >
+                                    <div class="chartsData">
+                                        <div id="activeUsers" class="graph">
+                                            <div class="graphTitle">
+                                                <h2>
+                                                    <a href="https://dimagi.my.salesforce.com/00Ob00000048BiR" target="_blank">Active Users</a>
+                                                </h2>
+                                            </div>
+                                        </div>
+                                        <div id="wams" class="graph">
+                                            <div class="graphTitle">
+                                                <h2>
+                                                    <a href="https://dimagi.my.salesforce.com/00Ob00000048BiR" target="_blank">WAMs</a>
+                                                </h2>
+                                            </div>
+                                        </div>
+                                        <div id="forms" class="graph">
+                                            <div class="graphTitle">
+                                                <h2>
+                                                    <a href="https://dimagi.my.salesforce.com/00Ob00000048BiR" target="_blank">Forms</a>
+                                                </h2>
+                                            </div>
+                                        </div>
+                                        <div id="programs" class="graph">
+                                            <div class="graphTitle">
+                                                <h2>
+                                                    <a href="https://dimagi.my.salesforce.com/00Ob00000048BiR" target="_blank">Active Project Spaces</a>
+                                                </h2>
+                                            </div>
+                                        </div>
                                     </div>
-                                    <div id="netEVBottomValue" class="graphBottomTitle"><h2>Sum of DIFF-Expected Value Minus Expense (Millions)</h2></div>
-                                </div>
-                                <div id="bufferEV" class="gaugeGraph">
-                                    <div class="graphTitle">
-                                        <h2>
-                                            <a href="https://dimagi.my.salesforce.com/00Ob00000047qYz" target="_blank">YTD Buffer EV generated - Target $4.2 million</a>
-                                        </h2>
+                                    </apex:pageBlockSection>
+                                    <apex:pageBlockSection title="Scale (ICDS-CAS)" collapsible="false" columns="1" >
+                                    <div class="chartsData">
+                                        <div id="activeUsersICDS" class="graph">
+                                            <div class="graphTitle">
+                                                <h2>
+                                                    <a href="https://dimagi.my.salesforce.com/00Ob0000004eTF2" target="_blank">Active Users - ICDS</a>
+                                                </h2>
+                                            </div>
+                                        </div>
+                                        <div id="wamsICDS" class="graph">
+                                            <div class="graphTitle">
+                                                <h2>
+                                                    <a href="https://dimagi.my.salesforce.com/00Ob0000004eTF2" target="_blank">WAMs - ICDS</a>
+                                                </h2>
+                                            </div>
+                                        </div>
+                                        <div id="formsICDS" class="graph">
+                                            <div class="graphTitle">
+                                                <h2>
+                                                    <a href="https://dimagi.my.salesforce.com/00Ob0000004eTF2" target="_blank">Forms - ICDS</a>
+                                                </h2>
+                                            </div>
+                                        </div>
                                     </div>
-                                    <div id="bufferEVBottomValue" class="graphBottomTitle"><h2>Sum of DIFF-Expected Buffer (Millions)</h2></div>
-                                </div>
-                                <div id="oppWon" class="gaugeGraph">
-                                    <div class="graphTitle">
-                                        <h2>
-                                            <a href="https://dimagi.my.salesforce.com/00Ob00000048GVF" target="_blank">YTD Opportunities Won - Target $ 6.9 million</a>
-                                        </h2>
+                                </apex:pageBlockSection>
+                                <apex:pageBlockSection title="Financial" collapsible="false" columns="1" >
+                                    <div class="chartsData">
+                                        <div id="netEV" class="gaugeGraph">
+                                            <div class="graphTitle">
+                                                <h2>
+                                                    <a href="https://dimagi.my.salesforce.com/00Ob00000047qYz" target="_blank">YTD Change in Net EV - Target $9.9 million</a>
+                                                </h2>
+                                            </div>
+                                            <div id="netEVBottomValue" class="graphBottomTitle"><h2>Sum of DIFF-Expected Value Minus Expense (Millions)</h2></div>
+                                        </div>
+                                        <div id="bufferEV" class="gaugeGraph">
+                                            <div class="graphTitle">
+                                                <h2>
+                                                    <a href="https://dimagi.my.salesforce.com/00Ob00000047qYz" target="_blank">YTD Buffer EV generated - Target $4.2 million</a>
+                                                </h2>
+                                            </div>
+                                        <div id="bufferEVBottomValue" class="graphBottomTitle"><h2>Sum of DIFF-Expected Buffer (Millions)</h2></div>
+                                        </div>
+                                        <div id="oppWon" class="gaugeGraph">
+                                            <div class="graphTitle">
+                                                <h2>
+                                                    <a href="https://dimagi.my.salesforce.com/00Ob00000048GVF" target="_blank">YTD Opportunities Won - Target $ 6.9 million</a>
+                                                </h2>
+                                            </div>
+                                            <div id="oppWonBottomValue" class="graphBottomTitle"><h2>Sum of Expected Value Minus Expense Income (Millions)</h2></div>
+                                            </div>
+                                        <div id="mrr" class="graph">
+                                            <div class="graphTitle">
+                                                <h2>
+                                                    <a href="https://dimagi.my.salesforce.com/00Ob00000048Bib" target="_blank">Monthly Recurring Revenue</a>
+                                                </h2>
+                                            </div>
+                                        </div>
                                     </div>
-                                    <div id="oppWonBottomValue" class="graphBottomTitle"><h2>Sum of Expected Value Minus Expense Income (Millions)</h2></div>
-                                </div>
-                                <div id="mrr" class="graph">
-                                    <div class="graphTitle">
-                                        <h2>
-                                            <a href="https://dimagi.my.salesforce.com/00Ob00000048Bib" target="_blank">Monthly Recurring Revenue</a>
-                                        </h2>
+                                </apex:pageBlockSection>
+                                <apex:pageBlockSection title="Performance of Product" collapsible="false" columns="1" >
+                                    <div class="chartsData">
+                                        <div id="performance1" class="graph">
+                                            <div class="graphTitle">
+                                                <h2>
+                                                    <a href="https://dimagi.my.salesforce.com/00Ob00000047rxW" target="_blank">Average Page Load Time</a>
+                                                </h2>
+                                            </div>
+                                        </div>
+                                        <div id="performance2" class="graph">
+                                            <div class="graphTitle">
+                                                <h2>
+                                                    <a href="https://dimagi.my.salesforce.com/00Ob00000047rxW" target="_blank">Average Apdex (server response time)</a>
+                                                </h2>
+                                            </div>
+                                        </div>
+                                        <div id="serverUpTime" class="graph">
+                                            <div class="graphTitle">
+                                                <h2>
+                                                    <a href="https://dimagi.my.salesforce.com/00Ob0000004eXeG" target="_blank">Server Uptime</a>
+                                                </h2>
+                                            </div>
+                                        </div>
                                     </div>
-                                </div>
-                            </div>
-                        </apex:pageBlockSection>
-                        <apex:pageBlockSection title="Performance of Product" collapsible="false" columns="1" >
-                            <div class="chartsData">
-                                <div id="performance1" class="graph">
-                                    <div class="graphTitle">
-                                        <h2>
-                                            <a href="https://dimagi.my.salesforce.com/00Ob00000047rxW" target="_blank">Average Page Load Time</a>
-                                        </h2>
+                                </apex:pageBlockSection>
+                                <apex:pageBlockSection title="Global Services" collapsible="false" columns="1" >
+                                    <div class="chartsData">
+                                        <div id="aggregateExecution" class="graph">
+                                            <div class="graphTitle">
+                                                <h2>
+                                                    <a href="https://dimagi.my.salesforce.com/00Ob0000004Mfu8" target="_blank">Aggregate Execution Efficiency</a>
+                                                </h2>
+                                            </div>
+                                        </div>
+                                        <div id="quality" class="graph">
+                                            <div class="graphTitle">
+                                                <h2>
+                                                    <a href="https://dimagi.my.salesforce.com/00Ob000000481sq" target="_blank">GS Overall Project Status (% Green)</a>
+                                                </h2>
+                                            </div>
+                                        </div>
+                                        <div id="customers" class="graph">
+                                            <div class="graphTitle">
+                                                <h2>
+                                                    <a href="https://dimagi.my.salesforce.com/00Ob000000481sq" target="_blank">GS Partner Relationship  (% Green)</a>
+                                                </h2>
+                                            </div>
+                                        </div>
+                                        <div id="headcount" class="graph">
+                                            <div class="graphTitle">
+                                                <h2>
+                                                    <a href="https://dimagi.my.salesforce.com/00Ob00000047xrP" target="_blank">GS Hires</a>
+                                                </h2>
+                                            </div>
+                                        </div>
                                     </div>
-                                </div>
-                                <div id="performance2" class="graph">
-                                    <div class="graphTitle">
-                                        <h2>
-                                            <a href="https://dimagi.my.salesforce.com/00Ob00000047rxW" target="_blank">Average Apdex (server response time)</a>
-                                        </h2>
-                                    </div>
-                                </div>
-                                <div id="serverUpTime" class="graph">
-                                    <div class="graphTitle">
-                                        <h2>
-                                            <a href="https://dimagi.my.salesforce.com/00Ob0000004eXeG" target="_blank">Server Uptime</a>
-                                        </h2>
-                                    </div>
-                                </div>
-                            </div>
-                        </apex:pageBlockSection>
-                        <apex:pageBlockSection title="Global Services" collapsible="false" columns="1" >
-                            <div class="chartsData">
-                                <div id="aggregateExecution" class="graph">
-                                    <div class="graphTitle">
-                                        <h2>
-                                            <a href="https://dimagi.my.salesforce.com/00Ob0000004Mfu8" target="_blank">Aggregate Execution Efficiency</a>
-                                        </h2>
-                                    </div>
-                                </div>
-                                <div id="quality" class="graph">
-                                    <div class="graphTitle">
-                                        <h2>
-                                            <a href="https://dimagi.my.salesforce.com/00Ob000000481sq" target="_blank">GS Overall Project Status (% Green)</a>
-                                        </h2>
-                                    </div>
-                                </div>
-                                <div id="customers" class="graph">
-                                    <div class="graphTitle">
-                                        <h2>
-                                            <a href="https://dimagi.my.salesforce.com/00Ob000000481sq" target="_blank">GS Partner Relationship  (% Green)</a>
-                                        </h2>
-                                    </div>
-                                </div>
-                                <div id="headcount" class="graph">
-                                    <div class="graphTitle">
-                                        <h2>
-                                            <a href="https://dimagi.my.salesforce.com/00Ob00000047xrP" target="_blank">GS Hires</a>
-                                        </h2>
-                                    </div>
-                                </div>
-                            </div>
-                        </apex:pageBlockSection>
-                    </apex:pageBlock>
-                </section></apex:outputPanel>
+                                </apex:pageBlockSection>
+                            </apex:pageBlock>
+                        </apex:form>
+                    </section>
+                </apex:outputPanel>
                 <section id="employeeRedForm" >
-                    <div>
-                        <c:RedFormComponent employeeEmailComp="mpalmer@test.com" />
-                    </div>
+                    <apex:form >
+                        <div>
+                            <c:RedFormComponent employeeEmailComp="{!currentLoginEmail}" />
+                        </div>
+                    </apex:form>
                 </section>
-            </div>
+                </div>
             </apex:outputPanel>
             <apex:pageBlock title="Project Report Out" rendered="{!NOT(isAuthenticated)}">
-                <apex:commandButton action="{!authenticate}" value="Authenticate with Dimagi email" />
+                <apex:form >
+                    <apex:commandButton action="{!authenticate}" value="Authenticate with Dimagi email" />
+                </apex:form>
             </apex:pageBlock>
-        </apex:form>
+
     </body>
 </apex:page>

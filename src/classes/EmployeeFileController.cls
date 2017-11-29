@@ -87,8 +87,6 @@ public class EmployeeFileController {
             this.redForm.Regular_Medication__c = userEmployeeObj.Regular_Medication__c;
             this.redForm.Medical_Permission__c = userEmployeeObj.Medical_Permission__c;
             this.redForm.Additional_Comments__c = userEmployeeObj.Additional_Comments__c;
-        } else {
-            ApexPages.addMessage(new ApexPages.message(ApexPages.severity.ERROR, 'Cannot Find Employee.'));
         }
     }
 

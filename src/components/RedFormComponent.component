@@ -9,8 +9,8 @@
             </apex:pageBlockButtons>
             <apex:outputPanel layout="block" id="messages">
                 <apex:pageMessages />
-
             </apex:outputPanel>
+
             <apex:pageBlockSection title="Personal Details" columns="2">
                 <apex:inputField value="{!redForm.Employee_First_Name__c}"/>
                 <apex:inputField value="{!redForm.Employee_Last_Name__c}"/>
