@@ -23,12 +23,33 @@
         <unique>false</unique>
     </fields>
     <fields>
+        <fullName>FB_URL__c</fullName>
+        <externalId>false</externalId>
+        <label>FB URL</label>
+        <length>255</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
         <fullName>Last_Time_Sync_Ran__c</fullName>
         <externalId>false</externalId>
         <label>Last Time Sync Ran</label>
         <required>false</required>
         <trackTrending>false</trackTrending>
         <type>DateTime</type>
+    </fields>
+    <fields>
+        <fullName>Sync_Filter_Closed__c</fullName>
+        <externalId>false</externalId>
+        <label>Sync Filter Closed</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
     </fields>
     <fields>
         <fullName>Sync_Filter__c</fullName>

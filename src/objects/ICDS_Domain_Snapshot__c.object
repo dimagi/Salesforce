@@ -93,6 +93,15 @@
         <unique>false</unique>
     </fields>
     <label>ICDS Domain Snapshot</label>
+    <listViews>
+        <fullName>All</fullName>
+        <columns>NAME</columns>
+        <columns>OBJECT_ID</columns>
+        <columns>Date__c</columns>
+        <columns>Active_Users__c</columns>
+        <filterScope>Everything</filterScope>
+        <label>All</label>
+    </listViews>
     <nameField>
         <displayFormat>ICDS-Snapshot-{00000}</displayFormat>
         <label>ICDS Domain Snapshot Name</label>

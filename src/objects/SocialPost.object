@@ -21,10 +21,6 @@
         <type>Default</type>
     </actionOverrides>
     <actionOverrides>
-        <actionName>Follow</actionName>
-        <type>Default</type>
-    </actionOverrides>
-    <actionOverrides>
         <actionName>Ignore</actionName>
         <type>Default</type>
     </actionOverrides>
@@ -81,9 +77,6 @@
     </fields>
     <fields>
         <fullName>Classification</fullName>
-        <picklist>
-            <sorted>false</sorted>
-        </picklist>
         <type>Picklist</type>
     </fields>
     <fields>
@@ -98,9 +91,6 @@
     </fields>
     <fields>
         <fullName>EngagementLevel</fullName>
-        <picklist>
-            <sorted>false</sorted>
-        </picklist>
         <type>Picklist</type>
     </fields>
     <fields>
@@ -114,6 +104,10 @@
     </fields>
     <fields>
         <fullName>Headline</fullName>
+    </fields>
+    <fields>
+        <fullName>HiddenById</fullName>
+        <type>Lookup</type>
     </fields>
     <fields>
         <fullName>InboundLinkCount</fullName>
@@ -199,10 +193,13 @@
         <fullName>ResponseContextExternalId</fullName>
     </fields>
     <fields>
+        <fullName>ReviewScale</fullName>
+    </fields>
+    <fields>
+        <fullName>ReviewScore</fullName>
+    </fields>
+    <fields>
         <fullName>ReviewedStatus</fullName>
-        <picklist>
-            <sorted>false</sorted>
-        </picklist>
         <type>Picklist</type>
     </fields>
     <fields>
@@ -233,6 +230,9 @@
         <fullName>TopicType</fullName>
     </fields>
     <fields>
+        <fullName>TruncatedContent</fullName>
+    </fields>
+    <fields>
         <fullName>UniqueCommentors</fullName>
     </fields>
     <fields>
@@ -242,6 +242,19 @@
         <fullName>WhoId</fullName>
         <type>Lookup</type>
     </fields>
+    <listViews>
+        <fullName>AllSocialPosts</fullName>
+        <columns>Name</columns>
+        <columns>Content</columns>
+        <columns>Posted</columns>
+        <columns>Provider</columns>
+        <columns>Persona</columns>
+        <columns>Parent</columns>
+        <columns>MessageType</columns>
+        <columns>ReviewedStatus</columns>
+        <filterScope>Everything</filterScope>
+        <label>All social posts</label>
+    </listViews>
     <searchLayouts>
         <customTabListAdditionalFields>Persona</customTabListAdditionalFields>
         <customTabListAdditionalFields>Content</customTabListAdditionalFields>

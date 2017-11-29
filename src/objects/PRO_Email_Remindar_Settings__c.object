@@ -3,6 +3,16 @@
     <customSettingsType>List</customSettingsType>
     <enableFeeds>false</enableFeeds>
     <fields>
+        <fullName>Dev_Work_Emails__c</fullName>
+        <externalId>false</externalId>
+        <label>Dev Work Emails</label>
+        <length>255</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
         <fullName>Error_Email__c</fullName>
         <description>Holds the email addresses to shoot an email when any error occurs in batch job.</description>
         <externalId>false</externalId>

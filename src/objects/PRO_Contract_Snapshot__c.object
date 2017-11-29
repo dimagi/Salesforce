@@ -21,10 +21,6 @@
         <type>Default</type>
     </actionOverrides>
     <actionOverrides>
-        <actionName>Follow</actionName>
-        <type>Default</type>
-    </actionOverrides>
-    <actionOverrides>
         <actionName>List</actionName>
         <type>Default</type>
     </actionOverrides>
@@ -76,6 +72,18 @@
         <type>Percent</type>
     </fields>
     <fields>
+        <fullName>Buffer_at_GS_BD_Handover__c</fullName>
+        <externalId>false</externalId>
+        <formula>Contract__r.Buffer_at_GS_BD_Handover__c</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Buffer % at GS-BD Handover</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackTrending>false</trackTrending>
+        <type>Percent</type>
+    </fields>
+    <fields>
         <fullName>Contract__c</fullName>
         <deleteConstraint>SetNull</deleteConstraint>
         <externalId>false</externalId>
@@ -86,6 +94,16 @@
         <required>false</required>
         <trackTrending>false</trackTrending>
         <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>Customer_Satisfaction_of_services__c</fullName>
+        <externalId>false</externalId>
+        <label>Customer Satisfaction of services</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
     </fields>
     <fields>
         <fullName>Execution_Efficiency__c</fullName>
@@ -111,6 +129,140 @@
         <fullName>Expense_And_Travel_Spend__c</fullName>
         <externalId>false</externalId>
         <label>Expense &amp; Travel Spend</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>Expense_Travel_Spend_for_Period__c</fullName>
+        <externalId>false</externalId>
+        <label>Expense &amp; Travel Spend for Period</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>GS_Execution_Budget__c</fullName>
+        <externalId>false</externalId>
+        <label>GS Project Services Budget</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>GS_Net_Income_for_Period__c</fullName>
+        <externalId>false</externalId>
+        <label>GS Net Income for Period</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>GS_Net_Income_for_Period_by_Handover__c</fullName>
+        <externalId>false</externalId>
+        <label>GS Net Income for Period by Handover</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>GS_Net_Income_to_Date_Handover__c</fullName>
+        <externalId>false</externalId>
+        <label>GS Net Income to Date @ Handover</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>GS_Net_Income_to_Date__c</fullName>
+        <externalId>false</externalId>
+        <label>GS Net Income to Date</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>GS_Project_Services_Budget_Handoff_Cp__c</fullName>
+        <externalId>false</externalId>
+        <label>GS Project Services Budget @ Handoff Cp</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>GS_Project_Services_Budget_Handoff__c</fullName>
+        <externalId>false</externalId>
+        <formula>Contract__r.GS_Project_Services_Budget_Handoff__c</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>GS Project Services Budget @ Handoff</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>GS_Revenue__c</fullName>
+        <externalId>false</externalId>
+        <formula>GS_Project_Services_Budget_Handoff_Cp__c * Work_Completed_for_Period__c</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>GS Revenue</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>GS_Services_Completed_Handover__c</fullName>
+        <externalId>false</externalId>
+        <label>GS Services Completed @ Handover</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>GS_Services_Completed__c</fullName>
+        <externalId>false</externalId>
+        <label>GS Services Completed</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>GS_Services_Completed_for_Period__c</fullName>
+        <externalId>false</externalId>
+        <label>GS Services Completed for Period</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>GS_Services_Handover_Completed_for_Per__c</fullName>
+        <externalId>false</externalId>
+        <label>GS Services (Handover) Completed for Per</label>
         <precision>18</precision>
         <required>false</required>
         <scale>2</scale>
@@ -148,9 +300,20 @@
         <type>Percent</type>
     </fields>
     <fields>
-        <fullName>Product_Spend__c</fullName>
+        <fullName>Product_Spend2__c</fullName>
         <externalId>false</externalId>
         <label>Product Spend</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>Product_Spend__c</fullName>
+        <externalId>false</externalId>
+        <inlineHelpText>Do not use this field, use Product Spend.</inlineHelpText>
+        <label>Do Not Use: Product Spend</label>
         <precision>18</precision>
         <required>false</required>
         <scale>0</scale>
@@ -158,9 +321,39 @@
         <type>Percent</type>
     </fields>
     <fields>
+        <fullName>Product_Spend_for_Period__c</fullName>
+        <externalId>false</externalId>
+        <label>Product Spend for Period</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>Project_Quality_Overall_Status__c</fullName>
+        <externalId>false</externalId>
+        <label>Project Quality (Overall Status)</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
         <fullName>Services_Spend__c</fullName>
         <externalId>false</externalId>
         <label>Services Spend</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>Services_Spend_for_Period__c</fullName>
+        <externalId>false</externalId>
+        <label>Services Spend for Period</label>
         <precision>18</precision>
         <required>false</required>
         <scale>2</scale>
@@ -184,6 +377,26 @@
         <scale>2</scale>
         <trackTrending>false</trackTrending>
         <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>Total_Calculated_Costs_for_Period__c</fullName>
+        <externalId>false</externalId>
+        <label>Total Calculated Costs for Period</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>Work_Completed_for_Period__c</fullName>
+        <externalId>false</externalId>
+        <label>% of Work Completed for Period</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackTrending>false</trackTrending>
+        <type>Percent</type>
     </fields>
     <label>PRO Contract Snapshot</label>
     <listViews>

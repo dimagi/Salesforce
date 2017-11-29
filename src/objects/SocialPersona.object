@@ -35,6 +35,9 @@
         <fullName>AreWeFollowing</fullName>
     </fields>
     <fields>
+        <fullName>AuthorLabels</fullName>
+    </fields>
+    <fields>
         <fullName>Bio</fullName>
     </fields>
     <fields>
@@ -50,10 +53,16 @@
         <fullName>Following</fullName>
     </fields>
     <fields>
+        <fullName>InfluencerScore</fullName>
+    </fields>
+    <fields>
         <fullName>IsBlacklisted</fullName>
     </fields>
     <fields>
         <fullName>IsFollowingUs</fullName>
+    </fields>
+    <fields>
+        <fullName>IsVerified</fullName>
     </fields>
     <fields>
         <fullName>Klout</fullName>

@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
     <actionOverrides>
+        <actionName>AddCampaign</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
         <actionName>AddToCampaign</actionName>
         <type>Default</type>
     </actionOverrides>
@@ -62,6 +66,10 @@
     </actionOverrides>
     <actionOverrides>
         <actionName>SaveEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>SmsHighlightAction</actionName>
         <type>Default</type>
     </actionOverrides>
     <actionOverrides>
@@ -175,1061 +183,1201 @@
         <fullName>City__c</fullName>
         <externalId>false</externalId>
         <label>City (old)</label>
-        <picklist>
-            <picklistValues>
-                <fullName>Abidjan</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Abu Dhabi</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Abuja</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Accra</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Adamstown</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Addis Ababa</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Adorra la Vella</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Algiers</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Alofi</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Amman</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Amsterdam</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Ankara</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Antananarivo</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Antigua, Guatemala</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Apia</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Ashgabat</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Asmara</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Astana</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Asuncion</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Athens</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Atlanta</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Austin</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Avarua</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Baghdad</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Baku</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Baltimore</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Bamako</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Bandar Seri Begawan</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Bangkok</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Bangui</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Banjul</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Basseterre</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Beijing</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Beirut</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Belgrade</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Belmopan</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Berlin</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Bern</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Bishkek</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Bissau</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Bogota</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Boston</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Brasilia</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Bratislava</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Brazzaville</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Bridgetown</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Brussels</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Bucharest</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Budapest</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Buenos Aires</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Bujumbura</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Cairo</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Cali</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Canberra</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Cape Town</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Cap Hatien</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Caracas</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Castries</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Cayenne</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Charlotte Amalie</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Chicago</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Chisinau</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Coban</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Cockburn Town</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Colombo</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Conakry</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Copenhagen</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Cusco</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Dakar</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Dallas</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Damascus</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Dhaka</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Dili</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Djibouti</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Dodoma</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Doja</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Douglas</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Dublin</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Dushanbe</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>East Jerusalem</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Edinburgh of Seven Seas</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>El Aaiun</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Episkopi Cantonment</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Flying Fish Cove</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Freetown</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Funafuti</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Gaborone</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Georgetown</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>George Town</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Gibraltar</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Guatemala City</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Gustavia</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Hagatna</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Hamilton</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Hanga Roa</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Hanoi</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Harare</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Hargeisa</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Havana</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Helsinki</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Honiara</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Houston</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Islamabad</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Jakarta</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Jamestown</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Jerusalem</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Johannesburg</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Juba</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Kabul</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Kampala</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Kathmandu</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Khartoum</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Kiev</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Kigali</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>King Edward Point</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Kingston</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Kingstown</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Kinshasa</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Kuala Lumpur</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Kuwait City</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>La Paz</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Libreville</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Lilongwe</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Lima</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Lisbon</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Ljubljana</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Lome</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>London</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Los Angeles</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Luanda</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Lusaka</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Luxembourg</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Madrid</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Majuro</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Malabo</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Male</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Managua</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Manama</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Manila</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Maputo</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Marigot</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Maseru</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Mata-Utu</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Mbabane</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Medellin</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Mexico City</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Miamey</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Miami</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Minsk</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Mogadishu</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Monaco</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Monrovia</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Montevideo</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Montreal</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Moroni</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Moscow</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Muscat</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>N&apos;Djamena</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Nairobi</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Napyidaw</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Nassau</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Newark</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>New Delhi</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>New York</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Ngerulmud</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Nicosia</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Nouakchott</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Noumea</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Nuku&apos;alofa</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Nuuk</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Oranjestad</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Oslo</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Other</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Ottawa</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Ougadougou</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Pago Pago</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Palikir</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Panama City</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Papeete</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Paramarimbo</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Paris</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Philipsburg</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Phnom Penh</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Plymouth</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Poirt of Spain</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Port Louis</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Port Moresby</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Porto-Novo</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Port Vila</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Pourt-au-Prince</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Prague</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Praia</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Pretoria</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Pristina</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Pyongyang</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Quito</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Rabat</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Reykjavik</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Riga</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Riyadh</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Road Town</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Rome</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Roseau</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Saipan</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Sana&apos;a</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>San Francisco</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>San Jose</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>San Juan, Puerto Rico</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>San Salvador</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Santiago</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Santo Domingo</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Sao Tome</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Sarajevo</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Seattle</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Seol</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Singapore</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Skopje</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Sofia</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>St. George&apos;s</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>St. Helier</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>St. John&apos;s</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>St. Peter Port</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Stanley</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Stepanakert</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Stockholm</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Sucre</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Sukhumi</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Suva</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Taipei</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Tallinn</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Tarawa Atoll</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Tashkent</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Tbilisi</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Tegucigalpa</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Tehran</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>The Valley</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Thimphu</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Tirana</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Tiraspol</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Tokyo</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Toronto</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Tripoli</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Tunis</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Ulaanbaatar</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Vaduz</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Valletta</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Vatican City</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Victoria</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Victoria City, HK</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Vienna</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Vientiane</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Vilnius</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Warsaw</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Washington, DC</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Wellington</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>West Island</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Widhoek</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Willemstad</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Yaounde</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Yaren</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Yerevan</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Zagreb</fullName>
-                <default>false</default>
-            </picklistValues>
-            <sorted>false</sorted>
-        </picklist>
         <required>false</required>
         <trackFeedHistory>false</trackFeedHistory>
         <trackHistory>false</trackHistory>
         <type>Picklist</type>
+        <valueSet>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>Abidjan</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Abu Dhabi</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Abuja</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Accra</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Adamstown</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Addis Ababa</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Adorra la Vella</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Algiers</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Alofi</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Amman</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Amsterdam</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Ankara</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Antananarivo</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Antigua, Guatemala</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Apia</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Ashgabat</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Asmara</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Astana</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Asuncion</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Athens</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Atlanta</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Austin</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Avarua</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Baghdad</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Baku</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Baltimore</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Bamako</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Bandar Seri Begawan</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Bangkok</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Bangui</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Banjul</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Basseterre</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Beijing</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Beirut</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Belgrade</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Belmopan</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Berlin</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Bern</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Bishkek</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Bissau</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Bogota</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Boston</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Brasilia</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Bratislava</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Brazzaville</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Bridgetown</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Brussels</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Bucharest</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Budapest</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Buenos Aires</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Bujumbura</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Cairo</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Cali</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Canberra</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Cape Town</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Cap Hatien</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Caracas</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Castries</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Cayenne</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Charlotte Amalie</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Chicago</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Chisinau</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Coban</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Cockburn Town</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Colombo</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Conakry</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Copenhagen</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Cusco</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Dakar</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Dallas</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Damascus</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Dhaka</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Dili</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Djibouti</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Dodoma</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Doja</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Douglas</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Dublin</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Dushanbe</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>East Jerusalem</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Edinburgh of Seven Seas</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>El Aaiun</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Episkopi Cantonment</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Flying Fish Cove</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Freetown</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Funafuti</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Gaborone</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Georgetown</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>George Town</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Gibraltar</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Guatemala City</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Gustavia</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Hagatna</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Hamilton</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Hanga Roa</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Hanoi</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Harare</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Hargeisa</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Havana</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Helsinki</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Honiara</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Houston</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Islamabad</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Jakarta</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Jamestown</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Jerusalem</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Johannesburg</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Juba</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Kabul</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Kampala</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Kathmandu</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Khartoum</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Kiev</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Kigali</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>King Edward Point</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Kingston</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Kingstown</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Kinshasa</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Kuala Lumpur</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Kuwait City</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>La Paz</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Libreville</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Lilongwe</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Lima</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Lisbon</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Ljubljana</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Lome</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>London</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Los Angeles</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Luanda</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Lusaka</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Luxembourg</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Madrid</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Majuro</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Malabo</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Male</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Managua</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Manama</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Manila</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Maputo</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Marigot</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Maseru</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Mata-Utu</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Mbabane</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Medellin</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Mexico City</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Miamey</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Miami</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Minsk</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Mogadishu</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Monaco</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Monrovia</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Montevideo</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Montreal</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Moroni</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Moscow</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Muscat</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>N&apos;Djamena</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Nairobi</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Napyidaw</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Nassau</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Newark</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>New Delhi</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>New York</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Ngerulmud</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Nicosia</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Nouakchott</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Noumea</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Nuku&apos;alofa</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Nuuk</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Oranjestad</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Oslo</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Other</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Ottawa</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Ougadougou</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Pago Pago</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Palikir</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Panama City</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Papeete</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Paramarimbo</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Paris</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Philipsburg</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Phnom Penh</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Plymouth</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Poirt of Spain</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Port Louis</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Port Moresby</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Porto-Novo</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Port Vila</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Pourt-au-Prince</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Prague</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Praia</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Pretoria</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Pristina</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Pyongyang</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Quito</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Rabat</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Reykjavik</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Riga</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Riyadh</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Road Town</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Rome</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Roseau</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Saipan</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Sana&apos;a</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>San Francisco</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>San Jose</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>San Juan, Puerto Rico</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>San Salvador</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Santiago</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Santo Domingo</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Sao Tome</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Sarajevo</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Seattle</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Seol</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Singapore</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Skopje</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Sofia</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>St. George&apos;s</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>St. Helier</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>St. John&apos;s</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>St. Peter Port</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Stanley</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Stepanakert</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Stockholm</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Sucre</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Sukhumi</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Suva</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Taipei</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Tallinn</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Tarawa Atoll</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Tashkent</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Tbilisi</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Tegucigalpa</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Tehran</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>The Valley</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Thimphu</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Tirana</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Tiraspol</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Tokyo</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Toronto</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Tripoli</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Tunis</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Ulaanbaatar</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Vaduz</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Valletta</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Vatican City</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Victoria</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Victoria City, HK</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Vienna</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Vientiane</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Vilnius</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Warsaw</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Washington, DC</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Wellington</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>West Island</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Widhoek</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Willemstad</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Yaounde</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Yaren</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Yerevan</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Zagreb</fullName>
+                    <default>false</default>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+    <fields>
+        <fullName>CloudingoAgent__CES__c</fullName>
+        <defaultValue>0</defaultValue>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>Contact Email Status</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>CloudingoAgent__MAR__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>Mailing Address Record Type</label>
+        <length>1</length>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>CloudingoAgent__MAS__c</fullName>
+        <defaultValue>0</defaultValue>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>Mailing Address Status</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>CloudingoAgent__MAV__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>Mailing Address Vacancy</label>
+        <length>1</length>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>CloudingoAgent__MRDI__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>Mailing Residential Delivery Indicator</label>
+        <length>12</length>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>CloudingoAgent__MTZ__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>Mailing Timezone</label>
+        <length>48</length>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>CloudingoAgent__OAR__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>Other Address Record Type</label>
+        <length>1</length>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>CloudingoAgent__OAS__c</fullName>
+        <defaultValue>0</defaultValue>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>Other Address Status</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>CloudingoAgent__OAV__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>Other Address Vacancy</label>
+        <length>1</length>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>CloudingoAgent__ORDI__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>Other Residential Delivery Indicator</label>
+        <length>12</length>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>CloudingoAgent__OTZ__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>Other Timezone</label>
+        <length>48</length>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <type>Text</type>
+        <unique>false</unique>
     </fields>
     <fields>
         <fullName>Contact_Source_Reason__c</fullName>
@@ -1237,29 +1385,27 @@
         <externalId>false</externalId>
         <inlineHelpText>Choose the type of referral that best fits the contact.</inlineHelpText>
         <label>Contact Source Reason</label>
-        <picklist>
-            <controllingField>LeadSource</controllingField>
-            <picklistValues>
-                <fullName>Internal referral (within the same organization)</fullName>
-                <default>false</default>
-                <controllingFieldValues>Inbound - Referral</controllingFieldValues>
-            </picklistValues>
-            <picklistValues>
-                <fullName>External referral (to a different organization)</fullName>
-                <default>false</default>
-                <controllingFieldValues>Inbound - Referral</controllingFieldValues>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Dimagi referral (someone from Dimagi referred this lead)</fullName>
-                <default>false</default>
-                <controllingFieldValues>Inbound - Referral</controllingFieldValues>
-            </picklistValues>
-            <sorted>false</sorted>
-        </picklist>
         <required>false</required>
         <trackFeedHistory>false</trackFeedHistory>
         <trackHistory>true</trackHistory>
         <type>Picklist</type>
+        <valueSet>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>Internal referral (within the same organization)</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>External referral (to a different organization)</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Dimagi referral (someone from Dimagi referred this lead)</fullName>
+                    <default>false</default>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
     </fields>
     <fields>
         <fullName>Contact_Status_Reason__c</fullName>
@@ -1267,59 +1413,88 @@
         <externalId>false</externalId>
         <inlineHelpText>Choose a reason that helps clarify the contact status.</inlineHelpText>
         <label>Contact Status Reason</label>
-        <picklist>
-            <controllingField>Status__c</controllingField>
-            <picklistValues>
-                <fullName>Recruiting / Hiring</fullName>
-                <default>false</default>
-                <controllingFieldValues>7- Passive &amp; Friendly</controllingFieldValues>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Stopped responding</fullName>
-                <default>false</default>
-                <controllingFieldValues>7- Passive &amp; Friendly</controllingFieldValues>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Timeline &gt; 6 months out</fullName>
-                <default>false</default>
-                <controllingFieldValues>7- Passive &amp; Friendly</controllingFieldValues>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Existing client / project</fullName>
-                <default>false</default>
-                <controllingFieldValues>7- Passive &amp; Friendly</controllingFieldValues>
-            </picklistValues>
-            <picklistValues>
-                <fullName>No response</fullName>
-                <default>false</default>
-                <controllingFieldValues>8- Passive &amp; Unfriendly</controllingFieldValues>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Email opt-out</fullName>
-                <default>false</default>
-                <controllingFieldValues>8- Passive &amp; Unfriendly</controllingFieldValues>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Spam</fullName>
-                <default>false</default>
-                <controllingFieldValues>8- Passive &amp; Unfriendly</controllingFieldValues>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Competitor</fullName>
-                <default>false</default>
-                <controllingFieldValues>8- Passive &amp; Unfriendly</controllingFieldValues>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Partner program</fullName>
-                <default>false</default>
-                <controllingFieldValues>7- Passive &amp; Friendly</controllingFieldValues>
-            </picklistValues>
-            <sorted>false</sorted>
-        </picklist>
         <required>false</required>
         <trackFeedHistory>false</trackFeedHistory>
         <trackHistory>true</trackHistory>
         <type>Picklist</type>
+        <valueSet>
+            <controllingField>Status__c</controllingField>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>Recruiting / Hiring</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Stopped responding</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Timeline &gt; 6 months out</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Existing client / project</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>No response</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Email opt-out</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Spam</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Competitor</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Partner program</fullName>
+                    <default>false</default>
+                </value>
+            </valueSetDefinition>
+            <valueSettings>
+                <controllingFieldValue>7- Passive &amp; Friendly</controllingFieldValue>
+                <valueName>Recruiting / Hiring</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>7- Passive &amp; Friendly</controllingFieldValue>
+                <valueName>Stopped responding</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>7- Passive &amp; Friendly</controllingFieldValue>
+                <valueName>Timeline &gt; 6 months out</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>7- Passive &amp; Friendly</controllingFieldValue>
+                <valueName>Existing client / project</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>7- Passive &amp; Friendly</controllingFieldValue>
+                <valueName>Partner program</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>8- Passive &amp; Unfriendly</controllingFieldValue>
+                <valueName>No response</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>8- Passive &amp; Unfriendly</controllingFieldValue>
+                <valueName>Email opt-out</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>8- Passive &amp; Unfriendly</controllingFieldValue>
+                <valueName>Spam</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>8- Passive &amp; Unfriendly</controllingFieldValue>
+                <valueName>Competitor</valueName>
+            </valueSettings>
+        </valueSet>
     </fields>
     <fields>
         <fullName>Counter_Formula__c</fullName>
@@ -1376,6 +1551,66 @@
         <fullName>Department</fullName>
         <trackFeedHistory>false</trackFeedHistory>
         <trackHistory>false</trackHistory>
+    </fields>
+    <fields>
+        <fullName>Department_Bucket__c</fullName>
+        <description>Created by Gillian - ask if you have questions</description>
+        <externalId>false</externalId>
+        <label>Department Bucket</label>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <type>Picklist</type>
+        <valueSet>
+            <restricted>true</restricted>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>Academia</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Evaluation (M&amp;E / MEAL / MERL)</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>ICT / IT / Technical</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Logistics / Supply Chain</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Management</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Medical</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Operations / Biz Dev</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Procurement / Finance</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Programmatic / Projects</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Regional</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Research / Data</fullName>
+                    <default>false</default>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
     </fields>
     <fields>
         <fullName>Description</fullName>
@@ -1529,46 +1764,48 @@
         <externalId>false</externalId>
         <inlineHelpText>This is mapped to the Hubspot lifecycle stage and should automatically get updated by Hubspot. Note that you CANNOT rollback a stage to a previous stage.</inlineHelpText>
         <label>Hubspot - Lifecycle stage</label>
-        <picklist>
-            <picklistValues>
-                <fullName>Subscriber</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Lead</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Marketing Qualified Lead</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Sales Qualified Lead</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Opportunity</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Customer</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Evangelist</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Other</fullName>
-                <default>false</default>
-            </picklistValues>
-            <restrictedPicklist>true</restrictedPicklist>
-            <sorted>false</sorted>
-        </picklist>
         <required>false</required>
         <trackFeedHistory>false</trackFeedHistory>
         <trackHistory>false</trackHistory>
         <type>MultiselectPicklist</type>
+        <valueSet>
+            <restricted>true</restricted>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>Subscriber</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Lead</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Marketing Qualified Lead</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Sales Qualified Lead</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Opportunity</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Customer</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Evangelist</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Other</fullName>
+                    <default>false</default>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
         <visibleLines>4</visibleLines>
     </fields>
     <fields>
@@ -1642,50 +1879,54 @@
         <externalId>false</externalId>
         <inlineHelpText>Check this to have the contact included in the follow-up report after 3 months of no activity.</inlineHelpText>
         <label>Keep Warm</label>
-        <picklist>
-            <picklistValues>
-                <fullName>No</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Yes</fullName>
-                <default>false</default>
-            </picklistValues>
-            <sorted>false</sorted>
-        </picklist>
         <required>false</required>
         <trackFeedHistory>false</trackFeedHistory>
         <trackHistory>true</trackHistory>
         <type>Picklist</type>
+        <valueSet>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>No</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Yes</fullName>
+                    <default>false</default>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
     </fields>
     <fields>
         <fullName>Language__c</fullName>
         <externalId>false</externalId>
         <inlineHelpText>The primary language a person speaks.</inlineHelpText>
         <label>Language</label>
-        <picklist>
-            <picklistValues>
-                <fullName>English</fullName>
-                <default>true</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>French</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Portuguese</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Spanish</fullName>
-                <default>false</default>
-            </picklistValues>
-            <sorted>false</sorted>
-        </picklist>
         <required>false</required>
         <trackFeedHistory>false</trackFeedHistory>
         <trackHistory>false</trackHistory>
         <type>Picklist</type>
+        <valueSet>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>English</fullName>
+                    <default>true</default>
+                </value>
+                <value>
+                    <fullName>French</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Portuguese</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Spanish</fullName>
+                    <default>false</default>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
     </fields>
     <fields>
         <fullName>LastCURequestDate</fullName>
@@ -1694,105 +1935,78 @@
         <fullName>LastCUUpdateDate</fullName>
     </fields>
     <fields>
+        <fullName>Latest_day_opps_sales_process_failed__c</fullName>
+        <description>Automatically populated by Hubspot workflow. Latest day the opps did not follow the sales process (days without activity &gt; 10 days with opps still open)</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Automatically populated by Hubspot workflow. Latest day the opps did not follow the sales process (days without activity &gt; 10 days with opps still open)</inlineHelpText>
+        <label>Latest day opps sales process failed</label>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <type>Date</type>
+    </fields>
+    <fields>
         <fullName>LeadSource</fullName>
-        <picklist>
-            <picklistValues>
-                <fullName>Inbound - Contacted us directly</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Inbound - Referred within same Org</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Inbound - Referred by another Org</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Inbound - Referred by Dimagi staff</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Outbound - Conference</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Outbound - Membership or Coalition List</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Outbound - Networking Event</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Outbound - Personal Contact</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Outbound - Pulled from Forum</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Outbound - Pulled from Social Media</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Outbound - Pulled from Website</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Inbound - Emailed us directly DO NOT USE</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Inbound - Conference (came to us after)</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Inbound - Called us directly -DO NOT USE</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Inbound-Tried schedule call dir. DONT U</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Inbound - Contacted us on Social Media</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Inbound - Event Sign Up</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Inbound - HQ signup</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Inbound - Emailed info@ DO NOT USE</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Inbound - Referral</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Inbound - Webinar Sign Up</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Inbound- Workshop Sign Up</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Other</fullName>
-                <default>false</default>
-            </picklistValues>
-            <sorted>false</sorted>
-        </picklist>
         <trackFeedHistory>false</trackFeedHistory>
         <trackHistory>true</trackHistory>
         <type>Picklist</type>
+    </fields>
+    <fields>
+        <fullName>Lead_Source_Drilldown__c</fullName>
+        <description>Same as the field on the Lead</description>
+        <externalId>false</externalId>
+        <label>Lead Source Drilldown</label>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <type>Picklist</type>
+        <valueSet>
+            <controllingField>LeadSource</controllingField>
+            <restricted>true</restricted>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>Inbound - Found us through Google Search</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Inbound - Found us on Social Media</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Inbound - Learnt about us on another website</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Inbound - Learnt about us through an article</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Inbound - Contacted us after seeing us at a conference</fullName>
+                    <default>false</default>
+                </value>
+            </valueSetDefinition>
+            <valueSettings>
+                <controllingFieldValue>Inbound - Contacted us directly</controllingFieldValue>
+                <valueName>Inbound - Found us through Google Search</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>Inbound - Contacted us directly</controllingFieldValue>
+                <valueName>Inbound - Found us on Social Media</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>Inbound - Contacted us directly</controllingFieldValue>
+                <valueName>Inbound - Learnt about us on another website</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>Inbound - Contacted us directly</controllingFieldValue>
+                <valueName>Inbound - Learnt about us through an article</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>Inbound - Contacted us directly</controllingFieldValue>
+                <valueName>Inbound - Contacted us after seeing us at a conference</valueName>
+            </valueSettings>
+        </valueSet>
     </fields>
     <fields>
         <fullName>MailingAddress</fullName>
@@ -1874,55 +2088,69 @@
         <fullName>RFP_Cycle__c</fullName>
         <externalId>false</externalId>
         <label>RFP Cycle</label>
-        <picklist>
-            <picklistValues>
-                <fullName>Cycle 1</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Cycle 2</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Cycle 3</fullName>
-                <default>false</default>
-            </picklistValues>
-            <sorted>false</sorted>
-        </picklist>
         <required>false</required>
         <trackFeedHistory>false</trackFeedHistory>
         <trackHistory>true</trackHistory>
         <type>Picklist</type>
+        <valueSet>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>Cycle 1</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Cycle 2</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Cycle 3</fullName>
+                    <default>false</default>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
     </fields>
     <fields>
         <fullName>Relationship_Strength__c</fullName>
         <externalId>false</externalId>
         <label>Relationship Strength</label>
-        <picklist>
-            <picklistValues>
-                <fullName>Strong</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Medium</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Weak</fullName>
-                <default>false</default>
-            </picklistValues>
-            <sorted>false</sorted>
-        </picklist>
         <required>false</required>
         <trackFeedHistory>false</trackFeedHistory>
         <trackHistory>false</trackHistory>
         <type>Picklist</type>
+        <valueSet>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>Strong</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Medium</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Weak</fullName>
+                    <default>false</default>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
     </fields>
     <fields>
         <fullName>ReportsToId</fullName>
         <trackFeedHistory>false</trackFeedHistory>
         <trackHistory>false</trackHistory>
         <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>SFSSDupeCatcher__Override_DupeCatcher__c</fullName>
+        <defaultValue>false</defaultValue>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>Contact Override DupeCatcher</label>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <type>Checkbox</type>
     </fields>
     <fields>
         <fullName>Skype__c</fullName>
@@ -1940,273 +2168,277 @@
         <description>US State Abbreviations (plus DC and Puerto Rico)</description>
         <externalId>false</externalId>
         <label>State</label>
-        <picklist>
-            <picklistValues>
-                <fullName>AK</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>AL</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>AR</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>AZ</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>CA</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>CO</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>CT</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>DC</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>DE</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>FL</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>GA</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>HI</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>IA</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>ID</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>IL</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>IN</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>KS</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>KY</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>LA</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>MA</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>MD</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>ME</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>MI</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>MN</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>MO</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>MS</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>MT</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>NC</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>ND</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>NE</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>NH</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>NJ</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>NM</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>NV</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>NY</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>OH</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>OK</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>OR</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>PA</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>PR</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>RI</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>SC</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>SD</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>TN</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>TX</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>UT</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>VA</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>VT</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>WA</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>WI</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>WV</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>WY</fullName>
-                <default>false</default>
-            </picklistValues>
-            <sorted>false</sorted>
-        </picklist>
         <required>false</required>
         <trackFeedHistory>false</trackFeedHistory>
         <trackHistory>false</trackHistory>
         <type>Picklist</type>
+        <valueSet>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>AK</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>AL</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>AR</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>AZ</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>CA</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>CO</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>CT</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>DC</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>DE</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>FL</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>GA</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>HI</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>IA</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>ID</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>IL</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>IN</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>KS</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>KY</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>LA</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>MA</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>MD</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>ME</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>MI</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>MN</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>MO</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>MS</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>MT</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>NC</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>ND</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>NE</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>NH</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>NJ</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>NM</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>NV</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>NY</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>OH</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>OK</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>OR</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>PA</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>PR</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>RI</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>SC</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>SD</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>TN</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>TX</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>UT</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>VA</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>VT</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>WA</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>WI</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>WV</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>WY</fullName>
+                    <default>false</default>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
     </fields>
     <fields>
         <fullName>Status__c</fullName>
         <externalId>false</externalId>
         <label>Contact Status</label>
-        <picklist>
-            <picklistValues>
-                <fullName>1- Working - Active Opp Development</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>2- Working - Talking</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>3- Working - Contacted</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>4- Strategic Partner</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>5- Active Project Team Member</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>6- Active Self Start</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>7- Passive &amp; Friendly</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>8- Passive &amp; Unfriendly</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>9-HOLD Not mine/move</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>10-Dimagi Staff</fullName>
-                <default>false</default>
-            </picklistValues>
-            <sorted>false</sorted>
-        </picklist>
         <required>false</required>
         <trackFeedHistory>false</trackFeedHistory>
         <trackHistory>true</trackHistory>
         <type>Picklist</type>
+        <valueSet>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>1- Working - Active Opp Development</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>2- Working - Talking</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>3- Working - Contacted</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>4- Strategic Partner</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>5- Active Project Team Member</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>6- Active Self Start</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>7- Passive &amp; Friendly</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>8- Passive &amp; Unfriendly</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>9-HOLD Not mine/move</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>10-Dimagi Staff</fullName>
+                    <default>false</default>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
     </fields>
     <fields>
         <fullName>Tag__c</fullName>
@@ -2237,6 +2469,121 @@
         <fullName>Title</fullName>
         <trackFeedHistory>false</trackFeedHistory>
         <trackHistory>false</trackHistory>
+    </fields>
+    <fields>
+        <fullName>Title_Bucket__c</fullName>
+        <description>Created by Gillian - ask if you have questions</description>
+        <externalId>false</externalId>
+        <label>Title Bucket</label>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <type>Picklist</type>
+        <valueSet>
+            <restricted>true</restricted>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>C-Suite / Co-Founder</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>VP / Director</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Manager / Coordinator</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Officer / Advisor</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Consultant</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Assistant / Analyst / Associate</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Intern / Fellow / Student / Volunteer</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Other</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Unknown</fullName>
+                    <default>false</default>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+    <fields>
+        <fullName>cirrusadv__Created_by_Cirrus_Insight__c</fullName>
+        <defaultValue>false</defaultValue>
+        <deprecated>false</deprecated>
+        <description>Indicates that this record was created by Cirrus Insight. This checkbox does not have to be included on the page layout, except with Contact Manager, Group, and Professional Edition organizations.</description>
+        <externalId>false</externalId>
+        <label>Created by Cirrus Insight</label>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>true</trackHistory>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>rh2__Currency_Test__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>Currency Test</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>rh2__Describe__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>Describe</label>
+        <referenceTo>rh2__PS_Describe__c</referenceTo>
+        <relationshipLabel>Contacts</relationshipLabel>
+        <relationshipName>Contacts</relationshipName>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>rh2__Formula_Test__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <formula>rh2__Currency_Test__c</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Formula Test</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackHistory>false</trackHistory>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>rh2__Integer_Test__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>Integer Test</label>
+        <precision>3</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <type>Number</type>
+        <unique>false</unique>
     </fields>
     <fields>
         <fullName>secondary_email__c</fullName>
@@ -2285,16 +2632,23 @@
         <fullName>AllContacts</fullName>
         <columns>FULL_NAME</columns>
         <columns>ACCOUNT.NAME</columns>
-        <columns>Relationship_Strength__c</columns>
-        <columns>Keep_Warm__c</columns>
-        <columns>CONTACT.EMAIL</columns>
+        <columns>Status__c</columns>
+        <columns>CONTACT.LAST_ACTIVITY</columns>
+        <columns>Days_w_o_Activity__c</columns>
+        <columns>CONTACT.LEAD_SOURCE</columns>
         <columns>CORE.USERS.ALIAS</columns>
-        <columns>Country__c</columns>
+        <columns>UPDATEDBY_USER.ALIAS</columns>
         <columns>Tag__c</columns>
-        <columns>City__c</columns>
+        <columns>CONTACT.EMAIL</columns>
+        <columns>Country__c</columns>
         <columns>CONTACT.ADDRESS1_CITY</columns>
         <filterScope>Everything</filterScope>
-        <label>All Contacts</label>
+        <filters>
+            <field>Country__c</field>
+            <operation>equals</operation>
+            <value>Senegal</value>
+        </filters>
+        <label>Contacts Senegal CJ KN</label>
     </listViews>
     <listViews>
         <fullName>BR_TSP_contacts</fullName>
@@ -2342,7 +2696,12 @@
         <columns>Relationship_Strength__c</columns>
         <columns>Days_w_o_Activity__c</columns>
         <columns>Tag__c</columns>
-        <filterScope>Mine</filterScope>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>CORE.USERS.FIRST_NAME</field>
+            <operation>equals</operation>
+            <value>Christina</value>
+        </filters>
         <label>CJ Contacts Working List</label>
     </listViews>
     <listViews>
@@ -2379,6 +2738,8 @@
     </listViews>
     <listViews>
         <fullName>Contacts_with_Follow_Up_Date_this_Week</fullName>
+        <columns>Follow_up_Date__c</columns>
+        <columns>Days_w_o_Activity__c</columns>
         <columns>FULL_NAME</columns>
         <columns>ACCOUNT.NAME</columns>
         <columns>Status__c</columns>
@@ -2464,7 +2825,12 @@
         <columns>CORE.USERS.ALIAS</columns>
         <columns>Country__c</columns>
         <columns>CONTACT.LAST_ACTIVITY</columns>
-        <filterScope>Mine</filterScope>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Country__c</field>
+            <operation>equals</operation>
+            <value>Mozambique</value>
+        </filters>
         <label>DMoz Contacts</label>
         <sharedTo>
             <group>All_Dimagi</group>
@@ -2510,6 +2876,22 @@
             <value>Partner program</value>
         </filters>
         <label>Dimagi - Contacts - Partner Program</label>
+    </listViews>
+    <listViews>
+        <fullName>GJ_contacts</fullName>
+        <columns>FULL_NAME</columns>
+        <columns>ACCOUNT.NAME</columns>
+        <columns>CONTACT.TITLE</columns>
+        <columns>CONTACT.PHONE1</columns>
+        <columns>CONTACT.EMAIL</columns>
+        <columns>CORE.USERS.ALIAS</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>CORE.USERS.FIRST_NAME</field>
+            <operation>equals</operation>
+            <value>Gillian</value>
+        </filters>
+        <label>GJ contacts</label>
     </listViews>
     <listViews>
         <fullName>Guatemala_Contacts_MS</fullName>
@@ -2613,7 +2995,6 @@
     </listViews>
     <listViews>
         <fullName>Latin_America_Caribbean_Contacts</fullName>
-        <booleanFilter>1 OR 2 OR 3 OR 4</booleanFilter>
         <columns>FULL_NAME</columns>
         <columns>ACCOUNT.NAME</columns>
         <columns>CONTACT.TITLE</columns>
@@ -2634,17 +3015,14 @@
         <filters>
             <field>Country__c</field>
             <operation>equals</operation>
-            <value>Ecuador,Peru,Colombia,Bolivia,Venezuela,Brazil,Chile,Argentina,Uruguay</value>
         </filters>
         <filters>
             <field>Country__c</field>
             <operation>equals</operation>
-            <value>Paraguay,Suriname,Guyana,French Guyana,Jamaica,Dominican Republic</value>
         </filters>
         <filters>
             <field>Country__c</field>
             <operation>equals</operation>
-            <value>Grenada,Puerto Rico,Haiti</value>
         </filters>
         <label>Latin America Caribbean Contacts</label>
     </listViews>
@@ -2667,6 +3045,7 @@
     </listViews>
     <listViews>
         <fullName>Marco_Contact_View</fullName>
+        <booleanFilter>1 AND (2 OR 3 OR 4)</booleanFilter>
         <columns>FULL_NAME</columns>
         <columns>ACCOUNT.NAME</columns>
         <columns>CONTACT.LAST_ACTIVITY</columns>
@@ -2680,6 +3059,20 @@
             <field>CORE.USERS.FIRST_NAME</field>
             <operation>equals</operation>
             <value>Marco</value>
+        </filters>
+        <filters>
+            <field>Country__c</field>
+            <operation>equals</operation>
+            <value>Mexico,Colombia,Costa Rica,Ecuador,Nicaragua,Guatemala,Brazil,Honduras</value>
+        </filters>
+        <filters>
+            <field>Country__c</field>
+            <operation>equals</operation>
+        </filters>
+        <filters>
+            <field>Country__c</field>
+            <operation>equals</operation>
+            <value>Dominican Republic</value>
         </filters>
         <label>Marco Contact View</label>
     </listViews>
@@ -2701,21 +3094,10 @@
         <label>Michelle Contacts View for BD 2016</label>
     </listViews>
     <listViews>
-        <fullName>My_Contacts</fullName>
-        <columns>FULL_NAME</columns>
-        <columns>ACCOUNT.NAME</columns>
-        <columns>Relationship_Strength__c</columns>
-        <columns>CONTACT.TITLE</columns>
-        <columns>CONTACT.EMAIL</columns>
-        <columns>CORE.USERS.ALIAS</columns>
-        <columns>CONTACT.ADDRESS2_CITY</columns>
-        <filterScope>Mine</filterScope>
-        <label>My Contacts</label>
-    </listViews>
-    <listViews>
         <fullName>My_Contacts1</fullName>
         <columns>FULL_NAME</columns>
         <columns>ACCOUNT.NAME</columns>
+        <columns>CONTACT.LEAD_SOURCE</columns>
         <columns>City_Object__c</columns>
         <columns>CONTACT.ADDRESS2_CITY</columns>
         <columns>Status__c</columns>
@@ -2908,6 +3290,24 @@
         <label>contact status add and update BD July15</label>
     </listViews>
     <listViews>
+        <fullName>contacts_dimagi_user</fullName>
+        <columns>FULL_NAME</columns>
+        <columns>ACCOUNT.NAME</columns>
+        <columns>CONTACT.TITLE</columns>
+        <columns>CONTACT.PHONE1</columns>
+        <columns>CONTACT.EMAIL</columns>
+        <columns>CORE.USERS.ALIAS</columns>
+        <columns>CORE.USERS.FIRST_NAME</columns>
+        <columns>CORE.USERS.LAST_NAME</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>CORE.USERS.FIRST_NAME</field>
+            <operation>contains</operation>
+            <value>Dimagi</value>
+        </filters>
+        <label>contacts dimagi user</label>
+    </listViews>
+    <listViews>
         <fullName>contacts_missing_status</fullName>
         <columns>FULL_NAME</columns>
         <columns>ACCOUNT.NAME</columns>
@@ -2975,6 +3375,25 @@
             <value>info</value>
         </filters>
         <label>Info and Unknown Contacts</label>
+    </listViews>
+    <listViews>
+        <fullName>my_contacts</fullName>
+        <columns>FULL_NAME</columns>
+        <columns>ACCOUNT.NAME</columns>
+        <columns>CONTACT.EMAIL</columns>
+        <columns>Status__c</columns>
+        <columns>CORE.USERS.ALIAS</columns>
+        <columns>Days_w_o_Activity__c</columns>
+        <columns>CONTACT.LAST_ACTIVITY</columns>
+        <columns>CONTACT.LAST_UPDATE</columns>
+        <columns>CONTACT.REPORTS_TO.FIRST_NAME</columns>
+        <columns>CONTACT.REPORTS_TO.LAST_NAME</columns>
+        <filterScope>Mine</filterScope>
+        <filters>
+            <field>ACCOUNT.NAME</field>
+            <operation>equals</operation>
+        </filters>
+        <label>my contacts missing account</label>
     </listViews>
     <listViews>
         <fullName>my_contacts_last_touch</fullName>
@@ -3165,5 +3584,37 @@
         <showsLocation>false</showsLocation>
         <showsStatus>false</showsStatus>
         <url>http://weather.yahoo.com/search/weather2?p={!Contact_MailingPostalCode}</url>
+    </webLinks>
+    <webLinks>
+        <fullName>salesvisual__Map_Contacts</fullName>
+        <availability>online</availability>
+        <displayType>massActionButton</displayType>
+        <linkType>javascript</linkType>
+        <masterLabel>Map Contacts</masterLabel>
+        <openType>onClickJavaScript</openType>
+        <protected>false</protected>
+        <requireRowSelection>true</requireRowSelection>
+        <url>{!requireScript(&quot;/soap/ajax/24.0/connection.js&quot;)}
+{!requireScript(&quot;/soap/ajax/24.0/apex.js&quot;)}
+idArray = {!GETRECORDIDS($ObjectType.Contact)};
+
+if(idArray.length == 0)
+{
+     alert(&quot;Please select at least one contact to map&quot;);
+}
+else if(idArray.length &gt; 20)
+{
+     alert(&quot;Please select no more than 20 contacts to map&quot;);
+}
+else
+{
+   // try the namespace first
+   var pageUrl = sforce.apex.execute(&quot;salesvisual.ContactMap&quot;, &quot;getPageUrl&quot;, {ids: idArray.toString()});
+   if (pageUrl == null)
+   {
+      var pageUrl = sforce.apex.execute(&quot;ContactMap&quot;, &quot;getPageUrl&quot;,  {ids: idArray.toString()});
+   }
+   window.location.href = pageUrl;
+}</url>
     </webLinks>
 </CustomObject>

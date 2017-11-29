@@ -106,6 +106,20 @@
         <visibleLines>6</visibleLines>
     </fields>
     <fields>
+        <fullName>Age__c</fullName>
+        <externalId>false</externalId>
+        <formula>(today()- DOB__c )/365</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Age</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
         <fullName>Annual_Salary_in_USD__c</fullName>
         <externalId>false</externalId>
         <formula>Salary__c / Exchange_Rate__c</formula>
@@ -237,6 +251,10 @@
             <valueSetDefinition>
                 <sorted>false</sorted>
                 <value>
+                    <fullName>Amsterdam</fullName>
+                    <default>false</default>
+                </value>
+                <value>
                     <fullName>Antigua</fullName>
                     <default>false</default>
                 </value>
@@ -269,7 +287,11 @@
                     <default>false</default>
                 </value>
                 <value>
-                    <fullName>LA/Seattle</fullName>
+                    <fullName>Lancaster</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>London</fullName>
                     <default>false</default>
                 </value>
                 <value>
@@ -289,7 +311,27 @@
                     <default>false</default>
                 </value>
                 <value>
+                    <fullName>New Orleans</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Richmond</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>San Diego</fullName>
+                    <default>false</default>
+                </value>
+                <value>
                     <fullName>San Jose</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Seattle</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Wethersfield</fullName>
                     <default>false</default>
                 </value>
                 <value>
@@ -408,6 +450,10 @@
                 </value>
                 <value>
                     <fullName>France</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Gambia</fullName>
                     <default>false</default>
                 </value>
                 <value>
@@ -629,6 +675,10 @@
                     <default>false</default>
                 </value>
                 <value>
+                    <fullName>Gambia</fullName>
+                    <default>false</default>
+                </value>
+                <value>
                     <fullName>Germany</fullName>
                     <default>false</default>
                 </value>
@@ -754,6 +804,14 @@
                 </value>
                 <value>
                     <fullName>Zimbabwe</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Malawi</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Sweden</fullName>
                     <default>false</default>
                 </value>
             </valueSetDefinition>
@@ -991,7 +1049,9 @@
     <fields>
         <fullName>Days_Employed__c</fullName>
         <externalId>false</externalId>
-        <formula>TODAY () - Hire_Date__c</formula>
+        <formula>IF(Termination_Date__c != null, 
+Termination_Date__c - Hire_Date__c, 
+TODAY() - Hire_Date__c)</formula>
         <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
         <label>Days Employed</label>
         <precision>18</precision>
@@ -1414,11 +1474,34 @@
         <label>Exchange Rate (Local:USD)</label>
         <precision>18</precision>
         <required>true</required>
-        <scale>5</scale>
+        <scale>6</scale>
         <trackHistory>true</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Number</type>
         <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Expected_Termination_Date__c</fullName>
+        <externalId>false</externalId>
+        <label>Expected Termination Date</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>FTE_Percentage__c</fullName>
+        <description>Hours per pay period / 40</description>
+        <externalId>false</externalId>
+        <formula>Per_Week_Hours__c / 40</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>FTE Percentage</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Percent</type>
     </fields>
     <fields>
         <fullName>Federal_Tax_Withholding__c</fullName>
@@ -1474,6 +1557,21 @@
         <trackTrending>false</trackTrending>
         <type>Text</type>
         <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Fringe_Loaded_Daily_Rate__c</fullName>
+        <description>Annual Salary over 260 working days, with 30% Fringe</description>
+        <externalId>false</externalId>
+        <formula>(Annual_Salary_in_USD__c / IF(Working_Days__c != null, Working_Days__c, 260))*(1+0.30)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <inlineHelpText>Annual Salary over 260 working days, with 30% Fringe</inlineHelpText>
+        <label>Fringe Loaded Daily Rate</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
     </fields>
     <fields>
         <fullName>Gender__c</fullName>
@@ -1534,7 +1632,7 @@
         <externalId>false</externalId>
         <label>Hire Date</label>
         <required>false</required>
-        <trackHistory>false</trackHistory>
+        <trackHistory>true</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Date</type>
     </fields>
@@ -1583,10 +1681,10 @@
         <unique>false</unique>
     </fields>
     <fields>
-        <fullName>Hours_Per_Week__c</fullName>
+        <fullName>Hours_Per_Week_del__c</fullName>
         <externalId>false</externalId>
         <inlineHelpText>40 Hours is full time employee</inlineHelpText>
-        <label>Hours Per Week</label>
+        <label>Old Hours Per Week</label>
         <length>20</length>
         <required>false</required>
         <trackHistory>true</trackHistory>
@@ -1948,7 +2046,7 @@
     <fields>
         <fullName>Loaded_Daily_Rate__c</fullName>
         <externalId>false</externalId>
-        <formula>(Annual_Salary_in_USD__c /260)* (1+0.30)*(1+0.51)*(1+0.09)*(1+0.10)</formula>
+        <formula>(Annual_Salary_in_USD__c /IF(Working_Days__c != null, Working_Days__c, 260))* (1+0.30)*(1+0.51)*(1+0.09)*(1+0.10)</formula>
         <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
         <inlineHelpText>Annual Salary over 260 working days, with 30% Fringe, 51% Overhead, 9% G&amp;A, 10 % fee</inlineHelpText>
         <label>Loaded Daily Rate</label>
@@ -2391,6 +2489,18 @@
         <unique>false</unique>
     </fields>
     <fields>
+        <fullName>Pay_Update_Notes__c</fullName>
+        <description>Only needed for Pay updates</description>
+        <externalId>false</externalId>
+        <label>Pay Update Notes</label>
+        <length>255</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
         <fullName>Payroll_Frequency__c</fullName>
         <externalId>false</externalId>
         <label>Payroll Frequency</label>
@@ -2446,6 +2556,19 @@
         </valueSet>
     </fields>
     <fields>
+        <fullName>Per_Week_Hours__c</fullName>
+        <externalId>false</externalId>
+        <inlineHelpText>40 Hours is full time employee</inlineHelpText>
+        <label>Hours Per Week</label>
+        <precision>7</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
         <fullName>Personal_Phone_Number__c</fullName>
         <externalId>false</externalId>
         <label>Personal Phone (with Country Code)</label>
@@ -2498,6 +2621,16 @@
         <trackTrending>false</trackTrending>
         <type>Number</type>
         <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Re_Hire_Date__c</fullName>
+        <description>Use this field if you are re-hiring a previous Dimagi employee.</description>
+        <externalId>false</externalId>
+        <label>Re-Hire Date</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>DateTime</type>
     </fields>
     <fields>
         <fullName>Roth_401K_Deduction_or__c</fullName>
@@ -2836,6 +2969,17 @@
         <unique>false</unique>
     </fields>
     <fields>
+        <fullName>Tax_Number__c</fullName>
+        <externalId>false</externalId>
+        <label>Tax Number</label>
+        <length>20</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
         <fullName>Tech__c</fullName>
         <externalId>false</externalId>
         <label>Tech</label>
@@ -2851,7 +2995,7 @@
         <externalId>false</externalId>
         <label>Termination Date</label>
         <required>false</required>
-        <trackHistory>false</trackHistory>
+        <trackHistory>true</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Date</type>
     </fields>
@@ -2934,7 +3078,7 @@
     <fields>
         <fullName>Unloaded_Daily_Rate__c</fullName>
         <externalId>false</externalId>
-        <formula>(Annual_Salary_in_USD__c /260)</formula>
+        <formula>(Annual_Salary_in_USD__c /IF(Working_Days__c != null, Working_Days__c, 260))</formula>
         <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
         <inlineHelpText>Calculated from Annual Salary USD over 260 working days</inlineHelpText>
         <label>Unloaded Daily Rate</label>
@@ -3074,6 +3218,18 @@
         <unique>false</unique>
     </fields>
     <fields>
+        <fullName>Working_Days__c</fullName>
+        <externalId>false</externalId>
+        <label>Working Days</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
         <fullName>X401K_Payroll_Deduction__c</fullName>
         <externalId>false</externalId>
         <label>Traditional 401K Deduction ($ or %)</label>
@@ -3176,7 +3332,7 @@
     </listViews>
     <nameField>
         <label>Employee Name</label>
-        <trackHistory>false</trackHistory>
+        <trackHistory>true</trackHistory>
         <type>Text</type>
     </nameField>
     <pluralLabel>Employees</pluralLabel>

@@ -21,10 +21,6 @@
         <type>Default</type>
     </actionOverrides>
     <actionOverrides>
-        <actionName>Follow</actionName>
-        <type>Default</type>
-    </actionOverrides>
-    <actionOverrides>
         <actionName>List</actionName>
         <type>Default</type>
     </actionOverrides>
@@ -65,6 +61,15 @@
         <unique>false</unique>
     </fields>
     <fields>
+        <fullName>Advisory_Service__c</fullName>
+        <defaultValue>false</defaultValue>
+        <externalId>false</externalId>
+        <label>Advisory Service</label>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
         <fullName>Amount</fullName>
         <inlineHelpText>This is the TOTAL amount of the expected contract, inclusive of all budget items. This is CALCULATED automatically when you add products.</inlineHelpText>
         <trackFeedHistory>true</trackFeedHistory>
@@ -89,60 +94,63 @@
         <fullName>Area__c</fullName>
         <externalId>false</externalId>
         <label>Sector</label>
-        <picklist>
-            <picklistValues>
-                <fullName>Agriculture and Food Security</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Economic Development</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Education and Training</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Emergency Response</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Financial Services for the Poor</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Gender Equality and Women&apos;s Empowerment</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Governance and Accountability</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Health</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Logistics</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Other</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Water, Sanitation, &amp; Hygiene</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Legal, Human Rights</fullName>
-                <default>false</default>
-            </picklistValues>
-            <sorted>false</sorted>
-        </picklist>
+        <required>false</required>
         <trackFeedHistory>false</trackFeedHistory>
         <trackHistory>false</trackHistory>
         <type>MultiselectPicklist</type>
+        <valueSet>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>Agriculture and Food Security</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Economic Development</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Education and Training</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Emergency Response</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Financial Services for the Poor</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Gender Equality and Women&apos;s Empowerment</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Governance and Accountability</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Health</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Logistics</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Other</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Water, Sanitation, &amp; Hygiene</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Legal, Human Rights</fullName>
+                    <default>false</default>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
         <visibleLines>6</visibleLines>
     </fields>
     <fields>
@@ -211,40 +219,43 @@ See https://confluence.dimagi.com/display/BD/BD+Channels</description>
         <inlineHelpText>What Channel is the Opportunity (Sales, B2B, Pre-Bid, Other Competitive Bid, etc.)? 
 See https://confluence.dimagi.com/display/BD/BD+Channels</inlineHelpText>
         <label>Channel</label>
-        <picklist>
-            <picklistValues>
-                <fullName>Inside Sales</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>B2B - Standard</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>B2B - Enterprise</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Pre-Bid</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Other Competitive Bid</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>NIH Prime Grant</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>CORE Funding (Gates)</fullName>
-                <default>false</default>
-            </picklistValues>
-            <sorted>false</sorted>
-        </picklist>
+        <required>false</required>
         <trackFeedHistory>false</trackFeedHistory>
         <trackHistory>true</trackHistory>
         <type>Picklist</type>
+        <valueSet>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>Inside Sales</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>B2B - Standard</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>B2B - Enterprise</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Pre-Bid</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Other Competitive Bid</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>NIH Prime Grant</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>CORE Funding (Gates)</fullName>
+                    <default>false</default>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
     </fields>
     <fields>
         <fullName>CloseDate</fullName>
@@ -255,56 +266,87 @@ See https://confluence.dimagi.com/display/BD/BD+Channels</inlineHelpText>
     </fields>
     <fields>
         <fullName>Closed_lost_reason__c</fullName>
-        <description>Enter the reason this opp was lost.</description>
+        <description>Enter the reason this opp was closed.</description>
         <externalId>false</externalId>
-        <inlineHelpText>Enter the reason this opp was lost.</inlineHelpText>
-        <label>Closed-lost reason</label>
-        <picklist>
-            <picklistValues>
-                <fullName>Competition</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>No Budget</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Not Interested</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Other</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Price</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Trial Issues</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>No need for features or users</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Stopped responding</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Project ended, no more needs</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Not satisfied with CommCare</fullName>
-                <default>false</default>
-            </picklistValues>
-            <sorted>false</sorted>
-        </picklist>
+        <inlineHelpText>Enter the reason this opp was closed.</inlineHelpText>
+        <label>Closed reason</label>
+        <required>false</required>
         <trackFeedHistory>false</trackFeedHistory>
         <trackHistory>false</trackHistory>
         <type>Picklist</type>
+        <valueSet>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>LOST - Competition</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>LOST - Authority</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>LOST - Didn&apos;t need a tool like CommCare</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>LOST - Lost proposal</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>LOST - No need for paid features</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>LOST - Other</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>LOST - Price</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>LOST - Stopped responding</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>LOST - Timing</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>WON - Features</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>WON - Had extra funding</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>WON - Intention to scale</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>WON - Other</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>WON - Server</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>WON - Support</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>LOST - Stop of funding source</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>LOST - End of project</fullName>
+                    <default>false</default>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
     </fields>
     <fields>
         <fullName>ContractId</fullName>
@@ -356,24 +398,27 @@ See https://confluence.dimagi.com/display/BD/BD+Channels</inlineHelpText>
         <fullName>Contract_Type__c</fullName>
         <externalId>false</externalId>
         <label>Contract Type</label>
-        <picklist>
-            <picklistValues>
-                <fullName>FFP</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>T&amp;M</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Cost Plus</fullName>
-                <default>false</default>
-            </picklistValues>
-            <sorted>false</sorted>
-        </picklist>
+        <required>false</required>
         <trackFeedHistory>false</trackFeedHistory>
         <trackHistory>false</trackHistory>
         <type>Picklist</type>
+        <valueSet>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>FFP</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>T&amp;M</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Cost Plus</fullName>
+                    <default>false</default>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
     </fields>
     <fields>
         <fullName>Cost_Lead__c</fullName>
@@ -517,36 +562,39 @@ if((CloseDate + (30*Duration_months__c)) &lt; $Setup.Expected_Value__c.EV_Date_1
         <fullName>Exclusive_Teaming_Agreement__c</fullName>
         <externalId>false</externalId>
         <label>Teaming Agreement</label>
-        <picklist>
-            <picklistValues>
-                <fullName>Not applicable</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Not signed, likely exclusive</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Not signed, likely non-exclusive</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Signed, exclusive</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Signed, non-exclusive</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Don&apos;t know</fullName>
-                <default>false</default>
-            </picklistValues>
-            <sorted>false</sorted>
-        </picklist>
+        <required>false</required>
         <trackFeedHistory>false</trackFeedHistory>
         <trackHistory>false</trackHistory>
         <type>Picklist</type>
+        <valueSet>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>Not applicable</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Not signed, likely exclusive</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Not signed, likely non-exclusive</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Signed, exclusive</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Signed, non-exclusive</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Don&apos;t know</fullName>
+                    <default>false</default>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
     </fields>
     <fields>
         <fullName>Exclusivity_Agreement_Y_N__c</fullName>
@@ -644,6 +692,31 @@ if((CloseDate + (30*Duration_months__c)) &lt; $Setup.Expected_Value__c.EV_Date_1
         <trackFeedHistory>false</trackFeedHistory>
         <trackHistory>false</trackHistory>
         <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>External_Integration_Types__c</fullName>
+        <externalId>false</externalId>
+        <inlineHelpText>Select all integration types requested/in use. Even if the client decides to proceed without the devices or systems they&apos;d like to integrate with, please indicate all that were inquired about.</inlineHelpText>
+        <label>External Integration Types</label>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <type>MultiselectPicklist</type>
+        <valueSet>
+            <restricted>true</restricted>
+            <valueSetName>External_Integration_Type</valueSetName>
+        </valueSet>
+        <visibleLines>4</visibleLines>
+    </fields>
+    <fields>
+        <fullName>External_Integration__c</fullName>
+        <defaultValue>false</defaultValue>
+        <description>Including MOTECH</description>
+        <externalId>false</externalId>
+        <label>External Integration</label>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <type>Checkbox</type>
     </fields>
     <fields>
         <fullName>Fogbugz_Assigned_To__c</fullName>
@@ -784,6 +857,18 @@ if((CloseDate + (30*Duration_months__c)) &lt; $Setup.Expected_Value__c.EV_Date_1
         <unique>false</unique>
     </fields>
     <fields>
+        <fullName>Fogbugz_elapsed_time__c</fullName>
+        <externalId>false</externalId>
+        <label>Fogbugz elapsed time</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>3</scale>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
         <fullName>Funder_Account__c</fullName>
         <deleteConstraint>Restrict</deleteConstraint>
         <externalId>false</externalId>
@@ -807,6 +892,41 @@ if((CloseDate + (30*Duration_months__c)) &lt; $Setup.Expected_Value__c.EV_Date_1
         <trackHistory>false</trackHistory>
         <type>LongTextArea</type>
         <visibleLines>3</visibleLines>
+    </fields>
+    <fields>
+        <fullName>GS_Resourcing_Status__c</fullName>
+        <externalId>false</externalId>
+        <label>GS Resourcing Status</label>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <type>Picklist</type>
+        <valueSet>
+            <restricted>true</restricted>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>N/A</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Request Submitted</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Red</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Yellow</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Green</fullName>
+                    <default>false</default>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
     </fields>
     <fields>
         <fullName>GS_Services_Work_12_month_EV__c</fullName>
@@ -943,6 +1063,24 @@ Services_EV__c ,
         <type>Percent</type>
     </fields>
     <fields>
+        <fullName>HIPAA_Assurance__c</fullName>
+        <defaultValue>false</defaultValue>
+        <externalId>false</externalId>
+        <label>HIPAA Assurance</label>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Has_SMS_Component__c</fullName>
+        <defaultValue>false</defaultValue>
+        <externalId>false</externalId>
+        <label>Has SMS Component</label>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
         <fullName>Ignore_below_field__c</fullName>
         <externalId>false</externalId>
         <formula>&apos;Please ignore the Probability(%) field below and use the Probability field at the top of this page.&apos;</formula>
@@ -968,28 +1106,31 @@ Services_EV__c ,
         <fullName>Implementation_Type__c</fullName>
         <externalId>false</externalId>
         <label>Implementation Type</label>
-        <picklist>
-            <picklistValues>
-                <fullName>Bundles and Services</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Enterprise</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Self Service</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Managed server</fullName>
-                <default>false</default>
-            </picklistValues>
-            <sorted>false</sorted>
-        </picklist>
+        <required>false</required>
         <trackFeedHistory>false</trackFeedHistory>
         <trackHistory>true</trackHistory>
         <type>Picklist</type>
+        <valueSet>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>Bundles and Services</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Enterprise</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Self Service</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Managed server</fullName>
+                    <default>false</default>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
     </fields>
     <fields>
         <fullName>Implementing_Business_Unit__c</fullName>
@@ -1033,52 +1174,55 @@ Services_EV__c ,
         <fullName>Industry__c</fullName>
         <externalId>false</externalId>
         <label>Industry</label>
-        <picklist>
-            <picklistValues>
-                <fullName>Agriculture</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Consulting</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Education</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Finance</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Health</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Mobile Money</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Nutrition</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Other</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Telecom</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Water &amp; Sanitation</fullName>
-                <default>false</default>
-            </picklistValues>
-            <sorted>false</sorted>
-        </picklist>
+        <required>false</required>
         <trackFeedHistory>false</trackFeedHistory>
         <trackHistory>false</trackHistory>
         <type>Picklist</type>
+        <valueSet>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>Agriculture</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Consulting</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Education</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Finance</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Health</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Mobile Money</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Nutrition</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Other</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Telecom</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Water &amp; Sanitation</fullName>
+                    <default>false</default>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
     </fields>
     <fields>
         <fullName>IsPrivate</fullName>
@@ -1086,105 +1230,82 @@ Services_EV__c ,
         <trackHistory>false</trackHistory>
     </fields>
     <fields>
+        <fullName>Is_Fast_Track__c</fullName>
+        <defaultValue>false</defaultValue>
+        <description>Check this box if the opportunity is bypassing the standard sales process.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Check this box if the opportunity is bypassing the standard sales process.</inlineHelpText>
+        <label>Is Fast-Track?</label>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Last_chatter_post_date_time__c</fullName>
+        <externalId>false</externalId>
+        <label>Last chatter post date</label>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <type>DateTime</type>
+    </fields>
+    <fields>
         <fullName>LeadSource</fullName>
-        <picklist>
-            <picklistValues>
-                <fullName>Inbound - Contacted us directly</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Inbound - Referred within same Org</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Inbound - Referred by another Org</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Inbound - Referred by Dimagi staff</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Outbound - Conference</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Outbound - Membership or Coalition List</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Outbound - Networking Event</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Outbound - Personal Contact</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Outbound - Pulled from Forum</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Outbound - Pulled from Social Media</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Outbound - Pulled from Website</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Inbound - Emailed us directly DO NOT USE</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Inbound - Conference (came to us after)</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Inbound - Called us directly -DO NOT USE</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Inbound-Tried schedule call dir. DONT U</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Inbound - Contacted us on Social Media</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Inbound - Event Sign Up</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Inbound - HQ signup</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Inbound - Emailed info@ DO NOT USE</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Inbound - Referral</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Inbound - Webinar Sign Up</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Inbound- Workshop Sign Up</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Other</fullName>
-                <default>false</default>
-            </picklistValues>
-            <sorted>false</sorted>
-        </picklist>
         <trackFeedHistory>false</trackFeedHistory>
         <trackHistory>false</trackHistory>
         <type>Picklist</type>
+    </fields>
+    <fields>
+        <fullName>Lead_Ever_Responded__c</fullName>
+        <defaultValue>false</defaultValue>
+        <externalId>false</externalId>
+        <label>Lead Ever Responded</label>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Lead_Status_Reason__c</fullName>
+        <externalId>false</externalId>
+        <label>Lead Status Reason</label>
+        <length>80</length>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Lead_Status__c</fullName>
+        <externalId>false</externalId>
+        <label>Lead Status</label>
+        <length>80</length>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Lead_first_call_held__c</fullName>
+        <defaultValue>false</defaultValue>
+        <externalId>false</externalId>
+        <label>Lead first call held</label>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Lead_follow_up_calls_held__c</fullName>
+        <externalId>false</externalId>
+        <label>Lead follow up calls held</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <type>Number</type>
+        <unique>false</unique>
     </fields>
     <fields>
         <fullName>Level_of_Effort_Description__c</fullName>
@@ -1201,24 +1322,27 @@ Services_EV__c ,
         <description>This is the estimated level of effort for the RFP. It is a combination of number of hours, quantity of new content, and quality of the proposal.  E.g. a large, strategic consortium RFP with a big technical compoment would be &quot;High&quot;.  An RFP wired for us that just needs the default proposal template and some Past Performance Reports would be &quot;Low&quot;. Use the description field as well to clarify.</description>
         <externalId>false</externalId>
         <label>Level of Effort (LOE)</label>
-        <picklist>
-            <picklistValues>
-                <fullName>Low</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Medium</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>High</fullName>
-                <default>false</default>
-            </picklistValues>
-            <sorted>false</sorted>
-        </picklist>
+        <required>false</required>
         <trackFeedHistory>false</trackFeedHistory>
         <trackHistory>true</trackHistory>
         <type>Picklist</type>
+        <valueSet>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>Low</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Medium</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>High</fullName>
+                    <default>false</default>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
     </fields>
     <fields>
         <fullName>Major_Subcontractor__c</fullName>
@@ -1264,6 +1388,29 @@ Services_EV__c ,
         <trackHistory>false</trackHistory>
     </fields>
     <fields>
+        <fullName>Not_Qualified__c</fullName>
+        <defaultValue>false</defaultValue>
+        <description>Check this if the opp is not qualified and enter notes.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Check this if the opp is not qualified and enter notes.</inlineHelpText>
+        <label>Not Qualified?</label>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Not_qualified_notes__c</fullName>
+        <description>Enter notes about why the opp was not qualified.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Enter notes about why the opp was not qualified.</inlineHelpText>
+        <label>Not qualified - notes</label>
+        <length>32768</length>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <type>LongTextArea</type>
+        <visibleLines>3</visibleLines>
+    </fields>
+    <fields>
         <fullName>Number_of_Users__c</fullName>
         <description>The expected number of Mobile users for the project opportunity.</description>
         <externalId>false</externalId>
@@ -1306,48 +1453,51 @@ Services_EV__c ,
         <externalId>false</externalId>
         <inlineHelpText>Offer given.</inlineHelpText>
         <label>Offer Given</label>
-        <picklist>
-            <picklistValues>
-                <fullName>One month free</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Onboarding - 1hr (Pro)</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Onboarding - 2hr (Advanced)</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Onboarding - 4hr (Enterprise)</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Extend Trial</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Report builder trial</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Two months free</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Coaching</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Other</fullName>
-                <default>false</default>
-            </picklistValues>
-            <sorted>false</sorted>
-        </picklist>
+        <required>false</required>
         <trackFeedHistory>false</trackFeedHistory>
         <trackHistory>false</trackHistory>
         <type>MultiselectPicklist</type>
+        <valueSet>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>One month free</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Onboarding - 1hr (Pro)</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Onboarding - 2hr (Advanced)</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Onboarding - 4hr (Enterprise)</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Extend Trial</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Report builder trial</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Two months free</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Coaching</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Other</fullName>
+                    <default>false</default>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
         <visibleLines>4</visibleLines>
     </fields>
     <fields>
@@ -1384,6 +1534,19 @@ Services_EV__c ,
         <unique>false</unique>
     </fields>
     <fields>
+        <fullName>Opp_to_Close_Time__c</fullName>
+        <description>Opportunity --&gt; Closed Time</description>
+        <externalId>false</externalId>
+        <formula>CloseDate - DATEVALUE(CreatedDate)</formula>
+        <label>Opp to Close Time</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackHistory>false</trackHistory>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
         <fullName>Opportunity_Owning_Entity__c</fullName>
         <deleteConstraint>Restrict</deleteConstraint>
         <externalId>false</externalId>
@@ -1403,48 +1566,75 @@ Services_EV__c ,
         <externalId>false</externalId>
         <inlineHelpText>Choose a source of the opportunity.  Answers the question &quot;Where did we first hear about this opportunity?&quot;</inlineHelpText>
         <label>Opportunity Source</label>
-        <picklist>
-            <picklistValues>
-                <fullName>Inbound</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Live event</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Other</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Outbound - called or emailed contact</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Referral</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Renewal</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Existing client</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Outbound - called or emailed past client</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Applied directly to RFP</fullName>
-                <default>false</default>
-            </picklistValues>
-            <sorted>false</sorted>
-        </picklist>
+        <required>false</required>
         <trackFeedHistory>false</trackFeedHistory>
         <trackHistory>false</trackHistory>
         <type>Picklist</type>
+        <valueSet>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>Applied to RFP</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Existing Project - New Deliverables/Scale Up</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Existing Project - Contract Amendment</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Existing Client - New Project</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Outbound - Contacted Directly</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Inbound</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Inbound - Referred within same Org</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Inbound - Referred by Another Org</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Referred by Dimagi staff</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Referral</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Implementation Renewal</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Product Renewal</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Other</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Pro-bono Renewal</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Existing client - Upsell</fullName>
+                    <default>false</default>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
     </fields>
     <fields>
         <fullName>Opportunity_Validation__c</fullName>
@@ -1471,8 +1661,14 @@ Services_EV__c ,
               IF(
                 ISBLANK(  Implementing_Business_Unit__c ),
                 &apos;Execution Owner cannot be blank&apos;,
-                &apos;Check date - everything else is valid.&apos;
+
+                  IF(
+                    ISBLANK(  Expected_Buffer__c),
+                    &apos;Expected Buffer % cannot be blank&apos;,
+
+                     &apos;Check date - everything else is valid.&apos;
                 )
+               )
               )
             )
           )
@@ -1491,26 +1687,57 @@ Services_EV__c ,
         <externalId>false</externalId>
         <inlineHelpText>Used by snapshots to prepopulate fields.</inlineHelpText>
         <label>Snapshot Source Type</label>
-        <picklist>
-            <picklistValues>
-                <fullName>Opportunity</fullName>
-                <default>true</default>
-            </picklistValues>
-            <sorted>false</sorted>
-        </picklist>
+        <required>false</required>
         <trackFeedHistory>false</trackFeedHistory>
         <trackHistory>false</trackHistory>
         <type>Picklist</type>
+        <valueSet>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>Opportunity</fullName>
+                    <default>true</default>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+    <fields>
+        <fullName>Opportunity_counter__c</fullName>
+        <externalId>false</externalId>
+        <formula>1</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Opportunity</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackHistory>false</trackHistory>
+        <type>Number</type>
+        <unique>false</unique>
     </fields>
     <fields>
         <fullName>Ops_to_customer_lead_time__c</fullName>
         <externalId>false</externalId>
-        <formula>IF(NOT(ISBLANK( CloseDate  )) &amp;&amp; NOT(ISBLANK(  CreatedDate  )),(((YEAR(  CloseDate  ) -YEAR(DATEVALUE(CreatedDate )) - 1) *12) + (12 - MONTH(DATEVALUE( CreatedDate )) +1) + MONTH( CloseDate  )),null)</formula>
+        <formula>IF(
+NOT(ISBLANK( CloseDate  )) &amp;&amp; NOT(ISBLANK(Datevalue( CreatedDate ) )),
+IF(YEAR(CloseDate)=Year(Datevalue(CreatedDate)), 
+(
+(
+(Month(CloseDate)-Month(Datevalue(CreatedDate)))*30.4+ Day(CloseDate)-Day(Datevalue(CreatedDate))
+)/30.4
+),
+(
+(YEAR(  CloseDate  ) -YEAR(DATEVALUE(CreatedDate )) - 1) *12*30.4 
++ (12 - MONTH(DATEVALUE( CreatedDate )))*30.4 
++ MONTH( CloseDate  )*30.4
+-(30.4-Day(CloseDate))
++(30.4-Day(Datevalue(CreatedDate)))
+)/30.4
+),null)</formula>
         <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
         <label>Ops to customer lead time</label>
         <precision>18</precision>
         <required>false</required>
-        <scale>0</scale>
+        <scale>2</scale>
         <trackHistory>false</trackHistory>
         <type>Number</type>
         <unique>false</unique>
@@ -1538,37 +1765,40 @@ Services_EV__c ,
         <externalId>false</externalId>
         <inlineHelpText>Best Guess at Software Plan</inlineHelpText>
         <label>Plan Budget</label>
-        <picklist>
-            <picklistValues>
-                <fullName>Unknown</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Community</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Standard</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Pro</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Advanced</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Enterprise</fullName>
-                <default>false</default>
-            </picklistValues>
-            <restrictedPicklist>true</restrictedPicklist>
-            <sorted>false</sorted>
-        </picklist>
+        <required>false</required>
         <trackFeedHistory>false</trackFeedHistory>
         <trackHistory>false</trackHistory>
         <type>Picklist</type>
+        <valueSet>
+            <restricted>true</restricted>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>Unknown</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Community</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Standard</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Pro</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Advanced</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Enterprise</fullName>
+                    <default>false</default>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
     </fields>
     <fields>
         <fullName>Potential_Prime_1__c</fullName>
@@ -1599,6 +1829,17 @@ Services_EV__c ,
     <fields>
         <fullName>Pricebook2Id</fullName>
         <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>Prior_Dimagi_contact__c</fullName>
+        <externalId>false</externalId>
+        <label>Prior Dimagi contact</label>
+        <length>255</length>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <type>Text</type>
+        <unique>false</unique>
     </fields>
     <fields>
         <fullName>Probability</fullName>
@@ -1769,24 +2010,27 @@ Services_EV__c ,
         <externalId>false</externalId>
         <inlineHelpText>Used for RFP outreach initiatives</inlineHelpText>
         <label>RFP Cycle</label>
-        <picklist>
-            <picklistValues>
-                <fullName>Cycle 1</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Cycle 2</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Cycle 3</fullName>
-                <default>false</default>
-            </picklistValues>
-            <sorted>false</sorted>
-        </picklist>
+        <required>false</required>
         <trackFeedHistory>false</trackFeedHistory>
         <trackHistory>true</trackHistory>
         <type>Picklist</type>
+        <valueSet>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>Cycle 1</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Cycle 2</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Cycle 3</fullName>
+                    <default>false</default>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
     </fields>
     <fields>
         <fullName>RFP_Outreach_Effort__c</fullName>
@@ -1875,6 +2119,36 @@ Services_EV__c ,
         <type>Checkbox</type>
     </fields>
     <fields>
+        <fullName>Sales_Steps__c</fullName>
+        <description>These are sales step checkboxes</description>
+        <externalId>false</externalId>
+        <inlineHelpText>These are sales step checkboxes</inlineHelpText>
+        <label>Sales Steps</label>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <type>MultiselectPicklist</type>
+        <valueSet>
+            <restricted>true</restricted>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>Decision maker identified and included in conversation</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>CommCare Demo Given to Decision Maker</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Initial demo (not necessarily decision maker)</fullName>
+                    <default>false</default>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+        <visibleLines>4</visibleLines>
+    </fields>
+    <fields>
         <fullName>Salesforce_Opportunity_ID__c</fullName>
         <externalId>false</externalId>
         <formula>Id</formula>
@@ -1955,16 +2229,19 @@ Services_EV__c ,
         <externalId>false</externalId>
         <inlineHelpText>Used for Pipeline reporting. Ignore.</inlineHelpText>
         <label>Snapshot Stage Total</label>
-        <picklist>
-            <picklistValues>
-                <fullName>Total</fullName>
-                <default>true</default>
-            </picklistValues>
-            <sorted>false</sorted>
-        </picklist>
+        <required>false</required>
         <trackFeedHistory>false</trackFeedHistory>
         <trackHistory>false</trackHistory>
         <type>Picklist</type>
+        <valueSet>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>Total</fullName>
+                    <default>true</default>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
     </fields>
     <fields>
         <fullName>Staff_Required__c</fullName>
@@ -1979,142 +2256,6 @@ Services_EV__c ,
     <fields>
         <fullName>StageName</fullName>
         <inlineHelpText>These are Dimagi&apos;s 6 Opportunity stages (1-6) that correspond to the Stages of the Opportunity Funnel.</inlineHelpText>
-        <picklist>
-            <picklistValues>
-                <fullName>Stage 1 - Connect</fullName>
-                <color>#0B6FCE</color>
-                <default>false</default>
-                <description>Do not use</description>
-                <closed>false</closed>
-                <forecastCategory>Pipeline</forecastCategory>
-                <probability>0</probability>
-                <won>false</won>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Stage 2 - Talking</fullName>
-                <color>#78C953</color>
-                <default>false</default>
-                <description>Talking with an org but there is no concrete opportunity yet.</description>
-                <closed>false</closed>
-                <forecastCategory>Pipeline</forecastCategory>
-                <probability>0</probability>
-                <won>false</won>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Stage 3 - Prospect</fullName>
-                <color>#DDDDDD</color>
-                <default>false</default>
-                <description>There is a real discreet opportunity now. A Fogbugz ticket is created.</description>
-                <closed>false</closed>
-                <forecastCategory>Pipeline</forecastCategory>
-                <probability>0</probability>
-                <won>false</won>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Stage 4 - Proposal Development</fullName>
-                <color>#BBBBBB</color>
-                <default>false</default>
-                <description>Developing a proposal.</description>
-                <closed>false</closed>
-                <forecastCategory>Pipeline</forecastCategory>
-                <probability>0</probability>
-                <won>false</won>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Stage 5 - Submitted</fullName>
-                <color>#999999</color>
-                <default>false</default>
-                <description>You have submitted the proposal</description>
-                <closed>false</closed>
-                <forecastCategory>Pipeline</forecastCategory>
-                <probability>0</probability>
-                <won>false</won>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Stage 6 - In Negotiations</fullName>
-                <color>#666666</color>
-                <default>false</default>
-                <description>Won the award and negotiating price.</description>
-                <closed>false</closed>
-                <forecastCategory>Pipeline</forecastCategory>
-                <probability>0</probability>
-                <won>false</won>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Closed</fullName>
-                <color>#FF99FF</color>
-                <default>false</default>
-                <closed>true</closed>
-                <forecastCategory>Omitted</forecastCategory>
-                <probability>0</probability>
-                <won>false</won>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Keep-Warm</fullName>
-                <color>#0B24BE</color>
-                <default>false</default>
-                <closed>false</closed>
-                <forecastCategory>Pipeline</forecastCategory>
-                <probability>0</probability>
-                <won>false</won>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Closed - Won</fullName>
-                <color>#33CC00</color>
-                <default>false</default>
-                <closed>true</closed>
-                <forecastCategory>Closed</forecastCategory>
-                <probability>100</probability>
-                <won>true</won>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Closed - Lost</fullName>
-                <color>#FF0000</color>
-                <default>false</default>
-                <closed>true</closed>
-                <forecastCategory>Omitted</forecastCategory>
-                <probability>0</probability>
-                <won>false</won>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Cash on Hand</fullName>
-                <color>#641CCF</color>
-                <default>false</default>
-                <closed>false</closed>
-                <forecastCategory>Pipeline</forecastCategory>
-                <probability>100</probability>
-                <won>false</won>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Closed - No Go</fullName>
-                <color>#660000</color>
-                <default>false</default>
-                <closed>true</closed>
-                <forecastCategory>Omitted</forecastCategory>
-                <probability>0</probability>
-                <won>false</won>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Predicted pipeline</fullName>
-                <color>#2F5D85</color>
-                <default>false</default>
-                <description>This is the estimated,unplanned revenue for a given month.</description>
-                <closed>false</closed>
-                <forecastCategory>Pipeline</forecastCategory>
-                <probability>100</probability>
-                <won>false</won>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Core run rate</fullName>
-                <color>#AFCADF</color>
-                <default>false</default>
-                <closed>false</closed>
-                <forecastCategory>Pipeline</forecastCategory>
-                <probability>100</probability>
-                <won>false</won>
-            </picklistValues>
-            <sorted>false</sorted>
-        </picklist>
         <trackFeedHistory>true</trackFeedHistory>
         <trackHistory>true</trackHistory>
         <trackTrending>true</trackTrending>
@@ -2174,288 +2315,294 @@ Services_EV__c ,
         <fullName>Sub_Area__c</fullName>
         <externalId>false</externalId>
         <label>Sub Sector</label>
-        <picklist>
-            <picklistValues>
-                <fullName>*** Agriculture and Food Security ***</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Agriculture</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Food Security</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>*** Economic Development ***</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Rural Development</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Safety &amp; Security</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Urban Development</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>*** Education and Training ***</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Adult Training</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Child Education</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Early Childhood Development</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>*** Emergency Response ***</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Emergency Response</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>*** Financial Services for the Poor ***</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Conditional Cash Transfer</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Financial Services to the Poor</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Mobile Banking</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>*** Gender Equality and Women&apos;s Emp ***</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Gender Services</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Sex Workers</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>*** Governance and Accountability ***</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Governence</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Social Accountability</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>*** Health ***</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Cardiac Diseases</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Care coordination</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Cervical Cancer</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Diagnostics</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Diarrhea</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Family Planning</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>HIV/AIDS</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Infectious Diseases</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Informatics</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Malaria</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Maternal, Newborn, &amp; Child Health</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Medication adherence</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Mental Health</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Neglected Tropical Diseases</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Non-Communicable Diseases</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Nutrition</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Polio</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Primary Care</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Respiratory Diseases</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Surgery</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Surveillance</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Telemedicine</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Tuberculosis</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Vaccinations</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>*** Logistics ***</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Commodity Tracking/Procurement</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Human Resources</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>*** Other ***</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Environment</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Orphans and Vulnerable Children</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Telecommunications</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>*** Water, Sanitation, &amp; Hygiene ***</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Water, Sanitation, &amp; Hygiene</fullName>
-                <default>false</default>
-            </picklistValues>
-            <sorted>false</sorted>
-        </picklist>
+        <required>false</required>
         <trackFeedHistory>false</trackFeedHistory>
         <trackHistory>false</trackHistory>
         <type>MultiselectPicklist</type>
+        <valueSet>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>*** Agriculture and Food Security ***</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Agriculture</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Food Security</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>*** Economic Development ***</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Rural Development</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Safety &amp; Security</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Urban Development</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>*** Education and Training ***</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Adult Training</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Child Education</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Early Childhood Development</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>*** Emergency Response ***</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Emergency Response</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>*** Financial Services for the Poor ***</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Conditional Cash Transfer</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Financial Services to the Poor</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Mobile Banking</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>*** Gender Equality and Women&apos;s Emp ***</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Gender Services</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Sex Workers</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>*** Governance and Accountability ***</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Governence</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Social Accountability</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>*** Health ***</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Cardiac Diseases</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Care coordination</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Cervical Cancer</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Diagnostics</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Diarrhea</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Family Planning</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>HIV/AIDS</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Infectious Diseases</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Informatics</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Malaria</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Maternal, Newborn, &amp; Child Health</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Medication adherence</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Mental Health</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Neglected Tropical Diseases</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Non-Communicable Diseases</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Nutrition</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Polio</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Primary Care</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Respiratory Diseases</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Surgery</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Surveillance</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Telemedicine</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Tuberculosis</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Vaccinations</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>*** Logistics ***</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Commodity Tracking/Procurement</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Human Resources</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>*** Other ***</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Environment</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Orphans and Vulnerable Children</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Telecommunications</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>*** Water, Sanitation, &amp; Hygiene ***</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Water, Sanitation, &amp; Hygiene</fullName>
+                    <default>false</default>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
         <visibleLines>8</visibleLines>
     </fields>
     <fields>
         <fullName>Submission_Materials__c</fullName>
         <externalId>false</externalId>
         <label>Materials Submitted</label>
-        <picklist>
-            <picklistValues>
-                <fullName>Concept Note</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Full Proposal - Prime RFP</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Standard MM SOW and Budget</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Letter of Intent</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Letter of Support</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Subcontract SOW and Budget</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Custom SOW and Budget</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Self-Service Contract</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Contract Amendment</fullName>
-                <default>false</default>
-            </picklistValues>
-            <sorted>false</sorted>
-        </picklist>
+        <required>false</required>
         <trackFeedHistory>false</trackFeedHistory>
         <trackHistory>false</trackHistory>
         <type>MultiselectPicklist</type>
+        <valueSet>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>Concept Note</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Full Proposal - Prime RFP</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Standard MM SOW and Budget</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Letter of Intent</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Letter of Support</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Subcontract SOW and Budget</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Custom SOW and Budget</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Self-Service Contract</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Contract Amendment</fullName>
+                    <default>false</default>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
         <visibleLines>4</visibleLines>
     </fields>
     <fields>
@@ -2472,6 +2619,18 @@ Services_EV__c ,
         <trackFeedHistory>false</trackFeedHistory>
         <trackHistory>false</trackHistory>
         <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>Subscriptions_web_users__c</fullName>
+        <externalId>false</externalId>
+        <label>Subscriptions web users</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <type>Number</type>
+        <unique>false</unique>
     </fields>
     <fields>
         <fullName>Tag__c</fullName>
@@ -2506,6 +2665,16 @@ Services_EV__c ,
         <scale>0</scale>
         <trackHistory>false</trackHistory>
         <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>Tech_Signed_Off__c</fullName>
+        <defaultValue>false</defaultValue>
+        <description>Tech team owns checking this off when they have signed off on an opp</description>
+        <externalId>false</externalId>
+        <label>Tech Signed Off</label>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <type>Checkbox</type>
     </fields>
     <fields>
         <fullName>Technical_Backstop__c</fullName>
@@ -2560,11 +2729,20 @@ Services_EV__c ,
     </fields>
     <fields>
         <fullName>Total_Days_Not_Updated__c</fullName>
-        <description>Equals today minus the last activity date on the opportunity</description>
+        <description>Equals today minus the last activity date OR last FB update on the opportunity</description>
         <externalId>false</externalId>
-        <formula>MIN(Fogbugz_Days_Not_Updated__c, TODAY()  -  LastActivityDate)</formula>
+        <formula>IF(AND(ISNULL(LastActivityDate), ISNULL(Last_chatter_post_date_time__c)),
+    Fogbugz_Days_Not_Updated__c,
+    IF(ISNULL(LastActivityDate),
+        MIN(Fogbugz_Days_Not_Updated__c, TODAY() -  DATEVALUE(Last_chatter_post_date_time__c)),
+        IF(ISNULL(Last_chatter_post_date_time__c),
+            MIN(Fogbugz_Days_Not_Updated__c, TODAY() - LastActivityDate),
+            MIN(Fogbugz_Days_Not_Updated__c, TODAY() - DATEVALUE(Last_chatter_post_date_time__c), TODAY() - LastActivityDate)
+        ) 
+    )
+)</formula>
         <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
-        <inlineHelpText>Equals today minus the last activity date on the opportunity</inlineHelpText>
+        <inlineHelpText>Equals today minus the last activity date OR last FB update on the opportunity</inlineHelpText>
         <label>Days Not Updated</label>
         <precision>18</precision>
         <required>false</required>
@@ -2593,17 +2771,6 @@ Services_EV__c ,
     </fields>
     <fields>
         <fullName>Type</fullName>
-        <picklist>
-            <picklistValues>
-                <fullName>Existing Business</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>New Business</fullName>
-                <default>false</default>
-            </picklistValues>
-            <sorted>false</sorted>
-        </picklist>
         <trackFeedHistory>false</trackFeedHistory>
         <trackHistory>false</trackHistory>
         <type>Picklist</type>
@@ -2879,10 +3046,10 @@ Expected_Value_Minus_Income__c ,
     </fields>
     <fields>
         <fullName>closed_lost_reason_detail__c</fullName>
-        <description>Closed lost reason - more details.</description>
+        <description>Closed reason - more details.</description>
         <externalId>false</externalId>
-        <inlineHelpText>Closed lost reason - more details.</inlineHelpText>
-        <label>Closed Lost Reason - Detail</label>
+        <inlineHelpText>Closed reason - more details.</inlineHelpText>
+        <label>Closed Reason - Detail</label>
         <required>false</required>
         <trackFeedHistory>false</trackFeedHistory>
         <trackHistory>false</trackHistory>
@@ -2974,10 +3141,40 @@ Expected_Value_Minus_Income__c ,
         <columns>OPPORTUNITY.CLOSE_DATE</columns>
         <columns>OPPORTUNITY.STAGE_NAME</columns>
         <columns>CORE.USERS.ALIAS</columns>
+        <columns>Twelve_Month_EV__c</columns>
+        <columns>X24_Month_Cash_EV__c</columns>
+        <columns>Expected_Value__c</columns>
         <filterScope>Everything</filterScope>
         <filters>
             <field>Area__c</field>
             <operation>equals</operation>
+            <value>Agriculture and Food Security</value>
+        </filters>
+        <filters>
+            <field>OPPORTUNITY.STAGE_NAME</field>
+            <operation>contains</operation>
+            <value>Stage 3 - Prospect,Stage 4 - Proposal Development,Stage 5 - Submitted,Stage 6</value>
+        </filters>
+        <label>Ag Pipeline</label>
+    </listViews>
+    <listViews>
+        <fullName>Ag_Pipeline1</fullName>
+        <columns>OPPORTUNITY.NAME</columns>
+        <columns>ACCOUNT.NAME</columns>
+        <columns>Area__c</columns>
+        <columns>Sub_Area__c</columns>
+        <columns>OPPORTUNITY.AMOUNT</columns>
+        <columns>OPPORTUNITY.CLOSE_DATE</columns>
+        <columns>OPPORTUNITY.STAGE_NAME</columns>
+        <columns>CORE.USERS.ALIAS</columns>
+        <columns>Twelve_Month_EV__c</columns>
+        <columns>X12Month_Cash_Minus_Expenses_EV__c</columns>
+        <columns>X24_Month_Cash_EV__c</columns>
+        <columns>X24_Month_Cash_Minus_Expense_EV__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Area__c</field>
+            <operation>includes</operation>
             <value>Agriculture and Food Security</value>
         </filters>
         <filters>
@@ -3020,6 +3217,7 @@ Expected_Value_Minus_Income__c ,
         <columns>Fogbugz_Assigned_To__c</columns>
         <columns>Fogbugz_Ticket_Number__c</columns>
         <columns>Fogbugz_Link__c</columns>
+        <columns>OPPORTUNITY.AMOUNT</columns>
         <filterScope>Everything</filterScope>
         <filters>
             <field>CORE.USERS.ALIAS</field>
@@ -3154,6 +3352,36 @@ Expected_Value_Minus_Income__c ,
         <label>RJ Opp view</label>
     </listViews>
     <listViews>
+        <fullName>CJ_total_opps_view</fullName>
+        <booleanFilter>1 OR 2</booleanFilter>
+        <columns>OPPORTUNITY.NAME</columns>
+        <columns>ACCOUNT.NAME</columns>
+        <columns>Opportunity_Owning_Entity__c</columns>
+        <columns>Implementing_Business_Unit__c</columns>
+        <columns>OPPORTUNITY.CLOSE_DATE</columns>
+        <columns>Has_SMS_Component__c</columns>
+        <columns>Advisory_Service__c</columns>
+        <columns>Country__c</columns>
+        <columns>Channel_Response__c</columns>
+        <columns>OPPORTUNITY.AMOUNT</columns>
+        <columns>OPPORTUNITY.STAGE_NAME</columns>
+        <columns>CORE.USERS.ALIAS</columns>
+        <columns>HIPAA_Assurance__c</columns>
+        <columns>External_Integration__c</columns>
+        <filterScope>Mine</filterScope>
+        <filters>
+            <field>OPPORTUNITY.STAGE_NAME</field>
+            <operation>equals</operation>
+            <value>Stage 3 - Prospect,Stage 4 - Proposal Development,Stage 5 - Submitted</value>
+        </filters>
+        <filters>
+            <field>OPPORTUNITY.STAGE_NAME</field>
+            <operation>equals</operation>
+            <value>Stage 6 - In Negotiations</value>
+        </filters>
+        <label>CJ total opps view</label>
+    </listViews>
+    <listViews>
         <fullName>Cash_Flow_3Month_12Month</fullName>
         <columns>OPPORTUNITY.NAME</columns>
         <columns>OPPORTUNITY.CLOSE_DATE</columns>
@@ -3217,6 +3445,9 @@ Expected_Value_Minus_Income__c ,
     </listViews>
     <listViews>
         <fullName>ClosingThisMonth</fullName>
+        <columns>CORE.USERS.ALIAS</columns>
+        <columns>OPPORTUNITY.CLOSE_DATE</columns>
+        <columns>OPPORTUNITY.NAME</columns>
         <filterScope>Everything</filterScope>
         <filters>
             <field>OPPORTUNITY.CLOSED</field>
@@ -3265,6 +3496,29 @@ Expected_Value_Minus_Income__c ,
         <label>DLAC Execution</label>
     </listViews>
     <listViews>
+        <fullName>DLAC_Pipeline</fullName>
+        <columns>OPPORTUNITY.NAME</columns>
+        <columns>Opportunity_Source__c</columns>
+        <columns>OPPORTUNITY.STAGE_NAME</columns>
+        <columns>OPPORTUNITY.LEAD_SOURCE</columns>
+        <columns>ACCOUNT.NAME</columns>
+        <columns>OPPORTUNITY.AMOUNT</columns>
+        <columns>OPPORTUNITY.CLOSE_DATE</columns>
+        <columns>CORE.USERS.ALIAS</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Implementing_Business_Unit__c</field>
+            <operation>equals</operation>
+            <value>DLAC</value>
+        </filters>
+        <filters>
+            <field>OPPORTUNITY.CREATED_DATE</field>
+            <operation>greaterOrEqual</operation>
+            <value>6/1/2014 12:00 AM</value>
+        </filters>
+        <label>DLAC Pipeline</label>
+    </listViews>
+    <listViews>
         <fullName>DLAC_Upcoming_Contracts</fullName>
         <columns>OPPORTUNITY.NAME</columns>
         <columns>ACCOUNT.NAME</columns>
@@ -3281,6 +3535,61 @@ Expected_Value_Minus_Income__c ,
             <value>DLAC</value>
         </filters>
         <label>DLAC Upcoming Contracts</label>
+    </listViews>
+    <listViews>
+        <fullName>DSA_Ag_execution</fullName>
+        <columns>OPPORTUNITY.NAME</columns>
+        <columns>ACCOUNT.NAME</columns>
+        <columns>OPPORTUNITY.AMOUNT</columns>
+        <columns>OPPORTUNITY.CLOSE_DATE</columns>
+        <columns>OPPORTUNITY.STAGE_NAME</columns>
+        <columns>CORE.USERS.ALIAS</columns>
+        <columns>Business_Unit_Owner__c</columns>
+        <columns>Channel_Response__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Area__c</field>
+            <operation>includes</operation>
+            <value>Agriculture and Food Security</value>
+        </filters>
+        <filters>
+            <field>OPPORTUNITY.CLOSE_DATE</field>
+            <operation>lessThan</operation>
+            <value>11/13/2016</value>
+        </filters>
+        <filters>
+            <field>OPPORTUNITY.CLOSE_DATE</field>
+            <operation>greaterThan</operation>
+            <value>1/1/2015</value>
+        </filters>
+        <label>AG since 2015</label>
+    </listViews>
+    <listViews>
+        <fullName>DSA_Ag_execution_2016</fullName>
+        <columns>OPPORTUNITY.NAME</columns>
+        <columns>ACCOUNT.NAME</columns>
+        <columns>OPPORTUNITY.AMOUNT</columns>
+        <columns>OPPORTUNITY.CLOSE_DATE</columns>
+        <columns>OPPORTUNITY.STAGE_NAME</columns>
+        <columns>CORE.USERS.ALIAS</columns>
+        <columns>Channel_Response__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Area__c</field>
+            <operation>includes</operation>
+            <value>Agriculture and Food Security</value>
+        </filters>
+        <filters>
+            <field>OPPORTUNITY.CLOSE_DATE</field>
+            <operation>lessThan</operation>
+            <value>12/31/2016</value>
+        </filters>
+        <filters>
+            <field>OPPORTUNITY.CLOSE_DATE</field>
+            <operation>greaterThan</operation>
+            <value>1/1/2016</value>
+        </filters>
+        <label>Ag in 2016</label>
     </listViews>
     <listViews>
         <fullName>DSA_Pipeline_Updates</fullName>
@@ -3320,6 +3629,7 @@ Expected_Value_Minus_Income__c ,
         <columns>OPPORTUNITY.STAGE_NAME</columns>
         <columns>Fogbugz_Probability__c</columns>
         <columns>CORE.USERS.ALIAS</columns>
+        <columns>Country_Name__c</columns>
         <filterScope>Everything</filterScope>
         <filters>
             <field>Implementing_Business_Unit__c</field>
@@ -3327,6 +3637,40 @@ Expected_Value_Minus_Income__c ,
             <value>DWA</value>
         </filters>
         <label>DWA BizDev 2</label>
+        <sharedTo>
+            <group>DSA</group>
+            <group>DSI</group>
+            <group>Inc</group>
+            <group>Moz</group>
+        </sharedTo>
+    </listViews>
+    <listViews>
+        <fullName>DWA_BizDev_ALL_OPPS</fullName>
+        <booleanFilter>1 AND 2</booleanFilter>
+        <columns>OPPORTUNITY.NAME</columns>
+        <columns>ACCOUNT.NAME</columns>
+        <columns>Country__c</columns>
+        <columns>Opp_Stage__c</columns>
+        <columns>OPPORTUNITY.STAGE_NAME</columns>
+        <columns>OPPORTUNITY.AMOUNT</columns>
+        <columns>Buffer_Amount__c</columns>
+        <columns>Buffer_EV__c</columns>
+        <columns>OPPORTUNITY.CLOSE_DATE</columns>
+        <columns>Fogbugz_Probability__c</columns>
+        <columns>Country_Text__c</columns>
+        <columns>CORE.USERS.ALIAS</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Implementing_Business_Unit__c</field>
+            <operation>equals</operation>
+            <value>DWA</value>
+        </filters>
+        <filters>
+            <field>Opportunity_Owning_Entity__c</field>
+            <operation>equals</operation>
+            <value>DWA</value>
+        </filters>
+        <label>DWA BizDev ALL OPPS</label>
         <sharedTo>
             <group>DSA</group>
             <group>DSI</group>
@@ -3386,6 +3730,7 @@ Expected_Value_Minus_Income__c ,
         <columns>Country__c</columns>
         <columns>OPPORTUNITY.CLOSE_DATE</columns>
         <columns>CORE.USERS.ALIAS</columns>
+        <columns>Channel_Response__c</columns>
         <filterScope>Everything</filterScope>
         <filters>
             <field>Implementing_Business_Unit__c</field>
@@ -3401,6 +3746,67 @@ Expected_Value_Minus_Income__c ,
         <sharedTo>
             <group>All_Dimagi</group>
         </sharedTo>
+    </listViews>
+    <listViews>
+        <fullName>DWA_Stage_3_6_Opportunities</fullName>
+        <columns>OPPORTUNITY.NAME</columns>
+        <columns>ACCOUNT.NAME</columns>
+        <columns>OPPORTUNITY.AMOUNT</columns>
+        <columns>OPPORTUNITY.CLOSE_DATE</columns>
+        <columns>OPPORTUNITY.STAGE_NAME</columns>
+        <columns>OPPORTUNITY.PROBABILITY</columns>
+        <columns>CORE.USERS.ALIAS</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Opportunity_Owning_Entity__c</field>
+            <operation>equals</operation>
+            <value>DWA</value>
+        </filters>
+        <filters>
+            <field>OPPORTUNITY.STAGE_NAME</field>
+            <operation>notEqual</operation>
+            <value>Closed</value>
+        </filters>
+        <filters>
+            <field>OPPORTUNITY.STAGE_NAME</field>
+            <operation>notEqual</operation>
+            <value>Closed - Won</value>
+        </filters>
+        <filters>
+            <field>OPPORTUNITY.STAGE_NAME</field>
+            <operation>notEqual</operation>
+            <value>Closed - Lost</value>
+        </filters>
+        <filters>
+            <field>OPPORTUNITY.STAGE_NAME</field>
+            <operation>notEqual</operation>
+            <value>Closed - No Go</value>
+        </filters>
+        <label>DWA Stage 3-6 Opportunities</label>
+    </listViews>
+    <listViews>
+        <fullName>DWA_opps_Stage_4_and_5_by_Buffer</fullName>
+        <columns>OPPORTUNITY.NAME</columns>
+        <columns>ACCOUNT.NAME</columns>
+        <columns>OPPORTUNITY.AMOUNT</columns>
+        <columns>OPPORTUNITY.CLOSE_DATE</columns>
+        <columns>OPPORTUNITY.STAGE_NAME</columns>
+        <columns>CORE.USERS.ALIAS</columns>
+        <columns>Buffer_Amount__c</columns>
+        <columns>Buffer_EV__c</columns>
+        <columns>Expected_Buffer__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>OPPORTUNITY.STAGE_NAME</field>
+            <operation>equals</operation>
+            <value>Stage 4 - Proposal Development,Stage 5 - Submitted</value>
+        </filters>
+        <filters>
+            <field>Opportunity_Owning_Entity__c</field>
+            <operation>equals</operation>
+            <value>DWA</value>
+        </filters>
+        <label>DWA opps Stage 4 and 5 by Buffer</label>
     </listViews>
     <listViews>
         <fullName>Default_Opportunity_Pipeline</fullName>
@@ -3580,8 +3986,11 @@ Expected_Value_Minus_Income__c ,
     </listViews>
     <listViews>
         <fullName>My_opps_field_edits</fullName>
-        <booleanFilter>1 OR 2</booleanFilter>
         <columns>OPPORTUNITY.NAME</columns>
+        <columns>GS_Resourcing_Status__c</columns>
+        <columns>Funder_Account__c</columns>
+        <columns>Opportunity_Source__c</columns>
+        <columns>OPPORTUNITY.LEAD_SOURCE</columns>
         <columns>ACCOUNT.NAME</columns>
         <columns>OPPORTUNITY.CLOSE_DATE</columns>
         <columns>OPPORTUNITY.STAGE_NAME</columns>
@@ -3591,21 +4000,12 @@ Expected_Value_Minus_Income__c ,
         <columns>OPPORTUNITY.PROBABILITY</columns>
         <columns>Duration_months__c</columns>
         <columns>OPPORTUNITY.TYPE</columns>
-        <columns>Country_Text__c</columns>
-        <columns>Technical_Lead__c</columns>
-        <columns>Number_of_Users__c</columns>
         <columns>Country__c</columns>
-        <columns>Tag__c</columns>
         <filterScope>Mine</filterScope>
         <filters>
             <field>OPPORTUNITY.STAGE_NAME</field>
-            <operation>equals</operation>
-            <value>Stage 3 - Prospect,Stage 4 - Proposal Development,Stage 5 - Submitted</value>
-        </filters>
-        <filters>
-            <field>OPPORTUNITY.STAGE_NAME</field>
-            <operation>equals</operation>
-            <value>Stage 6 - In Negotiations</value>
+            <operation>notEqual</operation>
+            <value>Closed,Closed - Won,Closed - Lost,Closed - No Go</value>
         </filters>
         <label>My opps field edits</label>
     </listViews>
@@ -3719,6 +4119,11 @@ Expected_Value_Minus_Income__c ,
         <columns>Fogbugz_Probability__c</columns>
         <columns>OPPORTUNITY.AMOUNT</columns>
         <filterScope>Mine</filterScope>
+        <filters>
+            <field>OPPORTUNITY.STAGE_NAME</field>
+            <operation>notEqual</operation>
+            <value>Closed,Keep-Warm,Closed - Won,Closed - Lost,Cash on Hand,Closed - No Go</value>
+        </filters>
         <label>Opp Field Management View CJ</label>
     </listViews>
     <listViews>
@@ -3773,6 +4178,25 @@ Expected_Value_Minus_Income__c ,
         <label>Opps - Self Service</label>
     </listViews>
     <listViews>
+        <fullName>Opps_Stage_3_Edits</fullName>
+        <columns>OPPORTUNITY.NAME</columns>
+        <columns>ACCOUNT.NAME</columns>
+        <columns>OPPORTUNITY.PROBABILITY</columns>
+        <columns>OPPORTUNITY.LAST_ACTIVITY</columns>
+        <columns>Opportunity_Source__c</columns>
+        <columns>OPPORTUNITY.AMOUNT</columns>
+        <columns>OPPORTUNITY.CLOSE_DATE</columns>
+        <columns>OPPORTUNITY.STAGE_NAME</columns>
+        <columns>CORE.USERS.ALIAS</columns>
+        <filterScope>Mine</filterScope>
+        <filters>
+            <field>OPPORTUNITY.STAGE_NAME</field>
+            <operation>equals</operation>
+            <value>Stage 3 - Prospect</value>
+        </filters>
+        <label>Opps Stage 3 Edits</label>
+    </listViews>
+    <listViews>
         <fullName>Pipeline_DMoz_All_open_opps</fullName>
         <columns>OPPORTUNITY.NAME</columns>
         <columns>ACCOUNT.NAME</columns>
@@ -3809,6 +4233,62 @@ Expected_Value_Minus_Income__c ,
             <value>Predicted pipeline</value>
         </filters>
         <label>Predicted Pipeline</label>
+    </listViews>
+    <listViews>
+        <fullName>RH_Stopped_responding</fullName>
+        <columns>OPPORTUNITY.NAME</columns>
+        <columns>ACCOUNT.NAME</columns>
+        <columns>OPPORTUNITY.CLOSE_DATE</columns>
+        <columns>Monthly_Recurring_Revenue_MRR__c</columns>
+        <columns>Closed_lost_reason__c</columns>
+        <columns>closed_lost_reason_detail__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>CORE.USERS.FIRST_NAME</field>
+            <operation>equals</operation>
+            <value>ryan</value>
+        </filters>
+        <filters>
+            <field>Closed_lost_reason__c</field>
+            <operation>equals</operation>
+            <value>LOST - Stopped responding</value>
+        </filters>
+        <label>RH - Stopped responding</label>
+    </listViews>
+    <listViews>
+        <fullName>RH_not_qualified</fullName>
+        <columns>CREATEDBY_USER.ALIAS</columns>
+        <columns>closed_lost_reason_detail__c</columns>
+        <columns>Closed_lost_reason__c</columns>
+        <columns>OPPORTUNITY.NAME</columns>
+        <columns>ACCOUNT.NAME</columns>
+        <columns>OPPORTUNITY.AMOUNT</columns>
+        <columns>OPPORTUNITY.CLOSE_DATE</columns>
+        <columns>OPPORTUNITY.STAGE_NAME</columns>
+        <columns>CORE.USERS.ALIAS</columns>
+        <filterScope>Mine</filterScope>
+        <filters>
+            <field>Not_Qualified__c</field>
+            <operation>equals</operation>
+            <value>1</value>
+        </filters>
+        <label>RH - not qualified</label>
+    </listViews>
+    <listViews>
+        <fullName>RH_opps_that_stopped_resp</fullName>
+        <columns>OPPORTUNITY.NAME</columns>
+        <columns>ACCOUNT.NAME</columns>
+        <columns>OPPORTUNITY.AMOUNT</columns>
+        <columns>OPPORTUNITY.CLOSE_DATE</columns>
+        <columns>OPPORTUNITY.STAGE_NAME</columns>
+        <columns>CORE.USERS.ALIAS</columns>
+        <filterScope>Mine</filterScope>
+        <filters>
+            <field>Closed_lost_reason__c</field>
+            <operation>equals</operation>
+            <value>LOST - Stopped responding</value>
+        </filters>
+        <label>RH - opps that stopped responding</label>
     </listViews>
     <listViews>
         <fullName>Recognition_Awards_View</fullName>
@@ -3867,6 +4347,9 @@ Expected_Value_Minus_Income__c ,
     </listViews>
     <listViews>
         <fullName>Won</fullName>
+        <columns>OPPORTUNITY.NAME</columns>
+        <columns>Opportunity_Source__c</columns>
+        <columns>CORE.USERS.FULL_NAME</columns>
         <filterScope>Everything</filterScope>
         <filters>
             <field>OPPORTUNITY.WON</field>
@@ -3877,6 +4360,11 @@ Expected_Value_Minus_Income__c ,
             <field>OPPORTUNITY.CLOSED</field>
             <operation>equals</operation>
             <value>1</value>
+        </filters>
+        <filters>
+            <field>OPPORTUNITY.CLOSE_DATE</field>
+            <operation>greaterOrEqual</operation>
+            <value>1/1/2015</value>
         </filters>
         <label>Won</label>
     </listViews>
@@ -3965,6 +4453,32 @@ Expected_Value_Minus_Income__c ,
         <label>DMOZ - opp owner, stages 1-6</label>
     </listViews>
     <listViews>
+        <fullName>enterprise</fullName>
+        <columns>OPPORTUNITY.NAME</columns>
+        <columns>ACCOUNT.NAME</columns>
+        <columns>OPPORTUNITY.AMOUNT</columns>
+        <columns>OPPORTUNITY.CLOSE_DATE</columns>
+        <columns>OPPORTUNITY.STAGE_NAME</columns>
+        <columns>CORE.USERS.ALIAS</columns>
+        <filterScope>Mine</filterScope>
+        <filters>
+            <field>Product_Text__c</field>
+            <operation>contains</operation>
+            <value>enterprise</value>
+        </filters>
+        <filters>
+            <field>Opportunity_Source__c</field>
+            <operation>notContain</operation>
+            <value>renewal</value>
+        </filters>
+        <filters>
+            <field>OPPORTUNITY.CREATED_DATE</field>
+            <operation>greaterThan</operation>
+            <value>1/1/2016 12:00 AM</value>
+        </filters>
+        <label>enterprise</label>
+    </listViews>
+    <listViews>
         <fullName>product_temp</fullName>
         <columns>OPPORTUNITY.NAME</columns>
         <columns>Product_Text__c</columns>
@@ -3980,6 +4494,23 @@ Expected_Value_Minus_Income__c ,
             <value>Stage 4 - Proposal Development,Stage 5 - Submitted,Stage 6 - In Negotiations</value>
         </filters>
         <label>product_temp</label>
+    </listViews>
+    <listViews>
+        <fullName>renewal_v2</fullName>
+        <columns>Opportunity_Source__c</columns>
+        <columns>OPPORTUNITY.NAME</columns>
+        <columns>ACCOUNT.NAME</columns>
+        <columns>OPPORTUNITY.AMOUNT</columns>
+        <columns>OPPORTUNITY.CLOSE_DATE</columns>
+        <columns>OPPORTUNITY.STAGE_NAME</columns>
+        <columns>CORE.USERS.ALIAS</columns>
+        <filterScope>Mine</filterScope>
+        <filters>
+            <field>Opportunity_Source__c</field>
+            <operation>equals</operation>
+            <value>Implementation Renewal,Product Renewal</value>
+        </filters>
+        <label>renewal v2</label>
     </listViews>
     <listViews>
         <fullName>temp_to_delete</fullName>
@@ -4003,6 +4534,7 @@ Expected_Value_Minus_Income__c ,
         <customTabListAdditionalFields>OPPORTUNITY.NAME</customTabListAdditionalFields>
         <customTabListAdditionalFields>ACCOUNT.NAME</customTabListAdditionalFields>
         <customTabListAdditionalFields>OPPORTUNITY.CLOSE_DATE</customTabListAdditionalFields>
+        <customTabListAdditionalFields>Short_Description__c</customTabListAdditionalFields>
         <listViewButtons>Sync_with_FB_multi</listViewButtons>
         <lookupDialogsAdditionalFields>OPPORTUNITY.NAME</lookupDialogsAdditionalFields>
         <lookupDialogsAdditionalFields>ACCOUNT.NAME</lookupDialogsAdditionalFields>
@@ -4012,10 +4544,12 @@ Expected_Value_Minus_Income__c ,
         <lookupPhoneDialogsAdditionalFields>ACCOUNT.SITE</lookupPhoneDialogsAdditionalFields>
         <searchResultsAdditionalFields>OPPORTUNITY.NAME</searchResultsAdditionalFields>
         <searchResultsAdditionalFields>ACCOUNT.NAME</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>Opp_Stage__c</searchResultsAdditionalFields>
         <searchResultsAdditionalFields>ACCOUNT.SITE</searchResultsAdditionalFields>
         <searchResultsAdditionalFields>OPPORTUNITY.STAGE_NAME</searchResultsAdditionalFields>
         <searchResultsAdditionalFields>OPPORTUNITY.CLOSE_DATE</searchResultsAdditionalFields>
         <searchResultsAdditionalFields>CORE.USERS.ALIAS</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>Channel_Response__c</searchResultsAdditionalFields>
     </searchLayouts>
     <sharingModel>ReadWrite</sharingModel>
     <validationRules>
