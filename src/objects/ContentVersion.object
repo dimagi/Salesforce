@@ -5,17 +5,26 @@
         <type>Default</type>
     </actionOverrides>
     <actionOverrides>
-        <actionName>SaveNoteAction</actionName>
+        <actionName>SaveEdit</actionName>
         <type>Default</type>
     </actionOverrides>
     <compactLayoutAssignment>SYSTEM</compactLayoutAssignment>
     <enableFeeds>false</enableFeeds>
     <fields>
+        <fullName>ContentSize</fullName>
+    </fields>
+    <fields>
         <fullName>Description</fullName>
         <trackHistory>false</trackHistory>
     </fields>
     <fields>
+        <fullName>FileExtension</fullName>
+    </fields>
+    <fields>
         <fullName>FileType</fullName>
+    </fields>
+    <fields>
+        <fullName>IsAssetEnabled</fullName>
     </fields>
     <fields>
         <fullName>Language</fullName>
@@ -31,10 +40,21 @@
         <trackHistory>true</trackHistory>
     </fields>
     <fields>
+        <fullName>SharingPrivacy</fullName>
+        <trackHistory>true</trackHistory>
+    </fields>
+    <fields>
         <fullName>TagCsv</fullName>
     </fields>
     <fields>
         <fullName>Title</fullName>
         <trackHistory>false</trackHistory>
     </fields>
+    <searchLayouts>
+        <searchResultsAdditionalFields>VERSION.TITLE</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>VERSION.CONTENT_SIZE</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>VERSION.FILE_EXTENSION</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>VERSION.LAST_UPDATE</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>VERSION.OWNER</searchResultsAdditionalFields>
+    </searchLayouts>
 </CustomObject>

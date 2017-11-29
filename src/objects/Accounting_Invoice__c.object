@@ -21,10 +21,6 @@
         <type>Default</type>
     </actionOverrides>
     <actionOverrides>
-        <actionName>Follow</actionName>
-        <type>Default</type>
-    </actionOverrides>
-    <actionOverrides>
         <actionName>List</actionName>
         <type>Default</type>
     </actionOverrides>
@@ -103,6 +99,19 @@
         <trackTrending>false</trackTrending>
         <type>Text</type>
         <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Domain__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <externalId>false</externalId>
+        <label>Domain</label>
+        <referenceTo>Domain__c</referenceTo>
+        <relationshipLabel>Accounting (Domain)</relationshipLabel>
+        <relationshipName>Accounting1</relationshipName>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
     </fields>
     <fields>
         <fullName>Invoice__c</fullName>
@@ -244,21 +253,34 @@ YEAR(DATEVALUE(accounting_billingaccount_date_created__c)) == YEAR(DATEVALUE(dat
         <fullName>Server_Name__c</fullName>
         <externalId>false</externalId>
         <label>Server Name</label>
-        <picklist>
-            <picklistValues>
-                <fullName>CommCareHQ</fullName>
-                <default>true</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>CommCareHQ India</fullName>
-                <default>false</default>
-            </picklistValues>
-            <sorted>false</sorted>
-        </picklist>
         <required>false</required>
         <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Picklist</type>
+        <valueSet>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>CommCareHQ</fullName>
+                    <default>true</default>
+                </value>
+                <value>
+                    <fullName>CommCareHQ India</fullName>
+                    <default>false</default>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+    <fields>
+        <fullName>Softwareplan_Edition__c</fullName>
+        <externalId>false</externalId>
+        <label>Softwareplan Edition</label>
+        <length>255</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
     </fields>
     <fields>
         <fullName>Total_Credits__c</fullName>
@@ -952,9 +974,9 @@ YEAR(DATEVALUE(accounting_billingaccount_date_created__c)) == YEAR(DATEVALUE(dat
         <fullName>balance__c</fullName>
         <externalId>false</externalId>
         <label>Amount Due</label>
-        <precision>18</precision>
+        <precision>14</precision>
         <required>false</required>
-        <scale>4</scale>
+        <scale>0</scale>
         <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Number</type>
@@ -1054,6 +1076,16 @@ IF(AND(MONTH(accounting_subscription_date_start__c)= MONTH(date_end__c),YEAR(acc
         <defaultValue>false</defaultValue>
         <externalId>false</externalId>
         <label>invoice_is_hidden_to_ops</label>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>subscription_skip_auto_downgrade__c</fullName>
+        <externalId>false</externalId>
+        <formula>Accounting_Subscription__r.skip_auto_downgrade__c</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>subscription_skip_auto_downgrade</label>
         <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Checkbox</type>

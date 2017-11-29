@@ -21,10 +21,6 @@
         <type>Default</type>
     </actionOverrides>
     <actionOverrides>
-        <actionName>Follow</actionName>
-        <type>Default</type>
-    </actionOverrides>
-    <actionOverrides>
         <actionName>List</actionName>
         <type>Default</type>
     </actionOverrides>
@@ -55,6 +51,27 @@
     <enableSearch>true</enableSearch>
     <enableSharing>true</enableSharing>
     <enableStreamingApi>true</enableStreamingApi>
+    <fields>
+        <fullName>Server_Name__c</fullName>
+        <externalId>false</externalId>
+        <label>Server Name</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+        <valueSet>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>CommCareHQ</fullName>
+                    <default>true</default>
+                </value>
+                <value>
+                    <fullName>CommCareHQ India</fullName>
+                    <default>false</default>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
     <fields>
         <fullName>Subscription__c</fullName>
         <deleteConstraint>SetNull</deleteConstraint>
@@ -108,14 +125,13 @@
     </fields>
     <fields>
         <fullName>id__c</fullName>
-        <caseSensitive>false</caseSensitive>
         <externalId>true</externalId>
         <label>id</label>
         <length>255</length>
         <required>false</required>
         <trackTrending>false</trackTrending>
         <type>Text</type>
-        <unique>true</unique>
+        <unique>false</unique>
     </fields>
     <fields>
         <fullName>is_active__c</fullName>

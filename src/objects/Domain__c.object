@@ -21,10 +21,6 @@
         <type>Default</type>
     </actionOverrides>
     <actionOverrides>
-        <actionName>Follow</actionName>
-        <type>Default</type>
-    </actionOverrides>
-    <actionOverrides>
         <actionName>List</actionName>
         <type>Default</type>
     </actionOverrides>
@@ -94,24 +90,10 @@
         <visibleLines>3</visibleLines>
     </fields>
     <fields>
-        <fullName>Deployment__c</fullName>
-        <deleteConstraint>SetNull</deleteConstraint>
-        <externalId>false</externalId>
-        <label>Deployment</label>
-        <referenceTo>Deployment__c</referenceTo>
-        <relationshipLabel>Domain</relationshipLabel>
-        <relationshipName>Domain</relationshipName>
-        <required>false</required>
-        <trackHistory>false</trackHistory>
-        <trackTrending>false</trackTrending>
-        <type>Lookup</type>
-    </fields>
-    <fields>
         <fullName>Deployment_city__c</fullName>
         <externalId>false</externalId>
-        <formula>Deployment__r.city__c</formula>
-        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
-        <label>Deployment_city</label>
+        <label>Deployment city</label>
+        <length>255</length>
         <required>false</required>
         <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
@@ -121,9 +103,8 @@
     <fields>
         <fullName>Deployment_country__c</fullName>
         <externalId>false</externalId>
-        <formula>Deployment__r.country__c</formula>
-        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
-        <label>Deployment_country</label>
+        <label>Deployment country</label>
+        <length>255</length>
         <required>false</required>
         <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
@@ -131,11 +112,29 @@
         <unique>false</unique>
     </fields>
     <fields>
-        <fullName>Deployment_public__c</fullName>
+        <fullName>Deployment_date__c</fullName>
         <externalId>false</externalId>
-        <formula>Deployment__r.public__c</formula>
-        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
-        <label>Deployment_public</label>
+        <label>Deployment date</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>DateTime</type>
+    </fields>
+    <fields>
+        <fullName>Deployment_description__c</fullName>
+        <externalId>false</externalId>
+        <label>Deployment description</label>
+        <length>15000</length>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>LongTextArea</type>
+        <visibleLines>3</visibleLines>
+    </fields>
+    <fields>
+        <fullName>Deployment_public__c</fullName>
+        <defaultValue>false</defaultValue>
+        <externalId>false</externalId>
+        <label>Deployment public</label>
         <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Checkbox</type>
@@ -143,14 +142,23 @@
     <fields>
         <fullName>Deployment_region__c</fullName>
         <externalId>false</externalId>
-        <formula>Deployment__r.region__c</formula>
-        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
-        <label>Deployment_region</label>
+        <label>Deployment region</label>
+        <length>255</length>
         <required>false</required>
         <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Text</type>
         <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Domain_has_used_features__c</fullName>
+        <defaultValue>false</defaultValue>
+        <description>Experimental from Gillian - do not use. Marks which domains have used features at any point in time.</description>
+        <externalId>false</externalId>
+        <label>[Experimental] Domain_has_used_features</label>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
     </fields>
     <fields>
         <fullName>Email__c</fullName>
@@ -161,6 +169,27 @@
         <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Enterprise_Project_Space__c</fullName>
+        <defaultValue>false</defaultValue>
+        <externalId>false</externalId>
+        <label>Enterprise Project Space</label>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Forms_for_Period__c</fullName>
+        <externalId>false</externalId>
+        <label>Forms for Period</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
         <unique>false</unique>
     </fields>
     <fields>
@@ -433,6 +462,17 @@
         <type>Lookup</type>
     </fields>
     <fields>
+        <fullName>Is_Inside_Sales__c</fullName>
+        <defaultValue>false</defaultValue>
+        <description>Check if went through the inside sales process</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Check if went through the inside sales process</inlineHelpText>
+        <label>Is Inside Sales?</label>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
         <fullName>Lead__c</fullName>
         <deleteConstraint>SetNull</deleteConstraint>
         <externalId>false</externalId>
@@ -446,12 +486,78 @@
         <type>Lookup</type>
     </fields>
     <fields>
+        <fullName>Lifetime_MRR__c</fullName>
+        <externalId>false</externalId>
+        <label>Lifetime MRR</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
         <fullName>Likely_Real__c</fullName>
         <description>over 300 forms</description>
         <externalId>false</externalId>
         <formula>cpAllForms__c &gt;= 300</formula>
         <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
         <label>Likely Real</label>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Not_Billable__c</fullName>
+        <defaultValue>false</defaultValue>
+        <description>Check this to exclude the domain from showing up in this report: https://dimagi.my.salesforce.com/00Ob0000004eeG6</description>
+        <externalId>false</externalId>
+        <label>Not Billable</label>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Opportunity__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <externalId>false</externalId>
+        <label>Opportunity</label>
+        <referenceTo>Opportunity</referenceTo>
+        <relationshipLabel>Domain</relationshipLabel>
+        <relationshipName>Domain</relationshipName>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>Partner_Program_Organization__c</fullName>
+        <description>Used to identify the Partner Program organization name</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Select the Partner Program organization from the dropdown menu</inlineHelpText>
+        <label>Partner Program Organization</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+        <valueSet>
+            <restricted>true</restricted>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>AgImpact</fullName>
+                    <default>false</default>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+    <fields>
+        <fullName>Partner_Program__c</fullName>
+        <defaultValue>false</defaultValue>
+        <description>Used to identify domains in the Partner Program</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Check box if domain is part of the Partner Program</inlineHelpText>
+        <label>Partner Program</label>
         <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Checkbox</type>
@@ -486,6 +592,28 @@
         <unique>false</unique>
     </fields>
     <fields>
+        <fullName>Server_Name__c</fullName>
+        <externalId>false</externalId>
+        <label>Server Name</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+        <valueSet>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>CommCareHQ</fullName>
+                    <default>true</default>
+                </value>
+                <value>
+                    <fullName>CommCareHQ India</fullName>
+                    <default>false</default>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+    <fields>
         <fullName>View_Project_Space_Settings_in_HQ__c</fullName>
         <externalId>false</externalId>
         <formula>HYPERLINK(&quot;https://www.commcarehq.org/a/&quot;&amp; Name &amp;&quot;/settings/project/basic/&quot;, &quot;View Project Space Settings HQ&quot;, &quot;_self&quot;)</formula>
@@ -494,6 +622,18 @@
         <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Wam__c</fullName>
+        <externalId>false</externalId>
+        <label>Wam</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
         <unique>false</unique>
     </fields>
     <fields>
@@ -1311,7 +1451,7 @@
         <defaultValue>false</defaultValue>
         <externalId>false</externalId>
         <label>Domain_is_active</label>
-        <trackHistory>false</trackHistory>
+        <trackHistory>true</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Checkbox</type>
     </fields>
@@ -1613,6 +1753,18 @@
         <type>Checkbox</type>
     </fields>
     <fields>
+        <fullName>subscription_notes__c</fullName>
+        <description>Notes on the subscription - upsell, implementation renewal, product renewal</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Notes on the subscription - upsell, implementation renewal, product renewal</inlineHelpText>
+        <label>Subscription notes</label>
+        <length>32768</length>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>LongTextArea</type>
+        <visibleLines>3</visibleLines>
+    </fields>
+    <fields>
         <fullName>supports_multiple_locations_per_user__c</fullName>
         <defaultValue>false</defaultValue>
         <externalId>false</externalId>
@@ -1692,6 +1844,28 @@
         <label>All</label>
     </listViews>
     <listViews>
+        <fullName>CRS_Test</fullName>
+        <columns>NAME</columns>
+        <columns>Account__c</columns>
+        <columns>Deployment_country__c</columns>
+        <columns>Opportunity__c</columns>
+        <columns>Enterprise_Project_Space__c</columns>
+        <columns>Email__c</columns>
+        <columns>Likely_Real__c</columns>
+        <columns>Deployment_Countries__c</columns>
+        <columns>is_active__c</columns>
+        <columns>is_test__c</columns>
+        <columns>launch_date__c</columns>
+        <columns>CREATED_DATE</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Email__c</field>
+            <operation>contains</operation>
+            <value>@crs.org</value>
+        </filters>
+        <label>CRS Test</label>
+    </listViews>
+    <listViews>
         <fullName>Domain_info_CJ</fullName>
         <booleanFilter>1 AND 2 AND (3 or 4)</booleanFilter>
         <columns>NAME</columns>
@@ -1700,7 +1874,6 @@
         <columns>Country_of_deployment_salesforce__c</columns>
         <columns>Deployment_Countries__c</columns>
         <columns>organization__c</columns>
-        <columns>Deployment_country__c</columns>
         <columns>Primary_Contact__c</columns>
         <columns>Lead__c</columns>
         <filterScope>Everything</filterScope>
@@ -1714,17 +1887,68 @@
             <operation>notEqual</operation>
             <value>True</value>
         </filters>
-        <filters>
-            <field>Deployment_country__c</field>
-            <operation>equals</operation>
-            <value>GUATEMALA,HONDURAS,EL SALVADOR,MEXICO,NICARAGUA,BELIZE</value>
-        </filters>
-        <filters>
-            <field>Deployment_country__c</field>
-            <operation>equals</operation>
-            <value>COSTA RICA,PANAMA,COLOMBIA,PERU,ECUADOR,BRAZIL,BOLIVIA</value>
-        </filters>
         <label>Domain info CJ</label>
+    </listViews>
+    <listViews>
+        <fullName>IRC_Test</fullName>
+        <columns>NAME</columns>
+        <columns>Account__c</columns>
+        <columns>Email__c</columns>
+        <columns>is_active__c</columns>
+        <columns>Primary_Contact__c</columns>
+        <columns>Enterprise_Project_Space__c</columns>
+        <columns>Deployment_country__c</columns>
+        <columns>is_test__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Email__c</field>
+            <operation>contains</operation>
+            <value>@rescue.org</value>
+        </filters>
+        <label>IRC_Test</label>
+    </listViews>
+    <listViews>
+        <fullName>PIH_Test</fullName>
+        <columns>NAME</columns>
+        <columns>Account__c</columns>
+        <columns>Email__c</columns>
+        <columns>is_active__c</columns>
+        <columns>Primary_Contact__c</columns>
+        <columns>Enterprise_Project_Space__c</columns>
+        <columns>Deployment_country__c</columns>
+        <columns>is_test__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Email__c</field>
+            <operation>contains</operation>
+            <value>@pih.org</value>
+        </filters>
+        <label>PIH_Test</label>
+    </listViews>
+    <listViews>
+        <fullName>RTI_Test</fullName>
+        <booleanFilter>1 OR 2</booleanFilter>
+        <columns>NAME</columns>
+        <columns>Account__c</columns>
+        <columns>creating_user__c</columns>
+        <columns>Deployment_country__c</columns>
+        <columns>Lifetime_MRR__c</columns>
+        <columns>Opportunity__c</columns>
+        <columns>Enterprise_Project_Space__c</columns>
+        <columns>Deployment_Countries__c</columns>
+        <columns>Country_of_deployment_salesforce__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Email__c</field>
+            <operation>contains</operation>
+            <value>@rti.org</value>
+        </filters>
+        <filters>
+            <field>NAME</field>
+            <operation>contains</operation>
+            <value>RTI</value>
+        </filters>
+        <label>RTI Test</label>
     </listViews>
     <nameField>
         <label>Domain Name</label>

@@ -47,154 +47,194 @@
     <enableBulkApi>true</enableBulkApi>
     <enableFeeds>false</enableFeeds>
     <enableHistory>false</enableHistory>
-    <enableReports>false</enableReports>
-    <enableSearch>true</enableSearch>
+    <enableReports>true</enableReports>
+    <enableSearch>false</enableSearch>
     <enableSharing>true</enableSharing>
     <enableStreamingApi>true</enableStreamingApi>
     <fields>
-        <fullName>Account__c</fullName>
+        <fullName>Employee__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
         <externalId>false</externalId>
-        <formula>Opportunity__r.Account_Name__c</formula>
-        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
-        <label>Account</label>
+        <label>Employee</label>
+        <referenceTo>SFDC_Employee__c</referenceTo>
+        <relationshipLabel>FTE Work Cards</relationshipLabel>
+        <relationshipName>FTE_Work_Cards</relationshipName>
         <required>false</required>
         <trackTrending>false</trackTrending>
-        <type>Text</type>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>Month_10__c</fullName>
+        <externalId>false</externalId>
+        <label>Month 10</label>
+        <precision>16</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
         <unique>false</unique>
     </fields>
     <fields>
-        <fullName>Amount__c</fullName>
+        <fullName>Month_11__c</fullName>
         <externalId>false</externalId>
-        <formula>Opportunity__r.Amount</formula>
-        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
-        <label>Amount</label>
+        <label>Month 11</label>
+        <precision>16</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Month_12__c</fullName>
+        <externalId>false</externalId>
+        <label>Month 12</label>
+        <precision>16</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Month_1__c</fullName>
+        <externalId>false</externalId>
+        <label>Month 1</label>
+        <precision>16</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Month_2__c</fullName>
+        <externalId>false</externalId>
+        <label>Month 2</label>
+        <precision>16</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Month_3__c</fullName>
+        <externalId>false</externalId>
+        <label>Month 3</label>
+        <precision>16</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Month_4__c</fullName>
+        <externalId>false</externalId>
+        <label>Month 4</label>
+        <precision>16</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Month_5__c</fullName>
+        <externalId>false</externalId>
+        <label>Month 5</label>
+        <precision>16</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Month_6__c</fullName>
+        <externalId>false</externalId>
+        <label>Month 6</label>
+        <precision>16</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Month_7__c</fullName>
+        <externalId>false</externalId>
+        <label>Month 7</label>
+        <precision>16</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Month_8__c</fullName>
+        <externalId>false</externalId>
+        <label>Month 8</label>
+        <precision>16</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Month_9__c</fullName>
+        <externalId>false</externalId>
+        <label>Month 9</label>
+        <precision>16</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Total_Hours__c</fullName>
+        <externalId>false</externalId>
+        <label>Total Hours</label>
         <precision>18</precision>
         <required>false</required>
         <scale>2</scale>
         <trackTrending>false</trackTrending>
-        <type>Currency</type>
-    </fields>
-    <fields>
-        <fullName>Country_Closed__c</fullName>
-        <deleteConstraint>SetNull</deleteConstraint>
-        <externalId>false</externalId>
-        <label>Country Closed</label>
-        <referenceTo>Country__c</referenceTo>
-        <relationshipLabel>Opportunities (Closed)</relationshipLabel>
-        <relationshipName>Opportunity_Countries1</relationshipName>
-        <required>false</required>
-        <trackTrending>false</trackTrending>
-        <type>Lookup</type>
-    </fields>
-    <fields>
-        <fullName>Country_Open__c</fullName>
-        <deleteConstraint>SetNull</deleteConstraint>
-        <externalId>false</externalId>
-        <label>Country Open</label>
-        <referenceTo>Country__c</referenceTo>
-        <relationshipLabel>Opportunities (Open)</relationshipLabel>
-        <relationshipName>Opportunity_Countries</relationshipName>
-        <required>false</required>
-        <trackTrending>false</trackTrending>
-        <type>Lookup</type>
-    </fields>
-    <fields>
-        <fullName>Country__c</fullName>
-        <deleteConstraint>SetNull</deleteConstraint>
-        <externalId>false</externalId>
-        <label>Country</label>
-        <referenceTo>Country__c</referenceTo>
-        <relationshipLabel>Opportunity Countries (Country)</relationshipLabel>
-        <relationshipName>OpportunityCountries</relationshipName>
-        <required>false</required>
-        <trackTrending>false</trackTrending>
-        <type>Lookup</type>
-    </fields>
-    <fields>
-        <fullName>Description__c</fullName>
-        <externalId>false</externalId>
-        <formula>Opportunity__r.Short_Description__c</formula>
-        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
-        <label>Description</label>
-        <required>false</required>
-        <trackTrending>false</trackTrending>
-        <type>Text</type>
+        <type>Number</type>
         <unique>false</unique>
     </fields>
     <fields>
-        <fullName>Opp_Name__c</fullName>
+        <fullName>Total__c</fullName>
         <externalId>false</externalId>
-        <formula>Opportunity__r.Name</formula>
-        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
-        <label>Opp. Name</label>
+        <label>Total</label>
+        <precision>16</precision>
         <required>false</required>
+        <scale>2</scale>
         <trackTrending>false</trackTrending>
-        <type>Text</type>
+        <type>Number</type>
         <unique>false</unique>
     </fields>
     <fields>
-        <fullName>Opp_Stage__c</fullName>
+        <fullName>Year__c</fullName>
         <externalId>false</externalId>
-        <formula>TEXT(Opportunity__r.StageName)</formula>
-        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
-        <label>Opp. Stage</label>
-        <required>false</required>
-        <trackTrending>false</trackTrending>
-        <type>Text</type>
-        <unique>false</unique>
-    </fields>
-    <fields>
-        <fullName>OpportunityId__c</fullName>
-        <externalId>false</externalId>
-        <label>OpportunityId</label>
-        <length>18</length>
-        <required>false</required>
-        <trackTrending>false</trackTrending>
-        <type>Text</type>
-        <unique>false</unique>
-    </fields>
-    <fields>
-        <fullName>Opportunity_Location__c</fullName>
-        <deleteConstraint>SetNull</deleteConstraint>
-        <externalId>false</externalId>
-        <label>Opportunity Location</label>
-        <referenceTo>Opportunity_Location__c</referenceTo>
-        <relationshipName>OpportunityCountries</relationshipName>
-        <required>false</required>
-        <trackTrending>false</trackTrending>
-        <type>Lookup</type>
-    </fields>
-    <fields>
-        <fullName>Opportunity__c</fullName>
-        <deleteConstraint>SetNull</deleteConstraint>
-        <externalId>false</externalId>
-        <label>Opportunity</label>
-        <referenceTo>Opportunity</referenceTo>
-        <relationshipLabel>Countries</relationshipLabel>
-        <relationshipName>OpportunityCountries</relationshipName>
-        <required>false</required>
-        <trackTrending>false</trackTrending>
-        <type>Lookup</type>
-    </fields>
-    <fields>
-        <fullName>Probability__c</fullName>
-        <externalId>false</externalId>
-        <formula>Opportunity__r.Fogbugz_Probability__c</formula>
-        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
-        <label>Probability</label>
-        <precision>18</precision>
+        <label>Year</label>
+        <precision>4</precision>
         <required>false</required>
         <scale>0</scale>
         <trackTrending>false</trackTrending>
-        <type>Percent</type>
+        <type>Number</type>
+        <unique>false</unique>
     </fields>
-    <label>Opportunity Country</label>
+    <label>FTE Work Card</label>
     <nameField>
-        <displayFormat>OC-{000000}</displayFormat>
-        <label>OpportunityCountry Name</label>
+        <displayFormat>Work-Card-{00000}</displayFormat>
+        <label>FTE Work Card Name</label>
         <type>AutoNumber</type>
     </nameField>
-    <pluralLabel>Opportunity Countries</pluralLabel>
+    <pluralLabel>FTE Work Cards</pluralLabel>
     <searchLayouts/>
     <sharingModel>ReadWrite</sharingModel>
 </CustomObject>

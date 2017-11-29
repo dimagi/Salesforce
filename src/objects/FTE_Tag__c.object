@@ -47,49 +47,31 @@
     <enableBulkApi>true</enableBulkApi>
     <enableFeeds>false</enableFeeds>
     <enableHistory>false</enableHistory>
-    <enableReports>true</enableReports>
+    <enableReports>false</enableReports>
     <enableSearch>false</enableSearch>
     <enableSharing>true</enableSharing>
     <enableStreamingApi>true</enableStreamingApi>
     <fields>
-        <fullName>DLAC__c</fullName>
+        <fullName>Action__c</fullName>
         <externalId>false</externalId>
-        <label>DLAC</label>
-        <precision>18</precision>
+        <label>Action</label>
         <required>false</required>
-        <scale>2</scale>
         <trackTrending>false</trackTrending>
-        <type>Percent</type>
-    </fields>
-    <fields>
-        <fullName>DSA__c</fullName>
-        <externalId>false</externalId>
-        <label>DSA</label>
-        <precision>18</precision>
-        <required>false</required>
-        <scale>2</scale>
-        <trackTrending>false</trackTrending>
-        <type>Percent</type>
-    </fields>
-    <fields>
-        <fullName>DSI__c</fullName>
-        <externalId>false</externalId>
-        <label>DSI</label>
-        <precision>18</precision>
-        <required>false</required>
-        <scale>2</scale>
-        <trackTrending>false</trackTrending>
-        <type>Percent</type>
-    </fields>
-    <fields>
-        <fullName>DWA__c</fullName>
-        <externalId>false</externalId>
-        <label>DWA</label>
-        <precision>18</precision>
-        <required>false</required>
-        <scale>2</scale>
-        <trackTrending>false</trackTrending>
-        <type>Percent</type>
+        <type>Picklist</type>
+        <valueSet>
+            <restricted>true</restricted>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>Updated</fullName>
+                    <default>true</default>
+                </value>
+                <value>
+                    <fullName>Tag Deleted</fullName>
+                    <default>false</default>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
     </fields>
     <fields>
         <fullName>Date__c</fullName>
@@ -100,31 +82,58 @@
         <type>Date</type>
     </fields>
     <fields>
-        <fullName>INC__c</fullName>
+        <fullName>Employee__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
         <externalId>false</externalId>
-        <label>INC</label>
-        <precision>18</precision>
+        <label>Employee</label>
+        <referenceTo>SFDC_Employee__c</referenceTo>
+        <relationshipLabel>FTE Tags</relationshipLabel>
+        <relationshipName>FTE_Tags</relationshipName>
         <required>false</required>
-        <scale>2</scale>
         <trackTrending>false</trackTrending>
-        <type>Percent</type>
+        <type>Lookup</type>
     </fields>
     <fields>
-        <fullName>Total_Aggregate_Execution_Efficiency__c</fullName>
+        <fullName>FTE_Contract__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
         <externalId>false</externalId>
-        <label>Total Aggregate Execution Efficiency</label>
+        <label>FTE Contract</label>
+        <referenceTo>DContract__c</referenceTo>
+        <relationshipLabel>FTE Tags (FTE Contract)</relationshipLabel>
+        <relationshipName>FTE_Tags1</relationshipName>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>Hours__c</fullName>
+        <externalId>false</externalId>
+        <label>Hours</label>
         <precision>18</precision>
         <required>false</required>
         <scale>2</scale>
         <trackTrending>false</trackTrending>
-        <type>Percent</type>
+        <type>Number</type>
+        <unique>false</unique>
     </fields>
-    <label>Aggregate Execution Efficiency Snapshot</label>
+    <fields>
+        <fullName>TC_Contract__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <externalId>false</externalId>
+        <label>TC Contract</label>
+        <referenceTo>DContract__c</referenceTo>
+        <relationshipLabel>FTE Tags</relationshipLabel>
+        <relationshipName>FTE_Tags</relationshipName>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <label>FTE Tag</label>
     <nameField>
-        <label>Aggregate Execution Efficiency Snapshot</label>
+        <label>FTE Tag Name</label>
         <type>Text</type>
     </nameField>
-    <pluralLabel>Aggregate Execution Efficiency Snapshots</pluralLabel>
+    <pluralLabel>FTE Tags</pluralLabel>
     <searchLayouts/>
     <sharingModel>ReadWrite</sharingModel>
 </CustomObject>

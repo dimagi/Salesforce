@@ -21,10 +21,6 @@
         <type>Default</type>
     </actionOverrides>
     <actionOverrides>
-        <actionName>Follow</actionName>
-        <type>Default</type>
-    </actionOverrides>
-    <actionOverrides>
         <actionName>List</actionName>
         <type>Default</type>
     </actionOverrides>
@@ -42,7 +38,11 @@
     </actionOverrides>
     <actionOverrides>
         <actionName>View</actionName>
-        <type>Default</type>
+        <comment>Action override created by Lightning App Builder during activation.</comment>
+        <content>Country_Record_Page</content>
+        <formFactor>Large</formFactor>
+        <skipRecordTypeSelect>false</skipRecordTypeSelect>
+        <type>Flexipage</type>
     </actionOverrides>
     <allowInChatterGroups>false</allowInChatterGroups>
     <compactLayoutAssignment>SYSTEM</compactLayoutAssignment>
@@ -89,31 +89,46 @@
         <type>TextArea</type>
     </fields>
     <fields>
+        <fullName>Description__c</fullName>
+        <description>General description of what we have going on in the country. Can be updated by anyone at any time.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Feel free to update with the latest fun facts/talking points about the country.</inlineHelpText>
+        <label>Description</label>
+        <length>32768</length>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>LongTextArea</type>
+        <visibleLines>3</visibleLines>
+    </fields>
+    <fields>
         <fullName>Entity__c</fullName>
         <externalId>false</externalId>
         <label>Owning Entity</label>
-        <picklist>
-            <picklistValues>
-                <fullName>Inc</fullName>
-                <default>true</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>DSA</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>DSI</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>DWA</fullName>
-                <default>false</default>
-            </picklistValues>
-            <sorted>false</sorted>
-        </picklist>
+        <required>false</required>
         <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Picklist</type>
+        <valueSet>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>Inc</fullName>
+                    <default>true</default>
+                </value>
+                <value>
+                    <fullName>DSA</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>DSI</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>DWA</fullName>
+                    <default>false</default>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
     </fields>
     <fields>
         <fullName>Sub_Area__c</fullName>

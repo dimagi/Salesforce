@@ -21,10 +21,6 @@
         <type>Default</type>
     </actionOverrides>
     <actionOverrides>
-        <actionName>Follow</actionName>
-        <type>Default</type>
-    </actionOverrides>
-    <actionOverrides>
         <actionName>List</actionName>
         <type>Default</type>
     </actionOverrides>
@@ -91,6 +87,50 @@ For Outstanding Contract: Total Amount Remaining</inlineHelpText>
         <scale>2</scale>
         <trackTrending>false</trackTrending>
         <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>Billing_Deficit__c</fullName>
+        <externalId>false</externalId>
+        <label>Billing Deficit</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>Buffer_EV__c</fullName>
+        <externalId>false</externalId>
+        <formula>Expected_Buffer__c * (Amount_Minus_Expense_Income__c * Probability__c)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Buffer EV</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>Buffer_EV_for_Period__c</fullName>
+        <externalId>false</externalId>
+        <label>Buffer EV for Period</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>Buffer_at_GS_BD_Handover__c</fullName>
+        <externalId>false</externalId>
+        <formula>Contract__r.Buffer_at_GS_BD_Handover__c</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Buffer % at GS-BD Handover</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackTrending>false</trackTrending>
+        <type>Percent</type>
     </fields>
     <fields>
         <fullName>CloseDate__c</fullName>
@@ -490,6 +530,29 @@ Contracts: End Date - Start Date</inlineHelpText>
         <unique>false</unique>
     </fields>
     <fields>
+        <fullName>Expected_Buffer__c</fullName>
+        <externalId>false</externalId>
+        <label>Expected % Buffer</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackTrending>false</trackTrending>
+        <type>Percent</type>
+    </fields>
+    <fields>
+        <fullName>Expected_Monthly_Recurring_Revenue_MRR__c</fullName>
+        <externalId>false</externalId>
+        <formula>IF(OR(ISPICKVAL(Opportunity__r.Implementation_Type__c, &quot;Self Service&quot;), ISPICKVAL(Opportunity__r.Implementation_Type__c, &quot;Enterprise&quot;), ISPICKVAL(Opportunity__r.Implementation_Type__c, &quot;Managed Server&quot;)),
+IF(OR(ISBLANK (Amount__c), ISBLANK(Duration_months__c)), NULL, Monthly_Recurring_Revenue_MRR__c * Probability__c), NULL)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Expected Monthly Recurring Revenue (MRR)</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
         <fullName>Expected_Value_Minus_Expense__c</fullName>
         <externalId>false</externalId>
         <formula>Amount_Minus_Expense_Income__c * Probability__c</formula>
@@ -515,6 +578,26 @@ Contracts: End Date - Start Date</inlineHelpText>
         <type>Currency</type>
     </fields>
     <fields>
+        <fullName>Expense_Travel_Spend__c</fullName>
+        <externalId>false</externalId>
+        <label>Expense &amp; Travel Spend</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>Expense_Travel_Spend_for_Period__c</fullName>
+        <externalId>false</externalId>
+        <label>Expense &amp; Travel Spend for Period</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
         <fullName>Funder_Account__c</fullName>
         <deleteConstraint>Restrict</deleteConstraint>
         <externalId>false</externalId>
@@ -526,22 +609,149 @@ Contracts: End Date - Start Date</inlineHelpText>
         <type>Lookup</type>
     </fields>
     <fields>
+        <fullName>GS_Execution_Budget__c</fullName>
+        <externalId>false</externalId>
+        <label>GS Project Services Budget</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>GS_Net_Income_for_Period__c</fullName>
+        <externalId>false</externalId>
+        <label>GS Net Income for Period</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>GS_Net_Income_for_Period_by_Handover__c</fullName>
+        <externalId>false</externalId>
+        <label>GS Net Income for Period by Handover</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>GS_Net_Income_to_Date_Handover__c</fullName>
+        <externalId>false</externalId>
+        <label>GS Net Income to Date @ Handover</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>GS_Net_Income_to_Date__c</fullName>
+        <externalId>false</externalId>
+        <label>GS Net Income to Date</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>GS_Project_Services_Budget_Handoff_Cp__c</fullName>
+        <externalId>false</externalId>
+        <label>GS Project Services Budget @ Handoff Cp</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>GS_Project_Services_Budget_Handoff__c</fullName>
+        <externalId>false</externalId>
+        <formula>Contract__r.GS_Project_Services_Budget_Handoff__c</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>GS Project Services Budget @ Handoff</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>GS_Revenue__c</fullName>
+        <externalId>false</externalId>
+        <formula>GS_Project_Services_Budget_Handoff_Cp__c * Work_Completed_for_Period__c</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>GS Revenue</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>GS_Services_Completed_Handover__c</fullName>
+        <externalId>false</externalId>
+        <label>GS Services Completed @ Handover</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>GS_Services_Completed__c</fullName>
+        <externalId>false</externalId>
+        <label>GS Services Completed</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>GS_Services_Completed_for_Period__c</fullName>
+        <externalId>false</externalId>
+        <label>GS Services Completed for Period</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>GS_Services_Handover_Completed_for_Per__c</fullName>
+        <externalId>false</externalId>
+        <label>GS Services (Handover) Completed for Per</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
         <fullName>Intracompany_Sub_contract__c</fullName>
         <externalId>false</externalId>
         <label>Intracompany Sub-contract</label>
-        <picklist>
-            <picklistValues>
-                <fullName>Yes</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>No</fullName>
-                <default>false</default>
-            </picklistValues>
-            <sorted>false</sorted>
-        </picklist>
+        <required>false</required>
         <trackTrending>false</trackTrending>
         <type>Picklist</type>
+        <valueSet>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>Yes</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>No</fullName>
+                    <default>false</default>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
     </fields>
     <fields>
         <fullName>Month_Date__c</fullName>
@@ -551,6 +761,19 @@ Contracts: End Date - Start Date</inlineHelpText>
         <required>false</required>
         <trackTrending>false</trackTrending>
         <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>Monthly_Recurring_Revenue_MRR__c</fullName>
+        <externalId>false</externalId>
+        <formula>IF(OR(ISPICKVAL(Opportunity__r.Implementation_Type__c, &quot;Self Service&quot;), ISPICKVAL(Opportunity__r.Implementation_Type__c, &quot;Enterprise&quot;), ISPICKVAL(Opportunity__r.Implementation_Type__c, &quot;Managed Server&quot;)),
+IF(OR(ISBLANK(Amount__c), ISBLANK (Duration_months__c)), NULL, Amount__c / Duration_months__c), NULL)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Monthly Recurring Revenue (MRR)</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
     </fields>
     <fields>
         <fullName>Opportunity_Amount_Minus_Expense_Income__c</fullName>
@@ -669,6 +892,26 @@ Contracts: End Date - Start Date</inlineHelpText>
         <unique>false</unique>
     </fields>
     <fields>
+        <fullName>Product_Spend__c</fullName>
+        <externalId>false</externalId>
+        <label>Product Spend</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>Product_Spend_for_Period__c</fullName>
+        <externalId>false</externalId>
+        <label>Product Spend for Period</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
         <fullName>Products__c</fullName>
         <externalId>false</externalId>
         <label>Products</label>
@@ -682,112 +925,141 @@ Contracts: End Date - Start Date</inlineHelpText>
         <fullName>RFP_Response__c</fullName>
         <externalId>false</externalId>
         <label>RFP Response</label>
-        <picklist>
-            <picklistValues>
-                <fullName>Non-RFP</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Prime-RFP</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Sub-RFP</fullName>
-                <default>false</default>
-            </picklistValues>
-            <sorted>false</sorted>
-        </picklist>
+        <required>false</required>
         <trackTrending>false</trackTrending>
         <type>Picklist</type>
+        <valueSet>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>Non-RFP</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Prime-RFP</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Sub-RFP</fullName>
+                    <default>false</default>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+    <fields>
+        <fullName>Services_Spend__c</fullName>
+        <externalId>false</externalId>
+        <label>Services Spend</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>Services_Spend_for_Period__c</fullName>
+        <externalId>false</externalId>
+        <label>Services Spend for Period</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
     </fields>
     <fields>
         <fullName>Source_Type__c</fullName>
         <externalId>false</externalId>
         <inlineHelpText>Did this come from a contract or an opportunity?</inlineHelpText>
         <label>Source Type</label>
-        <picklist>
-            <picklistValues>
-                <fullName>Contract</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Opportunity</fullName>
-                <default>false</default>
-            </picklistValues>
-            <sorted>false</sorted>
-        </picklist>
+        <required>false</required>
         <trackTrending>false</trackTrending>
         <type>Picklist</type>
+        <valueSet>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>Contract</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Opportunity</fullName>
+                    <default>false</default>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
     </fields>
     <fields>
         <fullName>Stage__c</fullName>
         <externalId>false</externalId>
         <label>Stage</label>
-        <picklist>
-            <picklistValues>
-                <fullName>Stage 1 - Connect</fullName>
-                <color>#0B6FCE</color>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Stage 2 - Talking</fullName>
-                <color>#78C953</color>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Stage 3 - Prospect</fullName>
-                <color>#E27001</color>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Stage 4 - Proposal Development</fullName>
-                <color>#DDDDDD</color>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Stage 5 - Submitted</fullName>
-                <color>#BBBBBB</color>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Stage 6 - In Negotiations</fullName>
-                <color>#999999</color>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Closed</fullName>
-                <color>#A845DC</color>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Outstanding Contracted</fullName>
-                <color>#F3D904</color>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Total</fullName>
-                <color>#A53711</color>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Cash on Hand</fullName>
-                <color>#009900</color>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Predicted pipeline</fullName>
-                <color>#0B6FCE</color>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Core run rate</fullName>
-                <color>#FF0000</color>
-                <default>false</default>
-            </picklistValues>
-            <sorted>false</sorted>
-        </picklist>
+        <required>false</required>
         <trackTrending>false</trackTrending>
         <type>Picklist</type>
+        <valueSet>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>Stage 1 - Connect</fullName>
+                    <color>#0B6FCE</color>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Stage 2 - Talking</fullName>
+                    <color>#78C953</color>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Stage 3 - Prospect</fullName>
+                    <color>#E27001</color>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Stage 4 - Proposal Development</fullName>
+                    <color>#DDDDDD</color>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Stage 5 - Submitted</fullName>
+                    <color>#BBBBBB</color>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Stage 6 - In Negotiations</fullName>
+                    <color>#999999</color>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Closed</fullName>
+                    <color>#A845DC</color>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Outstanding Contracted</fullName>
+                    <color>#F3D904</color>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Total</fullName>
+                    <color>#A53711</color>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Cash on Hand</fullName>
+                    <color>#009900</color>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Predicted pipeline</fullName>
+                    <color>#0B6FCE</color>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Core run rate</fullName>
+                    <color>#FF0000</color>
+                    <default>false</default>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
     </fields>
     <fields>
         <fullName>Three_Month_EV__c</fullName>
@@ -828,6 +1100,26 @@ Amount__c,
         <type>Currency</type>
     </fields>
     <fields>
+        <fullName>Total_Calculated_Costs__c</fullName>
+        <externalId>false</externalId>
+        <label>Total Calculated Costs</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>Total_Calculated_Costs_for_Period__c</fullName>
+        <externalId>false</externalId>
+        <label>Total Calculated Costs for Period</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
         <fullName>Twelve_Month_Cash_EV__c</fullName>
         <externalId>false</externalId>
         <formula>if(ispickval(Source_Type__c,&apos;Opportunity&apos;), 
@@ -852,6 +1144,26 @@ Amount__c,
         <scale>0</scale>
         <trackTrending>false</trackTrending>
         <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>Work_Completed__c</fullName>
+        <externalId>false</externalId>
+        <label>% of Work Completed</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackTrending>false</trackTrending>
+        <type>Percent</type>
+    </fields>
+    <fields>
+        <fullName>Work_Completed_for_Period__c</fullName>
+        <externalId>false</externalId>
+        <label>% of Work Completed for Period</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackTrending>false</trackTrending>
+        <type>Percent</type>
     </fields>
     <fields>
         <fullName>X12_Month_Cash_Minus_Expense_Income_EV__c</fullName>

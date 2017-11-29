@@ -21,10 +21,6 @@
         <type>Default</type>
     </actionOverrides>
     <actionOverrides>
-        <actionName>Follow</actionName>
-        <type>Default</type>
-    </actionOverrides>
-    <actionOverrides>
         <actionName>List</actionName>
         <type>Default</type>
     </actionOverrides>
@@ -59,7 +55,7 @@
         <fullName>DIFF_12_Month_Cash_Minus_Expense_Income__c</fullName>
         <description>EV DIFF - 12 Month Cash Minus Expense Income (EV)</description>
         <externalId>false</externalId>
-        <label>DIFF-12 Month Cash Minus Expense Income</label>
+        <label>Net EV (12 month)</label>
         <precision>18</precision>
         <required>false</required>
         <scale>0</scale>
@@ -71,7 +67,7 @@
         <fullName>DIFF_18_Month_Cash_Minus_Expenses_Income__c</fullName>
         <description>EV DIFF - 18 Month Cash Minus Expenses Income (EV)</description>
         <externalId>false</externalId>
-        <label>DIFF-18 Month Cash Minus Expenses Income</label>
+        <label>Net EV (18 month)</label>
         <precision>18</precision>
         <required>false</required>
         <scale>0</scale>
@@ -83,7 +79,7 @@
         <fullName>DIFF_24_Month_Cash_Minus_Expense_Income__c</fullName>
         <description>EV DIFF - 24 Month Cash Minus Expense Income (EV)</description>
         <externalId>false</externalId>
-        <label>DIFF-24 Month Cash Minus Expense Income</label>
+        <label>Net EV (24 month)</label>
         <precision>18</precision>
         <required>false</required>
         <scale>0</scale>
@@ -95,7 +91,7 @@
         <fullName>DIFF_Amount_Minus_Expense_Income__c</fullName>
         <description>EV DIFF - Opportunity Amount Minus Expense Income</description>
         <externalId>false</externalId>
-        <label>DIFF-Amount Minus Expense Income</label>
+        <label>Net Amount (Minus Exp)</label>
         <precision>18</precision>
         <required>false</required>
         <scale>0</scale>
@@ -107,7 +103,7 @@
         <fullName>DIFF_Expected_Value_Minus_Expense__c</fullName>
         <description>EV DIFF - Expected Value Minus Expense</description>
         <externalId>false</externalId>
-        <label>DIFF-Expected Value Minus Expense</label>
+        <label>Net EV (All Time)</label>
         <precision>18</precision>
         <required>false</required>
         <scale>0</scale>
@@ -119,41 +115,70 @@
         <fullName>Delta_Type__c</fullName>
         <externalId>false</externalId>
         <label>Delta Type</label>
-        <picklist>
-            <picklistValues>
-                <fullName>No Change</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>New Opp EV</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Increased EV</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Decreased EV</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Closed Opp - Lost / No Go</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Closed Opp - Won</fullName>
-                <default>false</default>
-            </picklistValues>
-            <sorted>false</sorted>
-        </picklist>
+        <required>false</required>
         <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Picklist</type>
+        <valueSet>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>No Change</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>New Opp EV</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Increased EV</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Decreased EV</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Closed Opp - Lost / No Go</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Closed Opp - Won</fullName>
+                    <default>false</default>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+    <fields>
+        <fullName>Diff_Buffer_EV__c</fullName>
+        <externalId>false</externalId>
+        <label>Net Buffer EV</label>
+        <precision>16</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>Diff_expected_buffer__c</fullName>
+        <externalId>false</externalId>
+        <formula>DIFF_Expected_Value_Minus_Expense__c * 	Pipeline_Snapshot__r.Expected_Buffer__c</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Diff - expected buffer</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
     </fields>
     <fields>
         <fullName>Expected_Monthly_Recurring_Revenue_MRR__c</fullName>
+        <description>Expected Monthly Recurring Revenue (MRR)</description>
         <externalId>false</externalId>
-        <label>Expected Monthly Recurring Revenue (MRR)</label>
+        <inlineHelpText>Expected Monthly Recurring Revenue (MRR)</inlineHelpText>
+        <label>Expected MRR</label>
         <precision>18</precision>
         <required>false</required>
         <scale>0</scale>
@@ -185,7 +210,7 @@
         <fullName>Opportunity_Name__c</fullName>
         <externalId>false</externalId>
         <label>Opportunity_Name</label>
-        <length>80</length>
+        <length>255</length>
         <required>false</required>
         <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
@@ -193,11 +218,23 @@
         <unique>false</unique>
     </fields>
     <fields>
+        <fullName>Opportunity__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <externalId>false</externalId>
+        <label>Opportunity</label>
+        <referenceTo>Opportunity</referenceTo>
+        <relationshipLabel>Pipeline Snapshot EV DIffs</relationshipLabel>
+        <relationshipName>Pipeline_Snapshot_EV_DIffs</relationshipName>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
         <fullName>Pipeline_Snapshot__c</fullName>
         <externalId>false</externalId>
         <label>Pipeline Snapshot</label>
         <referenceTo>Pipeline_Snapshot__c</referenceTo>
-        <relationshipLabel>Pipeline Snapshot EV DIffs</relationshipLabel>
         <relationshipName>Pipeline_Snapshot_EV_DIffs</relationshipName>
         <relationshipOrder>0</relationshipOrder>
         <reparentableMasterDetail>false</reparentableMasterDetail>
@@ -209,30 +246,19 @@
     <fields>
         <fullName>Prior_Snapshot_date__c</fullName>
         <externalId>false</externalId>
-        <label>Diff with snapshot from</label>
+        <label>Prior Snapshot Date</label>
         <required>false</required>
         <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Date</type>
     </fields>
-    <label>Pipeline Snapshot EV DIff</label>
-    <listViews>
-        <fullName>All</fullName>
-        <columns>DIFF_12_Month_Cash_Minus_Expense_Income__c</columns>
-        <columns>DIFF_18_Month_Cash_Minus_Expenses_Income__c</columns>
-        <columns>DIFF_24_Month_Cash_Minus_Expense_Income__c</columns>
-        <columns>DIFF_Amount_Minus_Expense_Income__c</columns>
-        <columns>DIFF_Expected_Value_Minus_Expense__c</columns>
-        <columns>Delta_Type__c</columns>
-        <filterScope>Everything</filterScope>
-        <label>All</label>
-    </listViews>
+    <label>EV Diffs</label>
     <nameField>
         <label>Pipeline Snapshot EV DIff Name</label>
         <trackHistory>false</trackHistory>
         <type>Text</type>
     </nameField>
-    <pluralLabel>Pipeline Snapshot EV DIffs</pluralLabel>
+    <pluralLabel>EV Diffs</pluralLabel>
     <searchLayouts/>
     <sharingModel>ControlledByParent</sharingModel>
 </CustomObject>

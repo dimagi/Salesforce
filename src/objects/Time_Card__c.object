@@ -21,10 +21,6 @@
         <type>Default</type>
     </actionOverrides>
     <actionOverrides>
-        <actionName>Follow</actionName>
-        <type>Default</type>
-    </actionOverrides>
-    <actionOverrides>
         <actionName>List</actionName>
         <type>Default</type>
     </actionOverrides>
@@ -201,6 +197,52 @@ IF(CONTAINS(Client__r.Name,&quot;Product:&quot;),&quot;Product&quot;,
         <type>Lookup</type>
     </fields>
     <fields>
+        <fullName>FTE_Contract__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <externalId>false</externalId>
+        <label>FTE Contract</label>
+        <referenceTo>DContract__c</referenceTo>
+        <relationshipLabel>Time Cards (FTE Contract)</relationshipLabel>
+        <relationshipName>FTE_Time_Cards</relationshipName>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>FTE_hours__c</fullName>
+        <externalId>false</externalId>
+        <label>FTE hours</label>
+        <precision>14</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>FTE_only__c</fullName>
+        <defaultValue>false</defaultValue>
+        <externalId>false</externalId>
+        <label>FTE only</label>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Fogbugz_Id__c</fullName>
+        <externalId>false</externalId>
+        <label>Fogbugz Id</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
         <fullName>Month__c</fullName>
         <description>Pulls the month from Date__c</description>
         <externalId>false</externalId>
@@ -226,6 +268,17 @@ IF(CONTAINS(Client__r.Name,&quot;Product:&quot;),&quot;Product&quot;,
         <unique>false</unique>
     </fields>
     <fields>
+        <fullName>Time_card_cost__c</fullName>
+        <externalId>false</externalId>
+        <label>Time card cost</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
         <fullName>Total_Days__c</fullName>
         <description>Hours divided by 8 to get days</description>
         <externalId>false</externalId>
@@ -245,9 +298,9 @@ IF(CONTAINS(Client__r.Name,&quot;Product:&quot;),&quot;Product&quot;,
         <externalId>false</externalId>
         <inlineHelpText>Total Hours</inlineHelpText>
         <label>Total Hours</label>
-        <precision>6</precision>
+        <precision>7</precision>
         <required>false</required>
-        <scale>1</scale>
+        <scale>2</scale>
         <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Number</type>

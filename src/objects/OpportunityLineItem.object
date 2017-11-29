@@ -44,30 +44,33 @@
         <fullName>License_Edition__c</fullName>
         <externalId>false</externalId>
         <label>License Edition</label>
-        <picklist>
-            <picklistValues>
-                <fullName>Community</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Standard</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Plus</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Advanced</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Enterprise</fullName>
-                <default>false</default>
-            </picklistValues>
-            <sorted>false</sorted>
-        </picklist>
+        <required>false</required>
         <type>Picklist</type>
+        <valueSet>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>Community</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Standard</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Plus</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Advanced</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Enterprise</fullName>
+                    <default>false</default>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
     </fields>
     <fields>
         <fullName>ListPrice</fullName>
