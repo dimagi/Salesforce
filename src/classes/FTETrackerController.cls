@@ -72,13 +72,11 @@ public class FTETrackerController {
                                             AND Status IN ('Holding', 'Queued', 'Preparing', 'Processing') ORDER BY createdDate DESC LIMIT 1];
 
         if(batchClassJobList != null && batchClassJobList.size() > 0) {
-            workCardJobStatus.batchIsRunning = true;
-            workCardJobStatus.batchClassJob = batchClassJobList[0];
-            workCardJobStatus.batchSubmittedDate = batchClassJobList[0].createdDate.format();
+            workCardJobStatus.isRunning = true;
             workCardJobStatus.jobItemsProcessed = batchClassJobList[0].JobItemsProcessed;
             workCardJobStatus.totalJobItems = batchClassJobList[0].TotalJobItems;
         } else {
-            workCardJobStatus.batchIsRunning = false;
+            workCardJobStatus.isRunning = false;
         }
     }
 
@@ -87,24 +85,64 @@ public class FTETrackerController {
      */
     public List<DContract__c> fteContractList { get; set;}
     public List<DContract__c> fteContractSearchList { get; set;}
+
+    public List<DContract__c> finalFteContracts {get; set;}
+    public List<DContract__c> toAddContracts {get; set;}
+    public List<DContract__c> toRemoveContracts {get; set;}
+
     public String searchError { get; set;}
     public String seachProjectName { get; set;}
+    public Boolean projectListUpdated { get; set;}
 
     public void loadContractList() {
-       this.fteContractList = [SELECT Id, Name, FTE_Tracker__c FROM DContract__c
+        this.seachProjectName = '';
+        this.searchError = '';
+        this.fteContractSearchList = new List<DContract__c>();
+        this.toAddContracts = new List<DContract__c>();
+        this.toRemoveContracts = new List<DContract__c>();
+        this.projectListUpdated = false;
+
+        loadWorkCardJobStatus();
+
+        if (workCardJobStatus.isRunning) {
+            return;
+        }
+    }
+
+    public void updateFteContracts() {
+        for (DContract__c dc : this.toAddContracts) {
+            dc.FTE_Tracker__c = 'Yes';
+        }
+        for (DContract__c dc : this.toRemoveContracts) {
+            dc.FTE_Tracker__c = 'No';
+        }
+        List<DContract__c> forUpdate = new List<DContract__c>();
+        forUpdate.addAll(this.toAddContracts);
+        forUpdate.addAll(this.toRemoveContracts);
+        if (forUpdate.size() > 0) {
+            update forUpdate;
+        }
+        this.toAddContracts.clear();
+        this.toRemoveContracts.clear();
+        this.projectListUpdated = false;
+        loadWorkCardJobStatus();
+    }
+
+    public List<DContract__c> getListToSubmit() {
+        if (this.fteContractList == null) {
+           this.fteContractList = [SELECT Id, Name, FTE_Tracker__c FROM DContract__c
                                                  WHERE FTE_Tracker__c = 'Yes' ORDER BY Name];
-       this.seachProjectName = '';
-       this.searchError = '';
-       this.fteContractSearchList = new List<DContract__c>();
+        }
+
+        return this.fteContractList;
     }
 
     public void searchProject() {
         if (this.seachProjectName != null && this.seachProjectName != '') {
-            String soql = 'SELECT Id, Name, Status__c FROM DContract__c WHERE FTE_Tracker__c != \'Yes\'';
-            soql += ' AND Name LIKE \'' + String.escapeSingleQuotes(seachProjectName) + '%\'';
-            soql += ' LIMIT 20';
-            System.debug('Final query: ' + soql);
-            this.fteContractSearchList = Database.query(soql);
+            String seachProjectNameExpr = seachProjectName + '%';
+            this.fteContractSearchList = [SELECT Id, Name, Status__c FROM DContract__c WHERE Id NOT IN : this.fteContractList
+                    AND Name LIKE: seachProjectNameExpr LIMIT 20];
+
             if(this.fteContractSearchList.size() == 0) {
                 this.searchError = 'No projects were found.';
             } else {
@@ -118,36 +156,65 @@ public class FTETrackerController {
 
     public void addProjectToFteTracker() {
         if (this.contractId != null) {
-            List<DContract__c> recordsFromDb = [SELECT Id, FTE_Tracker__c FROM DContract__c WHERE Id =: this.contractId];
+            List<DContract__c> recordsFromDb = [SELECT Id, Name, FTE_Tracker__c FROM DContract__c WHERE Id =: this.contractId];
             if (recordsFromDb.size() > 0) {
-                DContract__c toUpdate = recordsFromDb.get(0);
-                toUpdate.FTE_Tracker__c = 'Yes';
-                try {
-                    update toUpdate;
-                } catch (Exception e) {
-                    ApexPages.addMessage(new ApexPages.message(ApexPages.severity.ERROR, 'Cannot add project to FTE Tracker: '
-                                                                                            +  e.getMessage()));
+                DContract__c newFteContract = recordsFromDb.get(0);
+                Boolean aleradyAdded = false;
+                for (DContract__c cc : fteContractList) {
+                    if (cc.Id == newFteContract.Id) {
+                        aleradyAdded = true;
+                        break;
+                    }
                 }
-                loadContractList();
+                if (!aleradyAdded) {
+                    this.fteContractList.add(newFteContract);
+                    this.toAddContracts.add(newFteContract);
+                }
+
+                //check removed list
+                Integer index = -1;
+                for (Integer i = 0 ; i < this.toRemoveContracts.size(); i++) {
+                    if (this.toRemoveContracts.get(i).Id == this.contractId) {
+                        index = i;
+                        break;
+                    }
+                }
+                if (index > -1) {
+                    this.toRemoveContracts.remove(index);
+                }
             }
+            this.projectListUpdated = true;
         }
         this.contractId = null;
     }
 
     public void removeProjectFromFteTracker() {
         if (this.contractId != null) {
-            List<DContract__c> recordsFromDb = [SELECT Id, FTE_Tracker__c FROM DContract__c WHERE Id =: this.contractId];
-            if (recordsFromDb.size() > 0) {
-                DContract__c toUpdate = recordsFromDb.get(0);
-                toUpdate.FTE_Tracker__c = 'No';
-                try {
-                    update toUpdate;
-                } catch (Exception e) {
-                    ApexPages.addMessage(new ApexPages.message(ApexPages.severity.ERROR, 'Cannot remove project from FTE Tracker: '
-                                                                                            +  e.getMessage()));
+            Integer index = -1;
+            for (Integer i = 0; i < fteContractList.size(); i++) {
+                if (fteContractList.get(i).Id == this.contractId) {
+                    index = i;
+                    break;
                 }
-                loadContractList();
             }
+            if (index > -1) {
+                DContract__c contractToRem = fteContractList.get(index);
+                fteContractList.remove(index);
+                this.toRemoveContracts.add(contractToRem);
+            }
+
+            //check added list
+            index = -1;
+            for (Integer i = 0 ; i < this.toAddContracts.size(); i++) {
+                if (this.toAddContracts.get(i).Id == this.contractId) {
+                    index = i;
+                    break;
+                }
+            }
+            if (index > -1) {
+                this.toAddContracts.remove(index);
+            }
+            this.projectListUpdated = true;
         }
         this.contractId = null;
     }
@@ -304,6 +371,12 @@ public class FTETrackerController {
     public List<EmployeeTime> employees { get; set;}
 
     public void loadEmployeeListTimeHistory() {
+        loadWorkCardJobStatus();
+
+        if (workCardJobStatus.isRunning) {
+            return;
+        }
+
        this.employees = new List<EmployeeTime>();
        List<FTE_Work_Card__c> workCards = [SELECT Id, Employee__c, Employee__r.Hire_Date__c, Employee__r.Name, Employee__r.Unloaded_Daily_Rate__c, Month_1__c, Month_2__c, Month_3__c,
                                            Month_4__c, Month_5__c, Month_6__c, Month_7__c, Month_8__c, Month_9__c, Month_10__c, Month_11__c, Month_12__c,

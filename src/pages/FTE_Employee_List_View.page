@@ -23,9 +23,18 @@
         $j = jQuery.noConflict();
     </script>
 
-    <apex:pageBlock title="FTE Employee List">
+    <apex:pageBlock title="FTE Employee List" id="employeeListBlockId">
         <apex:form >
-            <apex:outputPanel >
+            <apex:actionFunction action="{!setViewData}" name="refreshEmoployeeList" reRender="emplsPanel" />
+            <apex:actionPoller action="{!loadEmployeeListTimeHistory}" enabled="{!workCardJobStatus.isRunning}" oncomplete="refreshEmoployeeList();"
+                reRender="employeeListBlockId,emplsPanel" interval="5"/>
+
+            <apex:outputPanel id="jobLoader" rendered="{!workCardJobStatus.isRunning}">
+                <apex:image url="/img/loading32.gif" height="10px" />
+                FTE Tracker is currently calculating Empolyee Work Cards {!workCardJobStatus.jobItemsProcessed}/{!workCardJobStatus.totalJobItems}
+            </apex:outputPanel>
+
+            <apex:outputPanel id="emplsPanel" rendered="{!!workCardJobStatus.isRunning}">
                 <apex:actionstatus id="loadingDiv">
                     <apex:facet name="start">
                         <div class="waitingSearchDiv" id="el_loading" style="background-color: #fbfbfb; height:100%;opacity:0.65;width:100%;">
@@ -56,6 +65,7 @@
                 <apex:actionFunction action="{!setViewData}" name="setEmployeeViewData" oncomplete="goToEmployeeView();">
                     <apex:param name="employeeId" assignTo="{!employeeId}" value=""/>
                 </apex:actionFunction>
+
                 <apex:actionFunction action="{!goToEmployeeView}" name="goToEmployeeView" />
                 <apex:commandButton action="{!goToProjectListViewFromEmployeeListView}" value="Project List" id="backButton" />
             </apex:outputPanel>

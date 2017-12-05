@@ -13,6 +13,9 @@
             margin-top: 15px;
             margin-bottom: 10px;
         }
+        .leftMargin {
+            margin-left: 10px;
+        }
     </style>
 
     <apex:includeScript value="{!URLFOR($Resource.ProjectReportOut2, 'js/jquery.min.js')}"/>
@@ -23,9 +26,18 @@
         $j = jQuery.noConflict();
     </script>
 
-    <apex:pageBlock title="FTE Project List">
+    <apex:pageBlock title="FTE Project List" id="projectListViewIBlock">
         <apex:form >
-            <apex:outputPanel id="projectList">
+
+            <apex:actionPoller action="{!loadWorkCardJobStatus}" enabled="{!workCardJobStatus.isRunning}"
+                        reRender="projectListViewIBlock" interval="10"/>
+
+            <apex:outputPanel id="jobLoader" rendered="{!workCardJobStatus.isRunning}">
+                <apex:image url="/img/loading32.gif" height="10px" />
+                FTE Tracker is currently calculating Empolyee Work Cards {!workCardJobStatus.jobItemsProcessed}/{!workCardJobStatus.totalJobItems}
+            </apex:outputPanel>
+
+            <apex:outputPanel id="projectList" rendered="{!!workCardJobStatus.isRunning}">
                 <apex:actionstatus id="loadingDiv">
                     <apex:facet name="start">
                         <div class="waitingSearchDiv" id="el_loading" style="background-color: #fbfbfb; height:100%;opacity:0.65;width:100%;">
@@ -47,17 +59,21 @@
                 <apex:actionFunction action="{!searchProject}" name="searchProjectJs" status="loadingDiv" reRender="projectList" />
 
                 <apex:pageBlockSection columns="1">
-                <apex:pageBlockTable id="fteContractList" value="{!fteContractList}" var="fteProject" styleClass="projectTable">
-                    <apex:column headerValue="FTE Project Name" value="{!fteProject.name}" styleClass="fteProjectCell" onclick="setIndividualProjectViewData('{!fteProject.Id}');" />
-                    <apex:column headerValue="Action" >
-                        <apex:commandLink status="loadingDiv" value=" Remove " action="{!removeProjectFromFteTracker}" reRender="projectList" >
-                            <apex:param name="contractToRemove" assignTo="{!contractId}" value="{!fteProject.Id}"/>
-                        </apex:commandLink>
-                    </apex:column>
-                </apex:pageBlockTable>
-                <apex:commandButton action="{!goToEmployeeListViewFromProjectListView}" value="Employee List" id="backButton" />
+                    <apex:pageBlockTable id="fteContractList" value="{!listToSubmit}" var="fteProject" styleClass="projectTable">
+                        <apex:column headerValue="FTE Project Name" value="{!fteProject.name}" styleClass="fteProjectCell" onclick="setIndividualProjectViewData('{!fteProject.Id}');" />
+                        <apex:column headerValue="Action" >
+                            <apex:commandLink status="loadingDiv" value=" Remove " action="{!removeProjectFromFteTracker}" reRender="projectList" >
+                                <apex:param name="contractToRemove" assignTo="{!contractId}" value="{!fteProject.Id}"/>
+                            </apex:commandLink>
+                        </apex:column>
+                    </apex:pageBlockTable>
                 </apex:pageBlockSection>
-
+                <apex:outputPanel styleClass="leftMargin">
+                    <apex:commandButton action="{!updateFteContracts}" value="Save changes" id="saveButton"
+                                            disabled="{!!projectListUpdated}" status="loadingDiv" reRender="projectListViewIBlock" />
+                    <apex:commandButton action="{!goToEmployeeListViewFromProjectListView}" value="Employee List" id="backButton" />
+                </apex:outputPanel>
+                <br /><br />
                 <apex:pageBlockSection columns="1" id="serachSection">
                 <apex:outputLabel value="Search Project    " />
                 <apex:outputPanel >
