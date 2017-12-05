@@ -136,11 +136,4 @@ public with sharing class hqInt_ManualRunController {
         fetchRunningInstancesPhase2();
         return null;
     }
-
-    public class JobWrapper {
-        public String jobName { get; set;}
-        public Boolean isRunning { get; set;}
-        public Integer jobItemsProcessed { get; set;}
-        public Integer totalJobItems { get; set;}
-    }
 }
