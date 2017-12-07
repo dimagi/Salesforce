@@ -117,7 +117,7 @@ public class ProjectReportOutControllerTest {
         addEmployee('simple-user@test.com');
         SFDC_Employee__c emplRec = [SELECT Id FROM SFDC_Employee__c WHERE Email_Address__c = 'simple-user@test.com'];
         Record_of_Emergency_Data_Form__c redForm = new Record_of_Emergency_Data_Form__c(Employee__c = emplRec.Id, Employee_First_Name__c = 'First Name', Employee_Middle_Name__c = 'Middle Name', Business_Unit__c = 'DSI',
-                                                                        DOB__c = Date.newInstance(Date.today().year() - 30, 3, 3), Citizenship__c = 'France', Gender__c = 'Female',
+                                                                        Employee_Last_Name__c = 'Last Name', DOB__c = Date.newInstance(Date.today().year() - 30, 3, 3), Citizenship__c = 'France', Gender__c = 'Female',
                                                                         Personal_Phone_Number__c = '000999111', Passport_No__c = 'poiulkj' ,Passport_Expiration_Date__c = Date.newInstance(Date.today().year() + 7, 5, 5),
                                                                         Current_Address_City__c = 'Simple City', Current_Address_Street__c = 'Other 323', Current_Address_State__c = 'New one',
                                                                         Current_Address_Country__c = 'England', Emergency_Contact__c = 'Emergency Contact', Emergency_Contact_Relationship__c = 'Child',
