@@ -84,7 +84,7 @@ No Last PRO found
 </apex:outputPanel>
 
 <br/><br/>
-<a href="http://dimagi.force.com/projectreportout?state={!RelatedTo.Contract__c}">Fix Distribution List</a>
+<a href="https://dimagi.secure.force.com/projectreportout?state={!RelatedTo.Contract__c}">Fix Distribution List</a>
 
 
 </messaging:htmlEmailBody>
