@@ -1348,7 +1348,7 @@ public with sharing class ProjectReportOutController {
 
     public String getServerUpTime() {
         if (this.upTime == null) {
-            this.upTime = [SELECT X_Text__c, Graph_Value_1__c, Graph_Value_2__c, Graph_Value_3__c FROM Global_Metric_Graph__c
+            this.upTime = [SELECT X_Text__c, Graph_Value_1__c, Graph_Value_2__c, Graph_Value_3__c, Graph_Value_7__c FROM Global_Metric_Graph__c
                                  WHERE Name =: CorporateDashboardHelper.UP_TIME_GRAPHS ORDER BY Helper_Date__c];
         }
         if (this.upTime != null) {

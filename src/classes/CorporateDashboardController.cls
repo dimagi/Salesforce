@@ -50,7 +50,7 @@ public without sharing class CorporateDashboardController {
                                                            ORDER BY Date__c ASC];
 
             if (metrics.size() > 0) {
-                LineChartData tmpData = new LineChartData('', 0, 0, 0);
+                LineChartData tmpData = new LineChartData('', 0, 0, 0, 0);
                 Date lastDate = metrics.get(0).Date__c;
                 for (CommCareHQ_Performance_Metrics__c rec : metrics) {
                     if (rec.Date__c.year() != lastDate.year() || rec.Date__c.month() != lastDate.month()) {
@@ -59,7 +59,7 @@ public without sharing class CorporateDashboardController {
                         tmpData.graphValue3 = (tmpData.recordCount3 != 0 ? tmpData.graphValue3 / tmpData.recordCount3 : 0);
                         tmpData.name = getDateText(lastDate);
                         this.performanceData.add(tmpData);
-                        tmpData = new LineChartData('', 0, 0, 0);
+                        tmpData = new LineChartData('', 0, 0, 0, 0);
                     }
 
                     if (rec.Number_of_Submissions__c != null) {
@@ -107,21 +107,22 @@ public without sharing class CorporateDashboardController {
         String message = '';
         ApexPages.addMessage(new ApexPages.message(ApexPages.severity.ERROR, 'part 1'));
         try {
-            List<CommCareHQ_Performance_Metrics__c> metrics = [SELECT Date__c, ICDS_Uptime__c, Prod_Uptime__c, India_Server_Uptime__c
+            List<CommCareHQ_Performance_Metrics__c> metrics = [SELECT Date__c, ICDS_Uptime__c, Prod_Uptime__c, India_Server_Uptime__c, eNikshay_Up_Time__c
                                                            FROM CommCareHQ_Performance_Metrics__c
                                                            WHERE Date__c >=: Date.today().addMonths(-12).toStartOfMonth() AND Prod_Uptime__c != null
                                                            ORDER BY Date__c ASC];
             if (metrics.size() > 0) {
-                LineChartData tmpData = new LineChartData('', 0, 0, 0);
+                LineChartData tmpData = new LineChartData('', 0, 0, 0, 0);
                 Date lastDate = metrics.get(0).Date__c;
                 for (CommCareHQ_Performance_Metrics__c rec : metrics) {
                     if (rec.Date__c.year() != lastDate.year() || rec.Date__c.month() != lastDate.month()) {
                         tmpData.graphValue2 = (tmpData.recordCount1 != 0 ? tmpData.graphValue2 / tmpData.recordCount1 : 0);
                         tmpData.graphValue1 = (tmpData.recordCount2 != 0 ? tmpData.graphValue1 / tmpData.recordCount2 : 0);
                         tmpData.graphValue3 = (tmpData.recordCount3 != 0 ? tmpData.graphValue3 / tmpData.recordCount3 : 0);
+                        tmpData.graphValue4 = (tmpData.recordCount4 != 0 ? tmpData.graphValue4 / tmpData.recordCount4 : 0);
                         tmpData.name = getDateText(lastDate);
                         this.upTimeData.add(tmpData);
-                        tmpData = new LineChartData('', 0, 0, 0);
+                        tmpData = new LineChartData('', 0, 0, 0, 0);
                     }
 
                     if (rec.India_Server_Uptime__c != null) {
@@ -136,6 +137,10 @@ public without sharing class CorporateDashboardController {
                         tmpData.graphValue3 += rec.ICDS_Uptime__c;
                         tmpData.recordCount3++;
                     }
+                    if (rec.eNikshay_Up_Time__c != null) {
+                        tmpData.graphValue4 += rec.eNikshay_Up_Time__c;
+                        tmpData.recordCount4++;
+                    }
                     lastDate = rec.Date__c;
                 }
                 // we must add the last date from list:
@@ -143,6 +148,7 @@ public without sharing class CorporateDashboardController {
                 tmpData.graphValue2 = (tmpData.recordCount1 != 0 ? tmpData.graphValue2 / tmpData.recordCount1 : 0);
                 tmpData.graphValue1 = (tmpData.recordCount2 != 0 ? tmpData.graphValue1 / tmpData.recordCount2 : 0);
                 tmpData.graphValue3 = (tmpData.recordCount3 != 0 ? tmpData.graphValue3 / tmpData.recordCount3 : 0);
+                tmpData.graphValue4 = (tmpData.recordCount4 != 0 ? tmpData.graphValue4 / tmpData.recordCount4 : 0);
                 this.upTimeData.add(tmpData);
             }
         } catch(Exception e) {
@@ -169,21 +175,25 @@ public without sharing class CorporateDashboardController {
         public Decimal graphValue1 { get; set; }
         public Decimal graphValue2 { get; set; }
         public Decimal graphValue3 { get; set; }
+        public Decimal graphValue4 { get; set; }
         public Decimal recordCount1 { get; set;}
         public Decimal recordCount2 { get; set;}
         public Decimal recordCount3 { get; set;}
+        public Decimal recordCount4 { get; set;}
 
         public LineChartData() {
         }
 
-        public LineChartData(String name, Decimal graphValue1, Decimal graphValue2, Decimal graphValue3) {
+        public LineChartData(String name, Decimal graphValue1, Decimal graphValue2, Decimal graphValue3, Decimal graphValue4) {
             this.name = name;
             this.graphValue1 = graphValue1;
             this.graphValue2 = graphValue2 / 1000.00;
             this.graphValue3 = graphValue3;
+            this.graphValue4 = graphValue4;
             this.recordCount1 = 0;
             this.recordCount2 = 0;
             this.recordCount3 = 0;
+            this.recordCount4 = 0;
         }
     }
 }
