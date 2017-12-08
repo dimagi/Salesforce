@@ -172,7 +172,10 @@
                             <h2><a href="https://dimagi.my.salesforce.com/00Ob0000004eXeG" target="_blank">Server Uptime %</a></h2>
                             <apex:chart data="{!upData}" height="400" width="90%">
                                 <apex:legend position="bottom" font="9px Helvetica, sans-serif"/>
-                                <apex:axis type="Numeric" position="left" fields="graphValue1,graphValue2,graphValue3" >
+                                <apex:axis type="Numeric" position="left" fields="graphValue1,graphValue2,graphValue3,graphValue4" >
+                                     <apex:chartLabel font="10px Helvetica, sans-serif"/>
+                                </apex:axis>
+                                <apex:axis type="Numeric" position="right" fields="graphValue4" >
                                      <apex:chartLabel font="10px Helvetica, sans-serif"/>
                                 </apex:axis>
                                 <apex:axis type="Category" position="bottom" fields="name" title="Date">
@@ -186,6 +189,9 @@
                                     <apex:chartTips height="20" width="200"/>
                                 </apex:lineSeries>
                                 <apex:lineSeries title="Avg ICDS Uptime" axis="left" xField="name" yField="graphValue3" >
+                                    <apex:chartTips height="20" width="200"/>
+                                </apex:lineSeries>
+                                <apex:lineSeries title="Avg eNikshay Uptime" axis="right" xField="name" yField="graphValue4" >
                                     <apex:chartTips height="20" width="200"/>
                                 </apex:lineSeries>
                             </apex:chart>
