@@ -130,6 +130,8 @@ public without sharing class RedFormReminderBatch implements Database.Batchable<
         emailContent += ' ' + redFormSettings.First_Email_Part_2__c;
         emailContent += ' ' + redFormSettings.First_Email_Part_3__c;
         emailContent += '<br/><br/>';
+        emailContent += 'Record of Emergency data form - https://dimagi.secure.force.com/projectreportout';
+        emailContent += '<br/><br/>';
         emailContent += 'Looking forward to working with you!';
         emailContent += '<br/><br/>';
         emailContent += 'Best,<br/>Dimagi';
