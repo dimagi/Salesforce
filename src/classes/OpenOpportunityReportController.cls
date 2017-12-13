@@ -9,7 +9,7 @@ Additional Comments: This controller performs all Opportunity Related queries fo
                      
 Updated by Nick Nestle
 Date 05/09/2013
-Changed SOQL filter in getOpenOpportunitiesByUser to filter by BU also               
+Changed SOQL filter in getOpenOpportunitiesByUser to filter by BU also
 **************************************************/
 public class OpenOpportunityReportController {
 
@@ -105,72 +105,89 @@ public class OpenOpportunityReportController {
         return queryValues;     
     }
     
-    public Opportunity[] getOpenOpportunitiesByUser(Id[] usersId) {
-        
+    public Opportunity[] getOpenOpportunitiesByUser(Id[] usersId, String[] channel) {
         String[] stages = new String[] {'Stage 1 - Connect','Stage 2 - Talking','Stage 3 - Prospect','Stage 4 - Proposal Development','Stage 5 - Submitted','Stage 6 - In Negotiations'};
-        
         Opportunity[] result = new Opportunity[] {};
+        String queryValues = this.getOpenOpportunitiesQueryValues();
 
-        String queryValues = this.getOpenOpportunitiesQueryValues();   
-        
         /******
         /* Added in filter for Opportunity_Owning_Entity__c so can filter on business unit in the report
         /* Nick Nestle May 9, 2013
         *******/
-        String sql = 'SELECT ' + queryValues + ' FROM Opportunity WHERE IsClosed = false AND (OwnerId IN :usersId OR Opportunity_Owning_Entity__c IN :usersId) AND StageName IN :stages';
-             
-        result = Database.query(sql);                                      
-        return result;                               
-    }
+        String sql = 'SELECT ' + queryValues + ' FROM Opportunity WHERE IsClosed = false AND (OwnerId IN :usersId OR Opportunity_Owning_Entity__c IN :usersId) AND StageName IN :stages AND Channel_Response__c IN: channel';
 
-
-    public Map<String, Opportunity[]> getOpenOpportunitiesOrderByStage(Id userId) {
-    	
-    	return getOpenOpportunitiesOrderByStage(new Id[] {userId});
-    }
-
-    public Map<String, Opportunity[]> getOpenOpportunitiesOrderByStage(Id[] usersId) {
-    	
-    	Map<String, Opportunity[]> result = new Map<String, Opportunity[]>();
-    	Opportunity[] opportunities = getOpenOpportunitiesByUser(usersId);    	
-    	
-    	for(Opportunity opportunity :opportunities) {
-    		
-    		String stageName = opportunity.StageName;
-    		
-    		if (result.containsKey(stageName)) {
-    			
-    			result.get(stageName).add(opportunity);    			
-    		}
-    		else {
-    			
-    			result.put(stageName, new Opportunity[] {opportunity});
-    		}    		
-    	}
-    	
-    	return result;
-    }
-    
-    public Map<String, Opportunity[]> getOpenOpportunitiesAllUsersOrderByStage() {
-        
-        Map<String, Opportunity[]> result = new Map<String, Opportunity[]>();
-        Opportunity[] opportunities = getOpenOpportunitiesAllUsers();      
-        
-        for(Opportunity opportunity :opportunities) {
-            
-            String stageName = opportunity.StageName;
-            
-            if (result.containsKey(stageName)) {
-                
-                result.get(stageName).add(opportunity);             
-            }
-            else {
-                
-                result.put(stageName, new Opportunity[] {opportunity});
-            }           
-        }
-        
+        result = Database.query(sql);
         return result;
+    }
+
+    public Map<String, Opportunity[]> getOpenOpportunitiesOrderByStage(Id userId, String[] channel) {
+        return getOpenOpportunitiesOrderByStage(new Id[] {userId}, channel);
+    }
+
+    public Map<String, Opportunity[]> getOpenOpportunitiesOrderByStage(Id[] usersId, String[] channel) {
+
+        Map<String, Opportunity[]> result = new Map<String, Opportunity[]>();
+        Opportunity[] opportunities = getOpenOpportunitiesByUser(usersId, channel);
+
+        for(Opportunity opportunity :opportunities) {
+            String stageName = opportunity.StageName;
+
+            if (result.containsKey(stageName)) {
+                result.get(stageName).add(opportunity);
+            } else {
+                result.put(stageName, new Opportunity[] {opportunity});
+            }
+        }
+
+        return result;
+    }
+
+    public Map<String, Opportunity[]> getOpenOpportunitiesAllUsersOrderByStage(String[] channel) {
+
+        Map<String, Opportunity[]> result = new Map<String, Opportunity[]>();
+        Opportunity[] opportunities = getOpenOpportunitiesAllUsers();
+
+        for(Opportunity opportunity :opportunities) {
+            String stageName = opportunity.StageName;
+
+            if (result.containsKey(stageName)) {
+                result.get(stageName).add(opportunity);
+            } else {
+                result.put(stageName, new Opportunity[] {opportunity});
+            }
+        }
+
+        return result;
+    }
+
+    public List<Selectoption> getChannelPickListValues() {
+        return getChannelPickListValues(false);
+    }
+
+    public List<Selectoption> getChannelPickListValues(Boolean forUI) {
+        List<Selectoption> pickListValuesList= new List<Selectoption>();
+        Schema.DescribeFieldResult fieldResult = Opportunity.Channel_Response__c.getDescribe();
+        List<Schema.PicklistEntry> ple = fieldResult.getPicklistValues();
+        for( Schema.PicklistEntry pickListVal : ple){
+            pickListValuesList.add(new Selectoption(pickListVal.getValue(), pickListVal.getLabel()));
+        }
+        if (forUI) {
+            pickListValuesList.add(new Selectoption('---', '-- Empty --'));
+        } else {
+            pickListValuesList.add(new Selectoption('', '-- Empty --'));
+        }
+
+        return pickListValuesList;
+    }
+
+    public List<String> getChannelListForQuery() {
+        List<String> channel = new List<String>();
+        for (Selectoption so : getChannelPickListValues()) {
+            if (so.getValue() != 'Inside Sales') {
+                channel.add(so.getValue());
+            }
+        }
+        return channel;
     }
 
     public void updateStageDate(Id[] usersId) {
