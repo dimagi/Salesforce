@@ -13,7 +13,8 @@ global class OpenOpportunityNeedUpdateDailySchedule implements Schedulable {
         if (settings.Biz_Dev_Daily_Report_Emails__c != null) {
             List<String> mails = settings.Biz_Dev_Daily_Report_Emails__c.split(',');
             if (!mails.isEmpty()) {
-                Map<String, Opportunity[]> stagedOpportunities = OpenOpportunityReportController.getInstance().getOpenOpportunitiesAllUsersOrderByStage();
+                List<String> channel = OpenOpportunityReportController.getInstance().getChannelListForQuery();
+                Map<String, Opportunity[]> stagedOpportunities = OpenOpportunityReportController.getInstance().getOpenOpportunitiesAllUsersOrderByStage(channel);
                 OpenOpportunityMailer.sendRedOpenOpportunitiesUsers(mails, stagedOpportunities, 'global');
             }
         }

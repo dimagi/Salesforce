@@ -41,7 +41,8 @@ public class OpenOpportunityMailer {
             usersNameSubject += user.Name + ' - ';
         }
 
-        Map<String, Opportunity[]> stagedOpportunities = OpenOpportunityReportController.getInstance().getOpenOpportunitiesOrderByStage(usersId);
+        List<String> channel = OpenOpportunityReportController.getInstance().getChannelListForQuery();
+        Map<String, Opportunity[]> stagedOpportunities = OpenOpportunityReportController.getInstance().getOpenOpportunitiesOrderByStage(usersId,channel);
         String content = OpenOpportunityEmailUtils.buildEmailContent(stagedOpportunities, true, stageComments);
         sendEmail(content, recipients, EMAIL_SUBJECT, usersNameSubject);
     }

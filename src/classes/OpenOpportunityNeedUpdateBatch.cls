@@ -6,12 +6,12 @@
  */
 global class OpenOpportunityNeedUpdateBatch implements Database.Batchable<sObject> {
 
-    public OpenOpportunityNeedUpdateBatch(){}    
-    
+    public OpenOpportunityNeedUpdateBatch(){}
+
     global Iterable<sObject> start(Database.BatchableContext bc) {
-    
+
         Opportunity [] opportunities = new Opportunity [] {};
-        
+
         opportunities = [SELECT 
                                 Id,
                                 OwnerId
@@ -20,22 +20,22 @@ global class OpenOpportunityNeedUpdateBatch implements Database.Batchable<sObjec
                             
         Set<Id> usersId = new Set<Id>();
         
-        for(Opportunity opp :opportunities) {           
+        for(Opportunity opp :opportunities) {
             usersId.add(opp.OwnerId);
-        }                                      
-        
-        User[] users = [SELECT Id, Email, Name FROM User WHERE Id IN :usersId];        
-        return users;             
-    }
-    
-    global void execute(Database.BatchableContext bc, User[] scope) {
-                            
-        User user = scope[0];                           
-        Map<String, Opportunity[]> stagedOpportunities = OpenOpportunityReportController.getInstance().getOpenOpportunitiesOrderByStage(user.Id);
+        }
 
-        OpenOpportunityMailer.sendRedOpenOpportunitiesBatchReport(user, new String[]{user.Email}, stagedOpportunities);                
+        User[] users = [SELECT Id, Email, Name FROM User WHERE Id IN :usersId];
+        return users;
     }
-    
+
+    global void execute(Database.BatchableContext bc, User[] scope) {
+        User user = scope[0];
+        List<String> channel = OpenOpportunityReportController.getInstance().getChannelListForQuery();
+        Map<String, Opportunity[]> stagedOpportunities = OpenOpportunityReportController.getInstance().getOpenOpportunitiesOrderByStage(user.Id, channel);
+
+        OpenOpportunityMailer.sendRedOpenOpportunitiesBatchReport(user, new String[]{user.Email}, stagedOpportunities);
+    }
+
     global void finish(Database.BatchableContext bc){}
-    
+
 }
