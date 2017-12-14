@@ -54,7 +54,7 @@ global without sharing class BatchCalculateTotalHoursOfTimeCard implements Datab
     }
 
     global void finish(Database.BatchableContext context){
-        // We must update values in contracts
+        // We must replace values in contracts
         if (!Test.isRunningTest()) {
             BatchUpdateContractServicesSpend obj = new BatchUpdateContractServicesSpend(servicesSpendMap);
             Database.executeBatch(obj, 50);

@@ -8,14 +8,12 @@ public without sharing class SalaryHistoryHelper {
     private Map<Id, List<SalaryHistoryWrapper>> employeeSalaryDateList;
     private Map<Id, List<SalaryHistoryWrapper>> employeeExchangeRateList;
     private Map<Id, List<SalaryHistoryWrapper>> employeeExchangeRateDateList;
-    private List<LoadedDailyRateSettingsWrapper> dailyRateSettings;
 
     public SalaryHistoryHelper() {
         this.employeeSalaryList = new Map<Id, List<SalaryHistoryWrapper>>();
         this.employeeSalaryDateList = new Map<Id, List<SalaryHistoryWrapper>>();
         this.employeeExchangeRateList = new Map<Id, List<SalaryHistoryWrapper>>();
         this.employeeExchangeRateDateList = new Map<Id, List<SalaryHistoryWrapper>>();
-        loadLoadedDailyRateSettings();
     }
 
     /**
@@ -169,7 +167,7 @@ public without sharing class SalaryHistoryHelper {
                 break;
             }
 
-            result.add(new SalaryHistoryRecord(calculateSalary(currentSalary, currentRate), toAdd));
+            result.add(new SalaryHistoryRecord(calculateSalary(currentSalary, currentRate, employee.Working_Days__c), toAdd));
 
             if (salaryIndex  >= salary.size() && exchangeRateIndex  >= exchangeRate.size()) {
                 break;
@@ -181,74 +179,17 @@ public without sharing class SalaryHistoryHelper {
 
     public List<SalaryHistoryRecord> mergeSalaryHistory(SFDC_Employee__c employee) {
         List<SalaryHistoryRecord> salary = mergeSalaryWithExchangeRateHistory(employee);
-        List<SalaryHistoryRecord> result = new List<SalaryHistoryRecord>();
-
-        Boolean endLoop = false;
-
-        Decimal currentSalary = 0;
-        LoadedDailyRateSettingsWrapper currentSettings = this.dailyRateSettings.get(0);
-        Integer salaryIndex = 0;
-        Integer settingsIndex = 0;
-
-        while (!endLoop) {
-
-            Date salaryDate = null;
-            Date settingsDate = null;
-
-            Decimal sal = 0;
-            LoadedDailyRateSettingsWrapper settings = null;
-
-            if (salaryIndex < salary.size()) {
-                sal = salary.get(salaryIndex).getValue();
-                salaryDate = salary.get(salaryIndex).getValueDate();
-            }
-
-            if (settingsIndex < this.dailyRateSettings.size()) {
-                settings = this.dailyRateSettings.get(settingsIndex);
-                settingsDate = this.dailyRateSettings.get(settingsIndex).getSettings().Settings_Effective_Date__c;
-            }
-
-            Date toAdd = salaryDate;
-            if ((salaryDate == null && settingsDate != null) || salaryDate > settingsDate) {
-                toAdd = settingsDate;
-                currentSettings = settings;
-                settingsIndex++;
-            } else if ((salaryDate != null && settingsDate == null) || salaryDate < settingsDate) {
-                currentSalary = sal;
-                salaryIndex++;
-            } else if (salaryDate == settingsDate) {
-                currentSalary = sal;
-                currentSettings = settings;
-                salaryIndex++;
-                settingsIndex++;
-            } else {
-                break;
-            }
-
-            result.add(new SalaryHistoryRecord(calculatePerHourSalary(currentSalary, currentSettings.getSettings(), employee.Working_Days__c), toAdd));
-
-            if (salaryIndex  >= salary.size() && settingsIndex  >= this.dailyRateSettings.size()) {
-                break;
-            }
-        }
-
-        return result;
+        return salary;
     }
 
-    public static Decimal calculateSalary(Decimal sal, Decimal er) {
-        Double result = (sal / (Double) er);
-        return Decimal.valueOf(result).setScale(2);
-    }
-
-    public static Decimal calculatePerHourSalary(Decimal sal, Loaded_Daily_Rate_Settings__c settings, Decimal workingDays) {
-        Decimal calcWorkingDays = settings.Working_Days__c;
+    public static Decimal calculateSalary(Decimal sal, Decimal er, Decimal workingDays) {
+        Decimal calcWorkingDays = 260.00;
         if (workingDays != null) {
             calcWorkingDays = workingDays;
         }
-        Double result = ((sal / calcWorkingDays) * (1 + settings.Fringe__c / 100.0)
-                            * (1 + settings.Overhead__c / 100.0) * (1 + settings.Fee__c / 100.0)
-                            * (1 + settings.G_A__c / 100.0)) / 8.0;
-        return Decimal.valueOf(result).setScale(2);
+
+        Double result = ((sal / (Double) er) / (Double) calcWorkingDays); // TODO working days?
+        return Decimal.valueOf(result);
     }
 
     private Decimal getValueForSalary(String field, SalaryHistoryWrapper record) {
@@ -313,50 +254,5 @@ public without sharing class SalaryHistoryHelper {
 
     private Date takeDate(DateTime dt) {
         return Date.newInstance(dt.year(), dt.month(), dt.day());
-    }
-
-    private void loadLoadedDailyRateSettings() {
-        this.dailyRateSettings = new List<LoadedDailyRateSettingsWrapper>();
-        List<Loaded_Daily_Rate_Settings__c> ldrs = Loaded_Daily_Rate_Settings__c.getall().values();
-
-        if (ldrs.size() > 0) {
-            for (Loaded_Daily_Rate_Settings__c settings : ldrs) {
-                this.dailyRateSettings.add(new LoadedDailyRateSettingsWrapper(settings));
-            }
-            this.dailyRateSettings.sort();
-            this.dailyRateSettings.get(0).getSettings().Settings_Effective_Date__c = Date.newInstance(1900, 1, 1);
-            System.debug('Loaded_Daily_Rate_Settings__c ' + this.dailyRateSettings);
-        } else {
-            this.dailyRateSettings.add(new LoadedDailyRateSettingsWrapper(
-                    new Loaded_Daily_Rate_Settings__c(Settings_Effective_Date__c = Date.newInstance(1900, 1, 1), Working_Days__c = 260, Fringe__c = 30,
-                                                      Overhead__c = 52, Fee__c = 10, G_A__c = 10)));
-        }
-    }
-
-    private class LoadedDailyRateSettingsWrapper implements Comparable {
-
-        private Loaded_Daily_Rate_Settings__c settings;
-
-        public LoadedDailyRateSettingsWrapper(Loaded_Daily_Rate_Settings__c settings) {
-            this.settings = settings;
-        }
-
-        public Loaded_Daily_Rate_Settings__c getSettings() {
-            return this.settings;
-        }
-
-        public void setSettings(Loaded_Daily_Rate_Settings__c settings) {
-            this.settings = settings;
-        }
-
-        public Integer compareTo(Object objToCompare) {
-            Date dateToCompare = ((LoadedDailyRateSettingsWrapper) objToCompare).getSettings().Settings_Effective_Date__c;
-            if (this.getSettings().Settings_Effective_Date__c > dateToCompare) {
-                return 1;
-            } else if (this.getSettings().Settings_Effective_Date__c < dateToCompare) {
-                return -1;
-            }
-            return 0;
-        }
     }
 }

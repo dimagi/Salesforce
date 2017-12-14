@@ -73,7 +73,7 @@ public class BatchUpdateContractServicesSpend implements Database.Batchable<DCon
             }
         }
 
-        Database.update(contractsToUpdate, false); // TODO Generate mailer
+        Database.update(contractsToUpdate, false); // TODO Generate mailer with mode!!! 
     }
 
     public void finish(Database.BatchableContext context) {
