@@ -3,7 +3,7 @@
  */
 global without sharing class BatchCalculateTotalHoursOfTimeCard implements Database.Batchable<sObject>, Database.Stateful {
 
-    private String contractId;
+    private List<String> contractIds;
     private Map<Id, Decimal> servicesSpendMap;
     private String lastEmployee;
     private List<SalaryHistoryRecord> employeeSalaryHistory;
@@ -11,13 +11,18 @@ global without sharing class BatchCalculateTotalHoursOfTimeCard implements Datab
     private Boolean testMode;
 
     global BatchCalculateTotalHoursOfTimeCard(){
+        this.contractIds = new List<String>();
         this.testMode = false;
         this.servicesSpendMap = new Map<Id, Decimal>();
     }
 
     global BatchCalculateTotalHoursOfTimeCard(String contractId){
+        BatchCalculateTotalHoursOfTimeCard(new List<String> {contractId});
+    }
+
+    global BatchCalculateTotalHoursOfTimeCard(List<String> contractIds){
         this.testMode = false;
-        this.contractId = contractId;
+        this.contractIds = contractIds;
         this.servicesSpendMap = new Map<Id, Decimal>();
     }
 
@@ -26,10 +31,10 @@ global without sharing class BatchCalculateTotalHoursOfTimeCard implements Datab
         this.employeeSalaryHistory = new List<SalaryHistoryRecord>();
 
         String query;
-        if (String.isEmpty(contractId)) {
-            query = 'SELECT Client__c, Time_card_cost__c, Employee__c, Date__c FROM Time_Card__c WHERE Employee__c != \'\' ORDER BY Employee__c';
+        if (contractIds.size() == 0) {
+            query = 'SELECT Client__c, Time_Card_Rate_Cost__c, Employee__c, Date__c FROM Time_Card__c WHERE Employee__c != \'\' ORDER BY Employee__c';
         } else {
-            query = 'SELECT Client__c, Time_card_cost__c, Employee__c, Date__c FROM Time_Card__c WHERE Client__c =: contractId ORDER BY Employee__c';
+            query = 'SELECT Client__c, Time_Card_Rate_Cost__c, Employee__c, Date__c FROM Time_Card__c WHERE Client__c IN: contractIds ORDER BY Employee__c';
         }
         return Database.getQueryLocator(query);
     }
@@ -38,11 +43,11 @@ global without sharing class BatchCalculateTotalHoursOfTimeCard implements Datab
         for (sObject obj : scope) {
             Time_Card__c tc = (Time_Card__c) obj;
 
-            if (tc.Time_card_cost__c != null) {
+            if (tc.Time_Card_Rate_Cost__c != null) {
                 if (servicesSpendMap.containsKey(tc.Client__c)) {
-                    servicesSpendMap.put(tc.Client__c, servicesSpendMap.get(tc.Client__c) + tc.Time_card_cost__c);
+                    servicesSpendMap.put(tc.Client__c, servicesSpendMap.get(tc.Client__c) + tc.Time_Card_Rate_Cost__c);
                 } else {
-                    servicesSpendMap.put(tc.Client__c, tc.Time_card_cost__c);
+                    servicesSpendMap.put(tc.Client__c, tc.Time_Card_Rate_Cost__c);
                 }
             }
         }
