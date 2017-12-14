@@ -117,7 +117,7 @@ public class ProjectReportOutControllerTest {
         addEmployee('simple-user@test.com');
         SFDC_Employee__c emplRec = [SELECT Id FROM SFDC_Employee__c WHERE Email_Address__c = 'simple-user@test.com'];
         Record_of_Emergency_Data_Form__c redForm = new Record_of_Emergency_Data_Form__c(Employee__c = emplRec.Id, Employee_First_Name__c = 'First Name', Employee_Middle_Name__c = 'Middle Name', Business_Unit__c = 'DSI',
-                                                                        Employee_Last_Name__c = 'Last Name', DOB__c = Date.newInstance(Date.today().year() - 30, 3, 3), Citizenship__c = 'France', Gender__c = 'Female',
+                                                                        Employee_Last_Name__c = 'Last Name', DOB__c = Date.newInstance(Date.today().year() - 30, 3, 3), Citizenship__c = 'France', Gender__c = 'Woman',
                                                                         Personal_Phone_Number__c = '000999111', Passport_No__c = 'poiulkj' ,Passport_Expiration_Date__c = Date.newInstance(Date.today().year() + 7, 5, 5),
                                                                         Current_Address_City__c = 'Simple City', Current_Address_Street__c = 'Other 323', Current_Address_State__c = 'New one',
                                                                         Current_Address_Country__c = 'England', Emergency_Contact__c = 'Emergency Contact', Emergency_Contact_Relationship__c = 'Child',
@@ -134,7 +134,7 @@ public class ProjectReportOutControllerTest {
 
         EmployeeFileController empFileController = new EmployeeFileController('simple-user@test.com');
         redForm = empFileController.getRedForm();
-        assertPersonalDate(redForm, 'First Name', 'Last Name', 'Middle Name', 'DSI', Date.newInstance(Date.today().year() - 30, 3, 3), 'France', 'Female', '000999111', 'poiulkj', Date.newInstance(Date.today().year() + 7, 5, 5),
+        assertPersonalDate(redForm, 'First Name', 'Last Name', 'Middle Name', 'DSI', Date.newInstance(Date.today().year() - 30, 3, 3), 'France', 'Woman', '000999111', 'poiulkj', Date.newInstance(Date.today().year() + 7, 5, 5),
                             'Simple City', 'Other 323', 'New one', 'England');
         assertEmergencyContact(redForm, 'Emergency Contact', 'Child', '333111666', 'p2@test.com', 'England', 'No');
         assertLocalEmergencyContact(redForm, 'Local Emergency', 'Other', '222222111','p1@test.com', 'United States of America (USA)', 'Yes');
@@ -147,7 +147,7 @@ public class ProjectReportOutControllerTest {
         Record_of_Emergency_Data_Form__c redForm = empFileController.getRedForm();
 
         System.assertNotEquals(null, redForm);
-        assertPersonalDate(redForm, 'Sample', 'Employee', null, 'Inc', Date.newInstance(Date.today().year() - 40, 2, 2), 'United States of America (USA)', 'Male', '606060606', 'zaq12', Date.newInstance(Date.today().year() + 4, 2, 2),
+        assertPersonalDate(redForm, 'Sample', 'Employee', null, 'Inc', Date.newInstance(Date.today().year() - 40, 2, 2), 'United States of America (USA)', 'Man', '606060606', 'zaq12', Date.newInstance(Date.today().year() + 4, 2, 2),
                             'LA', 'Street 12/B', '-', 'United States of America (USA)');
         assertEmergencyContact(redForm, 'Employee Parent1', 'Parent', '77798999666', 'parent1@test.com', 'Canada', 'Yes');
         assertLocalEmergencyContact(redForm, 'Employee Parent2', 'Parent', '711119666','parent2@test.com', 'Canada', 'No');
@@ -161,7 +161,7 @@ public class ProjectReportOutControllerTest {
         redForm.Business_Unit__c = 'DSI';
         redForm.DOB__c = Date.newInstance(Date.today().year() - 30, 3, 3);
         redForm.Citizenship__c = 'France';
-        redForm.Gender__c = 'Female';
+        redForm.Gender__c = 'Woman';
         redForm.Personal_Phone_Number__c = '000999111';
         redForm.Passport_No__c = 'poiulkj';
         redForm.Passport_Expiration_Date__c = Date.newInstance(Date.today().year() + 7, 5, 5);
@@ -200,7 +200,7 @@ public class ProjectReportOutControllerTest {
         // New instance to copy values from updated employee object
         empFileController = new EmployeeFileController('simple-user@test.com');
         redForm = empFileController.getRedForm();
-        assertPersonalDate(redForm, 'First Name', 'Last Name', 'Middle Name', 'DSI', Date.newInstance(Date.today().year() - 30, 3, 3), 'France', 'Female', '000999111', 'poiulkj', Date.newInstance(Date.today().year() + 7, 5, 5),
+        assertPersonalDate(redForm, 'First Name', 'Last Name', 'Middle Name', 'DSI', Date.newInstance(Date.today().year() - 30, 3, 3), 'France', 'Woman', '000999111', 'poiulkj', Date.newInstance(Date.today().year() + 7, 5, 5),
                             'Simple City', 'Other 323', 'New one', 'England');
         assertEmergencyContact(redForm, 'Emergency Contact', 'Child', '333111666', 'p2@test.com', 'England', 'No');
         assertLocalEmergencyContact(redForm, 'Local Emergency', 'Other', '222222111','p1@test.com', 'United States of America (USA)', 'Yes');
@@ -263,7 +263,7 @@ public class ProjectReportOutControllerTest {
             name = 'Sample Employee', Salary__c = 50000, Exchange_Rate__c = 1, Effective_Salary_Date__c = Date.newInstance(2016, 2, 24),
             Effective_Exchange_Rate_Date__c = Date.newInstance(2016, 2, 24), Employee_First_Name__c = 'Sample',
             Employee_Last_Name__c = 'Employee', Business_Unit__c = buList.get(0).Id, DOB__c = Date.newInstance(Date.today().year() - 40, 2, 2),
-            Citizenship__c = 'United States of America (USA)', Gender__c = 'Male', Personal_Phone_Number__c = '606060606',
+            Citizenship__c = 'United States of America (USA)', Gender__c = 'Man', Personal_Phone_Number__c = '606060606',
             Passport_No__c = 'zaq12', Passport_Expiration_Date__c = Date.newInstance(Date.today().year() + 4, 2, 2),
             Current_Address_City__c = 'LA', Current_Address_Street__c = 'Street 12/B', Current_Address_State__c = '-', Current_Address_Country__c = 'United States of America (USA)',
             EMERGENCY_CONTACT__c = 'Employee Parent1', Emergency_Contact_Relationship__c = 'Parent', Emergency_Contact_Phone__c = '77798999666',
