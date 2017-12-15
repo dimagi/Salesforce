@@ -3,27 +3,29 @@
  */
 public without sharing class SalaryHistoryHelper {
 
-    // Needed for PRO page to avoid SOQL Limit Exception
-    private Map<Id, List<SalaryHistoryWrapper>> employeeSalaryList;
-    private Map<Id, List<SalaryHistoryWrapper>> employeeSalaryDateList;
-    private Map<Id, List<SalaryHistoryWrapper>> employeeExchangeRateList;
-    private Map<Id, List<SalaryHistoryWrapper>> employeeExchangeRateDateList;
+    public List<SalaryHistoryRecord> loadBillingRatesHistory(String billingRateName) {
+        List<SalaryHistoryRecord> billingRateHistory = new List<SalaryHistoryRecord>();
 
-    public SalaryHistoryHelper() {
-        this.employeeSalaryList = new Map<Id, List<SalaryHistoryWrapper>>();
-        this.employeeSalaryDateList = new Map<Id, List<SalaryHistoryWrapper>>();
-        this.employeeExchangeRateList = new Map<Id, List<SalaryHistoryWrapper>>();
-        this.employeeExchangeRateDateList = new Map<Id, List<SalaryHistoryWrapper>>();
-    }
+        List<Project_Billing_Rate__c> ratesRecords = [SELECT Id, Date__c, Custom_1__c, Custom_2__c, Custom_3__c, Fee__c, Fringe__c, G_A__c, Overhead__c FROM Project_Billing_Rate__c WHERE Name =: billingRateName ORDER BY Date__c];
 
-    /**
-     * Loads history records from DB for employees from given list
-     */
-    public void loadHistoryForEmployees(Set<Id> emps) {
-        this.employeeSalaryList = fillMap(emps, [SELECT ParentId, OldValue, NewValue, CreatedDate FROM SFDC_Employee__History WHERE ParentId IN: emps AND Field = 'Salary__c' ORDER BY CreatedDate ASC]);
-        this.employeeSalaryDateList = fillMap(emps,[SELECT ParentId, OldValue, NewValue, CreatedDate FROM SFDC_Employee__History WHERE ParentId IN: emps AND Field = 'Effective_Salary_Date__c' ORDER BY CreatedDate ASC]);
-        this.employeeExchangeRateList = fillMap(emps,[SELECT ParentId, OldValue, NewValue, CreatedDate FROM SFDC_Employee__History WHERE ParentId IN: emps AND Field = 'Exchange_Rate__c' ORDER BY CreatedDate ASC]);
-        this.employeeExchangeRateDateList = fillMap(emps,[SELECT ParentId, OldValue, NewValue, CreatedDate FROM SFDC_Employee__History WHERE ParentId IN: emps AND Field = 'Effective_Exchange_Rate_Date__c' ORDER BY CreatedDate ASC]);
+        for (Project_Billing_Rate__c rate : ratesRecords) {
+            Decimal custom1 = rate.Custom_1__c != null ? rate.Custom_1__c / 100.00 : 0;
+            Decimal custom2 = rate.Custom_2__c != null ? rate.Custom_2__c / 100.00 : 0;
+            Decimal custom3 = rate.Custom_3__c != null ? rate.Custom_3__c / 100.00 : 0;
+            Decimal fee = rate.Fee__c != null ? rate.Fee__c / 100.00 : 0;
+            Decimal fringe = rate.Fringe__c != null ? rate.Fringe__c / 100.00 : 0;
+            Decimal ga = rate.G_A__c != null ? rate.G_A__c / 100.00 : 0;
+            Decimal over = rate.Overhead__c != null ? rate.Overhead__c / 100.00 : 0;
+
+            Decimal rateValue = 1.00 + custom1 + custom2 + custom3 + fee + fringe + ga + over;
+            billingRateHistory.add(new SalaryHistoryRecord(rateValue, rate.Date__c));
+        }
+
+        if (billingRateHistory.size() == 0) {
+            billingRateHistory.add(new SalaryHistoryRecord(1.0, Date.newInstance(1900, 1, 1))); // 100% of Daily Rate
+        }
+
+        return billingRateHistory;
     }
 
     /**
@@ -167,7 +169,9 @@ public without sharing class SalaryHistoryHelper {
                 break;
             }
 
-            result.add(new SalaryHistoryRecord(calculateSalary(currentSalary, currentRate, employee.Working_Days__c), toAdd));
+            result.add(new SalaryHistoryRecord(calculateSalary(currentSalary, currentRate,
+                                                employee.Hire_Date__c.monthsBetween(employee.Expected_Termination_Date__c) < 12 ? employee.Working_Days__c : null),
+                                                toAdd));
 
             if (salaryIndex  >= salary.size() && exchangeRateIndex  >= exchangeRate.size()) {
                 break;
@@ -183,12 +187,12 @@ public without sharing class SalaryHistoryHelper {
     }
 
     public static Decimal calculateSalary(Decimal sal, Decimal er, Decimal workingDays) {
-        Decimal calcWorkingDays = 260.00;
+        Decimal calcWorkingDays = 260.00 * 8.00;
         if (workingDays != null) {
-            calcWorkingDays = workingDays;
+            calcWorkingDays = workingDays * 8.00;
         }
 
-        Double result = ((sal / (Double) er) / (Double) calcWorkingDays); // TODO working days?
+        Double result = ((sal / (Double) er) / (Double) calcWorkingDays);
         return Decimal.valueOf(result);
     }
 
@@ -215,17 +219,6 @@ public without sharing class SalaryHistoryHelper {
     private List<SalaryHistoryWrapper> getFieldHistory(SFDC_Employee__c employee, String fieldName) {
         if (Test.isRunningTest()) {
             return SalaryHistoryMock.getFieldHistory(employee, fieldName);
-        }
-
-        // Check data fom buffor
-        if (fieldName == 'Salary__c' && this.employeeSalaryList.containsKey(employee.Id)) {
-            return this.employeeSalaryList.get(employee.Id);
-        } else if (fieldName == 'Effective_Salary_Date__c' && this.employeeSalaryDateList.containsKey(employee.Id)) {
-            return this.employeeSalaryDateList.get(employee.Id);
-        } else if (fieldName == 'Exchange_Rate__c' && this.employeeExchangeRateList.containsKey(employee.Id)) {
-            return this.employeeExchangeRateList.get(employee.Id);
-        } else if (fieldName == 'Effective_Exchange_Rate_Date__c' && this.employeeExchangeRateDateList.containsKey(employee.Id)) {
-            return this.employeeExchangeRateDateList.get(employee.Id);
         }
 
         List<SFDC_Employee__History> records = [SELECT OldValue, NewValue, CreatedDate FROM SFDC_Employee__History WHERE parentId =: employee.Id AND Field =: fieldName ORDER BY CreatedDate ASC];
