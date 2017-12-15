@@ -4,6 +4,7 @@ public class BatchCalculateTotalHoursOfTimeCardTest {
     @testSetup
     static void setup() {
         insert new Project_Billing_Rate__c(Name = 'Loaded Daily Rate', Date__c = Date.newInstance(1990, 01, 01), Custom_1__c = 0, Custom_2__c = 0, Custom_3__c = 0, Fee__c = 10, Fringe__c = 30, G_A__c = 10, Overhead__c = 52);
+        insert new Project_Billing_Rate__c(Name = 'Loaded Daily Rate 2', Date__c = Date.newInstance(1990, 01, 01), Custom_1__c = 22, Custom_2__c = 0, Custom_3__c = 0, Fee__c = 10, Fringe__c = 30, G_A__c = 10, Overhead__c = 52);
     }
 
     static testMethod void shouldUpdateServicesSpend() {
@@ -255,6 +256,89 @@ public class BatchCalculateTotalHoursOfTimeCardTest {
         System.assertEquals(574.75, dcontractFromDB.Services_Spend__c);
 
         dcontractFromDB = [SELECT Id, Name, Services_Spend__c FROM DContract__c WHERE Id =: child4.Id];
+        System.assertEquals(459.80, dcontractFromDB.Services_Spend__c);
+    }
+
+    @isTest
+    public static void triggerShouldUpdateRates() {
+        Test.startTest();
+        SFDC_Employee__c employeeObj = new SFDC_Employee__c(
+            name = 'Sample Employee',
+            Salary__c = 50000,
+            Exchange_Rate__c = 1,
+            Effective_Salary_Date__c = Date.newInstance(2016, 2, 24),
+            Effective_Exchange_Rate_Date__c = Date.newInstance(2016, 2, 24)
+        );
+        insert employeeObj;
+
+        DContract__c parent = new DContract__c(
+            Name = 'Sample Parent',
+            Status__c = 'Active',
+            Requires_Report_Out__c = 'No',
+            Intracompany_Sub_contract__c = 'No'
+        );
+        insert parent;
+
+        DContract__c child1 = new DContract__c(
+            Name = 'Sample Child 1',
+            Status__c = 'Active',
+            Requires_Report_Out__c = 'No',
+            Intracompany_Sub_contract__c = 'Yes',
+            Parent_Contract__c = parent.Id
+        );
+        insert child1;
+
+        DContract__c child2 = new DContract__c(
+            Name = 'Sample Child 2',
+            Status__c = 'Active',
+            Requires_Report_Out__c = 'No',
+            Intracompany_Sub_contract__c = 'Yes',
+            Parent_Contract__c = parent.Id
+        );
+        insert child2;
+
+        Time_Card__c timeCardObj1 = new Time_Card__c(
+            Total__c = 4,
+            Date__c = Date.today().addMonths(-2),
+            Employee__c = employeeObj.Id,
+            Client__c = child1.Id
+        );
+        insert timeCardObj1;
+
+        Time_Card__c timeCardObj2 = new Time_Card__c(
+            Total__c = 8,
+            Date__c = Date.today().addMonths(-2),
+            Employee__c = employeeObj.Id,
+            Client__c = child2.Id
+        );
+        insert timeCardObj2;
+
+        DContract__c toUpdate = [SELECT Id, Project_Billing_Rate__c FROM DContract__c WHERE Id =: child1.Id];
+        toUpdate.Project_Billing_Rate__c = 'Loaded Daily Rate 2';
+        update toUpdate;
+
+        Test.stopTest();
+
+        // we must manually run Batch job from finish method, not sure why this is not working in tests
+        BatchCalculateTotalHoursOfTimeCard batch1 = new BatchCalculateTotalHoursOfTimeCard(new List<Id> {toUpdate.Id});
+        Database.QueryLocatorIterator iter = batch1.start(null).iterator();
+        List<sObject> testData = new List<sObject>();
+        while (iter.hasNext()) {
+            testData.add(iter.next());
+        }
+
+        System.debug('testData ' + testData);
+        batch1.execute(null, testData);
+        BatchUpdateContractServicesSpend batch2 = new BatchUpdateContractServicesSpend(batch1.getServicesSpendMap());
+        batch2.execute(null, batch2.start(null));
+
+        DContract__c dcontractFromDB = [SELECT Id, Name, Services_Spend__c FROM DContract__c WHERE Id =: parent.Id];
+        System.assertEquals(740.28, dcontractFromDB.Services_Spend__c);
+
+        dcontractFromDB = [SELECT Id, Name, Services_Spend__c FROM DContract__c WHERE Id =: child1.Id];
+        System.assertEquals(280.48, dcontractFromDB.Services_Spend__c);
+
+        dcontractFromDB = [SELECT Id, Name, Services_Spend__c FROM DContract__c WHERE Id =: child2.Id];
         System.assertEquals(459.80, dcontractFromDB.Services_Spend__c);
     }
 
