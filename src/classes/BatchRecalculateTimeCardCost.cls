@@ -9,18 +9,19 @@ public without sharing class BatchRecalculateTimeCardCost implements Database.Ba
     private String lastEmployee;
 
     private Boolean onlyRate;
-    private Id contractId;
+    private List<Id> contractIds;
     private Map<String, List<SalaryHistoryRecord>> billingRateHistoryMap;
     private List<SalaryHistoryRecord> currentRateHistory;
     private String lastRateName = '';
 
     public BatchRecalculateTimeCardCost(Set<Id> timeCards) {
-        this(timeCards, '', false);
+        this(timeCards, new List<Id>(), false);
     }
 
-    public BatchRecalculateTimeCardCost(Set<Id> timeCards, String contractId, Boolean onlyRate) {
+    public BatchRecalculateTimeCardCost(Set<Id> timeCards, List<Id> contractIds, Boolean onlyRate) {
         this.salaryHistoryHelper = new SalaryHistoryHelper();
         this.timeCardsIds = timeCards;
+        this.contractIds = contractIds;
         this.employeeSalaryHistory = new List<SalaryHistoryRecord>();
         this.currentRateHistory = new List<SalaryHistoryRecord>();
         this.billingRateHistoryMap = new Map<String, List<SalaryHistoryRecord>>();
@@ -33,9 +34,9 @@ public without sharing class BatchRecalculateTimeCardCost implements Database.Ba
         String query;
         System.debug('timeCardsIds ' + timeCardsIds);
         if (this.timeCardsIds != null && this.timeCardsIds.size() > 0) {
-            query = 'SELECT Time_card_cost__c, Total__c, Employee__c, Date__c, Client__r.Project_Billing_Rate__c FROM Time_Card__c WHERE Id In: timeCardsIds AND Employee__c != \'\' ORDER BY Employee__c, Client__r.Project_Billing_Rate__c';
-        } else if (this.contractId != null && this.contractId != '') {
-            query = 'SELECT Time_card_cost__c, Total__c, Employee__c, Date__c, Client__r.Project_Billing_Rate__c FROM Time_Card__c WHERE Client__c =: contractId AND Employee__c != \'\' ORDER BY Employee__c, Client__r.Project_Billing_Rate__c';
+            query = 'SELECT Time_card_cost__c, Total__c, Employee__c, Date__c, Client__r.Project_Billing_Rate__c FROM Time_Card__c WHERE Id IN: timeCardsIds AND Employee__c != \'\' ORDER BY Employee__c, Client__r.Project_Billing_Rate__c';
+        } else if (this.contractIds != null && this.contractIds.size() > 0) {
+            query = 'SELECT Time_card_cost__c, Total__c, Employee__c, Date__c, Client__r.Project_Billing_Rate__c FROM Time_Card__c WHERE Client__c IN: contractIds AND Employee__c != \'\' ORDER BY Employee__c, Client__r.Project_Billing_Rate__c';
         } else {
             query = 'SELECT Time_card_cost__c, Total__c, Employee__c, Date__c, Client__r.Project_Billing_Rate__c FROM Time_Card__c WHERE Employee__c != \'\' ORDER BY Employee__c, Client__r.Project_Billing_Rate__c';
         }
@@ -142,8 +143,8 @@ public without sharing class BatchRecalculateTimeCardCost implements Database.Ba
     }
 
     public void finish(Database.BatchableContext context) {
-        if (this.onlyRate && this.contractId != null) { // recalculate whole contract time if we update all rates in contract
-            Database.executeBatch(new BatchCalculateTotalHoursOfTimeCard(this.contractId), 200);
+        if (this.onlyRate && this.contractIds != null && this.contractIds.size() > 0) { // recalculate whole contract time if we update all rates in contract
+            Database.executeBatch(new BatchCalculateTotalHoursOfTimeCard(this.contractIds), 200);
         }
     }
 }

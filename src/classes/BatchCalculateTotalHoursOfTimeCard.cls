@@ -17,7 +17,7 @@ global without sharing class BatchCalculateTotalHoursOfTimeCard implements Datab
     }
 
     global BatchCalculateTotalHoursOfTimeCard(String contractId){
-        BatchCalculateTotalHoursOfTimeCard(new List<String> {contractId});
+        this(new List<String> {contractId});
     }
 
     global BatchCalculateTotalHoursOfTimeCard(List<String> contractIds){

@@ -50,7 +50,7 @@ public class BatchUpdateContractServicesSpend implements Database.Batchable<DCon
                 contractsToUpdate.add(contract);
             } else {
                 if (contract.Services_Spend__c != contractValue) { // replace value
-                    contract.Services_Spend__c = contractValue;
+                    contract.Services_Spend__c = contractValue.setScale(2);
                     contractsToUpdate.add(contract);
                 }
             }
@@ -63,7 +63,7 @@ public class BatchUpdateContractServicesSpend implements Database.Batchable<DCon
 
             Decimal contractValue = servicesSpendMap.get(contract.Id);
             if (this.mode == 'update') { // update value
-                contract.Services_Spend__c = contractValue + (contract.Services_Spend__c != null ? contract.Services_Spend__c : 0);
+                contract.Services_Spend__c = (contractValue + (contract.Services_Spend__c != null ? contract.Services_Spend__c : 0)).setScale(2);
                 contractsToUpdate.add(contract);
             } else {
                 if (contract.Services_Spend__c != contractValue) { // replace value
