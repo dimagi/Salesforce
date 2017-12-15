@@ -34,11 +34,11 @@ public without sharing class BatchRecalculateTimeCardCost implements Database.Ba
         String query;
         System.debug('timeCardsIds ' + timeCardsIds);
         if (this.timeCardsIds != null && this.timeCardsIds.size() > 0) {
-            query = 'SELECT Time_card_cost__c, Total__c, Employee__c, Date__c, Client__r.Project_Billing_Rate__c FROM Time_Card__c WHERE Id IN: timeCardsIds AND Employee__c != \'\' ORDER BY Employee__c, Client__r.Project_Billing_Rate__c';
+            query = 'SELECT Billing_Rate__c, Time_Card_Salary__c, Total__c, Employee__c, Date__c, Client__r.Project_Billing_Rate__c FROM Time_Card__c WHERE Id IN: timeCardsIds AND Employee__c != \'\' ORDER BY Employee__c, Client__r.Project_Billing_Rate__c';
         } else if (this.contractIds != null && this.contractIds.size() > 0) {
-            query = 'SELECT Time_card_cost__c, Total__c, Employee__c, Date__c, Client__r.Project_Billing_Rate__c FROM Time_Card__c WHERE Client__c IN: contractIds AND Employee__c != \'\' ORDER BY Employee__c, Client__r.Project_Billing_Rate__c';
+            query = 'SELECT Billing_Rate__c, Time_Card_Salary__c, Total__c, Employee__c, Date__c, Client__r.Project_Billing_Rate__c FROM Time_Card__c WHERE Client__c IN: contractIds AND Employee__c != \'\' ORDER BY Employee__c, Client__r.Project_Billing_Rate__c';
         } else {
-            query = 'SELECT Time_card_cost__c, Total__c, Employee__c, Date__c, Client__r.Project_Billing_Rate__c FROM Time_Card__c WHERE Employee__c != \'\' ORDER BY Employee__c, Client__r.Project_Billing_Rate__c';
+            query = 'SELECT Billing_Rate__c, Time_Card_Salary__c, Total__c, Employee__c, Date__c, Client__r.Project_Billing_Rate__c FROM Time_Card__c WHERE Employee__c != \'\' ORDER BY Employee__c, Client__r.Project_Billing_Rate__c';
         }
         return Database.getQueryLocator(query);
     }
@@ -74,8 +74,8 @@ public without sharing class BatchRecalculateTimeCardCost implements Database.Ba
             if (!onlyRate) {
                 if (tc.Employee__c != this.lastEmployee) {
                     this.lastEmployee = tc.Employee__c;
-                    this.employeeSalaryHistory = this.salaryHistoryHelper.mergeSalaryHistory([SELECT Name, Salary__c, Effective_Salary_Date__c, Exchange_Rate__c, Effective_Exchange_Rate_Date__c,
-                                                                                            Working_Days__c FROM SFDC_Employee__c WHERE Id =: tc.Employee__c]);
+                    this.employeeSalaryHistory = this.salaryHistoryHelper.mergeSalaryHistory([SELECT Name, Hire_Date__c, Expected_Termination_Date__c, Salary__c, Effective_Salary_Date__c,
+                                                                                              Exchange_Rate__c, Effective_Exchange_Rate_Date__c, Working_Days__c FROM SFDC_Employee__c WHERE Id =: tc.Employee__c]);
                     System.debug('New employee : ' + tc.Employee__c);
                     lastToSalaryDate = this.employeeSalaryHistory.size() > 1 ? this.employeeSalaryHistory.get(1).getValueDate() : Date.today().addYears(1);
                     lastSalary = this.employeeSalaryHistory.get(0).getValue();

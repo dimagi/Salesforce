@@ -1,6 +1,11 @@
 @isTest
 public class BatchCalculateTotalHoursOfTimeCardTest {
 
+    @testSetup
+    static void setup() {
+        insert new Project_Billing_Rate__c(Name = 'Loaded Daily Rate', Date__c = Date.newInstance(1990, 01, 01), Custom_1__c = 0, Custom_2__c = 0, Custom_3__c = 0, Fee__c = 10, Fringe__c = 30, G_A__c = 10, Overhead__c = 52);
+    }
+
     static testMethod void shouldUpdateServicesSpend() {
         Test.startTest();
 
@@ -42,7 +47,7 @@ public class BatchCalculateTotalHoursOfTimeCardTest {
         batch2.execute(null, batch2.start(null));
 
         DContract__c dcontractFromDB = [SELECT Id, Name, Services_Spend__c FROM DContract__c WHERE Id =: dcontract.Id];
-        System.assertEquals(229.92, dcontractFromDB.Services_Spend__c);
+        System.assertEquals(229.90, dcontractFromDB.Services_Spend__c);
     }
 
     static testMethod void shouldUpdateParentServicesSpend() {
@@ -113,13 +118,13 @@ public class BatchCalculateTotalHoursOfTimeCardTest {
         batch2.execute(null, batch2.start(null));
 
         DContract__c dcontractFromDB = [SELECT Id, Name, Services_Spend__c FROM DContract__c WHERE Id =: parent.Id];
-        System.assertEquals(689.76, dcontractFromDB.Services_Spend__c);
+        System.assertEquals(689.70, dcontractFromDB.Services_Spend__c);
 
         dcontractFromDB = [SELECT Id, Name, Services_Spend__c FROM DContract__c WHERE Id =: child1.Id];
-        System.assertEquals(229.92, dcontractFromDB.Services_Spend__c);
+        System.assertEquals(229.90, dcontractFromDB.Services_Spend__c);
 
         dcontractFromDB = [SELECT Id, Name, Services_Spend__c FROM DContract__c WHERE Id =: child2.Id];
-        System.assertEquals(459.84, dcontractFromDB.Services_Spend__c);
+        System.assertEquals(459.80, dcontractFromDB.Services_Spend__c);
     }
 
     static testMethod void shouldUpdateServicesSpendInManyContracts() {
@@ -235,22 +240,22 @@ public class BatchCalculateTotalHoursOfTimeCardTest {
         batch2.execute(null, batch2.start(null));
 
         DContract__c dcontractFromDB = [SELECT Id, Name, Services_Spend__c FROM DContract__c WHERE Id =: parent1.Id];
-        System.assertEquals(689.76, dcontractFromDB.Services_Spend__c);
+        System.assertEquals(689.70, dcontractFromDB.Services_Spend__c);
 
         dcontractFromDB = [SELECT Id, Name, Services_Spend__c FROM DContract__c WHERE Id =: child1.Id];
-        System.assertEquals(459.84, dcontractFromDB.Services_Spend__c);
+        System.assertEquals(459.80, dcontractFromDB.Services_Spend__c);
 
         dcontractFromDB = [SELECT Id, Name, Services_Spend__c FROM DContract__c WHERE Id =: child2.Id];
         System.assertEquals(null, dcontractFromDB.Services_Spend__c);
 
         dcontractFromDB = [SELECT Id, Name, Services_Spend__c FROM DContract__c WHERE Id =: parent2.Id];
-        System.assertEquals(1034.64, dcontractFromDB.Services_Spend__c);
+        System.assertEquals(1034.55, dcontractFromDB.Services_Spend__c);
 
         dcontractFromDB = [SELECT Id, Name, Services_Spend__c FROM DContract__c WHERE Id =: child3.Id];
-        System.assertEquals(574.8, dcontractFromDB.Services_Spend__c);
+        System.assertEquals(574.75, dcontractFromDB.Services_Spend__c);
 
         dcontractFromDB = [SELECT Id, Name, Services_Spend__c FROM DContract__c WHERE Id =: child4.Id];
-        System.assertEquals(459.84, dcontractFromDB.Services_Spend__c);
+        System.assertEquals(459.80, dcontractFromDB.Services_Spend__c);
     }
 
     @isTest

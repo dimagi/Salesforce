@@ -29,12 +29,19 @@ global without sharing class BatchCalculateTotalHoursOfTimeCard implements Datab
     global Database.QueryLocator start(Database.BatchableContext context) {
         this.salaryHistoryHelper = new SalaryHistoryHelper();
         this.employeeSalaryHistory = new List<SalaryHistoryRecord>();
+        Set<Id> parentAndChildContracts = new Set<Id>();
 
         String query;
         if (contractIds.size() == 0) {
             query = 'SELECT Client__c, Time_Card_Rate_Cost__c, Employee__c, Date__c FROM Time_Card__c WHERE Employee__c != \'\' ORDER BY Employee__c';
         } else {
-            query = 'SELECT Client__c, Time_Card_Rate_Cost__c, Employee__c, Date__c FROM Time_Card__c WHERE Client__c IN: contractIds ORDER BY Employee__c';
+            for (DContract__c con : [SELECT Id, Parent_Contract__c FROM DContract__c WHERE Id IN: contractIds]) {
+                parentAndChildContracts.add(con.Id);
+                if (con.Parent_Contract__c != null) {
+                    parentAndChildContracts.add(con.Parent_Contract__c);
+                }
+            }
+            query = 'SELECT Client__c, Time_Card_Rate_Cost__c, Employee__c, Date__c FROM Time_Card__c WHERE Client__c IN: parentAndChildContracts ORDER BY Employee__c';
         }
         return Database.getQueryLocator(query);
     }

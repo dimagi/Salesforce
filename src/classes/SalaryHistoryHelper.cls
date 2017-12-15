@@ -9,15 +9,15 @@ public without sharing class SalaryHistoryHelper {
         List<Project_Billing_Rate__c> ratesRecords = [SELECT Id, Date__c, Custom_1__c, Custom_2__c, Custom_3__c, Fee__c, Fringe__c, G_A__c, Overhead__c FROM Project_Billing_Rate__c WHERE Name =: billingRateName ORDER BY Date__c];
 
         for (Project_Billing_Rate__c rate : ratesRecords) {
-            Decimal custom1 = rate.Custom_1__c != null ? rate.Custom_1__c / 100.00 : 0;
-            Decimal custom2 = rate.Custom_2__c != null ? rate.Custom_2__c / 100.00 : 0;
-            Decimal custom3 = rate.Custom_3__c != null ? rate.Custom_3__c / 100.00 : 0;
-            Decimal fee = rate.Fee__c != null ? rate.Fee__c / 100.00 : 0;
-            Decimal fringe = rate.Fringe__c != null ? rate.Fringe__c / 100.00 : 0;
-            Decimal ga = rate.G_A__c != null ? rate.G_A__c / 100.00 : 0;
-            Decimal over = rate.Overhead__c != null ? rate.Overhead__c / 100.00 : 0;
+            Decimal custom1 = rate.Custom_1__c != null ? 1.00 + (rate.Custom_1__c / 100.00) : 1;
+            Decimal custom2 = rate.Custom_2__c != null ? 1.00 + (rate.Custom_2__c / 100.00) : 1;
+            Decimal custom3 = rate.Custom_3__c != null ? 1.00 + (rate.Custom_3__c / 100.00) : 1;
+            Decimal fee = rate.Fee__c != null ? 1.00 + (rate.Fee__c / 100.00) : 1;
+            Decimal fringe = rate.Fringe__c != null ? 1.00 + (rate.Fringe__c / 100.00) : 1;
+            Decimal ga = rate.G_A__c != null ? 1.00 + (rate.G_A__c / 100.00) : 1;
+            Decimal over = rate.Overhead__c != null ? 1.00 + (rate.Overhead__c / 100.00) : 1;
 
-            Decimal rateValue = 1.00 + custom1 + custom2 + custom3 + fee + fringe + ga + over;
+            Decimal rateValue = custom1 * custom2 * custom3 * fee * fringe * ga * over;
             billingRateHistory.add(new SalaryHistoryRecord(rateValue, rate.Date__c));
         }
 
@@ -170,7 +170,8 @@ public without sharing class SalaryHistoryHelper {
             }
 
             result.add(new SalaryHistoryRecord(calculateSalary(currentSalary, currentRate,
-                                                employee.Hire_Date__c.monthsBetween(employee.Expected_Termination_Date__c) < 12 ? employee.Working_Days__c : null),
+                                                (employee.Hire_Date__c != null && employee.Expected_Termination_Date__c != null ?
+                                                (employee.Hire_Date__c.monthsBetween(employee.Expected_Termination_Date__c) < 12 ? employee.Working_Days__c : null) : null)),
                                                 toAdd));
 
             if (salaryIndex  >= salary.size() && exchangeRateIndex  >= exchangeRate.size()) {

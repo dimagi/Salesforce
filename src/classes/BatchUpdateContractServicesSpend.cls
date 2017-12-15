@@ -16,13 +16,11 @@ public class BatchUpdateContractServicesSpend implements Database.Batchable<DCon
     }
 
     public List<DContract__c> start(Database.BatchableContext context) {
-        if (this.mode == 'update') {
-            List<DContract__c> childList = [SELECT Name, Parent_Contract__c FROM DContract__c WHERE Parent_Contract__c != ''
+        List<DContract__c> childList = [SELECT Name, Parent_Contract__c FROM DContract__c WHERE Parent_Contract__c != ''
                                             AND Id IN: this.servicesSpendMap.keySet()];
-            for (DContract__c chCont : childList) { // We must add missing parents
-                if (!this.servicesSpendMap.containsKey(chCont.Parent_Contract__c)) {
-                    this.servicesSpendMap.put(chCont.Parent_Contract__c, 0);
-                }
+        for (DContract__c chCont : childList) { // We must add missing parents
+            if (!this.servicesSpendMap.containsKey(chCont.Parent_Contract__c)) {
+                this.servicesSpendMap.put(chCont.Parent_Contract__c, 0);
             }
         }
 
@@ -46,7 +44,7 @@ public class BatchUpdateContractServicesSpend implements Database.Batchable<DCon
             }
 
             if (this.mode == 'update') { // update value
-                contract.Services_Spend__c = contractValue + (contract.Services_Spend__c != null ? contract.Services_Spend__c : 0);
+                contract.Services_Spend__c = (contractValue + (contract.Services_Spend__c != null ? contract.Services_Spend__c : 0)).setScale(2);
                 contractsToUpdate.add(contract);
             } else {
                 if (contract.Services_Spend__c != contractValue) { // replace value
@@ -67,7 +65,7 @@ public class BatchUpdateContractServicesSpend implements Database.Batchable<DCon
                 contractsToUpdate.add(contract);
             } else {
                 if (contract.Services_Spend__c != contractValue) { // replace value
-                    contract.Services_Spend__c = contractValue;
+                    contract.Services_Spend__c = contractValue.setScale(2);
                     contractsToUpdate.add(contract);
                 }
             }
