@@ -67,17 +67,17 @@ public class SalaryHistoryMock {
         System.debug('Using mock merge for Name : ' + employee.Name);
         List<SalaryHistoryRecord> result = new List<SalaryHistoryRecord>();
         if (employee.Name == 'emp_11') {
-            result.add(new SalaryHistoryRecord(7700.43, Date.newInstance(1900, 1, 1)));
-            result.add(new SalaryHistoryRecord(9900.44, Date.newInstance(2015, 11, 5)));
-            result.add(new SalaryHistoryRecord(89319.79, Date.newInstance(2016, 2, 24)));
+            result.add(new SalaryHistoryRecord((7700.43 / (260.0 * 8.0)), Date.newInstance(1900, 1, 1)));
+            result.add(new SalaryHistoryRecord((9900.44 / (260.0 * 8.0)), Date.newInstance(2015, 11, 5)));
+            result.add(new SalaryHistoryRecord((89319.79 / (260.0 * 8.0)), Date.newInstance(2016, 2, 24)));
         } else if (employee.Name == 'emp_10') {
-            result.add(new SalaryHistoryRecord(3300.59, Date.newInstance(1900, 1, 1)));
-            result.add(new SalaryHistoryRecord(5000.39, Date.newInstance(2015, 11, 05)));
-            result.add(new SalaryHistoryRecord(45259.16, Date.newInstance(2016, 2, 24)));
+            result.add(new SalaryHistoryRecord((3300.59 / (260.0 * 8.0)), Date.newInstance(1900, 1, 1)));
+            result.add(new SalaryHistoryRecord((5000.39 / (260.0 * 8.0)), Date.newInstance(2015, 11, 05)));
+            result.add(new SalaryHistoryRecord((45259.16 / (260.0 * 8.0)), Date.newInstance(2016, 2, 24)));
         } else if (employee.Name == 'emp_9') {
-            result.add(new SalaryHistoryRecord(5700.83, Date.newInstance(1900, 1, 1)));
-            result.add(new SalaryHistoryRecord(11300.39, Date.newInstance(2015, 11, 12)));
-            result.add(new SalaryHistoryRecord(101854.98, Date.newInstance(2016, 2, 24)));
+            result.add(new SalaryHistoryRecord((5700.83 / (260.0 * 8.0)), Date.newInstance(1900, 1, 1)));
+            result.add(new SalaryHistoryRecord((11300.39 / (260.0 * 8.0)), Date.newInstance(2015, 11, 12)));
+            result.add(new SalaryHistoryRecord((101854.98 / (260.0 * 8.0)), Date.newInstance(2016, 2, 24)));
         }
         return result;
     }
