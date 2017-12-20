@@ -26,13 +26,13 @@ public class OpenOpportunityReportController {
         return instance;
     }
 
-    public Opportunity[] getOpenOpportunitiesAllUsers() {
+    public Opportunity[] getOpenOpportunitiesAllUsers(String[] channel) {
         String[] stages = new String[] {'Stage 1 - Connect','Stage 2 - Talking','Stage 3 - Prospect','Stage 4 - Proposal Development','Stage 5 - Submitted','Stage 6 - In Negotiations'};
 
         Opportunity[] result = new Opportunity[] {};
 
         String queryValues = this.getOpenOpportunitiesQueryValues();
-        String sql = 'SELECT ' + queryValues + ' FROM Opportunity WHERE IsClosed = false AND StageName IN :stages';
+        String sql = 'SELECT ' + queryValues + ' FROM Opportunity WHERE IsClosed = false AND StageName IN :stages AND Channel_Response__c IN: channel';
 
         result = Database.query(sql);
         return result; 
@@ -145,7 +145,7 @@ public class OpenOpportunityReportController {
     public Map<String, Opportunity[]> getOpenOpportunitiesAllUsersOrderByStage(String[] channel) {
 
         Map<String, Opportunity[]> result = new Map<String, Opportunity[]>();
-        Opportunity[] opportunities = getOpenOpportunitiesAllUsers();
+        Opportunity[] opportunities = getOpenOpportunitiesAllUsers(channel);
 
         for(Opportunity opportunity :opportunities) {
             String stageName = opportunity.StageName;
