@@ -100,8 +100,8 @@
                 <apex:inputTextarea cols="100" value="{!redForm.Medical_Conditions_Allergies__c}"/>
                 <apex:inputTextarea cols="100" value="{!redForm.Regular_Medication__c}"/>
                 <apex:pageBlockSectionItem >
-                    <apex:outputLabel value="Do you give permission for a medical practitioner to administer emergency contraception or post-exposure prophylaxis (PEP) if the situation requires it, and you are not in a position to decide or state your preference? "
-                                      for="em_contact_md_permission" />
+                    <apex:outputPanel >Do you give permission for a medical practitioner to administer <a target="_blank" href="http://www.who.int/mediacentre/factsheets/fs244/en/">emergency contraception</a> or post-exposure prophylaxis (<a target="_blank" href="http://www.who.int/hiv/topics/prophylaxis/info/en/">PEP</a>) if the situation requires it, and you are not in a position to decide or state your preference? "
+                    </apex:outputPanel>
                     <apex:inputField id="em_contact_md_permission" value="{!redForm.Medical_Permission__c}"/>
                 </apex:pageBlockSectionItem>
                 <apex:pageBlockSectionItem >
