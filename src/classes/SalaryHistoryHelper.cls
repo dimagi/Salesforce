@@ -3,29 +3,32 @@
  */
 public without sharing class SalaryHistoryHelper {
 
-    // Needed for PRO page to avoid SOQL Limit Exception
-    private Map<Id, List<SalaryHistoryWrapper>> employeeSalaryList;
-    private Map<Id, List<SalaryHistoryWrapper>> employeeSalaryDateList;
-    private Map<Id, List<SalaryHistoryWrapper>> employeeExchangeRateList;
-    private Map<Id, List<SalaryHistoryWrapper>> employeeExchangeRateDateList;
-    private List<LoadedDailyRateSettingsWrapper> dailyRateSettings;
+    public List<SalaryHistoryRecord> loadBillingRatesHistory(String billingRateName) {
+        List<SalaryHistoryRecord> billingRateHistory = new List<SalaryHistoryRecord>();
+        if (billingRateName == '' || billingRateName == null) {
+            billingRateName = 'Loaded Daily Rate';
+        }
 
-    public SalaryHistoryHelper() {
-        this.employeeSalaryList = new Map<Id, List<SalaryHistoryWrapper>>();
-        this.employeeSalaryDateList = new Map<Id, List<SalaryHistoryWrapper>>();
-        this.employeeExchangeRateList = new Map<Id, List<SalaryHistoryWrapper>>();
-        this.employeeExchangeRateDateList = new Map<Id, List<SalaryHistoryWrapper>>();
-        loadLoadedDailyRateSettings();
-    }
+        List<Project_Billing_Rate__c> ratesRecords = [SELECT Id, Date__c, Custom_1__c, Custom_2__c, Custom_3__c, Fee__c, Fringe__c, G_A__c, Overhead__c FROM Project_Billing_Rate__c WHERE Name =: billingRateName ORDER BY Date__c];
 
-    /**
-     * Loads history records from DB for employees from given list
-     */
-    public void loadHistoryForEmployees(Set<Id> emps) {
-        this.employeeSalaryList = fillMap(emps, [SELECT ParentId, OldValue, NewValue, CreatedDate FROM SFDC_Employee__History WHERE ParentId IN: emps AND Field = 'Salary__c' ORDER BY CreatedDate ASC]);
-        this.employeeSalaryDateList = fillMap(emps,[SELECT ParentId, OldValue, NewValue, CreatedDate FROM SFDC_Employee__History WHERE ParentId IN: emps AND Field = 'Effective_Salary_Date__c' ORDER BY CreatedDate ASC]);
-        this.employeeExchangeRateList = fillMap(emps,[SELECT ParentId, OldValue, NewValue, CreatedDate FROM SFDC_Employee__History WHERE ParentId IN: emps AND Field = 'Exchange_Rate__c' ORDER BY CreatedDate ASC]);
-        this.employeeExchangeRateDateList = fillMap(emps,[SELECT ParentId, OldValue, NewValue, CreatedDate FROM SFDC_Employee__History WHERE ParentId IN: emps AND Field = 'Effective_Exchange_Rate_Date__c' ORDER BY CreatedDate ASC]);
+        for (Project_Billing_Rate__c rate : ratesRecords) {
+            Decimal custom1 = rate.Custom_1__c != null ? 1.00 + (rate.Custom_1__c / 100.00) : 1;
+            Decimal custom2 = rate.Custom_2__c != null ? 1.00 + (rate.Custom_2__c / 100.00) : 1;
+            Decimal custom3 = rate.Custom_3__c != null ? 1.00 + (rate.Custom_3__c / 100.00) : 1;
+            Decimal fee = rate.Fee__c != null ? 1.00 + (rate.Fee__c / 100.00) : 1;
+            Decimal fringe = rate.Fringe__c != null ? 1.00 + (rate.Fringe__c / 100.00) : 1;
+            Decimal ga = rate.G_A__c != null ? 1.00 + (rate.G_A__c / 100.00) : 1;
+            Decimal over = rate.Overhead__c != null ? 1.00 + (rate.Overhead__c / 100.00) : 1;
+
+            Decimal rateValue = custom1 * custom2 * custom3 * fee * fringe * ga * over;
+            billingRateHistory.add(new SalaryHistoryRecord(rateValue, rate.Date__c));
+        }
+
+        if (billingRateHistory.size() == 0) {
+            billingRateHistory.add(new SalaryHistoryRecord(1.0, Date.newInstance(1900, 1, 1))); // 100% of Daily Rate
+        }
+
+        return billingRateHistory;
     }
 
     /**
@@ -169,7 +172,10 @@ public without sharing class SalaryHistoryHelper {
                 break;
             }
 
-            result.add(new SalaryHistoryRecord(calculateSalary(currentSalary, currentRate), toAdd));
+            result.add(new SalaryHistoryRecord(calculateSalary(currentSalary, currentRate,
+                                                (employee.Hire_Date__c != null && employee.Expected_Termination_Date__c != null ?
+                                                (employee.Hire_Date__c.monthsBetween(employee.Expected_Termination_Date__c) < 12 ? employee.Working_Days__c : null) : null)),
+                                                toAdd));
 
             if (salaryIndex  >= salary.size() && exchangeRateIndex  >= exchangeRate.size()) {
                 break;
@@ -181,74 +187,17 @@ public without sharing class SalaryHistoryHelper {
 
     public List<SalaryHistoryRecord> mergeSalaryHistory(SFDC_Employee__c employee) {
         List<SalaryHistoryRecord> salary = mergeSalaryWithExchangeRateHistory(employee);
-        List<SalaryHistoryRecord> result = new List<SalaryHistoryRecord>();
-
-        Boolean endLoop = false;
-
-        Decimal currentSalary = 0;
-        LoadedDailyRateSettingsWrapper currentSettings = this.dailyRateSettings.get(0);
-        Integer salaryIndex = 0;
-        Integer settingsIndex = 0;
-
-        while (!endLoop) {
-
-            Date salaryDate = null;
-            Date settingsDate = null;
-
-            Decimal sal = 0;
-            LoadedDailyRateSettingsWrapper settings = null;
-
-            if (salaryIndex < salary.size()) {
-                sal = salary.get(salaryIndex).getValue();
-                salaryDate = salary.get(salaryIndex).getValueDate();
-            }
-
-            if (settingsIndex < this.dailyRateSettings.size()) {
-                settings = this.dailyRateSettings.get(settingsIndex);
-                settingsDate = this.dailyRateSettings.get(settingsIndex).getSettings().Settings_Effective_Date__c;
-            }
-
-            Date toAdd = salaryDate;
-            if ((salaryDate == null && settingsDate != null) || salaryDate > settingsDate) {
-                toAdd = settingsDate;
-                currentSettings = settings;
-                settingsIndex++;
-            } else if ((salaryDate != null && settingsDate == null) || salaryDate < settingsDate) {
-                currentSalary = sal;
-                salaryIndex++;
-            } else if (salaryDate == settingsDate) {
-                currentSalary = sal;
-                currentSettings = settings;
-                salaryIndex++;
-                settingsIndex++;
-            } else {
-                break;
-            }
-
-            result.add(new SalaryHistoryRecord(calculatePerHourSalary(currentSalary, currentSettings.getSettings(), employee.Working_Days__c), toAdd));
-
-            if (salaryIndex  >= salary.size() && settingsIndex  >= this.dailyRateSettings.size()) {
-                break;
-            }
-        }
-
-        return result;
+        return salary;
     }
 
-    public static Decimal calculateSalary(Decimal sal, Decimal er) {
-        Double result = (sal / (Double) er);
-        return Decimal.valueOf(result).setScale(2);
-    }
-
-    public static Decimal calculatePerHourSalary(Decimal sal, Loaded_Daily_Rate_Settings__c settings, Decimal workingDays) {
-        Decimal calcWorkingDays = settings.Working_Days__c;
+    public static Decimal calculateSalary(Decimal sal, Decimal er, Decimal workingDays) {
+        Decimal calcWorkingDays = 260.00 * 8.00;
         if (workingDays != null) {
-            calcWorkingDays = workingDays;
+            calcWorkingDays = workingDays * 8.00;
         }
-        Double result = ((sal / calcWorkingDays) * (1 + settings.Fringe__c / 100.0)
-                            * (1 + settings.Overhead__c / 100.0) * (1 + settings.Fee__c / 100.0)
-                            * (1 + settings.G_A__c / 100.0)) / 8.0;
-        return Decimal.valueOf(result).setScale(2);
+
+        Double result = ((sal / (Double) er) / (Double) calcWorkingDays);
+        return Decimal.valueOf(result);
     }
 
     private Decimal getValueForSalary(String field, SalaryHistoryWrapper record) {
@@ -274,17 +223,6 @@ public without sharing class SalaryHistoryHelper {
     private List<SalaryHistoryWrapper> getFieldHistory(SFDC_Employee__c employee, String fieldName) {
         if (Test.isRunningTest()) {
             return SalaryHistoryMock.getFieldHistory(employee, fieldName);
-        }
-
-        // Check data fom buffor
-        if (fieldName == 'Salary__c' && this.employeeSalaryList.containsKey(employee.Id)) {
-            return this.employeeSalaryList.get(employee.Id);
-        } else if (fieldName == 'Effective_Salary_Date__c' && this.employeeSalaryDateList.containsKey(employee.Id)) {
-            return this.employeeSalaryDateList.get(employee.Id);
-        } else if (fieldName == 'Exchange_Rate__c' && this.employeeExchangeRateList.containsKey(employee.Id)) {
-            return this.employeeExchangeRateList.get(employee.Id);
-        } else if (fieldName == 'Effective_Exchange_Rate_Date__c' && this.employeeExchangeRateDateList.containsKey(employee.Id)) {
-            return this.employeeExchangeRateDateList.get(employee.Id);
         }
 
         List<SFDC_Employee__History> records = [SELECT OldValue, NewValue, CreatedDate FROM SFDC_Employee__History WHERE parentId =: employee.Id AND Field =: fieldName ORDER BY CreatedDate ASC];
@@ -313,50 +251,5 @@ public without sharing class SalaryHistoryHelper {
 
     private Date takeDate(DateTime dt) {
         return Date.newInstance(dt.year(), dt.month(), dt.day());
-    }
-
-    private void loadLoadedDailyRateSettings() {
-        this.dailyRateSettings = new List<LoadedDailyRateSettingsWrapper>();
-        List<Loaded_Daily_Rate_Settings__c> ldrs = Loaded_Daily_Rate_Settings__c.getall().values();
-
-        if (ldrs.size() > 0) {
-            for (Loaded_Daily_Rate_Settings__c settings : ldrs) {
-                this.dailyRateSettings.add(new LoadedDailyRateSettingsWrapper(settings));
-            }
-            this.dailyRateSettings.sort();
-            this.dailyRateSettings.get(0).getSettings().Settings_Effective_Date__c = Date.newInstance(1900, 1, 1);
-            System.debug('Loaded_Daily_Rate_Settings__c ' + this.dailyRateSettings);
-        } else {
-            this.dailyRateSettings.add(new LoadedDailyRateSettingsWrapper(
-                    new Loaded_Daily_Rate_Settings__c(Settings_Effective_Date__c = Date.newInstance(1900, 1, 1), Working_Days__c = 260, Fringe__c = 30,
-                                                      Overhead__c = 52, Fee__c = 10, G_A__c = 10)));
-        }
-    }
-
-    private class LoadedDailyRateSettingsWrapper implements Comparable {
-
-        private Loaded_Daily_Rate_Settings__c settings;
-
-        public LoadedDailyRateSettingsWrapper(Loaded_Daily_Rate_Settings__c settings) {
-            this.settings = settings;
-        }
-
-        public Loaded_Daily_Rate_Settings__c getSettings() {
-            return this.settings;
-        }
-
-        public void setSettings(Loaded_Daily_Rate_Settings__c settings) {
-            this.settings = settings;
-        }
-
-        public Integer compareTo(Object objToCompare) {
-            Date dateToCompare = ((LoadedDailyRateSettingsWrapper) objToCompare).getSettings().Settings_Effective_Date__c;
-            if (this.getSettings().Settings_Effective_Date__c > dateToCompare) {
-                return 1;
-            } else if (this.getSettings().Settings_Effective_Date__c < dateToCompare) {
-                return -1;
-            }
-            return 0;
-        }
     }
 }

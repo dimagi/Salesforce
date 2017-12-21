@@ -119,23 +119,23 @@ public class SalaryHistoryTest {
                                                                                    Working_Days__c = 260, Fringe__c = 30,
                                                                                    Overhead__c = 52, Fee__c = 10, G_A__c = 10);
 
-        System.assertEquals(SalaryHistoryHelper.calculatePerHourSalary(SalaryHistoryHelper.calculateSalary(20000, 2), settings, null),
+        System.assertEquals(SalaryHistoryHelper.calculateSalary(20000, 2, null),
                             historyList.get(0).getValue());
         System.assertEquals(Date.newInstance(1900, 1, 1), historyList.get(0).getValueDate());
 
-        System.assertEquals(SalaryHistoryHelper.calculatePerHourSalary(SalaryHistoryHelper.calculateSalary(40000, 2), settings, null),
+        System.assertEquals(SalaryHistoryHelper.calculateSalary(40000, 2, null),
                             historyList.get(1).getValue());
         System.assertEquals(Date.newInstance(2011, 1, 1), historyList.get(1).getValueDate());
 
-        System.assertEquals(SalaryHistoryHelper.calculatePerHourSalary(SalaryHistoryHelper.calculateSalary(40000, 3), settings, null),
+        System.assertEquals(SalaryHistoryHelper.calculateSalary(40000, 3, null),
                             historyList.get(2).getValue());
         System.assertEquals(Date.newInstance(2011, 2, 14), historyList.get(2).getValueDate());
 
-        System.assertEquals(SalaryHistoryHelper.calculatePerHourSalary(SalaryHistoryHelper.calculateSalary(60000, 3), settings, null),
+        System.assertEquals(SalaryHistoryHelper.calculateSalary(60000, 3, null),
                             historyList.get(3).getValue());
         System.assertEquals(Date.newInstance(2011, 11, 1), historyList.get(3).getValueDate());
 
-        System.assertEquals(SalaryHistoryHelper.calculatePerHourSalary(SalaryHistoryHelper.calculateSalary(60000, 2), settings, null),
+        System.assertEquals(SalaryHistoryHelper.calculateSalary(60000, 2, null),
                             historyList.get(4).getValue());
         System.assertEquals(Date.newInstance(2012, 1, 1), historyList.get(4).getValueDate());
 
@@ -157,7 +157,7 @@ public class SalaryHistoryTest {
         List<SalaryHistoryRecord> historyList = salaryHelper.mergeSalaryHistory(employee);
 
         System.assertEquals(1, historyList.size());
-        System.assertEquals(SalaryHistoryHelper.calculatePerHourSalary(SalaryHistoryHelper.calculateSalary(45000, 2), settings, null),
+        System.assertEquals(SalaryHistoryHelper.calculateSalary(45000, 2, null),
                             historyList.get(0).getValue());
         System.assertEquals(Date.newInstance(1900, 1, 1), historyList.get(0).getValueDate());
 
@@ -179,33 +179,20 @@ public class SalaryHistoryTest {
         List<SalaryHistoryRecord> historyList = salaryHelper.mergeSalaryHistory(employee);
 
         System.assertEquals(2, historyList.size());
-        System.assertEquals(SalaryHistoryHelper.calculatePerHourSalary(SalaryHistoryHelper.calculateSalary(200000, 4), settings, null),
+        System.assertEquals(SalaryHistoryHelper.calculateSalary(200000, 4, null),
                             historyList.get(0).getValue());
         System.assertEquals(Date.newInstance(1900, 1, 1), historyList.get(0).getValueDate());
 
-        System.assertEquals(SalaryHistoryHelper.calculatePerHourSalary(SalaryHistoryHelper.calculateSalary(200000, 2), settings, null),
+        System.assertEquals(SalaryHistoryHelper.calculateSalary(200000, 2, null),
                             historyList.get(1).getValue());
         System.assertEquals(Date.newInstance(2013, 6, 1), historyList.get(1).getValueDate());
 
         Test.stopTest();
     }
 
-    static testMethod void shouldCalculateCorrectSalary() {
-        Test.startTest();
-        Loaded_Daily_Rate_Settings__c settings = new Loaded_Daily_Rate_Settings__c(Settings_Effective_Date__c = Date.newInstance(1900, 1, 1),
-                                                                                   Working_Days__c = 260, Fringe__c = 30,
-                                                                                   Overhead__c = 52, Fee__c = 10, G_A__c = 10);
-        System.assertEquals(11.50, SalaryHistoryHelper.calculatePerHourSalary(SalaryHistoryHelper.calculateSalary(20000, 2), settings, null));
-        System.assertEquals(22.99, SalaryHistoryHelper.calculatePerHourSalary(SalaryHistoryHelper.calculateSalary(40000, 2), settings, null));
-        System.assertEquals(15.33, SalaryHistoryHelper.calculatePerHourSalary(SalaryHistoryHelper.calculateSalary(40000, 3), settings, null));
-        System.assertEquals(34.48, SalaryHistoryHelper.calculatePerHourSalary(SalaryHistoryHelper.calculateSalary(60000, 2), settings, null));
-        System.assertEquals(22.25, SalaryHistoryHelper.calculatePerHourSalary(SalaryHistoryHelper.calculateSalary(60000, 3.1), settings, null));
-        System.assertEquals(71.96, SalaryHistoryHelper.calculatePerHourSalary(SalaryHistoryHelper.calculateSalary(457000, 7.3), settings, null));
-
-        Test.stopTest();
-    }
-
     static testMethod void testIntegrationWithCalculationBatchJob() {
+        insert new Project_Billing_Rate__c(Name = 'Loaded Daily Rate', Date__c = Date.newInstance(1990, 01, 01), Custom_1__c = 0, Custom_2__c = 0, Custom_3__c = 0,
+                                            Fee__c = 10, Fringe__c = 30, G_A__c = 10, Overhead__c = 52);
         // 3 Employess, 3 contracts, one is subcontract
         Test.startTest();
 
@@ -300,11 +287,11 @@ public class SalaryHistoryTest {
         batch2.execute(null, batch2.start(null));
 
         DContract__c dcontractFromDB = [SELECT Id, Name, Services_Spend__c FROM DContract__c WHERE Id =: parent_1.Id];
-        System.assertEquals(2347.83, dcontractFromDB.Services_Spend__c);
+        System.assertEquals(2347.85, dcontractFromDB.Services_Spend__c);
         dcontractFromDB = [SELECT Id, Name, Services_Spend__c FROM DContract__c WHERE Id =: child.Id];
-        System.assertEquals(1057.56, dcontractFromDB.Services_Spend__c);
+        System.assertEquals(1057.54, dcontractFromDB.Services_Spend__c);
         dcontractFromDB = [SELECT Id, Name, Services_Spend__c FROM DContract__c WHERE Id =: parent_2.Id];
-        System.assertEquals(1049.87, dcontractFromDB.Services_Spend__c);
+        System.assertEquals(1049.88, dcontractFromDB.Services_Spend__c);
     }
 
     static testMethod void shouldSortList() {
@@ -323,6 +310,8 @@ public class SalaryHistoryTest {
     }
 
     static testMethod void testCalcualtionScale() {
+        insert new Project_Billing_Rate__c(Name = 'Loaded Daily Rate', Date__c = Date.newInstance(1990, 01, 01), Custom_1__c = 0, Custom_2__c = 0, Custom_3__c = 0,
+                                            Fee__c = 10, Fringe__c = 30, G_A__c = 10, Overhead__c = 52);
         Test.startTest();
         DContract__c parent = new DContract__c(Name = 'Sample Parent', Status__c = 'Active', Requires_Report_Out__c = 'No', Intracompany_Sub_contract__c = 'No');
         insert parent;
@@ -466,22 +455,43 @@ public class SalaryHistoryTest {
         Database.QueryLocatorIterator iter = batch1.start(null).iterator();
         List<sObject> testData = new List<sObject>();
         while (iter.hasNext()) {
-            testData.add(iter.next());
+            sObject rec = iter.next();
+            testData.add(rec);
+            Time_Card__c tc = (Time_Card__c) rec;
+            System.debug('Time Card Cost : ' + tc.Time_Card_Rate_Cost__c);
         }
-        System.debug('Time cards : ' + testData.size());
-        Time_Card__c tc1 = (Time_Card__c) testData.get(0);
-        Time_Card__c tc2 = (Time_Card__c) testData.get(1);
-        System.debug('Time cards : ' + tc1.Time_card_cost__c);
-        System.debug('Time cards : ' + tc2.Time_card_cost__c);
         batch1.execute(null, testData);
+
         BatchUpdateContractServicesSpend batch2 = new BatchUpdateContractServicesSpend(batch1.getServicesSpendMap());
         batch2.execute(null, batch2.start(null));
 
         DContract__c dcontractFromDB = [SELECT Id, Name, Services_Spend__c FROM DContract__c WHERE Id =: parent.Id];
-        System.assertEquals(13780.155, dcontractFromDB.Services_Spend__c);
+        System.assertEquals(13779.88, dcontractFromDB.Services_Spend__c);
+    }
+
+    static testmethod void shouldSortBillingRate() {
+        insert new Project_Billing_Rate__c(Name = 'Loaded Daily Rate', Date__c = Date.newInstance(1990, 01, 01), Custom_1__c = 0, Custom_2__c = 0, Custom_3__c = 0,
+                                            Fee__c = 10, Fringe__c = 30, G_A__c = 10, Overhead__c = 52);
+        insert new Project_Billing_Rate__c(Name = 'Loaded Daily Rate', Date__c = Date.newInstance(2015, 01, 01), Custom_1__c = 0, Custom_2__c = 0, Custom_3__c = 0,
+                                            Fee__c = 15, Fringe__c = 30, G_A__c = 10, Overhead__c = 52);
+        insert new Project_Billing_Rate__c(Name = 'Loaded Daily Rate', Date__c = Date.newInstance(2014, 01, 01), Custom_1__c = 0, Custom_2__c = 0, Custom_3__c = 0,
+                                            Fee__c = 20, Fringe__c = 30, G_A__c = 10, Overhead__c = 52);
+        insert new Project_Billing_Rate__c(Name = 'Loaded Daily Rate', Date__c = Date.newInstance(2017, 01, 01), Custom_1__c = 0, Custom_2__c = 0, Custom_3__c = 0,
+                                            Fee__c = 25, Fringe__c = 30, G_A__c = 10, Overhead__c = 52);
+
+        SalaryHistoryHelper sh = new SalaryHistoryHelper();
+
+        List<SalaryHistoryRecord> billingRates = sh.loadBillingRatesHistory('Loaded Daily Rate');
+        System.assertEquals(2.39096, billingRates.get(0).getValue());
+        System.assertEquals(2.60832, billingRates.get(1).getValue());
+        System.assertEquals(2.49964, billingRates.get(2).getValue());
+        System.assertEquals(2.717, billingRates.get(3).getValue());
     }
 
     static testMethod void shouldCalculateTotalCostAfterUpsert() {
+        insert new Project_Billing_Rate__c(Name = 'Loaded Daily Rate', Date__c = Date.newInstance(1990, 01, 01), Custom_1__c = 0, Custom_2__c = 0, Custom_3__c = 0,
+                                            Fee__c = 10, Fringe__c = 30, G_A__c = 10, Overhead__c = 52);
+
         SFDC_Employee__c employee_1 = new SFDC_Employee__c(Name = 'emp_6', Salary__c = 60000, Exchange_Rate__c = 2,
                                                           Effective_Salary_Date__c = Date.newInstance(2011, 11, 1),
                                                           Effective_Exchange_Rate_Date__c = Date.newInstance(2013, 1, 1));
@@ -523,48 +533,15 @@ public class SalaryHistoryTest {
 
         Test.stopTest();
 
-        Time_Card__c tcFromDB = [SELECT Id, Time_card_cost__c FROM Time_Card__c WHERE Id =: tc_1_employee_1.Id LIMIT 1];
-        System.assertEquals(11.50, tcFromDB.Time_card_cost__c);
-        tcFromDB = [SELECT Id, Time_card_cost__c FROM Time_Card__c WHERE Id =: tc_2_employee_1.Id LIMIT 1];
-        System.assertEquals(34.5, tcFromDB.Time_card_cost__c);
-        tcFromDB = [SELECT Id, Time_card_cost__c FROM Time_Card__c WHERE Id =: tc_3_employee_1.Id LIMIT 1];
-        System.assertEquals(137.94, tcFromDB.Time_card_cost__c);
-        tcFromDB = [SELECT Id, Time_card_cost__c FROM Time_Card__c WHERE Id =: tc_4_employee_1.Id LIMIT 1];
-        System.assertEquals(107.31, tcFromDB.Time_card_cost__c);
-        tcFromDB = [SELECT Id, Time_card_cost__c FROM Time_Card__c WHERE Id =: tc_5_employee_1.Id LIMIT 1];
-        System.assertEquals(275.84, tcFromDB.Time_card_cost__c);
-    }
-
-    static testMethod void shouldUseSettingsList() {
-        Test.startTest();
-
-        Loaded_Daily_Rate_Settings__c settings_1 = new Loaded_Daily_Rate_Settings__c(Name = 'Test 1', Settings_Effective_Date__c = Date.newInstance(1990, 1, 1), Working_Days__c = 260, Fringe__c = 0.30,
-                                          Overhead__c = 52, Fee__c = 10, G_A__c = 10);
-        Loaded_Daily_Rate_Settings__c settings_2 = new Loaded_Daily_Rate_Settings__c(Name = 'Test 3', Settings_Effective_Date__c = Date.newInstance(2016, 1, 1), Working_Days__c = 260, Fringe__c = 0.2,
-                                          Overhead__c = 30, Fee__c = 10, G_A__c = 10);
-        Loaded_Daily_Rate_Settings__c settings_3 = new Loaded_Daily_Rate_Settings__c(Name = 'Test 2', Settings_Effective_Date__c = Date.newInstance(2014, 1, 1), Working_Days__c = 260, Fringe__c = 0.1,
-                                          Overhead__c = 70, Fee__c = 15, G_A__c = 15);
-        insert settings_1;
-        insert settings_2;
-        insert settings_3;
-
-        SFDC_Employee__c employee_1 = new SFDC_Employee__c(Name = 'emp_9', Salary__c = 101854.98, Effective_Salary_Date__c = Date.newInstance(2016, 2, 24),
-                                                           Exchange_Rate__c = 1, Effective_Exchange_Rate_Date__c = Date.newInstance(2016, 2, 24));
-        Test.stopTest();
-
-        SalaryHistoryHelper helper = new SalaryHistoryHelper();
-        List<SalaryHistoryRecord> empHistory = helper.mergeSalaryHistory(employee_1);
-        System.debug(empHistory);
-        System.assertEquals(5, empHistory.size());
-        System.assertEquals(SalaryHistoryHelper.calculatePerHourSalary(5700.83, settings_1, null), empHistory.get(0).getValue());
-        System.assertEquals(Date.newInstance(1900, 1, 1), empHistory.get(0).getValueDate());
-        System.assertEquals(SalaryHistoryHelper.calculatePerHourSalary(5700.83, settings_3, null), empHistory.get(1).getValue());
-        System.assertEquals(Date.newInstance(2014, 1, 1), empHistory.get(1).getValueDate());
-        System.assertEquals(SalaryHistoryHelper.calculatePerHourSalary(11300.39, settings_3, null), empHistory.get(2).getValue());
-        System.assertEquals(Date.newInstance(2015, 11, 12), empHistory.get(2).getValueDate());
-        System.assertEquals(SalaryHistoryHelper.calculatePerHourSalary(11300.39, settings_2, null), empHistory.get(3).getValue());
-        System.assertEquals(Date.newInstance(2016, 1, 1), empHistory.get(3).getValueDate());
-        System.assertEquals(SalaryHistoryHelper.calculatePerHourSalary(101854.98, settings_2, null), empHistory.get(4).getValue());
-        System.assertEquals(Date.newInstance(2016, 2, 24), empHistory.get(4).getValueDate());
+        Time_Card__c tcFromDB = [SELECT Id, Time_Card_Rate_Cost__c FROM Time_Card__c WHERE Id =: tc_1_employee_1.Id LIMIT 1];
+        System.assertEquals(11.495, tcFromDB.Time_Card_Rate_Cost__c);
+        tcFromDB = [SELECT Id, Time_Card_Rate_Cost__c FROM Time_Card__c WHERE Id =: tc_2_employee_1.Id LIMIT 1];
+        System.assertEquals(34.485, tcFromDB.Time_Card_Rate_Cost__c);
+        tcFromDB = [SELECT Id, Time_Card_Rate_Cost__c FROM Time_Card__c WHERE Id =: tc_3_employee_1.Id LIMIT 1];
+        System.assertEquals(137.94, tcFromDB.Time_Card_Rate_Cost__c);
+        tcFromDB = [SELECT Id, Time_Card_Rate_Cost__c FROM Time_Card__c WHERE Id =: tc_4_employee_1.Id LIMIT 1];
+        System.assertEquals(107.28666667, tcFromDB.Time_Card_Rate_Cost__c);
+        tcFromDB = [SELECT Id, Time_Card_Rate_Cost__c FROM Time_Card__c WHERE Id =: tc_5_employee_1.Id LIMIT 1];
+        System.assertEquals(275.88, tcFromDB.Time_Card_Rate_Cost__c);
     }
 }

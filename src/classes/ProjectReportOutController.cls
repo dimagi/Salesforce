@@ -596,7 +596,7 @@ public with sharing class ProjectReportOutController {
                 }
             }
 
-            for(Time_Card__c obj : [select Employee__r.Name,Date__c,Total__c,Time_card_cost__c,Client__c  from Time_Card__c where Client__c IN:parentAndChildContractIds]) {
+            for(Time_Card__c obj : [select Employee__r.Name,Date__c,Total__c,Time_Card_Rate_Cost__c,Client__c  from Time_Card__c where Client__c IN:parentAndChildContractIds]) {
                 if(contractIdTimeCardsMap.containsKey(obj.Client__c)){
                     List<Time_Card__c> tempList = contractIdTimeCardsMap.get(obj.Client__c);
                     tempList.add(obj);
@@ -610,8 +610,8 @@ public with sharing class ProjectReportOutController {
                 List<Time_Card__c> timeEntries = contractIdTimeCardsMap.get(contractId);
                 if(timeEntries != null && timeEntries.size() > 0) {
                     for(Time_Card__c obj : timeEntries) {
-                        if(obj.Time_card_cost__c != null) {
-                            LaborSpent += obj.Time_card_cost__c;
+                        if(obj.Time_Card_Rate_Cost__c != null) {
+                            LaborSpent += obj.Time_Card_Rate_Cost__c;
                         }
                     }
                 }
@@ -804,7 +804,7 @@ public with sharing class ProjectReportOutController {
                     Integer entryDateMonth = obj.Date__c != null ? obj.Date__c.month() : 0;
                     Integer entryDateYear = obj.Date__c != null ? obj.Date__c.year() : 0;
                     Decimal totalHoursPerMonth = obj.Total__c != null ? obj.Total__c: 0;
-                    Decimal laborCost = obj.Time_card_cost__c != null ? obj.Time_card_cost__c : 0;
+                    Decimal laborCost = obj.Time_Card_Rate_Cost__c != null ? obj.Time_Card_Rate_Cost__c : 0;
 
                     if (laborWithHours.containsKey(employeeName)) {
                         projTmSpntHstryObj = laborWithHours.get(employeeName);
@@ -1555,7 +1555,11 @@ public with sharing class ProjectReportOutController {
             set;
         }
 
-        public Decimal laborCost { get; set; }
+        public Decimal laborCost {
+            get {
+                return laborCost != null ? laborCost.setScale(2) : 0.00;
+            }
+            set; }
 
         public Integer compareTo(Object objToCompare) {
             return Integer.valueOf(((PROProjectTimeSpentHistory)objToCompare).totalHourstoDate - totalHourstoDate);
