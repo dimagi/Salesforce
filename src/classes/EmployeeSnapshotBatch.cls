@@ -14,7 +14,7 @@
     }
 
     public List<SFDC_Employee__c> start(Database.BatchableContext context) {
-       return [SELECT Id, X401K__c, Additional_Education__c, Salary__c, Annual_Salary_in_USD__c, At_Will_Employment_Agreement__c, ABSO__c, Account_Number__c, Account_Type__c,
+       return [SELECT Id, Name, X401K__c, Additional_Education__c, Salary__c, Annual_Salary_in_USD__c, At_Will_Employment_Agreement__c, ABSO__c, Account_Number__c, Account_Type__c,
                       BU_Description__c, Bonus_Potential__c, BizDev__c, Base_location__c, Bank_Name__c, Business_Unit__c, Call_Center__c, Citizenship__c, Citizenship_2__c, COL_Location__c,
                       Consented_to_share_salary__c, Contact__c, Corp_Photo__c, Country__c, Country_of_Visa__c, Current_Address__c, Current_Address_City__c, Current_Address_Country__c,
                       Current_Address_State__c, Current_Address_Street__c, Current_Address_Zip_Postal_Code__c, Data__c, Date_joining__c, Date_of_Policy_Expiry__c,
@@ -44,7 +44,7 @@
         List<SFDC_Employee_Snapshot__c> emplSnpList = new List<SFDC_Employee_Snapshot__c>();
         try {
             for (SFDC_Employee__c empl : scope) {
-                emplSnpList.add(new SFDC_Employee_Snapshot__c(Snapshot_Date__c = this.currentDate, Employee_Record__c = empl.Id,
+                emplSnpList.add(new SFDC_Employee_Snapshot__c(Name = empl.Name, Snapshot_Date__c = this.currentDate, Employee_Record__c = empl.Id,
                                 X401K__c = empl.X401K__c, Additional_Education__c = empl.Additional_Education__c, Salary__c = empl.Salary__c, Annual_Salary_in_USD__c = empl.Annual_Salary_in_USD__c,
                                 At_Will_Employment_Agreement__c = empl.At_Will_Employment_Agreement__c, ABSO__c = empl.ABSO__c, Account_Number__c = empl.Account_Number__c, Account_Type__c = empl.Account_Type__c,
                                 Bank_Name__c = empl.Bank_Name__c, Base_location__c = empl.Base_location__c, BizDev__c = empl.BizDev__c, Bonus_Potential__c = empl.Bonus_Potential__c, BU_Description__c = empl.BU_Description__c,
