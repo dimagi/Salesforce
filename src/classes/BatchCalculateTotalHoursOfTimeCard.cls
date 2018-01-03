@@ -35,13 +35,16 @@ global without sharing class BatchCalculateTotalHoursOfTimeCard implements Datab
         if (contractIds.size() == 0) {
             query = 'SELECT Client__c, Time_Card_Rate_Cost__c, Employee__c, Date__c FROM Time_Card__c WHERE Employee__c != \'\' ORDER BY Employee__c';
         } else {
-            Set<Id> parentsForMissongChilds = new Set<Id>();
-            for (DContract__c con : [SELECT Id, Parent_Contract__c FROM DContract__c WHERE Id IN: contractIds AND Parent_Contract__c != '']) {
-                parentAndChildContracts.add(con.Parent_Contract__c);
+            for (String conId : contractIds) {
+                parentAndChildContracts.add(conId);
             }
-            for (DContract__c con : [SELECT Id, Parent_Contract__c FROM DContract__c WHERE Id NOT IN: contractIds AND Parent_Contract__c IN: parentAndChildContracts]) {
-                parentAndChildContracts.add(con.Id);
+            for (DContract__c con : [SELECT Id, Parent_Contract__c FROM DContract__c WHERE Id IN: parentAndChildContracts AND Parent_Contract__c != '']) {
+                parentAndChildContracts.add(con.Parent_Contract__c); // Load all parents
             }
+            for (DContract__c con : [SELECT Id, Parent_Contract__c FROM DContract__c WHERE Parent_Contract__c IN: parentAndChildContracts]) {
+                parentAndChildContracts.add(con.Id); // Add childs
+            }
+
             for (Id elId : contractIds) {
                 parentAndChildContracts.add(elId);
             }
