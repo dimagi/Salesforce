@@ -137,6 +137,7 @@ public class NetEVDifferenceTriggerGateway {
                                      - (snapshot.Expected_Value_Minus_Expense__c != null ? snapshot.Expected_Value_Minus_Expense__c : 0);
                 snapShotsDiff.Expected_Monthly_Recurring_Revenue_MRR__c = (snapshot.Opportunity__r.Expected_Monthly_Recurring_Revenue_MRR__c != null ? snapshot.Opportunity__r.Expected_Monthly_Recurring_Revenue_MRR__c : 0)
                                      - (snapshot.Expected_Monthly_Recurring_Revenue_MRR__c != null ? snapshot.Expected_Monthly_Recurring_Revenue_MRR__c : 0);
+                snapShotsDiff.Diff_Buffer_EV__c = snapshot.Opportunity__r.Buffer_EV__c - snapshot.Buffer_EV__c;
             } else {
                 snapShotsDiff.Delta_Type__c = LOST;
                 snapShotDiffs.add(snapShotsDiff);
@@ -144,6 +145,7 @@ public class NetEVDifferenceTriggerGateway {
                                      - (snapshot.Expected_Value_Minus_Expense__c != null ? snapshot.Expected_Value_Minus_Expense__c : 0);
                 snapShotsDiff.Expected_Monthly_Recurring_Revenue_MRR__c = 0 -
                                      - (snapshot.Expected_Monthly_Recurring_Revenue_MRR__c != null ? snapshot.Expected_Monthly_Recurring_Revenue_MRR__c : 0);
+                snapShotsDiff.Diff_Buffer_EV__c = 0 - snapshot.Buffer_EV__c;
             }
 
             snapShotsDiff.DIFF_Amount_Minus_Expense_Income__c = (amount - expenseIncome)
@@ -246,30 +248,28 @@ public class NetEVDifferenceTriggerGateway {
     @future
     public static void recalculateDiffs(Date executeDate) {
         try {
-            List<Pipeline_Snapshot_EV_DIff__c> evDiffs = [SELECT Id, Delta_Type__c, Month_Date__c, Diff_Buffer_EV__c, Opportunity__c, Opportunity__r.Buffer_EV__c, 
-                                                      Pipeline_Snapshot__c, Pipeline_Snapshot__r.Buffer_EV__c
-                                                      FROM Pipeline_Snapshot_EV_DIff__c WHERE Month_Date__c =: executeDate];
+            List<Pipeline_Snapshot_EV_DIff__c> evDiffs = [SELECT Id, Delta_Type__c, Diff_Buffer_EV__c, Opportunity__c, Opportunity__r.Buffer_EV__c, Pipeline_Snapshot__c, Pipeline_Snapshot__r.Buffer_EV__c
+                                                      FROM Pipeline_Snapshot_EV_DIff__c WHERE Month_Date__c =: executeDate AND (Delta_Type__c =: WON OR Delta_Type__c =: LOST)];
             if (evDiffs.size() == 0) {
                 return;
             }
 
-            Map<Id, Pipeline_Snapshot__c> oldSnapshots = getPriorMonthSnapshotsForDate(executeDate);
-
+            List<Pipeline_Snapshot_EV_DIff__c> toUpdate = new List<Pipeline_Snapshot_EV_DIff__c>();
             for (Pipeline_Snapshot_EV_DIff__c evSn : evDiffs) {
-                Pipeline_Snapshot__c oldSn = oldSnapshots.get(evSn.Opportunity__c);
 
-                if (evSn.Delta_Type__c == NEW_OPP || oldSn == null) {
-                    evSn.Diff_Buffer_EV__c = evSn.Pipeline_Snapshot__r.Buffer_EV__c;
-                } else if (evSn.Delta_Type__c == LOST) {
-                    evSn.Diff_Buffer_EV__c = 0 - oldSn.Buffer_EV__c;
-                } else if (evSn.Delta_Type__c == WON) {
-                    evSn.Diff_Buffer_EV__c = evSn.Opportunity__r.Buffer_EV__c - oldSn.Buffer_EV__c;
-	            } else {
-	                evSn.Diff_Buffer_EV__c = evSn.Pipeline_Snapshot__r.Buffer_EV__c - oldSn.Buffer_EV__c;
+                if (evSn.Opportunity__c != null && evSn.Pipeline_Snapshot__c != null) {
+                    if (evSn.Delta_Type__c == LOST) {
+                        evSn.Diff_Buffer_EV__c = 0 - evSn.Pipeline_Snapshot__r.Buffer_EV__c;
+                    } else {
+                        evSn.Diff_Buffer_EV__c = evSn.Opportunity__r.Buffer_EV__c - evSn.Pipeline_Snapshot__r.Buffer_EV__c;
+                    }
+                    toUpdate.add(evSn);
                 }
             }
 
-            update evDiffs;
+            if (toUpdate.size() > 0) {
+                update toUpdate;
+            }
         } catch (Exception ex) {
             if (!Test.isRunningTest()) {
                 BatchDefaultSettings__c settings = BatchDefaultSettings__c.getOrgDefaults();
@@ -376,19 +376,6 @@ public class NetEVDifferenceTriggerGateway {
                 } else {
                     historyMap.put(ofh.OpportunityId, ofh.OldValue != null ? (Decimal) ofh.OldValue : 0);
                 }
-            }
-        }
-        return historyMap;
-    }
-
-    private static Map<Id, String> getSageHistory(Date lastDate, Set<Id> opportunityIds) {
-        Map<Id, String> historyMap = new Map<Id, String>();
-        List<OpportunityFieldHistory> historyList = [SELECT OpportunityId, CreatedDate, Field, NewValue, OldValue FROM OpportunityFieldHistory
-                                                     WHERE Field = 'StageName' AND OpportunityId IN: opportunityIds
-                                                     AND CreatedDate >=: lastDate AND CreatedDate <=: lastDate.addMonths(1) ORDER BY CreatedDate DESC];
-        for (OpportunityFieldHistory ofh : historyList) {
-            if (!historyMap.containsKey(ofh.OpportunityId)) {
-                historyMap.put(ofh.OpportunityId, ofh.NewValue != null ? (String) ofh.NewValue : '');
             }
         }
         return historyMap;
