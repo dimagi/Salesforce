@@ -18,7 +18,7 @@ public without sharing class FTEGenerateEmployeesWorkCardBatch implements Databa
     public List<SFDC_Employee__c> start(Database.BatchableContext BC) {
         try {
             if (this.contractsId == null) {
-                List<FTE_Work_Card__c> oldCards = [SELECT Id FROM FTE_Work_Card__c WHERE Employee__r.Employee_Status__c != 'Active'];
+                List<FTE_Work_Card__c> oldCards = [SELECT Id FROM FTE_Work_Card__c];
                 if (oldCards.size() > 0) {
                     delete oldCards;
                 }

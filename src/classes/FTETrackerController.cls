@@ -479,15 +479,15 @@ public class FTETrackerController {
         }
 
         this.contractsTime = new List<EmployeeTime>();
-        if (this.assignedMap.size() > 0) {
-            this.contractsTime = this.assignedMap.values();
-            this.totalAssignedDays = new EmployeeTime('Total Assigned Days', null);
-            this.totalDaysWorked = new EmployeeTime('Total Days Worked', null);
-            generateStyles();
-            this.contractsTime.add(this.unassigned);
-            this.contractsTime.add(this.totalAssignedDays);
-            this.contractsTime.add(this.totalDaysWorked);
-        }
+
+        this.contractsTime = this.assignedMap.values();
+        this.totalAssignedDays = new EmployeeTime('Total Assigned Days', null);
+        this.totalDaysWorked = new EmployeeTime('Total Days Worked', null);
+        generateStyles();
+        this.contractsTime.add(this.unassigned);
+        this.contractsTime.add(this.totalAssignedDays);
+        this.contractsTime.add(this.totalDaysWorked);
+
     }
 
     public PageReference goToAssignView() {
