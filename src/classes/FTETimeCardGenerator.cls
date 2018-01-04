@@ -99,6 +99,14 @@ public class FTETimeCardGenerator {
 
         // Generate list for UI and csv file
         List<FTEMonthTimeCard> result = this.contractMap.values();
+        for (FTEMonthTimeCard resRecord : result) {
+            for (Integer i = 0; i < this.monthDays; i++) {
+                resRecord.hours[i] = resRecord.hours[i].setScale(2);
+            }
+        }
+        for (Integer i = 0; i < this.monthDays; i++) {
+            unassignedHours.hours[i] = unassignedHours.hours[i].setScale(2);
+        }
         result.add(unassignedHours);
         return result;
     }
@@ -198,10 +206,10 @@ public class FTETimeCardGenerator {
 
         this.csvFile += CSV_LONG_EMPTY_ROW + NEW_LINE;
         this.csvFile += '"Total Project Hours",';
-        this.csvFile += '"' + total + '",';
+        this.csvFile += '"' + total.setScale(2) + '",';
         this.csvFile += CSV_SHORT_EMPTY_ROW + NEW_LINE;
         this.csvFile += '"Total Overhead Hours",';
-        this.csvFile += '"' + totalUnassigned + '",';
+        this.csvFile += '"' + totalUnassigned.setScale(2) + '",';
         this.csvFile += CSV_SHORT_EMPTY_ROW + NEW_LINE;
     }
 
