@@ -47,6 +47,8 @@ public class BatchCalculateEVDiff implements Database.Batchable<Pipeline_Snapsho
     }
 
     public void finish(Database.BatchableContext BC) {
-
+        if (this.wasData == true && !Test.isRunningTest()) {
+            EmailHelper.sendEmail(BatchDefaultSettings__c.getOrgDefaults().Error_Emails__c.split(','), 'EV Diff Job', 'EV Net Diff Job end for date : ' + currentDate);
+        }
     }
 }
