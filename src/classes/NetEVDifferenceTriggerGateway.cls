@@ -239,6 +239,9 @@ public class NetEVDifferenceTriggerGateway {
 
         if (snapShotDiffs.size() > 0) {
             insert snapShotDiffs;
+            if (!Test.isRunningTest()) {
+                EmailHelper.sendEmail(BatchDefaultSettings__c.getOrgDefaults().Error_Emails__c.split(','), 'EV Diff Job - Clsoed', 'EV Net Diff Job with Closed status end for date : ' + executeDate);
+            }
         }
     }
 
