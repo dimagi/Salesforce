@@ -1,0 +1,50 @@
+<apex:page controller="BillingRateController" docType="html-5.0" action="{!initManageRates}">
+    <style type="text/css">
+        .brTable {
+            margin-top: 10px;
+            margin-bottom: 10px;
+        }
+        .brTable td{
+            cursor: pointer;
+        }
+        .brTable td:hover {
+            background: #1797C0 !important;
+        }
+        h3 {
+            color: black;
+        }
+    </style>
+    <apex:pageBlock title="Billing Rates Manager" id="brManager">
+        <apex:form >
+            <apex:actionFunction action="{!setViewData}" name="setViewData" oncomplete="goToRateView();">
+                <apex:param name="billingRateName" assignTo="{!billingRateName}" value=""/>
+            </apex:actionFunction>
+            <apex:actionFunction action="{!goToRateView}" name="goToRateView" />
+            <apex:pageBlockTable id="billingRatesId" value="{!billingRates}" var="rate" styleClass="brTable">
+                <apex:column onclick="setViewData('{!rate.name}');" headerValue="Billing Rate Name" value="{!rate.name}" />
+            </apex:pageBlockTable>
+
+            <apex:outputPanel layout="block" id="messages">
+                <apex:pageMessages />
+            </apex:outputPanel>
+
+            <apex:outputPanel styleClass="bText" id="rateForm">
+                <apex:pageBlockSection title="New Billing Rate" columns="2" collapsible="false">
+                    <apex:inputField value="{!newBillingRate.Name}"/>
+                    <apex:inputField value="{!newBillingRate.Date__c}"/>
+                    <apex:inputField value="{!newBillingRate.Overhead__c}"/>
+                    <apex:inputField value="{!newBillingRate.Fringe__c}" />
+                    <apex:inputField value="{!newBillingRate.Fee__c}"/>
+                    <apex:inputField value="{!newBillingRate.G_A__c}" />
+                    <apex:inputField value="{!newBillingRate.Custom_1__c}" />
+                    <apex:inputField value="{!newBillingRate.Custom_2__c}" />
+                    <apex:inputField value="{!newBillingRate.Custom_3__c}" />
+
+                    <apex:outputPanel >
+                        <apex:commandButton action="{!saveNewRate}" value="Add New Billing Rate" id="brSaveButton" reRender="billingRatesId, messages, rateForm"/>
+                    </apex:outputPanel>
+                </apex:pageBlockSection>
+            </apex:outputPanel>
+        </apex:form>
+    </apex:pageBlock>
+</apex:page>
