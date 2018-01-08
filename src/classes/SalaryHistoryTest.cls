@@ -544,4 +544,21 @@ public class SalaryHistoryTest {
         tcFromDB = [SELECT Id, Time_Card_Rate_Cost__c FROM Time_Card__c WHERE Id =: tc_5_employee_1.Id LIMIT 1];
         System.assertEquals(275.88, tcFromDB.Time_Card_Rate_Cost__c);
     }
+
+    /**
+     * Test for Billing Rates UI Manager
+     */
+
+    static testMethod void shouldAddNewRate() {
+    }
+
+    static testMethod void shouldntAddNewRateWithSameName() {
+    }
+
+    static testMethod void shouldInsertNewRateRow() {
+    }
+
+    static testMethod void shouldUpdateRateHistory() {
+    }
+
 }

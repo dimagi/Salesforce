@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<ApexPage xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Billing_Rate_Upsert</fullName>
+    <apiVersion>38.0</apiVersion>
+    <description></description>
+    <label>Billing Rate Upsert</label>
+</ApexPage>
