@@ -10,6 +10,14 @@
         .brTable td:hover {
             background: #1797C0 !important;
         }
+        .brTable table {
+            width: auto !important;
+        }
+        .bText table {
+            margin-top: 10px;
+            margin-bottom: 10px;
+            width: auto !important;
+        }
         h3 {
             color: black;
         }
@@ -39,11 +47,10 @@
                     <apex:inputField value="{!newBillingRate.Custom_1__c}" />
                     <apex:inputField value="{!newBillingRate.Custom_2__c}" />
                     <apex:inputField value="{!newBillingRate.Custom_3__c}" />
-
-                    <apex:outputPanel >
-                        <apex:commandButton action="{!saveNewRate}" value="Add New Billing Rate" id="brSaveButton" reRender="billingRatesId, messages, rateForm"/>
-                    </apex:outputPanel>
                 </apex:pageBlockSection>
+                <apex:outputPanel >
+                    <apex:commandButton action="{!saveNewRate}" value="Add New Billing Rate" id="brSaveButton" reRender="billingRatesId, messages, rateForm"/>
+                </apex:outputPanel>
             </apex:outputPanel>
         </apex:form>
     </apex:pageBlock>
