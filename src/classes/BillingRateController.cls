@@ -29,7 +29,7 @@ public class BillingRateController {
             }
         }
 
-        this.newBillingRate = new Project_Billing_Rate__c(Date__c = Date.newInstance(2000, 01, 01), Name = '', Custom_1__c = 0, Overhead__c = 0, 
+        this.newBillingRate = new Project_Billing_Rate__c(Date__c = Date.today(), Name = '', Custom_1__c = 0, Overhead__c = 0,
                                                             G_A__c = 0, Fringe__c = 0, Fee__c = 0, Custom_2__c = 0, Custom_3__c = 0);
     }
 
@@ -56,9 +56,6 @@ public class BillingRateController {
         return pageRef;
     }
 
-    /**
-     * Manage Rate section.
-     */
     public void initManageRate() {
         if (this.billingRateName == null || this.billingRateName == '') {
             ApexPages.addMessage(new ApexPages.message(ApexPages.severity.ERROR, 'Rate Name cannot be empty'));
@@ -67,7 +64,7 @@ public class BillingRateController {
 
         this.rateHistoryList = [SELECT Id, Name, Date__c, Custom_1__c, Overhead__c, G_A__c, Fringe__c, Fee__c, Custom_2__c, Custom_3__c
                                                 FROM Project_Billing_Rate__c WHERE Name =: this.billingRateName ORDER BY Date__c];
-        this.newBillingRate = new Project_Billing_Rate__c(Date__c = Date.newInstance(2000, 01, 01), Name = this.billingRateName, Custom_1__c = 0, Overhead__c = 0,
+        this.newBillingRate = new Project_Billing_Rate__c(Date__c = Date.today(), Name = this.billingRateName, Custom_1__c = 0, Overhead__c = 0,
                                                             G_A__c = 0, Fringe__c = 0, Fee__c = 0, Custom_2__c = 0, Custom_3__c = 0);
     }
 
