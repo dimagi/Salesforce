@@ -33,7 +33,8 @@
 
             <apex:pageBlockButtons >
                 <apex:commandButton action="{!updateRateHistory}" value="Save" id="saveButton" />
-                <apex:commandButton action="{!deleteRateRow}" value="Delete" id="delPButton" />
+                <apex:commandButton action="{!goToRateView}" value="Back" id="backButton" />
+                <apex:commandButton action="{!deleteRateRow}" value="Delete" id="delPButton" onclick="return confirm('Are you sure you want to delete this item?');" />
             </apex:pageBlockButtons>
         </apex:pageBlock>
     </apex:form>

@@ -115,9 +115,10 @@ public class BillingRateController {
     }
 
     public PageReference deleteRateRow() {
-        // TODO check is last one
-        delete this.newBillingRate;
-        // TODO check is last one
+        if ([SELECT Id, Name, Date__c, Custom_1__c, Overhead__c, G_A__c, Fringe__c, Fee__c, Custom_2__c, Custom_3__c
+                                                FROM Project_Billing_Rate__c WHERE Name =: this.billingRateName].size() > 1) {
+            delete this.newBillingRate; // We don't want remove rate to avoid some bugs in future
+        }
         return goToRateView();
     }
 }
