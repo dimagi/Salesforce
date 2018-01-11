@@ -118,4 +118,72 @@ public class BillingRateController {
         }
         return goToRateView();
     }
+
+    public void handleInsert() {
+        Project_Billing_Rate__c nextRow = getNext();
+        Project_Billing_Rate__c beforeRow = getBefore();
+        Date fromDate = beforeRow != null ? this.newBillingRate.Date__c : Date.newInstance(2000, 1, 1);
+        Date toDate = nextRow != null ? nextRow.Date__c : Date.today();
+    }
+
+    public void handleUpdate() { // this is invoked after insert
+        Project_Billing_Rate__c nextRow = getNext();
+        Project_Billing_Rate__c beforeRow = getBefore();
+        Project_Billing_Rate__c oldValue = [SELECT Id, Date__c FROM Project_Billing_Rate__c WHERE Id =: this.newBillingRate.Id];
+
+        Date fromDate = null;
+
+        if (oldValue.Date__c != this.newBillingRate.Date__c) {
+            if (oldValue.Date__c > this.newBillingRate.Date__c) {
+                fromDate = this.newBillingRate.Date__c;
+            } else {
+                fromDate = oldValue.Date__c;
+            }
+        } else {
+            fromDate = beforeRow != null ? this.newBillingRate.Date__c : Date.newInstance(2000, 1, 1);
+        }
+
+        Date toDate = nextRow != null ? nextRow.Date__c : Date.today();
+    }
+
+    public void handleDelete() {
+        Project_Billing_Rate__c nextRow = getNext();
+        Project_Billing_Rate__c beforeRow = getBefore();
+        Date fromDate = beforeRow != null ? this.newBillingRate.Date__c : Date.newInstance(2000, 1, 1);
+        Date toDate = nextRow != null ? nextRow.Date__c : Date.today();
+    }
+
+    public void runRecalculationBatchJob() {
+        // TODO calculate dates, run batch job add UI message and its should be fixed !!!!!!!! add new custyom object and add ui button with bool deactivation!!!
+    }
+
+    public Project_Billing_Rate__c getNext() {
+        Project_Billing_Rate__c rateFromDB = [SELECT Id, Name, Date__c, Custom_1__c, Overhead__c, G_A__c, Fringe__c, Fee__c, Custom_2__c, Custom_3__c
+                                                FROM Project_Billing_Rate__c WHERE Name =: this.billingRateName ORDER BY Date__c];
+        Integer index = -1;
+        for (Integer i = 0; i < rateFromDB.size(); i++) {
+            if (rateFromDB.get(i).Id == this.newBillingRate.Id) {
+                index = i;
+            }
+        }
+        if (index != -1 && index + 1 < rateFromDB.size()) {
+            return rateFromDB.get(index + 1);
+        }
+        return null;
+    }
+
+    public Project_Billing_Rate__c getBefore() {
+        Project_Billing_Rate__c rateFromDB = [SELECT Id, Name, Date__c, Custom_1__c, Overhead__c, G_A__c, Fringe__c, Fee__c, Custom_2__c, Custom_3__c
+                                                FROM Project_Billing_Rate__c WHERE Name =: this.billingRateName ORDER BY Date__c];
+        Integer index = -1;
+        for (Integer i = 0; i < rateFromDB.size(); i++) {
+            if (rateFromDB.get(i).Id == this.newBillingRate.Id) {
+                index = i;
+            }
+        }
+        if (index > 0) {
+            return rateFromDB.get(index - 1);
+        }
+        return null;
+    }
 }
