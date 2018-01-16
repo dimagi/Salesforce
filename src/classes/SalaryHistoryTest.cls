@@ -681,7 +681,128 @@ public class SalaryHistoryTest {
         System.assertEquals(30, newRate.Fee__c);
         System.assertEquals(10, newRate.G_A__c);
         System.assertEquals(5, newRate.Overhead__c);
-        System.assertEquals(Date.today(), newRate.Date__c);
+        System.assertEquals(Date.newInstance(2015, 01, 01), newRate.Date__c);
     }
 
+    static testMethod void billingRateManagerShouldRunRecalculationBatch1() {
+        Project_Billing_Rate__c rate1_1 = new Project_Billing_Rate__c(Name = 'Loaded Daily Rate', Date__c = Date.newInstance(1990, 01, 01), Custom_1__c = 0, Custom_2__c = 0, Custom_3__c = 0,
+                                            Fee__c = 10, Fringe__c = 30, G_A__c = 10, Overhead__c = 52);
+        Project_Billing_Rate__c rate1_2 = new Project_Billing_Rate__c(Name = 'Loaded Daily Rate', Date__c = Date.newInstance(2011, 01, 01), Custom_1__c = 0, Custom_2__c = 0, Custom_3__c = 0,
+                                            Fee__c = 15, Fringe__c = 30, G_A__c = 10, Overhead__c = 52);
+        Project_Billing_Rate__c rate1_3 = new Project_Billing_Rate__c(Name = 'Loaded Daily Rate', Date__c = Date.newInstance(2012, 01, 01), Custom_1__c = 0, Custom_2__c = 0, Custom_3__c = 0,
+                                            Fee__c = 10, Fringe__c = 30, G_A__c = 10, Overhead__c = 52);
+        insert rate1_1;
+        insert rate1_2;
+        insert rate1_3;
+
+        SFDC_Employee__c employee_1 = new SFDC_Employee__c(Name = 'emp_6', Salary__c = 60000, Exchange_Rate__c = 2,
+                                                          Effective_Salary_Date__c = Date.newInstance(2011, 11, 1),
+                                                          Effective_Exchange_Rate_Date__c = Date.newInstance(2013, 1, 1));
+        DContract__c parent_1 = new DContract__c(Name = 'Sample Parent', Status__c = 'Active', Requires_Report_Out__c = 'No', Intracompany_Sub_contract__c = 'No');
+        insert parent_1;
+        Time_Card__c tc_1_employee_1 = new Time_Card__c(Total__c = 1, Date__c = Date.newInstance(2010, 12, 30), Employee__c = employee_1.Id, Client__c = parent_1.Id);
+        insert tc_1_employee_1;
+        Time_Card__c tc_2_employee_1 = new Time_Card__c(Total__c = 3, Date__c = Date.newInstance(2010, 11, 1), Employee__c = employee_1.Id, Client__c = parent_1.Id);
+        insert tc_2_employee_1;
+        Time_Card__c tc_3_employee_1 = new Time_Card__c(Total__c = 6, Date__c = Date.newInstance(2011, 1, 1), Employee__c = employee_1.Id, Client__c = parent_1.Id);
+        insert tc_3_employee_1;
+        Time_Card__c tc_4_employee_1 = new Time_Card__c(Total__c = 7, Date__c = Date.newInstance(2011, 5, 22), Employee__c = employee_1.Id, Client__c = parent_1.Id);
+        insert tc_4_employee_1;
+        Time_Card__c tc_5_employee_1 = new Time_Card__c(Total__c = 8, Date__c = Date.newInstance(2016, 3, 3), Employee__c = employee_1.Id, Client__c = parent_1.Id);
+        insert tc_5_employee_1;
+
+        Test.startTest();
+        BillingRateController brc = new BillingRateController();
+        brc.billingRateName = 'Loaded Daily Rate';
+        brc.initManageRate();
+        brc.billingRateId = rate1_2.Id;
+        brc.initUpdateRate();
+        brc.newBillingRate.Fee__c = 30;
+        brc.newBillingRate.Fringe__c = 15;
+        brc.newBillingRate.G_A__c = 10;
+        brc.newBillingRate.Overhead__c = 5;
+        brc.newBillingRate.Custom_1__c = 11;
+        brc.newBillingRate.Custom_2__c = 12;
+        brc.newBillingRate.Custom_3__c = 13;
+        brc.updateRateHistory();
+        brc.runRecalculationBatchJob();
+        Test.stopTest();
+
+        Time_Card__c tcDB_1 = [SELECT Id, Billing_Rate__c FROM Time_Card__c WHERE Id =: tc_1_employee_1.Id];
+        System.assertEquals(null, tcDB_1.Billing_Rate__c);
+        Time_Card__c tcDB_2 = [SELECT Id, Billing_Rate__c FROM Time_Card__c WHERE Id =: tc_2_employee_1.Id];
+        System.assertEquals(null, tcDB_2.Billing_Rate__c);
+        Time_Card__c tcDB_3 = [SELECT Id, Billing_Rate__c FROM Time_Card__c WHERE Id =: tc_3_employee_1.Id];
+        System.assertEquals(2.4257309076, tcDB_3.Billing_Rate__c);
+        Time_Card__c tcDB_4 = [SELECT Id, Billing_Rate__c FROM Time_Card__c WHERE Id =: tc_4_employee_1.Id];
+        System.assertEquals(2.4257309076, tcDB_4.Billing_Rate__c);
+        Time_Card__c tcDB_5 = [SELECT Id, Billing_Rate__c FROM Time_Card__c WHERE Id =: tc_5_employee_1.Id];
+        System.assertEquals(null, tcDB_5.Billing_Rate__c);
+    }
+
+    static testMethod void billingRateManagerShouldRunRecalculationBatch2() {
+        Project_Billing_Rate__c rate1_1 = new Project_Billing_Rate__c(Name = 'Loaded Daily Rate', Date__c = Date.newInstance(1990, 01, 01), Custom_1__c = 0, Custom_2__c = 0, Custom_3__c = 0,
+                                            Fee__c = 10, Fringe__c = 30, G_A__c = 10, Overhead__c = 52);
+        Project_Billing_Rate__c rate1_2 = new Project_Billing_Rate__c(Name = 'Loaded Daily Rate', Date__c = Date.newInstance(2011, 01, 01), Custom_1__c = 0, Custom_2__c = 0, Custom_3__c = 0,
+                                            Fee__c = 15, Fringe__c = 30, G_A__c = 10, Overhead__c = 52);
+        Project_Billing_Rate__c rate1_3 = new Project_Billing_Rate__c(Name = 'Loaded Daily Rate', Date__c = Date.newInstance(2012, 01, 01), Custom_1__c = 0, Custom_2__c = 0, Custom_3__c = 0,
+                                            Fee__c = 10, Fringe__c = 30, G_A__c = 10, Overhead__c = 52);
+        insert rate1_1;
+        insert rate1_2;
+        insert rate1_3;
+
+        SFDC_Employee__c employee_1 = new SFDC_Employee__c(Name = 'emp_6', Salary__c = 60000, Exchange_Rate__c = 2,
+                                                          Effective_Salary_Date__c = Date.newInstance(2011, 11, 1),
+                                                          Effective_Exchange_Rate_Date__c = Date.newInstance(2013, 1, 1));
+        DContract__c parent_1 = new DContract__c(Name = 'Sample Parent', Status__c = 'Active', Requires_Report_Out__c = 'No', Intracompany_Sub_contract__c = 'No');
+        insert parent_1;
+        Time_Card__c tc_1_employee_1 = new Time_Card__c(Total__c = 1, Date__c = Date.newInstance(2010, 12, 30), Employee__c = employee_1.Id, Client__c = parent_1.Id);
+        insert tc_1_employee_1;
+        Time_Card__c tc_2_employee_1 = new Time_Card__c(Total__c = 3, Date__c = Date.newInstance(2010, 11, 1), Employee__c = employee_1.Id, Client__c = parent_1.Id);
+        insert tc_2_employee_1;
+        Time_Card__c tc_3_employee_1 = new Time_Card__c(Total__c = 6, Date__c = Date.newInstance(2011, 1, 1), Employee__c = employee_1.Id, Client__c = parent_1.Id);
+        insert tc_3_employee_1;
+        Time_Card__c tc_4_employee_1 = new Time_Card__c(Total__c = 7, Date__c = Date.newInstance(2011, 5, 22), Employee__c = employee_1.Id, Client__c = parent_1.Id);
+        insert tc_4_employee_1;
+        Time_Card__c tc_5_employee_1 = new Time_Card__c(Total__c = 8, Date__c = Date.newInstance(2016, 3, 3), Employee__c = employee_1.Id, Client__c = parent_1.Id);
+        insert tc_5_employee_1;
+
+        Test.startTest();
+        BillingRateController brc = new BillingRateController();
+        brc.billingRateName = 'Loaded Daily Rate';
+        brc.initManageRate();
+        brc.billingRateId = rate1_2.Id;
+        brc.initUpdateRate();
+        brc.newBillingRate.Fee__c = 30;
+        brc.newBillingRate.Fringe__c = 15;
+        brc.newBillingRate.G_A__c = 10;
+        brc.newBillingRate.Overhead__c = 5;
+        brc.newBillingRate.Custom_1__c = 11;
+        brc.newBillingRate.Custom_2__c = 12;
+        brc.newBillingRate.Custom_3__c = 13;
+        brc.updateRateHistory();
+        brc.initManageRate();
+        brc.newBillingRate.Fee__c = 30;
+        brc.newBillingRate.Fringe__c = 15;
+        brc.newBillingRate.G_A__c = 10;
+        brc.newBillingRate.Overhead__c = 5;
+        brc.newBillingRate.Custom_1__c = 50;
+        brc.newBillingRate.Custom_2__c = 12;
+        brc.newBillingRate.Custom_3__c = 50;
+        brc.newBillingRate.Date__c = Date.newInstance(2016, 3, 3);
+        brc.saveNewRateHistory();
+        brc.runRecalculationBatchJob();
+        Test.stopTest();
+
+        Time_Card__c tcDB_1 = [SELECT Id, Billing_Rate__c FROM Time_Card__c WHERE Id =: tc_1_employee_1.Id];
+        System.assertEquals(null, tcDB_1.Billing_Rate__c);
+        Time_Card__c tcDB_2 = [SELECT Id, Billing_Rate__c FROM Time_Card__c WHERE Id =: tc_2_employee_1.Id];
+        System.assertEquals(null, tcDB_2.Billing_Rate__c);
+        Time_Card__c tcDB_3 = [SELECT Id, Billing_Rate__c FROM Time_Card__c WHERE Id =: tc_3_employee_1.Id];
+        System.assertEquals(2.4257309076, tcDB_3.Billing_Rate__c);
+        Time_Card__c tcDB_4 = [SELECT Id, Billing_Rate__c FROM Time_Card__c WHERE Id =: tc_4_employee_1.Id];
+        System.assertEquals(2.4257309076, tcDB_4.Billing_Rate__c);
+        Time_Card__c tcDB_5 = [SELECT Id, Billing_Rate__c FROM Time_Card__c WHERE Id =: tc_5_employee_1.Id];
+        System.assertEquals(4.351347, tcDB_5.Billing_Rate__c);
+    }
 }

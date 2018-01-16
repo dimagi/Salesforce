@@ -6,6 +6,7 @@ public class BillingRateController {
     public List<Project_Billing_Rate__c> billingRates {get; set;}
     public Project_Billing_Rate__c newBillingRate {get; set;}
 
+    public Boolean requiredRefresh {get; set;}
     public Id billingRateId {get; set;}
     public String billingRateName {get; set;}
     public List<Project_Billing_Rate__c> rateHistoryList {get; set;}
@@ -66,6 +67,11 @@ public class BillingRateController {
                                                 FROM Project_Billing_Rate__c WHERE Name =: this.billingRateName ORDER BY Date__c];
         this.newBillingRate = new Project_Billing_Rate__c(Date__c = Date.today(), Name = this.billingRateName, Custom_1__c = 0, Overhead__c = 0,
                                                             G_A__c = 0, Fringe__c = 0, Fee__c = 0, Custom_2__c = 0, Custom_3__c = 0);
+        this.requiredRefresh = false;
+        List<Project_Billing_Rate_Update__c> updatesList = [SELECT Id, From_Range__c, To_Range__c FROM Project_Billing_Rate_Update__c WHERE Name =: this.billingRateName];
+        if (updatesList.size() > 0) {
+            this.requiredRefresh = true;
+        }
     }
 
     public void saveNewRateHistory() {
@@ -78,6 +84,7 @@ public class BillingRateController {
             return;
         }
         insert this.newBillingRate;
+        handleInsert();
         initManageRate();
     }
 
@@ -107,6 +114,7 @@ public class BillingRateController {
             ApexPages.addMessage(new ApexPages.message(ApexPages.severity.ERROR, 'Effective Data cannot be empty.'));
             return null;
         }
+        handleUpdate();
         update this.newBillingRate;
         return goToRateView();
     }
@@ -114,6 +122,7 @@ public class BillingRateController {
     public PageReference deleteRateRow() {
         if ([SELECT Id, Name, Date__c, Custom_1__c, Overhead__c, G_A__c, Fringe__c, Fee__c, Custom_2__c, Custom_3__c
                                                 FROM Project_Billing_Rate__c WHERE Name =: this.billingRateName].size() > 1) {
+            handleDelete();
             delete this.newBillingRate; // We don't want remove rate to avoid some bugs in future
         }
         return goToRateView();
@@ -124,9 +133,10 @@ public class BillingRateController {
         Project_Billing_Rate__c beforeRow = getBefore();
         Date fromDate = beforeRow != null ? this.newBillingRate.Date__c : Date.newInstance(2000, 1, 1);
         Date toDate = nextRow != null ? nextRow.Date__c : Date.today();
+        insert new Project_Billing_Rate_Update__c(Name = this.billingRateName, From_Range__c = fromDate, To_Range__c = toDate);
     }
 
-    public void handleUpdate() { // this is invoked after insert
+    public void handleUpdate() {
         Project_Billing_Rate__c nextRow = getNext();
         Project_Billing_Rate__c beforeRow = getBefore();
         Project_Billing_Rate__c oldValue = [SELECT Id, Date__c FROM Project_Billing_Rate__c WHERE Id =: this.newBillingRate.Id];
@@ -144,6 +154,7 @@ public class BillingRateController {
         }
 
         Date toDate = nextRow != null ? nextRow.Date__c : Date.today();
+        insert new Project_Billing_Rate_Update__c(Name = this.billingRateName, From_Range__c = fromDate, To_Range__c = toDate);
     }
 
     public void handleDelete() {
@@ -151,14 +162,21 @@ public class BillingRateController {
         Project_Billing_Rate__c beforeRow = getBefore();
         Date fromDate = beforeRow != null ? this.newBillingRate.Date__c : Date.newInstance(2000, 1, 1);
         Date toDate = nextRow != null ? nextRow.Date__c : Date.today();
+        insert new Project_Billing_Rate_Update__c(Name = this.billingRateName, From_Range__c = fromDate, To_Range__c = toDate);
     }
 
     public void runRecalculationBatchJob() {
-        // TODO calculate dates, run batch job add UI message and its should be fixed !!!!!!!! add new custyom object and add ui button with bool deactivation!!!
+        List<Project_Billing_Rate_Update__c> updatesList = [SELECT Id, From_Range__c, To_Range__c FROM Project_Billing_Rate_Update__c WHERE Name =: this.billingRateName];
+        if (updatesList.size() > 0) {
+             Database.executeBatch(new BatchRecalculateTimeCardCost(new Set<Id>(), new List<Id>(), updatesList, true), 200);
+        }
+        delete updatesList;
+        this.requiredRefresh = false;
+        initManageRate();
     }
 
     public Project_Billing_Rate__c getNext() {
-        Project_Billing_Rate__c rateFromDB = [SELECT Id, Name, Date__c, Custom_1__c, Overhead__c, G_A__c, Fringe__c, Fee__c, Custom_2__c, Custom_3__c
+        List<Project_Billing_Rate__c> rateFromDB = [SELECT Id, Name, Date__c, Custom_1__c, Overhead__c, G_A__c, Fringe__c, Fee__c, Custom_2__c, Custom_3__c
                                                 FROM Project_Billing_Rate__c WHERE Name =: this.billingRateName ORDER BY Date__c];
         Integer index = -1;
         for (Integer i = 0; i < rateFromDB.size(); i++) {
@@ -173,7 +191,7 @@ public class BillingRateController {
     }
 
     public Project_Billing_Rate__c getBefore() {
-        Project_Billing_Rate__c rateFromDB = [SELECT Id, Name, Date__c, Custom_1__c, Overhead__c, G_A__c, Fringe__c, Fee__c, Custom_2__c, Custom_3__c
+        List<Project_Billing_Rate__c> rateFromDB = [SELECT Id, Name, Date__c, Custom_1__c, Overhead__c, G_A__c, Fringe__c, Fee__c, Custom_2__c, Custom_3__c
                                                 FROM Project_Billing_Rate__c WHERE Name =: this.billingRateName ORDER BY Date__c];
         Integer index = -1;
         for (Integer i = 0; i < rateFromDB.size(); i++) {
