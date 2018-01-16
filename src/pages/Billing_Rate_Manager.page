@@ -19,6 +19,8 @@
             width: auto !important;
         }
         h3 {
+            margin-top: 10px;
+            margin-bottom: 10px;
             color: black;
         }
     </style>
@@ -50,7 +52,9 @@
             <apex:outputPanel layout="block" id="messages">
                 <apex:pageMessages />
             </apex:outputPanel>
-
+            <apex:pageBlockSection >
+                <apex:commandButton disabled="{!!requiredRefresh}" action="{!runRecalculationBatchJob}" value="Recalculate rates in time cards" id="recButton" reRender="billingRatesId, messages, rateForm, recButton"/>
+            </apex:pageBlockSection>
             <apex:outputPanel styleClass="bText" id="rateForm">
                 <apex:pageBlockSection title="New Rate Numnbers" columns="2" collapsible="false">
                     <apex:inputField value="{!newBillingRate.Date__c}"/>
@@ -63,7 +67,7 @@
                     <apex:inputField value="{!newBillingRate.Custom_3__c}" />
                 </apex:pageBlockSection>
                 <apex:pageBlockSection >
-                    <apex:commandButton action="{!saveNewRateHistory}" value="Save New Rate Numbers" id="brSaveButton" reRender="billingRatesId, messages, rateForm"/>
+                    <apex:commandButton action="{!saveNewRateHistory}" value="Save New Rate Numbers" id="brSaveButton" reRender="billingRatesId, messages, rateForm, recButton"/>
                 </apex:pageBlockSection>
                 <apex:pageBlockSection >
                     <apex:commandButton action="{!goToRateListView}" value="Billign Rates List" id="backPButton" />

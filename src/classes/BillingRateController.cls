@@ -173,6 +173,7 @@ public class BillingRateController {
         delete updatesList;
         this.requiredRefresh = false;
         initManageRate();
+        ApexPages.addMessage(new ApexPages.message(ApexPages.severity.CONFIRM, 'Recalculations Job was scheduled.'));
     }
 
     public Project_Billing_Rate__c getNext() {
