@@ -15,7 +15,6 @@
                 <apex:inputField value="{!redForm.Employee_First_Name__c}"/>
                 <apex:inputField value="{!redForm.Employee_Last_Name__c}"/>
                 <apex:inputField value="{!redForm.Employee_Middle_Name__c}"/>
-                <apex:inputField value="{!redForm.Business_Unit__c}" />
                 <apex:inputField value="{!redForm.DOB__c}"/>
                 <apex:inputField value="{!redForm.Citizenship__c}" />
                 <apex:inputField value="{!redForm.Gender__c}" />

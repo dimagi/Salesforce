@@ -30,7 +30,7 @@ public class EmployeeFileController {
     }
 
     private void copyEmployeeData() {
-        List<SFDC_Employee__c> employees = [SELECT Id, Employee_First_Name__c, Employee_Last_Name__c, Employee_Middle_Name__c, Business_Unit__r.Name,
+        List<SFDC_Employee__c> employees = [SELECT Id, Employee_First_Name__c, Employee_Last_Name__c, Employee_Middle_Name__c,
                                             DOB__c, Citizenship__c, Gender__c, Personal_Phone_Number__c,
                                             Passport_No__c, Passport_Expiration_Date__c, Current_Address_City__c,
                                             Current_Address_Street__c, Current_Address_State__c, Current_Address_Country__c,
@@ -49,7 +49,6 @@ public class EmployeeFileController {
             this.redForm.Employee_First_Name__c = userEmployeeObj.Employee_First_Name__c;
             this.redForm.Employee_Last_Name__c = userEmployeeObj.Employee_Last_Name__c;
             this.redForm.Employee_Middle_Name__c = userEmployeeObj.Employee_Middle_Name__c;
-            this.redForm.Business_Unit__c = userEmployeeObj.Business_Unit__r.Name;
             this.redForm.DOB__c = userEmployeeObj.DOB__c;
             this.redForm.Citizenship__c = userEmployeeObj.Citizenship__c;
             this.redForm.Gender__c = userEmployeeObj.Gender__c;

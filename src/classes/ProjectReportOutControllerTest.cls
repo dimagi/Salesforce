@@ -116,7 +116,7 @@ public class ProjectReportOutControllerTest {
     public static testMethod void triggerShouldUpdateEmployeePersonalData() {
         addEmployee('simple-user@test.com');
         SFDC_Employee__c emplRec = [SELECT Id FROM SFDC_Employee__c WHERE Email_Address__c = 'simple-user@test.com'];
-        Record_of_Emergency_Data_Form__c redForm = new Record_of_Emergency_Data_Form__c(Employee__c = emplRec.Id, Employee_First_Name__c = 'First Name', Employee_Middle_Name__c = 'Middle Name', Business_Unit__c = 'DSI',
+        Record_of_Emergency_Data_Form__c redForm = new Record_of_Emergency_Data_Form__c(Employee__c = emplRec.Id, Employee_First_Name__c = 'First Name', Employee_Middle_Name__c = 'Middle Name',
                                                                         Employee_Last_Name__c = 'Last Name', DOB__c = Date.newInstance(Date.today().year() - 30, 3, 3), Citizenship__c = 'France', Gender__c = 'Woman',
                                                                         Personal_Phone_Number__c = '000999111', Passport_No__c = 'poiulkj' ,Passport_Expiration_Date__c = Date.newInstance(Date.today().year() + 7, 5, 5),
                                                                         Current_Address_City__c = 'Simple City', Current_Address_Street__c = 'Other 323', Current_Address_State__c = 'New one',
@@ -158,7 +158,6 @@ public class ProjectReportOutControllerTest {
         redForm.Employee_First_Name__c = 'First Name';
         redForm.Employee_Last_Name__c = 'Last Name';
         redForm.Employee_Middle_Name__c = 'Middle Name';
-        redForm.Business_Unit__c = 'DSI';
         redForm.DOB__c = Date.newInstance(Date.today().year() - 30, 3, 3);
         redForm.Citizenship__c = 'France';
         redForm.Gender__c = 'Woman';
@@ -212,7 +211,6 @@ public class ProjectReportOutControllerTest {
         System.assertEquals(fName, redForm.Employee_First_Name__c);
         System.assertEquals(lName, redForm.Employee_Last_Name__c);
         System.assertEquals(mName, redForm.Employee_Middle_Name__c);
-        System.assertEquals(bu, redForm.Business_Unit__c);
         System.assertEquals(dob, redForm.DOB__c);
         System.assertEquals(citizenship, redForm.Citizenship__c);
         System.assertEquals(gender, redForm.Gender__c);
@@ -258,11 +256,10 @@ public class ProjectReportOutControllerTest {
     }
 
     private static void addEmployee(string employeeEmail) {
-        List<Business_Unit__c> buList = [SELECT Id, Name FROM Business_Unit__c WHERE Name = 'Inc'];
         SFDC_Employee__c employeeObj = new SFDC_Employee__c(
             name = 'Sample Employee', Salary__c = 50000, Exchange_Rate__c = 1, Effective_Salary_Date__c = Date.newInstance(2016, 2, 24),
             Effective_Exchange_Rate_Date__c = Date.newInstance(2016, 2, 24), Employee_First_Name__c = 'Sample',
-            Employee_Last_Name__c = 'Employee', Business_Unit__c = buList.get(0).Id, DOB__c = Date.newInstance(Date.today().year() - 40, 2, 2),
+            Employee_Last_Name__c = 'Employee', DOB__c = Date.newInstance(Date.today().year() - 40, 2, 2),
             Citizenship__c = 'United States of America (USA)', Gender__c = 'Man', Personal_Phone_Number__c = '606060606',
             Passport_No__c = 'zaq12', Passport_Expiration_Date__c = Date.newInstance(Date.today().year() + 4, 2, 2),
             Current_Address_City__c = 'LA', Current_Address_Street__c = 'Street 12/B', Current_Address_State__c = '-', Current_Address_Country__c = 'United States of America (USA)',
