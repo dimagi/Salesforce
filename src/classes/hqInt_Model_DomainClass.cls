@@ -220,6 +220,26 @@ public class hqInt_Model_DomainClass {
             domainObj.cpFormsIn60Days__c = calculatedProperties.cp_n_forms_60_d;
             domainObj.cpFormsIn90Days__c = calculatedProperties.cp_n_forms_90_d;
             domainObj.cpHasApp__c = calculatedProperties.cp_has_app == null ? false : calculatedProperties.cp_has_app;
+
+            domainObj.Domain_cp_n_30_day_user_cases__c = calculatedProperties.cp_n_30_day_user_cases;
+            domainObj.Domain_cp_n_trivet_backends__c = calculatedProperties.cp_n_trivet_backends;
+            domainObj.Domain_cp_use_domain_security__c = calculatedProperties.cp_use_domain_security == null ? false : calculatedProperties.cp_use_domain_security;
+            domainObj.Domain_cp_n_custom_roles__c = calculatedProperties.cp_n_custom_roles;
+            domainObj.Domain_cp_using_locations__c = calculatedProperties.cp_using_locations == null ? false : calculatedProperties.cp_using_locations;
+            domainObj.Domain_cp_n_loc_restricted_roles__c = calculatedProperties.cp_n_loc_restricted_roles;
+            domainObj.Domain_cp_n_case_sharing_olevels__c = calculatedProperties.cp_n_case_sharing_olevels;
+            domainObj.Domain_cp_n_case_sharing_groups__c = calculatedProperties.cp_n_case_sharing_groups;
+            domainObj.Domain_cp_n_repeaters__c = calculatedProperties.cp_n_repeaters;
+            domainObj.Domain_cp_n_case_exports__c = calculatedProperties.cp_n_case_exports;
+            domainObj.Domain_cp_n_deid_exports__c = calculatedProperties.cp_n_deid_exports;
+            domainObj.Domain_cp_n_saved_exports__c = calculatedProperties.cp_n_saved_exports;
+            domainObj.Domain_cp_n_rb_reports__c = calculatedProperties.cp_n_rb_reports;
+            domainObj.Domain_cp_n_ucr_reports__c = calculatedProperties.cp_n_ucr_reports;
+            domainObj.Domain_cp_n_lookup_tables__c = calculatedProperties.cp_n_lookup_tables;
+            domainObj.Domain_cp_has_project_icon__c = calculatedProperties.cp_has_project_icon == null ? false : calculatedProperties.cp_has_project_icon;
+            domainObj.Domain_cp_n_apps_with_icon__c = calculatedProperties.cp_n_apps_with_icon;
+            domainObj.Domain_cp_n_apps__c = calculatedProperties.cp_n_apps;
+            domainObj.Domain_cp_n_apps_with_multi_lang__c = calculatedProperties.cp_n_apps_with_multi_lang;
         }
         domainObj.Server_Name__c = serverName;
 
