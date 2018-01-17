@@ -30,4 +30,24 @@ public class HqIntModelCalculatedProperties {
     public Integer cp_n_forms_60_d;
     public Integer cp_n_forms_90_d;
     public Boolean cp_has_app;
+    public Integer cp_n_30_day_user_cases;
+    public Integer cp_n_trivet_backends;
+    public Boolean cp_use_domain_security;
+    public Integer cp_n_custom_roles;
+    public Boolean cp_using_locations;
+    public Integer cp_n_loc_restricted_roles;
+    public Integer cp_n_case_sharing_olevels;
+    public Integer cp_n_case_sharing_groups;
+    public Integer cp_n_repeaters;
+    public Integer cp_n_case_exports;
+    public Integer cp_n_deid_exports;
+    public Integer cp_n_saved_exports;
+    public Integer cp_n_rb_reports;
+    public Integer cp_n_ucr_reports;
+    public Integer cp_n_lookup_tables;
+    public Boolean cp_has_project_icon;
+    public Integer cp_n_apps_with_icon;
+    public Integer cp_n_apps;
+    public Integer cp_n_apps_with_multi_lang;
+
 }
