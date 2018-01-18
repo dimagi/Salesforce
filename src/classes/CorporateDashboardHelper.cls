@@ -295,14 +295,14 @@ public class CorporateDashboardHelper {
     public static void loadAggregateEff() {
         Corporate_Dashboard_Settings__c corporateDashboardSettings = Corporate_Dashboard_Settings__c.getOrgDefaults();
         List<Global_Metric_Graph__c> aggregateEff = new List<Global_Metric_Graph__c>();
-        AggregateResult[] resultContr = [SELECT Efficiency_Owner_BU__r.Name, Implementation_Type__c, SUM(Services_Budget__c), SUM(Weighted_Efficiency__c)
+        AggregateResult[] resultContr = [SELECT Efficiency_Owner_BU__r.Name, SUM(Services_Budget__c), SUM(Weighted_Efficiency__c)
                                          FROM DContract__c
                                          WHERE (NOT Name LIKE '%internal%') AND Total_Amount_of_Contract__c > 0
                                          AND (NOT Name LIKE '%MOTECH suite%') AND Implementation_Type__c != 'Self Service'
                                          AND Implementation_Type__c != '' AND Efficiency_Owner_BU__c != null
                                          AND Intracompany_Sub_contract__c = 'No' AND Percent_through_SOW_deliverables__c != 100
                                          AND Status__c != 'Complete'
-                                         GROUP BY Efficiency_Owner_BU__r.Name, Implementation_Type__c ORDER BY Efficiency_Owner_BU__r.Name];
+                                         GROUP BY Efficiency_Owner_BU__r.Name ORDER BY Efficiency_Owner_BU__r.Name];
 
         if (resultContr.size() > 0) {
             Global_Metric_Graph__c graphHelper = new Global_Metric_Graph__c(Name = AGGREGATE_EFF_GRAPH, Graph_Value_1__c = 0, Graph_Value_2__c = 0, Graph_Value_3__c = 0,
@@ -318,7 +318,6 @@ public class CorporateDashboardHelper {
                 graphHelper.X_Text__c = currName;
                 Decimal sumServices = (Decimal) ar.get('expr0');
                 Decimal valuetoSet = 1;
-                String impType = (String) ar.get('Implementation_Type__c');
 
                 if (sumServices > 0) {
                     Decimal a = ar.get('expr1') != null ? (Decimal) ar.get('expr1') : 0;
