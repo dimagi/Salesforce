@@ -295,8 +295,8 @@ public class CorporateDashboardHelper {
     public static void loadAggregateEff() {
         Corporate_Dashboard_Settings__c corporateDashboardSettings = Corporate_Dashboard_Settings__c.getOrgDefaults();
         List<Global_Metric_Graph__c> aggregateEff = new List<Global_Metric_Graph__c>();
-        AggregateResult[] resultContr = [SELECT Efficiency_Owner_BU__r.Name, Implementation_Type__c, SUM(Services_Budget__c), SUM(Weighted_Efficiency__c),
-                                         SUM(Services_Budget__c) FROM DContract__c
+        AggregateResult[] resultContr = [SELECT Efficiency_Owner_BU__r.Name, Implementation_Type__c, SUM(Services_Budget__c), SUM(Weighted_Efficiency__c)
+                                         FROM DContract__c
                                          WHERE (NOT Name LIKE '%internal%') AND Total_Amount_of_Contract__c > 0
                                          AND (NOT Name LIKE '%MOTECH suite%') AND Implementation_Type__c != 'Self Service'
                                          AND Implementation_Type__c != '' AND Efficiency_Owner_BU__c != null
@@ -322,15 +322,9 @@ public class CorporateDashboardHelper {
 
                 if (sumServices > 0) {
                     Decimal a = ar.get('expr1') != null ? (Decimal) ar.get('expr1') : 0;
-                    Decimal b = ar.get('expr2') != null ? (Decimal) ar.get('expr2') : 0;
-                    valuetoSet = (b != 0 ? a/b : 0);
+                    valuetoSet = (sumServices != 0 ? a/sumServices : 0);
                 }
-
-                if (impType == 'Enterprise') {
-                    graphHelper.Graph_Value_1__c = valuetoSet;
-                } else if (impType == 'Bundles and Services') {
-                    graphHelper.Graph_Value_2__c = valuetoSet;
-                }
+                graphHelper.Graph_Value_1__c = valuetoSet;
             }
             aggregateEff.add(graphHelper);
         }

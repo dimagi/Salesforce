@@ -337,15 +337,15 @@
                     return chart;
                 });
                 nv.addGraph(function() {
-                    var aggData, chart = nv.models.multiBarChart().stacked(false).height(400).legendPosition('bottom').reduceXTicks(false);
-                    chart.legend.margin({"top": 22});
+                    var aggData, chart = nv.models.discreteBarChart().height(400);
                     chart.xAxis.axisLabel('Efficiency Owner (BU)');
-                    chart.yAxis.tickFormat(d3.format('%'));
-                    chart.yAxis.ticks(6);
                     chart.yAxis.axisLabel('Aggregate Weighted Efficiency');
                     chart.yAxis.axisLabelDistance(1);
-                    aggData = $j("[id$=aggregateEffId]").val();
+                    chart.yAxis.tickFormat(d3.format('%'));
+                    chart.yAxis.ticks(6);
+                    chart.x(function(d) { return d.label }).y(function(d) { return d.value });
 
+                    aggData = $j("[id$=aggregateEffId]").val();
                     $j("[id$=aggregateExecution").append("<svg></svg>");
                     d3.select('#aggregateExecution svg').datum(fillAggregateData(JSON.parse(aggData)))
                         .transition().duration(500).call(chart);
@@ -538,13 +538,12 @@
             }
 
             function fillAggregateData(graphData) {
-                var i, bundles = [], enterprise = [];
+                var i, data = [];
                 for (i = 0; i < graphData.length; i++) {
-                    bundles.push({x: graphData[i].X_Text__c, y: graphData[i].Graph_Value_2__c});
-                    enterprise.push({x: graphData[i].X_Text__c, y: graphData[i].Graph_Value_1__c});
+                    data.push({"value": graphData[i].Graph_Value_1__c, "label": graphData[i].X_Text__c});
                 }
 
-                return [{"values": bundles, "key": "Bundles and Services"}, {"values": enterprise, "key": "Enterprise"}];
+                return [{key: "Aggregate Execution Efficiency", values: data}];
             }
 
             function buildMultiBatChart(labelTitleY, labelTitleX) {
