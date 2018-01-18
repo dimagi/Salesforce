@@ -202,7 +202,7 @@
                     <div class="chartsDataContainer">
                         <div class="graphContainer">
                             <a href="/00Ob0000004Mfu8">
-                                <img class="graph" src="/servlet/servlet.ChartServer?rsid=0FLb0000001HQDx&ruid=005b0000001SrLL&did=01Zb0000000gCws&s=8&fs=12&tfg=12&tfs=-16777216&explode=0&c=col_line&cs=1&title=Aggregate+Execution+Efficiency&eh=no&compo=yes&fg=-16777216&bg1=-1&bg2=-1&bgdir=2&dl1=Efficiency+Owner+%28BU%29&dl2=Implementation+Type&l=2&sax=yes&Yman=no&nc=0&actUrl=%2F00Ob0000004Mfu8&sd=1&scv=no&sct=no&spt=no&bd=yes&cu=USD&ab=X&u=0&vt=0&ab2=Y&u2=0&vt2=1&vl0=Aggregate+Weighted+Efficiency&vl1=Aggregate+Weighted+Efficiency&spoc=no&topn=no&gc0=-1&gc1=-1&gc2=-1&sona=0&cacheParam={!randomParam}" />
+                                <img class="graph" src="/servlet/servlet.ChartServer?rsid=0FL0X000001iiKC&ruid=005b0000001SrLL&did=01Zb0000000gCws&s=8&fs=12&tfg=12&tfs=-16777216&explode=0&c=col_line&cs=0&title=Aggregate+Execution+Efficiency&eh=no&compo=yes&fg=-16777216&bg1=-1&bg2=-1&bgdir=2&dl1=Efficiency+Owner+%28BU%29&dl2=&l=2&sax=yes&Yman=no&nc=0&actUrl=%2F00Ob0000004Mfu8&sd=1&scv=no&sct=no&spt=no&bd=yes&cu=USD&ab=X&u=0&vt=0&ab2=Y&u2=0&vt2=1&vl0=Aggregate+Weighted+Efficiency&vl1=Aggregate+Weighted+Efficiency&spoc=no&topn=no&gc0=-1&gc1=-1&gc2=-1&sona=0&cacheParam={!randomParam}" />
                             </a>
                         </div>
                         <div class="graphContainer">
