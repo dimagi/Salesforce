@@ -15,12 +15,12 @@
                 <apex:inputField value="{!redForm.Employee_First_Name__c}"/>
                 <apex:inputField value="{!redForm.Employee_Last_Name__c}"/>
                 <apex:inputField value="{!redForm.Employee_Middle_Name__c}"/>
-                <apex:inputField value="{!redForm.DOB__c}"/>
+                <apex:inputField onclick="setYear(50, 0)" value="{!redForm.DOB__c}"/>
                 <apex:inputField value="{!redForm.Citizenship__c}" />
                 <apex:inputField value="{!redForm.Gender__c}" />
                 <apex:inputField value="{!redForm.Personal_Phone_Number__c}" />
                 <apex:inputField value="{!redForm.Passport_No__c}" />
-                <apex:inputField value="{!redForm.Passport_Expiration_Date__c}" />
+                <apex:inputField onclick="setYear(0, 10)" value="{!redForm.Passport_Expiration_Date__c}" />
                 <apex:inputField value="{!redForm.Current_Address_City__c}" />
                 <apex:inputField value="{!redForm.Current_Address_Street__c}" />
                 <apex:inputField value="{!redForm.Current_Address_State__c}" />

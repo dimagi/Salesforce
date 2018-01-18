@@ -106,6 +106,18 @@
                 $j("[id$=theaddrs]").tablesorter({headers: { 3: { sorter: false}}});
             });
 
+            function setYear(fromValue, toValue) {
+                var i, startYear, endYear, htmlStr, cYear = new Date().getFullYear();
+                startYear = (cYear - fromValue);
+                endYear = (cYear + toValue);
+                htmlStr = '';
+
+                for(i = startYear; i<= endYear; i++) {
+                    htmlStr += "<option value=\""+i+"\">"+i+"</option>";
+                }
+                $j('#calYearPicker').html(htmlStr);
+            }
+
             function clickProProject(elem) {
                 var contractId = $j(elem).find(".accId").find('span').html();
                 $j('[id$=contractIdElement]').val(contractId);
@@ -769,7 +781,7 @@
                                     <apex:outputLabel value="Report Out Date" for="proDate"/>
                                     <apex:outputPanel styleClass="requiredInput" layout="block">
                                         <apex:outputPanel styleClass="requiredBlock" layout="block"/>
-                                        <apex:inputField id="proDate" value="{!pro.Report_Out_Date__c}"/>
+                                        <apex:inputField onclick="setYear(1, 1)" id="proDate" value="{!pro.Report_Out_Date__c}"/>
                                     </apex:outputPanel>
                                 </apex:pageBlockSectionItem>
 
