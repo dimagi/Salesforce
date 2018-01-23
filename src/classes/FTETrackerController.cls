@@ -369,6 +369,11 @@ public class FTETrackerController {
      * Employee List View
      */
     public List<EmployeeTime> employees { get; set;}
+    public Integer resultSize { get; set;}
+    public Integer pageSize { get; set;}
+    public Integer pageNumber { get; set;}
+    public Boolean hasPrevious { get; set;}
+    public Boolean hasNext { get; set;}
 
     public void loadEmployeeListTimeHistory() {
         loadWorkCardJobStatus();
@@ -377,37 +382,73 @@ public class FTETrackerController {
             return;
         }
 
-       this.employees = new List<EmployeeTime>();
-       List<FTE_Work_Card__c> workCards = [SELECT Id, Employee__c, Employee__r.Hire_Date__c, Employee__r.Name, Employee__r.Unloaded_Daily_Rate__c, Month_1__c, Month_2__c, Month_3__c,
+        if (this.pageNumber == null) { // new open - initiate variables
+            this.pageNumber = 1;
+            this.resultSize = 0;
+            this.pageSize = 2;
+            this.hasPrevious = true;
+            this.hasNext = true;
+        }
+    }
+
+    public List<EmployeeTime> getEmployeesList() {
+        this.employees = new List<EmployeeTime>();
+        this.hasPrevious = true;
+        this.hasNext = true;
+        Integer offsetValue = ((this.pageNumber - 1) * this.pageSize);
+        List<FTE_Work_Card__c> workCards = [SELECT Id, Employee__c, Employee__r.Hire_Date__c, Employee__r.Name, Employee__r.Unloaded_Daily_Rate__c, Month_1__c, Month_2__c, Month_3__c,
                                            Month_4__c, Month_5__c, Month_6__c, Month_7__c, Month_8__c, Month_9__c, Month_10__c, Month_11__c, Month_12__c,
-                                           Total__c, Total_Hours__c, Year__c FROM FTE_Work_Card__c ORDER BY Employee__r.Name];
-       for (FTE_Work_Card__c workCard : workCards) {
-           Integer empNetworkDays = getNetworkDays(workCard.Employee__r.Hire_Date__c);
-           EmployeeTime empTime = new EmployeeTime(workCard.Employee__r.Name, workCard.Employee__c);
-           empTime.daysArray[0] = workCard.Month_1__c;
-           empTime.daysArray[1] = workCard.Month_2__c;
-           empTime.daysArray[2] = workCard.Month_3__c;
-           empTime.daysArray[3] = workCard.Month_4__c;
-           empTime.daysArray[4] = workCard.Month_5__c;
-           empTime.daysArray[5] = workCard.Month_6__c;
-           empTime.daysArray[6] = workCard.Month_7__c;
-           empTime.daysArray[7] = workCard.Month_8__c;
-           empTime.daysArray[8] = workCard.Month_9__c;
-           empTime.daysArray[9] = workCard.Month_10__c;
-           empTime.daysArray[10] = workCard.Month_11__c;
-           empTime.daysArray[11] = workCard.Month_12__c;
-           empTime.daysArray[12] = workCard.Total__c;
-           if (workCard.Total__c > empNetworkDays) {
-               empTime.cssStyle[12] = 'fteCell overbilled';
-           }
-           for (Integer i = 0; i < 12; i++) {
-               if (empTime.daysArray[i] > 21) {
-                   empTime.cssStyle[i] = 'fteCell overbilled';
-               }
-           }
-           empTime.daysArray[13] = (workCard.Total_Hours__c * workCard.Employee__r.Unloaded_Daily_Rate__c).setScale(2);
-           this.employees.add(empTime);
-       }
+                                           Total__c, Total_Hours__c, Year__c FROM FTE_Work_Card__c ORDER BY Employee__r.Name LIMIT : this.pageSize OFFSET : offsetValue];
+        this.resultSize = Database.countQuery('SELECT count() FROM FTE_Work_Card__c');
+        if (pageNumber == 1) {
+            this.HasPrevious = false;
+        }
+        if (offsetValue + this.pageSize >= this.resultSize) {
+            this.HasNext = false;
+        }
+
+
+        for (FTE_Work_Card__c workCard : workCards) {
+            Integer empNetworkDays = getNetworkDays(workCard.Employee__r.Hire_Date__c);
+            EmployeeTime empTime = new EmployeeTime(workCard.Employee__r.Name, workCard.Employee__c);
+            empTime.daysArray[0] = workCard.Month_1__c;
+            empTime.daysArray[1] = workCard.Month_2__c;
+            empTime.daysArray[2] = workCard.Month_3__c;
+            empTime.daysArray[3] = workCard.Month_4__c;
+            empTime.daysArray[4] = workCard.Month_5__c;
+            empTime.daysArray[5] = workCard.Month_6__c;
+            empTime.daysArray[6] = workCard.Month_7__c;
+            empTime.daysArray[7] = workCard.Month_8__c;
+            empTime.daysArray[8] = workCard.Month_9__c;
+            empTime.daysArray[9] = workCard.Month_10__c;
+            empTime.daysArray[10] = workCard.Month_11__c;
+            empTime.daysArray[11] = workCard.Month_12__c;
+            empTime.daysArray[12] = workCard.Total__c;
+            if (workCard.Total__c > empNetworkDays) {
+                empTime.cssStyle[12] = 'fteCell overbilled';
+            }
+            for (Integer i = 0; i < 12; i++) {
+                if (empTime.daysArray[i] > 21) {
+                    empTime.cssStyle[i] = 'fteCell overbilled';
+                }
+            }
+            empTime.daysArray[13] = (workCard.Total_Hours__c * workCard.Employee__r.Unloaded_Daily_Rate__c).setScale(2);
+            this.employees.add(empTime);
+        }
+
+        return this.employees;
+    }
+
+    public void previousPage() {
+        this.pageNumber--;
+    }
+
+    public void nextPage() {
+        this.pageNumber++;
+    }
+
+    public void updatePageNumber() {
+        this.pageNumber = 1;
     }
 
     public PageReference goToProjectListViewFromEmployeeListView() {

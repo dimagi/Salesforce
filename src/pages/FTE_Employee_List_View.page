@@ -44,7 +44,7 @@
                         </div>
                     </apex:facet>
                 </apex:actionstatus>
-                <apex:pageBlockTable id="employeesHours" value="{!employees}" var="empTime" styleClass="employeeTable">
+                <apex:pageBlockTable id="employeesHours" value="{!employeesList}" var="empTime" styleClass="employeeTable">
                     <apex:column onclick="setEmployeeViewData('{!empTime.objId}');" headerValue="Employee Name" value="{!empTime.name}" styleClass="{!empTime.nameCss}"/>
                     <apex:column headerValue="Jan {!currentYear}" value="{!empTime.daysArray[0]}" styleClass="{!empTime.cssStyle[0]}"/>
                     <apex:column headerValue="Feb {!currentYear}" value="{!empTime.daysArray[1]}" styleClass="{!empTime.cssStyle[1]}"/>
@@ -61,6 +61,29 @@
                     <apex:column headerValue="Total" value="{!empTime.daysArray[12]}" styleClass="{!empTime.cssStyle[12]}"/>
                     <apex:column headerValue="Labor Cost Estimates" value="$ {!empTime.daysArray[13]}" styleClass="{!empTime.cssStyle[13]}"/>
                 </apex:pageBlockTable>
+                <!-- Pagination -->
+                <table style="width: 100%">
+                    <tr>
+                        <td>Page: <apex:outputText value=" {!pageNumber} of {!CEILING(resultSize / pageSize)}"/></td>
+                        <td align="center">
+                            <apex:commandLink action="{!previousPage}" value="« Previous" rendered="{!hasPrevious}" reRender="emplsPanel" />
+                            <apex:outputText style="color: #ccc;" value="« Previous" rendered="{!NOT(hasPrevious)}"/>
+                            &nbsp;&nbsp;
+                            <apex:commandLink action="{!nextPage}" value="Next »" rendered="{!hasNext}" reRender="emplsPanel" />
+                            <apex:outputText style="color: #ccc;" value="Next »" rendered="{!NOT(hasNext) }"/>
+                        </td>
+                        <td align="right">
+                            Records per page:&nbsp;&nbsp;
+                            <apex:selectList value="{!pageSize }" size="1" onchange="resetPageNum();" >
+                                <apex:selectOption itemValue="2" itemLabel="2"/>
+                                <apex:selectOption itemValue="5" itemLabel="5"/>
+                                <apex:actionSupport event="onchange" reRender="emplsPanel"/>
+                            </apex:selectList>
+                        </td>
+                    </tr>
+                </table>
+
+                <apex:actionFunction action="{!updatePageNumber}" name="resetPageNum" reRender="emplsPanel" />
 
                 <apex:actionFunction action="{!setViewData}" name="setEmployeeViewData" oncomplete="goToEmployeeView();">
                     <apex:param name="employeeId" assignTo="{!employeeId}" value=""/>
