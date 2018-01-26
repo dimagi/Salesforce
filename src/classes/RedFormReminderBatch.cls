@@ -30,11 +30,13 @@ public without sharing class RedFormReminderBatch implements Database.Batchable<
 
         if (!this.quarterMode) { // we want send first email or reminders
             return [SELECT Id, Name, Hire_Date__c, Email_Address__c FROM SFDC_Employee__c WHERE Employee_Status__c = 'Active'
+                                               AND (Employee_Type__c = 'Contractor' OR Employee_Type__c = 'Employee')
                                                AND Hire_Date__c <=: Date.today() AND Red_Form_Filled_Date__c = null AND Email_Address__c != null];
         }
 
         // We want send quarter email only to employees who filled first time Red Form
-        return [SELECT Id, Name, Email_Address__c FROM SFDC_Employee__c WHERE Employee_Status__c = 'Active' AND Red_Form_Filled_Date__c != null AND Email_Address__c != null];
+        return [SELECT Id, Name, Email_Address__c FROM SFDC_Employee__c WHERE Employee_Status__c = 'Active' AND Red_Form_Filled_Date__c != null AND Email_Address__c != null
+                                                        AND (Employee_Type__c = 'Contractor' OR Employee_Type__c = 'Employee')];
     }
 
     public void execute(Database.BatchableContext context, List<SFDC_Employee__c> scope) {
