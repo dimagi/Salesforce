@@ -75,8 +75,9 @@
                         <td align="right">
                             Records per page:&nbsp;&nbsp;
                             <apex:selectList value="{!pageSize }" size="1" onchange="resetPageNum();" >
-                                <apex:selectOption itemValue="2" itemLabel="2"/>
-                                <apex:selectOption itemValue="5" itemLabel="5"/>
+                                <apex:selectOption itemValue="10" itemLabel="10"/>
+                                <apex:selectOption itemValue="20" itemLabel="20"/>
+                                <apex:selectOption itemValue="50" itemLabel="50"/>
                                 <apex:actionSupport event="onchange" reRender="emplsPanel"/>
                             </apex:selectList>
                         </td>

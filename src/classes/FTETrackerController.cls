@@ -385,7 +385,7 @@ public class FTETrackerController {
         if (this.pageNumber == null) { // new open - initiate variables
             this.pageNumber = 1;
             this.resultSize = 0;
-            this.pageSize = 2;
+            this.pageSize = 10;
             this.hasPrevious = true;
             this.hasNext = true;
         }
