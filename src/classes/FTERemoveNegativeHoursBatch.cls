@@ -107,9 +107,20 @@ public without sharing class FTERemoveNegativeHoursBatch implements Database.Bat
     }
 
     public void finish(Database.BatchableContext BC) {
-        List<FTE_Tag__c> tagsToRemove = [SELECT Id FROm FTE_Tag__c WHERE Action__c = 'Updated'];
-        if (tagsToRemove.size() > 0) {
-            delete tagsToRemove;
+        try {
+            List<FTE_Tag__c> tagsToRemove = [SELECT Id FROm FTE_Tag__c WHERE Action__c = 'Updated'];
+            if (tagsToRemove.size() > 0) {
+                delete tagsToRemove;
+            }
+            if (!Test.isRunningTest()) {
+                Integer fteYear = (FTE_Tracker_Settings__c.getOrgDefaults().FTE_Year__c != null ? FTE_Tracker_Settings__c.getOrgDefaults().FTE_Year__c.intValue() : Date.today().year());
+                Database.executeBatch(new FTEGenerateEmployeesWorkCardBatch(fteYear), 1);
+            }
+        } catch (Exception ex) {
+            if (!Test.isRunningTest()) {
+                BatchDefaultSettings__c settings = BatchDefaultSettings__c.getOrgDefaults();
+                EmailHelper.sendEmailFromException(settings.Error_Emails__c.split(','), 'FTERemoveNegativeHoursBatch error', 'Cannot remove negative FTE Tags', ex);
+            }
         }
     }
 
