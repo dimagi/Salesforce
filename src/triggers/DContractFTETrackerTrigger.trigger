@@ -7,10 +7,12 @@ trigger DContractFTETrackerTrigger on DContract__c (after update) {
         }
     }
     if (contracts.size() > 0) {
+        Integer yearValue = FTE_Tracker_Settings__c.getOrgDefaults().FTE_Year__c != null ? FTE_Tracker_Settings__c.getOrgDefaults().FTE_Year__c.intValue()
+                                : Date.today().year();
         if (!Test.isRunningTest()) {
-            Database.executeBatch(new FTEGenerateEmployeesWorkCardBatch(contracts, Date.today().year()), 1);
+            Database.executeBatch(new FTEGenerateEmployeesWorkCardBatch(contracts, yearValue), 1);
         } else {
-            Database.executeBatch(new FTEGenerateEmployeesWorkCardBatch(contracts, Date.today().year()));
+            Database.executeBatch(new FTEGenerateEmployeesWorkCardBatch(contracts, yearValue));
         }
     }
 }

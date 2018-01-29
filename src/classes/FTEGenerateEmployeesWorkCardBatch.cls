@@ -84,14 +84,18 @@ public without sharing class FTEGenerateEmployeesWorkCardBatch implements Databa
                 monthHours += realHours;
                 totalHours += realHours;
             }
-            monthDays = roundtoDays(monthHours);
-            sObj.put('Month_' + month + '__c', monthDays);
+            if (employeeYearTimeCards.size() > 0) {
+                monthDays = roundtoDays(monthHours);
+                sObj.put('Month_' + month + '__c', monthDays);
 
-            employeeWorkCard = (FTE_Work_Card__c) sObj;
-            employeeWorkCard.Total_Hours__c = totalHours;
-            employeeWorkCard.Total__c = roundtoDays(totalHours);
-            System.debug('WC totalHours: ' + totalHours);
-            upsert employeeWorkCard;
+                employeeWorkCard = (FTE_Work_Card__c) sObj;
+                employeeWorkCard.Total_Hours__c = totalHours;
+                employeeWorkCard.Total__c = roundtoDays(totalHours);
+                System.debug('WC totalHours: ' + totalHours);
+                upsert employeeWorkCard;
+            } else if (employeeWorkCard.Id != null) { // If no time we can delete record
+                delete employeeWorkCard;
+            }
         }
     }
 

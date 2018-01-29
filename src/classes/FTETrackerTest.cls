@@ -351,7 +351,7 @@ public class FTETrackerTest {
     }
 
     @isTest
-    public static void batchShouldFilleeNegativeFTETags1() {
+    public static void batchShouldFillNegativeFTETags1() {
         SFDC_Employee__c employee = [SELECT Id FROM SFDC_Employee__c WHERE Name = 'Other Employee'];
         SFDC_Employee__c employee2 = [SELECT Id FROM SFDC_Employee__c WHERE Name = 'Yyy Employee'];
         Id cont1 = [SELECT Id FROM DContract__c WHERE Name = 'FTE Contract 1' LIMIT 1].Id;
@@ -422,7 +422,7 @@ public class FTETrackerTest {
     }
 
     @isTest
-    public static void batchShouldFilleeNegativeFTETags2() {
+    public static void batchShouldFillNegativeFTETags2() {
         SFDC_Employee__c employee = [SELECT Id FROM SFDC_Employee__c WHERE Name = 'Other Employee'];
         SFDC_Employee__c employee2 = [SELECT Id FROM SFDC_Employee__c WHERE Name = 'Yyy Employee'];
         Id cont1 = [SELECT Id FROM DContract__c WHERE Name = 'FTE Contract 1' LIMIT 1].Id;
