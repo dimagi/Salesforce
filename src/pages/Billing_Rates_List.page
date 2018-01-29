@@ -39,7 +39,6 @@
             <apex:outputPanel styleClass="bText" id="rateForm">
                 <apex:pageBlockSection title="New Billing Rate" columns="2" collapsible="false">
                     <apex:inputField value="{!newBillingRate.Name}"/>
-                    <apex:inputField value="{!newBillingRate.Date__c}"/>
                     <apex:inputField value="{!newBillingRate.Overhead__c}"/>
                     <apex:inputField value="{!newBillingRate.Fringe__c}" />
                     <apex:inputField value="{!newBillingRate.Fee__c}"/>

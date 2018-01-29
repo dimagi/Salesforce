@@ -20,7 +20,7 @@
                 <apex:pageMessages />
             </apex:outputPanel>
 
-            <apex:pageBlockSection title="New Rate Numnbers" columns="2" collapsible="false">
+            <apex:pageBlockSection title="New Rate Numbers" columns="2" collapsible="false">
                 <apex:inputField value="{!newBillingRate.Date__c}"/>
                 <apex:inputField value="{!newBillingRate.Overhead__c}"/>
                 <apex:inputField value="{!newBillingRate.Fringe__c}" />

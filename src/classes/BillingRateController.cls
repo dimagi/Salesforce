@@ -30,7 +30,7 @@ public class BillingRateController {
             }
         }
 
-        this.newBillingRate = new Project_Billing_Rate__c(Date__c = Date.today(), Name = '', Custom_1__c = 0, Overhead__c = 0,
+        this.newBillingRate = new Project_Billing_Rate__c(Date__c = Date.newInstance(2000, 1, 1), Name = '', Custom_1__c = 0, Overhead__c = 0,
                                                             G_A__c = 0, Fringe__c = 0, Fee__c = 0, Custom_2__c = 0, Custom_3__c = 0);
     }
 
