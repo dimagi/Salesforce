@@ -37,7 +37,7 @@ public class HqMaltTablesBatch implements Database.Batchable<Integer>, Database.
         this.monthDate.addDays(1);
         this.endDate = this.monthDate.year() + '-' + this.monthDate.month() + '-' + this.monthDate.day();
         this.endPoint = this.serverSettings.Server_URL__c + 'malt_tables/?format=json&limit=';
-        this.apiLimitParameter = 30; //this object is small so we can fetch 30 records in one time 
+        this.apiLimitParameter = 60; //this object is small so we can fetch 30 records in one time 
         //this.serverSettings.API_Limit_Parameter__c != null ? Integer.valueOf(this.serverSettings.API_Limit_Parameter__c)
                             //: 10;
     }
