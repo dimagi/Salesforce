@@ -286,7 +286,6 @@
                 nv.addGraph(function() {
                     var expected, per, gData, chart;
                     gData = JSON.parse($j("[id$=oppExpecteId]").val());
-                    gData.Graph_Value_1__c = -1.0;
                     per = (100 * (gData.Graph_Value_1__c / gData.Graph_Value_2__c)).toFixed(2);
                     chart = buildPieChart('$' + (gData.Graph_Value_1__c).toFixed(2) + ' : ' + per + '%');
                     chart.tooltip.valueFormatter(function (d) { 
