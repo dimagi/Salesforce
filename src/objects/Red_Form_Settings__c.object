@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <customSettingsType>Hierarchy</customSettingsType>
+    <enableFeeds>false</enableFeeds>
+    <fields>
+        <fullName>Email_Address__c</fullName>
+        <externalId>false</externalId>
+        <label>Email Address</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Email</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>First_Email_Part_1__c</fullName>
+        <externalId>false</externalId>
+        <label>First Email Part 1</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>TextArea</type>
+    </fields>
+    <fields>
+        <fullName>First_Email_Part_2__c</fullName>
+        <externalId>false</externalId>
+        <label>First Email Part 2</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>TextArea</type>
+    </fields>
+    <fields>
+        <fullName>First_Email_Part_3__c</fullName>
+        <externalId>false</externalId>
+        <label>First Email Part 3</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>TextArea</type>
+    </fields>
+    <fields>
+        <fullName>First_Email_Part_4__c</fullName>
+        <externalId>false</externalId>
+        <label>First Email Part 4</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>TextArea</type>
+    </fields>
+    <fields>
+        <fullName>First_Email_Part_5__c</fullName>
+        <externalId>false</externalId>
+        <label>First Email Part 5</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>TextArea</type>
+    </fields>
+    <fields>
+        <fullName>Global_Email_Address__c</fullName>
+        <externalId>false</externalId>
+        <label>Global Email Address</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Email</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Global_Email_Part_1__c</fullName>
+        <externalId>false</externalId>
+        <label>Global Email Part 1</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>TextArea</type>
+    </fields>
+    <fields>
+        <fullName>Global_Email_Part_2__c</fullName>
+        <externalId>false</externalId>
+        <label>Global Email Part 2</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>TextArea</type>
+    </fields>
+    <fields>
+        <fullName>Quarter_Email_Part_1__c</fullName>
+        <externalId>false</externalId>
+        <label>Quarter Email Part 1</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>TextArea</type>
+    </fields>
+    <fields>
+        <fullName>Quarter_Email_Part_2__c</fullName>
+        <externalId>false</externalId>
+        <label>Quarter Email Part 2</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>TextArea</type>
+    </fields>
+    <fields>
+        <fullName>Quarter_Email_Part_3__c</fullName>
+        <externalId>false</externalId>
+        <label>Quarter Email Part 3</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>TextArea</type>
+    </fields>
+    <fields>
+        <fullName>Remainder_Email_Part_1__c</fullName>
+        <externalId>false</externalId>
+        <label>Remainder Email Part 1</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>TextArea</type>
+    </fields>
+    <fields>
+        <fullName>Remainder_Email_Part_2__c</fullName>
+        <externalId>false</externalId>
+        <label>Remainder Email Part 2</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>TextArea</type>
+    </fields>
+    <fields>
+        <fullName>Remainder_Email_Part_3__c</fullName>
+        <externalId>false</externalId>
+        <label>Remainder Email Part 3</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>TextArea</type>
+    </fields>
+    <fields>
+        <fullName>Remainder_Email_Part_4__c</fullName>
+        <externalId>false</externalId>
+        <label>Remainder Email Part 4</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>TextArea</type>
+    </fields>
+    <label>Red Form Settings</label>
+    <visibility>Protected</visibility>
+</CustomObject>
