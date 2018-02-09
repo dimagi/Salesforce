@@ -285,7 +285,7 @@ public class CorporateDashboardHelper {
         Date fiscalYearEnd = corporateDashboardSettings.Fiscal_year_End__c;
         Decimal targetData = corporateDashboardSettings.Opp_Won_Target__c;
         AggregateResult[] groupedResults = [SELECT SUM(Expected_Value_Minus_Income__c) FROM Opportunity WHERE CloseDate >=: fiscalYearStart AND CloseDate <=: fiscalYearEnd AND Amount > 0 AND StageName = 'Closed - Won'
-                                                AND (NOT Name LIKE '%Gates MOTECH Renewal%')];
+                                                AND Channel_Response__c != 'Inside Sales' AND (NOT Name LIKE '%Gates MOTECH Renewal%')];
         Decimal currentValue = (Decimal) groupedResults[0].get('expr0');
         deleteAndAddMetrics(new List<Global_Metric_Graph__c> {new Global_Metric_Graph__c(Name = OPP_EXPECTED_GRAPH, X_Text__c = '',
                                                                                          Graph_Value_1__c = currentValue != null ? currentValue / 1000000.00 : 0,
