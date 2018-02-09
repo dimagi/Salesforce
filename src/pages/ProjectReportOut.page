@@ -286,13 +286,11 @@
                 nv.addGraph(function() {
                     var expected, per, gData, chart;
                     gData = JSON.parse($j("[id$=oppExpecteId]").val());
+                    gData.Graph_Value_1__c = -1.0;
                     per = (100 * (gData.Graph_Value_1__c / gData.Graph_Value_2__c)).toFixed(2);
                     chart = buildPieChart('$' + (gData.Graph_Value_1__c).toFixed(2) + ' : ' + per + '%');
                     chart.tooltip.valueFormatter(function (d) { 
                                                     var percen = (d == gData.Graph_Value_1__c ? per : (100 - per).toFixed(2));
-                                                    if (percen < 0) {
-                                                        percen = 0;
-                                                    }
                                                     return '$' + d.toFixed(2) + ' (' + percen + '%)';
                                                  });
                     $j("[id$=oppWonBottomValue").before("<svg></svg>");
@@ -312,9 +310,6 @@
                     chart = buildPieChart('$' + (gData.Graph_Value_1__c).toFixed(2) + ' : ' + per + '%');
                     chart.tooltip.valueFormatter(function (d) { 
                                                     var percen = (d == gData.Graph_Value_1__c ? per : (100 - per).toFixed(2));
-                                                    if (percen < 0) {
-                                                        percen = 0;
-                                                    }
                                                     return '$' + d.toFixed(2) + ' (' + percen + '%)';
                                                  });
                     $j("[id$=netEVBottomValue").before("<svg></svg>");
@@ -334,9 +329,6 @@
                     chart = buildPieChart('$' + (gData.Graph_Value_1__c).toFixed(2) + ' : ' + per + '%');
                     chart.tooltip.valueFormatter(function (d) { 
                                                     var percen = (d == gData.Graph_Value_1__c ? per : (100 - per).toFixed(2));
-                                                    if (percen < 0) {
-                                                        percen = 0;
-                                                    }
                                                     return '$' + d.toFixed(2) + ' (' + percen + '%)';
                                                  });
                     $j("[id$=bufferEVBottomValue").before("<svg></svg>");
@@ -594,7 +586,19 @@
                 chart.showLegend(true).showTooltipPercent(false).growOnHover(true);
                 chart.x(function (d) { return d.key });
                 chart.y(function (d) { return d.y });
-                chart.pie.startAngle(function(d) { return d.startAngle/2 -Math.PI/2 }).endAngle(function(d) { return d.endAngle/2 -Math.PI/2 });
+                chart.pie.startAngle
+                    (
+                        function(d) {
+                            if (d.data.key == "Target Missing" && d.startAngle >= 0) {
+                                return d.startAngle/2 - Math.PI/2;
+                            }
+                            return 0 - Math.PI/2;
+                        }
+                    ).endAngle(
+                        function(d) {
+                            return d.endAngle/2 - Math.PI/2;
+                        }
+                    );
                 chart.title(chartTitle);
                 return chart;
             }
@@ -1292,7 +1296,7 @@
                                         <div id="netEV" class="gaugeGraph">
                                             <div class="graphTitle">
                                                 <h2>
-                                                    <a href="https://dimagi.my.salesforce.com/00Ob00000047qYz" target="_blank">YTD Change in Net EV - Target $9.9 million</a>
+                                                    <a href="https://dimagi.my.salesforce.com/00Ob00000047qYz" target="_blank">YTD Change in Net EV - Target $12.5 million</a>
                                                 </h2>
                                             </div>
                                             <div id="netEVBottomValue" class="graphBottomTitle"><h2>Sum of DIFF-Expected Value Minus Expense (Millions)</h2></div>
@@ -1300,7 +1304,7 @@
                                         <div id="bufferEV" class="gaugeGraph">
                                             <div class="graphTitle">
                                                 <h2>
-                                                    <a href="https://dimagi.my.salesforce.com/00Ob00000047qYz" target="_blank">YTD Buffer EV generated - Target $4.2 million</a>
+                                                    <a href="https://dimagi.my.salesforce.com/00Ob00000047qYz" target="_blank">YTD Buffer EV generated - Target $6.0 million</a>
                                                 </h2>
                                             </div>
                                         <div id="bufferEVBottomValue" class="graphBottomTitle"><h2>Sum of DIFF-Expected Buffer (Millions)</h2></div>
@@ -1308,7 +1312,7 @@
                                         <div id="oppWon" class="gaugeGraph">
                                             <div class="graphTitle">
                                                 <h2>
-                                                    <a href="https://dimagi.my.salesforce.com/00Ob00000048GVF" target="_blank">YTD Opportunities Won - Target $ 6.9 million</a>
+                                                    <a href="https://dimagi.my.salesforce.com/00Ob00000048GVF" target="_blank">YTD Opportunities Won - Target $ 9.0 million</a>
                                                 </h2>
                                             </div>
                                             <div id="oppWonBottomValue" class="graphBottomTitle"><h2>Sum of Expected Value Minus Expense Income (Millions)</h2></div>
