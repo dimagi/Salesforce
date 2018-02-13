@@ -1,4 +1,4 @@
-<apex:page title="Project report out" docType="html-5.0" controller="ProjectReportOutController" action="{!loadSubmittedPro}">
+<apex:page title="Project report out" docType="html-5.0" controller="DimagiToolsController" action="{!loadSubmittedPro}">
 
     <head>
         <style type="text/css">
@@ -27,7 +27,7 @@
         <apex:PageBlock >
             <b>Report Out Name:</b> {!submittedPro.Name}<br/><br/>
             <b>Resource Planning:</b> {!submittedPro.Resource_Planning__c}<br/><br/>
-            <b>Overall Status:</b> {!submittedPro.status__C}<br/><br/>
+            <b>Overall Status:</b> {!submittedPro.Status__c}<br/><br/>
             <b>Ability to meet Schedule:</b> {!submittedPro.Ability_to_meet_Schedule__c}<br/><br/>
             <b>Ability to stay within Scope:</b> {!submittedPro.Ability_to_stay_within_Scope__c}<br/><br/>
             <b>Current System Usage:</b> {!submittedPro.Current_System_Usage__c}<br/><br/>

@@ -2,25 +2,25 @@
 public class ContractSnapshotTest {
 
     static testMethod void shouldCreateSnapshotAfterSubmitingPRO() {
-        ProjectReportOutController projectReportOutController = new ProjectReportOutController();
+        DimagiToolsController dToolsController = new DimagiToolsController();
 
-        projectReportOutController.pro = new Project_Report_Out__c();
-        projectReportOutController.pro.PM_email__c = 'tomek.stalka@gmail.com';
-        projectReportOutController.pro.Report_Out_Date__c = Date.today();
+        dToolsController.pro = new Project_Report_Out__c();
+        dToolsController.pro.PM_email__c = 'tomek.stalka@gmail.com';
+        dToolsController.pro.Report_Out_Date__c = Date.today();
 
         DContract__c dcontract = addContract();
 
-        projectReportOutController.reportContractId = dcontract.Id;
-        projectReportOutController.contractIdName = new Map<Id, DContract__C> {};
-        projectReportOutController.contractIdName.put(dcontract.Id, dcontract);
-        projectReportOutController.status = 'Active';
-        projectReportOutController.toMeetSchedule = 'Green';
-        projectReportOutController.stayWithinScope = 'Green';
-        projectReportOutController.currentSystemUsage = 'Green';
-        projectReportOutController.partnerRelationship = 'Green';
-        projectReportOutController.proTabContractPercntgethroughSOW = 30;
+        dToolsController.reportContractId = dcontract.Id;
+        dToolsController.contractIdName = new Map<Id, DContract__C> {};
+        dToolsController.contractIdName.put(dcontract.Id, dcontract);
+        dToolsController.status = 'Active';
+        dToolsController.toMeetSchedule = 'Green';
+        dToolsController.stayWithinScope = 'Green';
+        dToolsController.currentSystemUsage = 'Green';
+        dToolsController.partnerRelationship = 'Green';
+        dToolsController.proTabContractPercntgethroughSOW = 30;
 
-        projectReportOutController.save();
+        dToolsController.save();
 
         List<PRO_Contract_Snapshot__c> snapshots = [SELECT Id, Name, Percent_Of_Work_Completed__c, Percent_Services_Budget_For_GS__c, Expected_Buffer__c,
                                                         Expense_And_Travel_Spend__c, Services_Spend__c, Total_Calculated_Costs__c, Product_Spend2__c, Net_Income_By_Deliverables_Complete__c,

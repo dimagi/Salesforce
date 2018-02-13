@@ -2,7 +2,7 @@
 public class ProjectReportOutControllerTest {
 
     static testMethod void ProjectReportOutControllerTest1() {
-        ProjectReportOutController proObj = new ProjectReportOutController();
+        DimagiToolsController proObj = new DimagiToolsController();
         proObj.initAction();
         proObj.getProContracts();
         proObj.getProjectsList();
@@ -10,7 +10,7 @@ public class ProjectReportOutControllerTest {
         proObj.getProjectsForFinancialTab();
         proObj.loadContractBudgetAndSpentData();
 
-        List<ProjectReportOutController.PROProject> contractList = proObj.getProjectsList();
+        List<DimagiToolsController.PROProject> contractList = proObj.getProjectsList();
         proObj.contractIdName.put(contractList[0].contract.id,contractList[0].contract);
         proObj.reportContractId = contractList[0].contract.id;
 
@@ -27,12 +27,12 @@ public class ProjectReportOutControllerTest {
  
         List<selectoption> objList = proObj.StatusList;
 
-        ProjectReportOutController.getRandomNonce();
+        DimagiToolsController.getRandomNonce();
     }
 
     static testMethod void ProjectReportOutControllerTest2() {
-        ProjectReportOutController proObj=new ProjectReportOutController();
-        List<ProjectReportOutController.PROProject> contractList= proObj.getProjectsList();
+        DimagiToolsController proObj = new DimagiToolsController();
+        List<DimagiToolsController.PROProject> contractList= proObj.getProjectsList();
         proObj.selectedProjectId=contractList[0].contract.id;
 
         proObj.fillProjectDetails();

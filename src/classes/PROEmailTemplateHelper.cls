@@ -1,6 +1,6 @@
 public class PROEmailTemplateHelper{
     string baseURL='';
-    string PROURL='https://dimagi.secure.force.com/projectreportout';
+    string PROURL='https://dimagi.secure.force.com/sftools';
     string SnoozePageURL='';
     
     public PROEmailTemplateHelper(){

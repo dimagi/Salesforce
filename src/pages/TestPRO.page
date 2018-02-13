@@ -1,4 +1,4 @@
-<apex:page id="projectReportOutPage" controller="ProjectReportOutController" action="{!initAction}">
+<apex:page id="projectReportOutPage" controller="DimagiToolsController" action="{!initAction}">
 
     <head>
         <style>
