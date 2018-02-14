@@ -62,7 +62,7 @@ public without sharing class BatchRecalculateTimeCardCost implements Database.Ba
                 dateString += ' (Date__c >= ' + getDateText(updateInfo.From_Range__c) + ' AND Date__c <= ' + getDateText(updateInfo.To_Range__c) + ') ';
             }
             query = 'SELECT Billing_Rate__c, Time_Card_Salary__c, Total__c, Employee__c, Date__c, Client__r.Project_Billing_Rate__c FROM Time_Card__c WHERE Client__r.Project_Billing_Rate__c = \'' + rateName + '\''
-                                        + ' AND ' + dateString + ' ORDER BY Employee__c, Client__r.Project_Billing_Rate__c';
+                                        + ' AND (' + dateString + ') ORDER BY Employee__c, Client__r.Project_Billing_Rate__c';
             this.copyContracts = true;
             this.copiedContracts = new Set<Id>();
         } else {
