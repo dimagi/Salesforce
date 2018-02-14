@@ -583,7 +583,7 @@ public class SalaryHistoryTest {
         System.assertEquals(30, newRate.Fee__c);
         System.assertEquals(10, newRate.G_A__c);
         System.assertEquals(5, newRate.Overhead__c);
-        System.assertEquals(Date.today(), newRate.Date__c);
+        System.assertEquals(Date.newInstance(2000, 1, 1), newRate.Date__c);
     }
 
     static testMethod void billingRateManagerShouldntAddNewRateWithSameName() {
@@ -698,7 +698,7 @@ public class SalaryHistoryTest {
         SFDC_Employee__c employee_1 = new SFDC_Employee__c(Name = 'emp_6', Salary__c = 60000, Exchange_Rate__c = 2,
                                                           Effective_Salary_Date__c = Date.newInstance(2011, 11, 1),
                                                           Effective_Exchange_Rate_Date__c = Date.newInstance(2013, 1, 1));
-        DContract__c parent_1 = new DContract__c(Name = 'Sample Parent', Status__c = 'Active', Requires_Report_Out__c = 'No', Intracompany_Sub_contract__c = 'No');
+        DContract__c parent_1 = new DContract__c(Name = 'Sample Parent', Status__c = 'Active', Requires_Report_Out__c = 'No', Intracompany_Sub_contract__c = 'No', Project_Billing_Rate__c = 'Loaded Daily Rate');
         insert parent_1;
         Time_Card__c tc_1_employee_1 = new Time_Card__c(Total__c = 1, Date__c = Date.newInstance(2010, 12, 30), Employee__c = employee_1.Id, Client__c = parent_1.Id);
         insert tc_1_employee_1;
@@ -754,7 +754,7 @@ public class SalaryHistoryTest {
         SFDC_Employee__c employee_1 = new SFDC_Employee__c(Name = 'emp_6', Salary__c = 60000, Exchange_Rate__c = 2,
                                                           Effective_Salary_Date__c = Date.newInstance(2011, 11, 1),
                                                           Effective_Exchange_Rate_Date__c = Date.newInstance(2013, 1, 1));
-        DContract__c parent_1 = new DContract__c(Name = 'Sample Parent', Status__c = 'Active', Requires_Report_Out__c = 'No', Intracompany_Sub_contract__c = 'No');
+        DContract__c parent_1 = new DContract__c(Name = 'Sample Parent', Status__c = 'Active', Requires_Report_Out__c = 'No', Intracompany_Sub_contract__c = 'No', Project_Billing_Rate__c = 'Loaded Daily Rate');
         insert parent_1;
         Time_Card__c tc_1_employee_1 = new Time_Card__c(Total__c = 1, Date__c = Date.newInstance(2010, 12, 30), Employee__c = employee_1.Id, Client__c = parent_1.Id);
         insert tc_1_employee_1;

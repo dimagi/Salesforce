@@ -9,6 +9,6 @@ trigger ProjectBillingRateUpdatedTrigger on DContract__c (after update) {
     }
 
     if (contracts.size() > 0) { // after changing billing rate we must update time cards billing rates values
-        Database.executeBatch(new BatchRecalculateTimeCardCost(new Set<Id>(), contracts, true), 200);
+        Database.executeBatch(new BatchRecalculateTimeCardCost(contracts, true), 200);
     }
 }

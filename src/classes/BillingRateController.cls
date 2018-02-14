@@ -166,9 +166,9 @@ public class BillingRateController {
     }
 
     public void runRecalculationBatchJob() {
-        List<Project_Billing_Rate_Update__c> updatesList = [SELECT Id, From_Range__c, To_Range__c FROM Project_Billing_Rate_Update__c WHERE Name =: this.billingRateName];
+        List<Project_Billing_Rate_Update__c> updatesList = [SELECT Id, Name, From_Range__c, To_Range__c FROM Project_Billing_Rate_Update__c WHERE Name =: this.billingRateName];
         if (updatesList.size() > 0) {
-             Database.executeBatch(new BatchRecalculateTimeCardCost(new Set<Id>(), new List<Id>(), updatesList, true), 200);
+             Database.executeBatch(new BatchRecalculateTimeCardCost(updatesList, true), 200);
         }
         delete updatesList;
         this.requiredRefresh = false;
