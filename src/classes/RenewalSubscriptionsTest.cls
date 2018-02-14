@@ -37,11 +37,6 @@ public class RenewalSubscriptionsTest {
         Accounting_BillingAccount__c billingAccount5 = new Accounting_BillingAccount__c(Server_Name__c = 'CommCareHQ', account_type__c = 'Free', is_active__c = true, created_by__c = 'test@dimagi.com', created_by_domain__c = 'domain_3', dimagi_contact__c = 'contact_1@dimagi.com');
         insert billingAccount5;
 
-        Business_Unit__c bizUnit = new Business_Unit__c(Name = 'Test Business Unit 1');
-        Opportunity opp = new Opportunity(Name = 'AAA Opportunity 1', Business_Unit_Owner__c = bizUnit.Id, StageName = 'Stage 5 - Submitted',
-                                                 CloseDate = date.today().addMonths(5), Probability = 30);
-        insert opp;
-
         Account testAccount = new Account(Name = 'Test Account');
         insert testAccount;
         Domain__c domain1 = new Domain__c(Server_Name__c = 'CommCareHQ', Name = 'domain_1', cpAllWebUsers__c = 30, Account__c = testAccount.Id);
@@ -50,14 +45,20 @@ public class RenewalSubscriptionsTest {
         insert domain2;
         Domain__c domain3 = new Domain__c(Server_Name__c = 'CommCareHQ', Name = 'domain_3', cpAllWebUsers__c = 11);
         insert domain3;
-        Domain__c domain4 = new Domain__c(Server_Name__c = 'CommCareHQ', Name = 'domain_4', cpAllWebUsers__c = 111, Opportunity__c = opp.Id);
+        Domain__c domain4 = new Domain__c(Server_Name__c = 'CommCareHQ', Name = 'domain_4', cpAllWebUsers__c = 111);
         insert domain4;
+
+        Business_Unit__c bizUnit = new Business_Unit__c(Name = 'Test Business Unit 1');
+        Opportunity opp = new Opportunity(Name = 'AAA Opportunity 1', Business_Unit_Owner__c = bizUnit.Id, StageName = 'Stage 5 - Submitted',
+                                                 CloseDate = date.today().addMonths(5), Probability = 30, Domain_Name__c = domain4.Id);
+        insert opp;
+
 
         Accounting_Softwareplan__c softwarePlan1 = new Accounting_Softwareplan__c(Server_Name__c = 'CommCareHQ', edition__c = 'Pro');
         insert softwarePlan1;
         Accounting_Softwareplan__c softwarePlan2 = new Accounting_Softwareplan__c(Server_Name__c = 'CommCareHQ', edition__c = 'Community');
         insert softwarePlan2;
-        Accounting_Softwareplan__c softwarePlan3 = new Accounting_Softwareplan__c(Server_Name__c = 'CommCareHQ', edition__c = 'Conventional');
+        Accounting_Softwareplan__c softwarePlan3 = new Accounting_Softwareplan__c(Server_Name__c = 'CommCareHQ', edition__c = 'Standard');
         insert softwarePlan3;
 
         Accounting_SoftwarePlanVersion__c planVersion1 = new Accounting_SoftwarePlanVersion__c(Server_Name__c = 'CommCareHQ', Accounting_SoftwarePlan__c = softwarePlan1.Id);
@@ -94,7 +95,7 @@ public class RenewalSubscriptionsTest {
         List<Accounting_Subscription__c> futureList = batchJob.getFutureSubscriptions();
         System.assertEquals(1, futureList.size());
         List<Accounting_Subscription__c> renewalList = batchJob.getSubscriptionsForRenewal(new Set<String>());
-        System.assertEquals(3, renewalList.size());
+        System.assertEquals(5, renewalList.size());
         Database.executeBatch(batchJob, 50);
         Test.stopTest();
 
@@ -162,7 +163,7 @@ public class RenewalSubscriptionsTest {
         futureList = batchJob.getFutureSubscriptions();
         System.assertEquals(1, futureList.size());
         renewalList = batchJob.getSubscriptionsForRenewal(new Set<String>());
-        System.assertEquals(0, renewalList.size());
+        System.assertEquals(5, renewalList.size());
         batchJob.start(null);
         batchJob.execute(null, renewalList);
 
@@ -171,9 +172,6 @@ public class RenewalSubscriptionsTest {
                                   StageName, Implementation_Type__c, Opportunity_Owning_Entity__c, Contract_Owner_BU__c,
                                   Implementing_Business_Unit__c, Opportunity_Source__c, Owner.Name FROM Opportunity ORDER BY Name DESC];
         System.assertEquals(3, opps.size());
-
-        List<Domain__c> domains = [SELECT Id, Opportunity__c FROM Domain__c WHERE Opportunity__c != ''];
-        System.assertEquals(3, domains.size());
     }
 
     private static void addTestPricebooks() {
