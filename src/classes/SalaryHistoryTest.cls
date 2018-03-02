@@ -544,4 +544,265 @@ public class SalaryHistoryTest {
         tcFromDB = [SELECT Id, Time_Card_Rate_Cost__c FROM Time_Card__c WHERE Id =: tc_5_employee_1.Id LIMIT 1];
         System.assertEquals(275.88, tcFromDB.Time_Card_Rate_Cost__c);
     }
+
+    /**
+     * Test for Billing Rates UI Manager
+     */
+
+    static testMethod void billingRateManagerShouldAddNewRate() {
+        insert new Project_Billing_Rate__c(Name = 'Loaded Daily Rate 1', Date__c = Date.newInstance(1990, 01, 01), Custom_1__c = 0, Custom_2__c = 0, Custom_3__c = 0,
+                                            Fee__c = 10, Fringe__c = 30, G_A__c = 10, Overhead__c = 52);
+        insert new Project_Billing_Rate__c(Name = 'Loaded Daily Rate 1', Date__c = Date.newInstance(2015, 01, 01), Custom_1__c = 0, Custom_2__c = 0, Custom_3__c = 0,
+                                            Fee__c = 15, Fringe__c = 30, G_A__c = 10, Overhead__c = 52);
+        insert new Project_Billing_Rate__c(Name = 'Loaded Daily Rate 2', Date__c = Date.newInstance(2014, 01, 01), Custom_1__c = 0, Custom_2__c = 0, Custom_3__c = 0,
+                                            Fee__c = 20, Fringe__c = 30, G_A__c = 10, Overhead__c = 52);
+        insert new Project_Billing_Rate__c(Name = 'Loaded Daily Rate 3', Date__c = Date.newInstance(2017, 01, 01), Custom_1__c = 0, Custom_2__c = 0, Custom_3__c = 0,
+                                            Fee__c = 25, Fringe__c = 30, G_A__c = 10, Overhead__c = 52);
+        Test.startTest();
+        BillingRateController brc = new BillingRateController();
+        brc.initManageRates();
+        System.assertEquals(3, brc.billingRates.size());
+
+        brc.newBillingRate.Name = 'Simple new rate';
+        brc.newBillingRate.Fee__c = 30;
+        brc.newBillingRate.Fringe__c = 15;
+        brc.newBillingRate.G_A__c = 10;
+        brc.newBillingRate.Overhead__c = 5;
+        brc.newBillingRate.Custom_1__c = 11;
+        brc.newBillingRate.Custom_2__c = 12;
+        brc.newBillingRate.Custom_3__c = 13;
+        brc.saveNewRate();
+        Test.stopTest();
+
+        System.assertEquals(4, brc.billingRates.size());
+        Project_Billing_Rate__c newRate = [SELECT Id, Name, Date__c, Custom_1__c, Overhead__c, G_A__c, Fringe__c, Fee__c, Custom_2__c, Custom_3__c FROM Project_Billing_Rate__c WHERE Name = 'Simple new rate'];
+        System.assertEquals(11, newRate.Custom_1__c);
+        System.assertEquals(12, newRate.Custom_2__c);
+        System.assertEquals(13, newRate.Custom_3__c);
+        System.assertEquals(15, newRate.Fringe__c);
+        System.assertEquals(30, newRate.Fee__c);
+        System.assertEquals(10, newRate.G_A__c);
+        System.assertEquals(5, newRate.Overhead__c);
+        System.assertEquals(Date.newInstance(2000, 1, 1), newRate.Date__c);
+    }
+
+    static testMethod void billingRateManagerShouldntAddNewRateWithSameName() {
+        insert new Project_Billing_Rate__c(Name = 'Loaded Daily Rate 1', Date__c = Date.newInstance(1990, 01, 01), Custom_1__c = 0, Custom_2__c = 0, Custom_3__c = 0,
+                                            Fee__c = 10, Fringe__c = 30, G_A__c = 10, Overhead__c = 52);
+        insert new Project_Billing_Rate__c(Name = 'Loaded Daily Rate 1', Date__c = Date.newInstance(2015, 01, 01), Custom_1__c = 0, Custom_2__c = 0, Custom_3__c = 0,
+                                            Fee__c = 15, Fringe__c = 30, G_A__c = 10, Overhead__c = 52);
+        insert new Project_Billing_Rate__c(Name = 'Loaded Daily Rate 2', Date__c = Date.newInstance(2014, 01, 01), Custom_1__c = 0, Custom_2__c = 0, Custom_3__c = 0,
+                                            Fee__c = 20, Fringe__c = 30, G_A__c = 10, Overhead__c = 52);
+        insert new Project_Billing_Rate__c(Name = 'Loaded Daily Rate 3', Date__c = Date.newInstance(2017, 01, 01), Custom_1__c = 0, Custom_2__c = 0, Custom_3__c = 0,
+                                            Fee__c = 25, Fringe__c = 30, G_A__c = 10, Overhead__c = 52);
+        Test.startTest();
+        BillingRateController brc = new BillingRateController();
+        brc.initManageRates();
+        System.assertEquals(3, brc.billingRates.size());
+
+        brc.newBillingRate.Name = 'Loaded Daily Rate 3';
+        brc.newBillingRate.Fee__c = 30;
+        brc.newBillingRate.Fringe__c = 15;
+        brc.saveNewRate();
+        Test.stopTest();
+
+        System.assertEquals(3, brc.billingRates.size());
+    }
+
+    static testMethod void billingRateManagerShouldInsertNewRateRow() {
+        insert new Project_Billing_Rate__c(Name = 'Loaded Daily Rate 1', Date__c = Date.newInstance(1990, 01, 01), Custom_1__c = 0, Custom_2__c = 0, Custom_3__c = 0,
+                                            Fee__c = 10, Fringe__c = 30, G_A__c = 10, Overhead__c = 52);
+        insert new Project_Billing_Rate__c(Name = 'Loaded Daily Rate 1', Date__c = Date.newInstance(2015, 01, 01), Custom_1__c = 0, Custom_2__c = 0, Custom_3__c = 0,
+                                            Fee__c = 15, Fringe__c = 30, G_A__c = 10, Overhead__c = 52);
+        insert new Project_Billing_Rate__c(Name = 'Loaded Daily Rate 2', Date__c = Date.newInstance(2014, 01, 01), Custom_1__c = 0, Custom_2__c = 0, Custom_3__c = 0,
+                                            Fee__c = 20, Fringe__c = 30, G_A__c = 10, Overhead__c = 52);
+        insert new Project_Billing_Rate__c(Name = 'Loaded Daily Rate 3', Date__c = Date.newInstance(2017, 01, 01), Custom_1__c = 0, Custom_2__c = 0, Custom_3__c = 0,
+                                            Fee__c = 25, Fringe__c = 30, G_A__c = 10, Overhead__c = 52);
+        Test.startTest();
+        BillingRateController brc = new BillingRateController();
+        brc.billingRateName = 'Loaded Daily Rate 1';
+        brc.initManageRate();
+        System.assertEquals(2, brc.rateHistoryList.size());
+        System.assertEquals('Loaded Daily Rate 1', brc.newBillingRate.Name);
+
+        brc.newBillingRate.Fee__c = 30;
+        brc.newBillingRate.Fringe__c = 15;
+        brc.newBillingRate.G_A__c = 10;
+        brc.newBillingRate.Overhead__c = 5;
+        brc.newBillingRate.Custom_1__c = 11;
+        brc.newBillingRate.Custom_2__c = 12;
+        brc.newBillingRate.Custom_3__c = 13;
+        brc.saveNewRateHistory();
+        Test.stopTest();
+
+        System.assertEquals(3, brc.rateHistoryList.size());
+        Project_Billing_Rate__c newRate = [SELECT Id, Name, Date__c, Custom_1__c, Overhead__c, G_A__c, Fringe__c, Fee__c, Custom_2__c, Custom_3__c FROM Project_Billing_Rate__c WHERE Name = 'Loaded Daily Rate 1'
+                                                AND Date__c =: Date.today()];
+        System.assertEquals(11, newRate.Custom_1__c);
+        System.assertEquals(12, newRate.Custom_2__c);
+        System.assertEquals(13, newRate.Custom_3__c);
+        System.assertEquals(15, newRate.Fringe__c);
+        System.assertEquals(30, newRate.Fee__c);
+        System.assertEquals(10, newRate.G_A__c);
+        System.assertEquals(5, newRate.Overhead__c);
+        System.assertEquals(Date.today(), newRate.Date__c);
+    }
+
+    static testMethod void billingRateManagerShouldUpdateRateHistory() {
+        Project_Billing_Rate__c br1 = new Project_Billing_Rate__c(Name = 'Loaded Daily Rate 1', Date__c = Date.newInstance(1990, 01, 01), Custom_1__c = 0, Custom_2__c = 0, Custom_3__c = 0,
+                                            Fee__c = 10, Fringe__c = 30, G_A__c = 10, Overhead__c = 52);
+        Project_Billing_Rate__c br2 = new Project_Billing_Rate__c(Name = 'Loaded Daily Rate 1', Date__c = Date.newInstance(2015, 01, 01), Custom_1__c = 0, Custom_2__c = 0, Custom_3__c = 0,
+                                            Fee__c = 15, Fringe__c = 30, G_A__c = 10, Overhead__c = 52);
+        insert br1;
+        insert br2;
+
+        Test.startTest();
+        BillingRateController brc = new BillingRateController();
+        brc.billingRateName = 'Loaded Daily Rate 1';
+        brc.initManageRate();
+        brc.billingRateId = br2.Id;
+        brc.initUpdateRate();
+        brc.newBillingRate.Fee__c = 30;
+        brc.newBillingRate.Fringe__c = 15;
+        brc.newBillingRate.G_A__c = 10;
+        brc.newBillingRate.Overhead__c = 5;
+        brc.newBillingRate.Custom_1__c = 11;
+        brc.newBillingRate.Custom_2__c = 12;
+        brc.newBillingRate.Custom_3__c = 13;
+        brc.updateRateHistory();
+        Test.stopTest();
+
+        System.assertEquals(2, brc.rateHistoryList.size());
+        Project_Billing_Rate__c newRate = [SELECT Id, Name, Date__c, Custom_1__c, Overhead__c, G_A__c, Fringe__c, Fee__c, Custom_2__c, Custom_3__c FROM Project_Billing_Rate__c WHERE Id =: br2.Id];
+        System.assertEquals(11, newRate.Custom_1__c);
+        System.assertEquals(12, newRate.Custom_2__c);
+        System.assertEquals(13, newRate.Custom_3__c);
+        System.assertEquals(15, newRate.Fringe__c);
+        System.assertEquals(30, newRate.Fee__c);
+        System.assertEquals(10, newRate.G_A__c);
+        System.assertEquals(5, newRate.Overhead__c);
+        System.assertEquals(Date.newInstance(2015, 01, 01), newRate.Date__c);
+    }
+
+    static testMethod void billingRateManagerShouldRunRecalculationBatch1() {
+        Project_Billing_Rate__c rate1_1 = new Project_Billing_Rate__c(Name = 'Loaded Daily Rate', Date__c = Date.newInstance(1990, 01, 01), Custom_1__c = 0, Custom_2__c = 0, Custom_3__c = 0,
+                                            Fee__c = 10, Fringe__c = 30, G_A__c = 10, Overhead__c = 52);
+        Project_Billing_Rate__c rate1_2 = new Project_Billing_Rate__c(Name = 'Loaded Daily Rate', Date__c = Date.newInstance(2011, 01, 01), Custom_1__c = 0, Custom_2__c = 0, Custom_3__c = 0,
+                                            Fee__c = 15, Fringe__c = 30, G_A__c = 10, Overhead__c = 52);
+        Project_Billing_Rate__c rate1_3 = new Project_Billing_Rate__c(Name = 'Loaded Daily Rate', Date__c = Date.newInstance(2012, 01, 01), Custom_1__c = 0, Custom_2__c = 0, Custom_3__c = 0,
+                                            Fee__c = 10, Fringe__c = 30, G_A__c = 10, Overhead__c = 52);
+        insert rate1_1;
+        insert rate1_2;
+        insert rate1_3;
+
+        SFDC_Employee__c employee_1 = new SFDC_Employee__c(Name = 'emp_6', Salary__c = 60000, Exchange_Rate__c = 2,
+                                                          Effective_Salary_Date__c = Date.newInstance(2011, 11, 1),
+                                                          Effective_Exchange_Rate_Date__c = Date.newInstance(2013, 1, 1));
+        DContract__c parent_1 = new DContract__c(Name = 'Sample Parent', Status__c = 'Active', Requires_Report_Out__c = 'No', Intracompany_Sub_contract__c = 'No', Project_Billing_Rate__c = 'Loaded Daily Rate');
+        insert parent_1;
+        Time_Card__c tc_1_employee_1 = new Time_Card__c(Total__c = 1, Date__c = Date.newInstance(2010, 12, 30), Employee__c = employee_1.Id, Client__c = parent_1.Id);
+        insert tc_1_employee_1;
+        Time_Card__c tc_2_employee_1 = new Time_Card__c(Total__c = 3, Date__c = Date.newInstance(2010, 11, 1), Employee__c = employee_1.Id, Client__c = parent_1.Id);
+        insert tc_2_employee_1;
+        Time_Card__c tc_3_employee_1 = new Time_Card__c(Total__c = 6, Date__c = Date.newInstance(2011, 1, 1), Employee__c = employee_1.Id, Client__c = parent_1.Id);
+        insert tc_3_employee_1;
+        Time_Card__c tc_4_employee_1 = new Time_Card__c(Total__c = 7, Date__c = Date.newInstance(2011, 5, 22), Employee__c = employee_1.Id, Client__c = parent_1.Id);
+        insert tc_4_employee_1;
+        Time_Card__c tc_5_employee_1 = new Time_Card__c(Total__c = 8, Date__c = Date.newInstance(2016, 3, 3), Employee__c = employee_1.Id, Client__c = parent_1.Id);
+        insert tc_5_employee_1;
+
+        Test.startTest();
+        BillingRateController brc = new BillingRateController();
+        brc.billingRateName = 'Loaded Daily Rate';
+        brc.initManageRate();
+        brc.billingRateId = rate1_2.Id;
+        brc.initUpdateRate();
+        brc.newBillingRate.Fee__c = 30;
+        brc.newBillingRate.Fringe__c = 15;
+        brc.newBillingRate.G_A__c = 10;
+        brc.newBillingRate.Overhead__c = 5;
+        brc.newBillingRate.Custom_1__c = 11;
+        brc.newBillingRate.Custom_2__c = 12;
+        brc.newBillingRate.Custom_3__c = 13;
+        brc.updateRateHistory();
+        brc.runRecalculationBatchJob();
+        Test.stopTest();
+
+        Time_Card__c tcDB_1 = [SELECT Id, Billing_Rate__c FROM Time_Card__c WHERE Id =: tc_1_employee_1.Id];
+        System.assertEquals(null, tcDB_1.Billing_Rate__c);
+        Time_Card__c tcDB_2 = [SELECT Id, Billing_Rate__c FROM Time_Card__c WHERE Id =: tc_2_employee_1.Id];
+        System.assertEquals(null, tcDB_2.Billing_Rate__c);
+        Time_Card__c tcDB_3 = [SELECT Id, Billing_Rate__c FROM Time_Card__c WHERE Id =: tc_3_employee_1.Id];
+        System.assertEquals(2.4257309076, tcDB_3.Billing_Rate__c);
+        Time_Card__c tcDB_4 = [SELECT Id, Billing_Rate__c FROM Time_Card__c WHERE Id =: tc_4_employee_1.Id];
+        System.assertEquals(2.4257309076, tcDB_4.Billing_Rate__c);
+        Time_Card__c tcDB_5 = [SELECT Id, Billing_Rate__c FROM Time_Card__c WHERE Id =: tc_5_employee_1.Id];
+        System.assertEquals(null, tcDB_5.Billing_Rate__c);
+    }
+
+    static testMethod void billingRateManagerShouldRunRecalculationBatch2() {
+        Project_Billing_Rate__c rate1_1 = new Project_Billing_Rate__c(Name = 'Loaded Daily Rate', Date__c = Date.newInstance(1990, 01, 01), Custom_1__c = 0, Custom_2__c = 0, Custom_3__c = 0,
+                                            Fee__c = 10, Fringe__c = 30, G_A__c = 10, Overhead__c = 52);
+        Project_Billing_Rate__c rate1_2 = new Project_Billing_Rate__c(Name = 'Loaded Daily Rate', Date__c = Date.newInstance(2011, 01, 01), Custom_1__c = 0, Custom_2__c = 0, Custom_3__c = 0,
+                                            Fee__c = 15, Fringe__c = 30, G_A__c = 10, Overhead__c = 52);
+        Project_Billing_Rate__c rate1_3 = new Project_Billing_Rate__c(Name = 'Loaded Daily Rate', Date__c = Date.newInstance(2012, 01, 01), Custom_1__c = 0, Custom_2__c = 0, Custom_3__c = 0,
+                                            Fee__c = 10, Fringe__c = 30, G_A__c = 10, Overhead__c = 52);
+        insert rate1_1;
+        insert rate1_2;
+        insert rate1_3;
+
+        SFDC_Employee__c employee_1 = new SFDC_Employee__c(Name = 'emp_6', Salary__c = 60000, Exchange_Rate__c = 2,
+                                                          Effective_Salary_Date__c = Date.newInstance(2011, 11, 1),
+                                                          Effective_Exchange_Rate_Date__c = Date.newInstance(2013, 1, 1));
+        DContract__c parent_1 = new DContract__c(Name = 'Sample Parent', Status__c = 'Active', Requires_Report_Out__c = 'No', Intracompany_Sub_contract__c = 'No', Project_Billing_Rate__c = 'Loaded Daily Rate');
+        insert parent_1;
+        Time_Card__c tc_1_employee_1 = new Time_Card__c(Total__c = 1, Date__c = Date.newInstance(2010, 12, 30), Employee__c = employee_1.Id, Client__c = parent_1.Id);
+        insert tc_1_employee_1;
+        Time_Card__c tc_2_employee_1 = new Time_Card__c(Total__c = 3, Date__c = Date.newInstance(2010, 11, 1), Employee__c = employee_1.Id, Client__c = parent_1.Id);
+        insert tc_2_employee_1;
+        Time_Card__c tc_3_employee_1 = new Time_Card__c(Total__c = 6, Date__c = Date.newInstance(2011, 1, 1), Employee__c = employee_1.Id, Client__c = parent_1.Id);
+        insert tc_3_employee_1;
+        Time_Card__c tc_4_employee_1 = new Time_Card__c(Total__c = 7, Date__c = Date.newInstance(2011, 5, 22), Employee__c = employee_1.Id, Client__c = parent_1.Id);
+        insert tc_4_employee_1;
+        Time_Card__c tc_5_employee_1 = new Time_Card__c(Total__c = 8, Date__c = Date.newInstance(2016, 3, 3), Employee__c = employee_1.Id, Client__c = parent_1.Id);
+        insert tc_5_employee_1;
+
+        Test.startTest();
+        BillingRateController brc = new BillingRateController();
+        brc.billingRateName = 'Loaded Daily Rate';
+        brc.initManageRate();
+        brc.billingRateId = rate1_2.Id;
+        brc.initUpdateRate();
+        brc.newBillingRate.Fee__c = 30;
+        brc.newBillingRate.Fringe__c = 15;
+        brc.newBillingRate.G_A__c = 10;
+        brc.newBillingRate.Overhead__c = 5;
+        brc.newBillingRate.Custom_1__c = 11;
+        brc.newBillingRate.Custom_2__c = 12;
+        brc.newBillingRate.Custom_3__c = 13;
+        brc.updateRateHistory();
+        brc.initManageRate();
+        brc.newBillingRate.Fee__c = 30;
+        brc.newBillingRate.Fringe__c = 15;
+        brc.newBillingRate.G_A__c = 10;
+        brc.newBillingRate.Overhead__c = 5;
+        brc.newBillingRate.Custom_1__c = 50;
+        brc.newBillingRate.Custom_2__c = 12;
+        brc.newBillingRate.Custom_3__c = 50;
+        brc.newBillingRate.Date__c = Date.newInstance(2016, 3, 3);
+        brc.saveNewRateHistory();
+        brc.runRecalculationBatchJob();
+        Test.stopTest();
+
+        Time_Card__c tcDB_1 = [SELECT Id, Billing_Rate__c FROM Time_Card__c WHERE Id =: tc_1_employee_1.Id];
+        System.assertEquals(null, tcDB_1.Billing_Rate__c);
+        Time_Card__c tcDB_2 = [SELECT Id, Billing_Rate__c FROM Time_Card__c WHERE Id =: tc_2_employee_1.Id];
+        System.assertEquals(null, tcDB_2.Billing_Rate__c);
+        Time_Card__c tcDB_3 = [SELECT Id, Billing_Rate__c FROM Time_Card__c WHERE Id =: tc_3_employee_1.Id];
+        System.assertEquals(2.4257309076, tcDB_3.Billing_Rate__c);
+        Time_Card__c tcDB_4 = [SELECT Id, Billing_Rate__c FROM Time_Card__c WHERE Id =: tc_4_employee_1.Id];
+        System.assertEquals(2.4257309076, tcDB_4.Billing_Rate__c);
+        Time_Card__c tcDB_5 = [SELECT Id, Billing_Rate__c FROM Time_Card__c WHERE Id =: tc_5_employee_1.Id];
+        System.assertEquals(4.351347, tcDB_5.Billing_Rate__c);
+    }
 }

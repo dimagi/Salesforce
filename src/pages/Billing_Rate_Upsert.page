@@ -1,0 +1,41 @@
+<apex:page controller="BillingRateController" docType="html-5.0" action="{!initUpdateRate}">
+    <style type="text/css">
+        .bText table {
+            margin-top: 10px;
+            margin-bottom: 10px;
+        }
+        h3 {
+            color: black;
+        }
+    </style>
+
+    <script type="text/javascript">
+        function setFocusOnLoad() {}
+    </script>
+
+    <apex:form >
+        <apex:pageBlock title="Billing Rates Manager : {!billingRateName}" id="brManagerHistory">
+            <apex:actionFunction action="{!goToRateListView}" name="goToRateListView" />
+            <apex:outputPanel layout="block" id="messages">
+                <apex:pageMessages />
+            </apex:outputPanel>
+
+            <apex:pageBlockSection title="New Rate Numbers" columns="2" collapsible="false">
+                <apex:inputField value="{!newBillingRate.Date__c}"/>
+                <apex:inputField value="{!newBillingRate.Overhead__c}"/>
+                <apex:inputField value="{!newBillingRate.Fringe__c}" />
+                <apex:inputField value="{!newBillingRate.Fee__c}"/>
+                <apex:inputField value="{!newBillingRate.G_A__c}" />
+                <apex:inputField value="{!newBillingRate.Custom_1__c}" />
+                <apex:inputField value="{!newBillingRate.Custom_2__c}" />
+                <apex:inputField value="{!newBillingRate.Custom_3__c}" />
+            </apex:pageBlockSection>
+
+            <apex:pageBlockButtons >
+                <apex:commandButton action="{!updateRateHistory}" value="Save" id="saveButton" />
+                <apex:commandButton action="{!goToRateView}" value="Back" id="backButton" />
+                <apex:commandButton action="{!deleteRateRow}" value="Delete" id="delPButton" onclick="return confirm('Are you sure you want to delete this item?');" />
+            </apex:pageBlockButtons>
+        </apex:pageBlock>
+    </apex:form>
+</apex:page>

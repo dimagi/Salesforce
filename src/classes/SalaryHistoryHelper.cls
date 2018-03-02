@@ -9,7 +9,8 @@ public without sharing class SalaryHistoryHelper {
             billingRateName = 'Loaded Daily Rate';
         }
 
-        List<Project_Billing_Rate__c> ratesRecords = [SELECT Id, Date__c, Custom_1__c, Custom_2__c, Custom_3__c, Fee__c, Fringe__c, G_A__c, Overhead__c FROM Project_Billing_Rate__c WHERE Name =: billingRateName ORDER BY Date__c];
+        List<Project_Billing_Rate__c> ratesRecords = [SELECT Id, Date__c, Custom_1__c, Custom_2__c, Custom_3__c, Fee__c, Fringe__c, G_A__c, Overhead__c FROM Project_Billing_Rate__c
+                                                        WHERE Name =: billingRateName ORDER BY Date__c];
 
         for (Project_Billing_Rate__c rate : ratesRecords) {
             Decimal custom1 = rate.Custom_1__c != null ? 1.00 + (rate.Custom_1__c / 100.00) : 1;

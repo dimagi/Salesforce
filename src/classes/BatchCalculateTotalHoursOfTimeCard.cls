@@ -1,5 +1,5 @@
 /**
- * Calculates Services Spend field value for each contracts, runs BatchUpdateContractServicesSpend job.
+ * Calculates Services Spend field value for each contracts, runs BatchUpdateContractServicesSpend job for update values in contracts.
  */
 global without sharing class BatchCalculateTotalHoursOfTimeCard implements Database.Batchable<sObject>, Database.Stateful {
 
