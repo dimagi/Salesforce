@@ -24,12 +24,7 @@ public class CountryListAccTest {
         countryListAcc.selectedAccountId = '001g000000LQQnn';
         countryListAcc.searchByAccount();
         //System.assertNotEquals(0, countryListAcc.childAccounts.size());
-        
-        //Just for coverage
-        //We can remove these functions from controller
-        List<CountryListAcc.ParentAcc> parentNodes = countryListAcc.mainnodes();
-        countryListAcc.ContList();
-        
+
         Test.stopTest();
     }
     
