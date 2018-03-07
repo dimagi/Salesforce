@@ -39,10 +39,10 @@ public class CountryListAcc{
         String strX = ApexPages.currentPage().getParameters().get('q');
         String accountId = ApexPages.currentPage().getParameters().get('id');
 
-        if(strX != null && strX != '' && strX != 'null'){
+        if(strX != null && strX != '' && strX != 'null') {
             this.searchString = strX;
             search();
-            if(accountId != null){
+            if(accountId != null && accountId != '' && accountId != 'null') {
                 this.selectedAccountId = accountId;
                 searchByAccount();
             }
