@@ -268,7 +268,8 @@ public class CorporateDashboardHelper {
                                             AND (Pipeline_Snapshot__r.Stage__c = 'Stage 4 - Proposal Development' OR Pipeline_Snapshot__r.Stage__c = 'Stage 5 - Submitted'
                                                  OR Pipeline_Snapshot__r.Stage__c = 'Stage 6 - In Negotiations' OR Pipeline_Snapshot__r.Stage__c = 'Closed')
                                             AND Pipeline_Snapshot__r.Current_Channel__c != 'Core Funding (Gates)'
-                                            AND Pipeline_Snapshot__r.Current_Channel__c != 'Inside Sales'];
+                                            AND Pipeline_Snapshot__r.Current_Channel__c != 'Inside Sales'
+                                            AND (NOT Name LIKE '%MSH - Congo Health Overhaul%')];
         Decimal currentValueExpectedVal = (Decimal) groupedResults[0].get('expr0');
         Decimal currentValueExpectedBuffVal = (Decimal) groupedResults[0].get('expr1');
         deleteAndAddMetrics(new List<Global_Metric_Graph__c> {new Global_Metric_Graph__c(Name = EV_EXPECTED_GRAPH, X_Text__c = '',
