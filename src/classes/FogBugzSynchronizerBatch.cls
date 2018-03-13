@@ -121,7 +121,14 @@ global without sharing class FogBugzSynchronizerBatch implements Database.Batcha
                     }
                 } else {
                     FogBugzCase fbCase = fbIdToCaseMap.get(caseId);
-                    System.debug(LoggingLevel.INFO, 'Processing new opportunity::' + minTime + '-' + fbCase.lastModifiedDate);
+
+                    if (fbCase.externalBugID != null && fbCase.externalBugID != 'null' && fbCase.externalBugID != '') {
+                        // Opportunity was deleted and FB cae was closed, we want skip this situation to avoid creating opps all the time
+                        System.debug(LoggingLevel.INFO, 'Opp deleted in SF skipping::' + fbCase.caseId);
+                        continue;
+                    } else {
+                        System.debug(LoggingLevel.INFO, 'Processing new opportunity::' + minTime + '-' + fbCase.lastModifiedDate);
+                    }
 
                     Opportunity o = new Opportunity(
                         Name = 'Synchronizing',
