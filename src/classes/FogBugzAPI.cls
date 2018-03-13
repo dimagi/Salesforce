@@ -9,7 +9,7 @@
 public with sharing class FogBugzAPI {
 
     private static final String DEFAULT_FB_URL = 'https://manage.dimagi.com/api.asp?';
-    private static final String FB_LIST_COLS = 'ixPersonOpenedBy,dtLastUpdated';
+    private static final String FB_LIST_COLS = 'ixPersonOpenedBy,dtLastUpdated,sVersion';
     private static final String FB_CASE_COLS = 'sTitle,sArea,sPersonAssignedTo,sVersion,dtLastUpdated,latestEvent,tags,ixPersonOpenedBy,hrsElapsed';
     private static final Integer FB_HTTP_TIMEOUT = 60000;
 
