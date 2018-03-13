@@ -47,28 +47,27 @@ public class CorporateDashboardHelper {
     }
 
     public static void loadGsHeadcountData() {
-        Date startHireDate = Date.newInstance(2012, 1, 2);
         List<Global_Metric_Graph__c> headcountData = new List<Global_Metric_Graph__c>();
-        AggregateResult[] records = [SELECT CALENDAR_YEAR(Hire_Date__c), Business_Unit__r.Name, Count(Id)
-                                     FROM SFDC_Employee__c WHERE Sub_Unit__c = 'Global Services' AND Hire_Date__c >=: startHireDate
-                                     AND (Employee_Status__c = 'Active' OR Employee_Status__c = 'Terminated') AND (NOT Title__c LIKE '%Intern%')
-                                     GROUP BY CALENDAR_YEAR(Hire_Date__c), Business_Unit__r.Name ORDER BY CALENDAR_YEAR(Hire_Date__c)];
+        AggregateResult[] records = [SELECT Snapshot_Date__c, Business_Unit__r.Name, Count(Id)
+                                     FROM SFDC_Employee_Snapshot__c WHERE Snapshot_Date__c >=: Date.today().addMonths(-8)
+                                     AND (Employee_Type__c = 'Contractor' OR Employee_Type__c = 'Employee')
+                                     GROUP BY Snapshot_Date__c, Business_Unit__r.Name ORDER BY Snapshot_Date__c];
 
         System.debug('Employee Data : ' + records);
         if (records.size() > 0) {
-            Integer hireYear = Integer.valueOf(records[0].get('expr0'));
-            Global_Metric_Graph__c helper = new Global_Metric_Graph__c(Name = GS_HEADCOUNT, X_Text__c = hireYear.format(), Graph_Value_1__c = 0, Graph_Value_2__c = 0, Graph_Value_3__c = 0,
-                                                        Graph_Value_4__c = 0, Graph_Value_5__c = 0, Graph_Value_6__c = 0, Graph_Value_7__c = hireYear, Helper_Date__c = Date.newInstance(hireYear, 1, 1));
+            Date snpDateLast = (Date) records.get(0).get('Snapshot_Date__c');
+            Global_Metric_Graph__c helper = new Global_Metric_Graph__c(Name = GS_HEADCOUNT, X_Text__c = getDateText(snpDateLast), Graph_Value_1__c = 0, Graph_Value_2__c = 0, Graph_Value_3__c = 0,
+                                                        Graph_Value_4__c = 0, Graph_Value_5__c = 0, Graph_Value_6__c = 0, Helper_Date__c = snpDateLast);
             for (AggregateResult ar : records) {
-                Integer currentHireYear = Integer.valueOf(ar.get('expr0'));
+                Date snpDate = (Date) ar.get('Snapshot_Date__c');
                 String buName = (String) ar.get('Name');
-                Integer countRecords = Integer.valueOf(ar.get('expr1'));
-                System.debug('Record : ' + currentHireYear + ' ' + buName + ' ' + countRecords);
-                if (hireYear != currentHireYear) {
-                    hireYear = currentHireYear;
+                Integer countRecords = Integer.valueOf(ar.get('expr0'));
+                System.debug('Record : ' + snpDate + ' ' + buName + ' ' + countRecords);
+                if (snpDateLast != snpDate) {
+                    snpDateLast = snpDate;
                     headcountData.add(helper);
-                    helper = new Global_Metric_Graph__c(Name = GS_HEADCOUNT, X_Text__c = hireYear.format(), Graph_Value_1__c = 0, Graph_Value_2__c = 0, Graph_Value_3__c = 0,
-                                                        Graph_Value_4__c = 0, Graph_Value_5__c = 0, Graph_Value_6__c = 0, Graph_Value_7__c = hireYear, Helper_Date__c = Date.newInstance(hireYear, 1, 1));
+                    helper = new Global_Metric_Graph__c(Name = GS_HEADCOUNT, X_Text__c = getDateText(snpDate), Graph_Value_1__c = 0, Graph_Value_2__c = 0, Graph_Value_3__c = 0,
+                                                        Graph_Value_4__c = 0, Graph_Value_5__c = 0, Graph_Value_6__c = 0, Helper_Date__c = snpDate);
                 }
                 helper.Graph_Value_1__c += countRecords;
                 if (buName == 'Inc') {
@@ -79,6 +78,8 @@ public class CorporateDashboardHelper {
                     helper.Graph_Value_4__c = countRecords;
                 } else if (buName == 'DSA') {
                     helper.Graph_Value_5__c = countRecords;
+                } else if (buName == 'DLAC') {
+                    helper.Graph_Value_6__c = countRecords;
                 }
             }
             headcountData.add(helper);

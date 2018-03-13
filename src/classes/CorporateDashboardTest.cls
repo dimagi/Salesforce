@@ -127,7 +127,7 @@ public class CorporateDashboardTest {
     }
 
     @isTest
-    public static void shouldMrrGraph() {
+    public static void shouldLoadMrrGraph() {
         setUpMrrData();
 
         Test.startTest();
@@ -141,6 +141,54 @@ public class CorporateDashboardTest {
         System.assertEquals(2, mrrGraph.size());
         System.assertEquals(0, mrrGraph.get(0).Graph_Value_4__c);
         System.assertEquals(0, mrrGraph.get(1).Graph_Value_4__c);
+    }
+
+    @isTest
+    public static void shouldLoadHiresGraph() {
+        setHiresData();
+
+        Test.startTest();
+        CorporateDashboardHelper.refreshAllGraphs();
+        Test.stopTest();
+
+        List<Global_Metric_Graph__c> mrrGraph = [SELECT X_Text__c, Graph_Value_1__c, Graph_Value_2__c, Graph_Value_3__c, Graph_Value_4__c,
+                                                         Graph_Value_5__c, Graph_Value_6__c, Graph_Value_7__c, Helper_Date__c
+                                                         FROM Global_Metric_Graph__c WHERE Name =: CorporateDashboardHelper.GS_HEADCOUNT
+                                                         ORDER BY Helper_Date__c];
+        System.assertEquals(2, mrrGraph.size());
+        System.assertEquals(2, mrrGraph.get(0).Graph_Value_2__c);
+        System.assertEquals(1, mrrGraph.get(0).Graph_Value_3__c);
+        System.assertEquals(1, mrrGraph.get(0).Graph_Value_4__c);
+
+        System.assertEquals(3, mrrGraph.get(1).Graph_Value_2__c);
+        System.assertEquals(1, mrrGraph.get(1).Graph_Value_3__c);
+        System.assertEquals(2, mrrGraph.get(1).Graph_Value_4__c);
+    }
+
+    private static void setHiresData() {
+        Business_Unit__c bizUnit1 = new Business_Unit__c(Name = 'Inc');
+        Business_Unit__c bizUnit2 = new Business_Unit__c(Name = 'DWA');
+        Business_Unit__c bizUnit3 = new Business_Unit__c(Name = 'DSI');
+        insert bizUnit1;
+        insert bizUnit2;
+        insert bizUnit3;
+
+        insert new SFDC_Employee_Snapshot__c(Name = 'emp_snp_1', Employee_Type__c = 'Employee', Snapshot_Date__c = Date.today(), Business_Unit__c = bizUnit1.Id, Exchange_Rate__c = 1);
+        insert new SFDC_Employee_Snapshot__c(Name = 'emp_snp_1', Employee_Type__c = 'Employee', Snapshot_Date__c = Date.today().addMonths(-1), Business_Unit__c = bizUnit1.Id, Exchange_Rate__c = 1);
+
+        insert new SFDC_Employee_Snapshot__c(Name = 'emp_snp_2', Employee_Type__c = 'Employee', Snapshot_Date__c = Date.today(), Business_Unit__c = bizUnit2.Id, Exchange_Rate__c = 1);
+        insert new SFDC_Employee_Snapshot__c(Name = 'emp_snp_2', Employee_Type__c = 'Employee', Snapshot_Date__c = Date.today().addMonths(-1), Business_Unit__c = bizUnit2.Id, Exchange_Rate__c = 1);
+
+        insert new SFDC_Employee_Snapshot__c(Name = 'emp_snp_3', Employee_Type__c = 'Employee', Snapshot_Date__c = Date.today(), Business_Unit__c = bizUnit3.Id, Exchange_Rate__c = 1);
+
+        insert new SFDC_Employee_Snapshot__c(Name = 'emp_snp_4', Employee_Type__c = 'Employee', Snapshot_Date__c = Date.today().addMonths(-1), Business_Unit__c = bizUnit3.Id, Exchange_Rate__c = 1);
+
+        insert new SFDC_Employee_Snapshot__c(Name = 'emp_snp_5', Employee_Type__c = 'Employee', Snapshot_Date__c = Date.today(), Business_Unit__c = bizUnit3.Id, Exchange_Rate__c = 1);
+
+        insert new SFDC_Employee_Snapshot__c(Name = 'emp_snp_6', Employee_Type__c = 'Employee', Snapshot_Date__c = Date.today(), Business_Unit__c = bizUnit1.Id, Exchange_Rate__c = 1);
+        insert new SFDC_Employee_Snapshot__c(Name = 'emp_snp_6', Employee_Type__c = 'Employee', Snapshot_Date__c = Date.today().addMonths(-1), Business_Unit__c = bizUnit1.Id, Exchange_Rate__c = 1);
+
+        insert new SFDC_Employee_Snapshot__c(Name = 'emp_snp_7', Employee_Type__c = 'Employee', Snapshot_Date__c = Date.today(), Business_Unit__c = bizUnit1.Id, Exchange_Rate__c = 1);
     }
 
     private static void setUpMrrData() {
