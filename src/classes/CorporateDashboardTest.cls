@@ -173,22 +173,32 @@ public class CorporateDashboardTest {
         insert bizUnit2;
         insert bizUnit3;
 
-        insert new SFDC_Employee_Snapshot__c(Name = 'emp_snp_1', Employee_Type__c = 'Employee', Snapshot_Date__c = Date.today(), Business_Unit__c = bizUnit1.Id, Exchange_Rate__c = 1);
-        insert new SFDC_Employee_Snapshot__c(Name = 'emp_snp_1', Employee_Type__c = 'Employee', Snapshot_Date__c = Date.today().addMonths(-1), Business_Unit__c = bizUnit1.Id, Exchange_Rate__c = 1);
+        insert new SFDC_Employee_Snapshot__c(Name = 'emp_snp_1', Employee_Status__c = 'Active', Employee_Type__c = 'Employee',
+                                                Snapshot_Date__c = Date.today(), Business_Unit__c = bizUnit1.Id, Exchange_Rate__c = 1);
+        insert new SFDC_Employee_Snapshot__c(Name = 'emp_snp_1', Employee_Status__c = 'Active', Employee_Type__c = 'Employee',
+                                                Snapshot_Date__c = Date.today().addMonths(-1), Business_Unit__c = bizUnit1.Id, Exchange_Rate__c = 1);
 
-        insert new SFDC_Employee_Snapshot__c(Name = 'emp_snp_2', Employee_Type__c = 'Employee', Snapshot_Date__c = Date.today(), Business_Unit__c = bizUnit2.Id, Exchange_Rate__c = 1);
-        insert new SFDC_Employee_Snapshot__c(Name = 'emp_snp_2', Employee_Type__c = 'Employee', Snapshot_Date__c = Date.today().addMonths(-1), Business_Unit__c = bizUnit2.Id, Exchange_Rate__c = 1);
+        insert new SFDC_Employee_Snapshot__c(Name = 'emp_snp_2', Employee_Status__c = 'Active', Employee_Type__c = 'Employee',
+                                                Snapshot_Date__c = Date.today(), Business_Unit__c = bizUnit2.Id, Exchange_Rate__c = 1);
+        insert new SFDC_Employee_Snapshot__c(Name = 'emp_snp_2', Employee_Status__c = 'Active', Employee_Type__c = 'Employee',
+                                                Snapshot_Date__c = Date.today().addMonths(-1), Business_Unit__c = bizUnit2.Id, Exchange_Rate__c = 1);
 
-        insert new SFDC_Employee_Snapshot__c(Name = 'emp_snp_3', Employee_Type__c = 'Employee', Snapshot_Date__c = Date.today(), Business_Unit__c = bizUnit3.Id, Exchange_Rate__c = 1);
+        insert new SFDC_Employee_Snapshot__c(Name = 'emp_snp_3', Employee_Status__c = 'Active', Employee_Type__c = 'Employee',
+                                                Snapshot_Date__c = Date.today(), Business_Unit__c = bizUnit3.Id, Exchange_Rate__c = 1);
 
-        insert new SFDC_Employee_Snapshot__c(Name = 'emp_snp_4', Employee_Type__c = 'Employee', Snapshot_Date__c = Date.today().addMonths(-1), Business_Unit__c = bizUnit3.Id, Exchange_Rate__c = 1);
+        insert new SFDC_Employee_Snapshot__c(Name = 'emp_snp_4', Employee_Status__c = 'Active', Employee_Type__c = 'Employee',
+                                                Snapshot_Date__c = Date.today().addMonths(-1), Business_Unit__c = bizUnit3.Id, Exchange_Rate__c = 1);
 
-        insert new SFDC_Employee_Snapshot__c(Name = 'emp_snp_5', Employee_Type__c = 'Employee', Snapshot_Date__c = Date.today(), Business_Unit__c = bizUnit3.Id, Exchange_Rate__c = 1);
+        insert new SFDC_Employee_Snapshot__c(Name = 'emp_snp_5', Employee_Status__c = 'Active', Employee_Type__c = 'Employee',
+                                                Snapshot_Date__c = Date.today(), Business_Unit__c = bizUnit3.Id, Exchange_Rate__c = 1);
 
-        insert new SFDC_Employee_Snapshot__c(Name = 'emp_snp_6', Employee_Type__c = 'Employee', Snapshot_Date__c = Date.today(), Business_Unit__c = bizUnit1.Id, Exchange_Rate__c = 1);
-        insert new SFDC_Employee_Snapshot__c(Name = 'emp_snp_6', Employee_Type__c = 'Employee', Snapshot_Date__c = Date.today().addMonths(-1), Business_Unit__c = bizUnit1.Id, Exchange_Rate__c = 1);
+        insert new SFDC_Employee_Snapshot__c(Name = 'emp_snp_6', Employee_Status__c = 'Active', Employee_Type__c = 'Employee',
+                                                Snapshot_Date__c = Date.today(), Business_Unit__c = bizUnit1.Id, Exchange_Rate__c = 1);
+        insert new SFDC_Employee_Snapshot__c(Name = 'emp_snp_6', Employee_Status__c = 'Active', Employee_Type__c = 'Employee',
+                                                Snapshot_Date__c = Date.today().addMonths(-1), Business_Unit__c = bizUnit1.Id, Exchange_Rate__c = 1);
 
-        insert new SFDC_Employee_Snapshot__c(Name = 'emp_snp_7', Employee_Type__c = 'Employee', Snapshot_Date__c = Date.today(), Business_Unit__c = bizUnit1.Id, Exchange_Rate__c = 1);
+        insert new SFDC_Employee_Snapshot__c(Name = 'emp_snp_7', Employee_Status__c = 'Active', Employee_Type__c = 'Employee',
+                                                Snapshot_Date__c = Date.today(), Business_Unit__c = bizUnit1.Id, Exchange_Rate__c = 1);
     }
 
     private static void setUpMrrData() {
