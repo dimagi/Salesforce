@@ -361,8 +361,9 @@ public with sharing class FogBugzAPI {
 
         fbCase.caseId = caseNode.getAttribute('ixBug', null);
         fbCase.ixPersonOpenedBy = caseNode.getChildElement('ixPersonOpenedBy', null).getText();
+        fbCase.externalBugID = caseNode.getChildElement('sVersion', null).getText();
         String dtLastUpdatedValue = caseNode.getChildElement('dtLastUpdated', null).getText();
-        
+
         if (dtLastUpdatedValue != null && dtLastUpdatedValue.length() > 0) {
             fbCase.lastModifiedDate = FogBugzUtils.parseRFC822UTCTime(dtLastUpdatedValue);
         }
