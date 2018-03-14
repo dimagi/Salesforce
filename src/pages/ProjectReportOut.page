@@ -409,21 +409,11 @@
                 });
 
                 nv.addGraph(function() {
-                    var range =[], headcountData, chart = nv.models.multiChart().height(400);
-                    chart.legend.rightAlign = false;
-                    chart.legend.align(false);
-                    headcountData = loadHeadCountData();
-                    for (var i = 0; i < headcountData[0].values.length; i++) {
-                        range.push(headcountData[0].values[i].x);
-                    }
-                    chart.xAxis.tickValues(range);
-                    chart.xAxis.tickFormat(function(d) {
-                            return 'CY' + d
-                        });
-                    chart.xAxis.axisLabel('Hire Date');
+                    var chart, headCount = loadHeadCountData();
+                    chart = buildMultiBatChart('Record Count', 'Snapshot Date');
                     $j("[id$=headcount").append("<svg></svg>");
-                    d3.select('#headcount svg').datum(headcountData).call(chart)
-                        .transition().duration(500);
+                    d3.select('#headcount svg').datum(headCount)
+                        .transition().duration(500).call(chart);
                     nv.utils.windowResize(chart.update);
                     return chart;
                 });
@@ -431,16 +421,16 @@
 
             function loadHeadCountData() {
                 var graphData = JSON.parse($j("[id$=headCountDataId]").val());
-                var total = [], inc = [], dwa = [], dsi = [], dsa = [];
+                var dlac = [], inc = [], dwa = [], dsi = [], dsa = [];
                 for (i = 0; i < graphData.length; i++) {
-                    total.push({x: new Number(graphData[i].Graph_Value_7__c), y: graphData[i].Graph_Value_1__c});
-                    inc.push({x: new Number(graphData[i].Graph_Value_7__c), y: graphData[i].Graph_Value_2__c});
-                    dwa.push({x: new Number(graphData[i].Graph_Value_7__c), y: graphData[i].Graph_Value_3__c});
-                    dsi.push({x: new Number(graphData[i].Graph_Value_7__c), y: graphData[i].Graph_Value_4__c});
-                    dsa.push({x: new Number(graphData[i].Graph_Value_7__c), y: graphData[i].Graph_Value_5__c});
+                    dlac.push({x: graphData[i].X_Text__c, y: graphData[i].Graph_Value_6__c});
+                    inc.push({x: graphData[i].X_Text__c, y: graphData[i].Graph_Value_2__c});
+                    dwa.push({x: graphData[i].X_Text__c, y: graphData[i].Graph_Value_3__c});
+                    dsi.push({x: graphData[i].X_Text__c, y: graphData[i].Graph_Value_4__c});
+                    dsa.push({x: graphData[i].X_Text__c, y: graphData[i].Graph_Value_5__c});
                 }
-                return [ {key: "Record Count", yAxis: 1, type: "line", values: total}, {key: "Record Count: Inc", yAxis: 1, type: "bar", values: inc}, {key: "Record Count: DWA", yAxis: 1, type: "bar", values: dwa},
-                         {key: "Record Count: DSI", yAxis: 1, type: "bar", values: dsi}, {key: "Record Count: DSA", yAxis: 1, type: "bar", values: dsa} ];
+                return [ {key: "Inc", values: inc}, {key: "DWA", values: dwa},
+                         {key: "DSI", values: dsi}, {key: "DSA", values: dsa}, {key: "DLAC", values: dlac} ];
             }
 
             function buildDiscBatChart(yLabel) {
