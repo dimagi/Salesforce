@@ -52,7 +52,7 @@ public without sharing class FogBugzUtils {
         Map<String, Opportunity> res = new Map<String, Opportunity>();
 
         for (Opportunity o:[SELECT Id, Name, Owner.Name, Owner.Email, Owner.Id, StageName, Amount,
-                            Fogbugz_Most_Recent_Note__c, Probability, Fogbugz_Probability__c, Fogbugz_Ticket_Number__c,
+                            Fogbugz_Most_Recent_Note__c, Probability, Fogbugz_Probability__c, Fogbugz_Ticket_Number__c, IsClosed,
                             Fogbugz_Assigned_To__c, Fogbugz_Opened_By__c, Fogbugz_Last_Updated_Date__c, Fogbugz_elapsed_time__c
                             FROM Opportunity
                             WHERE Fogbugz_Ticket_Number__c in :fbCaseIds]) {
@@ -102,7 +102,10 @@ public without sharing class FogBugzUtils {
                 } else if (fbArea == 'Closed' || fbArea == 'Closed - No Go' || fbArea == 'Closed - Lost') {
                     o.Probability = 0;
                 }
-                o.StageName = fbArea;
+
+                if (!(o.IsClosed && fbCase.assignedTo == 'CLOSED') || (fbArea != null && fbArea.contains('Closed'))) { // We want avoid problem with 3 hours time frame, but we want add correct closed stage to Opp
+                    o.StageName = fbArea;
+                }
                 o.Fogbugz_Assigned_To__c = fbCase.assignedTo;
                 o.Name = fbCase.title == null ? null : (fbCase.title.length() > 120 ? fbCase.title.substring(0, 120) : fbCase.title);
                 o.Fogbugz_Opened_By__c = null;

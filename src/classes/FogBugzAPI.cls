@@ -9,7 +9,7 @@
 public with sharing class FogBugzAPI {
 
     private static final String DEFAULT_FB_URL = 'https://manage.dimagi.com/api.asp?';
-    private static final String FB_LIST_COLS = 'ixPersonOpenedBy,dtLastUpdated';
+    private static final String FB_LIST_COLS = 'ixPersonOpenedBy,dtLastUpdated,sVersion';
     private static final String FB_CASE_COLS = 'sTitle,sArea,sPersonAssignedTo,sVersion,dtLastUpdated,latestEvent,tags,ixPersonOpenedBy,hrsElapsed';
     private static final Integer FB_HTTP_TIMEOUT = 60000;
 
@@ -338,31 +338,27 @@ public with sharing class FogBugzAPI {
      * but we cannot access CDATA fields
      */
     public Map<String, fogBugzCase> parseCaseList(String xmlString) {
-        Dom.Document doc = new Dom.Document();
-        doc.load(xmlString);
-
-        Dom.XmlNode responseNode = doc.getRootElement();
-        Dom.XmlNode casesNode = responseNode.getChildElement('cases', null);
+        XMLDom dom = new XMLDom(xmlString);
+        XMLDom.Element casesNode = dom.root.getElementByTagName('cases');
 
         Map<String, FogBugzCase> cases = new Map<String, FogBugzCase>();
 
         if (casesNode != null) {
-            for (Dom.XmlNode caseNode:casesNode.getChildren()) {
+            for (XMLDom.Element caseNode : casesNode.childNodes) {
                 FogBugzCase fbCase = parseListCase(caseNode);
                 cases.put(fbCase.caseId, fbCase);
             }
         }
-
         return cases;
     }
 
-    public FogBugzCase parseListCase(Dom.XmlNode caseNode) {
+    public FogBugzCase parseListCase(XMLDom.Element caseNode) {
         FogBugzCase fbCase = new FogBugzCase();
+        fbCase.caseId = caseNode.getAttribute('ixBug');
+        fbCase.externalBugID = caseNode.getElementByTagName('sVersion').nodeValue;
+        fbCase.ixPersonOpenedBy = caseNode.getElementByTagName('ixPersonOpenedBy').nodeValue;
 
-        fbCase.caseId = caseNode.getAttribute('ixBug', null);
-        fbCase.ixPersonOpenedBy = caseNode.getChildElement('ixPersonOpenedBy', null).getText();
-        String dtLastUpdatedValue = caseNode.getChildElement('dtLastUpdated', null).getText();
-        
+        String dtLastUpdatedValue = caseNode.getElementByTagName('dtLastUpdated').nodeValue;
         if (dtLastUpdatedValue != null && dtLastUpdatedValue.length() > 0) {
             fbCase.lastModifiedDate = FogBugzUtils.parseRFC822UTCTime(dtLastUpdatedValue);
         }

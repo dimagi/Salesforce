@@ -9,10 +9,10 @@ public without sharing class RenewalSubscriptionsBatch implements Database.Batch
     private Subscription_Renewal_Settings__c settings;
     private List<DatabaseErrorInfo> oppsErrors;
     private List<DatabaseErrorInfo> subsErrors;
-    private Map<String, Date> createdOppsForDomains;
     private Map<String, PricebookEntry> priceBookEntries;
     private PricebookEntry commCareEntry;
     private Map<String, Decimal> salesPrices;
+    private Set<Id> domainsToSkip;
 
     public RenewalSubscriptionsBatch () {
         this.currentDate = Date.today();
@@ -46,7 +46,7 @@ public without sharing class RenewalSubscriptionsBatch implements Database.Batch
 
         this.oppsErrors = new List<DatabaseErrorInfo>();
         this.subsErrors = new List<DatabaseErrorInfo>();
-        this.createdOppsForDomains = new Map<String, Date>();
+        this.domainsToSkip = new Set<Id>();
         this.priceBookEntries = new Map<String, PricebookEntry>();
 
         Set<String> productCodes = new Set<String> { 'Reseller', 'Managed Hosting', 'Advanced', 'Community', 'Enterprise', 'Pro', 'Standard' };
@@ -74,6 +74,11 @@ public without sharing class RenewalSubscriptionsBatch implements Database.Batch
         this.salesPrices.put('Managed Hosting', this.settings.Managed_Hosting__c != null ? this.settings.Managed_Hosting__c : 2000);
         this.salesPrices.put('Reseller', this.settings.Reseller__c != null ? this.settings.Reseller__c : 500);
 
+        List<Opportunity> opps = [SELECT Id, Domain_Name__c FROM Opportunity WHERE Domain_Name__c != '' AND CreatedDate >=: this.currentDate.addDays(-61)];
+        for (Opportunity opp : opps) {
+            domainsToSkip.add(opp.Domain_Name__c);
+        }
+
         return getSubscriptionsForRenewal(domainsWithFutureSubscriptions);
     }
 
@@ -92,7 +97,7 @@ public without sharing class RenewalSubscriptionsBatch implements Database.Batch
         List<Domain__c> domainsToUpdate = new List<Domain__c>();
 
         for (Accounting_Subscription__c subscription : subs) {
-            if (!this.createdOppsForDomains.containsKey(subscription.Accounting_subscriber_domain__c) && subscription.Renewal_Opportunity_created__c == false) {
+            if (!this.domainsToSkip.contains(subscription.Accounting_subscriber_domain__c) && subscription.Renewal_Opportunity_created__c == false) {
                 String oppNameFirstPart = subscription.Accounting_subscriber_domain__r.Account__r.Name != null && subscription.Accounting_subscriber_domain__r.Account__r.Name != '' ?
                                             subscription.Accounting_subscriber_domain__r.Account__r.Name : subscription.Accounting_subscriber_domain__r.Name;
 
@@ -135,8 +140,8 @@ public without sharing class RenewalSubscriptionsBatch implements Database.Batch
                 domainsToUpdate.add(domainToUpdate);
             }
             // we must create Opp only for the latest subscription which will end
-            if (!this.createdOppsForDomains.containsKey(subscription.Accounting_subscriber_domain__c)) {
-                this.createdOppsForDomains.put(subscription.Accounting_subscriber_domain__c, subscription.date_end__c);
+            if (!this.domainsToSkip.contains(subscription.Accounting_subscriber_domain__c)) {
+                this.domainsToSkip.add(subscription.Accounting_subscriber_domain__c);
             }
         }
 
@@ -235,7 +240,7 @@ public without sharing class RenewalSubscriptionsBatch implements Database.Batch
     public List<Accounting_Subscription__c> getSubscriptionsForRenewal(Set<String> domainsWithFutureSubscriptions) {
         return [SELECT Id, date_end__c, service_type__c, Accounting_subscriber_domain__c, Accounting_subscriber_domain__r.Name, Dimagi_Contact__c, Accounting_subscriber_domain__r.Account__r.Name,
                 Accounting_subscriber_domain__r.cpAllWebUsers__c, Software_Plan_Edition__c, Renewal_Opportunity_created__c FROM Accounting_Subscription__c
-                WHERE Accounting_subscriber_domain__r.Name != '' AND Accounting_subscriber_domain__r.Opportunity__c = '' AND date_end__c != null AND date_end__c <=: this.currentDate.addDays(60)
+                WHERE Accounting_subscriber_domain__r.Name != '' AND date_end__c != null AND date_end__c <=: this.currentDate.addDays(60)
                 AND date_end__c >=: this.currentDate AND Accounting_subscriber_domain__r.Name NOT IN: domainsWithFutureSubscriptions AND is_active__c = true
                 AND is_trial__c = false AND Server_Name__c = 'CommCareHQ' ORDER BY date_end__c DESC];
     }

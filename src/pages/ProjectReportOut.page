@@ -1,3 +1,2 @@
 <apex:page controller="ProjectReportOutController" action="{!redirectToSFTools}">
-
 </apex:page>
