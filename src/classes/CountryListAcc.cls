@@ -1,7 +1,7 @@
 /**
  * Apex Controller for Global Accounts View
  */
-public class CountryListAcc{
+public class CountryListAcc {
 
     public List<Account> lstAcc {get; set;}
     public List<Contact> lstCon {get; set;}
@@ -53,7 +53,7 @@ public class CountryListAcc{
         clearData();
 
         //Select records from Account according to given search string
-        String searchQuery = 'SELECT Name, Id, Country__r.Name, Status__c, Parent.Name FROM Account WHERE Name LIKE \'%'+SearchString+'%\'';
+        String searchQuery = 'SELECT Name, Id, Country__r.Name, Status__c, Parent.Name FROM Account WHERE Name LIKE \'%' + this.searchString + '%\'';
         this.lstAcc = Database.query(searchQuery);
 
         //Create collection of wrapper class
@@ -66,7 +66,7 @@ public class CountryListAcc{
             }
         }
 
-        for(Account acc: [SELECT Name, Id, Country__r.Name, Status__c, Parent.Name FROM Account WHERE ParentId IN : this.accIdList]) {
+        for(Account acc : [SELECT Name, Id, Country__r.Name, Status__c, Parent.Name FROM Account WHERE ParentId IN : this.accIdList]) {
             if(!this.setId.contains(acc.Id)) {
                 this.wrapperList.add(new AccountWrapper(acc, true));
                 this.lstAcc.add(acc);
@@ -195,6 +195,8 @@ public class CountryListAcc{
     }
 
     private void clearData() {
+        this.setId.clear();
+        this.accIdList.clear();
         this.wrapperList.clear();
         this.childAccounts.clear();
         this.lstCon.clear();
