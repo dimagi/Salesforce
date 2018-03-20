@@ -1,7 +1,7 @@
 /**
  * Apex Controller for Global Accounts View
  */
-public class CountryListAcc{
+public class CountryListAcc {
 
     public List<Account> lstAcc {get; set;}
     public List<Contact> lstCon {get; set;}
@@ -53,7 +53,7 @@ public class CountryListAcc{
         clearData();
 
         //Select records from Account according to given search string
-        String searchQuery = 'SELECT Name, Id, Country__r.Name, Status__c, Parent.Name FROM Account WHERE Name LIKE \'%'+SearchString+'%\'';
+        String searchQuery = 'SELECT Name, Id, Country__r.Name, Account_Status__c, Parent.Name FROM Account WHERE Name LIKE \'%' + this.searchString + '%\'';
         this.lstAcc = Database.query(searchQuery);
 
         //Create collection of wrapper class
@@ -66,7 +66,7 @@ public class CountryListAcc{
             }
         }
 
-        for(Account acc: [SELECT Name, Id, Country__r.Name, Status__c, Parent.Name FROM Account WHERE ParentId IN : this.accIdList]) {
+        for(Account acc : [SELECT Name, Id, Country__r.Name, Account_Status__c, Parent.Name FROM Account WHERE ParentId IN : this.accIdList]) {
             if(!this.setId.contains(acc.Id)) {
                 this.wrapperList.add(new AccountWrapper(acc, true));
                 this.lstAcc.add(acc);
@@ -92,7 +92,7 @@ public class CountryListAcc{
     //Action on radiobutton
     public void searchByAccount(){
         //Get child accounts
-        this.childAccounts = [Select Name,Id,Country__r.Name,Status__c,Parent.Name from account where Parent.Id =: this.selectedAccountId];
+        this.childAccounts = [SELECT Name, Id, Country__r.Name, Account_Status__c, Parent.Name FROM Account WHERE Parent.Id =: this.selectedAccountId];
 
         //Create set of child accounts IDs
         Set<Id> childAccountIDs = new Set<Id>();
@@ -131,15 +131,12 @@ public class CountryListAcc{
         //Opportunities Open
         this.lstoppty = [SELECT Id, Name,Account.Name, Description, Country__c,Country__r.Name, StageName
                             FROM Opportunity
-                            WHERE AccountId =: this.selectedAccountId AND
-                                (StageName = 'Stage 1 - Connect' OR StageName = 'Stage 2 - Talking' OR StageName = 'Stage 3 - Prospect' OR
-                                StageName = 'Stage 4 - Proposal Development' OR StageName = 'Stage 5 - Submitted' OR StageName = 'Stage 6 - In Negotiations' OR
-                                StageName = 'On Hold')];
+                            WHERE AccountId =: this.selectedAccountId AND IsClosed = false];
 
         //Opportunities Closed
         this.lstopptyClosed = [SELECT Id, Name, Account.Name, Description, Country__c, Country__r.Name, StageName
                                 FROM Opportunity
-                                WHERE AccountId =: this.selectedAccountId AND (StageName = 'Closed - Lost' OR StageName = 'Closed - Won')];
+                                WHERE AccountId =: this.selectedAccountId AND IsClosed = true];
 
         //Get all child objects by child accounts IDs
 
@@ -180,21 +177,19 @@ public class CountryListAcc{
         //Opportunities Open
         List<Opportunity> lstopptyChild = [SELECT Id, Name, Account.Name, Description, Country__c,Country__r.Name, StageName
                                       FROM Opportunity
-                                      WHERE AccountId IN: childAccountIDs AND
-                                             (StageName = 'Stage 1 - Connect' OR StageName = 'Stage 2 - Talking' OR StageName = 'Stage 3 - Prospect' OR
-                                              StageName = 'Stage 4 - Proposal Development' OR StageName = 'Stage 5 - Submitted' OR StageName = 'Stage 6 - In Negotiations' OR
-                                              StageName = 'On Hold')];
+                                      WHERE AccountId IN: childAccountIDs AND IsClosed = false];
         this.lstoppty.addAll(lstopptyChild);
 
         //Opportunities Closed
         List<Opportunity> lstopptyClosedChild = [SELECT Id, Name, Account.Name, Description, Country__c, Country__r.Name, StageName
                                                     FROM Opportunity
-                                                    WHERE AccountId IN: childAccountIDs AND
-                                                    (StageName = 'Closed - Lost' OR StageName = 'Closed - Won')];
+                                                    WHERE AccountId IN: childAccountIDs AND IsClosed = true];
         this.lstopptyClosed.addAll(lstopptyClosedChild);
     }
 
     private void clearData() {
+        this.setId.clear();
+        this.accIdList.clear();
         this.wrapperList.clear();
         this.childAccounts.clear();
         this.lstCon.clear();
