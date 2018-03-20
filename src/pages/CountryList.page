@@ -31,7 +31,7 @@
                     <apex:outputlink value="/{!a.acc.id}" >{!a.acc.Name}</apex:outputlink>
                 </apex:column>
                 <apex:column headerValue="Country Name" value="{!a.acc.Country__r.Name}"/>
-                <apex:column headerValue="Status Old" value="{!a.acc.Status__c}"/>
+                <apex:column headerValue="Account Status" value="{!a.acc.Account_Status__c}"/>
                 <apex:column headerValue="Parent Name" value="{!a.acc.Parent.Name}"/>
             </apex:pageBlockTable>
         </apex:pageBlock>
@@ -44,7 +44,7 @@
                     <apex:outputlink value="/{!child.id}" >{!child.Name}</apex:outputlink>
                 </apex:column>
                 <apex:column headerValue="Country Name" value="{!child.Country__r.Name}"/>
-                <apex:column headerValue="Status Old" value="{!child.Status__c}"/>
+                <apex:column headerValue="Account Status" value="{!child.Account_Status__c}"/>
                 <apex:column headerValue="Parent Name" value="{!child.Parent.Name}"/>
             </apex:pageBlockTable>
         </apex:pageBlock>

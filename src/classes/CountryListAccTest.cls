@@ -1,6 +1,6 @@
 /**
-  Tests for Global Account View
-*/
+ *  Tests for Global Account View
+ */
 @isTest
 public class CountryListAccTest {
 
