@@ -4,33 +4,26 @@
 public class ScriptBatchJob implements Database.Batchable<Domain__c>, Database.Stateful {
 
     /**
-     * Script code for moving data to second sied of the relation before deleting field in domain custom object
+     * Script code for moving Account relation to the domain custom object
      */
     public ScriptBatchJob() {
     }
 
     public List<Domain__c> start(Database.BatchableContext context) {
-        return [SELECT Id, Opportunity__c FROM Domain__c WHERE Opportunity__c != ''];
+        return [SELECT Id, Account__c, Opportunity__c, Opportunity__r.AccountId FROM Domain__c WHERE Opportunity__c != '' AND Opportunity__r.AccountId != ''];
     }
 
     public void execute(Database.BatchableContext context, List<Domain__c> scope) {
-        Set<Id> oppsSet = new Set<Id>();
+        List<Domain__c> toUpdate = new List<Domain__c>();
         for (Domain__c hqDomain : scope) {
-            oppsSet.add(hqDomain.Opportunity__c);
-        }
-        Map<Id, Opportunity> oppsMap = new Map<Id, Opportunity> ([SELECT Id, Domain_Name__c FROM Opportunity WHERE Id IN: oppsSet]);
-
-        List<Opportunity> oppsToUpdate = new List<Opportunity>();
-        for (Domain__c hqDomain : scope) {
-            if (oppsMap.containsKey(hqDomain.Opportunity__c)) {
-                Opportunity opp = oppsMap.get(hqDomain.Opportunity__c);
-                opp.Domain_Name__c = hqDomain.Id;
-                oppsToUpdate.add(opp);
+            if (hqDomain.Opportunity__r.AccountId != null) {
+                hqDomain.Account__c = hqDomain.Opportunity__r.AccountId;
+                toUpdate.add(hqDomain);
             }
         }
 
-        if (oppsToUpdate.size() > 0) {
-            update oppsToUpdate;
+        if (toUpdate.size() > 0) {
+            update toUpdate;
         }
     }
 
