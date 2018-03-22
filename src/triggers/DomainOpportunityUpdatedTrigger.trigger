@@ -3,6 +3,7 @@ trigger DomainOpportunityUpdatedTrigger on Domain__c (after update) {
         if (!RecursiveTriggerHelper.hasRecursiveFlag()) {
             Set<Id> opps = new Set<Id>();
             Map<Id, Id> domainToOpp = new Map<Id, Id>();
+
             System.debug('Updated domains : ' + Trigger.new);
             for (Domain__c domain : Trigger.new) {
                 Domain__c oldDomain = Trigger.oldMap.get(domain.Id);
@@ -22,11 +23,19 @@ trigger DomainOpportunityUpdatedTrigger on Domain__c (after update) {
                     oppToContactMap.put(role.OpportunityId, role.ContactId);
                 }
 
+                Map<Id, Opportunity> oppToAccMap = new Map<Id, Opportunity>([SELECT Id, AccountId FROM Opportunity WHERE Id IN: opps]);
+
                 List<Domain__c> domainsToUpdate = new List<Domain__c>();
                 for (Id domainId : domainToOpp.keySet()) {
                     Id oppId = domainToOpp.get(domainId);
-                    if (oppId != null && oppToContactMap.containsKey(oppId)) {
+                    Id accountId = oppToAccMap.get(oppId).AccountId;
+
+                    if (oppId != null && oppToContactMap.containsKey(oppId) && accountId != null) {
+                        domainsToUpdate.add(new Domain__c(Id = domainId, Primary_Contact__c = oppToContactMap.get(oppId), Account__c = accountId));
+                    } else if (oppId != null && oppToContactMap.containsKey(oppId) && accountId == null) {
                         domainsToUpdate.add(new Domain__c(Id = domainId, Primary_Contact__c = oppToContactMap.get(oppId)));
+                    } else if (oppId != null && accountId != null) {
+                        domainsToUpdate.add(new Domain__c(Id = domainId, Account__c = accountId));
                     }
                 }
 
