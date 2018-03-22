@@ -166,6 +166,7 @@ public class HqIntegrationTests {
         Account acc2 = new Account(Name = 'Acc 2 Test', Status__c = 'Active');
         insert acc2;
         Account acc3 = new Account(Name = 'Acc 3 NY', Status__c = 'Active');
+        insert acc3;
         Opportunity opp1 = new Opportunity(Name = 'opp1', StageName = 'Stage 1 - Connect', CloseDate = Date.today().addDays(50),
                                           Implementing_Business_Unit__c = bunit.Id, AccountId = acc1.Id);
         insert opp1;
