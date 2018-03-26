@@ -174,6 +174,70 @@ public class RenewalSubscriptionsTest {
         System.assertEquals(3, opps.size());
     }
 
+    public static testMethod void shouldCreateNewOppWhenRenewalOppIsTooOld() {
+        addTestData();
+        addTestPricebooks();
+
+        Accounting_BillingAccount__c billingAccount1 = new Accounting_BillingAccount__c(Server_Name__c = 'CommCareHQ', account_type__c = 'Pro', is_active__c = true, created_by__c = 'test@dimagi.com', created_by_domain__c = 'domain_1', dimagi_contact__c = 'contact_1@dimagi.com');
+        insert billingAccount1;
+        Accounting_BillingAccount__c billingAccount2 = new Accounting_BillingAccount__c(Server_Name__c = 'CommCareHQ', account_type__c = 'Conventional 1', is_active__c = true, created_by__c = 'test@dimagi.com', created_by_domain__c = 'domain_2', dimagi_contact__c = 'contact_1@dimagi.com');
+        insert billingAccount2;
+
+        Account testAccount = new Account(Name = 'Test Account');
+        insert testAccount;
+        Domain__c domain1 = new Domain__c(Server_Name__c = 'CommCareHQ', Name = 'domain_1', cpAllWebUsers__c = 30, Account__c = testAccount.Id);
+        insert domain1;
+
+        Business_Unit__c bizUnit = new Business_Unit__c(Name = 'Test Business Unit 1');
+        Opportunity opp = new Opportunity(Name = 'Old Renewal Opportunity', Business_Unit_Owner__c = bizUnit.Id, StageName = 'Closed',
+                                                 CloseDate = date.today().addDays(-1), Probability = 30, Domain_Name__c = domain1.Id);
+        insert opp;
+        Test.setCreatedDate(opp.Id, DateTime.now().addDays(-200));
+        update new Domain__c(Id = domain1.Id, Opportunity__c = opp.Id);
+
+        Accounting_Softwareplan__c softwarePlan1 = new Accounting_Softwareplan__c(Server_Name__c = 'CommCareHQ', edition__c = 'Pro');
+        insert softwarePlan1;
+        Accounting_Softwareplan__c softwarePlan2 = new Accounting_Softwareplan__c(Server_Name__c = 'CommCareHQ', edition__c = 'Community');
+        insert softwarePlan2;
+        Accounting_Softwareplan__c softwarePlan3 = new Accounting_Softwareplan__c(Server_Name__c = 'CommCareHQ', edition__c = 'Standard');
+        insert softwarePlan3;
+
+        Accounting_SoftwarePlanVersion__c planVersion1 = new Accounting_SoftwarePlanVersion__c(Server_Name__c = 'CommCareHQ', Accounting_SoftwarePlan__c = softwarePlan1.Id);
+        insert planVersion1;
+        Accounting_SoftwarePlanVersion__c planVersion2 = new Accounting_SoftwarePlanVersion__c(Server_Name__c = 'CommCareHQ', Accounting_SoftwarePlan__c = softwarePlan2.Id);
+        insert planVersion2;
+        Accounting_SoftwarePlanVersion__c planVersion3 = new Accounting_SoftwarePlanVersion__c(Server_Name__c = 'CommCareHQ', Accounting_SoftwarePlan__c = softwarePlan3.Id);
+        insert planVersion3;
+
+        Accounting_Subscription__c subscription1 = new Accounting_Subscription__c(Server_Name__c = 'CommCareHQ', is_trial__c = false, date_start__c = Date.today().addDays(-47), date_end__c = Date.today().addDays(-45), service_type__c = 'Implementation', is_active__c = false,
+                                                                                  Renewal_Opportunity_created__c = false, account__c = billingAccount1.Id, Accounting_subscriber_domain__c = domain1.Id, plan_version__c = planVersion1.Id);
+        insert subscription1;
+        Accounting_Subscription__c subscription2 = new Accounting_Subscription__c(Server_Name__c = 'CommCareHQ', is_trial__c = false, date_start__c = Date.today().addDays(-45), date_end__c = Date.today().addDays(7), service_type__c = 'Other', is_active__c = true,
+                                                                                  Renewal_Opportunity_created__c = false, account__c = billingAccount2.Id, Accounting_subscriber_domain__c = domain1.Id, plan_version__c = planVersion2.Id);
+        insert subscription2;
+
+        Test.startTest();
+        RenewalSubscriptionsBatch batchJob = new RenewalSubscriptionsBatch();
+        List<Accounting_Subscription__c> futureList = batchJob.getFutureSubscriptions();
+        System.assertEquals(0, futureList.size());
+        List<Accounting_Subscription__c> renewalList = batchJob.getSubscriptionsForRenewal(new Set<String>());
+        System.assertEquals(1, renewalList.size());
+        Database.executeBatch(batchJob, 50);
+        Test.stopTest();
+
+        List<Opportunity> opps = [SELECT Id, Name, Prior_Dimagi_contact__c, Subscriptions_web_users__c, Fogbugz_Probability__c, Duration_months__c,
+                                  Expected_Buffer__c, of_Execution_budget_for_GS__c, CloseDate, Domain_Name__c, Product_Text__c,
+                                  StageName, Implementation_Type__c, Opportunity_Owning_Entity__c, Contract_Owner_BU__c,
+                                  Implementing_Business_Unit__c, Opportunity_Source__c, Owner.Name FROM Opportunity ORDER BY Name DESC];
+        System.assertEquals(2, opps.size());
+        Opportunity opp1 = opps.get(0);
+        System.assertEquals('Test Account - Community - Renewal', opp1.Name);
+        Opportunity opp2 = opps.get(1);
+        System.assertEquals('Old Renewal Opportunity', opp2.Name);
+        Domain__c domainFromDB = [SELECT Id, Name, Opportunity__c FROM Domain__c WHERE Id =: domain1.Id];
+        System.assertEquals(opp1.Id, domainFromDB.Opportunity__c);
+    }
+
     private static void addTestPricebooks() {
         Id pricebookId = Test.getStandardPricebookId();
 
