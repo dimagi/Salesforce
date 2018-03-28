@@ -447,10 +447,16 @@ public without sharing class DimagiToolsController {
     public List<PROProjectTimeSpentHistory> timeSpendHistoryList { get; set; }
     public List<PROProjectBudget> proExpenseSpendList { get; set; }
     public List<PROProjectBudget> proBudgetList { get; set; }
+    public Date lastFBSyncDate { get; set;}
 
     private Set<Id> excludeContractFromSearch = new Set<Id>();
 
     public List<PROProject> getProjectsForFinancialTab() {
+        Time_Card__c lastTimeCard = [SELECT Id, CreatedDate FROM Time_Card__c ORDER BY CreatedDate DESC LIMIT 1];
+        if (lastTimeCard != null) {
+            lastFBSyncDate = Date.newInstance(lastTimeCard.CreatedDate.year(), lastTimeCard.CreatedDate.month(), lastTimeCard.CreatedDate.day());
+        }
+
         List<PROProject> proList = new List<PROProject>();
         Set<Id> customContractsIdsToAddInList = new Set<Id>();
         excludeContractFromSearch.clear();
