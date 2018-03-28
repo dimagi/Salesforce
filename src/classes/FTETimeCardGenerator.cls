@@ -55,6 +55,10 @@ public class FTETimeCardGenerator {
         for (Time_Card__c fteCard : fteCards) {
             if (fteCard.Client__r.FTE_Tracker__c != 'Yes' && fteCard.FTE_Contract__r.FTE_Tracker__c == 'Yes') { // From Unassigned to Assigned
                 FTEMonthTimeCard monthCard = this.contractMap.get(fteCard.FTE_Contract__c);
+                if (monthCard == null) {
+                    this.contractMap.put(fteCard.FTE_Contract__c, new FTEMonthTimeCard(fteCard.FTE_Contract__r.Name, this.monthDays));
+                    monthCard = this.contractMap.get(fteCard.FTE_Contract__c);
+                }
                 Decimal hoursHelper = fteCard.FTE_hours__c;
                 for (Integer i = 0; i < this.monthDays; i++) {
                     Decimal hoursToMove = unassignedHours.hours[i] < hoursHelper ? unassignedHours.hours[i] : hoursHelper;
@@ -84,6 +88,10 @@ public class FTETimeCardGenerator {
             } else if (fteCard.Client__r.FTE_Tracker__c == 'Yes' && fteCard.FTE_Contract__r.FTE_Tracker__c == 'Yes') {
                 FTEMonthTimeCard monthCardFrom = this.contractMap.get(fteCard.Client__c);
                 FTEMonthTimeCard monthCardTo = this.contractMap.get(fteCard.FTE_Contract__c);
+                if (monthCardTo == null) {
+                    this.contractMap.put(fteCard.FTE_Contract__c, new FTEMonthTimeCard(fteCard.FTE_Contract__r.Name, this.monthDays));
+                    monthCardTo = this.contractMap.get(fteCard.FTE_Contract__c);
+                }
                 Decimal hoursHelper = fteCard.FTE_hours__c;
                 for (Integer i = 0; i < this.monthDays; i++) {
                     Decimal hoursToMove = monthCardFrom.hours[i] < hoursHelper ? monthCardFrom.hours[i] : hoursHelper;
