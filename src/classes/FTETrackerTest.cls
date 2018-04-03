@@ -674,7 +674,8 @@ public class FTETrackerTest {
             Name = employeeName,
             Salary__c = 50000,
             Employee_Status__c = 'Active',
-            Exchange_Rate__c = 1
+            Exchange_Rate__c = 1,
+            Per_Week_Hours__c = 40
         );
         insert employeeObj;
         return employeeObj;
