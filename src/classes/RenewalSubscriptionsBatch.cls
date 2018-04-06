@@ -74,10 +74,10 @@ public without sharing class RenewalSubscriptionsBatch implements Database.Batch
         this.salesPrices.put('Managed Hosting', this.settings.Managed_Hosting__c != null ? this.settings.Managed_Hosting__c : 2000);
         this.salesPrices.put('Reseller', this.settings.Reseller__c != null ? this.settings.Reseller__c : 500);
 
-        List<Opportunity> opps = [SELECT Id, Domain_Name__c FROM Opportunity WHERE Domain_Name__c != '' AND CreatedDate >=: this.currentDate.addDays(-61)];
-        for (Opportunity opp : opps) {
+        /**List<Opportunity> opps = [SELECT Id, Domain_Name__c FROM Opportunity WHERE Domain_Name__c != '' AND CreatedDate >=: this.currentDate.addDays(-61)];
+        for (Opportunity opp : opps) { // TODO remove if this was bug, neeed debug it first
             domainsToSkip.add(opp.Domain_Name__c);
-        }
+        }*/
 
         return getSubscriptionsForRenewal(domainsWithFutureSubscriptions);
     }
@@ -96,14 +96,28 @@ public without sharing class RenewalSubscriptionsBatch implements Database.Batch
         Map<Id, Domain__c> domains = new Map<Id, Domain__c> ([SELECT Id, Opportunity__c FROM Domain__c WHERE Id IN: domainsSet]);
         List<Domain__c> domainsToUpdate = new List<Domain__c>();
 
+        String dateString = (this.currentDate.month() < 10 ? '0' + this.currentDate.month() : '' + this.currentDate.month())
+                                + (this.currentDate.day() < 10 ? '0' + this.currentDate.day() : '' + this.currentDate.day())
+                                + ('' + this.currentDate.year());
+
         for (Accounting_Subscription__c subscription : subs) {
+            if (subscription.Accounting_subscriber_domain__r.Opportunity__c != null && subscription.Accounting_subscriber_domain__r.Opportunity__r.CreatedDate >= this.currentDate.addDays(-61)) {
+                this.domainsToSkip.add(subscription.Accounting_subscriber_domain__c);
+            }
             if (!this.domainsToSkip.contains(subscription.Accounting_subscriber_domain__c) && subscription.Renewal_Opportunity_created__c == false) {
                 String oppNameFirstPart = subscription.Accounting_subscriber_domain__r.Account__r.Name != null && subscription.Accounting_subscriber_domain__r.Account__r.Name != '' ?
                                             subscription.Accounting_subscriber_domain__r.Account__r.Name : subscription.Accounting_subscriber_domain__r.Name;
 
+
+                String oppNamesecondPart = '-' + subscription.Software_Plan_Edition__c + (subscription.service_type__c == 'Implementation' ? '-Implementation' : '') + ' Renewal ' + dateString;
+
+                if (oppNameFirstPart.length() + oppNamesecondPart.length() > 120) {
+                    oppNameFirstPart = oppNameFirstPart.subString(0, 120 - oppNamesecondPart.length());
+                }
+
                 Opportunity newOpp = new Opportunity(
                                                         Prior_Dimagi_contact__c = subscription.Dimagi_Contact__c,
-                                                        Name = oppNameFirstPart + ' - ' + subscription.Software_Plan_Edition__c + ' - Renewal',
+                                                        Name = oppNameFirstPart + oppNamesecondPart,
                                                         Subscriptions_web_users__c = subscription.Accounting_subscriber_domain__r.cpAllWebUsers__c,
                                                         Fogbugz_Probability__c = 30,
                                                         Probability = 30,
@@ -229,17 +243,20 @@ public without sharing class RenewalSubscriptionsBatch implements Database.Batch
      * Returns Subscriptions which ends after 60 days
      */
     public List<Accounting_Subscription__c> getFutureSubscriptions() {
-        return [SELECT Id, Accounting_subscriber_domain__r.Name FROM Accounting_Subscription__c
-                WHERE Accounting_subscriber_domain__r.Name != '' AND is_active__c = true AND is_trial__c = false
-                AND date_end__c != null AND date_end__c >: this.currentDate.addDays(60) AND Server_Name__c = 'CommCareHQ'];
+        return [SELECT Id, date_start__c, date_end__c, Accounting_subscriber_domain__r.Name FROM Accounting_Subscription__c
+                WHERE Accounting_subscriber_domain__r.Name != '' AND is_trial__c = false
+                AND date_start__c >: this.currentDate
+                AND Server_Name__c = 'CommCareHQ'];
     }
 
     /**
      * Returns Subscriptions which ends in 60 days for domains which dosen't contain subscriptions from future (which ends after 60 days).
      */
     public List<Accounting_Subscription__c> getSubscriptionsForRenewal(Set<String> domainsWithFutureSubscriptions) {
-        return [SELECT Id, date_end__c, service_type__c, Accounting_subscriber_domain__c, Accounting_subscriber_domain__r.Name, Dimagi_Contact__c, Accounting_subscriber_domain__r.Account__r.Name,
-                Accounting_subscriber_domain__r.cpAllWebUsers__c, Software_Plan_Edition__c, Renewal_Opportunity_created__c FROM Accounting_Subscription__c
+        return [SELECT Id, date_start__c, date_end__c, service_type__c, Accounting_subscriber_domain__c, Accounting_subscriber_domain__r.Name, Dimagi_Contact__c, Accounting_subscriber_domain__r.Account__r.Name,
+                Accounting_subscriber_domain__r.cpAllWebUsers__c, Software_Plan_Edition__c, Renewal_Opportunity_created__c,
+                Accounting_subscriber_domain__r.Opportunity__r.CreatedDate, Accounting_subscriber_domain__r.Opportunity__c
+                FROM Accounting_Subscription__c
                 WHERE Accounting_subscriber_domain__r.Name != '' AND date_end__c != null AND date_end__c <=: this.currentDate.addDays(60)
                 AND date_end__c >=: this.currentDate AND Accounting_subscriber_domain__r.Name NOT IN: domainsWithFutureSubscriptions AND is_active__c = true
                 AND is_trial__c = false AND Server_Name__c = 'CommCareHQ' ORDER BY date_end__c DESC];
