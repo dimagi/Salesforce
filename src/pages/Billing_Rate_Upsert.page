@@ -26,9 +26,6 @@
                 <apex:inputField value="{!newBillingRate.Fringe__c}" />
                 <apex:inputField value="{!newBillingRate.Fee__c}"/>
                 <apex:inputField value="{!newBillingRate.G_A__c}" />
-                <apex:inputField value="{!newBillingRate.Custom_1__c}" />
-                <apex:inputField value="{!newBillingRate.Custom_2__c}" />
-                <apex:inputField value="{!newBillingRate.Custom_3__c}" />
             </apex:pageBlockSection>
 
             <apex:pageBlockButtons >

@@ -5,35 +5,46 @@
 public with sharing class TimeCardTriggerController {
 
     public static void handleAfterInsert(Set<Id> newTimeCardsIds, List<Time_Card__c> newTimeCards) {
-        Database.executeBatch(new BatchRecalculateTimeCardCost(newTimeCardsIds), 200);
-        markContractsToRefresh(newTimeCards);
     }
 
     public static void handleAfterUpdate(List<Time_Card__c> updatedTimeCards, List<Time_Card__c> beforeUpdateTimeCards) {
-        // Services Spend calculations : Date, Total Hours and Employee in Time Card cannot be updated, such time cards will be deleted from FB side and created again.
     }
 
     public static void handleAfterDelete(List<Time_Card__c> deletedTimeCards) {
-        markContractsToRefresh(deletedTimeCards);
-        // TODO Mark contracts for recalculations
-    }
+        Map<Id, Decimal> servicesSpendMap = new Map<Id, Decimal>();
+        for (Time_Card__c tc : deletedTimeCards) {
+            Decimal value = tc.Total__c * (tc.Time_Card_Salary__c != null ? tc.Time_Card_Salary__c : 0) * (tc.Billing_Rate__c != null ? tc.Billing_Rate__c : 0);
+            System.debug('TC value : ' + value + ' removed from ' + tc.Client__r.Name + ' with parent: '
+                            + tc.Client__r.Parent_Contract__c != null ? tc.Client__r.Parent_Contract__r.Name : '');
+            if (servicesSpendMap.containsKey(tc.Client__c)) {
+                servicesSpendMap.put(tc.Client__c, value + servicesSpendMap.get(tc.Client__c));
+            } else {
+                servicesSpendMap.put(tc.Client__c, value);
+            }
 
-    private static void markContractsToRefresh(List<Time_Card__c> changedTimeCards) {
-        Set<Id> contractSet = new Set<Id>();
-        for (Time_Card__c tc : changedTimeCards) {
-            Id clientId = tc.Client__c;
-            if (clientId != null) {
-                contractSet.add(clientId);
+            if (tc.Client__r.Parent_Contract__c != null) { // we must also add childs service spend to the parent object
+                if (servicesSpendMap.containsKey(tc.Client__r.Parent_Contract__c)) {
+                    servicesSpendMap.put(tc.Client__r.Parent_Contract__c, value + servicesSpendMap.get(tc.Client__r.Parent_Contract__c));
+                } else {
+                    servicesSpendMap.put(tc.Client__r.Parent_Contract__c, value);
+                }
             }
         }
 
-        List<DContract__c> toUpdateList = [SELECT Id, Require_Services_Spend_Refresh__c FROM DContract__c WHERE Id IN: contractSet AND Require_Services_Spend_Refresh__c = false];
-        for (DContract__c dContract : toUpdateList) {
-            dContract.Require_Services_Spend_Refresh__c = true;
+        for (DContract__c child : [SELECT Id, Parent_Contract__c FROM DContract__c WHERE Id IN: servicesSpendMap.keySet() AND Parent_Contract__c != '']) {
+            if (servicesSpendMap.containsKey(child.Parent_Contract__c)) {
+                servicesSpendMap.put(child.Parent_Contract__c, servicesSpendMap.get(child.Parent_Contract__c) + servicesSpendMap.get(child.Id));
+            } else {
+                servicesSpendMap.put(child.Parent_Contract__c, servicesSpendMap.get(child.Id));
+            }
         }
 
-        if (toUpdateList.size() > 0) {
-            Database.update(toUpdateList, false); // TODO Mailer or update validation in DContract
+        if (servicesSpendMap.size() > 0) {
+            List<DContract__c> toUpdate = [SELECT Id, Services_Spend__c FROM DContract__c WHERE Id IN: servicesSpendMap.keySet()];
+            for (DContract__c dContract : toUpdate) {
+                dContract.Services_Spend__c = (dContract.Services_Spend__c != null ? dContract.Services_Spend__c : 0) - servicesSpendMap.get(dContract.Id);
+            }
+            Database.update(toUpdate, false);
         }
     }
 }

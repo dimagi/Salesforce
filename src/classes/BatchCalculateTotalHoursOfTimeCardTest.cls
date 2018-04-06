@@ -34,6 +34,7 @@ public class BatchCalculateTotalHoursOfTimeCardTest {
             Client__c = dcontract.Id
         );
         insert timeCardObj;
+        Database.executeBatch(new TimeCardCalculator('daily'), 200);
         Test.stopTest();
 
         BatchCalculateTotalHoursOfTimeCard batch1 = new BatchCalculateTotalHoursOfTimeCard();
@@ -103,7 +104,7 @@ public class BatchCalculateTotalHoursOfTimeCardTest {
             Client__c = child2.Id
         );
         insert timeCardObj2;
-
+        Database.executeBatch(new TimeCardCalculator('daily'), 200);
         Test.stopTest();
 
         BatchCalculateTotalHoursOfTimeCard batch1 = new BatchCalculateTotalHoursOfTimeCard();
@@ -222,7 +223,7 @@ public class BatchCalculateTotalHoursOfTimeCardTest {
             Client__c = child4.Id
         );
         insert timeCardObj4;
-
+        Database.executeBatch(new TimeCardCalculator('daily'), 200);
         Test.stopTest();
 
         Set<Id> ids = new Set<Id>();
@@ -316,7 +317,7 @@ public class BatchCalculateTotalHoursOfTimeCardTest {
         DContract__c toUpdate = [SELECT Id, Project_Billing_Rate__c FROM DContract__c WHERE Id =: child1.Id];
         toUpdate.Project_Billing_Rate__c = 'Loaded Daily Rate 2';
         update toUpdate;
-
+        Database.executeBatch(new TimeCardCalculator('daily'), 200);
         Test.stopTest();
 
         // we must manually run Batch job from finish method, not sure why this is not working in tests
