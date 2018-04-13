@@ -271,9 +271,14 @@ public class SalaryHistoryTest {
         // child = 919.62, parent_1 = 804.65 + 919.62 CH , parent_2 = 459.84
 
         // TOTAL : child = 1057.56, parent_1 = 46 + 439.62 + 804.65 + 1057.56 CH = 2347.83 , parent_2 = 383.15 + 206,88 + 459.84 = 1049.87
-        Database.executeBatch(new TimeCardCalculator('daily'), 200);
+        List<Time_Card__c> tcListIds = [SELECT Id FROM Time_Card__c];
+        Set<Id> idsSet = new Set<Id>();
+        for (Time_Card__c tc : tcListIds) {
+            idsSet.add(tc.Id);
+        }
+        Database.executeBatch(new BatchRecalculateTimeCardCost(idsSet), 200);
         Test.stopTest();
-/**
+
         BatchCalculateTotalHoursOfTimeCard batch1 = new BatchCalculateTotalHoursOfTimeCard();
         Database.QueryLocatorIterator iter = batch1.start(null).iterator();
         List<sObject> testData = new List<sObject>();
@@ -286,7 +291,7 @@ public class SalaryHistoryTest {
         System.debug('batch1.getServicesSpendMap() : ' + batch1.getServicesSpendMap());
         BatchUpdateContractServicesSpend batch2 = new BatchUpdateContractServicesSpend(batch1.getServicesSpendMap());
         batch2.execute(null, batch2.start(null));
-**/
+
         DContract__c dcontractFromDB = [SELECT Id, Name, Services_Spend__c FROM DContract__c WHERE Id =: parent_1.Id];
         System.assertEquals(2347.85, dcontractFromDB.Services_Spend__c);
         dcontractFromDB = [SELECT Id, Name, Services_Spend__c FROM DContract__c WHERE Id =: child.Id];
@@ -449,9 +454,14 @@ public class SalaryHistoryTest {
         timecards.add(new Time_Card__c(Total__c = 0.5, Date__c = Date.newInstance(2016, 9, 12), Employee__c = employee_3.Id, Client__c = parent.Id));
 
         insert timecards;
-        Database.executeBatch(new TimeCardCalculator('daily'), 200);
+        List<Time_Card__c> tcListIds = [SELECT Id FROM Time_Card__c];
+        Set<Id> idsSet = new Set<Id>();
+        for (Time_Card__c tc : tcListIds) {
+            idsSet.add(tc.Id);
+        }
+        Database.executeBatch(new BatchRecalculateTimeCardCost(idsSet), 200);
         Test.stopTest();
-/**
+
         BatchCalculateTotalHoursOfTimeCard batch1 = new BatchCalculateTotalHoursOfTimeCard();
         Database.QueryLocatorIterator iter = batch1.start(null).iterator();
         List<sObject> testData = new List<sObject>();
@@ -459,13 +469,12 @@ public class SalaryHistoryTest {
             sObject rec = iter.next();
             testData.add(rec);
             Time_Card__c tc = (Time_Card__c) rec;
-            System.debug('Time Card Cost : ' + tc.Time_Card_Rate_Cost__c);
         }
         batch1.execute(null, testData);
 
         BatchUpdateContractServicesSpend batch2 = new BatchUpdateContractServicesSpend(batch1.getServicesSpendMap());
         batch2.execute(null, batch2.start(null));
-**/
+
         DContract__c dcontractFromDB = [SELECT Id, Name, Services_Spend__c FROM DContract__c WHERE Id =: parent.Id];
         System.assertEquals(13779.88, dcontractFromDB.Services_Spend__c);
     }
@@ -531,19 +540,24 @@ public class SalaryHistoryTest {
         tcList2.add(tcFromDB2);
 
         upsert tcList2;
-        Database.executeBatch(new TimeCardCalculator('daily'), 200);
+        List<Time_Card__c> tcListIds = [SELECT Id FROM Time_Card__c];
+        Set<Id> idsSet = new Set<Id>();
+        for (Time_Card__c tc : tcListIds) {
+            idsSet.add(tc.Id);
+        }
+        Database.executeBatch(new BatchRecalculateTimeCardCost(idsSet), 200);
         Test.stopTest();
 
         Time_Card__c tcFromDB = [SELECT Id, Time_Card_Rate_Cost__c FROM Time_Card__c WHERE Id =: tc_1_employee_1.Id LIMIT 1];
-        System.assertEquals(11.495, tcFromDB.Time_Card_Rate_Cost__c);
+        System.assertEquals(11.49500001, tcFromDB.Time_Card_Rate_Cost__c);
         tcFromDB = [SELECT Id, Time_Card_Rate_Cost__c FROM Time_Card__c WHERE Id =: tc_2_employee_1.Id LIMIT 1];
-        System.assertEquals(34.485, tcFromDB.Time_Card_Rate_Cost__c);
+        System.assertEquals(34.48500002, tcFromDB.Time_Card_Rate_Cost__c);
         tcFromDB = [SELECT Id, Time_Card_Rate_Cost__c FROM Time_Card__c WHERE Id =: tc_3_employee_1.Id LIMIT 1];
-        System.assertEquals(137.94, tcFromDB.Time_Card_Rate_Cost__c);
+        System.assertEquals(137.94000007, tcFromDB.Time_Card_Rate_Cost__c);
         tcFromDB = [SELECT Id, Time_Card_Rate_Cost__c FROM Time_Card__c WHERE Id =: tc_4_employee_1.Id LIMIT 1];
-        System.assertEquals(107.28666667, tcFromDB.Time_Card_Rate_Cost__c);
+        System.assertEquals(107.28666666, tcFromDB.Time_Card_Rate_Cost__c);
         tcFromDB = [SELECT Id, Time_Card_Rate_Cost__c FROM Time_Card__c WHERE Id =: tc_5_employee_1.Id LIMIT 1];
-        System.assertEquals(275.88, tcFromDB.Time_Card_Rate_Cost__c);
+        System.assertEquals(275.87999994, tcFromDB.Time_Card_Rate_Cost__c);
     }
 
     /**

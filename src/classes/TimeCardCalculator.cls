@@ -3,100 +3,117 @@
  */
 public without sharing class TimeCardCalculator implements Database.Batchable<sObject>, Database.Stateful {
 
-    // job managment
-    private String mode; // we want use mode to avoid other implementations because we want only one instace of this job at one time
-    private Date runDate;
-    private Boolean billingRateHistoryChanged;
-    private Set<Id> contractIds;
-    private Set<Id> timeCardsIds;
-
-    // salary update for contract
+    private DateTime lastUpdatedDateTime;
     private Map<Id, Decimal> servicesSpendMap;
-
-    // salary calc
-    private Id lastEmployee;
-    private List<SalaryHistoryRecord> employeeSalaryHistory;
-    private SalaryHistoryHelper salaryHistoryHelper;
-
-    // Rate calc
     private Map<String, List<SalaryHistoryRecord>> billingRateHistoryMap;
     private List<SalaryHistoryRecord> currentRateHistory;
-    private String lastRateName = '';
-    private Set<Id> updatedRateSet;
+    private SalaryHistoryHelper salaryHistoryHelper;
+    private Boolean onlyRate;
 
-    // billing rate ui
-    private List<Project_Billing_Rate_Update__c> updateRanges;
+    private Set<Id> updatedContracts;
+    private List<Id> timeCardsIds;
+    private List<Project_Billing_Rate_Update__c> updatesList;
+    private List<DContract__c> contractsList;
 
-    public TimeCardCalculator(String mode) {
-        this(mode, Date.today());
+    public TimeCardCalculator() {
+        this(DateTime.now().addDays(-1));
     }
 
-    public TimeCardCalculator(List<Project_Billing_Rate_Update__c> updateRanges) {
-        this('client_update', Date.today());
-        this.updateRanges = updateRanges;
+    public TimeCardCalculator(Set<Id> updatedContracts) {
+        this(DateTime.now().addDays(-1));
+        this.updatedContracts = updatedContracts;
+        this.onlyRate = true;
     }
 
-    public TimeCardCalculator(Id contractId) {
-        this('billing_rate_ui', Date.today());
-        this.contractIds = new Set<Id> { contractId };
-    }
-
-    public TimeCardCalculator(Set<Id> timeCardsIds) {
-        this('rec', Date.today());
+    public TimeCardCalculator(List<Id> timeCardsIds) {
+        this(DateTime.now().addDays(-1));
         this.timeCardsIds = timeCardsIds;
+        this.onlyRate = false;
     }
 
-    public TimeCardCalculator(String mode, Date runDate) {
-        this.mode = mode;
-        this.runDate = runDate;
-        this.billingRateHistoryChanged = false;
+    public TimeCardCalculator(Set<Id> updatedContracts, Boolean onlyRate) {
+        this(DateTime.now().addDays(-1));
+        this.updatedContracts = updatedContracts;
+        this.onlyRate = onlyRate;
+    }
 
+    public TimeCardCalculator(List<Project_Billing_Rate_Update__c> updatesList) {
+        this(DateTime.now().addDays(-1));
+        this.updatesList = updatesList;
+    }
+
+    public TimeCardCalculator(DateTime lastUpdatedDateTime) {
+        this.lastUpdatedDateTime = lastUpdatedDateTime;
         this.servicesSpendMap = new Map<Id, Decimal>();
         this.billingRateHistoryMap = new  Map<String, List<SalaryHistoryRecord>>();
         this.currentRateHistory = new List<SalaryHistoryRecord>();
-        this.updatedRateSet = new Set<Id>();
-
-        this.employeeSalaryHistory = new List<SalaryHistoryRecord>();
         this.salaryHistoryHelper = new SalaryHistoryHelper();
+        this.onlyRate = false;
     }
 
     public Database.QueryLocator start(Database.BatchableContext context) {
-        String query = '';
+        String query = 'SELECT Id, Date__c, Employee__c, Employee__r.Salary__c, Employee__r.Exchange_Rate__c, Employee__r.Per_Week_Hours__c, Billing_Rate__c, Time_Card_Salary__c, Client__c, Client__r.Parent_Contract__c, Client__r.Project_Billing_Rate__c, Total__c ';
 
-        if (this.mode == 'daily') { // in daily job we want update new time cards and update changed billing rate in contracts
-            List<DContract__c> contractsList = [SELECT Id, Project_Billing_Rate_Updated__c FROM DContract__c WHERE Project_Billing_Rate_Updated__c = true];
-            for (DContract__c dContract : contractsList) {
-                dContract.Project_Billing_Rate_Updated__c = false;
-                this.updatedRateSet.add(dContract.Id);
-            }
-            Database.update(contractsList, false);
-
-            query = 'SELECT Id, Date__c, Client__c, Employee__c, Billing_Rate__c, Time_Card_Salary__c, Client__r.Parent_Contract__c, Client__r.Project_Billing_Rate__c, Total__c, CreatedDate FROM Time_Card__c WHERE CreatedDate = TODAY ORDER BY Employee__c, Date__c';
-        } else if (this.mode == 'client_update') { // we want run job ony for thsi contract and for it family
-            for (DContract__c dContract : [SELECT Id, Parent_Contract__c FROM DContract__c WHERE Id IN: contractIds]) {
+        if (this.updatedContracts != null) { // Contract UI run
+            for (DContract__c dContract : [SELECT Id, Parent_Contract__c FROM DContract__c WHERE Id IN: this.updatedContracts]) {
                 if (dContract.Parent_Contract__c != null) {
-                    contractIds.add(dContract.Parent_Contract__c);
+                    this.updatedContracts.add(dContract.Parent_Contract__c);
                 }
             }
-            for (DContract__c dContract : [SELECT Id FROM DContract__c WHERE Parent_Contract__c IN: contractIds]) {
-                contractIds.add(dContract.Id);
+            for (DContract__c dContract : [SELECT Id FROM DContract__c WHERE Parent_Contract__c IN: this.updatedContracts]) {
+                this.updatedContracts.add(dContract.Id);
             }
-            query = 'SELECT Id, Date__c, Client__c, Employee__c, Billing_Rate__c, Time_Card_Salary__c, Client__r.Parent_Contract__c, Client__r.Project_Billing_Rate__c, Total__c, CreatedDate FROM Time_Card__c WHERE Client__c IN: contractIds ORDER BY Employee__c, Date__c';
-        } else if (this.mode == 'billing_rate_ui') { // run from billing rate ui
-            String rateName = this.updateRanges.get(0).Name;
+
+            List<DContract__c> toUpdateList = [SELECT Id, Project_Billing_Rate_Updated__c FROM DContract__c WHERE Id IN: this.updatedContracts];
+            for (DContract__c dContract : toUpdateList) {
+                dContract.Project_Billing_Rate_Updated__c = false;
+            }
+            Database.update(toUpdateList, false);
+            query = query + 'FROM Time_Card__c WHERE Client__c IN: updatedContracts ORDER BY Employee__c, Date__c';
+        } else if (this.updatesList != null) { // BR UI run
             String dateString = '';
             Boolean isFirst = true;
-            for (Project_Billing_Rate_Update__c updateInfo : this.updateRanges) {
+            for (Project_Billing_Rate_Update__c updateInfo : this.updatesList) {
                 if (!isFirst) {
                     dateString += 'OR';
                 }
                 isFirst = false;
-                dateString += ' (Date__c >= ' + getDateText(updateInfo.From_Range__c) + ' AND Date__c <= ' + getDateText(updateInfo.To_Range__c) + ' AND Client__r.Project_Billing_Rate__c = \'' + updateInfo.Name + '\''+ ') ';
+                dateString += ' (Date__c >= ' + getDateText(updateInfo.From_Range__c) + ' AND Date__c <= ' + getDateText(updateInfo.To_Range__c) + ' AND Client__r.Project_Billing_Rate__c = \'' + updateInfo.Name + '\') ';
             }
-            query = 'SELECT Id, Date__c, Client__c, Employee__c, Billing_Rate__c, Time_Card_Salary__c, Client__r.Parent_Contract__c, Client__r.Project_Billing_Rate__c, Total__c, CreatedDate FROM Time_Card__c WHERE (' + dateString + ') ORDER BY Employee__c, Client__r.Project_Billing_Rate__c';
-            this.billingRateHistoryChanged = true;
-        } else if (this.mode == 'rec') { // manually run for recalulations if something will be wrong
-            query = 'SELECT Id, Date__c, Client__c, Employee__c, Billing_Rate__c, Time_Card_Salary__c, Client__r.Parent_Contract__c, Client__r.Project_Billing_Rate__c, Total__c, CreatedDate FROM Time_Card__c WHERE Id IN: timeCardsIds ORDER BY Employee__c, Date__c';
+            query = query + 'FROM Time_Card__c WHERE (' + dateString + ') ORDER BY Employee__c, Date__c';
+        } else if (this.timeCardsIds != null) {
+            query = query + 'FROM Time_Card__c WHERE Id IN: timeCardsIds ORDER BY Employee__c, Date__c';
+        } else { // daily
+            this.contractsList = [SELECT Id, Project_Billing_Rate_Updated__c FROM DContract__c WHERE Project_Billing_Rate_Updated__c = true];
+            for (DContract__c dContract : contractsList) {
+                dContract.Project_Billing_Rate_Updated__c = false;
+            }
+            Database.update(this.contractsList, false);
+
+            List<SFDC_Employee_Snapshot__c> newEmplSnpList = [SELECT Id, Employee_Record__c, Snapshot_Date__c FROM SFDC_Employee_Snapshot__c WHERE CreatedDate >=: lastUpdatedDateTime];
+            List<SFDC_Employee_Snapshot__c> updatedEmplSnpList = [SELECT Id, Employee_Record__c, Snapshot_Date__c FROM SFDC_Employee_Snapshot__c WHERE Salary_Updated__c = true];
+
+            String newEmplSnpWhere = '';
+            if (newEmplSnpList.size() > 0) {
+                newEmplSnpWhere = '(Date__c>=' + getDateText(newEmplSnpList.get(0).Snapshot_Date__c.toStartOfMonth()) + ' AND Date__c<=' + getDateText(newEmplSnpList.get(0).Snapshot_Date__c) + ')';
+            }
+
+            List<String> updatedEmplSnpWhere = new List<String>();
+            if (newEmplSnpList.size() > 0) {
+                for (SFDC_Employee_Snapshot__c empSnpUpdated : updatedEmplSnpList) {
+                    updatedEmplSnpWhere.add('(Date__c>=' + getDateText(newEmplSnpList.get(0).Snapshot_Date__c.toStartOfMonth()) + ' AND Date__c<=' + getDateText(newEmplSnpList.get(0).Snapshot_Date__c)
+                                        + ' AND Employee__c=\'' + empSnpUpdated.Employee_Record__c + '\')');
+                }
+            }
+            if (newEmplSnpWhere != '') {
+                updatedEmplSnpWhere.add(newEmplSnpWhere);
+            }
+
+            if (updatedEmplSnpWhere.size() > 0) {
+                newEmplSnpWhere = ' OR (' + String.join(updatedEmplSnpWhere, ' OR ') + ')';
+            }
+
+            query = query + 'FROM Time_Card__c WHERE CreatedDate>=:lastUpdatedDateTime OR Client__c IN: contractsList' + newEmplSnpWhere + ' ORDER BY Employee__c, Date__c';
         }
 
         System.debug('Query : ' + query);
@@ -104,116 +121,80 @@ public without sharing class TimeCardCalculator implements Database.Batchable<sO
     }
 
     public void execute(Database.BatchableContext BC, List<sObject> scope) {
-        // Salary helpers
-        Date lastFromSalaryDate = Date.newInstance(1900, 1, 1);
-        Date lastToSalaryDate = Date.today().addYears(1);
-        Decimal lastSalary = 0;
+        List<Time_Card__c> toUpdateList = new List<Time_card__c>();
 
-        // Rate helpers
+        SFDC_Employee_Snapshot__c lastEmpSnp;
+        String lastRateName = '';
         Date lastFromRateDate = Date.newInstance(1900, 1, 1);
         Date lastToRateDate = Date.today().addYears(1);
+
         Decimal contractRate = 1.0;
-
-        if (this.employeeSalaryHistory.size() > 0) {
-            lastToSalaryDate = this.employeeSalaryHistory.size() > 1 ? this.employeeSalaryHistory.get(1).getValueDate() : Date.today().addYears(1);
-            lastSalary = this.employeeSalaryHistory.get(0).getValue();
-        }
-
-        if (this.currentRateHistory.size() > 0) {
-            lastToRateDate = this.currentRateHistory.size() > 1 ? this.currentRateHistory.get(1).getValueDate() : Date.today().addYears(1);
-            contractRate = this.currentRateHistory.get(0).getValue();
-        }
-
-        List<Time_Card__c> toUpdateList = new List<Time_Card__c>(); // time card which cost really was updated
+        Decimal salary = 0.0;
 
         for (sObject obj : scope) {
             Time_Card__c tc = (Time_Card__c) obj;
 
-            Boolean updateBillingRate = false;
-            Boolean updateSalary = false;
-            Boolean wasUpdated = false;
+            if (tc.Date__c > Date.newInstance(2017, 12, 1) && this.onlyRate == false) {
+                // we must recalculate such time cards manually, old and we will remove it in future
+                // Load empl snapshot
+                if (lastEmpSnp == null || lastEmpSnp.Employee_Record__c != tc.Employee__c || lastEmpSnp.Snapshot_Date__c < tc.Date__c) { // Time Cards are sort by employee, date so first we will change empl and then we will change time card
 
-            if (this.updatedRateSet.contains(tc.Client__c) || mode == 'rec') { // if rate was updated in contract we must change it in time card object
-                updateBillingRate = true;
-            }
-
-            if (this.billingRateHistoryChanged == true) {
-                updateBillingRate = true;
-            }
-
-            if (this.runDate.isSameDay(tc.CreatedDate.date()) || mode == 'rec') { // if new time card added we must set all values
-                updateBillingRate = true;
-                updateSalary = true;
-            }
-
-            /**************************************************/
-            /*** Find salary entry for given time card date ***/
-            /**************************************************/
-            if (updateSalary == true) {
-                if (tc.Employee__c != this.lastEmployee) {
-                    this.lastEmployee = tc.Employee__c;
-                    this.employeeSalaryHistory = this.salaryHistoryHelper.mergeSalaryHistory([SELECT Name, Hire_Date__c, Expected_Termination_Date__c, Salary__c, Effective_Salary_Date__c,
-                                                                                              Exchange_Rate__c, Effective_Exchange_Rate_Date__c, Working_Days__c FROM SFDC_Employee__c WHERE Id =: tc.Employee__c]);
-                    System.debug('New employee : ' + tc.Employee__c);
-                    lastToSalaryDate = this.employeeSalaryHistory.size() > 1 ? this.employeeSalaryHistory.get(1).getValueDate() : Date.today().addYears(1);
-                    lastSalary = this.employeeSalaryHistory.get(0).getValue();
-                    lastFromSalaryDate = Date.newInstance(1900, 1, 1);
-                }
-
-                if (tc.Date__c < lastFromSalaryDate || tc.Date__c >= lastToSalaryDate) {
-                    Integer index = 0;
-                    for (Integer i = 0; i < this.employeeSalaryHistory.size(); i++) {
-                        if (tc.Date__c >= this.employeeSalaryHistory.get(i).getValueDate()) {
-                            lastSalary = this.employeeSalaryHistory.get(i).getValue();
-                            lastFromSalaryDate = this.employeeSalaryHistory.get(i).getValueDate();
-                        } else {
-                            index = i - 1;
-                            break;
-                        }
+                    List<SFDC_Employee_Snapshot__c> emplList = new List<SFDC_Employee_Snapshot__c>();
+                    if (Date.today().month() != tc.Date__c.month() || Date.today().year() != tc.Date__c.year()) { // if current month Employee Snapshot wasn't created yet so we don't need make sql query
+                        emplList = [SELECT Id, Employee_Record__c, Salary__c, Exchange_Rate__c, Per_Week_Hours__c, Snapshot_Date__c FROM SFDC_Employee_Snapshot__c
+                                WHERE Employee_Record__c =: tc.Employee__c AND Snapshot_Date__c =: Date.newInstance(tc.Date__c.year(), tc.Date__c.month(), Date.daysInMonth(tc.Date__c.year(), tc.Date__c.month()))];
                     }
-                    lastToSalaryDate = this.employeeSalaryHistory.size() > index + 1 ? this.employeeSalaryHistory.get(index + 1).getValueDate() : Date.today().addYears(1);
-                }
-            }
-
-            /****************************************************************************/
-            /*** Load Project Billing Rate entry for given time card project and date ***/
-            /****************************************************************************/
-            if (updateBillingRate == true) {
-                if (!this.billingRateHistoryMap.containsKey(tc.Client__r.Project_Billing_Rate__c)) { // Load missin billing rate
-                    this.billingRateHistoryMap.put(tc.Client__r.Project_Billing_Rate__c, this.salaryHistoryHelper.loadBillingRatesHistory(tc.Client__r.Project_Billing_Rate__c));
-                }
-
-                if (tc.Client__r.Project_Billing_Rate__c != this.lastRateName) {
-                    this.lastRateName = tc.Client__r.Project_Billing_Rate__c;
-                    this.currentRateHistory = this.billingRateHistoryMap.get(tc.Client__r.Project_Billing_Rate__c);
-                    lastToRateDate = this.currentRateHistory.size() > 1 ? this.currentRateHistory.get(1).getValueDate() : Date.today().addYears(1);
-                    lastFromRateDate = Date.newInstance(1900, 1, 1);
-                    contractRate = this.currentRateHistory.get(0).getValue();
-                }
-
-                if (tc.Date__c < lastFromRateDate || tc.Date__c >= lastToRateDate) {
-                    Integer index = 0;
-                    for (Integer i = 0; i < this.currentRateHistory.size(); i++) {
-                        if (tc.Date__c >= this.currentRateHistory.get(i).getValueDate()) {
-                            contractRate = this.currentRateHistory.get(i).getValue();
-                            lastFromRateDate = this.currentRateHistory.get(i).getValueDate();
-                        } else {
-                            index = i - 1;
-                            break;
-                        }
+                    if (emplList.size() > 0) {
+                        lastEmpSnp = emplList.get(0);
+                        salary = (((lastEmpSnp.Salary__c != null ? lastEmpSnp.Salary__c : 0)
+                                    / (lastEmpSnp.Exchange_Rate__c != null && lastEmpSnp.Exchange_Rate__c != 0 ? lastEmpSnp.Exchange_Rate__c : 1.0))
+                                    / (260.0 * ((lastEmpSnp.Per_Week_Hours__c != null && lastEmpSnp.Per_Week_Hours__c != 0 ? lastEmpSnp.Per_Week_Hours__c : 40.0) / 40.0)))
+                                    / 8.0;
+                    } else {
+                        salary = (((tc.Employee__r.Salary__c != null ? tc.Employee__r.Salary__c : 0)
+                                    / (tc.Employee__r.Exchange_Rate__c != null && tc.Employee__r.Exchange_Rate__c != 0 ? tc.Employee__r.Exchange_Rate__c : 1.0))
+                                    / (260.0 * ((tc.Employee__r.Per_Week_Hours__c != null && tc.Employee__r.Per_Week_Hours__c != 0 ? tc.Employee__r.Per_Week_Hours__c : 40.0) / 40.0)))
+                                    / 8.0;
                     }
-                    lastToRateDate = this.currentRateHistory.size() > index + 1 ? this.currentRateHistory.get(index + 1).getValueDate() : Date.today().addYears(1);
+                    salary = salary.setScale(8);
                 }
             }
 
-            /****************************************/
-            /*** Update time card salary and rate ***/
-            /****************************************/
-            if (tc.Time_Card_Salary__c != lastSalary || tc.Billing_Rate__c != contractRate) {
-                Decimal oldValue = tc.Total__c * (tc.Billing_Rate__c != null ? tc.Billing_Rate__c : 0) * (tc.Time_Card_Salary__c != null ? tc.Time_Card_Salary__c : 0);
-                tc.Time_Card_Salary__c = lastSalary;
+            if (!this.billingRateHistoryMap.containsKey(tc.Client__r.Project_Billing_Rate__c)) { // Load missin billing rate
+                this.billingRateHistoryMap.put(tc.Client__r.Project_Billing_Rate__c, this.salaryHistoryHelper.loadBillingRatesHistory(tc.Client__r.Project_Billing_Rate__c));
+            }
+
+            if (tc.Client__r.Project_Billing_Rate__c != lastRateName) {
+                lastRateName = tc.Client__r.Project_Billing_Rate__c;
+                this.currentRateHistory = this.billingRateHistoryMap.get(tc.Client__r.Project_Billing_Rate__c);
+                lastToRateDate = this.currentRateHistory.size() > 1 ? this.currentRateHistory.get(1).getValueDate() : Date.today().addYears(1);
+                lastFromRateDate = Date.newInstance(1900, 1, 1);
+                contractRate = this.currentRateHistory.get(0).getValue();
+            }
+
+            if (tc.Date__c < lastFromRateDate || tc.Date__c >= lastToRateDate) {
+                Integer index = 0;
+                for (Integer i = 0; i < this.currentRateHistory.size(); i++) {
+                    index = i;
+                    if (tc.Date__c >= this.currentRateHistory.get(i).getValueDate()) {
+                        contractRate = this.currentRateHistory.get(i).getValue();
+                        lastFromRateDate = this.currentRateHistory.get(i).getValueDate();
+                    } else {
+                        index = i - 1;
+                        break;
+                    }
+                }
+                lastToRateDate = this.currentRateHistory.size() > index + 1 ? this.currentRateHistory.get(index + 1).getValueDate() : Date.today().addYears(1);
+            }
+
+            if (tc.Time_Card_Salary__c != salary || tc.Billing_Rate__c != contractRate) {
+                Decimal oldValue = (tc.Total__c * (tc.Billing_Rate__c != null ? tc.Billing_Rate__c : 0.0) * (tc.Time_Card_Salary__c != null ? tc.Time_Card_Salary__c : 0.0)).setScale(8);
+                if (tc.Date__c >= Date.newInstance(2017, 12, 1)  && this.onlyRate == false) { // only update salary for time cards when empl snp was added
+                    tc.Time_Card_Salary__c = salary;
+                }
+
                 tc.Billing_Rate__c = contractRate;
-                Decimal value = tc.Total__c * (tc.Time_Card_Salary__c != null ? tc.Time_Card_Salary__c : 0) * (tc.Billing_Rate__c != null ? tc.Billing_Rate__c : 0);
+                Decimal value = (tc.Total__c * (tc.Time_Card_Salary__c != null ? tc.Time_Card_Salary__c : 0.0) * (contractRate != null ? contractRate : 0.0)).setScale(8);
                 addServicesSpend(value - oldValue, tc.Client__c, tc.Client__r.Parent_Contract__c);
                 toUpdateList.add(tc);
             }
@@ -222,16 +203,20 @@ public without sharing class TimeCardCalculator implements Database.Batchable<sO
         if (toUpdateList.size() > 0) { // update racalculated time cards
             update toUpdateList;
         }
-
-        // Reset for the next batch iteration
-        this.lastRateName = '';
     }
 
     public void finish(Database.BatchableContext context) {
         if (!this.servicesSpendMap.isEmpty()) {
             List<DContract__c> contractList = new List<DContract__c>();
-            for (DContract__c dContract : [SELECT Id, Services_Spend__c FROM DContract__c WHERE Id IN: this.servicesSpendMap.keySet()]) { // update services spend in contract object
-                contractList.add(new DContract__c(Id = dContract.Id, Services_Spend__c = (dContract.Services_Spend__c != null ? dContract.Services_Spend__c : 0) + this.servicesSpendMap.get(dContract.Id)));
+            for (DContract__c dContract : [SELECT Id, Services_Spend__c, Calculated_Services_Spend__c FROM DContract__c WHERE Id IN: this.servicesSpendMap.keySet() OR Require_Services_Spend_Refresh__c = true]) {
+                DContract__c dCon = new DContract__c(Id = dContract.Id, Require_Services_Spend_Refresh__c = false);
+                Decimal value = this.servicesSpendMap.get(dContract.Id);
+                if (value == null) {
+                    value = 0;
+                }
+                dCon.Calculated_Services_Spend__c = (dContract.Calculated_Services_Spend__c != null ? dContract.Calculated_Services_Spend__c + value : value);
+                dCon.Services_Spend__c = dCon.Calculated_Services_Spend__c.setScale(2);
+                contractList.add(dCon);
             }
             Database.update(contractList, false);
         }

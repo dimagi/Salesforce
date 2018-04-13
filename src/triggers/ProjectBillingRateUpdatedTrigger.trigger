@@ -1,7 +1,7 @@
 trigger ProjectBillingRateUpdatedTrigger on DContract__c (after update) {
 
     if (!RecursiveTriggerHelper.hasRecursiveFlag()) {
-        List<Id> contracts = new List<Id>();
+        List<DContract__c> contracts = new List<DContract__c>();
         for (DContract__c con : Trigger.new) {
             DContract__c oldValue = Trigger.oldMap.get(con.Id);
             if (oldValue == null || oldValue.Project_Billing_Rate__c != con.Project_Billing_Rate__c) {

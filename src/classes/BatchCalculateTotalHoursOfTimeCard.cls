@@ -39,9 +39,9 @@ public without sharing class BatchCalculateTotalHoursOfTimeCard implements Datab
 
         String query;
         if (this.updatedContracts == true) { // only with updated time cards
-            query = 'SELECT Client__c, Time_Card_Rate_Cost__c, Employee__c, Date__c FROM Time_Card__c WHERE Client__r.Require_Services_Spend_Refresh__c = true ORDER BY Employee__c';
+            query = 'SELECT Client__c, Total__c, Time_Card_Salary__c, Billing_Rate__c, Employee__c, Date__c FROM Time_Card__c WHERE Client__r.Require_Services_Spend_Refresh__c = true ORDER BY Employee__c';
         } else if (contractIds.size() == 0) {
-            query = 'SELECT Client__c, Time_Card_Rate_Cost__c, Employee__c, Date__c FROM Time_Card__c WHERE Employee__c != \'\' ORDER BY Employee__c';
+            query = 'SELECT Client__c, Total__c, Time_Card_Salary__c, Billing_Rate__c, Employee__c, Date__c FROM Time_Card__c WHERE Employee__c != \'\' ORDER BY Employee__c';
         } else {
             for (String conId : contractIds) {
                 parentAndChildContracts.add(conId);
@@ -57,7 +57,7 @@ public without sharing class BatchCalculateTotalHoursOfTimeCard implements Datab
                 parentAndChildContracts.add(elId);
             }
 
-            query = 'SELECT Client__c, Time_Card_Rate_Cost__c, Employee__c, Date__c FROM Time_Card__c WHERE Client__c IN: parentAndChildContracts ORDER BY Employee__c';
+            query = 'SELECT Client__c, Total__c, Time_Card_Salary__c, Billing_Rate__c, Employee__c, Date__c FROM Time_Card__c WHERE Client__c IN: parentAndChildContracts ORDER BY Employee__c';
         }
         return Database.getQueryLocator(query);
     }
@@ -66,12 +66,11 @@ public without sharing class BatchCalculateTotalHoursOfTimeCard implements Datab
         for (sObject obj : scope) {
             Time_Card__c tc = (Time_Card__c) obj;
 
-            if (tc.Time_Card_Rate_Cost__c != null) {
-                if (servicesSpendMap.containsKey(tc.Client__c)) {
-                    servicesSpendMap.put(tc.Client__c, servicesSpendMap.get(tc.Client__c) + tc.Time_Card_Rate_Cost__c);
-                } else {
-                    servicesSpendMap.put(tc.Client__c, tc.Time_Card_Rate_Cost__c);
-                }
+            Decimal value = (tc.Total__c * (tc.Time_Card_Salary__c != null ? tc.Time_Card_Salary__c : 0.0) * (tc.Billing_Rate__c != null ? tc.Billing_Rate__c : 0.0)).setScale(8);
+            if (servicesSpendMap.containsKey(tc.Client__c)) {
+                servicesSpendMap.put(tc.Client__c, servicesSpendMap.get(tc.Client__c) + value);
+            } else {
+                servicesSpendMap.put(tc.Client__c, value);
             }
         }
     }

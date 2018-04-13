@@ -1,5 +1,5 @@
 /**
- * Calculates cost of time cards.
+ * Calculates cost of time cards. TODO: Remove in future. We need it until no old time cards will be added to SF from FB.
  */
 public without sharing class BatchRecalculateTimeCardCost implements Database.Batchable<sObject>, Database.Stateful {
 
@@ -111,13 +111,14 @@ public without sharing class BatchRecalculateTimeCardCost implements Database.Ba
                                                                                               Exchange_Rate__c, Effective_Exchange_Rate_Date__c, Working_Days__c FROM SFDC_Employee__c WHERE Id =: tc.Employee__c]);
                     System.debug('New employee : ' + tc.Employee__c);
                     lastToSalaryDate = this.employeeSalaryHistory.size() > 1 ? this.employeeSalaryHistory.get(1).getValueDate() : Date.today().addYears(1);
-                    lastSalary = this.employeeSalaryHistory.get(0).getValue();
+                    lastSalary = this.employeeSalaryHistory.get(0).getValue().setScale(8);
                     lastFromSalaryDate = Date.newInstance(1900, 1, 1);
                 }
 
                 if (tc.Date__c < lastFromSalaryDate || tc.Date__c >= lastToSalaryDate) {
                     Integer index = 0;
                     for (Integer i = 0; i < this.employeeSalaryHistory.size(); i++) {
+                        index = i;
                         if (tc.Date__c >= this.employeeSalaryHistory.get(i).getValueDate()) {
                             lastSalary = this.employeeSalaryHistory.get(i).getValue();
                             lastFromSalaryDate = this.employeeSalaryHistory.get(i).getValueDate();
@@ -149,6 +150,7 @@ public without sharing class BatchRecalculateTimeCardCost implements Database.Ba
             if (tc.Date__c < lastFromRateDate || tc.Date__c >= lastToRateDate) {
                 Integer index = 0;
                 for (Integer i = 0; i < this.currentRateHistory.size(); i++) {
+                    index = 0;
                     if (tc.Date__c >= this.currentRateHistory.get(i).getValueDate()) {
                         contractRate = this.currentRateHistory.get(i).getValue();
                         lastFromRateDate = this.currentRateHistory.get(i).getValueDate();
@@ -164,7 +166,9 @@ public without sharing class BatchRecalculateTimeCardCost implements Database.Ba
             /*** Update time card salary and rate ***/
             /****************************************/
             if (tc.Time_Card_Salary__c != lastSalary || tc.Billing_Rate__c != contractRate) {
-                tc.Time_Card_Salary__c = lastSalary; // we can store more data if each record take 2KB, it will speed up changing rates in contrac UI
+                if (tc.Date__c < Date.newInstance(2017, 12, 1)) {
+                    tc.Time_Card_Salary__c = lastSalary.setScale(8);
+                }
                 tc.Billing_Rate__c = contractRate;
                 toUpdate.add(tc);
             }

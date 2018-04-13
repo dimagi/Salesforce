@@ -166,6 +166,15 @@ public class BillingRateController {
     }
 
     public void runRecalculationBatchJob() {
+        ApexClass batchClass = [SELECT Id FROM ApexClass WHERE Name='TimeCardCalculator' LIMIT 1];
+        AsyncApexJob[] batchClassJobList = [SELECT Id, JobItemsProcessed, TotalJobItems, createdDate FROM AsyncApexJob WHERE ApexClassID = :batchClass.Id
+                                            AND Status IN ('Holding', 'Queued', 'Preparing', 'Processing') ORDER BY createdDate DESC LIMIT 1];
+
+        if(batchClassJobList != null && batchClassJobList.size() > 0) {
+            ApexPages.addMessage(new ApexPages.message(ApexPages.severity.ERROR, 'Time Card Calculator is running right now, cannot schedule two jobs at the same time. Please try again after few minutes.'));
+            return;
+        }
+
         List<Project_Billing_Rate_Update__c> updatesList = [SELECT Id, Name, From_Range__c, To_Range__c FROM Project_Billing_Rate_Update__c];
 
         if (updatesList.size() > 0) {
