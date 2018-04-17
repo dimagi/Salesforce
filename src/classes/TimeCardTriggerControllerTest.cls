@@ -220,4 +220,59 @@ public class TimeCardTriggerControllerTest {
         dcontractFromDB = [SELECT Id, Name, Calculated_Services_Spend__c FROM DContract__c WHERE Name = 'Sample Child 2'];
         System.assertEquals(0, dcontractFromDB.Calculated_Services_Spend__c);
     }
+
+    @isTest
+    public static void shouldUseUpdatedEmployeeSnapshotForCalculations() {
+        DContract__c parent1 = [SELECT Id, Project_Billing_Rate__c, Services_Spend__c FROM DContract__c WHERE Name = 'Sample Parent 1'];
+        DContract__c child1 = [SELECT Id, Project_Billing_Rate__c, Services_Spend__c FROM DContract__c WHERE Name = 'Sample Child 1'];
+        DContract__c child2 = [SELECT Id, Project_Billing_Rate__c, Services_Spend__c FROM DContract__c WHERE Name = 'Sample Child 2'];
+
+        parent1.Project_Billing_Rate__c = 'Test Daily Rate';
+        parent1.Calculated_Services_Spend__c = 0.0;
+        child1.Project_Billing_Rate__c = 'Test Daily Rate';
+        child1.Calculated_Services_Spend__c = 0.0;
+        child2.Calculated_Services_Spend__c = 0.0;
+        update parent1;
+        update child1;
+        update child2;
+
+        SFDC_Employee__c employeeObj = [SELECT Id FROM SFDC_Employee__c WHERE Name = 'Sample Employee'];
+        SFDC_Employee_Snapshot__c emplSnp1 = new SFDC_Employee_Snapshot__c(Salary__c = 30000, Exchange_Rate__c = 2.0, Per_Week_Hours__c = 20,
+                                                                              Snapshot_Date__c = Date.newInstance(2018, 1, 31), Employee_Record__c = employeeObj.Id);
+        insert emplSnp1;
+        SFDC_Employee_Snapshot__c emplSnp2 = new SFDC_Employee_Snapshot__c(Salary__c = 40000, Exchange_Rate__c = 3.0, Per_Week_Hours__c = 20,
+                                                                              Snapshot_Date__c = Date.newInstance(2018, 2, 28), Employee_Record__c = employeeObj.Id);
+        insert emplSnp2;
+        SFDC_Employee_Snapshot__c emplSnp3 = new SFDC_Employee_Snapshot__c(Salary__c = 45000, Exchange_Rate__c = 1.0, Per_Week_Hours__c = 30,
+                                                                              Snapshot_Date__c = Date.newInstance(2018, 3, 31), Employee_Record__c = employeeObj.Id);
+        insert emplSnp3;
+
+        List<Time_Card__c> timeCards = new List<Time_Card__c>();
+
+        // January : Salary -> (30000 / (260 / 2)) / 8 Billing Rate -> before 20 : (1.1 * 1.1 * 1.1 * 1.52) = 2.02312, from 20 (1.1 * 1.2 * 1.1 * 1.52) = 2.20704
+        Time_Card__c timeCardObj1 = new Time_Card__c(Time_Card_Salary__c = 0, Billing_Rate__c = 2.0, Total__c = 8, Date__c = Date.newInstance(2018 , 1, 2),
+                                                        Employee__c = employeeObj.Id, Client__c = child1.Id);
+        timeCards.add(timeCardObj1);
+        Time_Card__c timeCardObj2 = new Time_Card__c(Time_Card_Salary__c = 0, Billing_Rate__c = 3.0, Total__c = 4, Date__c = Date.newInstance(2018 , 1, 12),
+                                                        Employee__c = employeeObj.Id, Client__c = parent1.Id);
+        timeCards.add(timeCardObj2);
+        Time_Card__c timeCardObj3 = new Time_Card__c(Time_Card_Salary__c = 0, Billing_Rate__c = 2.0, Total__c = 10, Date__c = Date.newInstance(2018 , 1, 20),
+                                                        Employee__c = employeeObj.Id, Client__c = child1.Id);
+        timeCards.add(timeCardObj3);
+        insert timeCards;
+
+        Test.startTest();
+        emplSnp1.Per_Week_Hours__c = 40;
+        emplSnp1.Salary__c = 77000;
+        update emplSnp1;
+        Database.executeBatch(new TimeCardCalculator(), 200);
+        Test.stopTest();
+
+        Time_Card__c tc1 = [SELECT Id, Time_Card_Salary__c FROM Time_Card__c WHERE Id =: timeCardObj1.Id];
+        System.assertEquals((((77000 / 2.0) / 260.0) / 8.0).setScale(8), tc1.Time_Card_Salary__c);
+        Time_Card__c tc2 = [SELECT Id, Time_Card_Salary__c FROM Time_Card__c WHERE Id =: timeCardObj2.Id];
+        System.assertEquals((((77000 / 2.0) / 260.0) / 8.0).setScale(8), tc2.Time_Card_Salary__c);
+        Time_Card__c tc3 = [SELECT Id, Time_Card_Salary__c FROM Time_Card__c WHERE Id =: timeCardObj3.Id];
+        System.assertEquals((((77000 / 2.0) / 260.0) / 8.0).setScale(8), tc2.Time_Card_Salary__c);
+    }
 }

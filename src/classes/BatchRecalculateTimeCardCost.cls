@@ -120,7 +120,7 @@ public without sharing class BatchRecalculateTimeCardCost implements Database.Ba
                     for (Integer i = 0; i < this.employeeSalaryHistory.size(); i++) {
                         index = i;
                         if (tc.Date__c >= this.employeeSalaryHistory.get(i).getValueDate()) {
-                            lastSalary = this.employeeSalaryHistory.get(i).getValue();
+                            lastSalary = this.employeeSalaryHistory.get(i).getValue().setScale(8);
                             lastFromSalaryDate = this.employeeSalaryHistory.get(i).getValueDate();
                         } else {
                             index = i - 1;

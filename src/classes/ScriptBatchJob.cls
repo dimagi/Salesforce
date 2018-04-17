@@ -1,29 +1,30 @@
 /**
  * This is editable class, should be used to do data migration. For example filling new fields with relation.
  */
-public class ScriptBatchJob implements Database.Batchable<Domain__c>, Database.Stateful {
+public class ScriptBatchJob implements Database.Batchable<sObject>, Database.Stateful {
+
+    private Date helperDate;
 
     /**
-     * Script code for moving Account relation to the domain custom object
+     * Script code for setting proper scale for time card salary calculations
      */
-    public ScriptBatchJob() {
+    public ScriptBatchJob(Date helperDate) {
+        this.helperDate = helperDate;
     }
 
-    public List<Domain__c> start(Database.BatchableContext context) {
-        return [SELECT Id, Account__c, Opportunity__c, Opportunity__r.AccountId FROM Domain__c WHERE Opportunity__c != '' AND Opportunity__r.AccountId != ''];
+    public Database.QueryLocator start(Database.BatchableContext context) {
+        String query = 'SELECT Id, Time_Card_Salary__c FROM Time_Card__c WHERE Time_Card_Salary__c != null AND Date__c <: helperDate';
+        return Database.getQueryLocator(query);
     }
 
-    public void execute(Database.BatchableContext context, List<Domain__c> scope) {
-        List<Domain__c> toUpdate = new List<Domain__c>();
-        for (Domain__c hqDomain : scope) {
-            if (hqDomain.Opportunity__r.AccountId != null) {
-                hqDomain.Account__c = hqDomain.Opportunity__r.AccountId;
-                toUpdate.add(hqDomain);
-            }
+    public void execute(Database.BatchableContext context, List<sObject> scope) {
+        List<Time_Card__c> tcList = new List<Time_Card__c>();
+        for (sObject sObj : scope) {
+            Time_Card__c tc = (Time_Card__c) sObj;
+            tc.Time_Card_Salary__c = tc.Time_Card_Salary__c.setScale(8);
         }
-
-        if (toUpdate.size() > 0) {
-            update toUpdate;
+        if (tcList.size() > 0) {
+            update tcList;
         }
     }
 

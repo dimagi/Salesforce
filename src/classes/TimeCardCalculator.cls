@@ -103,8 +103,13 @@ public without sharing class TimeCardCalculator implements Database.Batchable<sO
                 for (SFDC_Employee_Snapshot__c empSnpUpdated : updatedEmplSnpList) {
                     updatedEmplSnpWhere.add('(Date__c>=' + getDateText(newEmplSnpList.get(0).Snapshot_Date__c.toStartOfMonth()) + ' AND Date__c<=' + getDateText(newEmplSnpList.get(0).Snapshot_Date__c)
                                         + ' AND Employee__c=\'' + empSnpUpdated.Employee_Record__c + '\')');
+                    empSnpUpdated.Salary_Updated__c = false;
                 }
             }
+            if (updatedEmplSnpList.size()) {
+                update updatedEmplSnpList;
+            }
+
             if (newEmplSnpWhere != '') {
                 updatedEmplSnpWhere.add(newEmplSnpWhere);
             }
@@ -189,7 +194,7 @@ public without sharing class TimeCardCalculator implements Database.Batchable<sO
 
             if (tc.Time_Card_Salary__c != salary || tc.Billing_Rate__c != contractRate) {
                 Decimal oldValue = (tc.Total__c * (tc.Billing_Rate__c != null ? tc.Billing_Rate__c : 0.0) * (tc.Time_Card_Salary__c != null ? tc.Time_Card_Salary__c : 0.0)).setScale(8);
-                if (tc.Date__c >= Date.newInstance(2017, 12, 1)  && this.onlyRate == false) { // only update salary for time cards when empl snp was added
+                if (tc.Date__c >= Date.newInstance(2017, 12, 1) && this.onlyRate == false) { // only update salary for time cards when empl snp was added
                     tc.Time_Card_Salary__c = salary;
                 }
 
