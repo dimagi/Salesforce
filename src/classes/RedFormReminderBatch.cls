@@ -82,7 +82,7 @@ public without sharing class RedFormReminderBatch implements Database.Batchable<
         Date quarter2 = Date.newInstance(currentDate.year(), 4, 1);
         Date quarter3 = Date.newInstance(currentDate.year(), 7, 1);
         Date quarter4 = Date.newInstance(currentDate.year(), 10, 1);
-        if (!Test.isRunningTest() && (currentDate.isSameDay(quarter1) || currentDate.isSameDay(quarter2)
+        if (this.quarterMode == false && !Test.isRunningTest() && (currentDate.isSameDay(quarter1) || currentDate.isSameDay(quarter2)
                 || currentDate.isSameDay(quarter3) || currentDate.isSameDay(quarter4))) { // If new quarter we want send quarter reminder to each employee who filled RED Form
              Database.executeBatch(new RedFormReminderBatch(true));
         }
