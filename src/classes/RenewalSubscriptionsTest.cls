@@ -235,7 +235,7 @@ public class RenewalSubscriptionsTest {
         System.assertEquals(2, opps.size());
         Opportunity opp1 = opps.get(0);
         System.assertEquals('Test Account-Community Renewal ' + ((Date.today().month() < 10 ? '0' + Date.today().month() : '' + Date.today().month())
-                                                                    + (Date.today().month() < 10 ? '0' + Date.today().day() : '' + Date.today().day())
+                                                                    + (Date.today().day() < 10 ? '0' + Date.today().day() : '' + Date.today().day())
                                                                     + ('' + Date.today().year())), opp1.Name);
         Opportunity opp2 = opps.get(1);
         System.assertEquals('Old Renewal Opportunity', opp2.Name);

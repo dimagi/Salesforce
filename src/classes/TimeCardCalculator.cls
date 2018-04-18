@@ -106,7 +106,7 @@ public without sharing class TimeCardCalculator implements Database.Batchable<sO
                     empSnpUpdated.Salary_Updated__c = false;
                 }
             }
-            if (updatedEmplSnpList.size()) {
+            if (updatedEmplSnpList.size() > 0) {
                 update updatedEmplSnpList;
             }
 
@@ -139,7 +139,7 @@ public without sharing class TimeCardCalculator implements Database.Batchable<sO
         for (sObject obj : scope) {
             Time_Card__c tc = (Time_Card__c) obj;
 
-            if (tc.Date__c > Date.newInstance(2017, 12, 1) && this.onlyRate == false) {
+            if (tc.Date__c >= Date.newInstance(2017, 12, 1) && this.onlyRate == false) {
                 // we must recalculate such time cards manually, old and we will remove it in future
                 // Load empl snapshot
                 if (lastEmpSnp == null || lastEmpSnp.Employee_Record__c != tc.Employee__c || lastEmpSnp.Snapshot_Date__c < tc.Date__c) { // Time Cards are sort by employee, date so first we will change empl and then we will change time card

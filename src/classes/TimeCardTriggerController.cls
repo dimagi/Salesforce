@@ -13,20 +13,11 @@ public with sharing class TimeCardTriggerController {
         Map<Id, Decimal> servicesSpendMap = new Map<Id, Decimal>();
         for (Time_Card__c tc : deletedTimeCards) {
             Decimal value = (tc.Total__c * (tc.Time_Card_Salary__c != null ? tc.Time_Card_Salary__c : 0) * (tc.Billing_Rate__c != null ? tc.Billing_Rate__c : 0)).setScale(8);
-            System.debug('TC value : ' + value + ' removed from ' + tc.Client__r.Name + ' with parent: '
-                            + tc.Client__r.Parent_Contract__c != null ? tc.Client__r.Parent_Contract__r.Name : '');
+
             if (servicesSpendMap.containsKey(tc.Client__c)) {
                 servicesSpendMap.put(tc.Client__c, value + servicesSpendMap.get(tc.Client__c));
             } else {
                 servicesSpendMap.put(tc.Client__c, value);
-            }
-
-            if (tc.Client__r.Parent_Contract__c != null) { // we must also add childs service spend to the parent object
-                if (servicesSpendMap.containsKey(tc.Client__r.Parent_Contract__c)) {
-                    servicesSpendMap.put(tc.Client__r.Parent_Contract__c, value + servicesSpendMap.get(tc.Client__r.Parent_Contract__c));
-                } else {
-                    servicesSpendMap.put(tc.Client__r.Parent_Contract__c, value);
-                }
             }
         }
 
