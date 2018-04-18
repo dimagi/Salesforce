@@ -1,17 +1,12 @@
-trigger TimeCardTrigger on Time_Card__c (after insert, after update) {
-    if (Trigger.isInsert) {
-        Database.executeBatch(new BatchRecalculateTimeCardCost(Trigger.newMap.keySet()), 200);
-    } else {
-        Set<Id> timeCardsIds = new Set<Id>();
-        for (Time_Card__c updatedTC : Trigger.new) {
-            // If time or number of hours was updated we should recalculate total cost for that time card, we must check that because we are updating time cards
-            // in batch job (job updates only total cost) so it will cause a recurrsive trigger.
-            if (updatedTC.Total__c != Trigger.oldMap.get(updatedTC.Id).Total__c ||updatedTC.Date__c != Trigger.oldMap.get(updatedTC.Id).Date__c) {
-                timeCardsIds.add(updatedTC.Id);
-            }
-        }
-        if (timeCardsIds.size() > 0) {
-            Database.executeBatch(new BatchRecalculateTimeCardCost(timeCardsIds), 200);
-        }
+/**
+ * Time Card trigger, used for recalculations cost and billing rates. Handles updates for FTE Tracker.
+ */
+trigger TimeCardTrigger on Time_Card__c (after insert, after update, after delete) {
+    if(Trigger.isAfter && Trigger.isInsert) {
+        TimeCardTriggerController.handleAfterInsert(Trigger.newMap.keySet(), Trigger.new);
+    } else if(Trigger.isAfter && Trigger.isUpdate) {
+        TimeCardTriggerController.handleAfterUpdate(Trigger.new, Trigger.old);
+    } else if (Trigger.isAfter && Trigger.isDelete) {
+        TimeCardTriggerController.handleAfterDelete(Trigger.old);
     }
 }

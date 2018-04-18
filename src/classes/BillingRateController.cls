@@ -32,6 +32,10 @@ public class BillingRateController {
 
         this.newBillingRate = new Project_Billing_Rate__c(Date__c = Date.newInstance(2000, 1, 1), Name = '', Custom_1__c = 0, Overhead__c = 0,
                                                             G_A__c = 0, Fringe__c = 0, Fee__c = 0, Custom_2__c = 0, Custom_3__c = 0);
+        List<Project_Billing_Rate_Update__c> updatesList = [SELECT Id, Name, From_Range__c, To_Range__c FROM Project_Billing_Rate_Update__c];
+        if (updatesList.size() > 0) {
+            this.requiredRefresh = true;
+        }
     }
 
     public void saveNewRate() {
@@ -68,10 +72,6 @@ public class BillingRateController {
         this.newBillingRate = new Project_Billing_Rate__c(Date__c = Date.today(), Name = this.billingRateName, Custom_1__c = 0, Overhead__c = 0,
                                                             G_A__c = 0, Fringe__c = 0, Fee__c = 0, Custom_2__c = 0, Custom_3__c = 0);
         this.requiredRefresh = false;
-        List<Project_Billing_Rate_Update__c> updatesList = [SELECT Id, From_Range__c, To_Range__c FROM Project_Billing_Rate_Update__c WHERE Name =: this.billingRateName];
-        if (updatesList.size() > 0) {
-            this.requiredRefresh = true;
-        }
     }
 
     public void saveNewRateHistory() {
@@ -166,13 +166,23 @@ public class BillingRateController {
     }
 
     public void runRecalculationBatchJob() {
-        List<Project_Billing_Rate_Update__c> updatesList = [SELECT Id, Name, From_Range__c, To_Range__c FROM Project_Billing_Rate_Update__c WHERE Name =: this.billingRateName];
-        if (updatesList.size() > 0) {
-             Database.executeBatch(new BatchRecalculateTimeCardCost(updatesList, true), 200);
+        ApexClass batchClass = [SELECT Id FROM ApexClass WHERE Name='TimeCardCalculator' LIMIT 1];
+        AsyncApexJob[] batchClassJobList = [SELECT Id, JobItemsProcessed, TotalJobItems, createdDate FROM AsyncApexJob WHERE ApexClassID = :batchClass.Id
+                                            AND Status IN ('Holding', 'Queued', 'Preparing', 'Processing') ORDER BY createdDate DESC LIMIT 1];
+
+        if(batchClassJobList != null && batchClassJobList.size() > 0) {
+            ApexPages.addMessage(new ApexPages.message(ApexPages.severity.ERROR, 'Time Card Calculator is running right now, cannot schedule two jobs at the same time. Please try again after few minutes.'));
+            return;
         }
-        delete updatesList;
+
+        List<Project_Billing_Rate_Update__c> updatesList = [SELECT Id, Name, From_Range__c, To_Range__c FROM Project_Billing_Rate_Update__c];
+
+        if (updatesList.size() > 0) {
+            Database.executeBatch(new TimeCardCalculator(updatesList), 200);
+            delete updatesList;
+        }
+
         this.requiredRefresh = false;
-        initManageRate();
         ApexPages.addMessage(new ApexPages.message(ApexPages.severity.CONFIRM, 'Recalculations Job was scheduled.'));
     }
 

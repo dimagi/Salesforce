@@ -1,87 +1,45 @@
-public class TimeCardTriggerController {
+/**
+ * Time Card Trigger Handler class. Handles after insert, update and delete events.
+ */
+public with sharing class TimeCardTriggerController {
 
-    public void rollUpTimeCardsTotalSpent(List<Time_Card__c> timeCardList) {
-        Set<Id> contractIds = new Set<Id>();
-
-        for (Time_Card__c obj : timeCardList) {
-            if(obj.Client__c != null) {
-                contractIds.add(obj.Client__c);
-            }
-        }
-
-        if (contractIds.isEmpty() == false) {
-            TimeCardTriggerController.loadTimeCardsTotalAmountByContractIds(contractIds);
-        }
+    public static void handleAfterInsert(Set<Id> newTimeCardsIds, List<Time_Card__c> newTimeCards) {
     }
 
-    @future
-    public static void loadTimeCardsTotalAmountByContractIds(Set<Id> contractIds) {
-        List<DContract__c> contractsFromDB =  [SELECT Id, Services_Spend__c, Parent_Contract__c, (SELECT Id, Services_Spend__c FROM Contracts__r) FROM DContract__c WHERE Id IN :contractIds];
-        Map<Id, DContract__c> contracts = new Map<Id, DContract__c>();
-        Set<Id> childs = new Set<Id>();
-        Set<Id> parents = new Set<Id>();
+    public static void handleAfterUpdate(List<Time_Card__c> updatedTimeCards, List<Time_Card__c> beforeUpdateTimeCards) {
+    }
 
-        for (DContract__c dc : contractsFromDB) {
-            if (!String.isBlank(dc.Parent_Contract__c)) {
-                parents.add(dc.Parent_Contract__c);
-            } else if (dc.Contracts__r != null && dc.Contracts__r.size() > 0) {
-                for (DContract__c child : dc.Contracts__r) {
-                    childs.add(child.Id);
-                }
-            }
-            contracts.put(dc.Id, dc);
-        }
+    public static void handleAfterDelete(List<Time_Card__c> deletedTimeCards) {
+        Map<Id, Decimal> servicesSpendMap = new Map<Id, Decimal>();
+        for (Time_Card__c tc : deletedTimeCards) {
+            Decimal value = (tc.Total__c * (tc.Time_Card_Salary__c != null ? tc.Time_Card_Salary__c : 0) * (tc.Billing_Rate__c != null ? tc.Billing_Rate__c : 0)).setScale(8);
 
-        List<DContract__c> parentsFromDB =  [SELECT Id, Services_Spend__c, Parent_Contract__c, (SELECT Id, Services_Spend__c FROM Contracts__r) FROM DContract__c WHERE Id IN :parents];
-        for (DContract__c dc : parentsFromDB) {
-            if (dc.Contracts__r != null && dc.Contracts__r.size() > 0) {
-                for (DContract__c child : dc.Contracts__r) {
-                    childs.add(child.Id);
-                }
-            }
-            contracts.put(dc.Id, dc);
-        }
-
-        Set<Id> ids = new Set<Id>();
-        ids.addAll(contracts.keySet());
-        ids.addAll(childs);
-        Map<Id, Integer> resultsBycontractId = new Map<Id, Integer>();
-
-        AggregateResult[] results = [Select Client__c, SUM(labor_cost__c) Total from Time_Card__c where Client__c IN : ids Group By Client__c];
-        for (AggregateResult result : results) {
-            Id contractId = (Id) result.get('Client__c');
-            Integer total = Integer.valueOf((decimal) result.get('Total'));
-            if (total != null) {
-                resultsBycontractId.put(contractId, total);
+            if (servicesSpendMap.containsKey(tc.Client__c)) {
+                servicesSpendMap.put(tc.Client__c, value + servicesSpendMap.get(tc.Client__c));
+            } else {
+                servicesSpendMap.put(tc.Client__c, value);
             }
         }
 
-        List<DContract__c> contractsToUpdate = new List<DContract__c>();
-        for (Id contractId : contracts.keySet()) {
-            DContract__c dc = contracts.get(contractId);
-            Integer total = 0;
+        updateContractServicesSpend(servicesSpendMap);
+    }
 
-            if (resultsBycontractId.containsKey(contractId)) {
-                total = resultsBycontractId.get(contractId);
-            }
-
-            if (dc.Contracts__r != null && dc.Contracts__r.size() > 0) {
-                for (DContract__c child : dc.Contracts__r) {
-                    if (resultsBycontractId.containsKey(child.Id)) {
-                        total += resultsBycontractId.get(child.Id);
-                    }
-                }
-            }
-
-            if (dc.Services_Spend__c != total) {
-                dc.Services_Spend__c = total;
-                contractsToUpdate.add(dc);
+    public static void updateContractServicesSpend(Map<Id, Decimal> servicesSpendMap) {
+        for (DContract__c child : [SELECT Id, Parent_Contract__c FROM DContract__c WHERE Id IN: servicesSpendMap.keySet() AND Parent_Contract__c != '']) {
+            if (servicesSpendMap.containsKey(child.Parent_Contract__c)) {
+                servicesSpendMap.put(child.Parent_Contract__c, servicesSpendMap.get(child.Parent_Contract__c) + servicesSpendMap.get(child.Id));
+            } else {
+                servicesSpendMap.put(child.Parent_Contract__c, servicesSpendMap.get(child.Id));
             }
         }
 
-        if(contractsToUpdate.isEmpty() == false) {
-            Database.SaveResult[] saveResults = Database.update(contractsToUpdate, false);
-            System.debug('--- Updated Contracts ---' + saveResults);
+        if (servicesSpendMap.size() > 0) {
+            List<DContract__c> toUpdate = [SELECT Id, Require_Services_Spend_Refresh__c, Calculated_Services_Spend__c, Services_Spend__c FROM DContract__c WHERE Id IN: servicesSpendMap.keySet()];
+            for (DContract__c dContract : toUpdate) {
+                dContract.Require_Services_Spend_Refresh__c = true;
+                dContract.Calculated_Services_Spend__c = (dContract.Calculated_Services_Spend__c != null ? dContract.Calculated_Services_Spend__c : 0) - servicesSpendMap.get(dContract.Id);
+            }
+            Database.update(toUpdate, false);
         }
     }
 }

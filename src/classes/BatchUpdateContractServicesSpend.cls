@@ -24,11 +24,11 @@ public class BatchUpdateContractServicesSpend implements Database.Batchable<DCon
             }
         }
 
-        return [SELECT Name, Services_Spend__c FROM DContract__c WHERE Parent_Contract__c = '' AND Id IN: this.servicesSpendMap.keySet()];
+        return [SELECT Name, Calculated_Services_Spend__c, Services_Spend__c FROM DContract__c WHERE Parent_Contract__c = '' AND Id IN: this.servicesSpendMap.keySet()];
     }
 
     public void execute(Database.BatchableContext context, List<DContract__c> contracts) {
-        List<DContract__c> childContracts = [SELECT Name, Parent_Contract__c, Services_Spend__c FROM DContract__c WHERE Parent_Contract__c IN :contracts];
+        List<DContract__c> childContracts = [SELECT Name, Parent_Contract__c, Calculated_Services_Spend__c, Services_Spend__c FROM DContract__c WHERE Parent_Contract__c IN :contracts];
         List<DContract__c> contractsToUpdate = new List<DContract__c>();
 
         for (DContract__c contract : childContracts) {
@@ -42,16 +42,9 @@ public class BatchUpdateContractServicesSpend implements Database.Batchable<DCon
             } else {
                 this.servicesSpendMap.put(contract.Parent_Contract__c, contractValue);
             }
-
-            if (this.mode == 'update') { // update value
-                contract.Services_Spend__c = (contractValue + (contract.Services_Spend__c != null ? contract.Services_Spend__c : 0)).setScale(2);
-                contractsToUpdate.add(contract);
-            } else {
-                if (contract.Services_Spend__c != contractValue) { // replace value
-                    contract.Services_Spend__c = contractValue.setScale(2);
-                    contractsToUpdate.add(contract);
-                }
-            }
+            contract.Calculated_Services_Spend__c = contractValue;
+            contract.Services_Spend__c = contractValue.setScale(2);
+            contractsToUpdate.add(contract);
         }
 
         for (DContract__c contract : contracts) {
@@ -60,15 +53,9 @@ public class BatchUpdateContractServicesSpend implements Database.Batchable<DCon
             }
 
             Decimal contractValue = servicesSpendMap.get(contract.Id);
-            if (this.mode == 'update') { // update value
-                contract.Services_Spend__c = (contractValue + (contract.Services_Spend__c != null ? contract.Services_Spend__c : 0)).setScale(2);
-                contractsToUpdate.add(contract);
-            } else {
-                if (contract.Services_Spend__c != contractValue) { // replace value
-                    contract.Services_Spend__c = contractValue.setScale(2);
-                    contractsToUpdate.add(contract);
-                }
-            }
+            contract.Calculated_Services_Spend__c = contractValue;
+            contract.Services_Spend__c = contractValue.setScale(2);
+            contractsToUpdate.add(contract);
         }
 
         Database.update(contractsToUpdate, false); // TODO Generate mailer with mode!!! 

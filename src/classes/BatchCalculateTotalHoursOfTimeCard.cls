@@ -1,39 +1,47 @@
 /**
  * Calculates Services Spend field value for each contracts, runs BatchUpdateContractServicesSpend job for update values in contracts.
  */
-global without sharing class BatchCalculateTotalHoursOfTimeCard implements Database.Batchable<sObject>, Database.Stateful {
+public without sharing class BatchCalculateTotalHoursOfTimeCard implements Database.Batchable<sObject>, Database.Stateful {
 
     private List<String> contractIds;
     private Map<Id, Decimal> servicesSpendMap;
     private String lastEmployee;
     private List<SalaryHistoryRecord> employeeSalaryHistory;
     private SalaryHistoryHelper salaryHistoryHelper;
-    private Boolean testMode;
+    private Boolean updatedContracts;
 
-    global BatchCalculateTotalHoursOfTimeCard(){
-        this.contractIds = new List<String>();
-        this.testMode = false;
-        this.servicesSpendMap = new Map<Id, Decimal>();
+    public BatchCalculateTotalHoursOfTimeCard(){
+        this(new List<String>());
     }
 
-    global BatchCalculateTotalHoursOfTimeCard(String contractId){
+    public BatchCalculateTotalHoursOfTimeCard(Boolean updatedContracts){
+        this(new List<String>(), true);
+    }
+
+    public BatchCalculateTotalHoursOfTimeCard(String contractId){
         this(new List<String> {contractId});
     }
 
-    global BatchCalculateTotalHoursOfTimeCard(List<String> contractIds){
-        this.testMode = false;
+    public BatchCalculateTotalHoursOfTimeCard(List<String> contractIds){
+        this(contractIds, false);
+    }
+
+    public BatchCalculateTotalHoursOfTimeCard(List<String> contractIds, Boolean updatedContracts) {
+        this.updatedContracts = updatedContracts;
         this.contractIds = contractIds;
         this.servicesSpendMap = new Map<Id, Decimal>();
     }
 
-    global Database.QueryLocator start(Database.BatchableContext context) {
+    public Database.QueryLocator start(Database.BatchableContext context) {
         this.salaryHistoryHelper = new SalaryHistoryHelper();
         this.employeeSalaryHistory = new List<SalaryHistoryRecord>();
         Set<Id> parentAndChildContracts = new Set<Id>();
 
         String query;
-        if (contractIds.size() == 0) {
-            query = 'SELECT Client__c, Time_Card_Rate_Cost__c, Employee__c, Date__c FROM Time_Card__c WHERE Employee__c != \'\' ORDER BY Employee__c';
+        if (this.updatedContracts == true) { // only with updated time cards
+            query = 'SELECT Client__c, Total__c, Time_Card_Salary__c, Billing_Rate__c, Employee__c, Date__c FROM Time_Card__c WHERE Client__r.Require_Services_Spend_Refresh__c = true ORDER BY Employee__c';
+        } else if (contractIds.size() == 0) {
+            query = 'SELECT Client__c, Total__c, Time_Card_Salary__c, Billing_Rate__c, Employee__c, Date__c FROM Time_Card__c WHERE Employee__c != \'\' ORDER BY Employee__c';
         } else {
             for (String conId : contractIds) {
                 parentAndChildContracts.add(conId);
@@ -49,26 +57,25 @@ global without sharing class BatchCalculateTotalHoursOfTimeCard implements Datab
                 parentAndChildContracts.add(elId);
             }
 
-            query = 'SELECT Client__c, Time_Card_Rate_Cost__c, Employee__c, Date__c FROM Time_Card__c WHERE Client__c IN: parentAndChildContracts ORDER BY Employee__c';
+            query = 'SELECT Client__c, Total__c, Time_Card_Salary__c, Billing_Rate__c, Employee__c, Date__c FROM Time_Card__c WHERE Client__c IN: parentAndChildContracts ORDER BY Employee__c';
         }
         return Database.getQueryLocator(query);
     }
 
-    global void execute(Database.BatchableContext BC, List<sObject> scope){
+    public void execute(Database.BatchableContext BC, List<sObject> scope){
         for (sObject obj : scope) {
             Time_Card__c tc = (Time_Card__c) obj;
 
-            if (tc.Time_Card_Rate_Cost__c != null) {
-                if (servicesSpendMap.containsKey(tc.Client__c)) {
-                    servicesSpendMap.put(tc.Client__c, servicesSpendMap.get(tc.Client__c) + tc.Time_Card_Rate_Cost__c);
-                } else {
-                    servicesSpendMap.put(tc.Client__c, tc.Time_Card_Rate_Cost__c);
-                }
+            Decimal value = (tc.Total__c * (tc.Time_Card_Salary__c != null ? tc.Time_Card_Salary__c : 0.0) * (tc.Billing_Rate__c != null ? tc.Billing_Rate__c : 0.0)).setScale(8);
+            if (servicesSpendMap.containsKey(tc.Client__c)) {
+                servicesSpendMap.put(tc.Client__c, servicesSpendMap.get(tc.Client__c) + value);
+            } else {
+                servicesSpendMap.put(tc.Client__c, value);
             }
         }
     }
 
-    global void finish(Database.BatchableContext context){
+    public void finish(Database.BatchableContext context){
         // We must replace values in contracts
         if (!Test.isRunningTest()) {
             BatchUpdateContractServicesSpend obj = new BatchUpdateContractServicesSpend(servicesSpendMap);

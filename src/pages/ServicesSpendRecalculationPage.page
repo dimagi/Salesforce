@@ -1,0 +1,8 @@
+<apex:page standardController="DContract__c" extensions="DContractRecalculationController" action="{!runRecalculation}">
+    <apex:form >
+        <apex:pageBlock title="Services Spend Recalculation">
+            <apex:pageMessages />
+            <apex:commandButton value="Return" action="{!goBack}"/>
+        </apex:pageBlock>
+    </apex:form>
+</apex:page>
