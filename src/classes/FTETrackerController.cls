@@ -44,19 +44,14 @@ public class FTETrackerController {
             for (Integer i = 0 ; i < this.hoursArray.size(); i++) {
                 this.daysArray[i] = roundtoDays(this.hoursArray[i]);
             }
+            this.daysArray[13] =  this.daysArray[13].setScale(2);
         }
 
-        public void calculateDays(SFDC_Employee__c emp) {
-            for (Integer i = 0 ; i < this.hoursArray.size(); i++) {
-                this.daysArray[i] = roundtoDays(this.hoursArray[i]);
-            }
-            this.daysArray[13] = (this.hoursArray[12] * emp.Unloaded_Daily_Rate__c).setScale(2);
-        }
-
-        public void sumHours(EmployeeTime empTime) {
+        public void sumHoursAndCost(EmployeeTime empTime) {
             for (Integer i = 0 ; i < this.hoursArray.size(); i++) {
                 this.hoursArray[i] += empTime.hoursArray[i];
             }
+            this.daysArray[13] += empTime.daysArray[13];
         }
 
         public Decimal roundtoDays(Decimal hours) {
@@ -316,15 +311,15 @@ public class FTETrackerController {
                 tmpHelper.hoursArray[4] += realHours;
             }
             tmpHelper.hoursArray[12] += realHours;
+            tmpHelper.daysArray[13] += (timeCard.Total__c != null ? timeCard.Total__c : 0) * (timeCard.Time_Card_Salary__c != null ? timeCard.Time_Card_Salary__c : 0);
             projectTimeMap.put(timeCard.Employee__c, tmpHelper);
         }
         this.individualContractDataList = projectTimeMap.values();
         Map<Id, SFDC_Employee__c> empMap = new Map<Id, SFDC_Employee__c>([SELECT Id, Name, Unloaded_Daily_Rate__c 
                         FROM SFDC_Employee__c WHERE Id IN: projectTimeMap.keySet()]);
         for (EmployeeTime empT : this.individualContractDataList) {
-            empT.calculateDays(empMap.get(empT.objId));
-            totalProjectTime.daysArray[13] += empT.daysArray[13];
-            totalProjectTime.sumHours(empT);
+            empT.calculateDays();
+            totalProjectTime.sumHoursAndCost(empT);
         }
         totalProjectTime.calculateDays();
         totalProjectTime.cssStyle[0] = 'topTotal';
@@ -398,7 +393,8 @@ public class FTETrackerController {
         Integer offsetValue = ((this.pageNumber - 1) * this.pageSize);
         List<FTE_Work_Card__c> workCards = [SELECT Id, Employee__c, Employee__r.Hire_Date__c, Employee__r.Name, Employee__r.Unloaded_Daily_Rate__c, Month_1__c, Month_2__c, Month_3__c,
                                            Month_4__c, Month_5__c, Month_6__c, Month_7__c, Month_8__c, Month_9__c, Month_10__c, Month_11__c, Month_12__c,
-                                           Total__c, Total_Hours__c, Year__c FROM FTE_Work_Card__c ORDER BY Employee__r.Name LIMIT : this.pageSize OFFSET : offsetValue];
+                                           Total__c, Total_Hours__c, Year__c, Unloaded_Rate_Total_Cost__c
+                                           FROM FTE_Work_Card__c ORDER BY Employee__r.Name LIMIT : this.pageSize OFFSET : offsetValue];
         this.resultSize = Database.countQuery('SELECT count() FROM FTE_Work_Card__c');
         if (pageNumber == 1) {
             this.HasPrevious = false;
@@ -432,7 +428,7 @@ public class FTETrackerController {
                     empTime.cssStyle[i] = 'fteCell overbilled';
                 }
             }
-            empTime.daysArray[13] = (workCard.Total_Hours__c * workCard.Employee__r.Unloaded_Daily_Rate__c).setScale(2);
+            empTime.daysArray[13] = (workCard.Unloaded_Rate_Total_Cost__c != null ? workCard.Unloaded_Rate_Total_Cost__c : 0.00).setScale(2);
             this.employees.add(empTime);
         }
 
@@ -495,7 +491,7 @@ public class FTETrackerController {
         List<Time_Card__c> timeCards = [SELECT Id, Client__c, Client__r.FTE_Tracker__c, Client__r.Name,
                                         Total__c, FTE_hours__c, FTE_Contract__c,
                                         FTE_Contract__r.FTE_Tracker__c, FTE_Contract__r.Name,
-                                        Date__c FROM Time_Card__c
+                                        Time_Card_Salary__c, Date__c FROM Time_Card__c
                                         WHERE Employee__c =: this.employee.Id AND Client__c != null
                                         AND Date__c >=: this.yearBegin AND Date__c <=: this.yearEnd
                                         ORDER BY Client__r.Name];
@@ -510,13 +506,13 @@ public class FTETrackerController {
             Decimal movedTime = (timeCard.FTE_hours__c != null ? timeCard.FTE_hours__c : 0);
 
             // "Moved from" part this.contractsTime.add(this.unassigned);
-            calculateLoggedTime(timeCard.Client__r.FTE_Tracker__c == 'Yes', timeCard.Client__c, timeCard.Client__r.Name, (loggedTime - movedTime), timeCard.Date__c.month());
+            calculateLoggedTime(timeCard.Client__r.FTE_Tracker__c == 'Yes', timeCard.Client__c, timeCard.Client__r.Name, (loggedTime - movedTime), timeCard.Date__c.month(), timeCard.Time_Card_Salary__c);
             // If no FTE Tag values we don't need to process moved hours
             if (timeCard.FTE_Contract__c == null || movedTime == 0) {
                 continue;
             }
             // "Moved to" part
-            calculateLoggedTime(timeCard.FTE_Contract__r.FTE_Tracker__c == 'Yes', timeCard.FTE_Contract__c, timeCard.FTE_Contract__r.Name, movedTime, timeCard.Date__c.month());
+            calculateLoggedTime(timeCard.FTE_Contract__r.FTE_Tracker__c == 'Yes', timeCard.FTE_Contract__c, timeCard.FTE_Contract__r.Name, movedTime, timeCard.Date__c.month(), timeCard.Time_Card_Salary__c);
         }
 
         this.contractsTime = new List<EmployeeTime>();
@@ -587,7 +583,7 @@ public class FTETrackerController {
         this.unassignedMap = null;
     }
 
-    private void calculateLoggedTime(Boolean fteTracker, Id clientId, String clientName, Decimal loggedHours, Integer month) {
+    private void calculateLoggedTime(Boolean fteTracker, Id clientId, String clientName, Decimal loggedHours, Integer month, Decimal salary) {
         EmployeeTime tmpHelper = this.unassigned;
         if (fteTracker == true) {
             if (!this.assignedMap.containsKey(clientId)) {
@@ -596,28 +592,31 @@ public class FTETrackerController {
             tmpHelper = this.assignedMap.get(clientId);
             tmpHelper.hoursArray[month - 1] += loggedHours;
             tmpHelper.hoursArray[12] += loggedHours;
+            tmpHelper.daysArray[13] += (salary != null ? salary : 0) * loggedHours;
         } else {
             if (!this.unassignedMap.containsKey(clientId)) {
                 this.unassignedMap.put(clientId, new EmployeeTime(clientName, clientId));
             }
             tmpHelper.hoursArray[month - 1] += loggedHours;
             tmpHelper.hoursArray[12] += loggedHours;
+            tmpHelper.daysArray[13] += (salary != null ? salary : 0) * loggedHours;
             tmpHelper = this.unassignedMap.get(clientId);
             tmpHelper.hoursArray[month - 1] += loggedHours;
             tmpHelper.hoursArray[12] += loggedHours;
+            tmpHelper.daysArray[13] += (salary != null ? salary : 0) * loggedHours;
         }
     }
 
     private void generateStyles() {
         // Calculate totals and labor cost
         for (EmployeeTime empT : this.contractsTime) {
-            empT.calculateDays(employee);
-            this.totalAssignedDays.sumHours(empT);
-            this.totalDaysWorked.sumHours(empT);
+            empT.calculateDays();
+            this.totalAssignedDays.sumHoursAndCost(empT);
+            this.totalDaysWorked.sumHoursAndCost(empT);
         }
 
-        this.unassigned.calculateDays(employee);
-        this.totalAssignedDays.calculateDays(employee);
+        this.unassigned.calculateDays();
+        this.totalAssignedDays.calculateDays();
 
         // We add css classes here to avoid complex if sections in visualgforce page
         for (Integer i = 0; i < 12; i++) {
@@ -634,8 +633,8 @@ public class FTETrackerController {
             this.totalAssignedDays.cssStyle[12] = 'topTotal';
         }
         this.totalAssignedDays.cssStyle[13] = 'topTotal';
-        this.totalDaysWorked.sumHours(this.unassigned);
-        this.totalDaysWorked.calculateDays(employee);
+        this.totalDaysWorked.sumHoursAndCost(this.unassigned);
+        this.totalDaysWorked.calculateDays();
         this.totalDaysWorked.nameCss = '';
         this.totalAssignedDays.nameCss = 'topTotal';
         this.unassigned.nameCss = '';
