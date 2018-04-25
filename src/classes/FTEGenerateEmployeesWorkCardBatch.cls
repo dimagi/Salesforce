@@ -58,8 +58,10 @@ public without sharing class FTEGenerateEmployeesWorkCardBatch implements Databa
             Decimal totalHours = 0;
             Decimal monthHours = 0;
             Decimal monthDays = 0;
+            Decimal totalCost = 0;
             Integer month = 1;
-            List<Time_Card__c> employeeYearTimeCards = [SELECT Id, Total__c, Date__c, Client__r.FTE_Tracker__c, FTE_hours__c, FTE_Contract__c, FTE_Contract__r.FTE_Tracker__c FROM Time_Card__c
+            List<Time_Card__c> employeeYearTimeCards = [SELECT Id, Total__c, Date__c, Client__r.FTE_Tracker__c, FTE_hours__c, FTE_Contract__c,
+                                                        FTE_Contract__r.FTE_Tracker__c, Time_Card_Salary__c FROM Time_Card__c
                                                         WHERE Employee__c =: employee.Id AND CALENDAR_YEAR(Date__c) =: this.calculationYear AND (Client__r.FTE_Tracker__c = 'Yes'
                                                         OR (Client__r.FTE_Tracker__c != 'Yes' AND FTE_Contract__r.FTE_Tracker__c = 'Yes'))
                                                         AND Total__c != null ORDER BY Date__c]; // we need only fetch timcards assigned and unassigned which are moving time to assigned
@@ -83,6 +85,7 @@ public without sharing class FTEGenerateEmployeesWorkCardBatch implements Databa
 
                 monthHours += realHours;
                 totalHours += realHours;
+                totalCost += realHours * (tc.Time_Card_Salary__c != null ? tc.Time_Card_Salary__c : 0);
             }
             if (employeeYearTimeCards.size() > 0) {
                 monthDays = roundtoDays(monthHours);
@@ -91,6 +94,8 @@ public without sharing class FTEGenerateEmployeesWorkCardBatch implements Databa
                 employeeWorkCard = (FTE_Work_Card__c) sObj;
                 employeeWorkCard.Total_Hours__c = totalHours;
                 employeeWorkCard.Total__c = roundtoDays(totalHours);
+                employeeWorkCard.Unloaded_Rate_Total_Cost__c = totalCost.setScale(2);
+
                 System.debug('WC totalHours: ' + totalHours);
                 upsert employeeWorkCard;
             } else if (employeeWorkCard.Id != null) { // If no time we can delete record
