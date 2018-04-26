@@ -4,380 +4,27 @@
 public class FTETrackerController {
 
     public Integer currentYear { get; set;}
-    public Date yearBegin { get; set;}
-    public Date yearEnd { get; set;}
-    public Id contractId { get; set;}
     public Id employeeId { get; set;}
-    public String contractName { get; set;}
     public JobWrapper workCardJobStatus {get; set;}
-
-    public FTETrackerController () {
-        this.workCardJobStatus = new JobWrapper(false);
-        this.currentYear = FTE_Tracker_Settings__c.getOrgDefaults().FTE_Year__c != null ? FTE_Tracker_Settings__c.getOrgDefaults().FTE_Year__c.intValue() : Date.today().year();
-        this.yearBegin = Date.newInstance(this.currentYear, 1, 1);
-        this.yearEnd = Date.newInstance(this.currentYear, 12, 31);
-    }
-
-    public void setViewData() {
-        // We need this empty method to set values before loading new view.
-    }
-
-    public class EmployeeTime {
-        public String name { get; set;}
-        public Id objId { get; set;}
-        public List<Decimal> hoursArray { get; set;}
-        public List<Decimal> daysArray { get; set;}
-        public List<String> cssStyle { get; set;}
-        public String nameCss { get; set;}
-
-        public EmployeeTime (String name, Id objId) {
-            this.name = name;
-            this.objId = objId;
-            this.hoursArray = new Decimal [] {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
-            this.daysArray = new Decimal [] {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
-            this.cssStyle = new String [] {'fteCell', 'fteCell', 'fteCell', 'fteCell', 'fteCell', 'fteCell', 'fteCell', 'fteCell', 'fteCell', 'fteCell',
-                                            'fteCell', 'fteCell', '', ''};
-            this.nameCss = 'fteProjectCell';
-        }
-
-        public void calculateDays() {
-            for (Integer i = 0 ; i < this.hoursArray.size(); i++) {
-                this.daysArray[i] = roundtoDays(this.hoursArray[i]);
-            }
-            this.daysArray[13] =  this.daysArray[13].setScale(2);
-        }
-
-        public void sumHoursAndCost(EmployeeTime empTime) {
-            for (Integer i = 0 ; i < this.hoursArray.size(); i++) {
-                this.hoursArray[i] += empTime.hoursArray[i];
-            }
-            this.daysArray[13] += empTime.daysArray[13];
-        }
-
-        public Decimal roundtoDays(Decimal hours) {
-            Decimal totalDays = (hours / 8.0).intValue();
-            Decimal restValue = hours - (totalDays * 8);
-            return totalDays + (0.25 * (restValue / 2.0).setScale(0, System.RoundingMode.HALF_UP));
-        }
-    }
-
-    public void loadWorkCardJobStatus() { // We want block FTE Tracker until all Work Cards will be generated from time cards
-        ApexClass batchClass = [SELECT Id FROM ApexClass WHERE Name='FTEGenerateEmployeesWorkCardBatch' LIMIT 1];
-        AsyncApexJob[] batchClassJobList = [SELECT Id, JobItemsProcessed, TotalJobItems, createdDate FROM AsyncApexJob WHERE ApexClassID = :batchClass.Id
-                                            AND Status IN ('Holding', 'Queued', 'Preparing', 'Processing') ORDER BY createdDate DESC LIMIT 1];
-
-        if(batchClassJobList != null && batchClassJobList.size() > 0) {
-            workCardJobStatus.isRunning = true;
-            workCardJobStatus.jobItemsProcessed = batchClassJobList[0].JobItemsProcessed;
-            workCardJobStatus.totalJobItems = batchClassJobList[0].TotalJobItems;
-        } else {
-            workCardJobStatus.isRunning = false;
-        }
-    }
-
-    /**
-     * Project List View
-     */
-    public List<DContract__c> fteContractList { get; set;}
-    public List<DContract__c> fteContractSearchList { get; set;}
-
-    public List<DContract__c> finalFteContracts {get; set;}
-    public List<DContract__c> toAddContracts {get; set;}
-    public List<DContract__c> toRemoveContracts {get; set;}
-
-    public String searchError { get; set;}
-    public String seachProjectName { get; set;}
-    public Boolean projectListUpdated { get; set;}
-
-    public void loadContractList() {
-        this.seachProjectName = '';
-        this.searchError = '';
-        this.fteContractSearchList = new List<DContract__c>();
-        this.toAddContracts = new List<DContract__c>();
-        this.toRemoveContracts = new List<DContract__c>();
-        this.projectListUpdated = false;
-
-        loadWorkCardJobStatus();
-
-        if (workCardJobStatus.isRunning) {
-            return;
-        }
-    }
-
-    public void updateFteContracts() {
-        for (DContract__c dc : this.toAddContracts) {
-            dc.FTE_Tracker__c = 'Yes';
-        }
-        for (DContract__c dc : this.toRemoveContracts) {
-            dc.FTE_Tracker__c = 'No';
-        }
-        List<DContract__c> forUpdate = new List<DContract__c>();
-        forUpdate.addAll(this.toAddContracts);
-        forUpdate.addAll(this.toRemoveContracts);
-        if (forUpdate.size() > 0) {
-            update forUpdate;
-        }
-        this.toAddContracts.clear();
-        this.toRemoveContracts.clear();
-        this.projectListUpdated = false;
-        loadWorkCardJobStatus();
-    }
-
-    public List<DContract__c> getListToSubmit() {
-        if (this.fteContractList == null) {
-           this.fteContractList = [SELECT Id, Name, FTE_Tracker__c FROM DContract__c
-                                                 WHERE FTE_Tracker__c = 'Yes' ORDER BY Name];
-        }
-
-        return this.fteContractList;
-    }
-
-    public void searchProject() {
-        if (this.seachProjectName != null && this.seachProjectName != '') {
-            String seachProjectNameExpr = seachProjectName + '%';
-            this.fteContractSearchList = [SELECT Id, Name, Status__c FROM DContract__c WHERE Id NOT IN : this.fteContractList
-                    AND Name LIKE: seachProjectNameExpr LIMIT 20];
-
-            if(this.fteContractSearchList.size() == 0) {
-                this.searchError = 'No projects were found.';
-            } else {
-                this.searchError = '';
-            }
-        } else {
-            this.fteContractSearchList.clear();
-            this.searchError = 'Name cannot be empty';
-        }
-    }
-
-    public void addProjectToFteTracker() {
-        if (this.contractId != null) {
-            List<DContract__c> recordsFromDb = [SELECT Id, Name, FTE_Tracker__c FROM DContract__c WHERE Id =: this.contractId];
-            if (recordsFromDb.size() > 0) {
-                DContract__c newFteContract = recordsFromDb.get(0);
-                Boolean aleradyAdded = false;
-                for (DContract__c cc : fteContractList) {
-                    if (cc.Id == newFteContract.Id) {
-                        aleradyAdded = true;
-                        break;
-                    }
-                }
-                if (!aleradyAdded) {
-                    this.fteContractList.add(newFteContract);
-                    this.toAddContracts.add(newFteContract);
-                }
-
-                //check removed list
-                Integer index = -1;
-                for (Integer i = 0 ; i < this.toRemoveContracts.size(); i++) {
-                    if (this.toRemoveContracts.get(i).Id == this.contractId) {
-                        index = i;
-                        break;
-                    }
-                }
-                if (index > -1) {
-                    this.toRemoveContracts.remove(index);
-                }
-            }
-            this.projectListUpdated = true;
-        }
-        this.contractId = null;
-    }
-
-    public void removeProjectFromFteTracker() {
-        if (this.contractId != null) {
-            Integer index = -1;
-            for (Integer i = 0; i < fteContractList.size(); i++) {
-                if (fteContractList.get(i).Id == this.contractId) {
-                    index = i;
-                    break;
-                }
-            }
-            if (index > -1) {
-                DContract__c contractToRem = fteContractList.get(index);
-                fteContractList.remove(index);
-                this.toRemoveContracts.add(contractToRem);
-            }
-
-            //check added list
-            index = -1;
-            for (Integer i = 0 ; i < this.toAddContracts.size(); i++) {
-                if (this.toAddContracts.get(i).Id == this.contractId) {
-                    index = i;
-                    break;
-                }
-            }
-            if (index > -1) {
-                this.toAddContracts.remove(index);
-            }
-            this.projectListUpdated = true;
-        }
-        this.contractId = null;
-    }
-
-    public PageReference goToEmployeeListViewFromProjectListView() {
-        PageReference pageRef = Page.FTE_Employee_List_View;
-        pageRef.setRedirect(false);
-        clearProjectListViewData();
-        return pageRef;
-    }
-
-    public PageReference goToIndividualProjectView() {
-        PageReference pageRef = null;
-        if (String.isBlank(this.contractId)) {
-            ApexPages.addMessage(new ApexPages.message(ApexPages.severity.ERROR, 'Empty FTE Contract ID'));
-        } else {
-            clearProjectListViewData();
-            pageRef = Page.FTE_Individual_Project_View;
-            pageRef.setRedirect(false);
-        }
-
-        return pageRef;
-    }
-
-    private void clearProjectListViewData() {
-        this.fteContractList = null;
-        this.fteContractSearchList = null;
-        this.searchError = '';
-        this.seachProjectName = '';
-    }
-
-    /**
-     * Individual Project View
-     */
-
-    public List<EmployeeTime> individualContractDataList { get; set;}
-
-    public void loadIndividualProject() {
-        this.individualContractDataList = new List<EmployeeTime>();
-        if (this.contractId == null) {
-            ApexPages.addMessage(new ApexPages.message(ApexPages.severity.ERROR, 'Empty FTE Contract ID'));
-            return;
-        }
-
-        List<DContract__c> contractList = [SELECT Id, Name FROM DContract__c WHERE Id =: this.contractId];
-        if (contractList.size() == 0) {
-            ApexPages.addMessage(new ApexPages.message(ApexPages.severity.ERROR, 'Cannot load FTE Contract'));
-            return;
-        }
-
-        this.contractName = contractList.get(0).Name;
-        Map<Id, EmployeeTime> projectTimeMap = new Map<Id, EmployeeTime>();
-
-        Date currentDate = Date.today();
-        Integer currentMonth = currentDate.month();
-        Integer currentYear = currentDate.year();
-        Integer oneMonthAgo = currentDate.addMonths(-1).month();
-        Integer oneMonthAgoYear = currentDate.addMonths(-1).year();
-        Integer twoMonthAgo = currentDate.addMonths(-2).month();
-        Integer twoMonthAgoYear = currentDate.addMonths(-2).year();
-        Integer threeMonthAgo = currentDate.addMonths(-3).month();
-        Integer threeMonthAgoYear = currentDate.addMonths(-3).year();
-
-        Decimal totalHours = 0;
-        Decimal totalCost = 0;
-
-        List<Time_Card__c> contractTimeCards = [SELECT Id, Employee__c, Employee__r.Name, Date__c, Total__c, FTE_hours__c, FTE_Contract__c FROM Time_Card__c WHERE
-                                                (Client__c =: this.contractId OR FTE_Contract__c =: this.contractId) AND Date__c <=: Date.today()];
-
-        EmployeeTime totalProjectTime = new EmployeeTime('Total', null);
-        for (Time_Card__c timeCard : contractTimeCards) {
-            EmployeeTime tmpHelper;
-            if (projectTimeMap.containsKey(timeCard.Employee__c)) {
-                tmpHelper = projectTimeMap.get(timeCard.Employee__c);
-            } else {
-                tmpHelper = new EmployeeTime(timeCard.Employee__r.Name, timeCard.Employee__c);
-            }
-
-            Date entryDate = timeCard.Date__c != null ? timeCard.Date__c : Date.today();
-            Integer entryDateMonth = timeCard.Date__c != null ? timeCard.Date__c.month() : 0;
-            Integer entryDateYear = timeCard.Date__c != null ? timeCard.Date__c.year() : 0;
-
-            Decimal realHours = timeCard.Total__c != null ? timeCard.Total__c : 0;
-            if (timeCard.FTE_Contract__c != null && timeCard.FTE_Contract__c != this.contractId) {
-                realHours = realHours - timeCard.FTE_hours__c;
-            } else if (timeCard.FTE_Contract__c != null && timeCard.FTE_Contract__c == this.contractId) {
-                realHours = timeCard.FTE_hours__c;
-            }
-
-            if (entryDateMonth == currentMonth && entryDateYear == currentYear) {
-                tmpHelper.hoursArray[0] += realHours;
-            } else if(entryDateMonth == oneMonthAgo && entryDateYear == oneMonthAgoYear ){
-                tmpHelper.hoursArray[1] += realHours;
-            } else if(entryDateMonth == twoMonthAgo && entryDateYear == twoMonthAgoYear ) {
-                tmpHelper.hoursArray[2] += realHours;
-            } else if(entryDateMonth == threeMonthAgo && entryDateYear == threeMonthAgoYear ) {
-                tmpHelper.hoursArray[3] += realHours;
-            } else {
-                tmpHelper.hoursArray[4] += realHours;
-            }
-            tmpHelper.hoursArray[12] += realHours;
-            tmpHelper.daysArray[13] += (timeCard.Total__c != null ? timeCard.Total__c : 0) * (timeCard.Time_Card_Salary__c != null ? timeCard.Time_Card_Salary__c : 0);
-            projectTimeMap.put(timeCard.Employee__c, tmpHelper);
-        }
-        this.individualContractDataList = projectTimeMap.values();
-        Map<Id, SFDC_Employee__c> empMap = new Map<Id, SFDC_Employee__c>([SELECT Id, Name, Unloaded_Daily_Rate__c 
-                        FROM SFDC_Employee__c WHERE Id IN: projectTimeMap.keySet()]);
-        for (EmployeeTime empT : this.individualContractDataList) {
-            empT.calculateDays();
-            totalProjectTime.sumHoursAndCost(empT);
-        }
-        totalProjectTime.calculateDays();
-        totalProjectTime.cssStyle[0] = 'topTotal';
-        totalProjectTime.cssStyle[1] = 'topTotal';
-        totalProjectTime.cssStyle[2] = 'topTotal';
-        totalProjectTime.cssStyle[3] = 'topTotal';
-        totalProjectTime.cssStyle[4] = 'topTotal';
-        totalProjectTime.cssStyle[12] = 'topTotal';
-        totalProjectTime.cssStyle[13] = 'topTotal';
-        totalProjectTime.nameCss = 'topTotal';
-        this.individualContractDataList.add(totalProjectTime);
-    }
-
-    public PageReference goToEmployeeViewFromProjectView() {
-        PageReference pageRef = null;
-        if (String.isBlank(this.employeeId)) {
-            ApexPages.addMessage(new ApexPages.message(ApexPages.severity.ERROR, 'Empty FTE Employee ID'));
-        } else {
-            clearProjectIndividualData();
-            pageRef = Page.FTE_Employee_View;
-            pageRef.setRedirect(false);
-        }
-
-        return pageRef;
-    }
-
-    public PageReference goToProjectListViewFromProjectView() {
-        clearProjectIndividualData();
-        PageReference pageRef = Page.FTE_Project_List_View;
-        pageRef.setRedirect(false);
-
-        return pageRef;
-    }
-
-    private void clearProjectIndividualData() {
-        this.individualContractDataList = null;
-        this.contractId = null;
-        this.contractName = '';
-    }
-
-    /**
-     * Employee List View
-     */
-    public List<EmployeeTime> employees { get; set;}
+    public List<FTEEmployeeTime> employees { get; set;}
     public Integer resultSize { get; set;}
     public Integer pageSize { get; set;}
     public Integer pageNumber { get; set;}
     public Boolean hasPrevious { get; set;}
     public Boolean hasNext { get; set;}
 
-    public void loadEmployeeListTimeHistory() {
+    public FTETrackerController () {
+        this.currentYear = FTE_Tracker_Settings__c.getOrgDefaults().FTE_Year__c != null ? FTE_Tracker_Settings__c.getOrgDefaults().FTE_Year__c.intValue() : Date.today().year();
+    }
+
+    public void initEmployeeListView() {
         loadWorkCardJobStatus();
 
         if (workCardJobStatus.isRunning) {
             return;
         }
 
-        if (this.pageNumber == null) { // new open - initiate variables
+        if (this.pageNumber == null) {
             this.pageNumber = 1;
             this.resultSize = 0;
             this.pageSize = 10;
@@ -386,8 +33,8 @@ public class FTETrackerController {
         }
     }
 
-    public List<EmployeeTime> getEmployeesList() {
-        this.employees = new List<EmployeeTime>();
+    public List<FTEEmployeeTime> getEmployeesList() {
+        this.employees = new List<FTEEmployeeTime>();
         this.hasPrevious = true;
         this.hasNext = true;
         Integer offsetValue = ((this.pageNumber - 1) * this.pageSize);
@@ -405,8 +52,8 @@ public class FTETrackerController {
 
 
         for (FTE_Work_Card__c workCard : workCards) {
-            Integer empNetworkDays = getNetworkDays(workCard.Employee__r.Hire_Date__c);
-            EmployeeTime empTime = new EmployeeTime(workCard.Employee__r.Name, workCard.Employee__c);
+            Integer empNetworkDays = FTETrackerHelper.getNetworkDays(workCard.Employee__r.Hire_Date__c, this.currentYear);
+            FTEEmployeeTime empTime = new FTEEmployeeTime(workCard.Employee__r.Name, workCard.Employee__c);
             empTime.daysArray[0] = workCard.Month_1__c;
             empTime.daysArray[1] = workCard.Month_2__c;
             empTime.daysArray[2] = workCard.Month_3__c;
@@ -447,198 +94,34 @@ public class FTETrackerController {
         this.pageNumber = 1;
     }
 
-    public PageReference goToProjectListViewFromEmployeeListView() {
-        PageReference pageRef = Page.FTE_Project_List_View;
-        pageRef.setRedirect(false);
-        clearEmployeeListData();
-        return pageRef;
+    public PageReference goToProjectListView() {
+        return Page.FTE_Project_List_View;
     }
 
     public PageReference goToEmployeeView() {
-        PageReference pageRef = null;
-        if (String.isBlank(this.employeeId)) {
-            ApexPages.addMessage(new ApexPages.message(ApexPages.severity.ERROR, 'Empty FTE Employee ID'));
-        } else {
-            pageRef = Page.FTE_Employee_View;
-            pageRef.setRedirect(false);
-            clearEmployeeListData();
-        }
-
+        PageReference pageRef = Page.FTE_Employee_View;
+        pageref.getParameters().put('employeeId', this.employeeId);
         return pageRef;
     }
 
-    private void clearEmployeeListData() {
-        this.employees = null;
+    public void loadWorkCardJobStatus() {
+        this.workCardJobStatus = FTETrackerHelper.loadWorkCardJobStatus();
     }
 
-    /**
-     * Employee view
-     */
-    public SFDC_Employee__c employee { get; set;}
-    public EmployeeTime unassigned { get; set;}
-    public EmployeeTime totalAssignedDays { get; set;}
-    public EmployeeTime totalDaysWorked { get; set;}
-    public Map<Id, EmployeeTime> assignedMap { get; set;}
-    public List<EmployeeTime> contractsTime { get; set;}
-    public Map<Id, EmployeeTime> unassignedMap { get; set;}
 
-    private Integer employeeNetworkDays = 0;
 
-    public void loadEmployeeTimeHistory() {
-        // Load employee logged time this year
-        this.employee = [SELECT Id, Name, Unloaded_Daily_Rate__c, Hire_Date__c FROM SFDC_Employee__c WHERE Id =: this.employeeId LIMIT 1];
-        this.employeeNetworkDays = getNetworkDays(this.employee.Hire_Date__c);
-        List<Time_Card__c> timeCards = [SELECT Id, Client__c, Client__r.FTE_Tracker__c, Client__r.Name,
-                                        Total__c, FTE_hours__c, FTE_Contract__c,
-                                        FTE_Contract__r.FTE_Tracker__c, FTE_Contract__r.Name,
-                                        Time_Card_Salary__c, Date__c FROM Time_Card__c
-                                        WHERE Employee__c =: this.employee.Id AND Client__c != null
-                                        AND Date__c >=: this.yearBegin AND Date__c <=: this.yearEnd
-                                        ORDER BY Client__r.Name];
 
-        this.assignedMap = new Map<Id, EmployeeTime>();
-        this.unassignedMap = new Map<Id, EmployeeTime>();
-        this.unassigned = new EmployeeTime('Unassigned', null);
 
-        EmployeeTime tmpHelper;
-        for (Time_Card__c timeCard : timeCards) {
-            Decimal loggedTime = (timeCard.Total__c != null ? timeCard.Total__c : 0);
-            Decimal movedTime = (timeCard.FTE_hours__c != null ? timeCard.FTE_hours__c : 0);
 
-            // "Moved from" part this.contractsTime.add(this.unassigned);
-            calculateLoggedTime(timeCard.Client__r.FTE_Tracker__c == 'Yes', timeCard.Client__c, timeCard.Client__r.Name, (loggedTime - movedTime), timeCard.Date__c.month(), timeCard.Time_Card_Salary__c);
-            // If no FTE Tag values we don't need to process moved hours
-            if (timeCard.FTE_Contract__c == null || movedTime == 0) {
-                continue;
-            }
-            // "Moved to" part
-            calculateLoggedTime(timeCard.FTE_Contract__r.FTE_Tracker__c == 'Yes', timeCard.FTE_Contract__c, timeCard.FTE_Contract__r.Name, movedTime, timeCard.Date__c.month(), timeCard.Time_Card_Salary__c);
-        }
 
-        this.contractsTime = new List<EmployeeTime>();
 
-        this.contractsTime = this.assignedMap.values();
-        this.totalAssignedDays = new EmployeeTime('Total Assigned Days', null);
-        this.totalDaysWorked = new EmployeeTime('Total Days Worked', null);
-        generateStyles();
-        this.contractsTime.add(this.unassigned);
-        this.contractsTime.add(this.totalAssignedDays);
-        this.contractsTime.add(this.totalDaysWorked);
 
-    }
 
-    public PageReference goToAssignView() {
-        PageReference pageRef = Page.FTE_Unassign_Days_View;
-        if (String.isBlank(this.contractId)) {
-            pageRef = Page.FTE_Assign_Days_View;
-        }
 
-        pageRef.setRedirect(false);
-        return pageRef;
-    }
 
-    public PageReference goToEmployeeListViewFromEmployeeView () {
-        PageReference pageRef = Page.FTE_Employee_List_View;
-        clearEmployeeViewData();
-        pageRef.setRedirect(false);
-        return pageRef;
-    }
 
-    public PageReference goToProjectListViewFromEmployeeView() {
-        PageReference pageRef = Page.FTE_Project_List_View;
-        clearEmployeeViewData();
-        pageRef.setRedirect(false);
-        return pageRef;
-    }
 
-    public PageReference goToIndividualProjectFromEmplView() {
-        PageReference pageRef = null;
-        if (String.isBlank(this.contractId)) {
-            ApexPages.addMessage(new ApexPages.message(ApexPages.severity.ERROR, 'Empty FTE Contract ID'));
-        } else {
-            clearEmployeeViewData();
-            pageRef = Page.FTE_Individual_Project_View;
-            pageRef.setRedirect(false);
-        }
 
-        return pageRef;
-    }
-
-    public PageReference goToTimeCardView() {
-        PageReference pageRef = null;
-        if (exportMonth != null) {
-            pageRef = Page.FTE_Time_Card_View;
-            pageRef.setRedirect(false);
-        }
-        return pageRef;
-    }
-
-    private void clearEmployeeViewData() {
-        this.employee = null;
-        this.unassigned = null;
-        this.totalAssignedDays = null;
-        this.totalDaysWorked = null;
-        this.assignedMap = null;
-        this.contractsTime = null;
-        this.unassignedMap = null;
-    }
-
-    private void calculateLoggedTime(Boolean fteTracker, Id clientId, String clientName, Decimal loggedHours, Integer month, Decimal salary) {
-        EmployeeTime tmpHelper = this.unassigned;
-        if (fteTracker == true) {
-            if (!this.assignedMap.containsKey(clientId)) {
-                this.assignedMap.put(clientId, new EmployeeTime(clientName, clientId));
-            }
-            tmpHelper = this.assignedMap.get(clientId);
-            tmpHelper.hoursArray[month - 1] += loggedHours;
-            tmpHelper.hoursArray[12] += loggedHours;
-            tmpHelper.daysArray[13] += (salary != null ? salary : 0) * loggedHours;
-        } else {
-            if (!this.unassignedMap.containsKey(clientId)) {
-                this.unassignedMap.put(clientId, new EmployeeTime(clientName, clientId));
-            }
-            tmpHelper.hoursArray[month - 1] += loggedHours;
-            tmpHelper.hoursArray[12] += loggedHours;
-            tmpHelper.daysArray[13] += (salary != null ? salary : 0) * loggedHours;
-            tmpHelper = this.unassignedMap.get(clientId);
-            tmpHelper.hoursArray[month - 1] += loggedHours;
-            tmpHelper.hoursArray[12] += loggedHours;
-            tmpHelper.daysArray[13] += (salary != null ? salary : 0) * loggedHours;
-        }
-    }
-
-    private void generateStyles() {
-        // Calculate totals and labor cost
-        for (EmployeeTime empT : this.contractsTime) {
-            empT.calculateDays();
-            this.totalAssignedDays.sumHoursAndCost(empT);
-            this.totalDaysWorked.sumHoursAndCost(empT);
-        }
-
-        this.unassigned.calculateDays();
-        this.totalAssignedDays.calculateDays();
-
-        // We add css classes here to avoid complex if sections in visualgforce page
-        for (Integer i = 0; i < 12; i++) {
-            if (this.totalAssignedDays.daysArray[i] > 21) {
-                this.totalAssignedDays.cssStyle[i] = 'topTotal overbilled';
-            } else {
-                this.totalAssignedDays.cssStyle[i] = 'topTotal';
-            }
-            this.totalDaysWorked.cssStyle[i] = '';
-        }
-        if (totalAssignedDays.daysArray[12] > employeeNetworkDays) {
-            this.totalAssignedDays.cssStyle[12] = 'topTotal overbilled';
-        } else {
-            this.totalAssignedDays.cssStyle[12] = 'topTotal';
-        }
-        this.totalAssignedDays.cssStyle[13] = 'topTotal';
-        this.totalDaysWorked.sumHoursAndCost(this.unassigned);
-        this.totalDaysWorked.calculateDays();
-        this.totalDaysWorked.nameCss = '';
-        this.totalAssignedDays.nameCss = 'topTotal';
-        this.unassigned.nameCss = '';
-    }
 
     /**
      * Time Card Generation View
@@ -679,6 +162,7 @@ public class FTETrackerController {
     /**
      * Unassign/Assign hours/days view
      */
+     /**
     public List<DContract__c> fteContracts { get; set;}
     public List<SelectOption> fteContractsOptions { get;set; }
     public Id selectedFteContract { get; set;}
@@ -1082,13 +566,6 @@ public class FTETrackerController {
         this.monthName = null;
     }
 
-    private Integer getNetworkDays(Date hireDate) {
-        if (hireDate != null && hireDate.year() == this.currentYear) {
-            return FTETrackerHelper.getWorkingDays(hireDate, Date.newInstance(this.currentYear, 12 ,1));
-        }
-        return 230;
-    }
-
     private Integer getContractIndex() {
         Integer upperLimit = this.unassignedMap.size();
         if (upperLimit == 0) {
@@ -1097,5 +574,5 @@ public class FTETrackerController {
         }
         Integer rand = Math.round(Math.random()*1000);
         return Math.mod(rand, upperLimit);
-    }
+    }*/
 }

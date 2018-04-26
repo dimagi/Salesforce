@@ -29,10 +29,6 @@ public class FTEProjectListController {
         loadWorkCardJobStatus();
     }
 
-    public void loadWorkCardJobStatus() {
-        this.workCardJobStatus = FTETrackerHelper.loadWorkCardJobStatus();
-    }
-
     public void updateFteContracts() {
         for (DContract__c dc : this.toAddContracts) {
             dc.FTE_Tracker__c = 'Yes';
@@ -151,5 +147,9 @@ public class FTEProjectListController {
         PageReference pageRef = Page.FTE_Individual_Project_View;
         pageref.getParameters().put('contractId', this.contractId);
         return pageref;
+    }
+
+   public void loadWorkCardJobStatus() {
+        this.workCardJobStatus = FTETrackerHelper.loadWorkCardJobStatus();
     }
 }

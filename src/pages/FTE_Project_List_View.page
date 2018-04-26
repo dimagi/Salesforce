@@ -18,15 +18,11 @@
         }
     </style>
 
-    <script type="text/javascript">
-        $j = jQuery.noConflict();
-    </script>
-
     <apex:pageBlock title="FTE Project List" id="projectListViewIBlock">
         <apex:form >
 
             <apex:actionPoller action="{!loadWorkCardJobStatus}" enabled="{!workCardJobStatus.isRunning}"
-                        reRender="projectListViewIBlock" interval="10"/>
+                        reRender="projectListViewIBlock" interval="5"/>
 
             <apex:outputPanel id="jobLoader" rendered="{!workCardJobStatus.isRunning}">
                 <apex:image url="/img/loading32.gif" height="10px" />
