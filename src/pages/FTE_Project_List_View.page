@@ -1,4 +1,4 @@
-<apex:page controller="FTETrackerController" docType="html-5.0" action="{!loadContractList}">
+<apex:page controller="FTEProjectListController" docType="html-5.0" action="{!initProjectList}">
     <style type="text/css">
         .fteProjectCell {
             cursor: pointer;
@@ -17,10 +17,6 @@
             margin-left: 10px;
         }
     </style>
-
-    <apex:includeScript value="{!URLFOR($Resource.ProjectReportOut2, 'js/jquery.min.js')}"/>
-    <apex:includeScript value="{!URLFOR($Resource.ProjectReportOut2, 'js/jquery-ui.min.js')}"/>
-    <apex:stylesheet value="{!URLFOR($Resource.ProjectReportOut2, 'css/jquery-ui.min.css')}" />
 
     <script type="text/javascript">
         $j = jQuery.noConflict();
@@ -52,15 +48,15 @@
                     <apex:pageMessages />
                 </apex:outputPanel>
 
-                <apex:actionFunction action="{!goToIndividualProjectView}" name="goToIndividualProjectView" />
-                <apex:actionFunction action="{!setViewData}" name="setIndividualProjectViewData" oncomplete="goToIndividualProjectView();">
+                <apex:actionFunction action="{!goToIndividualProjectView}" name="goToIndividualProjectView" reRender="projectList" >
                     <apex:param name="contractId" assignTo="{!contractId}" value=""/>
                 </apex:actionFunction>
+
                 <apex:actionFunction action="{!searchProject}" name="searchProjectJs" status="loadingDiv" reRender="projectList" />
 
                 <apex:pageBlockSection columns="1">
                     <apex:pageBlockTable id="fteContractList" value="{!listToSubmit}" var="fteProject" styleClass="projectTable">
-                        <apex:column headerValue="FTE Project Name" value="{!fteProject.name}" styleClass="fteProjectCell" onclick="setIndividualProjectViewData('{!fteProject.Id}');" />
+                        <apex:column headerValue="FTE Project Name" value="{!fteProject.name}" styleClass="fteProjectCell" onclick="goToIndividualProjectView('{!fteProject.Id}');" />
                         <apex:column headerValue="Action" >
                             <apex:commandLink status="loadingDiv" value=" Remove " action="{!removeProjectFromFteTracker}" reRender="projectList" >
                                 <apex:param name="contractToRemove" assignTo="{!contractId}" value="{!fteProject.Id}"/>
@@ -71,7 +67,7 @@
                 <apex:outputPanel styleClass="leftMargin">
                     <apex:commandButton action="{!updateFteContracts}" value="Save changes" id="saveButton"
                                             disabled="{!!projectListUpdated}" status="loadingDiv" reRender="projectListViewIBlock" />
-                    <apex:commandButton action="{!goToEmployeeListViewFromProjectListView}" value="Employee List" id="backButton" />
+                    <apex:commandButton action="{!goToEmployeeListView}" value="Employee List" id="backButton" />
                 </apex:outputPanel>
                 <br /><br />
                 <apex:pageBlockSection columns="1" id="serachSection">
