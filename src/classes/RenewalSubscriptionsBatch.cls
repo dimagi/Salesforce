@@ -101,7 +101,9 @@ public without sharing class RenewalSubscriptionsBatch implements Database.Batch
                                 + ('' + this.currentDate.year());
 
         for (Accounting_Subscription__c subscription : subs) {
-            if (subscription.Accounting_subscriber_domain__r.Opportunity__c != null && subscription.Accounting_subscriber_domain__r.Opportunity__r.CreatedDate >= this.currentDate.addDays(-61)) {
+            if (subscription.Accounting_subscriber_domain__r.Opportunity__c != null &&
+                 (subscription.Accounting_subscriber_domain__r.Opportunity__r.IsClosed == false || 
+                   (subscription.Accounting_subscriber_domain__r.Opportunity__r.IsClosed == true && subscription.Accounting_subscriber_domain__r.Opportunity__r.CloseDate >= this.currentDate))) {
                 this.domainsToSkip.add(subscription.Accounting_subscriber_domain__c);
             }
             if (!this.domainsToSkip.contains(subscription.Accounting_subscriber_domain__c) && subscription.Renewal_Opportunity_created__c == false) {
@@ -255,7 +257,8 @@ public without sharing class RenewalSubscriptionsBatch implements Database.Batch
     public List<Accounting_Subscription__c> getSubscriptionsForRenewal(Set<String> domainsWithFutureSubscriptions) {
         return [SELECT Id, date_start__c, date_end__c, service_type__c, Accounting_subscriber_domain__c, Accounting_subscriber_domain__r.Name, Dimagi_Contact__c, Accounting_subscriber_domain__r.Account__r.Name,
                 Accounting_subscriber_domain__r.cpAllWebUsers__c, Software_Plan_Edition__c, Renewal_Opportunity_created__c,
-                Accounting_subscriber_domain__r.Opportunity__r.CreatedDate, Accounting_subscriber_domain__r.Opportunity__c
+                Accounting_subscriber_domain__r.Opportunity__r.CreatedDate, Accounting_subscriber_domain__r.Opportunity__c,
+                Accounting_subscriber_domain__r.Opportunity__r.CloseDate, Accounting_subscriber_domain__r.Opportunity__r.IsClosed
                 FROM Accounting_Subscription__c
                 WHERE Accounting_subscriber_domain__r.Name != '' AND date_end__c != null AND date_end__c <=: this.currentDate.addDays(60)
                 AND date_end__c >=: this.currentDate AND Accounting_subscriber_domain__r.Name NOT IN: domainsWithFutureSubscriptions AND is_active__c = true

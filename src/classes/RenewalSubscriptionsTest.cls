@@ -177,7 +177,7 @@ public class RenewalSubscriptionsTest {
         System.assertEquals(3, opps.size());
     }
 
-    public static testMethod void shouldCreateNewOppWhenRenewalOppIsTooOld() {
+    public static testMethod void shouldCreateNewOppWhenRenewalOppHaveClosedDateFromThePast() {
         addTestData();
         addTestPricebooks();
 
