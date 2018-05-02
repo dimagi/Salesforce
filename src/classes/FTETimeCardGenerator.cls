@@ -4,6 +4,7 @@ public class FTETimeCardGenerator {
     public static final String CSV_SHORT_EMPTY_ROW = '"","","","","","","","","","","","","","",""';
     public static final String NEW_LINE = '\n';
 
+    private Integer fteYear;
     private Integer employeeMonth;
     private Id employeeId;
     private FTEMonthTimeCard unassignedHours;
@@ -19,26 +20,25 @@ public class FTETimeCardGenerator {
     private String monthYearText;
     private String employeeName;
 
-    public FTETimeCardGenerator(Integer employeeMonth, Id employeeId) {
+    public FTETimeCardGenerator(Integer fteYear, Integer employeeMonth, Id employeeId) {
         this.employeeMonth = employeeMonth;
         this.employeeId = employeeId;
+        this.fteYear = fteYear;
     }
 
     public List<FTEMonthTimeCard> generateMonthTimeCards() {
-        Integer fteYear = FTE_Tracker_Settings__c.getOrgDefaults().FTE_Year__c != null ? FTE_Tracker_Settings__c.getOrgDefaults().FTE_Year__c.intValue() : Date.today().year();
-
         SFDC_Employee__c employee = [SELECT Id, Name, Unloaded_Daily_Rate__c FROM SFDC_Employee__c WHERE Id =: employeeId LIMIT 1];
         this.employeeName = employee.Name;
-        this.monthYearText = DateTime.newInstance(fteYear, this.employeeMonth, 1).format('MMMM yyyy');
+        this.monthYearText = DateTime.newInstance(this.fteYear, this.employeeMonth, 1).format('MMMM yyyy');
         this.fileName = employee.Name.replaceAll(' ', '_') + '_' + this.monthYearText.replaceAll(' ', '_') + '.csv';
 
         List<Time_Card__c> timeCards = [SELECT Id, Client__c, Client__r.FTE_Tracker__c, Client__r.Name, Total__c, FTE_hours__c,
                                         FTE_Contract__c, FTE_Contract__r.Name, FTE_Contract__r.FTE_Tracker__c, Date__c
                                         FROM Time_Card__c WHERE Employee__c =: this.employeeId AND Client__c != null
-                                        AND CALENDAR_YEAR(Date__c) =: fteYear AND CALENDAR_MONTH(Date__c) =: this.employeeMonth
+                                        AND CALENDAR_YEAR(Date__c) =: this.fteYear AND CALENDAR_MONTH(Date__c) =: this.employeeMonth
                                         ORDER BY Client__r.Name];
 
-        this.monthDays = Date.daysInMonth(fteYear, employeeMonth);
+        this.monthDays = Date.daysInMonth(this.fteYear, employeeMonth);
         this.unassignedHours = new FTEMonthTimeCard('Overhead', this.monthDays);
         this.contractMap = new Map<Id, FTEMonthTimeCard>();
 

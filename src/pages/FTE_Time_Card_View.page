@@ -1,4 +1,4 @@
-<apex:page controller="FTETrackerController" docType="html-5.0" action="{!loadExportTimeCards}">
+<apex:page controller="FTEFileController" docType="html-5.0" action="{!loadExportTimeCards}">
     <style type="text/css">
         .topTotal {
             border-top-width: 3px !important;
@@ -31,7 +31,7 @@
                 </apex:pageBlockTable>
 
                 <apex:commandButton action="{!goToEmployeeViewFromTimeCardView}" value="Employee View" id="backEButton" />
-                <a class="btn" style="text-decoration:none;" href="apex/FTE_Download_File?employeeId={!employee.Id}&employeeMonth={!exportMonth}" target="_blank">Download CSV</a>
+                <a class="btn" style="text-decoration:none;" href="apex/FTE_Download_File?employeeId={!employeeId}&month={!exportMonth}" target="_blank">Download CSV</a>
             </apex:outputPanel>
         </apex:form>
     </apex:pageBlock>

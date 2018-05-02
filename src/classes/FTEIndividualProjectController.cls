@@ -10,7 +10,7 @@ public class FTEIndividualProjectController {
 
     public FTEIndividualProjectController() {
         String conId = ApexPages.currentPage().getParameters().get('contractId');
-        if (conId != null) {
+        if (conId != null && conId InstanceOf Id) {
             this.contractId = (Id) conId;
         }
     }
