@@ -18,9 +18,18 @@ public class FTEEmployeeController {
     public List<FTEEmployeeTime> contractsTime { get; set;}
     public Map<Id, FTEEmployeeTime> unassignedMap { get; set;}
 
-    public void setViewData() {
-        // We need this empty method to set values before loading new view. ?? TODO !::::: we must check it
-    }
+    public List<DContract__c> fteContracts { get; set;}
+    public List<SelectOption> fteContractsOptions { get;set; }
+    public Id selectedFteContract { get; set;}
+    public String fteDays { get; set;}
+    public Integer employeeMonth { get; set;}
+    public Decimal fteHoursMax { get; set;}
+    public Decimal fteDaysMax { get; set;}
+    public Decimal userAvailableDays { get; set;}
+    public Boolean assignViewError { get; set;}
+    public Boolean notValidDays {get; set;}
+    public String monthName {get; set;}
+    public String contractName { get; set;}
 
     public FTEEmployeeController() {
         String emplId = ApexPages.currentPage().getParameters().get('employeeId');
@@ -102,17 +111,6 @@ public class FTEEmployeeController {
         return pageref;
     }
 
-    public PageReference goToAssignView() {
-        PageReference pageRef = Page.FTE_Unassign_Days_View;
-        if (String.isBlank(this.contractId)) {
-            pageRef = Page.FTE_Assign_Days_View;
-        }
-
-        pageRef.setRedirect(false);
-        return pageRef;
-    }
-
-
     public PageReference goToTimeCardView() {
         PageReference pageRef = null;
         pageRef = Page.FTE_Time_Card_View;
@@ -120,90 +118,6 @@ public class FTEEmployeeController {
         pageref.getParameters().put('fteYear', String.valueOf(this.fteYear));
         pageref.getParameters().put('month', String.valueOf(this.exportMonth));
         return pageRef;
-    }
-
-    private void calculateLoggedTime(Boolean fteTracker, Id clientId, String clientName, Decimal loggedHours, Integer month, Decimal salary) {
-        FTEEmployeeTime tmpHelper = this.unassigned;
-        if (fteTracker == true) {
-            if (!this.assignedMap.containsKey(clientId)) {
-                this.assignedMap.put(clientId, new FTEEmployeeTime(clientName, clientId));
-            }
-            tmpHelper = this.assignedMap.get(clientId);
-            tmpHelper.hoursArray[month - 1] += loggedHours;
-            tmpHelper.hoursArray[12] += loggedHours;
-            tmpHelper.daysArray[13] += (salary != null ? salary : 0) * loggedHours;
-        } else {
-            if (!this.unassignedMap.containsKey(clientId)) {
-                this.unassignedMap.put(clientId, new FTEEmployeeTime(clientName, clientId));
-            }
-            tmpHelper.hoursArray[month - 1] += loggedHours;
-            tmpHelper.hoursArray[12] += loggedHours;
-            tmpHelper.daysArray[13] += (salary != null ? salary : 0) * loggedHours;
-            tmpHelper = this.unassignedMap.get(clientId);
-            tmpHelper.hoursArray[month - 1] += loggedHours;
-            tmpHelper.hoursArray[12] += loggedHours;
-            tmpHelper.daysArray[13] += (salary != null ? salary : 0) * loggedHours;
-        }
-    }
-
-    private void generateStyles() {
-        // Calculate totals and labor cost
-        for (FTEEmployeeTime empT : this.contractsTime) {
-            empT.calculateDays();
-            this.totalAssignedDays.sumHoursAndCost(empT);
-            this.totalDaysWorked.sumHoursAndCost(empT);
-        }
-
-        this.unassigned.calculateDays();
-        this.totalAssignedDays.calculateDays();
-
-        // We add css classes here to avoid complex if sections in visualgforce page
-        for (Integer i = 0; i < 12; i++) {
-            if (this.totalAssignedDays.daysArray[i] > 21) {
-                this.totalAssignedDays.cssStyle[i] = 'topTotal overbilled';
-            } else {
-                this.totalAssignedDays.cssStyle[i] = 'topTotal';
-            }
-            this.totalDaysWorked.cssStyle[i] = '';
-        }
-        if (totalAssignedDays.daysArray[12] > employeeNetworkDays) {
-            this.totalAssignedDays.cssStyle[12] = 'topTotal overbilled';
-        } else {
-            this.totalAssignedDays.cssStyle[12] = 'topTotal';
-        }
-        this.totalAssignedDays.cssStyle[13] = 'topTotal';
-        this.totalDaysWorked.sumHoursAndCost(this.unassigned);
-        this.totalDaysWorked.calculateDays();
-        this.totalDaysWorked.nameCss = '';
-        this.totalAssignedDays.nameCss = 'topTotal';
-        this.unassigned.nameCss = '';
-    }
-
-    /**
-     * Unassign/Assign hours/days view
-     */
-
-    public List<DContract__c> fteContracts { get; set;}
-    public List<SelectOption> fteContractsOptions { get;set; }
-    public Id selectedFteContract { get; set;}
-    public String fteDays { get; set;}
-    public Integer employeeMonth { get; set;}
-    public Decimal fteHoursMax { get; set;}
-    public Decimal fteDaysMax { get; set;}
-    public Decimal userAvailableDays { get; set;}
-    public Boolean assignViewError { get; set;}
-    public Boolean notValidDays {get; set;}
-    public String monthName {get; set;}
-    public String contractName { get; set;}
-
-    public void enableConfirmButton() {
-        ApexPages.addMessage(new ApexPages.message(ApexPages.severity.ERROR, 'Button Enabled'));
-        this.notValidDays = false;
-    }
-
-    public void disableConfirmButton() {
-        ApexPages.addMessage(new ApexPages.message(ApexPages.severity.ERROR, 'Button Disabled'));
-        this.notValidDays = true;
     }
 
     public void loadEmployeeMonth() {
@@ -250,34 +164,34 @@ public class FTEEmployeeController {
         }
     }
 
-    public PageReference moveTimeToUnassigned() {
+    public void moveTimeToUnassigned() {
         if (notValidDays) {
-            return null;
+            return;
         }
         this.assignViewError = false;
         if (this.employeeMonth == null) {
             ApexPages.addMessage(new ApexPages.message(ApexPages.severity.ERROR, 'Cannot load month number'));
             this.assignViewError = true;
-            return null;
+            return;
         }
 
         Decimal fteDaysdecimal = this.fteDays != null && this.fteDays != '' ? Decimal.valueOf(this.fteDays) : 0;
         if (this.fteDaysMax < fteDaysdecimal || fteDaysdecimal < 0) {
             ApexPages.addMessage(new ApexPages.message(ApexPages.severity.ERROR, 'Too much hours to assign / hours cannot be negative'));
             this.assignViewError = true;
-            return null;
+            return;
         }
 
         if (String.isEmpty(this.contractId)) {
             ApexPages.addMessage(new ApexPages.message(ApexPages.severity.ERROR, 'Cannot find FTE Contract'));
             this.assignViewError = true;
-            return null;
+            return;
         }
 
         if (fteDaysdecimal == 0) {
             ApexPages.addMessage(new ApexPages.message(ApexPages.severity.ERROR, 'Cannot move 0 hours'));
             this.assignViewError = true;
-            return null;
+            return;
         }
 
         try {
@@ -370,44 +284,41 @@ public class FTEEmployeeController {
             upsert timeCardsToUpdate;
             moveHoursInFTEWorkCard((-1) * fteDaysdecimal, this.employeeMonth + 1, this.employee.Id);
 
-            if (this.assignViewError == false) {
-                return backToEmployeeView();
-            }
         } catch (Exception e) {
             this.assignViewError = true;
         }
 
-        return null;
+        initFteEmployeeView();
     }
 
-    public PageReference moveTimeFromUnassigned() {
+    public void moveTimeFromUnassigned() {
         if (notValidDays) {
-            return null;
+            return;
         }
         this.assignViewError = false;
         if (this.employeeMonth == null) {
             ApexPages.addMessage(new ApexPages.message(ApexPages.severity.ERROR, 'Cannot load month number'));
             this.assignViewError = true;
-            return null;
+            return;
         }
 
         Decimal fteDaysdecimal = this.fteDays != null && this.fteDays != '' ? Decimal.valueOf(this.fteDays) : 0;
         if (this.fteDaysMax < fteDaysdecimal || fteDaysdecimal < 0) {
             ApexPages.addMessage(new ApexPages.message(ApexPages.severity.ERROR, 'Too much hours to assign / hours cannot be negative'));
             this.assignViewError = true;
-            return null;
+            return;
         }
 
         if (String.isEmpty(this.selectedFteContract)) {
             ApexPages.addMessage(new ApexPages.message(ApexPages.severity.ERROR, 'Cannot find FTE Contract'));
             this.assignViewError = true;
-            return null;
+            return;
         }
 
         if (fteDaysdecimal == 0) {
             ApexPages.addMessage(new ApexPages.message(ApexPages.severity.ERROR, 'Cannot move 0 hours'));
             this.assignViewError = true;
-            return null;
+            return;
         }
 
         try {
@@ -537,22 +448,68 @@ public class FTEEmployeeController {
 
             upsert timeCardsToUpdate;
             moveHoursInFTEWorkCard(fteDaysdecimal, this.employeeMonth + 1, this.employee.Id);
-
-            if (this.assignViewError == false) {
-                return backToEmployeeView();
-            }
         } catch (Exception e) {
             this.assignViewError = true;
             ApexPages.addMessage(new ApexPages.message(ApexPages.severity.ERROR, 'Unexpected error: ' + e.getMessage()));
         }
-        return null;
+        initFteEmployeeView();
     }
 
-    public PageReference backToEmployeeView() {
-        clearAssignUnassignViewData();
-        PageReference pageRef = Page.FTE_Employee_View;
-        pageRef.setRedirect(false);
-        return pageRef;
+    private void calculateLoggedTime(Boolean fteTracker, Id clientId, String clientName, Decimal loggedHours, Integer month, Decimal salary) {
+        FTEEmployeeTime tmpHelper = this.unassigned;
+        if (fteTracker == true) {
+            if (!this.assignedMap.containsKey(clientId)) {
+                this.assignedMap.put(clientId, new FTEEmployeeTime(clientName, clientId));
+            }
+            tmpHelper = this.assignedMap.get(clientId);
+            tmpHelper.hoursArray[month - 1] += loggedHours;
+            tmpHelper.hoursArray[12] += loggedHours;
+            tmpHelper.daysArray[13] += (salary != null ? salary : 0) * loggedHours;
+        } else {
+            if (!this.unassignedMap.containsKey(clientId)) {
+                this.unassignedMap.put(clientId, new FTEEmployeeTime(clientName, clientId));
+            }
+            tmpHelper.hoursArray[month - 1] += loggedHours;
+            tmpHelper.hoursArray[12] += loggedHours;
+            tmpHelper.daysArray[13] += (salary != null ? salary : 0) * loggedHours;
+            tmpHelper = this.unassignedMap.get(clientId);
+            tmpHelper.hoursArray[month - 1] += loggedHours;
+            tmpHelper.hoursArray[12] += loggedHours;
+            tmpHelper.daysArray[13] += (salary != null ? salary : 0) * loggedHours;
+        }
+    }
+
+    private void generateStyles() {
+        // Calculate totals and labor cost
+        for (FTEEmployeeTime empT : this.contractsTime) {
+            empT.calculateDays();
+            this.totalAssignedDays.sumHoursAndCost(empT);
+            this.totalDaysWorked.sumHoursAndCost(empT);
+        }
+
+        this.unassigned.calculateDays();
+        this.totalAssignedDays.calculateDays();
+
+        // We add css classes here to avoid complex if sections in visualgforce page
+        for (Integer i = 0; i < 12; i++) {
+            if (this.totalAssignedDays.daysArray[i] > 21) {
+                this.totalAssignedDays.cssStyle[i] = 'topTotal overbilled';
+            } else {
+                this.totalAssignedDays.cssStyle[i] = 'topTotal';
+            }
+            this.totalDaysWorked.cssStyle[i] = '';
+        }
+        if (totalAssignedDays.daysArray[12] > employeeNetworkDays) {
+            this.totalAssignedDays.cssStyle[12] = 'topTotal overbilled';
+        } else {
+            this.totalAssignedDays.cssStyle[12] = 'topTotal';
+        }
+        this.totalAssignedDays.cssStyle[13] = 'topTotal';
+        this.totalDaysWorked.sumHoursAndCost(this.unassigned);
+        this.totalDaysWorked.calculateDays();
+        this.totalDaysWorked.nameCss = '';
+        this.totalAssignedDays.nameCss = 'topTotal';
+        this.unassigned.nameCss = '';
     }
 
     private void moveHoursInFTEWorkCard(Decimal daysValue, Integer month, Id EmployeeId) {

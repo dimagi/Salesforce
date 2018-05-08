@@ -26,12 +26,43 @@
             margin-top: 10px;
             margin-bottom: 10px;
         }
-        #chooseMonthButton {
+        .jqButton {
             height: 22px;
             width: auto;
             padding-right:5px;
             padding-left:5px;
             margin-top: 10px;
+        }
+        .boldText {
+            font-weight: bold;
+        }
+        .hoursModal label, input, span, h1, select {
+            display:block;
+            margin-bottom: 3px;
+        }
+        .hoursModal input.text {
+            margin-bottom:12px;
+            width:95%;
+            padding: .4em;
+        }
+        .hoursModal fieldset {
+            padding:5px;
+            border:0;
+            margin-top:0px;
+         }
+        .hoursModal h1 {
+            font-size: 1.2em;
+            margin: .6em 0;
+        }
+        .ui-button {
+            padding: 3px;
+        }
+        .ui-dialog .ui-state-error {
+            padding: .3em;
+        }
+        .validateTips {
+            border: 1px solid transparent;
+            padding: 0.3em;
         }
     </style>
 
@@ -41,11 +72,48 @@
 
     <script type="text/javascript">
         $j = jQuery.noConflict();
+
+        function unassignHours() {
+            $j("#unassignModal").dialog( "close" );
+            moveTimeToUnassigned($j("#daysToUnassig").val());
+        }
+
+        function assignHours() {
+            $j("#assignModal").dialog( "close" );
+            moveTimeToAssigned($j("#daysToAssig").val(), $j("[id*=fteContractAssign]")[0].selectedOptions[0].value);
+        }
+
         $j(document).ready(function() {
-            $j("#tcExport").dialog({ autoOpen: false, modal: true, closeOnEscape: true, width: 220, height: 120 });
+            $j("#tcExport").dialog({ autoOpen: false, modal: true, closeOnEscape: true, width: 220, height: 110 });
+            $j("#unassignModal").dialog({ autoOpen: false, modal: true, closeOnEscape: true, width: 280, height: 230,
+                                            buttons: {
+                                                "Confirm": {
+                                                    text: "Confirm",
+                                                    id: "unassignConfirm",
+                                                    click: unassignHours,
+                                                },
+                                                Cancel: function() {
+                                                    $j("#daysToUnassig").tooltip('disable');
+                                                    $j("#unassignModal").dialog( "close" );
+                                                }
+                                            },
+                                            close: function() { $j("#daysToUnassig").tooltip('disable'); }});
+            $j("#assignModal").dialog({ autoOpen: false, modal: true, closeOnEscape: true, width: 280, height: 250,
+                                            buttons: {
+                                                "Confirm": {
+                                                    text: "Confirm",
+                                                    id: "assignConfirm",
+                                                    click: assignHours,
+                                                },
+                                                Cancel: function() {
+                                                    $j("#daysToAssig").tooltip('disable');
+                                                    $j("#assignModal").dialog( "close" );
+                                                }
+                                            },
+                                            close: function() { $j("#daysToAssig").tooltip('disable'); }});
         });
 
-        function showDialog(){
+        function showTcExportDialog() {
             $j("#tcExport").dialog('open');
             $j('#tcExport').dialog('option' , 'title' , 'Generate Time Cards');
             return false;
@@ -55,6 +123,129 @@
             var monthNum = $j('#monthList').val();
             setExportMonthData(monthNum);
         }
+
+        function loadModalData(month, contractId) {
+            if (contractId == "") {
+                loadEmployeeMonth(month);
+            } else {
+                loadEmployeeUnassMonth(month, contractId);
+            }
+        }
+
+        function showUnassignedModal() {
+            $j("#daysToUnassig").val("0.25");
+            $j("#unassignModal").dialog('open');
+            $j('#unassignModal').dialog('option' , 'title' , 'Unassign Days');
+
+            $j("#daysToUnassig").tooltip({
+                items: '#daysToUnassig',
+                content: "Validation enabled!",
+                disabled: true,
+                show: false,
+                hide: false,
+                position: {my: "left top", at: "left bottom"},
+                close: function( event, ui ) {
+                    if (event.originalEvent.type != 'blur') {
+                        $j(this).tooltip('enable').tooltip('open');
+                    }
+                }
+            });
+            $j('#daysToUnassig').keyup(function() {
+                validateDaysValue($j(this), $j("#unassignConfirm"), true);
+            });
+            $j('#daysToUnassig').change(function() {
+                validateDaysValue($j(this), $j("#unassignConfirm"), true);
+            });
+            validateDaysValue($j("#daysToUnassig"), $j("#unassignConfirm"), true);
+            return false;
+        }
+
+        function showAssignedModal() {
+            $j("#daysToAssig").val("0.25");
+            $j("#assignModal").dialog('open');
+            $j('#assignModal').dialog('option' , 'title' , 'Assign Days');
+
+            $j("#daysToAssig").tooltip({
+                items: '#daysToAssig',
+                content: "Validation enabled!",
+                disabled: true,
+                show: false,
+                hide: false,
+                position: {my: "left top", at: "left bottom"},
+                close: function( event, ui ) {
+                    if (event.originalEvent.type != 'blur') {
+                        $j(this).tooltip('enable').tooltip('open');
+                    }
+                }
+            });
+            $j('#daysToAssig').keyup(function() {
+                validateDaysValue($j(this), $j("#assignConfirm"),false);
+            });
+            $j('#daysToAssig').change(function() {
+                validateDaysValue($j(this), $j("#assignConfirm"), false);
+            });
+            validateDaysValue($j("#daysToAssig"), $j("#assignConfirm"), false);
+            return false;
+        }
+
+        function validateDaysValue(tooltipElement, confirmButton, toUnassigned) {
+            var fteDaysMax, daysValue, daysNum, empAvailableDays;
+            daysValue = tooltipElement.val();
+            if (toUnassigned == true) {
+                fteDaysMax = $j("[id$=fteDaysMaxUnass]").val();
+            } else {
+                fteDaysMax = $j("[id$=fteDaysMaxAssign]").val();
+                empAvailableDays = $j("[id$=userAvailableDaysId]").val();
+            }
+
+            try {
+                if (daysValue == null || daysValue == undefined || daysValue == '') {
+                    setTooltipMessage(tooltipElement, confirmButton, 'Days cannot be empty');
+                    return;
+                }
+                if (!isFinite(daysValue)) {
+                    setTooltipMessage(tooltipElement, confirmButton, 'Wrong number format');
+                    return;
+                }
+
+                daysNum = new Number(daysValue);
+                if (toUnassigned == false) {
+                    if (daysNum > empAvailableDays) {
+                        setTooltipMessage(tooltipElement, confirmButton, 'Days overbilled!');
+                        return;
+                    }
+                }
+                if (daysNum < 0.25) {
+                    setTooltipMessage(tooltipElement, confirmButton, 'Minimum value is 0.25');
+                    return;
+                }
+                if (daysNum > fteDaysMax) {
+                    setTooltipMessage(tooltipElement, confirmButton, 'Maximum value is ' + fteDaysMax);
+                    return;
+                }
+
+                enableConfirmButton(confirmButton, tooltipElement);
+            } catch (e) {
+                setTooltipMessage(tooltipElement, confirmButton, 'Unexpected error, during validation');
+                console.error(e);
+            }
+        }
+
+        function enableConfirmButton(buttonElement, tooltipElement) {
+            tooltipElement.tooltip('disable');
+            buttonElement.button("enable");
+        }
+
+        function disableConfirmButton(buttonElement) {
+            buttonElement.button("disable");
+        }
+
+        function setTooltipMessage(tooltipElement, buttonElement, textMessage) {
+            disableConfirmButton(buttonElement);
+            tooltipElement.tooltip("option", "content", textMessage);
+            tooltipElement.tooltip('enable').tooltip('open');
+        }
+
     </script>
 
     <apex:pageBlock title="FTE Employee">
@@ -73,51 +264,103 @@
                     </apex:facet>
                 </apex:actionstatus>
                 <apex:outputText id="employeeName" value="{!employee.Name}"/>
+
+                <!-- TODO in future we will implement changing FTE year, it was added only for test browser back button <br />
+                <apex:outputText id="fteYearName" value="Choose FTE year"/>
+                <apex:selectList id="fteYearSelect" value="{!fteYear}" size="1">
+                    <apex:selectOption itemValue="2017" itemLabel="2017"/>
+                    <apex:selectOption itemValue="2018" itemLabel="2018"/>
+                    <apex:selectOption itemValue="2019" itemLabel="2019"/>
+                </apex:selectList> -->
+
                 <apex:pageBlockTable id="employeeHours" value="{!contractsTime}" var="empTime" styleClass="employeeTable">
                     <apex:column onclick="if ('{!empTime.name}' !== 'Unassigned' && '{!empTime.name}' !== 'Total Days Worked' && '{!empTime.name}' !== 'Total Assigned Days') {goToIndividualProjectView('{!empTime.objId}');}"
                                  headerValue="Contract Name" value="{!empTime.name}" styleClass="{!empTime.nameCss}"/>
-                    <apex:column onclick="if ('{!empTime.name}' !== 'Total Days Worked' && '{!empTime.name}' !== 'Total Assigned Days') {setAssignViewData(0, '{!empTime.objId}');}"
+                    <apex:column onclick="if ('{!empTime.name}' !== 'Total Days Worked' && '{!empTime.name}' !== 'Total Assigned Days') {loadModalData(0, '{!empTime.objId}');}"
                                  headerValue="Jan {!fteYear}" value="{!empTime.daysArray[0]}" styleClass="{!empTime.cssStyle[0]}"/>
-                    <apex:column onclick="if ('{!empTime.name}' !== 'Total Days Worked' && '{!empTime.name}' !== 'Total Assigned Days') {setAssignViewData(1, '{!empTime.objId}');}"
+                    <apex:column onclick="if ('{!empTime.name}' !== 'Total Days Worked' && '{!empTime.name}' !== 'Total Assigned Days') {loadModalData(1, '{!empTime.objId}');}"
                                  headerValue="Feb {!fteYear}" value="{!empTime.daysArray[1]}" styleClass="{!empTime.cssStyle[1]}"/>
-                    <apex:column onclick="if ('{!empTime.name}' !== 'Total Days Worked' && '{!empTime.name}' !== 'Total Assigned Days') {setAssignViewData(2, '{!empTime.objId}');}"
+                    <apex:column onclick="if ('{!empTime.name}' !== 'Total Days Worked' && '{!empTime.name}' !== 'Total Assigned Days') {loadModalData(2, '{!empTime.objId}');}"
                                  headerValue="Mar {!fteYear}" value="{!empTime.daysArray[2]}" styleClass="{!empTime.cssStyle[2]}"/>
-                    <apex:column onclick="if ('{!empTime.name}' !== 'Total Days Worked' && '{!empTime.name}' !== 'Total Assigned Days') {setAssignViewData(3, '{!empTime.objId}');}"
+                    <apex:column onclick="if ('{!empTime.name}' !== 'Total Days Worked' && '{!empTime.name}' !== 'Total Assigned Days') {loadModalData(3, '{!empTime.objId}');}"
                                  headerValue="Apr {!fteYear}" value="{!empTime.daysArray[3]}" styleClass="{!empTime.cssStyle[3]}"/>
-                    <apex:column onclick="if ('{!empTime.name}' !== 'Total Days Worked' && '{!empTime.name}' !== 'Total Assigned Days') {setAssignViewData(4, '{!empTime.objId}');}"
+                    <apex:column onclick="if ('{!empTime.name}' !== 'Total Days Worked' && '{!empTime.name}' !== 'Total Assigned Days') {loadModalData(4, '{!empTime.objId}');}"
                                  headerValue="May {!fteYear}" value="{!empTime.daysArray[4]}" styleClass="{!empTime.cssStyle[4]}"/>
-                    <apex:column onclick="if ('{!empTime.name}' !== 'Total Days Worked' && '{!empTime.name}' !== 'Total Assigned Days') {setAssignViewData(5, '{!empTime.objId}');}"
+                    <apex:column onclick="if ('{!empTime.name}' !== 'Total Days Worked' && '{!empTime.name}' !== 'Total Assigned Days') {loadModalData(5, '{!empTime.objId}');}"
                                  headerValue="Jun {!fteYear}" value="{!empTime.daysArray[5]}" styleClass="{!empTime.cssStyle[5]}"/>
-                    <apex:column onclick="if ('{!empTime.name}' !== 'Total Days Worked' && '{!empTime.name}' !== 'Total Assigned Days') {setAssignViewData(6, '{!empTime.objId}');}"
+                    <apex:column onclick="if ('{!empTime.name}' !== 'Total Days Worked' && '{!empTime.name}' !== 'Total Assigned Days') {loadModalData(6, '{!empTime.objId}');}"
                                  headerValue="Jul {!fteYear}" value="{!empTime.daysArray[6]}" styleClass="{!empTime.cssStyle[6]}"/>
-                    <apex:column onclick="if ('{!empTime.name}' !== 'Total Days Worked' && '{!empTime.name}' !== 'Total Assigned Days') {setAssignViewData(7, '{!empTime.objId}');}"
+                    <apex:column onclick="if ('{!empTime.name}' !== 'Total Days Worked' && '{!empTime.name}' !== 'Total Assigned Days') {loadModalData(7, '{!empTime.objId}');}"
                                  headerValue="Aug {!fteYear}" value="{!empTime.daysArray[7]}" styleClass="{!empTime.cssStyle[7]}"/>
-                    <apex:column onclick="if ('{!empTime.name}' !== 'Total Days Worked' && '{!empTime.name}' !== 'Total Assigned Days') {setAssignViewData(8, '{!empTime.objId}');}"
+                    <apex:column onclick="if ('{!empTime.name}' !== 'Total Days Worked' && '{!empTime.name}' !== 'Total Assigned Days') {loadModalData(8, '{!empTime.objId}');}"
                                  headerValue="Sep {!fteYear}" value="{!empTime.daysArray[8]}" styleClass="{!empTime.cssStyle[8]}"/>
-                    <apex:column onclick="if ('{!empTime.name}' !== 'Total Days Worked' && '{!empTime.name}' !== 'Total Assigned Days') {setAssignViewData(9, '{!empTime.objId}');}"
+                    <apex:column onclick="if ('{!empTime.name}' !== 'Total Days Worked' && '{!empTime.name}' !== 'Total Assigned Days') {loadModalData(9, '{!empTime.objId}');}"
                                  headerValue="Ocb {!fteYear}" value="{!empTime.daysArray[9]}" styleClass="{!empTime.cssStyle[9]}"/>
-                    <apex:column onclick="if ('{!empTime.name}' !== 'Total Days Worked' && '{!empTime.name}' !== 'Total Assigned Days') {setAssignViewData(10, '{!empTime.objId}');}"
+                    <apex:column onclick="if ('{!empTime.name}' !== 'Total Days Worked' && '{!empTime.name}' !== 'Total Assigned Days') {loadModalData(10, '{!empTime.objId}');}"
                                  headerValue="Nov {!fteYear}" value="{!empTime.daysArray[10]}" styleClass="{!empTime.cssStyle[10]}"/>
-                    <apex:column onclick="if ('{!empTime.name}' !== 'Total Days Worked' && '{!empTime.name}' !== 'Total Assigned Days') {setAssignViewData(11, '{!empTime.objId}');}"
+                    <apex:column onclick="if ('{!empTime.name}' !== 'Total Days Worked' && '{!empTime.name}' !== 'Total Assigned Days') {loadModalData(11, '{!empTime.objId}');}"
                                  headerValue="Dec {!fteYear}" value="{!empTime.daysArray[11]}" styleClass="{!empTime.cssStyle[11]}"/>
                     <apex:column headerValue="Total" value="{!empTime.daysArray[12]}" styleClass="{!empTime.cssStyle[12]}"/>
                     <apex:column headerValue="Labor Cost Estimates" value="$ {!empTime.daysArray[13]}" styleClass="{!empTime.cssStyle[13]}"/>
                 </apex:pageBlockTable>
 
-                <apex:actionFunction action="{!goToAssignView}" name="goToAssignView" />
-                <apex:actionFunction action="{!setViewData}" name="setAssignViewData" oncomplete="goToAssignView();">
+                <apex:actionFunction action="{!loadEmployeeUnassMonth}" status="loadingDiv" name="loadEmployeeUnassMonth" oncomplete="showUnassignedModal();"
+                        reRender="contractNameUnass,monthNameUnassign,fteDaysMaxUnassId,fteDaysMaxUnass,messages">
                     <apex:param name="employeeMonth" assignTo="{!employeeMonth}" value=""/>
                     <apex:param name="contractId" assignTo="{!contractId}" value=""/>
                 </apex:actionFunction>
+
+                <apex:actionFunction action="{!moveTimeToUnassigned}" status="loadingDiv" name="moveTimeToUnassigned" reRender="employeeHours,messages">
+                    <apex:param name="fteDays" assignTo="{!fteDays}" value=""/>
+                </apex:actionFunction>
+
+                <!-- Unassign Hours/Days Modal -->
+                <div id="unassignModal" class="hoursModal">
+                    <fieldset>
+                        <apex:inputHidden id="fteDaysMaxUnass" value="{!fteDaysMax}" />
+
+                        <apex:outputText styleClass="boldText" id="contractNameUnass" value="{!contractName}"/>
+                        <apex:outputText id="monthNameUnassign" value="{!monthName}"/>
+                        <apex:outputText id="fteDaysMaxUnassId" value="Assigned {!fteDaysMax}"/>
+                        <label class="boldText" for="daysToUnassig">Days to unassign:</label>
+                        <input type="text" name="daysToUnassig" id="daysToUnassig" value="0.25" class="text ui-widget-content ui-corner-all" />
+                    </fieldset>
+                </div>
+
+                <apex:actionFunction action="{!loadEmployeeMonth}" status="loadingDiv" name="loadEmployeeMonth" oncomplete="showAssignedModal();"
+                        reRender="userAvailableDaysId,fteDaysMaxAssign,monthNameAssign,numberUnassigned,fteContractAssign,messages">
+                    <apex:param name="employeeMonth" assignTo="{!employeeMonth}" value=""/>
+                </apex:actionFunction>
+
+                <apex:actionFunction action="{!moveTimeFromUnassigned}" status="loadingDiv" name="moveTimeToAssigned" reRender="employeeHours,messages">
+                    <apex:param name="fteDays" assignTo="{!fteDays}" value=""/>
+                    <apex:param name="selectedFteContract" assignTo="{!selectedFteContract}" value=""/>
+                </apex:actionFunction>
+
+                <!-- Assign Hours/Days Modal -->
+                <div id="assignModal" class="hoursModal">
+                    <fieldset>
+                        <apex:inputHidden id="userAvailableDaysId" value="{!userAvailableDays}" />
+                        <apex:inputHidden id="fteDaysMaxAssign" value="{!fteDaysMax}" />
+
+                        <apex:outputText id="monthNameAssign" value="{!monthName}"/>
+                        <apex:outputText id="numberUnassigned" value="Unassigned {!fteDaysMax}"/>
+
+                        <apex:outputLabel value="Project to Assign Days to:" for="fteContractAssign" styleClass="boldText"/>
+                        <apex:selectList id="fteContractAssign" value="{!selectedFteContract}" size="1">
+                            <apex:selectOptions value="{!fteContractsOptions}"/>
+                        </apex:selectList>
+
+                        <label class="boldText" for="daysToAssig">Days to assign:</label>
+                        <input type="text" name="daysToAssig" id="daysToAssig" value="0.25" class="text ui-widget-content ui-corner-all" />
+                    </fieldset>
+                </div>
 
                 <apex:actionFunction action="{!goToTimeCardView}" name="setExportMonthData" reRender="employeeHours">
                     <apex:param name="exportMonth" assignTo="{!exportMonth}" value=""/>
                 </apex:actionFunction>
 
-                <apex:actionFunction action="{!goToIndividualProjectView}" name="goToIndividualProjectView" reRender="employeeHours">
-                    <apex:param name="contractId" assignTo="{!contractId}" value=""/>
-                </apex:actionFunction>
-
+                <!-- Time Card Generator Modal -->
                 <div id="tcExport" >
                     <div style="float:left">
                         <label for="monthList">Select a month : </label>
@@ -140,7 +383,12 @@
                         Generate Time Cards
                     </button>
                 </div>
-                <apex:commandButton onclick="return showDialog();" value="Export Time Cards" id="tcButton" />
+
+                <apex:actionFunction action="{!goToIndividualProjectView}" name="goToIndividualProjectView" reRender="employeeHours">
+                    <apex:param name="contractId" assignTo="{!contractId}" value=""/>
+                </apex:actionFunction>
+
+                <apex:commandButton onclick="return showTcExportDialog();" value="Export Time Cards" styleClass="jqButton" />
                 <apex:commandButton action="{!goToEmployeeListView}" value="Employee List" id="backEButton" />
                 <apex:commandButton action="{!goToProjectListView}" value="Project List" id="backPButton" />
             </apex:outputPanel>
