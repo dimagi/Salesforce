@@ -149,16 +149,21 @@ public class FTETrackerTest {
                     [SELECT Id FROM SFDC_Employee__c WHERE Name = 'Other Employee'].Id,
                     Date.newInstance(currentDate.year(), currentDate.month(), 5), 3.3);
         SFDC_Employee__c employee = [SELECT Id FROM SFDC_Employee__c WHERE Name = 'FTE Employee'];
-        FTETrackerController controller = new FTETrackerController();
-        controller.employeeId = employee.Id;
-        controller.loadEmployeeTimeHistory();
+        PageReference pageRef = Page.FTE_Employee_View;
+        pageRef.getParameters().put('employeeId', String.valueOf(employee.Id));
+        Test.setCurrentPage(pageRef);
+
+        Test.startTest();
+        FTEEmployeeController controller = new FTEEmployeeController();
+        controller.initFteEmployeeView();
         controller.employeeMonth = currentDate.month() - 1;
         controller.contractId = [SELECT Id FROM DContract__c WHERE Name = 'FTE Contract 2' LIMIT 1].Id;
         controller.loadEmployeeUnassMonth();
         controller.fteDays = '3';
         controller.moveTimeToUnassigned();
-        controller.backToEmployeeView();
-        controller.loadEmployeeTimeHistory();
+        controller.initFteEmployeeView();
+        Test.stopTest();
+
         System.assertEquals(70.9, controller.unassigned.hoursArray[currentDate.month() - 1]);
         System.assertEquals(8.75, controller.unassigned.daysArray[currentDate.month() - 1]);
         System.assertEquals(68.1, controller.totalAssignedDays.hoursArray[currentDate.month() - 1]);
@@ -169,9 +174,13 @@ public class FTETrackerTest {
     public static void shouldAddErrorWhenMovingHoursToUnassigned() {
         Date currentDate = Date.today();
         SFDC_Employee__c employee = [SELECT Id FROM SFDC_Employee__c WHERE Name = 'FTE Employee'];
-        FTETrackerController controller = new FTETrackerController();
-        controller.employeeId = employee.Id;
-        controller.loadEmployeeTimeHistory();
+        PageReference pageRef = Page.FTE_Employee_View;
+        pageRef.getParameters().put('employeeId', String.valueOf(employee.Id));
+        Test.setCurrentPage(pageRef);
+
+        Test.startTest();
+        FTEEmployeeController controller = new FTEEmployeeController();
+        controller.initFteEmployeeView();
         controller.employeeMonth = currentDate.month() - 1;
         controller.contractId = [SELECT Id FROM DContract__c WHERE Name = 'FTE Contract 2' LIMIT 1].Id;
         controller.loadEmployeeUnassMonth();
@@ -184,6 +193,8 @@ public class FTETrackerTest {
         for(Apexpages.Message msg:msgs){
             if (msg.getDetail().contains('Too much hours to assign / hours cannot be negative')) b = true;
         }
+        Test.stopTest();
+
         System.assert(b);
     }
 
@@ -191,16 +202,21 @@ public class FTETrackerTest {
     public static void shouldMoveHoursFromUnassigned() {
         Date currentDate = Date.today();
         SFDC_Employee__c employee = [SELECT Id FROM SFDC_Employee__c WHERE Name = 'FTE Employee'];
-        FTETrackerController controller = new FTETrackerController();
-        controller.employeeId = employee.Id;
-        controller.loadEmployeeTimeHistory();
+        PageReference pageRef = Page.FTE_Employee_View;
+        pageRef.getParameters().put('employeeId', String.valueOf(employee.Id));
+        Test.setCurrentPage(pageRef);
+
+        Test.startTest();
+        FTEEmployeeController controller = new FTEEmployeeController();
+        controller.initFteEmployeeView();
         controller.employeeMonth = currentDate.month() - 1;
         controller.loadEmployeeMonth();
         controller.fteDays = '2.5';
         controller.selectedFteContract = [SELECT Id FROM DContract__c WHERE Name = 'FTE Contract 1' LIMIT 1].Id;
         controller.moveTimeFromUnassigned();
-        controller.backToEmployeeView();
-        controller.loadEmployeeTimeHistory();
+        controller.initFteEmployeeView();
+        Test.stopTest();
+
         System.assertEquals(26.9, controller.unassigned.hoursArray[currentDate.month() - 1]);
         System.assertEquals(3.25, controller.unassigned.daysArray[currentDate.month() - 1]);
         System.assertEquals(112.1, controller.totalAssignedDays.hoursArray[currentDate.month() - 1]);
@@ -211,9 +227,13 @@ public class FTETrackerTest {
     public static void shouldAddErrorWhenMovingHoursFromUnassigned() {
         Date currentDate = Date.today();
         SFDC_Employee__c employee = [SELECT Id FROM SFDC_Employee__c WHERE Name = 'FTE Employee'];
-        FTETrackerController controller = new FTETrackerController();
-        controller.employeeId = employee.Id;
-        controller.loadEmployeeTimeHistory();
+        PageReference pageRef = Page.FTE_Employee_View;
+        pageRef.getParameters().put('employeeId', String.valueOf(employee.Id));
+        Test.setCurrentPage(pageRef);
+
+        Test.startTest();
+        FTEEmployeeController controller = new FTEEmployeeController();
+        controller.initFteEmployeeView();
         controller.employeeMonth = currentDate.month() - 1;
         controller.loadEmployeeMonth();
         controller.fteDays = '6';
@@ -224,6 +244,8 @@ public class FTETrackerTest {
         for(Apexpages.Message msg:msgs){
             if (msg.getDetail().contains('Too much hours to assign / hours cannot be negative')) b = true;
         }
+        Test.stopTest();
+
         System.assert(b);
     }
 
@@ -231,9 +253,15 @@ public class FTETrackerTest {
     public static void shouldGenerateEmployeeHours() {
         Date currentDate = Date.today();
         SFDC_Employee__c employee = [SELECT Id FROM SFDC_Employee__c WHERE Name = 'FTE Employee'];
-        FTETrackerController controller = new FTETrackerController();
-        controller.employeeId = employee.Id;
-        controller.loadEmployeeTimeHistory();
+        PageReference pageRef = Page.FTE_Employee_View;
+        pageRef.getParameters().put('employeeId', String.valueOf(employee.Id));
+        Test.setCurrentPage(pageRef);
+
+        Test.startTest();
+        FTEEmployeeController controller = new FTEEmployeeController();
+        controller.initFteEmployeeView();
+        Test.stopTest();
+
         System.assertEquals(46.9, controller.unassigned.hoursArray[currentDate.month() - 1]);
         System.assertEquals(5.75, controller.unassigned.daysArray[currentDate.month() - 1]);
         System.assertEquals(92.1, controller.totalAssignedDays.hoursArray[currentDate.month() - 1]);
@@ -274,7 +302,7 @@ public class FTETrackerTest {
         for (FTE_Tag__c tagT : [SELECT Action__c, Hours__c, Employee__r.Name, TC_Contract__r.Name, FTE_Contract__r.Name FROM FTE_Tag__c]) {
             System.debug('FTE_Tag__c : ' + tagT);
         }
-        System.assertEquals(5, [SELECT Id FROM FTE_Tag__c].size());
+        System.assertEquals(3, [SELECT Id FROM FTE_Tag__c].size());
 
         FTE_Tag__c testTag = [SELECT Id, Hours__c, Employee__r.Name, TC_Contract__r.Name, FTE_Contract__r.Name FROM FTE_Tag__c
                                 WHERE Action__c = 'Tag Deleted' LIMIT 1];
@@ -282,20 +310,6 @@ public class FTETrackerTest {
         System.assertEquals(5.0 ,testTag.Hours__c);
         System.assertEquals('FTE Contract 1' ,testTag.TC_Contract__r.Name);
         System.assertEquals('Unassigned Contract 1' ,testTag.FTE_Contract__r.Name);
-
-        testTag = [SELECT Id, Hours__c, Employee__r.Name, TC_Contract__r.Name, FTE_Contract__r.Name FROM FTE_Tag__c
-                    WHERE Action__c = 'Updated' AND DAY_IN_MONTH(Date__c) = 2 LIMIT 1];
-
-        System.assertEquals('Other Employee' ,testTag.Employee__r.Name);
-        System.assertEquals(-5.0 ,testTag.Hours__c);
-        System.assertEquals('FTE Contract 1' ,testTag.TC_Contract__r.Name);
-
-        testTag = [SELECT Id, Hours__c, Employee__r.Name, TC_Contract__r.Name, FTE_Contract__r.Name FROM FTE_Tag__c
-                        WHERE Action__c = 'Updated' AND DAY_IN_MONTH(Date__c) = 22 LIMIT 1];
-
-        System.assertEquals('Other Employee' ,testTag.Employee__r.Name);
-        System.assertEquals(13.0 ,testTag.Hours__c);
-        System.assertEquals('Unassigned Contract 1' ,testTag.TC_Contract__r.Name);
 
         testTag = [SELECT Id, Hours__c, Employee__r.Name, TC_Contract__r.Name, FTE_Contract__r.Name FROM FTE_Tag__c
                     WHERE Action__c = 'Updated' AND DAY_IN_MONTH(Date__c) = 27 LIMIT 1];
@@ -518,7 +532,8 @@ public class FTETrackerTest {
     public static void shouldGenerateCSVDataWithoutTags() {
         SFDC_Employee__c employee = [SELECT Id FROM SFDC_Employee__c WHERE Name = 'FTE Employee'];
         Integer emplMonth = Date.today().month();
-        FTETimeCardGenerator generator = new FTETimeCardGenerator(emplMonth, employee.Id);
+        Integer fteYear = Date.today().year();
+        FTETimeCardGenerator generator = new FTETimeCardGenerator(fteYear, emplMonth, employee.Id);
         List<FTEMonthTimeCard> employeeMonthProjects = generator.generateMonthTimeCards();
         System.assertEquals(5, employeeMonthProjects.size());
 
@@ -572,7 +587,8 @@ public class FTETrackerTest {
     public static void shouldGenerateCSVDataWithTags() {
         SFDC_Employee__c employee = [SELECT Id FROM SFDC_Employee__c WHERE Name = 'FTE Employee'];
         Integer emplMonth = Date.today().month();
-        FTETimeCardGenerator generator = new FTETimeCardGenerator(emplMonth, employee.Id);
+        Integer fteYear = Date.today().year();
+        FTETimeCardGenerator generator = new FTETimeCardGenerator(fteYear, emplMonth, employee.Id);
 
         Id cont1 = [SELECT Id FROM DContract__c WHERE Name = 'FTE Contract 1' LIMIT 1].Id;
         Id cont2 = [SELECT Id FROM DContract__c WHERE Name = 'FTE Contract 2' LIMIT 1].Id;
