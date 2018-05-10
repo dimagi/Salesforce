@@ -22,19 +22,26 @@
             color: black;
         }
     </style>
+
+    <script type="text/javascript">
+        function setFocusOnLoad() {}
+    </script>
+
     <apex:pageBlock title="Billing Rates Manager" id="brManager">
         <apex:form >
-            <apex:actionFunction action="{!setViewData}" name="setViewData" oncomplete="goToRateView();">
-                <apex:param name="billingRateName" assignTo="{!billingRateName}" value=""/>
-            </apex:actionFunction>
-            <apex:actionFunction action="{!goToRateView}" name="goToRateView" />
-            <apex:pageBlockTable id="billingRatesId" value="{!billingRates}" var="rate" styleClass="brTable">
-                <apex:column onclick="setViewData('{!rate.name}');" headerValue="Billing Rate Name" value="{!rate.name}" />
-            </apex:pageBlockTable>
 
             <apex:outputPanel layout="block" id="messages">
                 <apex:pageMessages />
             </apex:outputPanel>
+
+            <apex:pageBlockTable id="billingRatesId" value="{!billingRates}" var="rate" styleClass="brTable">
+                <apex:column onclick="goToRateView('{!rate.name}');" headerValue="Billing Rate Name" value="{!rate.name}" />
+            </apex:pageBlockTable>
+
+            <apex:actionFunction action="{!goToRateView}" name="goToRateView" reRender="brManager">
+                <apex:param name="billingRateName" assignTo="{!billingRateName}" value=""/>
+            </apex:actionFunction>
+
             <apex:pageBlockSection >
                 <apex:commandButton disabled="{!!requiredRefresh}" action="{!runRecalculationBatchJob}" value="Recalculate rates in time cards" id="recButton" reRender="brManager"/>
             </apex:pageBlockSection>

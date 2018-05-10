@@ -31,19 +31,21 @@
 
     <apex:pageBlock title="Billing Rates Manager : {!billingRateName}" id="brManagerHistory">
         <apex:form >
-            <apex:actionFunction action="{!setViewData}" name="setViewData" oncomplete="goToRateUpdateView();">
+            <apex:outputPanel layout="block" id="messages">
+                <apex:pageMessages />
+            </apex:outputPanel>
+
+            <apex:actionFunction action="{!goToRateUpdateView}" name="goToRateUpdateView" reRender="brManagerHistory">
                 <apex:param name="billingRateId" assignTo="{!billingRateId}" value=""/>
             </apex:actionFunction>
             <apex:actionFunction action="{!goToRateListView}" name="goToRateListView" />
-            <apex:actionFunction action="{!goToRateUpdateView}" name="goToRateUpdateView" />
 
             <apex:pageBlockTable id="billingRatesId" value="{!rateHistoryList}" var="rate" styleClass="brTable">
-                <apex:column onclick="setViewData('{!rate.Id}');" headerValue="Effective Date" value="{!rate.Date__c}" />
-                <apex:column onclick="setViewData('{!rate.Id}');" headerValue="Overhead" value="{!rate.Overhead__c} %" />
-                <apex:column onclick="setViewData('{!rate.Id}');" headerValue="Overhead" value="{!rate.Overhead__c} %" />
-                <apex:column onclick="setViewData('{!rate.Id}');" headerValue="G & A" value="{!rate.G_A__c} %" />
-                <apex:column onclick="setViewData('{!rate.Id}');" headerValue="Fringe" value="{!rate.Fringe__c} %" />
-                <apex:column onclick="setViewData('{!rate.Id}');" headerValue="Fee" value="{!rate.Fee__c} %" />
+                <apex:column onclick="goToRateUpdateView('{!rate.Id}');" headerValue="Effective Date" value="{!rate.Date__c}" />
+                <apex:column onclick="goToRateUpdateView('{!rate.Id}');" headerValue="Overhead" value="{!rate.Overhead__c} %" />
+                <apex:column onclick="goToRateUpdateView('{!rate.Id}');" headerValue="G & A" value="{!rate.G_A__c} %" />
+                <apex:column onclick="goToRateUpdateView('{!rate.Id}');" headerValue="Fringe" value="{!rate.Fringe__c} %" />
+                <apex:column onclick="goToRateUpdateView('{!rate.Id}');" headerValue="Fee" value="{!rate.Fee__c} %" />
             </apex:pageBlockTable>
 
             <apex:outputPanel styleClass="bText" id="rateForm">
@@ -58,7 +60,7 @@
                     <apex:commandButton action="{!saveNewRateHistory}" value="Save New Rate Numbers" id="brSaveButton" reRender="billingRatesId, messages, rateForm, recButton"/>
                 </apex:pageBlockSection>
                 <apex:pageBlockSection >
-                    <apex:commandButton action="{!goToRateListView}" value="Billign Rates List" id="backPButton" />
+                    <apex:commandButton action="{!goToRateListView}" value="Billing Rates List" id="backPButton" />
                 </apex:pageBlockSection>
             </apex:outputPanel>
         </apex:form>

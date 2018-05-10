@@ -57,11 +57,16 @@ public class BillingRateController {
 
     public PageReference goToRateView() {
         PageReference pageRef = Page.Billing_Rate_Manager;
-        pageRef.setRedirect(false);
+        pageRef.setRedirect(true);
+        pageRef.getParameters().put('billingRateName', EncodingUtil.urlEncode(this.billingRateName, 'UTF-8'));
         return pageRef;
     }
 
     public void initManageRate() {
+        this.billingRateName = ApexPages.currentPage().getParameters().get('billingRateName');
+        if (this.billingRateName != null) {
+            this.billingRateName = EncodingUtil.urlDecode(this.billingRateName, 'UTF-8');
+        }
         if (this.billingRateName == null || this.billingRateName == '') {
             ApexPages.addMessage(new ApexPages.message(ApexPages.severity.ERROR, 'Rate Name cannot be empty'));
             return;
@@ -69,6 +74,10 @@ public class BillingRateController {
 
         this.rateHistoryList = [SELECT Id, Name, Date__c, Custom_1__c, Overhead__c, G_A__c, Fringe__c, Fee__c, Custom_2__c, Custom_3__c
                                                 FROM Project_Billing_Rate__c WHERE Name =: this.billingRateName ORDER BY Date__c];
+        if (rateHistoryList.size() == 0) {
+            ApexPages.addMessage(new ApexPages.message(ApexPages.severity.ERROR, 'Cannot find Billing Rate'));
+            return;
+        }
         this.newBillingRate = new Project_Billing_Rate__c(Date__c = Date.today(), Name = this.billingRateName, Custom_1__c = 0, Overhead__c = 0,
                                                             G_A__c = 0, Fringe__c = 0, Fee__c = 0, Custom_2__c = 0, Custom_3__c = 0);
         this.requiredRefresh = false;
@@ -89,19 +98,37 @@ public class BillingRateController {
     }
 
     public PageReference goToRateListView() {
-        this.billingRateName = null;
         PageReference pageRef = Page.Billing_Rates_List;
-        pageRef.setRedirect(false);
+        pageRef.setRedirect(true);
         return pageRef;
     }
 
     public PageReference goToRateUpdateView() {
         PageReference pageRef = Page.Billing_Rate_Upsert;
-        pageRef.setRedirect(false);
+        pageRef.setRedirect(true);
+        pageRef.getParameters().put('billingRateName', EncodingUtil.urlEncode(this.billingRateName, 'UTF-8'));
+        pageRef.getParameters().put('billingRateId', this.billingRateId);
         return pageRef;
     }
 
     public void initUpdateRate() {
+        String upbillingRateId = ApexPages.currentPage().getParameters().get('billingRateId');
+        if (upbillingRateId != null && upbillingRateId InstanceOf Id) {
+            this.billingRateId = upbillingRateId;
+        } else {
+            ApexPages.addMessage(new ApexPages.message(ApexPages.severity.ERROR, 'Rate Id cannot be empty'));
+            return;
+        }
+
+        this.billingRateName = ApexPages.currentPage().getParameters().get('billingRateName');
+        if (this.billingRateName != null) {
+            this.billingRateName = EncodingUtil.urlDecode(this.billingRateName, 'UTF-8');
+        }
+        if (this.billingRateName == null || this.billingRateName == '') {
+            ApexPages.addMessage(new ApexPages.message(ApexPages.severity.ERROR, 'Rate Name cannot be empty'));
+            return;
+        }
+
         this.newBillingRate = [SELECT Id, Name, Date__c, Custom_1__c, Overhead__c, G_A__c, Fringe__c, Fee__c, Custom_2__c, Custom_3__c
                                                 FROM Project_Billing_Rate__c WHERE Id =: this.billingRateId];
         if (this.newBillingRate == null) {
