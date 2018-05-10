@@ -573,6 +573,9 @@ public class SalaryHistoryTest {
                                             Fee__c = 20, Fringe__c = 30, G_A__c = 10, Overhead__c = 52);
         insert new Project_Billing_Rate__c(Name = 'Loaded Daily Rate 3', Date__c = Date.newInstance(2017, 01, 01), Custom_1__c = 0, Custom_2__c = 0, Custom_3__c = 0,
                                             Fee__c = 25, Fringe__c = 30, G_A__c = 10, Overhead__c = 52);
+        PageReference pageRef = Page.Billing_Rates_List;
+        Test.setCurrentPage(pageRef);
+
         Test.startTest();
         BillingRateController brc = new BillingRateController();
         brc.initManageRates();
@@ -610,6 +613,9 @@ public class SalaryHistoryTest {
                                             Fee__c = 20, Fringe__c = 30, G_A__c = 10, Overhead__c = 52);
         insert new Project_Billing_Rate__c(Name = 'Loaded Daily Rate 3', Date__c = Date.newInstance(2017, 01, 01), Custom_1__c = 0, Custom_2__c = 0, Custom_3__c = 0,
                                             Fee__c = 25, Fringe__c = 30, G_A__c = 10, Overhead__c = 52);
+        PageReference pageRef = Page.Billing_Rates_List;
+        Test.setCurrentPage(pageRef);
+
         Test.startTest();
         BillingRateController brc = new BillingRateController();
         brc.initManageRates();
@@ -633,9 +639,12 @@ public class SalaryHistoryTest {
                                             Fee__c = 20, Fringe__c = 30, G_A__c = 10, Overhead__c = 52);
         insert new Project_Billing_Rate__c(Name = 'Loaded Daily Rate 3', Date__c = Date.newInstance(2017, 01, 01), Custom_1__c = 0, Custom_2__c = 0, Custom_3__c = 0,
                                             Fee__c = 25, Fringe__c = 30, G_A__c = 10, Overhead__c = 52);
+        PageReference pageRef = Page.Billing_Rate_Manager;
+        pageRef.getParameters().put('billingRateName', EncodingUtil.urlDecode('Loaded Daily Rate 1', 'UTF-8'));
+        Test.setCurrentPage(pageRef);
+
         Test.startTest();
         BillingRateController brc = new BillingRateController();
-        brc.billingRateName = 'Loaded Daily Rate 1';
         brc.initManageRate();
         System.assertEquals(2, brc.rateHistoryList.size());
         System.assertEquals('Loaded Daily Rate 1', brc.newBillingRate.Name);
@@ -671,11 +680,13 @@ public class SalaryHistoryTest {
         insert br1;
         insert br2;
 
+        PageReference pageRef = Page.Billing_Rate_Manager;
+        pageRef.getParameters().put('billingRateName', EncodingUtil.urlDecode('Loaded Daily Rate 1', 'UTF-8'));
+        pageRef.getParameters().put('billingRateId', br2.Id);
+        Test.setCurrentPage(pageRef);
+
         Test.startTest();
         BillingRateController brc = new BillingRateController();
-        brc.billingRateName = 'Loaded Daily Rate 1';
-        brc.initManageRate();
-        brc.billingRateId = br2.Id;
         brc.initUpdateRate();
         brc.newBillingRate.Fee__c = 30;
         brc.newBillingRate.Fringe__c = 15;
@@ -687,6 +698,7 @@ public class SalaryHistoryTest {
         brc.updateRateHistory();
         Test.stopTest();
 
+        brc.initManageRate();
         System.assertEquals(2, brc.rateHistoryList.size());
         Project_Billing_Rate__c newRate = [SELECT Id, Name, Date__c, Custom_1__c, Overhead__c, G_A__c, Fringe__c, Fee__c, Custom_2__c, Custom_3__c FROM Project_Billing_Rate__c WHERE Id =: br2.Id];
         System.assertEquals(11, newRate.Custom_1__c);
@@ -726,11 +738,13 @@ public class SalaryHistoryTest {
         Time_Card__c tc_5_employee_1 = new Time_Card__c(Total__c = 8, Date__c = Date.newInstance(2016, 3, 3), Employee__c = employee_1.Id, Client__c = parent_1.Id);
         insert tc_5_employee_1;
 
+        PageReference pageRef = Page.Billing_Rate_Manager;
+        pageRef.getParameters().put('billingRateName', EncodingUtil.urlDecode('Loaded Daily Rate', 'UTF-8'));
+        pageRef.getParameters().put('billingRateId', rate1_2.Id);
+        Test.setCurrentPage(pageRef);
+
         Test.startTest();
         BillingRateController brc = new BillingRateController();
-        brc.billingRateName = 'Loaded Daily Rate';
-        brc.initManageRate();
-        brc.billingRateId = rate1_2.Id;
         brc.initUpdateRate();
         brc.newBillingRate.Fee__c = 30;
         brc.newBillingRate.Fringe__c = 15;
@@ -782,11 +796,13 @@ public class SalaryHistoryTest {
         Time_Card__c tc_5_employee_1 = new Time_Card__c(Total__c = 8, Date__c = Date.newInstance(2016, 3, 3), Employee__c = employee_1.Id, Client__c = parent_1.Id);
         insert tc_5_employee_1;
 
+        PageReference pageRef = Page.Billing_Rate_Manager;
+        pageRef.getParameters().put('billingRateName', EncodingUtil.urlDecode('Loaded Daily Rate', 'UTF-8'));
+        pageRef.getParameters().put('billingRateId', rate1_2.Id);
+        Test.setCurrentPage(pageRef);
+
         Test.startTest();
         BillingRateController brc = new BillingRateController();
-        brc.billingRateName = 'Loaded Daily Rate';
-        brc.initManageRate();
-        brc.billingRateId = rate1_2.Id;
         brc.initUpdateRate();
         brc.newBillingRate.Fee__c = 30;
         brc.newBillingRate.Fringe__c = 15;
