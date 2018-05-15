@@ -50,4 +50,20 @@ public class EmailHelper {
         sendEmail(addressList, subject, content);
     }
 
+    public static void sendEmailFromDatabaseSaveResultErrors(List<String> addressList, String subject, String head, Database.SaveResult[] srList) {
+        Boolean hadErrors = false;
+        List<String> errorsList = new List<String> { '<table border="1"><tr><td>Error Message</td><td>Obj ID</tr>' };
+        for (Database.SaveResult sr : srList) {
+            if (!sr.isSuccess()) {
+                hadErrors = true;
+                for(Database.Error err : sr.getErrors()) {
+                    errorsList.add('<tr><td>' + err.getMessage() + '</td><td>' + sr.getId() + '</td></tr>');
+                }
+            }
+        }
+
+        if (hadErrors == true) { // send email only when we had errors
+            sendEmail(addressList, subject, head + '</ br></ br>' + String.join(errorsList, '') + '</table>');
+        }
+    }
 }
