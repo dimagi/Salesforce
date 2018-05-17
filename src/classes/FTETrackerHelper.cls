@@ -3,6 +3,29 @@
  */
 public class FTETrackerHelper {
 
+    public static JobWrapper loadWorkCardJobStatus() { // We want block FTE Tracker until all Work Cards will be generated from time cards
+        JobWrapper workCardJobStatus = new JobWrapper(false);
+        ApexClass batchClass = [SELECT Id FROM ApexClass WHERE Name='FTEGenerateEmployeesWorkCardBatch' LIMIT 1];
+        AsyncApexJob[] batchClassJobList = [SELECT Id, JobItemsProcessed, TotalJobItems, createdDate FROM AsyncApexJob WHERE ApexClassID = :batchClass.Id
+                                            AND Status IN ('Holding', 'Queued', 'Preparing', 'Processing') ORDER BY createdDate DESC LIMIT 1];
+
+        if(batchClassJobList != null && batchClassJobList.size() > 0) {
+            workCardJobStatus.isRunning = true;
+            workCardJobStatus.jobItemsProcessed = batchClassJobList[0].JobItemsProcessed;
+            workCardJobStatus.totalJobItems = batchClassJobList[0].TotalJobItems;
+        } else {
+            workCardJobStatus.isRunning = false;
+        }
+        return workCardJobStatus;
+    }
+
+    public static Integer getNetworkDays(Date hireDate, Integer fteYear) {
+        if (hireDate != null && hireDate.year() == fteYear) {
+            return getWorkingDays(hireDate, Date.newInstance(fteYear, 12 ,31));
+        }
+        return 230;
+    }
+
     public static Integer getWorkingDays(Date startDate, Date endDate) {
         Integer workingDays = 0;
         if(startDate == null || endDate == null) {

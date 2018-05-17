@@ -1,17 +1,8 @@
-trigger FTETimeCardTrigger on Time_Card__c (after delete, after update, after insert) {
+trigger FTETimeCardTrigger on Time_Card__c (after delete, after insert) {
     Boolean enableTrigger = FTE_Tracker_Settings__c.getOrgDefaults().FTE_Trigger__c != null ? FTE_Tracker_Settings__c.getOrgDefaults().FTE_Trigger__c : false;
     if (enableTrigger) {
         List<FTE_Tag__c> tags = new List<FTE_Tag__c>();
-        if (Trigger.isUpdate) {
-            for (Time_Card__c updatedTC : Trigger.new) {
-                Decimal oldTotal = Trigger.oldMap.get(updatedTC.Id).Total__c;
-                if (oldTotal != updatedTC.Total__c) {
-                    tags.add(new FTE_Tag__c(Action__c = 'Updated', Date__c = updatedTC.Date__c, Hours__c = updatedTC.Total__c - oldTotal,
-                                            Employee__c = updatedTC.Employee__c, TC_Contract__c = updatedTC.Client__c));
-                }
-            }
-            //we need add how much time was removed from contract month and employee !!!
-        } else if (Trigger.isInsert) {
+        if (Trigger.isInsert) {
             for (Time_Card__c newTC : Trigger.new) {
                 tags.add(new FTE_Tag__c(Action__c = 'Updated', Date__c = newTC.Date__c, Hours__c = newTC.Total__c,
                                         Employee__c = newTC.Employee__c, TC_Contract__c = newTC.Client__c));
