@@ -3,7 +3,7 @@
  */
 public without sharing class BatchCalculateTotalHoursOfTimeCard implements Database.Batchable<sObject>, Database.Stateful {
 
-    private List<String> contractIds;
+    private Set<Id> contractIds;
     private Map<Id, Decimal> servicesSpendMap;
     private String lastEmployee;
     private List<SalaryHistoryRecord> employeeSalaryHistory;
@@ -11,22 +11,22 @@ public without sharing class BatchCalculateTotalHoursOfTimeCard implements Datab
     private Boolean updatedContracts;
 
     public BatchCalculateTotalHoursOfTimeCard(){
-        this(new List<String>());
+        this(new Set<Id>());
     }
 
     public BatchCalculateTotalHoursOfTimeCard(Boolean updatedContracts){
-        this(new List<String>(), true);
+        this(new Set<Id>(), true);
     }
 
-    public BatchCalculateTotalHoursOfTimeCard(String contractId){
-        this(new List<String> {contractId});
+    public BatchCalculateTotalHoursOfTimeCard(Id contractId){
+        this(new Set<Id> {contractId});
     }
 
-    public BatchCalculateTotalHoursOfTimeCard(List<String> contractIds){
+    public BatchCalculateTotalHoursOfTimeCard(Set<Id> contractIds){
         this(contractIds, false);
     }
 
-    public BatchCalculateTotalHoursOfTimeCard(List<String> contractIds, Boolean updatedContracts) {
+    public BatchCalculateTotalHoursOfTimeCard(Set<Id> contractIds, Boolean updatedContracts) {
         this.updatedContracts = updatedContracts;
         this.contractIds = contractIds;
         this.servicesSpendMap = new Map<Id, Decimal>();
@@ -37,12 +37,7 @@ public without sharing class BatchCalculateTotalHoursOfTimeCard implements Datab
         this.employeeSalaryHistory = new List<SalaryHistoryRecord>();
         Set<Id> parentAndChildContracts = new Set<Id>();
 
-        String query;
-        if (this.updatedContracts == true) { // only with updated time cards
-            query = 'SELECT Client__c, Total__c, Time_Card_Salary__c, Billing_Rate__c, Employee__c, Date__c FROM Time_Card__c WHERE Client__r.Require_Services_Spend_Refresh__c = true ORDER BY Employee__c';
-        } else if (contractIds.size() == 0) {
-            query = 'SELECT Client__c, Total__c, Time_Card_Salary__c, Billing_Rate__c, Employee__c, Date__c FROM Time_Card__c WHERE Employee__c != \'\' ORDER BY Employee__c';
-        } else {
+        if (contractIds.size() > 0) {
             for (String conId : contractIds) {
                 parentAndChildContracts.add(conId);
             }
@@ -56,8 +51,17 @@ public without sharing class BatchCalculateTotalHoursOfTimeCard implements Datab
             for (Id elId : contractIds) {
                 parentAndChildContracts.add(elId);
             }
+        }
 
+        String query;
+        if (this.updatedContracts == true && contractIds.size() > 0) { // Require_Services_Spend_Refresh__c this field is set to true when time card client was updated, we must remove cost from old contract
+            query = 'SELECT Client__c, Total__c, Time_Card_Salary__c, Billing_Rate__c, Employee__c, Date__c FROM Time_Card__c WHERE Client__c IN: parentAndChildContracts OR Client__r.Require_Services_Spend_Refresh__c = true ORDER BY Employee__c';
+        } else if (this.updatedContracts == true) { // only with updated time cards
+            query = 'SELECT Client__c, Total__c, Time_Card_Salary__c, Billing_Rate__c, Employee__c, Date__c FROM Time_Card__c WHERE Client__r.Require_Services_Spend_Refresh__c = true ORDER BY Employee__c';
+        } else if (contractIds.size() > 0) {
             query = 'SELECT Client__c, Total__c, Time_Card_Salary__c, Billing_Rate__c, Employee__c, Date__c FROM Time_Card__c WHERE Client__c IN: parentAndChildContracts ORDER BY Employee__c';
+        } else {
+            query = 'SELECT Client__c, Total__c, Time_Card_Salary__c, Billing_Rate__c, Employee__c, Date__c FROM Time_Card__c WHERE Employee__c != \'\' ORDER BY Employee__c';
         }
         return Database.getQueryLocator(query);
     }

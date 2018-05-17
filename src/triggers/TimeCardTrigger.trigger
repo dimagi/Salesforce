@@ -3,9 +3,9 @@
  */
 trigger TimeCardTrigger on Time_Card__c (after insert, after update, after delete) {
     if(Trigger.isAfter && Trigger.isInsert) {
-        TimeCardTriggerController.handleAfterInsert(Trigger.newMap.keySet(), Trigger.new);
+        TimeCardTriggerController.handleAfterInsert(Trigger.new);
     } else if(Trigger.isAfter && Trigger.isUpdate) {
-        TimeCardTriggerController.handleAfterUpdate(Trigger.new, Trigger.old);
+        TimeCardTriggerController.handleAfterUpdate(Trigger.new, Trigger.oldMap);
     } else if (Trigger.isAfter && Trigger.isDelete) {
         TimeCardTriggerController.handleAfterDelete(Trigger.old);
     }

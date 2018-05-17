@@ -3,43 +3,39 @@
  */
 public with sharing class TimeCardTriggerController {
 
-    public static void handleAfterInsert(Set<Id> newTimeCardsIds, List<Time_Card__c> newTimeCards) {
+    public static void handleAfterInsert(List<Time_Card__c> newTimeCards) {
+
     }
 
-    public static void handleAfterUpdate(List<Time_Card__c> updatedTimeCards, List<Time_Card__c> beforeUpdateTimeCards) {
+    public static void handleAfterUpdate(List<Time_Card__c> updatedTimeCards, Map<Id, Time_Card__c> beforeUpdateTimeCards) {
+        Set<Id> contractsIds = new Set<Id>();
+        for (Time_Card__c tc : updatedTimeCards) {
+            if (tc.FTE_Only__c != true) {
+                Time_Card__c oldTC = beforeUpdateTimeCards.get(tc.Id);
+                if (tc.Client__c != oldTC.Client__c) {
+                    contractsIds.add(oldTC.Client__c);
+                }
+            }
+        }
+
+        markContractsToRefresh(contractsIds);
     }
 
     public static void handleAfterDelete(List<Time_Card__c> deletedTimeCards) {
-        Map<Id, Decimal> servicesSpendMap = new Map<Id, Decimal>();
-        for (Time_Card__c tc : deletedTimeCards) {
-            Decimal value = (tc.Total__c * (tc.Time_Card_Salary__c != null ? tc.Time_Card_Salary__c : 0) * (tc.Billing_Rate__c != null ? tc.Billing_Rate__c : 0)).setScale(8);
 
-            if (servicesSpendMap.containsKey(tc.Client__c)) {
-                servicesSpendMap.put(tc.Client__c, value + servicesSpendMap.get(tc.Client__c));
-            } else {
-                servicesSpendMap.put(tc.Client__c, value);
-            }
-        }
-
-        updateContractServicesSpend(servicesSpendMap);
     }
 
-    public static void updateContractServicesSpend(Map<Id, Decimal> servicesSpendMap) {
-        for (DContract__c child : [SELECT Id, Parent_Contract__c FROM DContract__c WHERE Id IN: servicesSpendMap.keySet() AND Parent_Contract__c != '']) {
-            if (servicesSpendMap.containsKey(child.Parent_Contract__c)) {
-                servicesSpendMap.put(child.Parent_Contract__c, servicesSpendMap.get(child.Parent_Contract__c) + servicesSpendMap.get(child.Id));
-            } else {
-                servicesSpendMap.put(child.Parent_Contract__c, servicesSpendMap.get(child.Id));
-            }
+    public static void markContractsToRefresh(Set<Id> contractIds) {
+        List<DContract__c> contractsToRefresh = [SELECT Id, Require_Services_Spend_Refresh__c FROM DContract__c WHERE Id IN: contractIds AND Require_Services_Spend_Refresh__c = false];
+        for (DContract__c dContract : contractsToRefresh) {
+            dContract.Require_Services_Spend_Refresh__c = true;
         }
-
-        if (servicesSpendMap.size() > 0) {
-            List<DContract__c> toUpdate = [SELECT Id, Require_Services_Spend_Refresh__c, Calculated_Services_Spend__c, Services_Spend__c FROM DContract__c WHERE Id IN: servicesSpendMap.keySet()];
-            for (DContract__c dContract : toUpdate) {
-                dContract.Require_Services_Spend_Refresh__c = true;
-                dContract.Calculated_Services_Spend__c = (dContract.Calculated_Services_Spend__c != null ? dContract.Calculated_Services_Spend__c : 0) - servicesSpendMap.get(dContract.Id);
+        if (contractsToRefresh.size() > 0) {
+            Database.SaveResult[] srList = Database.update(contractsToRefresh, false);
+            if (!Test.isRunningTest()) {
+                EmailHelper.sendEmailFromDatabaseSaveResultErrors(BatchDefaultSettings__c.getOrgDefaults().Error_Emails__c.split(','),
+                        'Contract Update Errors', 'Cannot Update Contracts : ', srList);
             }
-            Database.update(toUpdate, false);
         }
     }
 }

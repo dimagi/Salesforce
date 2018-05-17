@@ -10,8 +10,12 @@ trigger ProjectBillingRateUpdatedTrigger on DContract__c (after update) {
         }
 
         if (contracts.size() > 0) {
-            Database.update(contracts, false); // TODO mailer
+            Database.SaveResult[] srList = Database.update(contracts, false);
             RecursiveTriggerHelper.setRecursiveFlag();
+            if (!Test.isRunningTest()) {
+                EmailHelper.sendEmailFromDatabaseSaveResultErrors(BatchDefaultSettings__c.getOrgDefaults().Error_Emails__c.split(','),
+                        'Contract Update Errors', 'Cannot Update Contracts : ', srList);
+            }
         }
     }
 }
