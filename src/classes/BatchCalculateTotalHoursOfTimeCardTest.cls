@@ -54,7 +54,8 @@ public class BatchCalculateTotalHoursOfTimeCardTest {
         System.assertEquals(229.90, dcontractFromDB.Services_Spend__c);
     }
 
-    static testMethod void shouldUpdateParentServicesSpend() {
+    @isTest
+    static void shouldUpdateParentServicesSpend() {
         Test.startTest();
         SFDC_Employee__c employeeObj = new SFDC_Employee__c(
             name = 'Sample Employee',
@@ -132,7 +133,8 @@ public class BatchCalculateTotalHoursOfTimeCardTest {
         System.assertEquals(459.80, dcontractFromDB.Services_Spend__c);
     }
 
-    static testMethod void shouldUpdateServicesSpendInManyContracts() {
+    @isTest
+    static void shouldUpdateServicesSpendInManyContracts() {
         Test.startTest();
         SFDC_Employee__c employeeObj = new SFDC_Employee__c(
             name = 'Sample Employee',

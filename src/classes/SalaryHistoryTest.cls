@@ -279,9 +279,17 @@ public class SalaryHistoryTest {
         Database.executeBatch(new BatchRecalculateTimeCardCost(idsSet), 200);
         Test.stopTest();
 
-        BatchCalculateTotalHoursOfTimeCard batch1 = new BatchCalculateTotalHoursOfTimeCard();
-        Database.QueryLocatorIterator iter = batch1.start(null).iterator();
+        TimeCardCalculator tcCalcJob = new TimeCardCalculator();
+        Database.QueryLocatorIterator iter = tcCalcJob.start(null).iterator();
         List<sObject> testData = new List<sObject>();
+        while (iter.hasNext()) {
+            testData.add(iter.next());
+        }
+        tcCalcJob.execute(null, testData);
+
+        BatchCalculateTotalHoursOfTimeCard batch1 = new BatchCalculateTotalHoursOfTimeCard();
+        iter = batch1.start(null).iterator();
+        testData = new List<sObject>();
         while (iter.hasNext()) {
             testData.add(iter.next());
         }
@@ -461,19 +469,26 @@ public class SalaryHistoryTest {
         }
         Database.executeBatch(new BatchRecalculateTimeCardCost(idsSet), 200);
         Test.stopTest();
-
-        BatchCalculateTotalHoursOfTimeCard batch1 = new BatchCalculateTotalHoursOfTimeCard();
-        Database.QueryLocatorIterator iter = batch1.start(null).iterator();
+        TimeCardCalculator tcCalcJob = new TimeCardCalculator();
+        Database.QueryLocatorIterator iter = tcCalcJob.start(null).iterator();
         List<sObject> testData = new List<sObject>();
         while (iter.hasNext()) {
-            sObject rec = iter.next();
-            testData.add(rec);
-            Time_Card__c tc = (Time_Card__c) rec;
+            testData.add(iter.next());
+        }
+        tcCalcJob.execute(null, testData);
+
+        BatchCalculateTotalHoursOfTimeCard batch1 = new BatchCalculateTotalHoursOfTimeCard();
+        iter = batch1.start(null).iterator();
+        testData = new List<sObject>();
+        while (iter.hasNext()) {
+            testData.add(iter.next());
         }
         batch1.execute(null, testData);
+        batch1.finish(null);
 
         BatchUpdateContractServicesSpend batch2 = new BatchUpdateContractServicesSpend(batch1.getServicesSpendMap());
         batch2.execute(null, batch2.start(null));
+        batch2.finish(null);
 
         DContract__c dcontractFromDB = [SELECT Id, Name, Services_Spend__c FROM DContract__c WHERE Id =: parent.Id];
         System.assertEquals(13779.88, dcontractFromDB.Services_Spend__c);
@@ -547,6 +562,13 @@ public class SalaryHistoryTest {
         }
         Database.executeBatch(new BatchRecalculateTimeCardCost(idsSet), 200);
         Test.stopTest();
+        TimeCardCalculator tcCalcJob = new TimeCardCalculator();
+        Database.QueryLocatorIterator iter = tcCalcJob.start(null).iterator();
+        List<sObject> testData = new List<sObject>();
+        while (iter.hasNext()) {
+            testData.add(iter.next());
+        }
+        tcCalcJob.execute(null, testData);
 
         Time_Card__c tcFromDB = [SELECT Id, Time_Card_Rate_Cost__c FROM Time_Card__c WHERE Id =: tc_1_employee_1.Id LIMIT 1];
         System.assertEquals(11.49500001, tcFromDB.Time_Card_Rate_Cost__c);

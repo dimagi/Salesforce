@@ -5,7 +5,7 @@ public class BatchUpdateContractServicesSpend implements Database.Batchable<DCon
 
     private Map<Id, Decimal> servicesSpendMap;
 
-    public BatchUpdateContractServicesSpend(Map<Id, Decimal> servicesSpendMap,) {
+    public BatchUpdateContractServicesSpend(Map<Id, Decimal> servicesSpendMap) {
         this.servicesSpendMap = servicesSpendMap;
     }
 

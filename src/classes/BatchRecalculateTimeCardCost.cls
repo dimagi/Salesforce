@@ -35,12 +35,11 @@ public without sharing class BatchRecalculateTimeCardCost implements Database.Ba
         this.salaryHistoryHelper = new SalaryHistoryHelper();
 
         String query;
-        System.debug('timeCardsIds ' + timeCardsIds);
         if (this.timeCardsIds != null && this.timeCardsIds.size() > 0) {
             query = 'SELECT Billing_Rate__c, Time_Card_Salary__c, Total__c, Employee__c, Date__c, Client__r.Project_Billing_Rate__c FROM Time_Card__c WHERE Id IN: timeCardsIds AND Employee__c != \'\' ORDER BY Employee__c';
         } else if (this.contractIds != null && this.contractIds.size() > 0) {
             query = 'SELECT Billing_Rate__c, Time_Card_Salary__c, Total__c, Employee__c, Date__c, Client__r.Project_Billing_Rate__c FROM Time_Card__c WHERE Client__c IN: contractIds AND Employee__c != \'\' ORDER BY Employee__c';
-        } else { // daily
+        } else { // daily calculate added old time cards (with Date__c before 2017-12-01)
             query = 'SELECT Billing_Rate__c, Time_Card_Salary__c, Total__c, Employee__c, Date__c, Client__r.Project_Billing_Rate__c FROM Time_Card__c WHERE CreatedDate>=:lastUpdatedDateTime AND Date__c<:oldCalculations AND Employee__c != \'\' ORDER BY Employee__c';
         }
         System.debug('Query : ' + query);
@@ -107,7 +106,7 @@ public without sharing class BatchRecalculateTimeCardCost implements Database.Ba
 
     public void finish(Database.BatchableContext context) {
         if (!Test.isRunningTest()) {
-            Database.executeBatch(new TimeCardCalculator(), 40); // calculate billing rate and salary for new time cards
+            Database.executeBatch(new TimeCardCalculator(), 40); // calculate billing rate and salary for new time cards(after 2017-12-01 we are using employee snapshot for calculations)
         }
     }
 

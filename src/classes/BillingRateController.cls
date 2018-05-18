@@ -15,10 +15,6 @@ public class BillingRateController {
         
     }
 
-    public void setViewData() {
-        
-    }
-
     public void initManageRates() {
         List<Project_Billing_Rate__c> dataBR = [SELECT Id, Name, Date__c, Custom_1__c, Overhead__c, G_A__c, Fringe__c, Fee__c, Custom_2__c, Custom_3__c FROM Project_Billing_Rate__c];
         Set<String> names = new Set<String>();

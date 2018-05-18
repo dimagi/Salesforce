@@ -22,7 +22,14 @@ public with sharing class TimeCardTriggerController {
     }
 
     public static void handleAfterDelete(List<Time_Card__c> deletedTimeCards) {
+        Set<Id> contractsIds = new Set<Id>();
+        for (Time_Card__c tc : deletedTimeCards) {
+            if (tc.FTE_Only__c != true) {
+                contractsIds.add(tc.Client__c);
+            }
+        }
 
+        markContractsToRefresh(contractsIds);
     }
 
     public static void markContractsToRefresh(Set<Id> contractIds) {

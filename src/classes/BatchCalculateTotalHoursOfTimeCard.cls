@@ -37,20 +37,27 @@ public without sharing class BatchCalculateTotalHoursOfTimeCard implements Datab
         this.employeeSalaryHistory = new List<SalaryHistoryRecord>();
         Set<Id> parentAndChildContracts = new Set<Id>();
 
-        if (contractIds.size() > 0) {
-            for (String conId : contractIds) {
+        if (this.contractIds.size() > 0) {
+            for (String conId : this.contractIds) {
                 parentAndChildContracts.add(conId);
+                this.servicesSpendMap.put(conId, 0);
             }
-            for (DContract__c con : [SELECT Id, Parent_Contract__c FROM DContract__c WHERE Id IN: parentAndChildContracts AND Parent_Contract__c != '']) {
-                parentAndChildContracts.add(con.Parent_Contract__c); // Load all parents
-            }
-            for (DContract__c con : [SELECT Id, Parent_Contract__c FROM DContract__c WHERE Parent_Contract__c IN: parentAndChildContracts]) {
-                parentAndChildContracts.add(con.Id); // Add childs
-            }
+        }
 
-            for (Id elId : contractIds) {
-                parentAndChildContracts.add(elId);
+        if (this.updatedContracts == true) {
+            for (DContract__c con : [SELECT Id, Parent_Contract__c FROM DContract__c WHERE Require_Services_Spend_Refresh__c = true AND Id NOT IN: parentAndChildContracts ]) {
+                parentAndChildContracts.add(con.Id);
+                this.servicesSpendMap.put(con.Id, 0);
             }
+        }
+
+        for (DContract__c con : [SELECT Id, Parent_Contract__c FROM DContract__c WHERE Id IN: parentAndChildContracts AND Parent_Contract__c != '']) {
+            parentAndChildContracts.add(con.Parent_Contract__c);
+            this.servicesSpendMap.put(con.Parent_Contract__c, 0); // Load all parents
+        }
+        for (DContract__c con : [SELECT Id, Parent_Contract__c FROM DContract__c WHERE Parent_Contract__c IN: parentAndChildContracts]) {
+            parentAndChildContracts.add(con.Id);
+            this.servicesSpendMap.put(con.Id, 0);// Add childs
         }
 
         String query;
@@ -80,9 +87,15 @@ public without sharing class BatchCalculateTotalHoursOfTimeCard implements Datab
     }
 
     public void finish(Database.BatchableContext context){
+        if (this.contractIds.size() == 0 && this.updatedContracts == false) {
+            for (DContract__c dContract : [SELECT Id FROM DContract__c WHERE Id NOT IN: this.servicesSpendMap.keySet()]) {
+                this.servicesSpendMap.put(dContract.Id, 0);
+            }
+        }
+
         // We must replace values in contracts
         if (!Test.isRunningTest()) {
-            BatchUpdateContractServicesSpend obj = new BatchUpdateContractServicesSpend(servicesSpendMap);
+            BatchUpdateContractServicesSpend obj = new BatchUpdateContractServicesSpend(this.servicesSpendMap);
             Database.executeBatch(obj, 50);
         }
     }

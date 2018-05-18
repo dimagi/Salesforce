@@ -219,7 +219,9 @@ public without sharing class TimeCardCalculator implements Database.Batchable<sO
     }
 
     public void finish(Database.BatchableContext context) {
-        Database.executeBatch(new BatchCalculateTotalHoursOfTimeCard(this.contractIds, true));
+        if (!Test.isRunningTest()) {
+            Database.executeBatch(new BatchCalculateTotalHoursOfTimeCard(this.contractIds, true));
+        }
     }
 
     private String getDateText(Date dateRecord) {
