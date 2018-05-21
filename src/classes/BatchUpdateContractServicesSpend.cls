@@ -4,15 +4,9 @@
 public class BatchUpdateContractServicesSpend implements Database.Batchable<DContract__c>, Database.Stateful {
 
     private Map<Id, Decimal> servicesSpendMap;
-    private String mode;
 
     public BatchUpdateContractServicesSpend(Map<Id, Decimal> servicesSpendMap) {
-        this(servicesSpendMap, 'replace');
-    }
-
-    public BatchUpdateContractServicesSpend(Map<Id, Decimal> servicesSpendMap, String mode) {
         this.servicesSpendMap = servicesSpendMap;
-        this.mode = mode;
     }
 
     public List<DContract__c> start(Database.BatchableContext context) {
@@ -24,11 +18,11 @@ public class BatchUpdateContractServicesSpend implements Database.Batchable<DCon
             }
         }
 
-        return [SELECT Name, Calculated_Services_Spend__c, Services_Spend__c FROM DContract__c WHERE Parent_Contract__c = '' AND Id IN: this.servicesSpendMap.keySet()];
+        return [SELECT Name, Services_Spend__c FROM DContract__c WHERE Parent_Contract__c = '' AND Id IN: this.servicesSpendMap.keySet()];
     }
 
     public void execute(Database.BatchableContext context, List<DContract__c> contracts) {
-        List<DContract__c> childContracts = [SELECT Name, Parent_Contract__c, Calculated_Services_Spend__c, Services_Spend__c FROM DContract__c WHERE Parent_Contract__c IN :contracts];
+        List<DContract__c> childContracts = [SELECT Name, Parent_Contract__c, Services_Spend__c FROM DContract__c WHERE Parent_Contract__c IN :contracts];
         List<DContract__c> contractsToUpdate = new List<DContract__c>();
 
         for (DContract__c contract : childContracts) {
@@ -42,8 +36,8 @@ public class BatchUpdateContractServicesSpend implements Database.Batchable<DCon
             } else {
                 this.servicesSpendMap.put(contract.Parent_Contract__c, contractValue);
             }
-            contract.Calculated_Services_Spend__c = contractValue;
             contract.Services_Spend__c = contractValue.setScale(2);
+            contract.Require_Services_Spend_Refresh__c = false;
             contractsToUpdate.add(contract);
         }
 
@@ -53,12 +47,16 @@ public class BatchUpdateContractServicesSpend implements Database.Batchable<DCon
             }
 
             Decimal contractValue = servicesSpendMap.get(contract.Id);
-            contract.Calculated_Services_Spend__c = contractValue;
             contract.Services_Spend__c = contractValue.setScale(2);
+            contract.Require_Services_Spend_Refresh__c = false;
             contractsToUpdate.add(contract);
         }
 
-        Database.update(contractsToUpdate, false); // TODO Generate mailer with mode!!! 
+        Database.SaveResult[] srList = Database.update(contractsToUpdate, false);
+        if (!Test.isRunningTest()) {
+            EmailHelper.sendEmailFromDatabaseSaveResultErrors(BatchDefaultSettings__c.getOrgDefaults().Error_Emails__c.split(','),
+                        'Contract Update Errors', 'Cannot Update Contracts : ', srList);
+        }
     }
 
     public void finish(Database.BatchableContext context) {

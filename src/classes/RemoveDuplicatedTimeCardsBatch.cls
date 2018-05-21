@@ -1,5 +1,5 @@
 /**
- * Batch Job removes all duplicated time cards.
+ * Batch Job removes all duplicated time cards with given range.
  */
 public class RemoveDuplicatedTimeCardsBatch implements Database.Batchable<TimeCardContainer> {
 
@@ -26,7 +26,7 @@ public class RemoveDuplicatedTimeCardsBatch implements Database.Batchable<TimeCa
     public void execute(Database.BatchableContext context, List<TimeCardContainer> scope) {
         List<Time_Card__c> timeCardsToRemove = new List<Time_Card__c>();
         for (TimeCardContainer tcData : scope) {
-            List<Time_Card__c> duplicatedTimeCardsList = [SELECT Id FROM Time_Card__c WHERE Employee__c =: tcData.employeeId AND Case__c =: tcData.caseName AND Date__c =: tcData.tcDate
+            List<Time_Card__c> duplicatedTimeCardsList = [SELECT Id FROM Time_Card__c WHERE Employee__c =: tcData.employeeId AND Case__c =: tcData.caseNum AND Date__c =: tcData.tcDate
                                                           ORDER BY LastModifiedDate DESC];
             if (duplicatedTimeCardsList.size() > 1) {
                 duplicatedTimeCardsList.remove(0);
@@ -44,18 +44,18 @@ public class RemoveDuplicatedTimeCardsBatch implements Database.Batchable<TimeCa
 
     public class TimeCardContainer {
 
-        private String caseName;
+        private String caseNum;
         private Date tcDate;
         private Id employeeId;
 
-        public TimeCardContainer(String caseName, Date tcDate, Id employeeId) {
-            this.caseName = caseName;
+        public TimeCardContainer(String caseNum, Date tcDate, Id employeeId) {
+            this.caseNum = caseNum;
             this.tcDate = tcDate;
             this.employeeId = employeeId;
         }
 
-        public String getCaseName() {
-            return this.caseName;
+        public String getcaseNum() {
+            return this.caseNum;
         }
 
         public Date getTcDate() {

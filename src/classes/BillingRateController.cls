@@ -15,10 +15,6 @@ public class BillingRateController {
         
     }
 
-    public void setViewData() {
-        
-    }
-
     public void initManageRates() {
         List<Project_Billing_Rate__c> dataBR = [SELECT Id, Name, Date__c, Custom_1__c, Overhead__c, G_A__c, Fringe__c, Fee__c, Custom_2__c, Custom_3__c FROM Project_Billing_Rate__c];
         Set<String> names = new Set<String>();
@@ -193,7 +189,8 @@ public class BillingRateController {
     }
 
     public void runRecalculationBatchJob() {
-        ApexClass batchClass = [SELECT Id FROM ApexClass WHERE Name='TimeCardCalculator' LIMIT 1];
+        ApexClass batchClass = [SELECT Id FROM ApexClass WHERE Name='TimeCardCalculator' OR Name = 'BatchCalculateTotalHoursOfTimeCard' OR Name = 'BatchUpdateContractServicesSpend'
+                                                                OR Name = 'BatchRecalculateTimeCardCost' LIMIT 1];
         AsyncApexJob[] batchClassJobList = [SELECT Id, JobItemsProcessed, TotalJobItems, createdDate FROM AsyncApexJob WHERE ApexClassID = :batchClass.Id
                                             AND Status IN ('Holding', 'Queued', 'Preparing', 'Processing') ORDER BY createdDate DESC LIMIT 1];
 

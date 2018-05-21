@@ -4,12 +4,12 @@
 public without sharing class TimeCardCalculator implements Database.Batchable<sObject>, Database.Stateful {
 
     private DateTime lastUpdatedDateTime;
-    private Map<Id, Decimal> servicesSpendMap;
     private Map<String, List<SalaryHistoryRecord>> billingRateHistoryMap;
     private List<SalaryHistoryRecord> currentRateHistory;
     private SalaryHistoryHelper salaryHistoryHelper;
     private Boolean onlyRate;
 
+    private Set<Id> contractIds;
     private Set<Id> updatedContracts;
     private List<Id> timeCardsIds;
     private List<Project_Billing_Rate_Update__c> updatesList;
@@ -44,11 +44,11 @@ public without sharing class TimeCardCalculator implements Database.Batchable<sO
 
     public TimeCardCalculator(DateTime lastUpdatedDateTime) {
         this.lastUpdatedDateTime = lastUpdatedDateTime;
-        this.servicesSpendMap = new Map<Id, Decimal>();
         this.billingRateHistoryMap = new  Map<String, List<SalaryHistoryRecord>>();
         this.currentRateHistory = new List<SalaryHistoryRecord>();
         this.salaryHistoryHelper = new SalaryHistoryHelper();
         this.onlyRate = false;
+        this.contractIds = new Set<Id>();
     }
 
     public Database.QueryLocator start(Database.BatchableContext context) {
@@ -68,7 +68,12 @@ public without sharing class TimeCardCalculator implements Database.Batchable<sO
             for (DContract__c dContract : toUpdateList) {
                 dContract.Project_Billing_Rate_Updated__c = false;
             }
-            Database.update(toUpdateList, false);
+
+            Database.SaveResult[] srList = Database.update(toUpdateList, false);
+            if (!Test.isRunningTest()) {
+                EmailHelper.sendEmailFromDatabaseSaveResultErrors(BatchDefaultSettings__c.getOrgDefaults().Error_Emails__c.split(','),
+                        'Contract Update Errors', 'Cannot Update Contracts : ', srList);
+            }
             query = query + 'FROM Time_Card__c WHERE Client__c IN: updatedContracts ORDER BY Employee__c, Date__c';
         } else if (this.updatesList != null) { // BR UI run
             String dateString = '';
@@ -88,7 +93,12 @@ public without sharing class TimeCardCalculator implements Database.Batchable<sO
             for (DContract__c dContract : contractsList) {
                 dContract.Project_Billing_Rate_Updated__c = false;
             }
-            Database.update(this.contractsList, false);
+
+            Database.SaveResult[] srList = Database.update(contractsList, false);
+            if (!Test.isRunningTest()) {
+                EmailHelper.sendEmailFromDatabaseSaveResultErrors(BatchDefaultSettings__c.getOrgDefaults().Error_Emails__c.split(','),
+                        'Contract Update Errors', 'Cannot Update Contracts : ', srList);
+            }
 
             List<SFDC_Employee_Snapshot__c> newEmplSnpList = [SELECT Id, Employee_Record__c, Snapshot_Date__c FROM SFDC_Employee_Snapshot__c WHERE CreatedDate >=: lastUpdatedDateTime];
             List<SFDC_Employee_Snapshot__c> updatedEmplSnpList = [SELECT Id, Employee_Record__c, Snapshot_Date__c FROM SFDC_Employee_Snapshot__c WHERE Salary_Updated__c = true];
@@ -118,7 +128,7 @@ public without sharing class TimeCardCalculator implements Database.Batchable<sO
                 newEmplSnpWhere = ' OR (' + String.join(updatedEmplSnpWhere, ' OR ') + ')';
             }
 
-            query = query + 'FROM Time_Card__c WHERE CreatedDate>=:lastUpdatedDateTime OR Client__c IN: contractsList' + newEmplSnpWhere + ' ORDER BY Employee__c, Date__c';
+            query = query + 'FROM Time_Card__c WHERE CreatedDate>=:lastUpdatedDateTime OR LastModifiedDate>=:lastUpdatedDateTime OR Client__c IN: contractsList' + newEmplSnpWhere + ' ORDER BY Employee__c, Date__c';
         }
 
         System.debug('Query : ' + query);
@@ -197,12 +207,10 @@ public without sharing class TimeCardCalculator implements Database.Batchable<sO
                 if (tc.Date__c >= Date.newInstance(2017, 12, 1) && this.onlyRate == false) { // only update salary for time cards when empl snp was added
                     tc.Time_Card_Salary__c = salary;
                 }
-
                 tc.Billing_Rate__c = contractRate;
-                Decimal value = (tc.Total__c * (tc.Time_Card_Salary__c != null ? tc.Time_Card_Salary__c : 0.0) * (contractRate != null ? contractRate : 0.0)).setScale(8);
-                addServicesSpend(value - oldValue, tc.Client__c, tc.Client__r.Parent_Contract__c);
                 toUpdateList.add(tc);
             }
+            this.contractIds.add(tc.Client__c);
         }
 
         if (toUpdateList.size() > 0) { // update racalculated time cards
@@ -211,35 +219,8 @@ public without sharing class TimeCardCalculator implements Database.Batchable<sO
     }
 
     public void finish(Database.BatchableContext context) {
-        if (!this.servicesSpendMap.isEmpty()) {
-            List<DContract__c> contractList = new List<DContract__c>();
-            for (DContract__c dContract : [SELECT Id, Services_Spend__c, Calculated_Services_Spend__c FROM DContract__c WHERE Id IN: this.servicesSpendMap.keySet() OR Require_Services_Spend_Refresh__c = true]) {
-                DContract__c dCon = new DContract__c(Id = dContract.Id, Require_Services_Spend_Refresh__c = false);
-                Decimal value = this.servicesSpendMap.get(dContract.Id);
-                if (value == null) {
-                    value = 0;
-                }
-                dCon.Calculated_Services_Spend__c = (dContract.Calculated_Services_Spend__c != null ? dContract.Calculated_Services_Spend__c + value : value);
-                dCon.Services_Spend__c = dCon.Calculated_Services_Spend__c.setScale(2);
-                contractList.add(dCon);
-            }
-            Database.update(contractList, false);
-        }
-    }
-
-    private void addServicesSpend(Decimal value, Id contractId, Id parentId) {
-        if (this.servicesSpendMap.containsKey(contractId)) {
-            this.servicesSpendMap.put(contractId, value + this.servicesSpendMap.get(contractId));
-        } else {
-            this.servicesSpendMap.put(contractId, value);
-        }
-
-        if (parentId != null) { // we must also add childs service spend to the parent object
-            if (this.servicesSpendMap.containsKey(parentId)) {
-                this.servicesSpendMap.put(parentId, value + this.servicesSpendMap.get(parentId));
-            } else {
-                this.servicesSpendMap.put(parentId, value);
-            }
+        if (!Test.isRunningTest()) {
+            Database.executeBatch(new BatchCalculateTotalHoursOfTimeCard(this.contractIds, true));
         }
     }
 

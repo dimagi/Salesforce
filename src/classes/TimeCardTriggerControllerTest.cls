@@ -7,22 +7,22 @@ public class TimeCardTriggerControllerTest {
                                                             Effective_Exchange_Rate_Date__c = Date.newInstance(2016, 2, 24), Per_Week_Hours__c = 40);
         insert employeeObj;
 
-        DContract__c parent1 = new DContract__c(Name = 'Sample Parent 1', Services_Spend__c = 400, Calculated_Services_Spend__c = 400, Status__c = 'Active', Requires_Report_Out__c = 'No', Intracompany_Sub_contract__c = 'No');
+        DContract__c parent1 = new DContract__c(Name = 'Sample Parent 1', Services_Spend__c = 400, Status__c = 'Active', Requires_Report_Out__c = 'No', Intracompany_Sub_contract__c = 'No');
         insert parent1;
 
-        DContract__c child1 = new DContract__c(Name = 'Sample Child 1',  Services_Spend__c = 100, Calculated_Services_Spend__c = 100, Status__c = 'Active', Requires_Report_Out__c = 'No', Intracompany_Sub_contract__c = 'Yes', Parent_Contract__c = parent1.Id);
+        DContract__c child1 = new DContract__c(Name = 'Sample Child 1',  Services_Spend__c = 100, Status__c = 'Active', Requires_Report_Out__c = 'No', Intracompany_Sub_contract__c = 'Yes', Parent_Contract__c = parent1.Id);
         insert child1;
 
-        DContract__c child2 = new DContract__c(Name = 'Sample Child 2',  Services_Spend__c = 100, Calculated_Services_Spend__c = 100, Status__c = 'Active', Requires_Report_Out__c = 'No', Intracompany_Sub_contract__c = 'Yes', Parent_Contract__c = parent1.Id);
+        DContract__c child2 = new DContract__c(Name = 'Sample Child 2',  Services_Spend__c = 100, Status__c = 'Active', Requires_Report_Out__c = 'No', Intracompany_Sub_contract__c = 'Yes', Parent_Contract__c = parent1.Id);
         insert child2;
 
-        DContract__c parent2 = new DContract__c(Name = 'Sample Parent 2', Services_Spend__c = 500, Calculated_Services_Spend__c = 500, Status__c = 'Active', Requires_Report_Out__c = 'No', Intracompany_Sub_contract__c = 'No');
+        DContract__c parent2 = new DContract__c(Name = 'Sample Parent 2', Services_Spend__c = 500, Status__c = 'Active', Requires_Report_Out__c = 'No', Intracompany_Sub_contract__c = 'No');
         insert parent2;
 
-        DContract__c child3 = new DContract__c(Name = 'Sample Child 3', Services_Spend__c = 200, Calculated_Services_Spend__c = 200, Status__c = 'Active', Requires_Report_Out__c = 'No', Intracompany_Sub_contract__c = 'Yes', Parent_Contract__c = parent2.Id);
+        DContract__c child3 = new DContract__c(Name = 'Sample Child 3', Services_Spend__c = 200, Status__c = 'Active', Requires_Report_Out__c = 'No', Intracompany_Sub_contract__c = 'Yes', Parent_Contract__c = parent2.Id);
         insert child3;
 
-        DContract__c child4 = new DContract__c(Name = 'Sample Child 4', Services_Spend__c = 150, Calculated_Services_Spend__c = 150, Status__c = 'Active', Requires_Report_Out__c = 'No', Intracompany_Sub_contract__c = 'Yes', Parent_Contract__c = parent2.Id);
+        DContract__c child4 = new DContract__c(Name = 'Sample Child 4', Services_Spend__c = 150, Status__c = 'Active', Requires_Report_Out__c = 'No', Intracompany_Sub_contract__c = 'Yes', Parent_Contract__c = parent2.Id);
         insert child4;
 
         insert new Project_Billing_Rate__c(Name = 'Loaded Daily Rate', Date__c = Date.newInstance(1990, 01, 01), Custom_1__c = 0, Custom_2__c = 0, Custom_3__c = 0,
@@ -59,22 +59,30 @@ public class TimeCardTriggerControllerTest {
         timeCards.add(timeCardObj4); // 64
         insert timeCards;
 
+        List<DContract__c> toUpdate = new List<DContract__c>();
+        for (DContract__c dContract : [SELECT Id, Require_Services_Spend_Refresh__c FROM DContract__c]) {
+            dContract.Require_Services_Spend_Refresh__c = false;
+            toUpdate.add(dContract);
+        }
+        update toUpdate;
+
         Test.startTest();
         delete timeCards;
+        Database.executeBatch(new BatchCalculateTotalHoursOfTimeCard(true));
         Test.stopTest();
 
-        DContract__c dcontractFromDB = [SELECT Id, Name, Calculated_Services_Spend__c FROM DContract__c WHERE Name = 'Sample Parent 1'];
-        System.assertEquals(360, dcontractFromDB.Calculated_Services_Spend__c);
-        dcontractFromDB = [SELECT Id, Name, Calculated_Services_Spend__c FROM DContract__c WHERE Name = 'Sample Parent 2'];
-        System.assertEquals(376, dcontractFromDB.Calculated_Services_Spend__c);
-        dcontractFromDB = [SELECT Id, Name, Calculated_Services_Spend__c FROM DContract__c WHERE Name = 'Sample Child 1'];
-        System.assertEquals(84, dcontractFromDB.Calculated_Services_Spend__c);
-        dcontractFromDB = [SELECT Id, Name, Calculated_Services_Spend__c FROM DContract__c WHERE Name = 'Sample Child 2'];
-        System.assertEquals(100, dcontractFromDB.Calculated_Services_Spend__c);
-        dcontractFromDB = [SELECT Id, Name, Calculated_Services_Spend__c FROM DContract__c WHERE Name = 'Sample Child 3'];
-        System.assertEquals(140, dcontractFromDB.Calculated_Services_Spend__c);
-        dcontractFromDB = [SELECT Id, Name, Calculated_Services_Spend__c FROM DContract__c WHERE Name = 'Sample Child 4'];
-        System.assertEquals(86, dcontractFromDB.Calculated_Services_Spend__c);
+        DContract__c dcontractFromDB = [SELECT Id, Name, Require_Services_Spend_Refresh__c FROM DContract__c WHERE Name = 'Sample Parent 1'];
+        System.assertEquals(true, dcontractFromDB.Require_Services_Spend_Refresh__c);
+        dcontractFromDB = [SELECT Id, Name, Require_Services_Spend_Refresh__c FROM DContract__c WHERE Name = 'Sample Parent 2'];
+        System.assertEquals(false, dcontractFromDB.Require_Services_Spend_Refresh__c);
+        dcontractFromDB = [SELECT Id, Name, Require_Services_Spend_Refresh__c FROM DContract__c WHERE Name = 'Sample Child 1'];
+        System.assertEquals(true, dcontractFromDB.Require_Services_Spend_Refresh__c);
+        dcontractFromDB = [SELECT Id, Name, Require_Services_Spend_Refresh__c FROM DContract__c WHERE Name = 'Sample Child 2'];
+        System.assertEquals(false, dcontractFromDB.Require_Services_Spend_Refresh__c);
+        dcontractFromDB = [SELECT Id, Name, Require_Services_Spend_Refresh__c FROM DContract__c WHERE Name = 'Sample Child 3'];
+        System.assertEquals(true, dcontractFromDB.Require_Services_Spend_Refresh__c);
+        dcontractFromDB = [SELECT Id, Name, Require_Services_Spend_Refresh__c FROM DContract__c WHERE Name = 'Sample Child 4'];
+        System.assertEquals(true, dcontractFromDB.Require_Services_Spend_Refresh__c);
     }
 
     @isTest
@@ -105,12 +113,25 @@ public class TimeCardTriggerControllerTest {
         Database.executeBatch(new TimeCardCalculator(new Set<Id> { child1.Id }, false), 200);
         Test.stopTest();
 
+        BatchCalculateTotalHoursOfTimeCard batch1 = new BatchCalculateTotalHoursOfTimeCard();
+        Database.QueryLocatorIterator iter = batch1.start(null).iterator();
+        List<sObject> testData = new List<sObject>();
+        while (iter.hasNext()) {
+            testData.add(iter.next());
+        }
+        batch1.execute(null, testData);
+        batch1.finish(null);
+
+        BatchUpdateContractServicesSpend batch2 = new BatchUpdateContractServicesSpend(batch1.getServicesSpendMap());
+        batch2.execute(null, batch2.start(null));
+        batch2.finish(null);
+
         DContract__c dcontractFromDB = [SELECT Id, Name, Services_Spend__c FROM DContract__c WHERE Name = 'Sample Parent 1'];
-        System.assertEquals(2124.25, dcontractFromDB.Services_Spend__c); // 400 + (30 * (1.1 * 1.1 * 1.3 * 1.52) * ((50000 / 260.0) / 8.0))
+        System.assertEquals(1724.25, dcontractFromDB.Services_Spend__c); // (30 * (1.1 * 1.1 * 1.3 * 1.52) * ((50000 / 260.0) / 8.0))
         dcontractFromDB = [SELECT Id, Name, Services_Spend__c FROM DContract__c WHERE Name = 'Sample Child 1'];
-        System.assertEquals(1134.55, dcontractFromDB.Services_Spend__c); // 100 + (18 * (1.1 * 1.1 * 1.3 * 1.52) * ((50000 / 260.0) / 8.0))
+        System.assertEquals(1034.55, dcontractFromDB.Services_Spend__c); // (18 * (1.1 * 1.1 * 1.3 * 1.52) * ((50000 / 260.0) / 8.0))
         dcontractFromDB = [SELECT Id, Name, Services_Spend__c FROM DContract__c WHERE Name = 'Sample Child 2'];
-        System.assertEquals(559.80, dcontractFromDB.Services_Spend__c); // 100 + (8 * (1.1 * 1.1 * 1.3 * 1.52) * ((50000 / 260.0) / 8.0))
+        System.assertEquals(459.80, dcontractFromDB.Services_Spend__c); // (8 * (1.1 * 1.1 * 1.3 * 1.52) * ((50000 / 260.0) / 8.0))
     }
 
     @isTest
@@ -120,10 +141,7 @@ public class TimeCardTriggerControllerTest {
         DContract__c child2 = [SELECT Id, Project_Billing_Rate__c, Services_Spend__c FROM DContract__c WHERE Name = 'Sample Child 2'];
 
         parent1.Project_Billing_Rate__c = 'Test Daily Rate';
-        parent1.Calculated_Services_Spend__c = 0.0;
         child1.Project_Billing_Rate__c = 'Test Daily Rate';
-        child1.Calculated_Services_Spend__c = 0.0;
-        child2.Calculated_Services_Spend__c = 0.0;
         update parent1;
         update child1;
         update child2;
@@ -188,6 +206,19 @@ public class TimeCardTriggerControllerTest {
         Database.executeBatch(new TimeCardCalculator(), 200);
         Test.stopTest();
 
+        BatchCalculateTotalHoursOfTimeCard batch1 = new BatchCalculateTotalHoursOfTimeCard();
+        Database.QueryLocatorIterator iter = batch1.start(null).iterator();
+        List<sObject> testData = new List<sObject>();
+        while (iter.hasNext()) {
+            testData.add(iter.next());
+        }
+        batch1.execute(null, testData);
+        batch1.finish(null);
+
+        BatchUpdateContractServicesSpend batch2 = new BatchUpdateContractServicesSpend(batch1.getServicesSpendMap());
+        batch2.execute(null, batch2.start(null));
+        batch2.finish(null);
+
         Decimal child1Value = (8 * (((30000 / 2.0) / (260.0 / 2.0)) / 8.0).setScale(8) * 2.0231200000).setScale(8) + (10 * (((30000 / 2.0) / (260.0 / 2.0)) / 8.0).setScale(8) * 2.2070400000).setScale(8)
                                 + (8 * (((40000 / 3.0) / (260.0 / 2.0)) / 8.0).setScale(8) * 2.2070400000).setScale(8) + (10 * (((40000 / 3.0) / (260.0 / 2.0)) / 8.0).setScale(8) * 2.2070400000).setScale(8)
                                 + (8 * ((45000 / (260.0 * (30.0 / 40.0))) / 8.0).setScale(8) * 2.3909600000).setScale(8) + (10 * ((45000 / (260.0 * (30.0 / 40.0))) / 8.0).setScale(8) * 2.3909600000).setScale(8)
@@ -197,28 +228,18 @@ public class TimeCardTriggerControllerTest {
                                 + (4 * ((45000 / (260.0 * (30.0 / 40.0))) / 8.0).setScale(8) * 2.3909600000).setScale(8)
                                 + (4 * ((50000 / 260.0) / 8.0).setScale(8) * 2.3909600000).setScale(8);
 
-        System.debug((((30000 / 2.0) / (260.0 / 2.0)) / 8.0).setScale(8));
-        System.debug((((30000 / 2.0) / (260.0 / 2.0)) / 8.0).setScale(8));
-        System.debug((((40000 / 3.0) / (260.0 / 2.0)) / 8.0).setScale(8));
-        System.debug((((40000 / 3.0) / (260.0 / 2.0)) / 8.0).setScale(8));
-        System.debug((((50000 / 260.0) / 8.0).setScale(8) * 2.3909600000).setScale(8));
-        System.debug((((30000 / 2.0) / (260.0 / 2.0)) / 8.0));
-        System.debug((((40000 / 3.0) / (260.0 / 2.0)) / 8.0).setScale(8));
-        System.debug(((45000 / (260.0 * (30.0 / 40.0))) / 8.0).setScale(8));
-        System.debug(((50000 / 260.0) / 8.0).setScale(8));
-
         for (Time_Card__c tc : [SELECT Id, Date__c, Time_Card_Salary__c, Billing_Rate__c,  Client__r.Name FROM TIme_Card__c]) {
             System.debug('Debug tc : ' + tc.Client__r.Name + ' ' + tc.Date__c + ' ' + tc.Billing_Rate__c + ' ' + tc.Time_Card_Salary__c);
         }
 
-        DContract__c dcontractFromDB = [SELECT Id, Name, Calculated_Services_Spend__c FROM DContract__c WHERE Name = 'Sample Parent 1'];
-        System.assertEquals((parentValue + child1Value).setScale(8), dcontractFromDB.Calculated_Services_Spend__c);
+        DContract__c dcontractFromDB = [SELECT Id, Name, Services_Spend__c FROM DContract__c WHERE Name = 'Sample Parent 1'];
+        System.assertEquals((parentValue + child1Value).setScale(2), dcontractFromDB.Services_Spend__c);
 
-        dcontractFromDB = [SELECT Id, Name, Calculated_Services_Spend__c FROM DContract__c WHERE Name = 'Sample Child 1'];
-        System.assertEquals((child1Value).setScale(8), dcontractFromDB.Calculated_Services_Spend__c);
+        dcontractFromDB = [SELECT Id, Name, Services_Spend__c FROM DContract__c WHERE Name = 'Sample Child 1'];
+        System.assertEquals((child1Value).setScale(2), dcontractFromDB.Services_Spend__c);
 
-        dcontractFromDB = [SELECT Id, Name, Calculated_Services_Spend__c FROM DContract__c WHERE Name = 'Sample Child 2'];
-        System.assertEquals(0, dcontractFromDB.Calculated_Services_Spend__c);
+        dcontractFromDB = [SELECT Id, Name, Services_Spend__c FROM DContract__c WHERE Name = 'Sample Child 2'];
+        System.assertEquals(0, dcontractFromDB.Services_Spend__c);
     }
 
     @isTest
@@ -228,10 +249,7 @@ public class TimeCardTriggerControllerTest {
         DContract__c child2 = [SELECT Id, Project_Billing_Rate__c, Services_Spend__c FROM DContract__c WHERE Name = 'Sample Child 2'];
 
         parent1.Project_Billing_Rate__c = 'Test Daily Rate';
-        parent1.Calculated_Services_Spend__c = 0.0;
         child1.Project_Billing_Rate__c = 'Test Daily Rate';
-        child1.Calculated_Services_Spend__c = 0.0;
-        child2.Calculated_Services_Spend__c = 0.0;
         update parent1;
         update child1;
         update child2;

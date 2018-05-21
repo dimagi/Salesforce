@@ -7,7 +7,8 @@ public class BatchCalculateTotalHoursOfTimeCardTest {
         insert new Project_Billing_Rate__c(Name = 'Loaded Daily Rate 2', Date__c = Date.newInstance(1990, 01, 01), Custom_1__c = 22, Custom_2__c = 0, Custom_3__c = 0, Fee__c = 10, Fringe__c = 30, G_A__c = 10, Overhead__c = 52);
     }
 
-    static testMethod void shouldUpdateServicesSpend() {
+    @isTest
+    public static void shouldUpdateServicesSpend() {
         Test.startTest();
 
         SFDC_Employee__c employeeObj = new SFDC_Employee__c(
@@ -38,7 +39,7 @@ public class BatchCalculateTotalHoursOfTimeCardTest {
         Database.executeBatch(new TimeCardCalculator(), 200);
         Test.stopTest();
 
-        BatchCalculateTotalHoursOfTimeCard batch1 = new BatchCalculateTotalHoursOfTimeCard();
+        BatchCalculateTotalHoursOfTimeCard batch1 = new BatchCalculateTotalHoursOfTimeCard(new Set<Id> {dcontract.Id}, true);
         Database.QueryLocatorIterator iter = batch1.start(null).iterator();
         List<sObject> testData = new List<sObject>();
         while (iter.hasNext()) {
@@ -53,7 +54,8 @@ public class BatchCalculateTotalHoursOfTimeCardTest {
         System.assertEquals(229.90, dcontractFromDB.Services_Spend__c);
     }
 
-    static testMethod void shouldUpdateParentServicesSpend() {
+    @isTest
+    static void shouldUpdateParentServicesSpend() {
         Test.startTest();
         SFDC_Employee__c employeeObj = new SFDC_Employee__c(
             name = 'Sample Employee',
@@ -131,7 +133,8 @@ public class BatchCalculateTotalHoursOfTimeCardTest {
         System.assertEquals(459.80, dcontractFromDB.Services_Spend__c);
     }
 
-    static testMethod void shouldUpdateServicesSpendInManyContracts() {
+    @isTest
+    static void shouldUpdateServicesSpendInManyContracts() {
         Test.startTest();
         SFDC_Employee__c employeeObj = new SFDC_Employee__c(
             name = 'Sample Employee',
@@ -325,7 +328,7 @@ public class BatchCalculateTotalHoursOfTimeCardTest {
         Test.stopTest();
 
         // we must manually run Batch job from finish method, not sure why this is not working in tests
-        BatchCalculateTotalHoursOfTimeCard batch1 = new BatchCalculateTotalHoursOfTimeCard(new List<Id> {toUpdate.Id});
+        BatchCalculateTotalHoursOfTimeCard batch1 = new BatchCalculateTotalHoursOfTimeCard(new Set<Id> {toUpdate.Id});
         Database.QueryLocatorIterator iter = batch1.start(null).iterator();
         List<sObject> testData = new List<sObject>();
         while (iter.hasNext()) {
