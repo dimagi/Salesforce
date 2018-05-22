@@ -1,3 +1,6 @@
+/**
+ * Class for adjusting hours when we will have negative values in a month after moving hours.
+ */
 public without sharing class FTERemoveNegativeHoursBatch implements Database.Batchable<FTEEmployeeMonthUpdated>, Database.Stateful {
 
     public List<FTEEmployeeMonthUpdated> start(Database.BatchableContext BC) {
