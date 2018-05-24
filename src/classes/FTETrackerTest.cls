@@ -271,6 +271,7 @@ public class FTETrackerTest {
     @isTest
     public static void triggerShouldAddRemovedTags() {
         Id cont1 = [SELECT Id FROM DContract__c WHERE Name = 'FTE Contract 1' LIMIT 1].Id;
+        Id cont2 = [SELECT Id FROM DContract__c WHERE Name = 'FTE Contract 2' LIMIT 1].Id;
         Id contUn1 = [SELECT Id FROM DContract__c WHERE Name = 'Unassigned Contract 1' LIMIT 1].Id;
 
         Date currentDate = Date.today();
@@ -288,6 +289,9 @@ public class FTETrackerTest {
         Time_Card__c tc3 = [SELECT Id, FTE_Contract__c, Total__c, FTE_Hours__c FROM Time_Card__c WHERE
                             Client__c =: contUn1 AND DAY_IN_MONTH(Date__c) = 22 AND Employee__r.Name = 'Other Employee' LIMIT 1];
         tc2.Total__c = 1;
+        tc2.Client__c = cont2;
+        tc2.FTE_Contract__c = contUn1;
+        tc2.FTE_hours__c = 6;
         tc3.Total__c = 19;
         List<Time_Card__c> triggerUpdate = new List<Time_Card__c>();
         triggerUpdate.add(tc2);
@@ -302,14 +306,25 @@ public class FTETrackerTest {
         for (FTE_Tag__c tagT : [SELECT Action__c, Hours__c, Employee__r.Name, TC_Contract__r.Name, FTE_Contract__r.Name FROM FTE_Tag__c]) {
             System.debug('FTE_Tag__c : ' + tagT);
         }
-        System.assertEquals(1, [SELECT Id FROM FTE_Tag__c].size());
+        System.assertEquals(2, [SELECT Id FROM FTE_Tag__c].size());
 
         FTE_Tag__c testTag = [SELECT Id, Hours__c, Employee__r.Name, TC_Contract__r.Name, FTE_Contract__r.Name FROM FTE_Tag__c
-                                WHERE Action__c = 'Tag Deleted' LIMIT 1];
+                                WHERE Action__c = 'Tag Deleted' AND DAY_IN_MONTH(Date__c) = 1 LIMIT 1];
         System.assertEquals('Other Employee' ,testTag.Employee__r.Name);
         System.assertEquals(5.0 ,testTag.Hours__c);
         System.assertEquals('FTE Contract 1' ,testTag.TC_Contract__r.Name);
         System.assertEquals('Unassigned Contract 1' ,testTag.FTE_Contract__r.Name);
+
+        testTag = [SELECT Id, Hours__c, Employee__r.Name, TC_Contract__r.Name, FTE_Contract__r.Name FROM FTE_Tag__c
+                                WHERE Action__c = 'Tag Deleted' AND DAY_IN_MONTH(Date__c) = 2 LIMIT 1];
+        System.assertEquals('Other Employee' ,testTag.Employee__r.Name);
+        System.assertEquals(6.0 ,testTag.Hours__c);
+        System.assertEquals('FTE Contract 1' ,testTag.TC_Contract__r.Name);
+        System.assertEquals('Unassigned Contract 1' ,testTag.FTE_Contract__r.Name);
+
+        Time_Card__c tcWithNewClient = [SELECT Id, FTE_Contract__c, FTE_hours__c FROM Time_Card__c WHERE Id =: tc2.Id LIMIT 1];
+        System.assertEquals(null ,tcWithNewClient.FTE_Contract__c);
+        System.assertEquals(0 ,tcWithNewClient.FTE_hours__c);
     }
 
     @isTest
