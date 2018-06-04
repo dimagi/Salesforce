@@ -7,7 +7,7 @@ public class OpportunityFailingSalesProcessBatch implements Database.Batchable<O
     }
 
     public List<Opportunity> start(Database.BatchableContext BC) {
-        return [SELECT Id, Name, Latest_day_Opp_failed_sales_process__c, Nb_times_Opp_failed_sales_process__c FROM Opportunity WHERE Channel_Response__c = 'Inside Sales' AND IsClosed = false]; // TODO add new fields!!!
+        return [SELECT Id, Name, Latest_day_Opp_failed_sales_process__c, Nb_times_Opp_failed_sales_process__c FROM Opportunity WHERE Channel_Response__c = 'Inside Sales' AND IsClosed = false];
     }
 
     public void execute(Database.BatchableContext BC, List<Opportunity> scope) {

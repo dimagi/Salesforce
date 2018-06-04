@@ -1,0 +1,36 @@
+<apex:page controller="OpportunityPipelineSnapshotController" docType="html-5.0" action="{!initOpportunityPipelineSnapshot}">
+    <apex:pageBlock title="Opportunity Pipeline Snapshot" id="mainBlockId">
+        <apex:form >
+            <apex:outputPanel >
+                <apex:outputPanel layout="block" id="messages">
+                    <apex:pageMessages />
+                </apex:outputPanel>
+            </apex:outputPanel>
+
+            <apex:actionstatus id="loadingDiv">
+                <apex:facet name="start">
+                    <div class="waitingSearchDiv" id="el_loading" style="background-color: #fbfbfb; height:100%;opacity:0.65;width:100%;">
+                        <div class="waitingHolder" style="left : 50%; top : 50%; position: fixed; width: 91px;">
+                            <img class="waitingImage" src="{!$Resource.BrokenCircle}" title="Please Wait..." />
+                        </div>
+                    </div>
+                </apex:facet>
+            </apex:actionstatus>
+
+            <apex:actionPoller action="{!loadOpportunityPipelineSnapshotBatchJobStatus}" enabled="{!oppSnapshotJobWrapper.isRunning}"
+                        reRender="mainBlockId" interval="5"/>
+
+            <apex:pageBlockSection >
+                <apex:outputPanel id="jobLoader" rendered="{!oppSnapshotJobWrapper.isRunning}">
+                    <apex:image url="/img/loading32.gif" height="10px" />
+                    Opportunity Pipeline Snapshot is currently working : {!oppSnapshotJobWrapper.jobItemsProcessed}/{!oppSnapshotJobWrapper.totalJobItems}
+                </apex:outputPanel>
+            </apex:pageBlockSection>
+
+            <apex:pageBlockSection >
+                <apex:commandButton action="{!runOpportunityPipelineSnapshotBatchJob}" value="Run Pipeline Snapshot" id="runButton"
+                                disabled="{!oppSnapshotJobWrapper.isRunning}" status="loadingDiv" reRender="mainBlockId" />
+            </apex:pageBlockSection>
+        </apex:form>
+    </apex:pageBlock>
+</apex:page>

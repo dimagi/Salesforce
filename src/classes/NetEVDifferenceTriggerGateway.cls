@@ -20,14 +20,15 @@ public class NetEVDifferenceTriggerGateway {
         if (triggerSnapshots.size() == 0) {
             return;
         }
+
         Set<Id> opps = new Set<Id>();
         Date currentDate = triggerSnapshots[0].Month_Date__c;
         Date firstDate = currentDate.toStartOfMonth();
         Date lastDate = firstDate.addDays(Date.daysInMonth(currentDate.year() , currentDate.month())).addDays(-1);
         List<Pipeline_Snapshot__c> snapshots = new List<Pipeline_Snapshot__c>();
-        // For now we don't want Total
+
         for(Pipeline_Snapshot__c snapshot : triggerSnapshots) {
-            if (!String.isBlank(snapshot.Opportunity__c) && snapshot.Stage__c != 'Total') {
+            if (!String.isBlank(snapshot.Opportunity__c) && snapshot.Stage__c != 'Total' && snapshot.Stage__c != 'Core run rate') {
                 opps.add(snapshot.Opportunity__c);
                 snapshots.add(snapshot);
             }
@@ -35,6 +36,7 @@ public class NetEVDifferenceTriggerGateway {
 
         Map<Id, Pipeline_Snapshot__c> priorMonthSnapshotRecords = getPriorMonthSnapshots(currentDate, opps);
         List<Pipeline_Snapshot_EV_DIff__c> snapShotDiffs = new List<Pipeline_Snapshot_EV_DIff__c>();
+
         List<Pipeline_Snapshot_EV_DIff__c> oldDiffs = [SELECT Id, Pipeline_Snapshot__c FROM Pipeline_Snapshot_EV_DIff__c WHERE Month_Date__c >=: firstDate
                             AND Month_Date__c <=: lastDate];
         Set<Id> pipelineSnapshotsToSkip = new Set<Id>();
@@ -169,7 +171,6 @@ public class NetEVDifferenceTriggerGateway {
     /**
      * Method to create Closed EV Diffs, should be used on "fresh" data.
      */
-    @future
     public static void processPriorMonthSnapshotsWithClosedStatus(Date executeDate) {
         Date firstDate = executeDate.toStartOfMonth();
         Date lastDate = firstDate.addDays(date.daysInMonth(firstDate.year() , firstDate.month())).addDays(-1);
@@ -301,7 +302,7 @@ public class NetEVDifferenceTriggerGateway {
                                                    Expected_Monthly_Recurring_Revenue_MRR__c, Buffer_EV__c
                                                    FROM Pipeline_Snapshot__c
                                                    WHERE Month_Date__c >= :firstDate AND Month_Date__c <= :lastDate
-                                                   AND Opportunity__c in :opps AND Stage__c != 'Total'];
+                                                   AND Opportunity__c in :opps AND Stage__c != 'Total' AND Stage__c != 'Core run rate'];
 
         Map<Id, Pipeline_Snapshot__c> lastMonthSnapShotsMap = new Map<Id, Pipeline_Snapshot__c>();
         for(Pipeline_Snapshot__c snapshotObject : lastMonthSnapShotsList) {
@@ -342,7 +343,7 @@ public class NetEVDifferenceTriggerGateway {
                 WHERE Month_Date__c >= :firstDate AND Month_Date__c <= :lastDate
                 AND Source_Type__c = 'Opportunity'
                 AND Opportunity__c != null
-                AND Stage__c != 'Total'];
+                AND Stage__c != 'Total' AND Stage__c != 'Core run rate'];
 
         Map<Id, Pipeline_Snapshot__c> lastMonthSnapShotsMap = new Map<Id, Pipeline_Snapshot__c>();
         for(Pipeline_Snapshot__c snapshotObject : lastMonthSnapShotsList) {
@@ -430,7 +431,7 @@ public class NetEVDifferenceTriggerGateway {
                             WHERE Month_Date__c >=: firstDate
                             AND Month_Date__c <=: currentDate
                             AND Source_Type__c = 'Opportunity'
-                            AND Stage__c != 'Total'];
+                            AND Stage__c != 'Total' AND Stage__c != 'Core run rate'];
 
         Map<Id, Pipeline_Snapshot__c> priorMonthSnapshotRecords = getPriorMonthSnapshotsForDate(firstDate);
         for (Pipeline_Snapshot__c snapshot : records) {
@@ -450,7 +451,7 @@ public class NetEVDifferenceTriggerGateway {
         diff.Prior_Snapshot_date__c = priorSnapshot.Month_Date__c;
         diff.Monthly_Recurring_Revenue_MRR__c = (lastSnapshot.Monthly_Recurring_Revenue_MRR__c != null ? lastSnapshot.Monthly_Recurring_Revenue_MRR__c : 0) - (priorSnapshot.Monthly_Recurring_Revenue_MRR__c != null ? priorSnapshot.Monthly_Recurring_Revenue_MRR__c : 0);
         diff.Expected_Monthly_Recurring_Revenue_MRR__c = (lastSnapshot.Expected_Monthly_Recurring_Revenue_MRR__c != null ? lastSnapshot.Expected_Monthly_Recurring_Revenue_MRR__c : 0) - (priorSnapshot.Expected_Monthly_Recurring_Revenue_MRR__c != null ? priorSnapshot.Expected_Monthly_Recurring_Revenue_MRR__c : 0);
-        diff.Diff_Buffer_EV__c = lastSnapshot.Buffer_EV__c - priorSnapshot.Buffer_EV__c;
+        diff.Diff_Buffer_EV__c = (lastSnapshot.Buffer_EV__c != null ? lastSnapshot.Buffer_EV__c : 0) - (priorSnapshot.Buffer_EV__c != null ? priorSnapshot.Buffer_EV__c : 0);
         return diff;
     }
 
