@@ -350,7 +350,7 @@ public class FTETrackerTest {
         triggerDelete.add(tc2);
         delete triggerDelete;
 
-        Database.executeBatch(new FTEUpdateTagsBatch(false));
+        Database.executeBatch(new FTEUpdateTagsBatch());
 
         Test.stopTest();
 
