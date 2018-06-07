@@ -4,12 +4,10 @@
 public without sharing class FTEUpdateTagsBatch implements Database.Batchable<FTE_Tag__c>, Database.Stateful {
 
     private List<Time_Card__c> timeCardsToUpsert;
-    private Boolean runRemoveNegativeTimeBatch;
     private Set<Id> timeCardsIds;
 
-    public FTEUpdateTagsBatch(Boolean runRemoveNegativeTimeBatch) {
+    public FTEUpdateTagsBatch() {
         this.timeCardsToUpsert = new List<Time_Card__c>();
-        this.runRemoveNegativeTimeBatch = runRemoveNegativeTimeBatch;
         this.timeCardsIds  = new Set<Id>();
     }
 
@@ -52,12 +50,9 @@ public without sharing class FTEUpdateTagsBatch implements Database.Batchable<FT
                 delete tagsToDelete;
             }
 
-            if (runRemoveNegativeTimeBatch) {
-                if (Test.isRunningTest()) {
-                    Database.executeBatch(new FTERemoveNegativeHoursBatch());
-                } else {
-                    Database.executeBatch(new FTERemoveNegativeHoursBatch(), 1);
-                }
+            if (!Test.isRunningTest()) {
+                Integer fteYear = (FTE_Tracker_Settings__c.getOrgDefaults().FTE_Year__c != null ? FTE_Tracker_Settings__c.getOrgDefaults().FTE_Year__c.intValue() : Date.today().year());
+                Database.executeBatch(new FTEGenerateEmployeesWorkCardBatch(fteYear), 1);
             }
         } catch (Exception ex) {
             if (!Test.isRunningTest()) {
