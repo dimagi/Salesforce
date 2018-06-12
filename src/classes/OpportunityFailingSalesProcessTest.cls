@@ -23,7 +23,7 @@ public class OpportunityFailingSalesProcessTest {
 
         Contact contact1 = new Contact(LastName = 'Test Contact 1', AccountId = theAccount.Id, Follow_up_Date__c = null, Hubspot_Next_Activity_Date__c = null); // true
         insert contact1;
-        Contact contact2 = new Contact(LastName = 'Test Contact 2', AccountId = theAccount.Id, Follow_up_Date__c = Date.today().addDays(-1), Hubspot_Next_Activity_Date__c = null); // true
+        Contact contact2 = new Contact(LastName = 'Test Contact 2', AccountId = theAccount.Id, Follow_up_Date__c = Date.today().addDays(-2), Hubspot_Next_Activity_Date__c = null); // true
         insert contact2;
         Contact contact3 = new Contact(LastName = 'Test Contact 3', AccountId = theAccount.Id, Follow_up_Date__c = null, Hubspot_Next_Activity_Date__c = Date.today().addDays(-1)); // true
         insert contact3;
