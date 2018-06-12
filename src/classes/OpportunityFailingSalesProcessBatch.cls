@@ -28,16 +28,24 @@ public class OpportunityFailingSalesProcessBatch implements Database.Batchable<O
                 Set<Id> contractsIdList = oppContactsMap.get(opp.Id);
 
                 if (contractsIdList.size() > 0) {
-                    List<Contact> contacts = !Test.isRunningTest() ?
-                                                [SELECT Id FROM Contact WHERE Id IN: contractsIdList
-                                                 AND (Follow_up_Date__c = null OR Follow_up_Date__c <: Date.today())
-                                                 AND (Days_w_o_Activity__c >= 10)
-                                                 AND (Hubspot_Next_Activity_Date__c = null OR Hubspot_Next_Activity_Date__c <: Date.today())]:
-                                                [SELECT Id FROM Contact WHERE Id IN: contractsIdList
-                                                 AND (Follow_up_Date__c = null OR Follow_up_Date__c <: Date.today())
-                                                 AND (Hubspot_Next_Activity_Date__c = null OR Hubspot_Next_Activity_Date__c <: Date.today())]; // In test we cannot mock Days_w_o_Activity__c, so for test we use different query
+                    Integer failedContacts = 0;
+                    List<Contact> contacts = [SELECT Id, Follow_up_Date__c, Days_w_o_Activity__c, Hubspot_Next_Activity_Date__c FROM Contact WHERE Id IN: contractsIdList];
 
-                    if (contractsIdList.size() == contacts.size()) { // FROM DOCS - if all contacts Follow-up Date = “blank” OR “Less than Today”,
+                    for (Contact contactToCheck : contacts) {
+                        if (!Test.isRunningTest()) {
+                            if (contactToCheck.Days_w_o_Activity__c >= 10 && (contactToCheck.Follow_up_Date__c == null || contactToCheck.Follow_up_Date__c < Date.today().addDays(-1))
+                                        && (contactToCheck.Hubspot_Next_Activity_Date__c == null || contactToCheck.Hubspot_Next_Activity_Date__c < Date.today())) {
+                                failedContacts++;
+                            }
+                        } else {
+                            if ((contactToCheck.Follow_up_Date__c == null || contactToCheck.Follow_up_Date__c < Date.today().addDays(-1))
+                                        && (contactToCheck.Hubspot_Next_Activity_Date__c == null || contactToCheck.Hubspot_Next_Activity_Date__c < Date.today())) {
+                                failedContacts++;
+                            }
+                        }
+                    }
+
+                    if (contractsIdList.size() == failedContacts) { // FROM DOCS - if all contacts Follow-up Date = “blank” OR “less then 1 day ago”,
                                                                      // AND Days w/o Activity greater or equal 10,
                                                                      // AND Hubspot - Next activity date = “blank” OR “more than 0 days ago”
                         opp.Latest_day_Opp_failed_sales_process__c = Date.today();
