@@ -43,6 +43,9 @@ public class FTETrackerController {
         this.hasPrevious = true;
         this.hasNext = true;
         Integer offsetValue = ((this.pageNumber - 1) * this.pageSize);
+
+        // TODO build filters !!! and make query as a String to build it in proper way, use LIKE and other elements
+
         List<FTE_Work_Card__c> workCards = [SELECT Id, Employee__c, Employee__r.Hire_Date__c, Employee__r.Name, Employee__r.Unloaded_Daily_Rate__c, Month_1__c, Month_2__c, Month_3__c,
                                            Month_4__c, Month_5__c, Month_6__c, Month_7__c, Month_8__c, Month_9__c, Month_10__c, Month_11__c, Month_12__c,
                                            Total__c, Total_Hours__c, Year__c, Unloaded_Rate_Total_Cost__c
