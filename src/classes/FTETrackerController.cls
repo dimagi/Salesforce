@@ -12,6 +12,7 @@ public class FTETrackerController {
     public Integer pageNumber { get; set;}
     public Boolean hasPrevious { get; set;}
     public Boolean hasNext { get; set;}
+    public String employeeNameSearch { get; set;}
 
     public FTETrackerController () {
         String yearString = ApexPages.currentPage().getParameters().get('fteYear');
@@ -43,11 +44,16 @@ public class FTETrackerController {
         this.hasPrevious = true;
         this.hasNext = true;
         Integer offsetValue = ((this.pageNumber - 1) * this.pageSize);
-        List<FTE_Work_Card__c> workCards = [SELECT Id, Employee__c, Employee__r.Hire_Date__c, Employee__r.Name, Employee__r.Unloaded_Daily_Rate__c, Month_1__c, Month_2__c, Month_3__c,
-                                           Month_4__c, Month_5__c, Month_6__c, Month_7__c, Month_8__c, Month_9__c, Month_10__c, Month_11__c, Month_12__c,
-                                           Total__c, Total_Hours__c, Year__c, Unloaded_Rate_Total_Cost__c
-                                           FROM FTE_Work_Card__c ORDER BY Employee__r.Name LIMIT : this.pageSize OFFSET : offsetValue];
-        this.resultSize = Database.countQuery('SELECT count() FROM FTE_Work_Card__c');
+
+        String soqlQuery = 'SELECT Id, Employee__c, Employee__r.Hire_Date__c, Employee__r.Name, Employee__r.Unloaded_Daily_Rate__c, Month_1__c, Month_2__c, Month_3__c,'
+                                + ' Month_4__c, Month_5__c, Month_6__c, Month_7__c, Month_8__c, Month_9__c, Month_10__c, Month_11__c, Month_12__c,'
+                                + ' Total__c, Total_Hours__c, Year__c, Unloaded_Rate_Total_Cost__c'
+                                + ' FROM FTE_Work_Card__c'
+                                + (this.employeeNameSearch != null && this.employeeNameSearch != '' ? ' WHERE Employee__r.Name LIKE \'%' + String.escapeSingleQuotes(this.employeeNameSearch) + '%\'' : '')
+                                + ' ORDER BY Employee__r.Name LIMIT : pageSize OFFSET : offsetValue';
+        List<FTE_Work_Card__c> workCards = Database.query(soqlQuery);
+        this.resultSize = Database.countQuery('SELECT count() FROM FTE_Work_Card__c' + (this.employeeNameSearch != null && this.employeeNameSearch != '' ? ' WHERE Employee__r.Name LIKE \'%' + String.escapeSingleQuotes(this.employeeNameSearch) + '%\'' : ''));
+
         if (pageNumber == 1) {
             this.HasPrevious = false;
         }
@@ -84,6 +90,10 @@ public class FTETrackerController {
         }
 
         return this.employees;
+    }
+
+    public void searchEmplopyee() {
+        this.pageNumber = 1;
     }
 
     public void previousPage() {
