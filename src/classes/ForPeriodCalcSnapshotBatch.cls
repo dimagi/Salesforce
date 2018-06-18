@@ -11,11 +11,6 @@ public class ForPeriodCalcSnapshotBatch implements Database.Batchable<Pipeline_S
         this.customDate = null;
     }
 
-    public ForPeriodCalcSnapshotBatch(Boolean forTotal){
-        this.forTotal = forTotal;
-        this.customDate = null;
-    }
-
     public List<Pipeline_Snapshot__c> start(Database.BatchableContext context) {
         List<Pipeline_Snapshot__c> snaps = new List<Pipeline_Snapshot__c>();
         return getContractPS();

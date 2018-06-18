@@ -12,7 +12,7 @@ public class BatchCalculateEVDiffTest {
         Database.executeBatch(new OpportunityPipelineSnapshotBatch(), 50);
         Test.stopTest();
 
-        System.assertEquals(4, [SELECT Id FROM Pipeline_Snapshot__c].size()); // 2 normal and 2 total records
+        System.assertEquals(2, [SELECT Id FROM Pipeline_Snapshot__c].size()); // 2 normal and 2 total records
 
         Pipeline_Snapshot__c psToTest = [SELECT Id, Name, Month_Date__c, Account__c, Amount__c, Amount_Minus_Expense_Income__c, Country__c, Duration_months__c,
                                         Expected_Buffer__c, Opportunity_Amount__c, CloseDate__c, Opportunity_Expense_Income__c, Probability__c, Products__c, RFP_Response__c
@@ -22,20 +22,8 @@ public class BatchCalculateEVDiffTest {
                                             30, 'Product test 1', 'Inside Sales');
         psToTest = [SELECT Id, Name, Month_Date__c, Account__c, Amount__c, Amount_Minus_Expense_Income__c, Country__c, Duration_months__c,
                                         Expected_Buffer__c, Opportunity_Amount__c, CloseDate__c, Opportunity_Expense_Income__c, Probability__c, Products__c, RFP_Response__c
-                                        FROM Pipeline_Snapshot__c WHERE Stage__c = 'Total' AND Opportunity__c =: opp1.Id LIMIT 1];
-        assertPipelineSnapshotValues(psToTest, 'Test Opportunity 1 - ' + Date.today().month() + '/' + Date.today().year() + ' - Total', snapShotAccount.Id, 50000, 35000,
-                                            'Sample text 1 test', 18, 50, Date.today().addMonths(5), 15000,
-                                            30, 'Product test 1', 'Inside Sales');
-        psToTest = [SELECT Id, Name, Month_Date__c, Account__c, Amount__c, Amount_Minus_Expense_Income__c, Country__c, Duration_months__c,
-                                        Expected_Buffer__c, Opportunity_Amount__c, CloseDate__c, Opportunity_Expense_Income__c, Probability__c, Products__c, RFP_Response__c
                                         FROM Pipeline_Snapshot__c WHERE Stage__c != 'Total' AND Opportunity__c =: opp2.Id LIMIT 1];
         assertPipelineSnapshotValues(psToTest, 'Test Opportunity 2 - ' + Date.today().month() + '/' + Date.today().year(), snapShotAccount.Id, 70000, 47000,
-                                            'Sample text 2 test', 24, 40, Date.today().addMonths(6), 23000,
-                                            40, 'Product test 2', 'Inside Sales');
-        psToTest = [SELECT Id, Name, Month_Date__c, Account__c, Amount__c, Amount_Minus_Expense_Income__c, Country__c, Duration_months__c,
-                                        Expected_Buffer__c, Opportunity_Amount__c, CloseDate__c, Opportunity_Expense_Income__c, Probability__c, Products__c, RFP_Response__c
-                                        FROM Pipeline_Snapshot__c WHERE Stage__c = 'Total' AND Opportunity__c =: opp2.Id LIMIT 1];
-        assertPipelineSnapshotValues(psToTest, 'Test Opportunity 2 - ' + Date.today().month() + '/' + Date.today().year() + ' - Total', snapShotAccount.Id, 70000, 47000,
                                             'Sample text 2 test', 24, 40, Date.today().addMonths(6), 23000,
                                             40, 'Product test 2', 'Inside Sales');
     }
@@ -113,7 +101,7 @@ public class BatchCalculateEVDiffTest {
         System.assert([SELECT Id FROM Pipeline_Snapshot__c WHERE Id =: snapShot5.Id].size() == 1);
         System.assert([SELECT Id FROM Pipeline_Snapshot__c WHERE Id =: snapShot6.Id].size() == 1);
         System.assert([SELECT Id FROM Pipeline_Snapshot__c WHERE Id =: snapShot7.Id].size() == 0);
-        System.assertEquals(9, [SELECT Id FROM Pipeline_Snapshot__c].size()); // was 7 2 was deleted and 4 was created(2 with total stage)
+        System.assertEquals(7, [SELECT Id FROM Pipeline_Snapshot__c].size()); // was 7, 2 was deleted and 2 was created(2 with total stage)
         System.assertEquals(7, [SELECT Id FROM Pipeline_Snapshot_EV_DIff__c].size());
         System.assertEquals(5, [SELECT Id FROM Pipeline_Snapshot_EV_DIff__c WHERE Id IN: evDiffs].size()); // w from this list was deleted
     }
