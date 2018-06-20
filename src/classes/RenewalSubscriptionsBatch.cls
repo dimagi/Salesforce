@@ -103,9 +103,9 @@ public without sharing class RenewalSubscriptionsBatch implements Database.Batch
             }
             if (!this.domainsToSkip.contains(subscription.Accounting_subscriber_domain__c) && subscription.Renewal_Opportunity_created__c == false) {
                 String oppSource = '';
-                if (subscription.service_type__c == 'Implementation') {
+                if (subscription.service_type__c == 'IMPLEMENTATION') {
                     oppSource = 'Implementation Renewal';
-                } else if (subscription.service_type__c == 'Product') {
+                } else if (subscription.service_type__c == 'PRODUCT' || subscription.service_type__c == 'TRIAL' || subscription.service_type__c == 'NOT_SET') {
                     oppSource = 'Product Renewal';
                 } else {
                     continue; // we skip this subscription
@@ -115,7 +115,7 @@ public without sharing class RenewalSubscriptionsBatch implements Database.Batch
                                             subscription.Accounting_subscriber_domain__r.Account__r.Name : subscription.Accounting_subscriber_domain__r.Name;
 
 
-                String oppNamesecondPart = '-' + subscription.Software_Plan_Edition__c + (subscription.service_type__c == 'Implementation' ? '-Implementation' : '') + ' Renewal ' + dateString;
+                String oppNamesecondPart = '-' + subscription.Software_Plan_Edition__c + (subscription.service_type__c == 'IMPLEMENTATION' ? '-Implementation' : '') + ' Renewal ' + dateString;
 
                 if (oppNameFirstPart.length() + oppNamesecondPart.length() > 120) {
                     oppNameFirstPart = oppNameFirstPart.subString(0, 120 - oppNamesecondPart.length());
