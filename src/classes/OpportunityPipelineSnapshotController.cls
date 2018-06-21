@@ -3,7 +3,8 @@ public class OpportunityPipelineSnapshotController {
     public String monthYearText { get; set;}
     public JobWrapper oppSnapshotJobWrapper { get; set;}
 
-    private Date lastMonthSnapshotDate;
+    public Integer currentPSCount {get; set;}
+    public Date lastMonthSnapshotDate {get; set;}
 
     public void initOpportunityPipelineSnapshot() {
         loadOpportunityPipelineSnapshotBatchJobStatus();
@@ -11,11 +12,20 @@ public class OpportunityPipelineSnapshotController {
         Integer numberOfDays = Date.daysInMonth(currentDate.year(), currentDate.month());
         this.lastMonthSnapshotDate = Date.newInstance(currentDate.year(), currentDate.month(), numberOfDays);
         this.monthYearText = DateTime.newInstance(this.lastMonthSnapshotDate.year(), this.lastMonthSnapshotDate.month(), this.lastMonthSnapshotDate.day()).format('MMMM yyyy');
+        this.currentPSCount = [SELECT count() FROM Pipeline_Snapshot__c WHERE Month_Date__c =: this.lastMonthSnapshotDate AND Source_Type__c = 'Opportunity'];
     }
 
-    public void runOpportunityPipelineSnapshotBatchJob() {
-        Database.executeBatch(new OpportunityPipelineSnapshotBatch(this.lastMonthSnapshotDate), 5);
-        loadOpportunityPipelineSnapshotBatchJobStatus();
+    public PageReference runOpportunityPipelineSnapshotBatchJob() {
+        ApexClass batchClass = [SELECT Id FROM ApexClass WHERE Name='OpportunityPipelineSnapshotBatch' LIMIT 1];
+        AsyncApexJob[] batchClassJobList = [SELECT Id, JobItemsProcessed, TotalJobItems, createdDate FROM AsyncApexJob WHERE ApexClassID = :batchClass.Id
+                                            AND Status IN ('Holding', 'Queued', 'Preparing', 'Processing') ORDER BY createdDate DESC LIMIT 1];
+        if (batchClassJobList != null && batchClassJobList.size() == 0) {
+            Database.executeBatch(new OpportunityPipelineSnapshotBatch(this.lastMonthSnapshotDate), 5);
+        }
+
+        PageReference pageRef = Page.OpportunityPipelineSnapshotPage;
+        pageRef.setRedirect(true);
+        return pageRef;
     }
 
     public void loadOpportunityPipelineSnapshotBatchJobStatus() {
@@ -43,6 +53,7 @@ public class OpportunityPipelineSnapshotController {
                         ApexPages.addMessage(new ApexPages.message(ApexPages.severity.ERROR, 'Pipeline snapshots job finished work with status ' + lastJobInfo.Status
                                                                         + ' ' + lastJobInfo.ExtendedStatus));
                     }
+                    this.currentPSCount = [SELECT count() FROM Pipeline_Snapshot__c WHERE Month_Date__c =: this.lastMonthSnapshotDate AND Source_Type__c = 'Opportunity'] ;
                 }
             }
         }

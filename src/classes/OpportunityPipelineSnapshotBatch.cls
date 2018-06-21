@@ -14,9 +14,8 @@ public class OpportunityPipelineSnapshotBatch implements Database.Batchable<Oppo
     }
 
     public List<Opportunity> start(Database.BatchableContext BC) {
-        List<Pipeline_Snapshot_EV_DIff__c> evToRemove = [SELECT Id FROM Pipeline_Snapshot_EV_DIff__c WHERE CALENDAR_MONTH(Month_Date__c) =: this.runDate.month()];
-        List<Pipeline_Snapshot__c> psTORemove = [SELECT Id FROM Pipeline_Snapshot__c WHERE CALENDAR_MONTH(Month_Date__c) =: this.runDate.month()
-                                                    AND Source_Type__c = 'Opportunity'];
+        List<Pipeline_Snapshot_EV_DIff__c> evToRemove = [SELECT Id FROM Pipeline_Snapshot_EV_DIff__c WHERE Month_Date__c =: this.runDate];
+        List<Pipeline_Snapshot__c> psTORemove = [SELECT Id FROM Pipeline_Snapshot__c WHERE Month_Date__c =: this.runDate AND Source_Type__c = 'Opportunity'];
         if (evToRemove.size() > 0) {
             delete evToRemove;
         }
