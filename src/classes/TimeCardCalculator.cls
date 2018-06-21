@@ -209,8 +209,8 @@ public without sharing class TimeCardCalculator implements Database.Batchable<sO
                 }
                 tc.Billing_Rate__c = contractRate;
                 toUpdateList.add(tc);
+                this.contractIds.add(tc.Client__c);
             }
-            this.contractIds.add(tc.Client__c);
         }
 
         if (toUpdateList.size() > 0) { // update racalculated time cards

@@ -74,11 +74,6 @@ public without sharing class RenewalSubscriptionsBatch implements Database.Batch
         this.salesPrices.put('Managed Hosting', this.settings.Managed_Hosting__c != null ? this.settings.Managed_Hosting__c : 2000);
         this.salesPrices.put('Reseller', this.settings.Reseller__c != null ? this.settings.Reseller__c : 500);
 
-        /**List<Opportunity> opps = [SELECT Id, Domain_Name__c FROM Opportunity WHERE Domain_Name__c != '' AND CreatedDate >=: this.currentDate.addDays(-61)];
-        for (Opportunity opp : opps) { // TODO remove if this was bug, neeed debug it first
-            domainsToSkip.add(opp.Domain_Name__c);
-        }*/
-
         return getSubscriptionsForRenewal(domainsWithFutureSubscriptions);
     }
 
@@ -107,11 +102,20 @@ public without sharing class RenewalSubscriptionsBatch implements Database.Batch
                 this.domainsToSkip.add(subscription.Accounting_subscriber_domain__c);
             }
             if (!this.domainsToSkip.contains(subscription.Accounting_subscriber_domain__c) && subscription.Renewal_Opportunity_created__c == false) {
+                String oppSource = '';
+                if (subscription.service_type__c == 'IMPLEMENTATION') {
+                    oppSource = 'Implementation Renewal';
+                } else if (subscription.service_type__c == 'PRODUCT' || subscription.service_type__c == 'TRIAL' || subscription.service_type__c == 'NOT_SET') {
+                    oppSource = 'Product Renewal';
+                } else {
+                    continue; // we skip this subscription
+                }
+
                 String oppNameFirstPart = subscription.Accounting_subscriber_domain__r.Account__r.Name != null && subscription.Accounting_subscriber_domain__r.Account__r.Name != '' ?
                                             subscription.Accounting_subscriber_domain__r.Account__r.Name : subscription.Accounting_subscriber_domain__r.Name;
 
 
-                String oppNamesecondPart = '-' + subscription.Software_Plan_Edition__c + (subscription.service_type__c == 'Implementation' ? '-Implementation' : '') + ' Renewal ' + dateString;
+                String oppNamesecondPart = '-' + subscription.Software_Plan_Edition__c + (subscription.service_type__c == 'IMPLEMENTATION' ? '-Implementation' : '') + ' Renewal ' + dateString;
 
                 if (oppNameFirstPart.length() + oppNamesecondPart.length() > 120) {
                     oppNameFirstPart = oppNameFirstPart.subString(0, 120 - oppNamesecondPart.length());
@@ -134,14 +138,9 @@ public without sharing class RenewalSubscriptionsBatch implements Database.Batch
                                                         Channel_Response__c = 'Inside Sales',
                                                         Opportunity_Owning_Entity__c = this.incBusinessUnit.Id,
                                                         Contract_Owner_BU__c = this.incBusinessUnit.Id,
-                                                        Implementing_Business_Unit__c = this.incBusinessUnit.Id
+                                                        Implementing_Business_Unit__c = this.incBusinessUnit.Id,
+                                                        Opportunity_Source__c = oppSource
                                                     );
-
-                if (subscription.service_type__c == 'Implementation' || subscription.service_type__c == 'Product') {
-                    newOpp.Opportunity_Source__c = 'Implementation Renewal';
-                } else {
-                    newOpp.Opportunity_Source__c = 'Product Renewal';
-                }
 
                 subscription.Renewal_Opportunity_created__c = true;
                 newOpps.add(newOpp);
@@ -155,6 +154,7 @@ public without sharing class RenewalSubscriptionsBatch implements Database.Batch
                 Domain__c domainToUpdate = domains.get(subscription.Accounting_subscriber_domain__c);
                 domainsToUpdate.add(domainToUpdate);
             }
+
             // we must create Opp only for the latest subscription which will end
             if (!this.domainsToSkip.contains(subscription.Accounting_subscriber_domain__c)) {
                 this.domainsToSkip.add(subscription.Accounting_subscriber_domain__c);
