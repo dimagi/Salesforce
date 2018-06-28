@@ -49,7 +49,7 @@ public class BatchUpdateContractServicesSpendTest {
         Map<Id, Decimal> batchData = new Map<Id, Decimal> { contracts.get(0).Id => 100, contracts.get(1).Id => 200, contracts.get(2).Id => 10, contracts.get(3).Id => 35};
 
         Test.startTest();
-        BatchUpdateContractServicesSpend obj = new BatchUpdateContractServicesSpend(batchData);
+        BatchUpdateContractServicesSpend obj = new BatchUpdateContractServicesSpend(batchData, true);
         Database.executeBatch(obj, 200);
         Test.stopTest();
 

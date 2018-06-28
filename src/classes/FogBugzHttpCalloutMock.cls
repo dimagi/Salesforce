@@ -22,6 +22,10 @@ global class FogBugzHttpCalloutMock implements HttpCalloutMock {
                                                      '<case ixBug="testFBId"><ixBug>testFBId</ixBug><sTitle>Title</sTitle><sArea>area</sArea><sPersonAssignedTo>salesforce</sPersonAssignedTo><sVersion>1</sVersion><ixPersonOpenedBy>salesforce</ixPersonOpenedBy><dtLastUpdated>2007-05-06T22:47:59Z</dtLastUpdated></case>' +
                                                      '<case ixBug="testFBId2"><ixBug>testFBId2</ixBug><sTitle>Title</sTitle><sArea>area</sArea><sPersonAssignedTo>salesforce</sPersonAssignedTo><sVersion>1</sVersion><ixPersonOpenedBy>salesforce</ixPersonOpenedBy><dtLastUpdated></dtLastUpdated></case>' +
                                                      '</cases></response>';
+    public static final String RESPONSE_LAST_UPDATED_CASES = '<?xml version="1.0" encoding="UTF-8"?><response><cases count="2">' +
+                                                     '<case ixBug="11111"><ixBug>11111</ixBug><sTitle>Title 1</sTitle><sArea>area 1</sArea><sProject><![CDATA[Test 1]]></sProject><Client>111</Client></case>' +
+                                                     '<case ixBug="22222"><ixBug>22222</ixBug><sTitle>Title 2</sTitle><sArea>area 2</sArea><sProject><![CDATA[Test 2]]></sProject><Client>222</Client></case>' +
+                                                     '</cases></response>';
     public static final String RESPONSE_VIEW_PERSON = '<?xml version="1.0" encoding="UTF-8"?><response>' +
                                                       '<person><sEmail>salesforce</sEmail></person></response>';
     public static final String RESPONSE_FILTER = '<response></response>';
@@ -42,7 +46,9 @@ global class FogBugzHttpCalloutMock implements HttpCalloutMock {
         }
 
         if (params.get('cmd') == 'search') {
-            if (params.containsKey('q')) {
+            if (params.containsKey('q') && params.get('q').startsWith('edited')) {
+                res.setBody(RESPONSE_LAST_UPDATED_CASES);
+            } else if (params.containsKey('q')) {
                 if (params.get('cols') == 'tags') {
                     res.setBody(RESPONSE_TAGS);
                 } else {

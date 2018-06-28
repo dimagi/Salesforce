@@ -8,8 +8,8 @@ public without sharing class TimeCardCalculator implements Database.Batchable<sO
     private List<SalaryHistoryRecord> currentRateHistory;
     private SalaryHistoryHelper salaryHistoryHelper;
     private Boolean onlyRate;
+    private Boolean isDaily;
 
-    private Set<Id> contractIds;
     private Set<Id> updatedContracts;
     private List<Id> timeCardsIds;
     private List<Project_Billing_Rate_Update__c> updatesList;
@@ -48,11 +48,11 @@ public without sharing class TimeCardCalculator implements Database.Batchable<sO
         this.currentRateHistory = new List<SalaryHistoryRecord>();
         this.salaryHistoryHelper = new SalaryHistoryHelper();
         this.onlyRate = false;
-        this.contractIds = new Set<Id>();
+        this.isDaily = false;
     }
 
     public Database.QueryLocator start(Database.BatchableContext context) {
-        String query = 'SELECT Id, Date__c, Employee__c, Employee__r.Salary__c, Employee__r.Exchange_Rate__c, Employee__r.Per_Week_Hours__c, Billing_Rate__c, Time_Card_Salary__c, Client__c, Client__r.Parent_Contract__c, Client__r.Project_Billing_Rate__c, Total__c ';
+        String query = 'SELECT Id, Need_recalculation__c, Date__c, Employee__c, Employee__r.Salary__c, Employee__r.Exchange_Rate__c, Employee__r.Per_Week_Hours__c, Billing_Rate__c, Time_Card_Salary__c, Client__c, Client__r.Parent_Contract__c, Client__r.Project_Billing_Rate__c, Total__c ';
 
         if (this.updatedContracts != null) { // Contract UI run
             for (DContract__c dContract : [SELECT Id, Parent_Contract__c FROM DContract__c WHERE Id IN: this.updatedContracts]) {
@@ -78,17 +78,23 @@ public without sharing class TimeCardCalculator implements Database.Batchable<sO
         } else if (this.updatesList != null) { // BR UI run
             String dateString = '';
             Boolean isFirst = true;
+            Set<String> updatedRates = new Set<String>();
             for (Project_Billing_Rate_Update__c updateInfo : this.updatesList) {
+                updatedRates.add(updateInfo.Name);
                 if (!isFirst) {
                     dateString += 'OR';
                 }
                 isFirst = false;
                 dateString += ' (Date__c >= ' + getDateText(updateInfo.From_Range__c) + ' AND Date__c <= ' + getDateText(updateInfo.To_Range__c) + ' AND Client__r.Project_Billing_Rate__c = \'' + updateInfo.Name + '\') ';
             }
+
+            Map<Id, DContract__c> contractMapping = new Map<Id, DContract__c>([SELECT Id FROM DContract__c WHERE Project_Billing_Rate__c IN: updatedRates]);
+            this.updatedContracts = contractMapping.keySet();
+
             query = query + 'FROM Time_Card__c WHERE (' + dateString + ') ORDER BY Employee__c, Date__c';
-        } else if (this.timeCardsIds != null) {
+        } else if (this.timeCardsIds != null) { // time cards from list
             query = query + 'FROM Time_Card__c WHERE Id IN: timeCardsIds ORDER BY Employee__c, Date__c';
-        } else { // daily
+        } else { // daily - last created, with updated billing rate, with updated client (we calculate it here because we don't want exception when FB is upserting time cards)
             this.contractsList = [SELECT Id, Project_Billing_Rate_Updated__c FROM DContract__c WHERE Project_Billing_Rate_Updated__c = true];
             for (DContract__c dContract : contractsList) {
                 dContract.Project_Billing_Rate_Updated__c = false;
@@ -99,36 +105,8 @@ public without sharing class TimeCardCalculator implements Database.Batchable<sO
                 EmailHelper.sendEmailFromDatabaseSaveResultErrors(BatchDefaultSettings__c.getOrgDefaults().Error_Emails__c.split(','),
                         'Contract Update Errors', 'Cannot Update Contracts : ', srList);
             }
-
-            List<SFDC_Employee_Snapshot__c> newEmplSnpList = [SELECT Id, Employee_Record__c, Snapshot_Date__c FROM SFDC_Employee_Snapshot__c WHERE CreatedDate >=: lastUpdatedDateTime];
-            List<SFDC_Employee_Snapshot__c> updatedEmplSnpList = [SELECT Id, Employee_Record__c, Snapshot_Date__c FROM SFDC_Employee_Snapshot__c WHERE Salary_Updated__c = true];
-
-            String newEmplSnpWhere = '';
-            if (newEmplSnpList.size() > 0) {
-                newEmplSnpWhere = '(Date__c>=' + getDateText(newEmplSnpList.get(0).Snapshot_Date__c.toStartOfMonth()) + ' AND Date__c<=' + getDateText(newEmplSnpList.get(0).Snapshot_Date__c) + ')';
-            }
-
-            List<String> updatedEmplSnpWhere = new List<String>();
-            if (newEmplSnpList.size() > 0) {
-                for (SFDC_Employee_Snapshot__c empSnpUpdated : updatedEmplSnpList) {
-                    updatedEmplSnpWhere.add('(Date__c>=' + getDateText(newEmplSnpList.get(0).Snapshot_Date__c.toStartOfMonth()) + ' AND Date__c<=' + getDateText(newEmplSnpList.get(0).Snapshot_Date__c)
-                                        + ' AND Employee__c=\'' + empSnpUpdated.Employee_Record__c + '\')');
-                    empSnpUpdated.Salary_Updated__c = false;
-                }
-            }
-            if (updatedEmplSnpList.size() > 0) {
-                update updatedEmplSnpList;
-            }
-
-            if (newEmplSnpWhere != '') {
-                updatedEmplSnpWhere.add(newEmplSnpWhere);
-            }
-
-            if (updatedEmplSnpWhere.size() > 0) {
-                newEmplSnpWhere = ' OR (' + String.join(updatedEmplSnpWhere, ' OR ') + ')';
-            }
-
-            query = query + 'FROM Time_Card__c WHERE CreatedDate>=:lastUpdatedDateTime OR LastModifiedDate>=:lastUpdatedDateTime OR Client__c IN: contractsList' + newEmplSnpWhere + ' ORDER BY Employee__c, Date__c';
+            this.isDaily = true;
+            query = query + 'FROM Time_Card__c WHERE CreatedDate>=:lastUpdatedDateTime OR Need_recalculation__c = true OR Client__c IN: contractsList ORDER BY Employee__c, Date__c';
         }
 
         System.debug('Query : ' + query);
@@ -150,7 +128,6 @@ public without sharing class TimeCardCalculator implements Database.Batchable<sO
             Time_Card__c tc = (Time_Card__c) obj;
 
             if (tc.Date__c >= Date.newInstance(2017, 12, 1) && this.onlyRate == false) {
-                // we must recalculate such time cards manually, old and we will remove it in future
                 // Load empl snapshot
                 if (lastEmpSnp == null || lastEmpSnp.Employee_Record__c != tc.Employee__c || lastEmpSnp.Snapshot_Date__c < tc.Date__c) { // Time Cards are sort by employee, date so first we will change empl and then we will change time card
 
@@ -161,17 +138,14 @@ public without sharing class TimeCardCalculator implements Database.Batchable<sO
                     }
                     if (emplList.size() > 0) {
                         lastEmpSnp = emplList.get(0);
-                        salary = (((lastEmpSnp.Salary__c != null ? lastEmpSnp.Salary__c : 0)
-                                    / (lastEmpSnp.Exchange_Rate__c != null && lastEmpSnp.Exchange_Rate__c != 0 ? lastEmpSnp.Exchange_Rate__c : 1.0))
-                                    / (260.0 * ((lastEmpSnp.Per_Week_Hours__c != null && lastEmpSnp.Per_Week_Hours__c != 0 ? lastEmpSnp.Per_Week_Hours__c : 40.0) / 40.0)))
-                                    / 8.0;
+                        salary = TimeCardCalculatorUtils.calculateSalaryForEmplSnapshot(lastEmpSnp);
                     } else {
                         salary = (((tc.Employee__r.Salary__c != null ? tc.Employee__r.Salary__c : 0)
                                     / (tc.Employee__r.Exchange_Rate__c != null && tc.Employee__r.Exchange_Rate__c != 0 ? tc.Employee__r.Exchange_Rate__c : 1.0))
                                     / (260.0 * ((tc.Employee__r.Per_Week_Hours__c != null && tc.Employee__r.Per_Week_Hours__c != 0 ? tc.Employee__r.Per_Week_Hours__c : 40.0) / 40.0)))
                                     / 8.0;
+                        salary = salary.setScale(8);
                     }
-                    salary = salary.setScale(8);
                 }
             }
 
@@ -202,14 +176,13 @@ public without sharing class TimeCardCalculator implements Database.Batchable<sO
                 lastToRateDate = this.currentRateHistory.size() > index + 1 ? this.currentRateHistory.get(index + 1).getValueDate() : Date.today().addYears(1);
             }
 
-            if (tc.Time_Card_Salary__c != salary || tc.Billing_Rate__c != contractRate) {
-                Decimal oldValue = (tc.Total__c * (tc.Billing_Rate__c != null ? tc.Billing_Rate__c : 0.0) * (tc.Time_Card_Salary__c != null ? tc.Time_Card_Salary__c : 0.0)).setScale(8);
+            if (tc.Time_Card_Salary__c != salary || tc.Billing_Rate__c != contractRate || tc.Need_recalculation__c == true) {
                 if (tc.Date__c >= Date.newInstance(2017, 12, 1) && this.onlyRate == false) { // only update salary for time cards when empl snp was added
                     tc.Time_Card_Salary__c = salary;
                 }
                 tc.Billing_Rate__c = contractRate;
+                tc.Need_recalculation__c = false;
                 toUpdateList.add(tc);
-                this.contractIds.add(tc.Client__c);
             }
         }
 
@@ -220,7 +193,11 @@ public without sharing class TimeCardCalculator implements Database.Batchable<sO
 
     public void finish(Database.BatchableContext context) {
         if (!Test.isRunningTest()) {
-            Database.executeBatch(new BatchCalculateTotalHoursOfTimeCard(this.contractIds, true));
+            if (this.isDaily == true) {
+                Database.executeBatch(new BatchCalculateTotalHoursOfTimeCard(true));
+            } else if (this.updatedContracts.size() > 0) {
+                Database.executeBatch(new BatchCalculateTotalHoursOfTimeCard(this.updatedContracts, false));
+            }
         }
     }
 

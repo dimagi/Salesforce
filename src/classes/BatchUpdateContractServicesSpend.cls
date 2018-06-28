@@ -4,9 +4,11 @@
 public class BatchUpdateContractServicesSpend implements Database.Batchable<DContract__c>, Database.Stateful {
 
     private Map<Id, Decimal> servicesSpendMap;
+    private Boolean updateContractRefreshField;
 
-    public BatchUpdateContractServicesSpend(Map<Id, Decimal> servicesSpendMap) {
+    public BatchUpdateContractServicesSpend(Map<Id, Decimal> servicesSpendMap, Boolean updateContractRefreshField) {
         this.servicesSpendMap = servicesSpendMap;
+        this.updateContractRefreshField = updateContractRefreshField;
     }
 
     public List<DContract__c> start(Database.BatchableContext context) {
@@ -37,7 +39,9 @@ public class BatchUpdateContractServicesSpend implements Database.Batchable<DCon
                 this.servicesSpendMap.put(contract.Parent_Contract__c, contractValue);
             }
             contract.Services_Spend__c = contractValue.setScale(2);
-            contract.Require_Services_Spend_Refresh__c = false;
+            if (this.updateContractRefreshField == true) {
+                contract.Require_Services_Spend_Refresh__c = false;
+            }
             contractsToUpdate.add(contract);
         }
 
@@ -48,7 +52,9 @@ public class BatchUpdateContractServicesSpend implements Database.Batchable<DCon
 
             Decimal contractValue = servicesSpendMap.get(contract.Id);
             contract.Services_Spend__c = contractValue.setScale(2);
-            contract.Require_Services_Spend_Refresh__c = false;
+            if (this.updateContractRefreshField == true) {
+                contract.Require_Services_Spend_Refresh__c = false;
+            }
             contractsToUpdate.add(contract);
         }
 

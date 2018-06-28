@@ -11,6 +11,7 @@ public with sharing class FogBugzAPI {
     private static final String DEFAULT_FB_URL = 'https://manage.dimagi.com/api.asp?';
     private static final String FB_LIST_COLS = 'ixPersonOpenedBy,dtLastUpdated,sVersion';
     private static final String FB_CASE_COLS = 'sTitle,sArea,sPersonAssignedTo,sVersion,dtLastUpdated,latestEvent,tags,ixPersonOpenedBy,hrsElapsed';
+    private static final String FB_CASES_UPDATED_COLS = 'sTitle,sArea,sProject,Client,ixBug';
     private static final Integer FB_HTTP_TIMEOUT = 60000;
 
     /**
@@ -46,6 +47,33 @@ public with sharing class FogBugzAPI {
         }
     }
 
+    public List<FogBugzCase> getLastUpdatedCases(DateTime lastUpdateDate) {
+        HTTPRequest req = new HTTPRequest();
+        req.setEndpoint(FogBugz_Settings__c.getOrgDefaults().FB_URL__c != null ? FogBugz_Settings__c.getOrgDefaults().FB_URL__c : DEFAULT_FB_URL);
+        String timeString = lastUpdateDate.formatGMT('yyyy-MM-dd\'T\'HH:mm:ss.SSS\'Z\'');
+        req.setBody('token=' + FogBugz_Settings__c.getOrgDefaults().Token__c + '&cmd=search&cols=' + FB_CASES_UPDATED_COLS + '&q=edited: "' + timeString + '..now"');
+        req.setTimeout(FB_HTTP_TIMEOUT);
+        req.setMethod('POST');
+
+        HTTP connection = new HTTP();
+        HTTPResponse res = null;
+
+        if (Test.isRunningTest()) {
+            FogBugzHttpCalloutMock mock = new FogBugzHttpCalloutMock();
+            res = mock.respond(req);
+        } else {
+            res = connection.send(req);
+        }
+
+        if (res.getBody() != null) {
+            List<FogBugzCase> cases = parseLastUpdatedCases(res.getBody());
+            return cases;
+        }
+
+        System.debug(LoggingLevel.ERROR, 'FogBugzAPI::getLastUpdatedCases() - Error while retrieving cases updated from ' + timeString);
+        return null;
+    }
+
     public FogBugzCase getCase(String caseId) {
         HTTPRequest req = new HTTPRequest();
         req.setEndpoint(FogBugz_Settings__c.getOrgDefaults().FB_URL__c != null ? FogBugz_Settings__c.getOrgDefaults().FB_URL__c : DEFAULT_FB_URL);
@@ -56,12 +84,11 @@ public with sharing class FogBugzAPI {
         HTTP connection = new HTTP();
         HTTPResponse res = null;
 
-        if (Test.isRunningTest()) {
+        if (!Test.isRunningTest()) {
+            res = connection.send(req);
+        } else {
             FogBugzHttpCalloutMock mock = new FogBugzHttpCalloutMock();
             res = mock.respond(req);
-        }
-        else {
-            res = connection.send(req);
         }
 
         if (res.getBody() != null) {
@@ -364,6 +391,27 @@ public with sharing class FogBugzAPI {
         }
 
         return fbCase;
+    }
+
+    public List<FogBugzCase> parseLastUpdatedCases(String xmlString) {
+        XMLDom dom = new XMLDom(xmlString);
+        XMLDom.Element casesNode = dom.root.getElementByTagName('cases');
+
+        List<FogBugzCase> cases = new List<FogBugzCase>();
+
+        for (XMLDom.Element caseNode:casesNode.childNodes) {
+            FogBugzCase fbCase = new FogBugzCase();
+
+            fbCase.title = caseNode.getElementByTagName('sTitle').nodeValue;
+            fbCase.area = caseNode.getElementByTagName('sArea').nodeValue;
+            fbCase.project = caseNode.getElementByTagName('sProject').nodeValue;
+            fbCase.client = caseNode.getElementByTagName('Client').nodeValue;
+            fbCase.caseId = caseNode.getAttribute('ixBug');
+
+            cases.add(fbCase);
+        }
+
+        return cases;
     }
 
     /**
