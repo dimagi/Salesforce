@@ -3,9 +3,13 @@
  */
 public without sharing class RenewalSubscriptionsBatch implements Database.Batchable<Accounting_Subscription__c>, Database.AllowsCallouts, Database.Stateful {
 
+    private static final String IMPL_RENEWAL = 'Implementation Renewal';
+    private static final String PROD_RENEWAL = 'Product Renewal';
+
     private Date currentDate;
     private Business_Unit__c incBusinessUnit;
-    private User defaultOppOwner;
+    private User defaultOppOwnerImplementation;
+    private User defaultOppOwnerProduct;
     private Subscription_Renewal_Settings__c settings;
     private List<DatabaseErrorInfo> oppsErrors;
     private List<DatabaseErrorInfo> subsErrors;
@@ -27,9 +31,10 @@ public without sharing class RenewalSubscriptionsBatch implements Database.Batch
         this.settings = Subscription_Renewal_Settings__c.getOrgDefaults();
 
         this.incBusinessUnit = [SELECT Id FROM Business_Unit__c WHERE Name =: settings.Default_Business_Unit__c];
-        this.defaultOppOwner = [SELECT Id FROM User WHERE Name =: settings.Default_Opportunity_Owner__c];
+        this.defaultOppOwnerImplementation = [SELECT Id FROM User WHERE Name =: settings.Default_Opportunity_Owner_Impl__c];
+        this.defaultOppOwnerProduct = [SELECT Id FROM User WHERE Name =: settings.Default_Opportunity_Owner_Prod__c];
 
-        if (this.incBusinessUnit == null || this.defaultOppOwner == null) {
+        if (this.incBusinessUnit == null || this.defaultOppOwnerImplementation == null || this.defaultOppOwnerProduct == null) {
             EmailHelper.sendEmail(settings.Error_Emails__c.split(','), 'Subscription Renewal ERROR',
                                   'Cannot find default Opportunity owner or Inc business unit');
             NoDataFoundException ex = new NoDataFoundException();
@@ -104,9 +109,9 @@ public without sharing class RenewalSubscriptionsBatch implements Database.Batch
             if (!this.domainsToSkip.contains(subscription.Accounting_subscriber_domain__c) && subscription.Renewal_Opportunity_created__c == false) {
                 String oppSource = '';
                 if (subscription.service_type__c == 'IMPLEMENTATION') {
-                    oppSource = 'Implementation Renewal';
+                    oppSource = IMPL_RENEWAL;
                 } else if (subscription.service_type__c == 'PRODUCT' || subscription.service_type__c == 'TRIAL' || subscription.service_type__c == 'NOT_SET') {
-                    oppSource = 'Product Renewal';
+                    oppSource = PROD_RENEWAL;
                 } else {
                     continue; // we skip this subscription
                 }
@@ -133,7 +138,7 @@ public without sharing class RenewalSubscriptionsBatch implements Database.Batch
                                                         CloseDate = subscription.date_end__c,
                                                         Domain_Name__c = subscription.Accounting_subscriber_domain__c,
                                                         StageName = 'Stage 3 - Prospect',
-                                                        OwnerId = this.defaultOppOwner.Id,
+                                                        OwnerId = (oppSource == IMPL_RENEWAL ? this.defaultOppOwnerImplementation.Id : this.defaultOppOwnerProduct.Id),
                                                         Implementation_Type__c = 'Self Service',
                                                         Channel_Response__c = 'Inside Sales',
                                                         Opportunity_Owning_Entity__c = this.incBusinessUnit.Id,
