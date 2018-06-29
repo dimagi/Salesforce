@@ -4,101 +4,104 @@ public class FTETrackerTest {
     @testSetup
     static void setup() {
         Date currentDate = Date.today();
+        List<Time_Card__c> timeCards = new List<Time_Card__c>();
+
         SFDC_Employee__c testEmployee = addEmployee('FTE Employee');
         Dcontract__c fteContract1 = addContract('FTE Contract 1', 'Yes');
-        addTimeCard(fteContract1.Id, testEmployee.Id, Date.newInstance(currentDate.year(), currentDate.month(), 1), 5);
-        addTimeCard(fteContract1.Id, testEmployee.Id, Date.newInstance(currentDate.year(), currentDate.month(), 2), 6);
-        addTimeCard(fteContract1.Id, testEmployee.Id, Date.newInstance(currentDate.year(), currentDate.month(), 3), 7);
-        addTimeCard(fteContract1.Id, testEmployee.Id, Date.newInstance(currentDate.year(), currentDate.month(), 4), 4.3);
-        addTimeCard(fteContract1.Id, testEmployee.Id, Date.newInstance(currentDate.year(), currentDate.month(), 5), 3.3);
+        timeCards.add(addTimeCard(fteContract1.Id, testEmployee.Id, Date.newInstance(currentDate.year(), currentDate.month(), 1), 5));
+        timeCards.add(addTimeCard(fteContract1.Id, testEmployee.Id, Date.newInstance(currentDate.year(), currentDate.month(), 2), 6));
+        timeCards.add(addTimeCard(fteContract1.Id, testEmployee.Id, Date.newInstance(currentDate.year(), currentDate.month(), 3), 7));
+        timeCards.add(addTimeCard(fteContract1.Id, testEmployee.Id, Date.newInstance(currentDate.year(), currentDate.month(), 4), 4.3));
+        timeCards.add(addTimeCard(fteContract1.Id, testEmployee.Id, Date.newInstance(currentDate.year(), currentDate.month(), 5), 3.3));
 
         Dcontract__c fteContract2 = addContract('FTE Contract 2', 'Yes');
-        addTimeCard(fteContract2.Id, testEmployee.Id, Date.newInstance(currentDate.year(), currentDate.month(), 6), 5);
-        addTimeCard(fteContract2.Id, testEmployee.Id, Date.newInstance(currentDate.year(), currentDate.month(), 7), 6);
-        addTimeCard(fteContract2.Id, testEmployee.Id, Date.newInstance(currentDate.year(), currentDate.month(), 8), 7);
-        addTimeCard(fteContract2.Id, testEmployee.Id, Date.newInstance(currentDate.year(), currentDate.month(), 9), 4.3);
-        addTimeCard(fteContract2.Id, testEmployee.Id, Date.newInstance(currentDate.year(), currentDate.month(), 10), 3.3);
+        timeCards.add(addTimeCard(fteContract2.Id, testEmployee.Id, Date.newInstance(currentDate.year(), currentDate.month(), 6), 5));
+        timeCards.add(addTimeCard(fteContract2.Id, testEmployee.Id, Date.newInstance(currentDate.year(), currentDate.month(), 7), 6));
+        timeCards.add(addTimeCard(fteContract2.Id, testEmployee.Id, Date.newInstance(currentDate.year(), currentDate.month(), 8), 7));
+        timeCards.add(addTimeCard(fteContract2.Id, testEmployee.Id, Date.newInstance(currentDate.year(), currentDate.month(), 9), 4.3));
+        timeCards.add(addTimeCard(fteContract2.Id, testEmployee.Id, Date.newInstance(currentDate.year(), currentDate.month(), 10), 3.3));
 
         Dcontract__c fteContract3 = addContract('FTE Contract 3', 'Yes');
-        addTimeCard(fteContract3.Id, testEmployee.Id, Date.newInstance(currentDate.year(), currentDate.month(), 11), 2);
-        addTimeCard(fteContract3.Id, testEmployee.Id, Date.newInstance(currentDate.year(), currentDate.month(), 12), 2);
-        addTimeCard(fteContract3.Id, testEmployee.Id, Date.newInstance(currentDate.year(), currentDate.month(), 13), 2);
-        addTimeCard(fteContract3.Id, testEmployee.Id, Date.newInstance(currentDate.year(), currentDate.month(), 14), 1);
-        addTimeCard(fteContract3.Id, testEmployee.Id, Date.newInstance(currentDate.year(), currentDate.month(), 15), 3.3);
+        timeCards.add(addTimeCard(fteContract3.Id, testEmployee.Id, Date.newInstance(currentDate.year(), currentDate.month(), 11), 2));
+        timeCards.add(addTimeCard(fteContract3.Id, testEmployee.Id, Date.newInstance(currentDate.year(), currentDate.month(), 12), 2));
+        timeCards.add(addTimeCard(fteContract3.Id, testEmployee.Id, Date.newInstance(currentDate.year(), currentDate.month(), 13), 2));
+        timeCards.add(addTimeCard(fteContract3.Id, testEmployee.Id, Date.newInstance(currentDate.year(), currentDate.month(), 14), 1));
+        timeCards.add(addTimeCard(fteContract3.Id, testEmployee.Id, Date.newInstance(currentDate.year(), currentDate.month(), 15), 3.3));
 
         Dcontract__c fteContract4 = addContract('FTE Contract 4', 'Yes');
-        addTimeCard(fteContract4.Id, testEmployee.Id, Date.newInstance(currentDate.year(), currentDate.month(), 16), 5);
-        addTimeCard(fteContract4.Id, testEmployee.Id, Date.newInstance(currentDate.year(), currentDate.month(), 17), 9);
-        addTimeCard(fteContract4.Id, testEmployee.Id, Date.newInstance(currentDate.year(), currentDate.month(), 18), 9);
-        addTimeCard(fteContract4.Id, testEmployee.Id, Date.newInstance(currentDate.year(), currentDate.month(), 19), 4.3);
-        addTimeCard(fteContract4.Id, testEmployee.Id, Date.newInstance(currentDate.year(), currentDate.month(), 20), 3.3);
+        timeCards.add(addTimeCard(fteContract4.Id, testEmployee.Id, Date.newInstance(currentDate.year(), currentDate.month(), 16), 5));
+        timeCards.add(addTimeCard(fteContract4.Id, testEmployee.Id, Date.newInstance(currentDate.year(), currentDate.month(), 17), 9));
+        timeCards.add(addTimeCard(fteContract4.Id, testEmployee.Id, Date.newInstance(currentDate.year(), currentDate.month(), 18), 9));
+        timeCards.add(addTimeCard(fteContract4.Id, testEmployee.Id, Date.newInstance(currentDate.year(), currentDate.month(), 19), 4.3));
+        timeCards.add(addTimeCard(fteContract4.Id, testEmployee.Id, Date.newInstance(currentDate.year(), currentDate.month(), 20), 3.3));
 
         Dcontract__c unassignedContract1 = addContract('Unassigned Contract 1', 'No');
-        addTimeCard(unassignedContract1.Id, testEmployee.Id, Date.newInstance(currentDate.year(), currentDate.month(), 21), 5);
-        addTimeCard(unassignedContract1.Id, testEmployee.Id, Date.newInstance(currentDate.year(), currentDate.month(), 22), 6);
-        addTimeCard(unassignedContract1.Id, testEmployee.Id, Date.newInstance(currentDate.year(), currentDate.month(), 23), 1);
-        addTimeCard(unassignedContract1.Id, testEmployee.Id, Date.newInstance(currentDate.year(), currentDate.month(), 24), 4);
-        addTimeCard(unassignedContract1.Id, testEmployee.Id, Date.newInstance(currentDate.year(), currentDate.month(), 25), 3.3);
+        timeCards.add(addTimeCard(unassignedContract1.Id, testEmployee.Id, Date.newInstance(currentDate.year(), currentDate.month(), 21), 5));
+        timeCards.add(addTimeCard(unassignedContract1.Id, testEmployee.Id, Date.newInstance(currentDate.year(), currentDate.month(), 22), 6));
+        timeCards.add(addTimeCard(unassignedContract1.Id, testEmployee.Id, Date.newInstance(currentDate.year(), currentDate.month(), 23), 1));
+        timeCards.add(addTimeCard(unassignedContract1.Id, testEmployee.Id, Date.newInstance(currentDate.year(), currentDate.month(), 24), 4));
+        timeCards.add(addTimeCard(unassignedContract1.Id, testEmployee.Id, Date.newInstance(currentDate.year(), currentDate.month(), 25), 3.3));
 
         Dcontract__c unassignedContract2 = addContract('Unassigned Contract 2', 'No');
-        addTimeCard(unassignedContract2.Id, testEmployee.Id, Date.newInstance(currentDate.year(), currentDate.month(), 1), 3);
-        addTimeCard(unassignedContract2.Id, testEmployee.Id, Date.newInstance(currentDate.year(), currentDate.month(), 2), 8);
-        addTimeCard(unassignedContract2.Id, testEmployee.Id, Date.newInstance(currentDate.year(), currentDate.month(), 3), 9);
-        addTimeCard(unassignedContract2.Id, testEmployee.Id, Date.newInstance(currentDate.year(), currentDate.month(), 4), 4.3);
-        addTimeCard(unassignedContract2.Id, testEmployee.Id, Date.newInstance(currentDate.year(), currentDate.month(), 5), 3.3);
+        timeCards.add(addTimeCard(unassignedContract2.Id, testEmployee.Id, Date.newInstance(currentDate.year(), currentDate.month(), 1), 3));
+        timeCards.add(addTimeCard(unassignedContract2.Id, testEmployee.Id, Date.newInstance(currentDate.year(), currentDate.month(), 2), 8));
+        timeCards.add(addTimeCard(unassignedContract2.Id, testEmployee.Id, Date.newInstance(currentDate.year(), currentDate.month(), 3), 9));
+        timeCards.add(addTimeCard(unassignedContract2.Id, testEmployee.Id, Date.newInstance(currentDate.year(), currentDate.month(), 4), 4.3));
+        timeCards.add(addTimeCard(unassignedContract2.Id, testEmployee.Id, Date.newInstance(currentDate.year(), currentDate.month(), 5), 3.3));
 
         SFDC_Employee__c testEmployee2 = addEmployee('Other Employee');
 
-        addTimeCard(fteContract1.Id, testEmployee2.Id, Date.newInstance(currentDate.year(), currentDate.month(), 1), 8, 5,
-                                                                                                unassignedContract1.Id);
-        addTimeCard(fteContract1.Id, testEmployee2.Id, Date.newInstance(currentDate.year(), currentDate.month(), 2), 6);
-        addTimeCard(fteContract1.Id, testEmployee2.Id, Date.newInstance(currentDate.year(), currentDate.month(), 3), 7);
-        addTimeCard(fteContract1.Id, testEmployee2.Id, Date.newInstance(currentDate.year(), currentDate.month(), 4), 4.3);
-        addTimeCard(fteContract1.Id, testEmployee2.Id, Date.newInstance(currentDate.year(), currentDate.month(), 5), 3.3);
+        timeCards.add(addTimeCard(fteContract1.Id, testEmployee2.Id, Date.newInstance(currentDate.year(), currentDate.month(), 1), 8, 5,
+                                                                                                unassignedContract1.Id));
+        timeCards.add(addTimeCard(fteContract1.Id, testEmployee2.Id, Date.newInstance(currentDate.year(), currentDate.month(), 2), 6));
+        timeCards.add(addTimeCard(fteContract1.Id, testEmployee2.Id, Date.newInstance(currentDate.year(), currentDate.month(), 3), 7));
+        timeCards.add(addTimeCard(fteContract1.Id, testEmployee2.Id, Date.newInstance(currentDate.year(), currentDate.month(), 4), 4.3));
+        timeCards.add(addTimeCard(fteContract1.Id, testEmployee2.Id, Date.newInstance(currentDate.year(), currentDate.month(), 5), 3.3));
 
-        addTimeCard(unassignedContract1.Id, testEmployee2.Id, Date.newInstance(currentDate.year(), currentDate.month(), 21), 5);
-        addTimeCard(unassignedContract1.Id, testEmployee2.Id, Date.newInstance(currentDate.year(), currentDate.month(), 22), 6);
-        addTimeCard(unassignedContract1.Id, testEmployee2.Id, Date.newInstance(currentDate.year(), currentDate.month(), 23), 1);
-        addTimeCard(unassignedContract1.Id, testEmployee2.Id, Date.newInstance(currentDate.year(), currentDate.month(), 24), 4);
-        addTimeCard(unassignedContract1.Id, testEmployee2.Id, Date.newInstance(currentDate.year(), currentDate.month(), 25), 3.3);
+        timeCards.add(addTimeCard(unassignedContract1.Id, testEmployee2.Id, Date.newInstance(currentDate.year(), currentDate.month(), 21), 5));
+        timeCards.add(addTimeCard(unassignedContract1.Id, testEmployee2.Id, Date.newInstance(currentDate.year(), currentDate.month(), 22), 6));
+        timeCards.add(addTimeCard(unassignedContract1.Id, testEmployee2.Id, Date.newInstance(currentDate.year(), currentDate.month(), 23), 1));
+        timeCards.add(addTimeCard(unassignedContract1.Id, testEmployee2.Id, Date.newInstance(currentDate.year(), currentDate.month(), 24), 4));
+        timeCards.add(addTimeCard(unassignedContract1.Id, testEmployee2.Id, Date.newInstance(currentDate.year(), currentDate.month(), 25), 3.3));
 
-        addTimeCard(fteContract4.Id, testEmployee2.Id, Date.newInstance(currentDate.year(), currentDate.month(), 16), 5, 2,
-                                                                                                unassignedContract2.Id);
+        timeCards.add(addTimeCard(fteContract4.Id, testEmployee2.Id, Date.newInstance(currentDate.year(), currentDate.month(), 16), 5, 2,
+                                                                                                unassignedContract2.Id));
 
         SFDC_Employee__c testEmployee3 = addEmployee('Yyy Employee');
 
-        addTimeCard(fteContract1.Id, testEmployee3.Id, Date.newInstance(currentDate.year(), currentDate.month(), 1), 3, 8,
-                                                                                                unassignedContract1.Id);
-        addTimeCard(fteContract1.Id, testEmployee3.Id, Date.newInstance(currentDate.year(), currentDate.month(), 2), 4);
-        addTimeCard(fteContract1.Id, testEmployee3.Id, Date.newInstance(currentDate.year(), currentDate.month(), 3), 5);
-        addTimeCard(fteContract1.Id, testEmployee3.Id, Date.newInstance(currentDate.year(), currentDate.month(), 4), 4.6);
-        addTimeCard(fteContract1.Id, testEmployee3.Id, Date.newInstance(currentDate.year(), currentDate.month(), 5), 2.5);
+        timeCards.add(addTimeCard(fteContract1.Id, testEmployee3.Id, Date.newInstance(currentDate.year(), currentDate.month(), 1), 3, 8,
+                                                                                                unassignedContract1.Id));
+        timeCards.add(addTimeCard(fteContract1.Id, testEmployee3.Id, Date.newInstance(currentDate.year(), currentDate.month(), 2), 4));
+        timeCards.add(addTimeCard(fteContract1.Id, testEmployee3.Id, Date.newInstance(currentDate.year(), currentDate.month(), 3), 5));
+        timeCards.add(addTimeCard(fteContract1.Id, testEmployee3.Id, Date.newInstance(currentDate.year(), currentDate.month(), 4), 4.6));
+        timeCards.add(addTimeCard(fteContract1.Id, testEmployee3.Id, Date.newInstance(currentDate.year(), currentDate.month(), 5), 2.5));
 
-        addTimeCard(fteContract2.Id, testEmployee3.Id, Date.newInstance(currentDate.year(), currentDate.month(), 6), 9);
-        addTimeCard(fteContract2.Id, testEmployee3.Id, Date.newInstance(currentDate.year(), currentDate.month(), 8), 7, 7,
-                                                                                                unassignedContract1.Id);
+        timeCards.add(addTimeCard(fteContract2.Id, testEmployee3.Id, Date.newInstance(currentDate.year(), currentDate.month(), 6), 9));
+        timeCards.add(addTimeCard(fteContract2.Id, testEmployee3.Id, Date.newInstance(currentDate.year(), currentDate.month(), 8), 7, 7,
+                                                                                                unassignedContract1.Id));
 
-        addTimeCard(fteContract3.Id, testEmployee3.Id, Date.newInstance(currentDate.year(), currentDate.month(), 9), 4);
-        addTimeCard(fteContract3.Id, testEmployee3.Id, Date.newInstance(currentDate.year(), currentDate.month(), 10), 3, 5,
-                                                                                                fteContract2.Id);
+        timeCards.add(addTimeCard(fteContract3.Id, testEmployee3.Id, Date.newInstance(currentDate.year(), currentDate.month(), 9), 4));
+        timeCards.add(addTimeCard(fteContract3.Id, testEmployee3.Id, Date.newInstance(currentDate.year(), currentDate.month(), 10), 3, 5,
+                                                                                                fteContract2.Id));
 
-        addTimeCard(fteContract4.Id, testEmployee3.Id, Date.newInstance(currentDate.year(), currentDate.month(), 16), 0.5, 3,
-                                                                                                fteContract3.Id);
-        addTimeCard(fteContract4.Id, testEmployee3.Id, Date.newInstance(currentDate.year(), currentDate.month(), 17), 1.5);
-        addTimeCard(fteContract4.Id, testEmployee3.Id, Date.newInstance(currentDate.year(), currentDate.month(), 18), 2);
-        addTimeCard(fteContract4.Id, testEmployee3.Id, Date.newInstance(currentDate.year(), currentDate.month(), 19), 1);
-        addTimeCard(fteContract4.Id, testEmployee3.Id, Date.newInstance(currentDate.year(), currentDate.month(), 20), 2);
-        addTimeCard(fteContract4.Id, testEmployee3.Id, Date.newInstance(currentDate.year(), currentDate.month(), 21), 1);
+        timeCards.add(addTimeCard(fteContract4.Id, testEmployee3.Id, Date.newInstance(currentDate.year(), currentDate.month(), 16), 0.5, 3,
+                                                                                                fteContract3.Id));
+        timeCards.add(addTimeCard(fteContract4.Id, testEmployee3.Id, Date.newInstance(currentDate.year(), currentDate.month(), 17), 1.5));
+        timeCards.add(addTimeCard(fteContract4.Id, testEmployee3.Id, Date.newInstance(currentDate.year(), currentDate.month(), 18), 2));
+        timeCards.add(addTimeCard(fteContract4.Id, testEmployee3.Id, Date.newInstance(currentDate.year(), currentDate.month(), 19), 1));
+        timeCards.add(addTimeCard(fteContract4.Id, testEmployee3.Id, Date.newInstance(currentDate.year(), currentDate.month(), 20), 2));
+        timeCards.add(addTimeCard(fteContract4.Id, testEmployee3.Id, Date.newInstance(currentDate.year(), currentDate.month(), 21), 1));
 
-        addTimeCard(unassignedContract1.Id, testEmployee3.Id, Date.newInstance(currentDate.year(), currentDate.month(), 21), 3);
+        timeCards.add(addTimeCard(unassignedContract1.Id, testEmployee3.Id, Date.newInstance(currentDate.year(), currentDate.month(), 21), 3));
 
-        addTimeCard(unassignedContract2.Id, testEmployee3.Id, Date.newInstance(currentDate.year(), currentDate.month(), 21), 6, 16,
-                                                                                                fteContract3.Id);
-        addTimeCard(unassignedContract2.Id, testEmployee3.Id, Date.newInstance(currentDate.year(), currentDate.month(), 21), 5);
-        addTimeCard(unassignedContract2.Id, testEmployee3.Id, Date.newInstance(currentDate.year(), currentDate.month(), 21), 7, 2,
-                                                                                                fteContract4.Id);
-        addTimeCard(unassignedContract2.Id, testEmployee3.Id, Date.newInstance(currentDate.year(), currentDate.month(), 21), 4);
+        timeCards.add(addTimeCard(unassignedContract2.Id, testEmployee3.Id, Date.newInstance(currentDate.year(), currentDate.month(), 21), 6, 16,
+                                                                                                fteContract3.Id));
+        timeCards.add(addTimeCard(unassignedContract2.Id, testEmployee3.Id, Date.newInstance(currentDate.year(), currentDate.month(), 21), 5));
+        timeCards.add(addTimeCard(unassignedContract2.Id, testEmployee3.Id, Date.newInstance(currentDate.year(), currentDate.month(), 21), 7, 2,
+                                                                                                fteContract4.Id));
+        timeCards.add(addTimeCard(unassignedContract2.Id, testEmployee3.Id, Date.newInstance(currentDate.year(), currentDate.month(), 21), 4));
 
+        insert timeCards;
         FTE_Tracker_Settings__c settings = FTE_Tracker_Settings__c.getOrgDefaults();
         settings.FTE_Year__c = Date.today().year();
         insert settings;
@@ -725,7 +728,6 @@ public class FTETrackerTest {
             Employee__c = employeeId,
             Client__c = contractId
         );
-        insert timeCardObj;
         return timeCardObj;
     }
 
@@ -738,7 +740,6 @@ public class FTETrackerTest {
             FTE_Hours__c = fteHours,
             FTE_Contract__c = fteId
         );
-        insert timeCardObj;
         return timeCardObj;
     }
 }

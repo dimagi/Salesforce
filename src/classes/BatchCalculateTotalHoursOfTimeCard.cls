@@ -95,7 +95,7 @@ public without sharing class BatchCalculateTotalHoursOfTimeCard implements Datab
 
         // We must replace values in contracts
         if (!Test.isRunningTest()) {
-            BatchUpdateContractServicesSpend obj = new BatchUpdateContractServicesSpend(this.servicesSpendMap);
+            BatchUpdateContractServicesSpend obj = new BatchUpdateContractServicesSpend(this.servicesSpendMap, this.updatedContracts);
             Database.executeBatch(obj, 50);
         }
     }

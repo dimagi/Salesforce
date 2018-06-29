@@ -7,6 +7,29 @@
 @isTest
 private class TestFBApi {
 
+    static testMethod void listLastUpdatedCaseTest() {
+        FogBugzAPI api = new FogBugzAPI();
+        Test.startTest();
+
+        List<FogBugzCase> cases = api.getLastUpdatedCases(Date.today());
+        System.assertEquals(cases.size(), 2);
+
+        FogBugzCase fbCase1 = cases.get(0);
+        FogBugzCase fbCase2 = cases.get(1);
+        System.assertEquals('11111', fbCase1.caseId);
+        System.assertEquals('22222', fbCase2.caseId);
+        System.assertEquals('area 1', fbCase1.area);
+        System.assertEquals('area 2', fbCase2.area);
+        System.assertEquals('Test 1', fbCase1.project);
+        System.assertEquals('Test 2', fbCase2.project);
+        System.assertEquals('111', fbCase1.client);
+        System.assertEquals('222', fbCase2.client);
+        System.assertEquals('Title 1', fbCase1.title);
+        System.assertEquals('Title 2', fbCase2.title);
+
+        Test.stopTest();
+    }
+
     static testMethod void listCasesTest() {
         FogBugzAPI api = new FogBugzAPI();
         Test.startTest();
