@@ -4,6 +4,7 @@
 public without sharing class TimeCardCalculator implements Database.Batchable<sObject>, Database.Stateful {
 
     private DateTime lastUpdatedDateTime;
+    private DateTime startDateTime;
     private Map<String, List<SalaryHistoryRecord>> billingRateHistoryMap;
     private List<SalaryHistoryRecord> currentRateHistory;
     private SalaryHistoryHelper salaryHistoryHelper;
@@ -16,39 +17,37 @@ public without sharing class TimeCardCalculator implements Database.Batchable<sO
     private List<DContract__c> contractsList;
 
     public TimeCardCalculator() {
-        this(DateTime.now().addDays(-1));
-    }
-
-    public TimeCardCalculator(Set<Id> updatedContracts) {
-        this(DateTime.now().addDays(-1));
-        this.updatedContracts = updatedContracts;
-        this.onlyRate = true;
-    }
-
-    public TimeCardCalculator(List<Id> timeCardsIds) {
-        this(DateTime.now().addDays(-1));
-        this.timeCardsIds = timeCardsIds;
-        this.onlyRate = false;
-    }
-
-    public TimeCardCalculator(Set<Id> updatedContracts, Boolean onlyRate) {
-        this(DateTime.now().addDays(-1));
-        this.updatedContracts = updatedContracts;
-        this.onlyRate = onlyRate;
-    }
-
-    public TimeCardCalculator(List<Project_Billing_Rate_Update__c> updatesList) {
-        this(DateTime.now().addDays(-1));
-        this.updatesList = updatesList;
-    }
-
-    public TimeCardCalculator(DateTime lastUpdatedDateTime) {
-        this.lastUpdatedDateTime = lastUpdatedDateTime;
+        this.startDateTime = DateTime.now();
+        BatchDefaultSettings__c batchSettings = BatchDefaultSettings__c.getOrgDefaults();
+        this.lastUpdatedDateTime = batchSettings.Time_Card_Calculation_Last_Date__c != null ? batchSettings.Time_Card_Calculation_Last_Date__c : DateTime.now().addDays(-1);
         this.billingRateHistoryMap = new  Map<String, List<SalaryHistoryRecord>>();
         this.currentRateHistory = new List<SalaryHistoryRecord>();
         this.salaryHistoryHelper = new SalaryHistoryHelper();
         this.onlyRate = false;
         this.isDaily = false;
+    }
+
+    public TimeCardCalculator(Set<Id> updatedContracts) {
+        this();
+        this.updatedContracts = updatedContracts;
+        this.onlyRate = true;
+    }
+
+    public TimeCardCalculator(List<Id> timeCardsIds) {
+        this();
+        this.timeCardsIds = timeCardsIds;
+        this.onlyRate = false;
+    }
+
+    public TimeCardCalculator(Set<Id> updatedContracts, Boolean onlyRate) {
+        this();
+        this.updatedContracts = updatedContracts;
+        this.onlyRate = onlyRate;
+    }
+
+    public TimeCardCalculator(List<Project_Billing_Rate_Update__c> updatesList) {
+        this();
+        this.updatesList = updatesList;
     }
 
     public Database.QueryLocator start(Database.BatchableContext context) {
@@ -194,6 +193,10 @@ public without sharing class TimeCardCalculator implements Database.Batchable<sO
     public void finish(Database.BatchableContext context) {
         if (!Test.isRunningTest()) {
             if (this.isDaily == true) {
+                BatchDefaultSettings__c batchSettings = BatchDefaultSettings__c.getOrgDefaults();
+                batchSettings.Time_Card_Calculation_Last_Date__c = this.startDateTime;
+                update batchSettings;
+
                 Database.executeBatch(new BatchCalculateTotalHoursOfTimeCard(true));
             } else if (this.updatedContracts.size() > 0) {
                 Database.executeBatch(new BatchCalculateTotalHoursOfTimeCard(this.updatedContracts, false));

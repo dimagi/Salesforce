@@ -3,6 +3,9 @@ public class TimeCardTriggerControllerTest {
 
     @testSetup
     public static void addTestData() {
+        BatchDefaultSettings__c batchSettings = BatchDefaultSettings__c.getOrgDefaults();
+        insert batchSettings;
+
         SFDC_Employee__c employeeObj = new SFDC_Employee__c(Name = 'Sample Employee', Salary__c = 50000, Exchange_Rate__c = 1, Effective_Salary_Date__c = Date.newInstance(2016, 2, 24),
                                                             Effective_Exchange_Rate_Date__c = Date.newInstance(2016, 2, 24), Per_Week_Hours__c = 40);
         insert employeeObj;
@@ -296,8 +299,6 @@ public class TimeCardTriggerControllerTest {
 
     @isTest
     public static void shouldMarkTimeCardsToUpdateAfterFetchingUpdatedCases() {
-        BatchDefaultSettings__c batchSettings = BatchDefaultSettings__c.getOrgDefaults();
-        insert batchSettings;
         DContract__c parent1 = [SELECT Id FROM DContract__c WHERE Name = 'Sample Parent 1'];
         DContract__c child2 = [SELECT Id FROM DContract__c WHERE Name = 'Sample Child 2'];
         DContract__c child3 = [SELECT Id FROM DContract__c WHERE Name = 'Sample Child 3'];

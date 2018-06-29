@@ -1,7 +1,7 @@
 /**
  * Time card sync batch job chain. TimeCardCaseUpdateBatch (Fetch updated cases from FB and update fields in time cards, like area, project , title or client).
  */
-public class TimeCardCaseUpdateBatch implements Database.Batchable<FogBugzCase>, Database.Stateful {
+public class TimeCardCaseUpdateBatch implements Database.Batchable<FogBugzCase>, Database.AllowsCallouts, Database.Stateful {
 
     private DateTime startDateTime;
 
