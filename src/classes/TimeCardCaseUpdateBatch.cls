@@ -33,16 +33,20 @@ public class TimeCardCaseUpdateBatch implements Database.Batchable<FogBugzCase>,
             if (fbCase.client == null || fbCase.client == '') {
                 continue; // we must skip empty clients in cases - less processing, we don't have time cardss for such cases
             }
+
             String dbCaseTitle = fbCase.caseId + ': ' + fbCase.title;
-            System.debug('dbCaseTitle : ' + dbCaseTitle);
             Integer clientFBId = Integer.valueOf(fbCase.client);
             List<Time_Card__c> timeCardsToUpdate = [SELECT Id, Area__c, Case__c, Project__c, Client__c FROM Time_Card__c WHERE Case_Number__c =: fbCase.caseId AND FTE_only__c = false
                                                         AND (Area__c !=: fbCase.area OR Case__c !=: dbCaseTitle OR Project__c !=: fbCase.project
                                                             OR Client__r.FB_Id__c !=: clientFBId)];
 
-            System.debug('size : ' + timeCardsToUpdate.size());
-            DContract__c newContract = [SELECT Id, Name FROM DContract__c WHERE FB_Id__c =: clientFBId];
-            System.debug('Contract : ' + clientFBId + ' with name : ' + (newContract != null ? newContract.Name : 'NULL'));
+
+            List<DContract__c> contracts = [SELECT Id, Name FROM DContract__c WHERE FB_Id__c =: clientFBId];
+            DContract__c newContract = null;
+            if (contracts.size() > 0) {
+                newContract = contracts.get(0);
+            }
+
             for (Time_Card__c tc : timeCardsToUpdate) {
                 tc.Area__c = fbCase.area;
                 tc.Case__c = dbCaseTitle;
