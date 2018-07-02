@@ -297,7 +297,7 @@ public class SalaryHistoryTest {
         batch1.execute(null, testData);
         System.debug('testData : ' + testData);
         System.debug('batch1.getServicesSpendMap() : ' + batch1.getServicesSpendMap());
-        BatchUpdateContractServicesSpend batch2 = new BatchUpdateContractServicesSpend(batch1.getServicesSpendMap());
+        BatchUpdateContractServicesSpend batch2 = new BatchUpdateContractServicesSpend(batch1.getServicesSpendMap(), true);
         batch2.execute(null, batch2.start(null));
 
         DContract__c dcontractFromDB = [SELECT Id, Name, Services_Spend__c FROM DContract__c WHERE Id =: parent_1.Id];
@@ -486,7 +486,7 @@ public class SalaryHistoryTest {
         batch1.execute(null, testData);
         batch1.finish(null);
 
-        BatchUpdateContractServicesSpend batch2 = new BatchUpdateContractServicesSpend(batch1.getServicesSpendMap());
+        BatchUpdateContractServicesSpend batch2 = new BatchUpdateContractServicesSpend(batch1.getServicesSpendMap(), true);
         batch2.execute(null, batch2.start(null));
         batch2.finish(null);
 

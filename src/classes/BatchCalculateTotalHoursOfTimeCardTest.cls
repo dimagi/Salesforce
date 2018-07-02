@@ -47,7 +47,7 @@ public class BatchCalculateTotalHoursOfTimeCardTest {
         }
 
         batch1.execute(null, testData);
-        BatchUpdateContractServicesSpend batch2 = new BatchUpdateContractServicesSpend(batch1.getServicesSpendMap());
+        BatchUpdateContractServicesSpend batch2 = new BatchUpdateContractServicesSpend(batch1.getServicesSpendMap(), true);
         batch2.execute(null, batch2.start(null));
 
         DContract__c dcontractFromDB = [SELECT Id, Name, Services_Spend__c FROM DContract__c WHERE Id =: dcontract.Id];
@@ -120,7 +120,7 @@ public class BatchCalculateTotalHoursOfTimeCardTest {
 
         System.debug('testData ' + testData);
         batch1.execute(null, testData);
-        BatchUpdateContractServicesSpend batch2 = new BatchUpdateContractServicesSpend(batch1.getServicesSpendMap());
+        BatchUpdateContractServicesSpend batch2 = new BatchUpdateContractServicesSpend(batch1.getServicesSpendMap(), true);
         batch2.execute(null, batch2.start(null));
 
         DContract__c dcontractFromDB = [SELECT Id, Name, Services_Spend__c FROM DContract__c WHERE Id =: parent.Id];
@@ -244,7 +244,7 @@ public class BatchCalculateTotalHoursOfTimeCardTest {
         }
 
         batch1.execute(null, testData);
-        BatchUpdateContractServicesSpend batch2 = new BatchUpdateContractServicesSpend(batch1.getServicesSpendMap());
+        BatchUpdateContractServicesSpend batch2 = new BatchUpdateContractServicesSpend(batch1.getServicesSpendMap(), true);
         batch2.execute(null, batch2.start(null));
 
         DContract__c dcontractFromDB = [SELECT Id, Name, Services_Spend__c FROM DContract__c WHERE Id =: parent1.Id];
@@ -337,7 +337,7 @@ public class BatchCalculateTotalHoursOfTimeCardTest {
 
         System.debug('testData ' + testData);
         batch1.execute(null, testData);
-        BatchUpdateContractServicesSpend batch2 = new BatchUpdateContractServicesSpend(batch1.getServicesSpendMap());
+        BatchUpdateContractServicesSpend batch2 = new BatchUpdateContractServicesSpend(batch1.getServicesSpendMap(), true);
         batch2.execute(null, batch2.start(null));
 
         DContract__c dcontractFromDB = [SELECT Id, Name, Services_Spend__c FROM DContract__c WHERE Id =: parent.Id];
