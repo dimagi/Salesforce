@@ -1,4 +1,11 @@
 <apex:page controller="OpportunityPipelineSnapshotController" docType="html-5.0" action="{!initOpportunityPipelineSnapshot}">
+    <style type="text/css">
+        .snpTable {
+            margin-top: 10px;
+            margin-bottom: 10px;
+        }
+    </style>
+
     <apex:pageBlock title="Opportunity Pipeline Snapshot" id="mainBlockId">
         <apex:form >
             <apex:outputPanel >
@@ -32,10 +39,56 @@
                     <apex:outputText value="Pipeline Snapshot Count : {!currentPSCount} for date : {!lastMonthSnapshotDate}" />
                 </apex:pageBlockSectionItem>
                 <apex:pageBlockSectionItem >
-                    <apex:commandButton onclick="return confirm('Are you sure you want to run this process? It will wipe all {!currentPSCount} snapshots for {!lastMonthSnapshotDate} and create new snapshots.');" action="{!runOpportunityPipelineSnapshotBatchJob}" value="Run Pipeline Snapshot" id="runButton"
+                    <apex:commandButton onclick="return confirm('Are you sure you want to run this process? It will wipe all {!currentPSCount} snapshots for {!lastMonthSnapshotDate} and create new snapshots.');"
+                                action="{!runOpportunityPipelineSnapshotBatchJob}" value="Run Pipeline Snapshot" id="runButton"
                                 disabled="{!oppSnapshotJobWrapper.isRunning}" />
                 </apex:pageBlockSectionItem>
             </apex:pageBlockSection>
+
+            <apex:pageBlockSection columns="1" id="tableSection">
+                <apex:pageBlockTable id="oppPipelineSnpTab" value="{!snpList}" var="snp" styleClass="snpTable">
+                    <apex:column headerValue="Pipeline Snapshot Name">
+                        <apex:outputLink value="/{!snp.Id}" target="_blank" disabled="{!oppSnapshotJobWrapper.isRunning}">{!snp.Name}</apex:outputLink>
+                    </apex:column>
+                    <apex:column headerValue="Month" value="{!snp.Month_Date__c}" />
+                    <apex:column headerValue="Stage" value="{!snp.Stage__c}" />
+                    <apex:column headerValue="Amount" value="{!snp.Amount__c}" />
+                    <apex:column headerValue="Month Cash (EV" value="{!snp.Three_Month_EV__c}" />
+                    <apex:column headerValue="12Month Cash (EV)" value="{!snp.Twelve_Month_Cash_EV__c}" />
+                    <apex:column headerValue="18 Month Cash (EV)" value="{!snp.X18_Month_Cash_EV__c}" />
+                    <apex:column headerValue="24 Month Cash (EV)" value="{!snp.X24_Month_Cash_EV__c}" />
+                    <apex:column headerValue="Probability (%)" value="{!snp.Probability__c}" />
+                    <apex:column headerValue="Opportunity Close Date" value="{!snp.CloseDate__c}" />
+                    <apex:column headerValue="Expected Value" value="{!snp.Expected_Value__c}" />
+                    <apex:column headerValue="Duration (months)" value="{!snp.Duration_months__c}" />
+                    <apex:column headerValue="Opportunity" value="{!snp.Opportunity__c}" />
+                </apex:pageBlockTable>
+            </apex:pageBlockSection>
+
+            <!-- Pagination -->
+            <table style="width: 100%">
+                <tr>
+                    <td>Page: <apex:outputText value=" {!pageNumber} of {!CEILING(resultSize / pageSize)}"/></td>
+                    <td align="center">
+                        <apex:commandLink action="{!previousPage}" value="« Previous" rendered="{!hasPrevious && NOT(oppSnapshotJobWrapper.isRunning)}" reRender="mainBlockId" />
+                        <apex:outputText style="color: #ccc;" value="« Previous" rendered="{!NOT(hasPrevious) || oppSnapshotJobWrapper.isRunning}"/>
+                        &nbsp;&nbsp;
+                        <apex:commandLink action="{!nextPage}" value="Next »" rendered="{!hasNext && NOT(oppSnapshotJobWrapper.isRunning)}" reRender="mainBlockId" />
+                        <apex:outputText style="color: #ccc;" value="Next »" rendered="{!NOT(hasNext) || oppSnapshotJobWrapper.isRunning}"/>
+                    </td>
+                    <td align="right">
+                        Records per page:&nbsp;&nbsp;
+                        <apex:selectList value="{!pageSize }" size="1" onchange="resetPageNum();" disabled="{!oppSnapshotJobWrapper.isRunning}" >
+                            <apex:selectOption itemValue="10" itemLabel="10"/>
+                            <apex:selectOption itemValue="20" itemLabel="20"/>
+                            <apex:selectOption itemValue="50" itemLabel="50"/>
+                            <apex:actionSupport event="onchange" reRender="mainBlockId"/>
+                        </apex:selectList>
+                    </td>
+                </tr>
+            </table>
+            <apex:actionFunction action="{!updatePageNumber}" name="resetPageNum" reRender="mainBlockId" />
+
         </apex:form>
     </apex:pageBlock>
 </apex:page>
