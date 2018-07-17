@@ -70,10 +70,10 @@
                 <tr>
                     <td>Page: <apex:outputText value=" {!pageNumber} of {!CEILING(resultSize / pageSize)}"/></td>
                     <td align="center">
-                        <apex:commandLink action="{!previousPage}" value="« Previous" rendered="{!hasPrevious && NOT(oppSnapshotJobWrapper.isRunning)}" reRender="mainBlockId" />
+                        <apex:commandLink status="loadingDiv" action="{!previousPage}" value="« Previous" rendered="{!hasPrevious && NOT(oppSnapshotJobWrapper.isRunning)}" reRender="mainBlockId" />
                         <apex:outputText style="color: #ccc;" value="« Previous" rendered="{!NOT(hasPrevious) || oppSnapshotJobWrapper.isRunning}"/>
                         &nbsp;&nbsp;
-                        <apex:commandLink action="{!nextPage}" value="Next »" rendered="{!hasNext && NOT(oppSnapshotJobWrapper.isRunning)}" reRender="mainBlockId" />
+                        <apex:commandLink status="loadingDiv" action="{!nextPage}" value="Next »" rendered="{!hasNext && NOT(oppSnapshotJobWrapper.isRunning)}" reRender="mainBlockId" />
                         <apex:outputText style="color: #ccc;" value="Next »" rendered="{!NOT(hasNext) || oppSnapshotJobWrapper.isRunning}"/>
                     </td>
                     <td align="right">
@@ -87,7 +87,7 @@
                     </td>
                 </tr>
             </table>
-            <apex:actionFunction action="{!updatePageNumber}" name="resetPageNum" reRender="mainBlockId" />
+            <apex:actionFunction status="loadingDiv" action="{!updatePageNumber}" name="resetPageNum" reRender="mainBlockId" />
 
         </apex:form>
     </apex:pageBlock>
