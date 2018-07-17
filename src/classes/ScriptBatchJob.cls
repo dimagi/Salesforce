@@ -1,31 +1,23 @@
 /**
  * This is editable class, should be used to do data migration. For example filling new fields with relation.
  */
-public class ScriptBatchJob implements Database.Batchable<sObject>, Database.Stateful {
+public class ScriptBatchJob implements Database.Batchable<Pipeline_Snapshot_EV_DIff__c>, Database.Stateful {
 
     private Date helperDate;
 
     /**
-     * Script code for setting proper scale for time card salary calculations
+     * Script code for removing wrong EV Diffs.
      */
     public ScriptBatchJob(Date helperDate) {
         this.helperDate = helperDate;
     }
 
-    public Database.QueryLocator start(Database.BatchableContext context) {
-        String query = 'SELECT Id, Time_Card_Salary__c FROM Time_Card__c WHERE Time_Card_Salary__c != null AND Date__c <: helperDate';
-        return Database.getQueryLocator(query);
+    public List<Pipeline_Snapshot_EV_DIff__c> start(Database.BatchableContext context) {
+        return [SELECT Id FROM Pipeline_Snapshot_EV_DIff__c WHERE Pipeline_Snapshot__r.Stage__c = 'Core run rate'];
     }
 
-    public void execute(Database.BatchableContext context, List<sObject> scope) {
-        List<Time_Card__c> tcList = new List<Time_Card__c>();
-        for (sObject sObj : scope) {
-            Time_Card__c tc = (Time_Card__c) sObj;
-            tc.Time_Card_Salary__c = tc.Time_Card_Salary__c.setScale(8);
-        }
-        if (tcList.size() > 0) {
-            update tcList;
-        }
+    public void execute(Database.BatchableContext context, List<Pipeline_Snapshot_EV_DIff__c> scope) {
+        delete scope;
     }
 
     public void finish(Database.BatchableContext context) {
