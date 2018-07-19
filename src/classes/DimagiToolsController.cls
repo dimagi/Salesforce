@@ -235,7 +235,7 @@ public without sharing class DimagiToolsController {
 
                 Project_Report_Out__c proToUpdate = createPROToUpdate(proList.isEmpty() ? null : proList[0]);
                 DContract__c dcontract = [SELECT Id, Name, Last_Report_Out_Status__c, Percent_through_SOW_deliverables__c, Budget_Used__c, of_Services_budget_for_GS__c, Total_Costs__c, Services_Spend__c,
-                                        Buffer_by_SOW_Completed__c, Execution_Efficiency__c, Expected_Buffer__c, Direct_Costs_Total_Expenses__c, Net_Income_based_on_SOW_Completed__c, Product_Spend__c,
+                                        Execution_Efficiency__c, Expected_Buffer__c, Direct_Costs_Total_Expenses__c, Net_Income_based_on_SOW_Completed__c, Product_Spend__c,
                                         GS_Execution_Budget__c, GS_Services_Completed__c, GS_Net_Income_to_Date__c, GS_Net_Income_to_Date_Handover__c, GS_Services_Completed_Handover__c,
                                         Project_Quality_Overall_Status__c, Customer_Satisfaction_of_services__c, GS_Project_Services_Budget_Handoff__c FROM DContract__c WHERE Id =: reportContractId];
 
@@ -471,13 +471,13 @@ public without sharing class DimagiToolsController {
                                             Product_Income_Budget__c, Services_Income__c, Product_Spend__c, Total_Amount_of_Contract__c, Direct_Costs_Sub_Contract_BUDGET__c,
                                             Internal_Sub_contract_BUDGET__c, Project_Other_BUDGET__c, Direct_Costs_Travel_Expenses__c, Direct_Costs_Sub_contract_Expenses__c,
                                             Internal_Sub_contract_Spend__c, Project_Other_Spent__c, Expected_Margin__c,Budget_Used__c, Margin_by_SOW_Completed__c,
-                                            Margin_by_Contract_Dates__c, Execution_Efficiency__c, Buffer_by_SOW_Completed__c, Contract_Expense_BUDGET__c,
+                                            Margin_by_Contract_Dates__c, Execution_Efficiency__c, Contract_Expense_BUDGET__c,
                                             (SELECT Id, Name, Requires_Developer_Work__c, Last_Report_Out_Date__c, Last_Report_Out_Status__c, Percent_through_SOW_deliverables__c,
                                             Burdened_Income_Budget__c, Direct_Costs_Travel_BUDGET__c, Direct_Costs_Total_Expenses__c, Percent_through_Contract__c,
                                             Product_Income_Budget__c, Services_Income__c, Product_Spend__c, Total_Amount_of_Contract__c, Direct_Costs_Sub_Contract_BUDGET__c,
                                             Internal_Sub_contract_BUDGET__c, Project_Other_BUDGET__c, Direct_Costs_Travel_Expenses__c, Direct_Costs_Sub_contract_Expenses__c,
                                             Internal_Sub_contract_Spend__c, Project_Other_Spent__c, Expected_Margin__c, Budget_Used__c ,Margin_by_SOW_Completed__c,
-                                            Margin_by_Contract_Dates__c, Execution_Efficiency__c, Buffer_by_SOW_Completed__c, Contract_Expense_BUDGET__c FROM Contracts__r)
+                                            Margin_by_Contract_Dates__c, Execution_Efficiency__c, Contract_Expense_BUDGET__c FROM Contracts__r)
                                             FROM DContract__c
                                             WHERE Id IN : customContractsIdsToAddInList OR
                                                 (In_Charge_Of_Report_Out__c='Project Manager' AND  Project_Manager__r.Email=:currentLoginEmail) OR
@@ -887,11 +887,7 @@ public without sharing class DimagiToolsController {
             execStatus4.FieldName = '% Time into Contract';
             execStatus4.FieldValue = Integer.valueOf(contractObj.Percent_through_Contract__c);
 
-            ProjectExecutionStatus execStatus5 = new ProjectExecutionStatus();
-            execStatus5.FieldName = 'Buffer % by Work Completed';
-            execStatus5.FieldValue = Integer.valueOf(contractObj.Buffer_by_SOW_Completed__c);
-
-            executionStatusList = new List<ProjectExecutionStatus>{execStatus1, execStatus2, execStatus3, execStatus4, execStatus5};
+            executionStatusList = new List<ProjectExecutionStatus>{execStatus1, execStatus2, execStatus3, execStatus4};
             
         }
     }
@@ -1264,216 +1260,6 @@ public without sharing class DimagiToolsController {
         }
         return accessToken;
     }
-
-    /**
-     *
-     *
-     * Corporate Dashboard tab
-     *
-     *
-     **/
-
-    private List<Global_Metric_Graph__c> headCount;
-    private List<Global_Metric_Graph__c> wamData;
-    private List<Global_Metric_Graph__c> formData;
-    private List<Global_Metric_Graph__c> userData;
-    private List<Global_Metric_Graph__c> programData;
-    private List<Global_Metric_Graph__c> performanceData;
-    private List<Global_Metric_Graph__c> upTime;
-    private List<Global_Metric_Graph__c> gsData;
-    private List<Global_Metric_Graph__c> mrr;
-    private List<Global_Metric_Graph__c> aggregateEff;
-    private List<Global_Metric_Graph__c> icds;
-    private Global_Metric_Graph__c oppExpectedRec;
-    private Global_Metric_Graph__c evExpectedRec;
-    private Global_Metric_Graph__c bufferEvGenRec;
-    public DateTime dashboardRefreshTime { get; set;}
-
-    public String getHeadCountData() {
-        if (this.headCount == null) {
-            this.headCount = [SELECT X_Text__c, Graph_Value_1__c, Graph_Value_2__c, Graph_Value_3__c, Graph_Value_4__c, Graph_Value_5__c, Graph_Value_6__c, Graph_Value_7__c
-                        FROM Global_Metric_Graph__c WHERE Name =: CorporateDashboardHelper.GS_HEADCOUNT ORDER BY Helper_Date__c];
-        }
-        if (this.headCount != null) {
-            return JSON.serialize(this.headCount);
-        }
-        return '';
-    }
-    public void setHeadCountData(String headCount) {}
-
-    public String getIcdsData() {
-        if (this.icds == null) {
-            this.icds = [SELECT X_Text__c, Graph_Value_1__c, Graph_Value_2__c, Graph_Value_3__c
-                        FROM Global_Metric_Graph__c WHERE Name =: CorporateDashboardHelper.ICDS_GRAPHS ORDER BY Helper_Date__c];
-        }
-        if (this.icds != null) {
-            return JSON.serialize(this.icds);
-        }
-        return '';
-    }
-    public void setIcdsData(String icds) {}
-
-    public String getEvExpected() {
-        if (this.evExpectedRec == null) {
-            List<Global_Metric_Graph__c> rList = [SELECT X_Text__c, Graph_Value_1__c, Graph_Value_2__c FROM Global_Metric_Graph__c
-                                 WHERE Name =: CorporateDashboardHelper.EV_EXPECTED_GRAPH];
-            this.evExpectedRec = rList.size () > 0 ? rList.get(0) : null;
-        }
-        if (this.evExpectedRec != null) {
-            return JSON.serialize(this.evExpectedRec);
-        }
-        return '';
-    }
-    public void setEvExpected(String evValues) {}
-
-    public String getOppExpected() {
-        if (this.oppExpectedRec == null) {
-            List<Global_Metric_Graph__c> rList = [SELECT X_Text__c, Graph_Value_1__c, Graph_Value_2__c FROM Global_Metric_Graph__c
-                                 WHERE Name =: CorporateDashboardHelper.OPP_EXPECTED_GRAPH];
-            this.oppExpectedRec = rList.size () > 0 ? rList.get(0) : null;
-        }
-        if (this.oppExpectedRec != null) {
-            return JSON.serialize(this.oppExpectedRec);
-        }
-        return '';
-    }
-    public void setOppExpected(String oppValues) {}
-
-    public String getBufferEvGen() {
-        if (this.bufferEvGenRec == null) {
-            List<Global_Metric_Graph__c> rList = [SELECT X_Text__c, Graph_Value_1__c, Graph_Value_2__c FROM Global_Metric_Graph__c
-                                 WHERE Name =: CorporateDashboardHelper.EV_BUFFER_GEN_GRAPH];
-            this.bufferEvGenRec = rList.size () > 0 ? rList.get(0) : null;
-        }
-        if (this.bufferEvGenRec != null) {
-            return JSON.serialize(this.bufferEvGenRec);
-        }
-        return '';
-    }
-    public void setBufferEvGen(String buffValues) {}
-
-    public String getServerUpTime() {
-        if (this.upTime == null) {
-            this.upTime = [SELECT X_Text__c, Graph_Value_1__c, Graph_Value_2__c, Graph_Value_3__c, Graph_Value_7__c FROM Global_Metric_Graph__c
-                                 WHERE Name =: CorporateDashboardHelper.UP_TIME_GRAPHS ORDER BY Helper_Date__c];
-        }
-        if (this.upTime != null) {
-            return JSON.serialize(this.upTime);
-        }
-        return '';
-    }
-    public void setServerUpTime(String upTimeData) {}
-
-    public String getAggregateEffData() {
-        if (this.aggregateEff == null) {
-            this.aggregateEff = [SELECT X_Text__c, Graph_Value_1__c, Graph_Value_2__c FROM Global_Metric_Graph__c
-                                 WHERE Name =: CorporateDashboardHelper.AGGREGATE_EFF_GRAPH];
-        }
-        if (this.aggregateEff != null) {
-            return JSON.serialize(this.aggregateEff);
-        }
-        return '';
-    }
-    public void setAggregateEffData(String aggValues) {}
-
-    public String getMrrData() {
-        if (this.mrr == null) {
-            this.mrr = [SELECT X_Text__c, Graph_Value_1__c, Graph_Value_2__c, Graph_Value_3__c, Graph_Value_4__c, Graph_Value_5__c, Graph_Value_6__c, Graph_Value_7__c
-                        FROM Global_Metric_Graph__c WHERE Name =: CorporateDashboardHelper.MRR_GRAPH ORDER BY Helper_Date__c];
-        }
-        if (this.mrr != null) {
-            return JSON.serialize(this.mrr);
-        }
-        return '';
-    }
-    public void setMrrData(String mrrValues) {}
-
-    public String getGsGraphData() {
-        if (this.gsData == null) {
-            this.gsData = [SELECT X_Text__c, Graph_Value_1__c, Graph_Value_2__c FROM Global_Metric_Graph__c
-                                 WHERE Name =: CorporateDashboardHelper.GS_GRAPHS ORDER BY Helper_Date__c];
-        }
-        if (this.gsData != null) {
-            return JSON.serialize(this.gsData);
-        }
-        return '';
-    }
-    public void setGsGraphData(String gsValues) {}
-
-    public String getPerformanceGraphData() {
-        if (this.performanceData == null) {
-            this.performanceData = [SELECT X_Text__c, Graph_Value_1__c, Graph_Value_2__c, Graph_Value_3__c, Graph_Value_4__c, Graph_Value_5__c, Graph_Value_6__c, Graph_Value_7__c
-                                    FROM Global_Metric_Graph__c WHERE Name =: CorporateDashboardHelper.PERFORMANCE_GRAPHS ORDER BY Helper_Date__c];
-        }
-
-        if (this.performanceData != null) {
-            return JSON.serialize(this.performanceData);
-        }
-        return '';
-    }
-    public void setPerformanceGraphData(String performanceValues) {}
-
-    public String getUserGraphData() {
-        if (this.userData == null) {
-            this.userData = [SELECT X_Text__c, Graph_Value_1__c, Graph_Value_2__c, Graph_Value_3__c, Graph_Value_4__c, Graph_Value_5__c, Graph_Value_6__c, Graph_Value_7__c
-                             FROM Global_Metric_Graph__c WHERE Name =: CorporateDashboardHelper.USER_GRAPH ORDER BY Helper_Date__c];
-        }
-        if (this.userData != null) {
-            return JSON.serialize(this.userData);
-        }
-        return '';
-    }
-    public void setUserGraphData(String userValues) {}
-
-    public String getFormGraphData() {
-        if (this.formData == null) {
-            this.formData = [SELECT X_Text__c, Graph_Value_1__c, Graph_Value_2__c, Graph_Value_3__c, Graph_Value_4__c, Graph_Value_5__c, Graph_Value_6__c, Graph_Value_7__c
-                             FROM Global_Metric_Graph__c WHERE Name =: CorporateDashboardHelper.FORM_GRAPH ORDER BY Helper_Date__c];
-        }
-        if (this.formData != null) {
-            return JSON.serialize(this.formData);
-        }
-        return '';
-    }
-    public void setFormGraphData(String wamValues) {}
-
-    public String getWamGraphData() {
-        if (this.wamData == null) {
-            this.wamData = [SELECT X_Text__c, Graph_Value_1__c, Graph_Value_2__c, Graph_Value_3__c, Graph_Value_4__c, Graph_Value_5__c, Graph_Value_6__c, Graph_Value_7__c
-                             FROM Global_Metric_Graph__c WHERE Name =: CorporateDashboardHelper.WAM_GRAPH ORDER BY Helper_Date__c];
-        }
-        if (this.wamData != null) {
-            return JSON.serialize(this.wamData);
-        }
-        return '';
-    }
-    public void setWamGraphData(String programValues) {}
-
-    public String getProgramGraphData() {
-        if (this.programData == null) {
-            this.programData = [SELECT X_Text__c, Graph_Value_1__c, Graph_Value_2__c, Graph_Value_3__c, Graph_Value_4__c, Graph_Value_5__c, Graph_Value_6__c, Graph_Value_7__c
-                             FROM Global_Metric_Graph__c WHERE Name =: CorporateDashboardHelper.PROGRAMS_GRAPH ORDER BY Helper_Date__c];
-        }
-        if (this.programData != null) {
-            return JSON.serialize(this.programData);
-        }
-        return '';
-    }
-    public void setProgramGraphData(String programValues) {}
-
-    public PageReference loadScaleData() {
-        try {
-            List<Global_Metric_Graph__c> metrics = [SELECT Id, CreatedDate FROM Global_Metric_Graph__c LIMIT 1];
-            if (metrics.size() > 0) {
-                this.dashboardRefreshTime = metrics.get(0).CreatedDate;
-            }
-        } catch (Exception ex) {
-             EmailHelper.sendEmailFromException(BatchDefaultSettings__c.getOrgDefaults().Error_Emails__c.split(','), 'PRO Corporate Dashboard errors', 'PRO Corporate Dashboard error', ex);
-        }
-        return null;
-    }
-
-
 
     /**
      *
