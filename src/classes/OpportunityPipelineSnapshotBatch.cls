@@ -40,8 +40,16 @@ public class OpportunityPipelineSnapshotBatch implements Database.Batchable<Oppo
         for (Opportunity opp : scope) {
             Pipeline_Snapshot__c lastMonthSnapshot = getOldSnapshots(opp.Id, this.runDate);
 
+            String nameSuffix = ' - ' + this.runDate.month() + '/' + this.runDate.year();
+            String namePrefix = opp.Name;
+
+            if (namePrefix != null && namePrefix.length() + nameSuffix.length() > 80) {
+                Integer charsToCut = namePrefix.length() - (namePrefix.length() + nameSuffix.length() - 80);
+                namePrefix = namePrefix.subString(0, charsToCut);
+            }
+
             Pipeline_Snapshot__c newPs = new Pipeline_Snapshot__c(
-                    Name = opp.Name + ' - ' + this.runDate.month() + '/' + this.runDate.year(),
+                    Name = namePrefix + nameSuffix,
                     Month_Date__c = this.runDate,
                     Opportunity__c = opp.Id,
                     Account__c = opp.AccountId,
