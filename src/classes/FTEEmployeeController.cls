@@ -11,12 +11,10 @@ public class FTEEmployeeController {
     public Integer exportMonth { get; set;}
     public SFDC_Employee__c employee { get; set;}
 
-    public FTEEmployeeTime unassigned { get; set;}
+    public FTETimeManager fteTimeManager { get; set;}
     public FTEEmployeeTime totalAssignedDays { get; set;}
     public FTEEmployeeTime totalDaysWorked { get; set;}
-    public Map<Id, FTEEmployeeTime> assignedMap { get; set;}
     public List<FTEEmployeeTime> contractsTime { get; set;}
-    public Map<Id, FTEEmployeeTime> unassignedMap { get; set;}
 
     public List<DContract__c> fteContracts { get; set;}
     public List<SelectOption> fteContractsOptions { get;set; }
@@ -51,48 +49,15 @@ public class FTEEmployeeController {
             return;
         }
 
-        List<SFDC_Employee__c> emplList = [SELECT Id, Name, Unloaded_Daily_Rate__c, Hire_Date__c FROM SFDC_Employee__c WHERE Id =: this.employeeId LIMIT 1];
+        List<SFDC_Employee__c> emplList = [SELECT Id, Name, Hire_Date__c FROM SFDC_Employee__c WHERE Id =: this.employeeId LIMIT 1];
         if (emplList.size() > 0) {
             this.employee = emplList.get(0);
         }
 
         this.employeeNetworkDays = FTETrackerHelper.getNetworkDays(this.employee.Hire_Date__c, this.fteYear);
-        List<Time_Card__c> timeCards = [SELECT Id, Client__c, Client__r.FTE_Tracker__c, Client__r.Name,
-                                        Total__c, FTE_hours__c, FTE_Contract__c,
-                                        FTE_Contract__r.FTE_Tracker__c, FTE_Contract__r.Name,
-                                        Time_Card_Salary__c, Date__c FROM Time_Card__c
-                                        WHERE Employee__c =: this.employee.Id AND Client__c != null
-                                        AND CALENDAR_YEAR(Date__c) =: this.fteYear
-                                        ORDER BY Client__r.Name];
-
-        this.assignedMap = new Map<Id, FTEEmployeeTime>();
-        this.unassignedMap = new Map<Id, FTEEmployeeTime>();
-        this.unassigned = new FTEEmployeeTime('Unassigned', null);
-
-        FTEEmployeeTime tmpHelper;
-        for (Time_Card__c timeCard : timeCards) {
-            Decimal loggedTime = (timeCard.Total__c != null ? timeCard.Total__c : 0);
-            Decimal movedTime = (timeCard.FTE_hours__c != null ? timeCard.FTE_hours__c : 0);
-
-            // "Moved from" part this.contractsTime.add(this.unassigned);
-            calculateLoggedTime(timeCard.Client__r.FTE_Tracker__c == 'Yes', timeCard.Client__c, timeCard.Client__r.Name, (loggedTime - movedTime), timeCard.Date__c.month(), timeCard.Time_Card_Salary__c);
-            // If no FTE Tag values we don't need to process moved hours
-            if (timeCard.FTE_Contract__c == null || movedTime == 0) {
-                continue;
-            }
-            // "Moved to" part
-            calculateLoggedTime(timeCard.FTE_Contract__r.FTE_Tracker__c == 'Yes', timeCard.FTE_Contract__c, timeCard.FTE_Contract__r.Name, movedTime, timeCard.Date__c.month(), timeCard.Time_Card_Salary__c);
-        }
-
-        this.contractsTime = new List<FTEEmployeeTime>();
-
-        this.contractsTime = this.assignedMap.values();
-        this.totalAssignedDays = new FTEEmployeeTime('Total Assigned Days', null);
-        this.totalDaysWorked = new FTEEmployeeTime('Total Days Worked', null);
-        generateStyles();
-        this.contractsTime.add(this.unassigned);
-        this.contractsTime.add(this.totalAssignedDays);
-        this.contractsTime.add(this.totalDaysWorked);
+        this.fteTimeManager = new FTETimeManager(this.employee, this.fteYear);
+        this.fteTimeManager.loadEmployeeTime();
+        buildUITableData();
     }
 
     public PageReference goToEmployeeListView () {
@@ -127,8 +92,8 @@ public class FTEEmployeeController {
         this.userAvailableDays = 0;
 
         if (this.employeeMonth != null) {
-            this.fteDaysMax = unassigned.daysArray[this.employeeMonth];
-            this.fteHoursMax = unassigned.hoursArray[this.employeeMonth];
+            this.fteDaysMax = this.fteTimeManager.unassigned.daysArray[this.employeeMonth];
+            this.fteHoursMax = this.fteTimeManager.unassigned.hoursArray[this.employeeMonth];
             this.monthName = DateTime.newInstance(this.fteYear, this.employeeMonth + 1, 1).format('MMMM yyyy');
             this.userAvailableDays = 21 - this.totalAssignedDays.daysArray[this.employeeMonth] > 0 ? 21 -
                                             this.totalAssignedDays.daysArray[this.employeeMonth] : 0;
@@ -153,9 +118,9 @@ public class FTEEmployeeController {
         this.notValidDays = false;
         this.fteDays = '0.25';
         if (this.employeeMonth != null && this.contractId != null) {
-            this.contractName = this.assignedMap.get(this.contractId).name;
-            this.fteHoursMax = this.assignedMap.get(this.contractId).hoursArray[this.employeeMonth];
-            this.fteDaysMax = this.assignedMap.get(this.contractId).daysArray[this.employeeMonth];
+            this.contractName = this.fteTimeManager.assignedMap.get(this.contractId).name;
+            this.fteHoursMax = this.fteTimeManager.assignedMap.get(this.contractId).hoursArray[this.employeeMonth];
+            this.fteDaysMax = this.fteTimeManager.assignedMap.get(this.contractId).daysArray[this.employeeMonth];
             this.monthName = DateTime.newInstance(this.fteYear, this.employeeMonth + 1, 1).format('MMMM yyyy');
         } else {
             ApexPages.addMessage(new ApexPages.message(ApexPages.severity.ERROR, 'Cannot load contract month'));
@@ -195,97 +160,15 @@ public class FTEEmployeeController {
         }
 
         try {
-            Date monthStart = Date.newInstance(this.fteYear, this.employeeMonth + 1, 1);
-            Date endMonth = Date.newInstance(this.fteYear, this.employeeMonth + 1,
-                                         Date.daysInMonth(this.fteYear, this.employeeMonth + 1));
             Decimal hoursToUnassign = fteDaysdecimal * 8;
             if (this.fteHoursMax < hoursToUnassign) {
                 hoursToUnassign = this.fteHoursMax;
             }
-            Boolean stopUpdating = false;
-
-            List<Time_Card__c> timeCardsToUpdate = new List<Time_Card__c>();
-            List<Time_Card__c> timeCardsFromDB = [SELECT Id, Client__c, Client__r.FTE_Tracker__c, Client__r.Name,
-                                                        Total__c, FTE_hours__c, FTE_Contract__c,
-                                                        FTE_Contract__r.FTE_Tracker__c, FTE_Contract__r.Name,
-                                                        Date__c FROM Time_Card__c
-                                                        WHERE Employee__c =: this.employee.Id AND Client__c != null
-                                                        AND (Client__r.FTE_Tracker__c = 'No' OR Client__r.FTE_Tracker__c = '')
-                                                        AND FTE_Contract__c =: this.contractId
-                                                        AND Date__c >=: monthStart AND Date__c <=: endMonth];
-
-            // If we have moved hours from unassigned to assigned we want take these hours back.
-            for (Time_Card__c tc : timeCardsFromDB) {
-                Decimal movedHours = tc.FTE_Hours__c;
-                Decimal hours = movedHours > hoursToUnassign ? hoursToUnassign : movedHours;
-                if (hours > 0) { // we try remove tag from tc
-                    tc.FTE_hours__c = tc.FTE_hours__c - hours;
-                    hoursToUnassign -= hours;
-                    if (tc.FTE_hours__c <= 0) {
-                        tc.FTE_Contract__c = null;
-                    }
-                    timeCardsToUpdate.add(tc);
-                    if (hoursToUnassign <= 0) {
-                        stopUpdating = true;
-                        break;
-                    }
-                }
-            }
-
-            // If we already have tag from assigned we want take more hours from that tag,
-            // we need only one time card we can move hours to one contract
-            if (stopUpdating == false) {
-                timeCardsFromDB = [SELECT Id, Client__c, Client__r.FTE_Tracker__c, Client__r.Name,
-                                                Total__c, FTE_hours__c, FTE_Contract__c,
-                                                FTE_Contract__r.FTE_Tracker__c, FTE_Contract__r.Name,
-                                                Date__c FROM Time_Card__c
-                                                WHERE Employee__c =: this.employee.Id AND Client__c != null
-                                                AND Client__c =: this.contractId AND FTE_Contract__c != null
-                                                AND (FTE_Contract__r.FTE_Tracker__c = 'No' OR FTE_Contract__r.FTE_Tracker__c = '')
-                                                AND Date__c >=: monthStart AND Date__c <=: endMonth LIMIT 1];
-
-                if (timeCardsFromDB.size() > 0) {
-                    Time_Card__c tc = timeCardsFromDB.get(0);
-                    tc.FTE_hours__c = tc.FTE_hours__c != null ? tc.FTE_hours__c + hoursToUnassign : hoursToUnassign;
-                    timeCardsToUpdate.add(tc);
-                    stopUpdating = true;
-                }
-            }
-
-            // If we don't have any tag we need add one in time cards
-            if (stopUpdating == false) {
-                timeCardsFromDB = [SELECT Id, Client__c, Client__r.FTE_Tracker__c, Client__r.Name,
-                                                Total__c, FTE_hours__c, FTE_Contract__c,
-                                                FTE_Contract__r.FTE_Tracker__c, FTE_Contract__r.Name,
-                                                Date__c FROM Time_Card__c
-                                                WHERE Employee__c =: this.employee.Id AND Client__c != null
-                                                AND Client__c =: this.contractId
-                                                AND FTE_Contract__c = null
-                                                AND Date__c >=: monthStart AND Date__c <=: endMonth LIMIT 1];
-
-                if (timeCardsFromDB.size() > 0) {
-                    Time_Card__c tc = timeCardsFromDB.get(0);
-                    tc.FTE_Contract__c = this.unassignedMap.values()[getContractIndex()].objId;
-                    tc.FTE_hours__c = hoursToUnassign;
-                    timeCardsToUpdate.add(tc);
-                    stopUpdating = true;
-                }
-            }
-
-            // If we don't have any empty time card we need create a empty one to move hours 
-            if (stopUpdating == false) {
-                Time_Card__c tc = new Time_Card__c(Client__c = this.contractId, Employee__c = this.employee.Id, Date__c = monthStart,
-                                                       FTE_only__c = true, Total__c = 0, FTE_hours__c = hoursToUnassign,
-                                                       FTE_Contract__c = this.unassignedMap.values()[getContractIndex()].objId);
-                timeCardsToUpdate.add(tc);
-                stopUpdating = true;
-            }
-
-            upsert timeCardsToUpdate;
+            this.fteTimeManager.moveTimeToUnassigned(hoursToUnassign, this.employeeMonth + 1, this.contractId);
             moveHoursInFTEWorkCard((-1) * fteDaysdecimal, this.employeeMonth + 1, this.employee.Id);
-
         } catch (Exception e) {
             this.assignViewError = true;
+            ApexPages.addMessage(new ApexPages.message(ApexPages.severity.ERROR, 'Unexpected error: ' + e.getMessage()));
         }
 
         initFteEmployeeView();
@@ -322,161 +205,28 @@ public class FTEEmployeeController {
         }
 
         try {
-            Date monthStart = Date.newInstance(this.fteYear, this.employeeMonth + 1, 1);
-            Date endMonth = Date.newInstance(this.fteYear, this.employeeMonth + 1,
-                                         Date.daysInMonth(this.fteYear, this.employeeMonth + 1));
             Decimal hoursToAssign = fteDaysdecimal * 8;
             if (this.fteHoursMax < hoursToAssign) {
                 hoursToAssign = this.fteHoursMax;
             }
-            Boolean stopUpdating = false;
-
-            List<Time_Card__c> timeCardsToUpdate = new List<Time_Card__c>();
-            List<Time_Card__c> timeCardsFromDB = [SELECT Id, Client__c, Client__r.FTE_Tracker__c, Client__r.Name,
-                                                Total__c, FTE_hours__c, FTE_Contract__c,
-                                                FTE_Contract__r.FTE_Tracker__c, FTE_Contract__r.Name,
-                                                Date__c FROM Time_Card__c
-                                                WHERE Employee__c =: this.employee.Id AND Client__c != null
-                                                AND Client__r.FTE_Tracker__c = 'Yes' AND FTE_Hours__c > 0
-                                                AND Client__c =: this.selectedFteContract AND FTE_Contract__c != null
-                                                AND (FTE_Contract__r.FTE_Tracker__c = 'No' OR FTE_Contract__r.FTE_Tracker__c  = '')
-                                                AND Date__c >=: monthStart AND Date__c <=: endMonth];
-
-            Set<Id> emptyContracts = new Set<Id>();
-            // If we have moved hours from assigned to unassigned we want take these hours back.
-            for (Time_Card__c tc : timeCardsFromDB) {
-                Decimal freeHours = this.unassignedMap.get(tc.FTE_Contract__c).hoursArray[this.employeeMonth];
-                Decimal movedHours = tc.FTE_Hours__c;
-                Decimal hours = movedHours > freeHours ? freeHours : movedHours;
-                if (hours > 0) { // we try remove tag from tc
-                    Decimal toAssign = hoursToAssign > hours ? hours : hoursToAssign;
-                    tc.FTE_hours__c = tc.FTE_hours__c - toAssign;
-                    hoursToAssign -= toAssign;
-                    this.unassignedMap.get(tc.FTE_Contract__c).hoursArray[this.employeeMonth] -= toAssign;
-                    if (tc.FTE_hours__c <= 0) {
-                        tc.FTE_Contract__c = null;
-                    }
-                    timeCardsToUpdate.add(tc);
-                    if (hoursToAssign <= 0) {
-                        stopUpdating = true;
-                        break;
-                    }
-                }
-            }
-
-            // If we already have tag from unassigned we want take more hours from that tag
-            if (stopUpdating == false) {
-                timeCardsFromDB = [SELECT Id, Client__c, Client__r.FTE_Tracker__c, Client__r.Name,
-                                                Total__c, FTE_hours__c, FTE_Contract__c,
-                                                FTE_Contract__r.FTE_Tracker__c, FTE_Contract__r.Name,
-                                                Date__c FROM Time_Card__c
-                                                WHERE Employee__c =: this.employee.Id AND Client__c != null
-                                                AND (Client__r.FTE_Tracker__c = 'No' OR Client__r.FTE_Tracker__c = '')
-                                                AND FTE_Contract__c =: this.selectedFteContract
-                                                AND Date__c >=: monthStart AND Date__c <=: endMonth];
-
-                for (Time_Card__c tc : timeCardsFromDB) {
-                    Decimal hours = this.unassignedMap.get(tc.Client__c).hoursArray[this.employeeMonth];
-                    if (hours > 0) { // we try move hours to this client tag
-                        Decimal toAssign = hoursToAssign > hours ? hours : hoursToAssign;
-                        tc.FTE_hours__c = tc.FTE_hours__c != null ? tc.FTE_hours__c + toAssign : toAssign;
-                        hoursToAssign -= toAssign;
-                        this.unassignedMap.get(tc.Client__c).hoursArray[this.employeeMonth] -= toAssign;
-                        timeCardsToUpdate.add(tc);
-                        if (hoursToAssign <= 0) {
-                            stopUpdating = true;
-                            break;
-                        }
-                        emptyContracts.add(tc.Client__c);
-                    } else {
-                        emptyContracts.add(tc.Client__c);
-                    }
-                }
-            }
-
-            // if we still need hours we will take time cards without any tag and add tag there
-            if (stopUpdating == false) {
-                timeCardsFromDB = [SELECT Id, Client__c, Client__r.FTE_Tracker__c, Client__r.Name,
-                                                Total__c, FTE_hours__c, FTE_Contract__c,
-                                                FTE_Contract__r.FTE_Tracker__c, FTE_Contract__r.Name,
-                                                Date__c FROM Time_Card__c
-                                                WHERE Employee__c =: this.employee.Id AND Client__c != null
-                                                AND (Client__r.FTE_Tracker__c = 'No' OR Client__r.FTE_Tracker__c = '')
-                                                AND (FTE_Contract__c = null OR FTE_Contract__c = '') AND Client__c NOT IN: emptyContracts
-                                                AND Date__c >=: monthStart AND Date__c <=: endMonth];
-
-                for (Time_Card__c tc : timeCardsFromDB) {
-                    Decimal hours = this.unassignedMap.get(tc.Client__c).hoursArray[this.employeeMonth];
-                    if (hours > 0) {
-                        Decimal toAssign = hoursToAssign > hours ? hours : hoursToAssign;
-                        tc.FTE_hours__c = tc.FTE_hours__c != null ? tc.FTE_hours__c + toAssign : toAssign;
-                        tc.FTE_Contract__c = this.selectedFteContract;
-                        hoursToAssign -= toAssign;
-                        this.unassignedMap.get(tc.Client__c).hoursArray[this.employeeMonth] -= toAssign;
-                        timeCardsToUpdate.add(tc);
-                        if (hoursToAssign <= 0) {
-                            stopUpdating = true;
-                            break;
-                        }
-                        emptyContracts.add(tc.Client__c);
-                    } else {
-                        emptyContracts.add(tc.Client__c);
-                    }
-                }
-            }
-
-            // If we have available time we need create empty time card with tag
-            if (stopUpdating == false) {
-                for (Id conId : this.unassignedMap.keySet()) {
-                    if (!emptyContracts.contains(contractId)) {
-                        Decimal hours = this.unassignedMap.get(conId).hoursArray[this.employeeMonth];
-                        if (hours > 0) {
-                            Decimal toAssign = hoursToAssign > hours ? hours : hoursToAssign;
-                            Time_Card__c tc = new Time_Card__c(Client__c = conId, Employee__c = this.employee.Id, Date__c = monthStart,
-                                                               FTE_only__c = true, Total__c = 0, FTE_hours__c = toAssign,
-                                                               FTE_Contract__c = this.selectedFteContract);
-                            hoursToAssign -= toAssign;
-                            timeCardsToUpdate.add(tc);
-                            if (hoursToAssign <= 0) {
-                                stopUpdating = true;
-                                break;
-                            }
-                        }
-                    }
-                }
-            }
-
-            upsert timeCardsToUpdate;
+            this.fteTimeManager.moveTimeToAssigned(hoursToAssign, this.employeeMonth + 1, this.selectedFteContract);
             moveHoursInFTEWorkCard(fteDaysdecimal, this.employeeMonth + 1, this.employee.Id);
         } catch (Exception e) {
             this.assignViewError = true;
-            ApexPages.addMessage(new ApexPages.message(ApexPages.severity.ERROR, 'Unexpected error: ' + e.getMessage()));
+            ApexPages.addMessage(new ApexPages.message(ApexPages.severity.ERROR, 'Unexpected error: ' + e.getMessage() + ' Line : ' + e.getLineNumber()));
         }
         initFteEmployeeView();
     }
 
-    private void calculateLoggedTime(Boolean fteTracker, Id clientId, String clientName, Decimal loggedHours, Integer month, Decimal salary) {
-        FTEEmployeeTime tmpHelper = this.unassigned;
-        if (fteTracker == true) {
-            if (!this.assignedMap.containsKey(clientId)) {
-                this.assignedMap.put(clientId, new FTEEmployeeTime(clientName, clientId));
-            }
-            tmpHelper = this.assignedMap.get(clientId);
-            tmpHelper.hoursArray[month - 1] += loggedHours;
-            tmpHelper.hoursArray[12] += loggedHours;
-            tmpHelper.daysArray[13] += (salary != null ? salary : 0) * loggedHours;
-        } else {
-            if (!this.unassignedMap.containsKey(clientId)) {
-                this.unassignedMap.put(clientId, new FTEEmployeeTime(clientName, clientId));
-            }
-            tmpHelper.hoursArray[month - 1] += loggedHours;
-            tmpHelper.hoursArray[12] += loggedHours;
-            tmpHelper.daysArray[13] += (salary != null ? salary : 0) * loggedHours;
-            tmpHelper = this.unassignedMap.get(clientId);
-            tmpHelper.hoursArray[month - 1] += loggedHours;
-            tmpHelper.hoursArray[12] += loggedHours;
-            tmpHelper.daysArray[13] += (salary != null ? salary : 0) * loggedHours;
-        }
+    private void buildUITableData() {
+        this.contractsTime = new List<FTEEmployeeTime>();
+        this.contractsTime = this.fteTimeManager.assignedMap.values();
+        this.totalAssignedDays = new FTEEmployeeTime('Total Assigned Days', null);
+        this.totalDaysWorked = new FTEEmployeeTime('Total Days Worked', null);
+        generateStyles();
+        this.contractsTime.add(this.fteTimeManager.unassigned);
+        this.contractsTime.add(this.totalAssignedDays);
+        this.contractsTime.add(this.totalDaysWorked);
     }
 
     private void generateStyles() {
@@ -487,7 +237,7 @@ public class FTEEmployeeController {
             this.totalDaysWorked.sumHoursAndCost(empT);
         }
 
-        this.unassigned.calculateDays();
+        this.fteTimeManager.unassigned.calculateDays();
         this.totalAssignedDays.calculateDays();
 
         // We add css classes here to avoid complex if sections in visualgforce page
@@ -505,11 +255,11 @@ public class FTEEmployeeController {
             this.totalAssignedDays.cssStyle[12] = 'topTotal';
         }
         this.totalAssignedDays.cssStyle[13] = 'topTotal';
-        this.totalDaysWorked.sumHoursAndCost(this.unassigned);
+        this.totalDaysWorked.sumHoursAndCost(this.fteTimeManager.unassigned);
         this.totalDaysWorked.calculateDays();
         this.totalDaysWorked.nameCss = '';
         this.totalAssignedDays.nameCss = 'topTotal';
-        this.unassigned.nameCss = '';
+        this.fteTimeManager.unassigned.nameCss = '';
     }
 
     private void moveHoursInFTEWorkCard(Decimal daysValue, Integer month, Id EmployeeId) {
@@ -542,15 +292,5 @@ public class FTEEmployeeController {
         this.assignViewError = false;
         this.notValidDays = false;
         this.monthName = null;
-    }
-
-    private Integer getContractIndex() {
-        Integer upperLimit = this.unassignedMap.size();
-        if (upperLimit == 0) {
-            ApexPages.addMessage(new ApexPages.message(ApexPages.severity.ERROR, 'Cannot find unassigned contract'));
-            return 0;
-        }
-        Integer rand = Math.round(Math.random()*1000);
-        return Math.mod(rand, upperLimit);
     }
 }

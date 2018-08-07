@@ -27,7 +27,7 @@ public class FTETimeCardGenerator {
     }
 
     public List<FTEMonthTimeCard> generateMonthTimeCards() {
-        SFDC_Employee__c employee = [SELECT Id, Name, Unloaded_Daily_Rate__c FROM SFDC_Employee__c WHERE Id =: employeeId LIMIT 1];
+        SFDC_Employee__c employee = [SELECT Id, Name FROM SFDC_Employee__c WHERE Id =: employeeId LIMIT 1];
         this.employeeName = employee.Name;
         this.monthYearText = DateTime.newInstance(this.fteYear, this.employeeMonth, 1).format('MMMM yyyy');
         this.fileName = employee.Name.replaceAll(' ', '_') + '_' + this.monthYearText.replaceAll(' ', '_') + '.csv';

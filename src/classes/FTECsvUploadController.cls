@@ -1,5 +1,5 @@
 /**
- * 
+ * CSV File Upload controller.
  */
 public class FTECsvUploadController {
 
@@ -61,7 +61,13 @@ public class FTECsvUploadController {
         loadWorkCardJobStatus();
         if (this.fteJobStatus.isRunning == false && this.fteDataPagination.resultSize > 0) {
             removeFTEDataStatusRecords(); // Remove status of last batch upload
-            Database.executeBatch(new FTEHoursUploadBatch(), 1);
+
+            if (!Test.isRunningTest()) {
+                Database.executeBatch(new FTEHoursUploadBatch(), 1);
+            } else {
+                Database.executeBatch(new FTEHoursUploadBatch()); // no more then one batch execute can be invoked from test
+            }
+
             loadWorkCardJobStatus();
             ApexPages.getMessages().clear();
         }

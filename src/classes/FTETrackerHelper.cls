@@ -3,6 +3,12 @@
  */
 public class FTETrackerHelper {
 
+    public static Decimal roundtoDays(Decimal hours) {
+        Decimal totalDays = (hours / 8.0).intValue();
+        Decimal restValue = hours - (totalDays * 8);
+        return totalDays + (0.25 * (restValue / 2.0).setScale(0, System.RoundingMode.HALF_UP));
+    }
+
     public static JobWrapper loadWorkCardJobStatus() { // We want block FTE Tracker until all Work Cards will be generated from time cards
         JobWrapper workCardJobStatus = new JobWrapper(false);
         ApexClass[] batchClassArray = [SELECT Id, Name FROM ApexClass WHERE Name='FTEGenerateEmployeesWorkCardBatch' OR Name = 'FTEHoursUploadBatch'];

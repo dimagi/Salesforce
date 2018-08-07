@@ -70,7 +70,7 @@ public without sharing class FTEGenerateEmployeesWorkCardBatch implements Databa
                 System.debug('TC Date: ' + tc.Date__c);
                 System.debug('TC Time: ' + tc.Date__c);
                 if (tc.Date__c.month() != month) {
-                    monthDays = roundtoDays(monthHours);
+                    monthDays = FTETrackerHelper.roundtoDays(monthHours);
                     sObj.put('Month_' + month + '__c', monthDays);
                     month = tc.Date__c.month();
                     monthHours = 0;
@@ -88,12 +88,12 @@ public without sharing class FTEGenerateEmployeesWorkCardBatch implements Databa
                 totalCost += realHours * (tc.Time_Card_Salary__c != null ? tc.Time_Card_Salary__c : 0);
             }
 
-            monthDays = roundtoDays(monthHours);
+            monthDays = FTETrackerHelper.roundtoDays(monthHours);
             sObj.put('Month_' + month + '__c', monthDays);
 
             employeeWorkCard = (FTE_Work_Card__c) sObj;
             employeeWorkCard.Total_Hours__c = totalHours;
-            employeeWorkCard.Total__c = roundtoDays(totalHours);
+            employeeWorkCard.Total__c = FTETrackerHelper.roundtoDays(totalHours);
             employeeWorkCard.Unloaded_Rate_Total_Cost__c = totalCost.setScale(2);
 
             System.debug('WC totalHours: ' + totalHours);
@@ -103,11 +103,5 @@ public without sharing class FTEGenerateEmployeesWorkCardBatch implements Databa
 
     public void finish(Database.BatchableContext BC) {
 
-    }
-
-    public Decimal roundtoDays(Decimal hours) {
-        Decimal totalDays = (hours / 8.0).intValue();
-        Decimal restValue = hours - (totalDays * 8);
-        return totalDays + (0.25 * (restValue / 2.0).setScale(0, System.RoundingMode.HALF_UP));
     }
 }

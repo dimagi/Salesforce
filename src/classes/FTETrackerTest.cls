@@ -1,6 +1,35 @@
 @isTest
 public class FTETrackerTest {
 
+    /** testSetup time cards
+    Employee        Contract                FTE Time     Days
+    FTE Employee    FTE Contract 1          Yes 25,6    3,2
+                    FTE Contract 2          Yes 25,6    3,2
+                    FTE Contract 3          Yes 10,3    1,2875
+                    FTE Contract 4          Yes 30,6    3,825
+                    Unassigned Contract 1   No  19,3    2,4125
+                    Unassigned Contract 2   No  27,6    3,45
+                                                139     17,375
+
+    Employee        Contract                FTE Time    Days
+    Other Employee  FTE Contract 1          Yes 28,6    3,575   5 TO UNASS
+                    FTE Contract 2          Yes 0       0
+                    FTE Contract 3          Yes 0       0
+                    FTE Contract 4          Yes 5       0,625   2 TO UNASS
+                    Unassigned Contract 1   No  19,3    2,4125
+                    Unassigned Contract 2   No  0       0
+                                                52,9    6,6125
+
+    Employee   Contract                     FTE Time    Days
+    Yyy Employee    FTE Contract 1          Yes 19,1    2,3875  8 TO UNASS
+                    FTE Contract 2          Yes 16      2   7 TO UNASS
+                    FTE Contract 3          Yes 7       0,875   5 fte 2
+                    FTE Contract 4          Yes 8       1   3 TP fte 3
+                    Unassigned Contract 1   No  3       0,375
+                    Unassigned Contract 2   No  22      2,75    2 TO FTE 4 AND 16 TO FTE 3
+                                                75,1    9,3875
+    */
+
     @testSetup
     static void setup() {
         Date currentDate = Date.today();
@@ -112,9 +141,9 @@ public class FTETrackerTest {
         Test.startTest();
         Database.executeBatch(new FTEGenerateEmployeesWorkCardBatch(Date.today().year()));
         Test.stopTest();
-        List<SFDC_Employee__c> employees = [SELECT Id, Name, Unloaded_Daily_Rate__c FROM SFDC_Employee__c WHERE Employee_Status__c = 'Active' ORDER BY Name];
+        List<SFDC_Employee__c> employees = [SELECT Id, Name FROM SFDC_Employee__c WHERE Employee_Status__c = 'Active' ORDER BY Name];
         System.assertEquals(3, employees.size());
-        List<FTE_Work_Card__c> workCards = [SELECT Id, Employee__c, Employee__r.Name, Employee__r.Unloaded_Daily_Rate__c, Month_1__c, Month_2__c, Month_3__c,
+        List<FTE_Work_Card__c> workCards = [SELECT Id, Employee__c, Employee__r.Name, Month_1__c, Month_2__c, Month_3__c,
                                    Month_4__c, Month_5__c, Month_6__c, Month_7__c, Month_8__c, Month_9__c, Month_10__c, Month_11__c, Month_12__c,
                                    Total__c, Total_Hours__c, Year__c FROM FTE_Work_Card__c ORDER BY Employee__r.Name];
         System.assertEquals(3, workCards.size());
@@ -135,9 +164,9 @@ public class FTETrackerTest {
         update contractsToUpdate;
         Test.stopTest();
 
-        List<SFDC_Employee__c> employees = [SELECT Id, Name, Unloaded_Daily_Rate__c FROM SFDC_Employee__c WHERE Employee_Status__c = 'Active' ORDER BY Name];
+        List<SFDC_Employee__c> employees = [SELECT Id, Name FROM SFDC_Employee__c WHERE Employee_Status__c = 'Active' ORDER BY Name];
         System.assertEquals(3, employees.size());
-        List<FTE_Work_Card__c> workCards = [SELECT Id, Employee__c, Employee__r.Name, Employee__r.Unloaded_Daily_Rate__c, Month_1__c, Month_2__c, Month_3__c,
+        List<FTE_Work_Card__c> workCards = [SELECT Id, Employee__c, Employee__r.Name, Month_1__c, Month_2__c, Month_3__c,
                                    Month_4__c, Month_5__c, Month_6__c, Month_7__c, Month_8__c, Month_9__c, Month_10__c, Month_11__c, Month_12__c,
                                    Total__c, Total_Hours__c, Year__c FROM FTE_Work_Card__c ORDER BY Employee__r.Name];
         System.assertEquals(3, workCards.size());
@@ -167,8 +196,8 @@ public class FTETrackerTest {
         controller.initFteEmployeeView();
         Test.stopTest();
 
-        System.assertEquals(70.9, controller.unassigned.hoursArray[currentDate.month() - 1]);
-        System.assertEquals(8.75, controller.unassigned.daysArray[currentDate.month() - 1]);
+        System.assertEquals(70.9, controller.fteTimeManager.unassigned.hoursArray[currentDate.month() - 1]);
+        System.assertEquals(8.75, controller.fteTimeManager.unassigned.daysArray[currentDate.month() - 1]);
         System.assertEquals(68.1, controller.totalAssignedDays.hoursArray[currentDate.month() - 1]);
         System.assertEquals(8.5, controller.totalAssignedDays.daysArray[currentDate.month() - 1]);
     }
@@ -220,8 +249,8 @@ public class FTETrackerTest {
         controller.initFteEmployeeView();
         Test.stopTest();
 
-        System.assertEquals(26.9, controller.unassigned.hoursArray[currentDate.month() - 1]);
-        System.assertEquals(3.25, controller.unassigned.daysArray[currentDate.month() - 1]);
+        System.assertEquals(26.9, controller.fteTimeManager.unassigned.hoursArray[currentDate.month() - 1]);
+        System.assertEquals(3.25, controller.fteTimeManager.unassigned.daysArray[currentDate.month() - 1]);
         System.assertEquals(112.1, controller.totalAssignedDays.hoursArray[currentDate.month() - 1]);
         System.assertEquals(14, controller.totalAssignedDays.daysArray[currentDate.month() - 1]);
     }
@@ -265,8 +294,8 @@ public class FTETrackerTest {
         controller.initFteEmployeeView();
         Test.stopTest();
 
-        System.assertEquals(46.9, controller.unassigned.hoursArray[currentDate.month() - 1]);
-        System.assertEquals(5.75, controller.unassigned.daysArray[currentDate.month() - 1]);
+        System.assertEquals(46.9, controller.fteTimeManager.unassigned.hoursArray[currentDate.month() - 1]);
+        System.assertEquals(5.75, controller.fteTimeManager.unassigned.daysArray[currentDate.month() - 1]);
         System.assertEquals(92.1, controller.totalAssignedDays.hoursArray[currentDate.month() - 1]);
         System.assertEquals(11.5, controller.totalAssignedDays.daysArray[currentDate.month() - 1]);
     }
@@ -684,6 +713,186 @@ public class FTETrackerTest {
         System.assertEquals(9, employeeMonthProjects.get(3).hours[17]);
         System.assertEquals(4.3, employeeMonthProjects.get(3).hours[18]);
         System.assertEquals(3.3, employeeMonthProjects.get(3).hours[19]);
+    }
+
+    @isTest
+    public static void csvParseControllerTest() {
+        Integer fteYear = Date.today().year();
+        integer fteMonth = Date.today().month();
+        String correctData = '\t\t\t\t\t\t\n\r '
+                           + 'FTE Contract 1 \t01/' + fteYear + '\t 02/' + fteYear + '\t 03/' + fteYear + '\t 04/' + fteYear + '\t 05/' + fteYear + '\t 06/' + fteYear + '\t 07/' + fteYear
+                           + '\t 08/' + fteYear + '\t 09/' + fteYear + '\t 10/' + fteYear + '\t 11/' + fteYear + '\t 12/' + fteYear + '\n\r'
+                           + 'Other Employee\t1\t2\t3\t4\t5\t6\t7\t8\t9\t10\t11\t12\n\r'
+                           + 'FTE Employee\t3\t4\t5\t6\t7\t8\t9\t10\t11\t12\t13\t14\n\r'
+                           + 'Yyy Employee\t12\t11\t10\t9\t8\t7\t6\t5\t4\t3\t2\t1\n\r';
+        FTECsvUploadController csvUpload = new FTECsvUploadController();
+
+        Test.startTest();
+        csvUpload.fileContent = Blob.valueOf(correctData);
+        csvUpload.fileName = 'Test file name';
+
+        csvUpload.parseCsvFile();
+        Test.stopTest();
+
+        System.assertEquals(3, [SELECT count() FROM FTE_Data_Record__c]);
+        assertFTEDataRecord('Other Employee', fteYear, 'FTE Contract 1', 3, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12);
+        assertFTEDataRecord('FTE Employee', fteYear, 'FTE Contract 1', 4, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14);
+        assertFTEDataRecord('Yyy Employee', fteYear, 'FTE Contract 1', 5, 12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1);
+    }
+
+    @isTest
+    public static void shouldUploadAndMoveCSVDataSample1() {
+        Integer fteYear = Date.today().year();
+        integer fteMonth = Date.today().month();
+        String correctData = '\t\t\t\t\t\t\n\r '
+                           + 'FTE Contract 1 \t01/' + fteYear + '\t 02/' + fteYear + '\t 03/' + fteYear + '\t 04/' + fteYear + '\t 05/' + fteYear + '\t 06/' + fteYear + '\t 07/' + fteYear
+                           + '\t 08/' + fteYear + '\t 09/' + fteYear + '\t 10/' + fteYear + '\t 11/' + fteYear + '\t 12/' + fteYear + '\n\r'
+                           + buildDataRow('Other Employee', fteMonth, 5.0)
+                           + buildDataRow('FTE Employee', fteMonth, 7.0)
+                           + buildDataRow('Yyy Employee', fteMonth, 4.0);
+
+        FTECsvUploadController csvUpload = new FTECsvUploadController();
+
+        Test.startTest();
+        csvUpload.fileContent = Blob.valueOf(correctData);
+        csvUpload.fileName = 'Test file name';
+
+        csvUpload.parseCsvFile();
+        System.assertEquals(3, [SELECT count() FROM FTE_Data_Record__c]);
+
+        csvUpload.getFTEDataRecords();
+        csvUpload.processFTEDataRecords();
+        Test.stopTest();
+
+        for (FTE_Data_Record_Status__c rec : [SELECT Status__c, Status_Message__c, Line_Number__c, Line_Number_Text__c FROM FTE_Data_Record_Status__c]) {
+            System.debug('Status Error Record : ' + rec);
+        }
+        System.assertEquals(0, [SELECT count() FROM FTE_Data_Record_Status__c]);
+
+        SFDC_Employee__c employee = [SELECT Id FROM SFDC_Employee__c WHERE Name = 'FTE Employee'];
+        Id contractId = [SELECT Id FROM DContract__c WHERE Name = 'FTE Contract 1'].Id;
+        FTETimeManager timeManager = new FTETimeManager(employee, fteYear);
+        timeManager.loadEmployeeTime();
+
+        System.assertEquals(56, timeManager.assignedMap.get(contractId).hoursArray[fteMonth - 1]);
+        timeManager.assignedMap.get(contractId).calculateDays();
+        System.assertEquals(7, timeManager.assignedMap.get(contractId).daysArray[fteMonth - 1]);
+
+        employee = [SELECT Id FROM SFDC_Employee__c WHERE Name = 'Other Employee'];
+        timeManager = new FTETimeManager(employee, fteYear);
+        timeManager.loadEmployeeTime();
+
+        System.assertEquals(40, timeManager.assignedMap.get(contractId).hoursArray[fteMonth - 1]);
+        timeManager.assignedMap.get(contractId).calculateDays();
+        System.assertEquals(5, timeManager.assignedMap.get(contractId).daysArray[fteMonth - 1]);
+
+        employee = [SELECT Id FROM SFDC_Employee__c WHERE Name = 'Yyy Employee'];
+        timeManager = new FTETimeManager(employee, fteYear);
+        timeManager.loadEmployeeTime();
+
+        System.assertEquals(32, timeManager.assignedMap.get(contractId).hoursArray[fteMonth - 1]);
+        timeManager.assignedMap.get(contractId).calculateDays();
+        System.assertEquals(4, timeManager.assignedMap.get(contractId).daysArray[fteMonth - 1]);
+    }
+
+    @isTest
+    public static void shouldUploadAndMoveCSVDataSample2() {
+        Integer fteYear = Date.today().year();
+        integer fteMonth = Date.today().month();
+        String correctData = '\t\t\t\t\t\t\n\r '
+                           + 'FTE Contract 1 \t01/' + fteYear + '\t 02/' + fteYear + '\t 03/' + fteYear + '\t 04/' + fteYear + '\t 05/' + fteYear + '\t 06/' + fteYear + '\t 07/' + fteYear
+                           + '\t 08/' + fteYear + '\t 09/' + fteYear + '\t 10/' + fteYear + '\t 11/' + fteYear + '\t 12/' + fteYear + '\n\r'
+                           + buildDataRow('Other Employee', fteMonth, 1.0)
+                           + buildDataRow('FTE Employee', fteMonth, 1.0)
+                           + buildDataRow('Yyy Employee', fteMonth, 1.0);
+
+        FTECsvUploadController csvUpload = new FTECsvUploadController();
+
+        Test.startTest();
+        csvUpload.fileContent = Blob.valueOf(correctData);
+        csvUpload.fileName = 'Test file name';
+
+        csvUpload.parseCsvFile();
+        System.assertEquals(3, [SELECT count() FROM FTE_Data_Record__c]);
+
+        csvUpload.getFTEDataRecords();
+        csvUpload.processFTEDataRecords();
+        Test.stopTest();
+
+        for (FTE_Data_Record_Status__c rec : [SELECT Status__c, Status_Message__c, Line_Number__c, Line_Number_Text__c FROM FTE_Data_Record_Status__c]) {
+            System.debug('Status Error Record : ' + rec);
+        }
+        System.assertEquals(0, [SELECT count() FROM FTE_Data_Record_Status__c]);
+
+        SFDC_Employee__c employee = [SELECT Id FROM SFDC_Employee__c WHERE Name = 'FTE Employee'];
+        Id contractId = [SELECT Id FROM DContract__c WHERE Name = 'FTE Contract 1'].Id;
+        FTETimeManager timeManager = new FTETimeManager(employee, fteYear);
+        timeManager.loadEmployeeTime();
+
+        System.assertEquals(8, timeManager.assignedMap.get(contractId).hoursArray[fteMonth - 1]);
+        timeManager.assignedMap.get(contractId).calculateDays();
+        System.assertEquals(1, timeManager.assignedMap.get(contractId).daysArray[fteMonth - 1]);
+        System.assertEquals(64.5, timeManager.unassigned.hoursArray[fteMonth - 1]);
+        timeManager.unassigned.calculateDays();
+        System.assertEquals(8, timeManager.unassigned.daysArray[fteMonth - 1]);
+
+        employee = [SELECT Id FROM SFDC_Employee__c WHERE Name = 'Other Employee'];
+        timeManager = new FTETimeManager(employee, fteYear);
+        timeManager.loadEmployeeTime();
+
+        System.assertEquals(8, timeManager.assignedMap.get(contractId).hoursArray[fteMonth - 1]);
+        timeManager.assignedMap.get(contractId).calculateDays();
+        System.assertEquals(1, timeManager.assignedMap.get(contractId).daysArray[fteMonth - 1]);
+        System.assertEquals(41.9, timeManager.unassigned.hoursArray[fteMonth - 1]);
+        timeManager.unassigned.calculateDays();
+        System.assertEquals(5.25, timeManager.unassigned.daysArray[fteMonth - 1]);
+
+        employee = [SELECT Id FROM SFDC_Employee__c WHERE Name = 'Yyy Employee'];
+        timeManager = new FTETimeManager(employee, fteYear);
+        timeManager.loadEmployeeTime();
+
+        System.assertEquals(8, timeManager.assignedMap.get(contractId).hoursArray[fteMonth - 1]);
+        timeManager.assignedMap.get(contractId).calculateDays();
+        System.assertEquals(1, timeManager.assignedMap.get(contractId).daysArray[fteMonth - 1]);
+        System.assertEquals(25.1, timeManager.unassigned.hoursArray[fteMonth - 1]);
+        timeManager.unassigned.calculateDays();
+        System.assertEquals(3.25, timeManager.unassigned.daysArray[fteMonth - 1]);
+    }
+
+    private static void assertFTEDataRecord(String emplName, Integer fteYear, String contractName, Integer lineNum, Decimal m1, Decimal m2, Decimal m3, Decimal m4,
+                                                Decimal m5, Decimal m6, Decimal m7, Decimal m8, Decimal m9, Decimal m10, Decimal m11, Decimal m12) {
+        FTE_Data_Record__c rec = [SELECT Year__c, Year_Text__c, Month_1__c, Month_2__c, Month_3__c, Month_4__c, Month_5__c, Month_6__c, Month_7__c, Month_8__c, Month_9__c,
+                                Month_10__c, Month_11__c, Month_12__c, Message__c, Employee__c, Employee__r.Name, Processed__c, Contract__c, Contract__r.Name, Line_Number__c
+                                FROM FTE_Data_Record__c WHERE Employee__r.Name =: emplName LIMIT 1];
+        System.assertEquals(fteYear, rec.Year__c);
+        System.assertEquals(emplName, rec.Employee__r.Name);
+        System.assertEquals(contractName,  rec.Contract__r.Name);
+        System.assertEquals(lineNum, rec.Line_Number__c);
+        System.assertEquals(m1, rec.Month_1__c);
+        System.assertEquals(m2, rec.Month_2__c);
+        System.assertEquals(m3, rec.Month_3__c);
+        System.assertEquals(m4, rec.Month_4__c);
+        System.assertEquals(m5, rec.Month_5__c);
+        System.assertEquals(m6, rec.Month_6__c);
+        System.assertEquals(m7, rec.Month_7__c);
+        System.assertEquals(m8, rec.Month_8__c);
+        System.assertEquals(m9, rec.Month_9__c);
+        System.assertEquals(m10, rec.Month_10__c);
+        System.assertEquals(m11, rec.Month_11__c);
+        System.assertEquals(m12, rec.Month_12__c);
+    }
+
+    private static String buildDataRow(String employeeName, Integer month, Decimal value) {
+        String hoursRow = '';
+        for (Integer i = 1; i <= 12; i++) {
+            if (i != month) {
+                hoursRow += '\t' + ' 0 ';
+            } else {
+                hoursRow += '\t' + value;
+            }
+        }
+
+        return employeeName + hoursRow + '\n\r';
     }
 
     private static List<Decimal> sumHours(List<Time_Card__c> timeCards) {

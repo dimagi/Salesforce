@@ -43,7 +43,7 @@ public class FTEFileController {
         String emplId = ApexPages.currentPage().getParameters().get('employeeId');
         if (emplId != null && emplId InstanceOf Id) {
             this.employeeId = (Id) emplId;
-            List<SFDC_Employee__c> emplList = [SELECT Id, Name, Unloaded_Daily_Rate__c, Hire_Date__c FROM SFDC_Employee__c WHERE Id =: this.employeeId LIMIT 1];
+            List<SFDC_Employee__c> emplList = [SELECT Id, Name, Hire_Date__c FROM SFDC_Employee__c WHERE Id =: this.employeeId LIMIT 1];
             if (emplList.size() > 0) {
                 this.employee = emplList.get(0);
             }
