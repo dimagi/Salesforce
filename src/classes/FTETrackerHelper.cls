@@ -17,7 +17,7 @@ public class FTETrackerHelper {
 
         if(batchClassJobList != null && batchClassJobList.size() > 0) {
             workCardJobStatus.isRunning = true;
-            workCardJobStatus.jobName = batchClassArray[0].Id == batchClassJobList[0].Id ? (batchClassArray[0].Name == 'FTEHoursUploadBatch' ? 'CSV Upload Batch' : 'FTE Working Card Batch' )
+            workCardJobStatus.jobName = batchClassArray[0].Id == batchClassJobList[0].ApexClassID ? (batchClassArray[0].Name == 'FTEHoursUploadBatch' ? 'CSV Upload Batch' : 'FTE Working Card Batch' )
                                             : (batchClassArray[1].Name == 'FTEHoursUploadBatch' ? 'CSV Upload Batch' : 'FTE Working Card Batch' );
             workCardJobStatus.jobItemsProcessed = batchClassJobList[0].JobItemsProcessed;
             workCardJobStatus.totalJobItems = batchClassJobList[0].TotalJobItems;

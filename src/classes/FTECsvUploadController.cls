@@ -73,6 +73,10 @@ public class FTECsvUploadController {
         }
     }
 
+    public PageReference goToEmployeeListView() {
+        return Page.FTE_Employee_List_View;
+    }
+
     public PageReference parseCsvFile() {
         loadWorkCardJobStatus();
         if (this.fteJobStatus.isRunning == true) {
@@ -140,7 +144,7 @@ public class FTECsvUploadController {
                     }
                 } else {
                     contractNameLoaded = true;
-                    contractName = strHelper;
+                    contractName = strHelper.trim();
                 }
             }
         }
@@ -202,7 +206,6 @@ public class FTECsvUploadController {
             insert records;
         }
 
-        removeFTEDataStatusRecords();
         ApexPages.addMessage(new ApexPages.message(ApexPages.severity.INFO, 'CSV file ' + fileName + ' was parsed.'));
         return null;
     }
@@ -235,16 +238,5 @@ public class FTECsvUploadController {
         }
 
         return removedRows;
-    }
-
-    public class Pair {
-
-        public Pair(Integer month, Integer year) {
-            this.month = month;
-            this.year = year;
-        }
-
-        Integer month { get; set;}
-        Integer year { get; set;}
     }
 }

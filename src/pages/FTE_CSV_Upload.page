@@ -42,8 +42,9 @@
 
             <apex:outputPanel rendered="{!!fteJobStatus.isRunning}" >
                 <apex:pageBlock title="CSV Data to process" id="tableSection">
-                    <apex:commandButton value="Remove CSV file data" id="removeButtonData" action="{!removeFTEDataRecords}" status="loadingDiv" reRender="tableDataForm" disabled="{!fteDataPagination.resultSize <= 0}" />
+                    <apex:commandButton value="Remove parsed data" id="removeButtonData" action="{!removeFTEDataRecords}" status="loadingDiv" reRender="tableDataForm" disabled="{!fteDataPagination.resultSize <= 0}" />
                     <apex:commandButton value="Run CSV data processing" id="processButton" action="{!processFTEDataRecords}" status="loadingDiv" reRender="tableDataForm" disabled="{!fteDataPagination.resultSize <= 0}" />
+                    <apex:commandButton action="{!goToEmployeeListView}" value="FTE Tracker" id="empButton" />
                     <br />
                     <apex:pageBlockTable id="fteDataTable" value="{!FTEDataRecords}" var="fteData" >
                         <apex:column headerValue="Client" >
@@ -93,7 +94,7 @@
                     <apex:actionFunction status="loadingDiv" action="{!fteDataPagination.resetPageNumber}" name="resetPageNum" reRender="tableDataForm" />
                 </apex:pageBlock>
 
-                <apex:pageBlock title="Last CSV Data upload errors" id="tableStatusSection">
+                <apex:pageBlock title="Last CSV Data process errors" id="tableStatusSection">
                     <apex:commandButton value="Remove process errors" id="removeButtonStatus" action="{!removeFTEDataStatusRecords}" status="loadingDiv" reRender="tableStatusSection" disabled="{!fteStatusPagination.resultSize <= 0}"/>
                     <br />
                     <apex:pageBlockTable id="fteDataStatusTable" value="{!FTEStatusRecords}" var="fteStatusData" styleClass="fteErrorTableClass" >

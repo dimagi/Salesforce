@@ -112,6 +112,10 @@ public class FTETrackerController {
         return Page.FTE_Project_List_View;
     }
 
+    public PageReference goToCSVUploadView() {
+        return Page.FTE_CSV_Upload;
+    }
+
     public PageReference goToEmployeeView() {
         PageReference pageRef = Page.FTE_Employee_View;
         pageref.getParameters().put('employeeId', this.employeeId);
