@@ -21,6 +21,10 @@
         <type>Default</type>
     </actionOverrides>
     <actionOverrides>
+        <actionName>Follow</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
         <actionName>List</actionName>
         <type>Default</type>
     </actionOverrides>
@@ -56,7 +60,7 @@
         <fullName>Account__c</fullName>
         <deleteConstraint>SetNull</deleteConstraint>
         <externalId>false</externalId>
-        <label>Account (Organization)</label>
+        <label>SF Account (Organization)</label>
         <referenceTo>Account</referenceTo>
         <relationshipLabel>Domain</relationshipLabel>
         <relationshipName>Domain</relationshipName>
@@ -149,6 +153,225 @@
         <trackTrending>false</trackTrending>
         <type>Text</type>
         <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Domain_cp_has_project_icon__c</fullName>
+        <defaultValue>false</defaultValue>
+        <externalId>false</externalId>
+        <label>Domain_cp_has_project_icon</label>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Domain_cp_n_30_day_user_cases__c</fullName>
+        <externalId>false</externalId>
+        <label>Domain_cp_n_30_day_user_cases</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Domain_cp_n_apps__c</fullName>
+        <externalId>false</externalId>
+        <label>Domain_cp_n_apps</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Domain_cp_n_apps_with_icon__c</fullName>
+        <externalId>false</externalId>
+        <label>Domain_cp_n_apps_with_icon</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Domain_cp_n_apps_with_multi_lang__c</fullName>
+        <externalId>false</externalId>
+        <label>Domain_cp_n_apps_with_multi_lang</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Domain_cp_n_case_exports__c</fullName>
+        <externalId>false</externalId>
+        <label>Domain_cp_n_case_exports</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Domain_cp_n_case_sharing_groups__c</fullName>
+        <externalId>false</externalId>
+        <label>Domain_cp_n_case_sharing_groups</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Domain_cp_n_case_sharing_olevels__c</fullName>
+        <externalId>false</externalId>
+        <label>Domain_cp_n_case_sharing_olevels</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Domain_cp_n_custom_roles__c</fullName>
+        <externalId>false</externalId>
+        <label>Domain_cp_n_custom_roles</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Domain_cp_n_deid_exports__c</fullName>
+        <externalId>false</externalId>
+        <label>Domain_cp_n_deid_exports</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Domain_cp_n_loc_restricted_roles__c</fullName>
+        <externalId>false</externalId>
+        <label>Domain_cp_n_loc_restricted_roles</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Domain_cp_n_lookup_tables__c</fullName>
+        <externalId>false</externalId>
+        <label>Domain_cp_n_lookup_tables</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Domain_cp_n_rb_reports__c</fullName>
+        <externalId>false</externalId>
+        <label>Domain_cp_n_rb_reports</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Domain_cp_n_repeaters__c</fullName>
+        <externalId>false</externalId>
+        <label>Domain_cp_n_repeaters</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Domain_cp_n_saved_exports__c</fullName>
+        <externalId>false</externalId>
+        <label>Domain_cp_n_saved_exports</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Domain_cp_n_trivet_backends__c</fullName>
+        <externalId>false</externalId>
+        <label>Domain_cp_n_trivet_backends</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Domain_cp_n_ucr_reports__c</fullName>
+        <externalId>false</externalId>
+        <label>Domain_cp_n_ucr_reports</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Domain_cp_use_domain_security__c</fullName>
+        <defaultValue>false</defaultValue>
+        <externalId>false</externalId>
+        <label>Domain_cp_use_domain_security</label>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Domain_cp_using_locations__c</fullName>
+        <defaultValue>false</defaultValue>
+        <externalId>false</externalId>
+        <label>Domain_cp_using_locations</label>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
     </fields>
     <fields>
         <fullName>Domain_has_used_features__c</fullName>
@@ -508,6 +731,20 @@
         <type>Checkbox</type>
     </fields>
     <fields>
+        <fullName>Months_since_created__c</fullName>
+        <externalId>false</externalId>
+        <formula>(TODAY() -   DATEVALUE(CreatedDate) )  / 30.1</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Months since created</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
         <fullName>Not_Billable__c</fullName>
         <defaultValue>false</defaultValue>
         <description>Check this to exclude the domain from showing up in this report: https://dimagi.my.salesforce.com/00Ob0000004eeG6</description>
@@ -516,6 +753,29 @@
         <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Onboarding_package__c</fullName>
+        <description>Has this domain purchased an onboarding package (executed by Customer Success team)?</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Has this domain purchased an onboarding package (executed by Customer Success team)?</inlineHelpText>
+        <label>Onboarding package</label>
+        <picklist>
+            <picklistValues>
+                <fullName>Quick-start (~ 6 hrs)</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Advanced onboarding (~15 hrs)</fullName>
+                <default>false</default>
+            </picklistValues>
+            <restrictedPicklist>true</restrictedPicklist>
+            <sorted>false</sorted>
+        </picklist>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
     </fields>
     <fields>
         <fullName>Opportunity__c</fullName>
@@ -531,25 +791,68 @@
         <type>Lookup</type>
     </fields>
     <fields>
+        <fullName>Origin_of_project_space__c</fullName>
+        <externalId>false</externalId>
+        <label>Origin of project space</label>
+        <picklist>
+            <picklistValues>
+                <fullName>Indirect Inside Sales (Sales team connection but no opp)</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Organic growth of Inside Sales customer (New project space)</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Organic Growth of non inside sales customer</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>BD team</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Other Dimagi Referral (mostly GS team)</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Partner Program</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Unknown/ Likely real self-start</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Other</fullName>
+                <default>false</default>
+            </picklistValues>
+            <restrictedPicklist>true</restrictedPicklist>
+            <sorted>false</sorted>
+        </picklist>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+    </fields>
+    <fields>
         <fullName>Partner_Program_Organization__c</fullName>
         <description>Used to identify the Partner Program organization name</description>
         <externalId>false</externalId>
         <inlineHelpText>Select the Partner Program organization from the dropdown menu</inlineHelpText>
         <label>Partner Program Organization</label>
+        <picklist>
+            <picklistValues>
+                <fullName>AgImpact</fullName>
+                <default>false</default>
+            </picklistValues>
+            <restrictedPicklist>true</restrictedPicklist>
+            <sorted>false</sorted>
+        </picklist>
         <required>false</required>
         <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Picklist</type>
-        <valueSet>
-            <restricted>true</restricted>
-            <valueSetDefinition>
-                <sorted>false</sorted>
-                <value>
-                    <fullName>AgImpact</fullName>
-                    <default>false</default>
-                </value>
-            </valueSetDefinition>
-        </valueSet>
     </fields>
     <fields>
         <fullName>Partner_Program__c</fullName>
@@ -576,6 +879,17 @@
         <type>Lookup</type>
     </fields>
     <fields>
+        <fullName>Proactive_CS_Support__c</fullName>
+        <defaultValue>false</defaultValue>
+        <description>True/False based on whether or not CS has reached out proactively to help this user.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Check if we have reached out proactively to give CS support to this partner.</inlineHelpText>
+        <label>Proactive CS Support Given</label>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
         <fullName>Project_Length__c</fullName>
         <description>Project length in days (first to last form submission)</description>
         <externalId>false</externalId>
@@ -595,23 +909,21 @@
         <fullName>Server_Name__c</fullName>
         <externalId>false</externalId>
         <label>Server Name</label>
+        <picklist>
+            <picklistValues>
+                <fullName>CommCareHQ</fullName>
+                <default>true</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>CommCareHQ India</fullName>
+                <default>false</default>
+            </picklistValues>
+            <sorted>false</sorted>
+        </picklist>
         <required>false</required>
         <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Picklist</type>
-        <valueSet>
-            <valueSetDefinition>
-                <sorted>false</sorted>
-                <value>
-                    <fullName>CommCareHQ</fullName>
-                    <default>true</default>
-                </value>
-                <value>
-                    <fullName>CommCareHQ India</fullName>
-                    <default>false</default>
-                </value>
-            </valueSetDefinition>
-        </valueSet>
     </fields>
     <fields>
         <fullName>View_Project_Space_Settings_in_HQ__c</fullName>
@@ -1232,6 +1544,20 @@
         <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>cs_interactions__c</fullName>
+        <description>The number of times a customer has received CS Support (tickets or email)</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Increment by 1 each time a CS interaction occurs</inlineHelpText>
+        <label>Number of CS Interactions</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
         <unique>false</unique>
     </fields>
     <fields>
@@ -1890,6 +2216,52 @@
         <label>Domain info CJ</label>
     </listViews>
     <listViews>
+        <fullName>Domains_Missing_Accounts</fullName>
+        <columns>NAME</columns>
+        <columns>Account__c</columns>
+        <columns>cpIsActive__c</columns>
+        <columns>Opportunity__c</columns>
+        <columns>InternalProp_organization_name__c</columns>
+        <columns>creating_user__c</columns>
+        <columns>organization__c</columns>
+        <columns>cpActiveMobileUsers__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Account__c</field>
+            <operation>equals</operation>
+        </filters>
+        <filters>
+            <field>Lifetime_MRR__c</field>
+            <operation>greaterThan</operation>
+            <value>0</value>
+        </filters>
+        <filters>
+            <field>cpIsActive__c</field>
+            <operation>equals</operation>
+            <value>1</value>
+        </filters>
+        <label>Domains Missing Accounts</label>
+    </listViews>
+    <listViews>
+        <fullName>Domains_missing_accounts_2nd_phase</fullName>
+        <columns>NAME</columns>
+        <columns>InternalProp_organization_name__c</columns>
+        <columns>Account__c</columns>
+        <columns>Email__c</columns>
+        <columns>InternalProp_sf_account_id__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Account__c</field>
+            <operation>equals</operation>
+        </filters>
+        <filters>
+            <field>Lifetime_MRR__c</field>
+            <operation>greaterThan</operation>
+            <value>0</value>
+        </filters>
+        <label>Domains missing accounts - 2nd phase</label>
+    </listViews>
+    <listViews>
         <fullName>IRC_Test</fullName>
         <columns>NAME</columns>
         <columns>Account__c</columns>
@@ -1906,6 +2278,27 @@
             <value>@rescue.org</value>
         </filters>
         <label>IRC_Test</label>
+    </listViews>
+    <listViews>
+        <fullName>Non_inside_sale_domain_missing_Origin</fullName>
+        <columns>NAME</columns>
+        <columns>Origin_of_project_space__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Lifetime_MRR__c</field>
+            <operation>greaterThan</operation>
+            <value>0</value>
+        </filters>
+        <filters>
+            <field>Is_Inside_Sales__c</field>
+            <operation>notEqual</operation>
+            <value>1</value>
+        </filters>
+        <filters>
+            <field>Origin_of_project_space__c</field>
+            <operation>equals</operation>
+        </filters>
+        <label>Non inside sale domain missing Origin</label>
     </listViews>
     <listViews>
         <fullName>PIH_Test</fullName>
@@ -1956,6 +2349,12 @@
         <type>Text</type>
     </nameField>
     <pluralLabel>Domain</pluralLabel>
-    <searchLayouts/>
+    <searchLayouts>
+        <searchResultsAdditionalFields>subscription_notes__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>Is_Inside_Sales__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>cpIsActive__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>cpLastFormSubmissionDate__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>Lifetime_MRR__c</searchResultsAdditionalFields>
+    </searchLayouts>
     <sharingModel>ReadWrite</sharingModel>
 </CustomObject>

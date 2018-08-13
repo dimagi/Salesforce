@@ -37,57 +37,55 @@
         <fullName>ActivitySubtype__c</fullName>
         <externalId>false</externalId>
         <label>ActivitySubtype</label>
+        <picklist>
+            <picklistValues>
+                <fullName>Call - exploratory</fullName>
+                <default>true</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Call - qualifying follow-up</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Call - exploratory no-show</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Call - opportunity follow-up</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Call - follow-up no show</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Call - Support</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Call - Unscheduled Exploratory</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Call - No call required (use this for exceptions that skip the call process)</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Call - customer success (post-closing)</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Call - strategic partner follow-up (not necessarily an opp)</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Call - strategic partner follow-up - no-show</fullName>
+                <default>false</default>
+            </picklistValues>
+            <sorted>false</sorted>
+        </picklist>
         <required>false</required>
         <type>Picklist</type>
-        <valueSet>
-            <valueSetDefinition>
-                <sorted>false</sorted>
-                <value>
-                    <fullName>Call - exploratory</fullName>
-                    <default>true</default>
-                </value>
-                <value>
-                    <fullName>Call - qualifying follow-up</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>Call - exploratory no-show</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>Call - opportunity follow-up</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>Call - follow-up no show</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>Call - Support</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>Call - Unscheduled Exploratory</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>Call - No call required (use this for exceptions that skip the call process)</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>Call - customer success (post-closing)</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>Call - strategic partner follow-up (not necessarily an opp)</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>Call - strategic partner follow-up - no-show</fullName>
-                    <default>false</default>
-                </value>
-            </valueSetDefinition>
-        </valueSet>
     </fields>
     <fields>
         <fullName>Activity_Count__c</fullName>
@@ -120,76 +118,74 @@
         <fullName>Call_Outcome__c</fullName>
         <externalId>false</externalId>
         <label>Call Outcome</label>
+        <picklist>
+            <picklistValues>
+                <fullName>1 Converted to Self-start opp</fullName>
+                <color>#A845DC</color>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>2 Converted to Enterprise opp</fullName>
+                <color>#F3D904</color>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>3 Converted to Services opp</fullName>
+                <color>#0B6FCE</color>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>4 Existing opportunity - stage change</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>5 Existing opportunity - no change</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>6 Need follow-up call - Unable to qualify</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>7 Passive &amp; Friendly - self-start</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>8 Passive &amp; Friendly - decided to use other solution</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>9 Passive &amp; Friendly - partner program</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>10 Passive &amp; Friendly - no opp</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>11 Archived &amp; Not Interested - hiring</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>12 Passive &amp; Friendly - existing client</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>13 Archived &amp; Not Interested - Not a good fit / not what they expected</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>14 Archived &amp; Not Interested - Competition</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>15 No-show</fullName>
+                <default>false</default>
+            </picklistValues>
+            <sorted>false</sorted>
+        </picklist>
         <required>false</required>
         <type>Picklist</type>
-        <valueSet>
-            <valueSetDefinition>
-                <sorted>false</sorted>
-                <value>
-                    <fullName>1 Converted to Self-start opp</fullName>
-                    <color>#A845DC</color>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>2 Converted to Enterprise opp</fullName>
-                    <color>#F3D904</color>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>3 Converted to Services opp</fullName>
-                    <color>#0B6FCE</color>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>4 Existing opportunity - stage change</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>5 Existing opportunity - no change</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>6 Need follow-up call - Unable to qualify</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>7 Passive &amp; Friendly - self-start</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>8 Passive &amp; Friendly - decided to use other solution</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>9 Passive &amp; Friendly - partner program</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>10 Passive &amp; Friendly - no opp</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>11 Archived &amp; Not Interested - hiring</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>12 Passive &amp; Friendly - existing client</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>13 Archived &amp; Not Interested - Not a good fit / not what they expected</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>14 Archived &amp; Not Interested - Competition</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>15 No-show</fullName>
-                    <default>false</default>
-                </value>
-            </valueSetDefinition>
-        </valueSet>
     </fields>
     <fields>
         <fullName>Call_Rating__c</fullName>
@@ -197,26 +193,24 @@
         <externalId>false</externalId>
         <inlineHelpText>Rate the call</inlineHelpText>
         <label>Call Rating</label>
+        <picklist>
+            <picklistValues>
+                <fullName>Good</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Neutral</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Bad</fullName>
+                <default>false</default>
+            </picklistValues>
+            <restrictedPicklist>true</restrictedPicklist>
+            <sorted>false</sorted>
+        </picklist>
         <required>false</required>
         <type>Picklist</type>
-        <valueSet>
-            <restricted>true</restricted>
-            <valueSetDefinition>
-                <sorted>false</sorted>
-                <value>
-                    <fullName>Good</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>Neutral</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>Bad</fullName>
-                    <default>false</default>
-                </value>
-            </valueSetDefinition>
-        </valueSet>
     </fields>
     <fields>
         <fullName>Call_rating_notes__c</fullName>
@@ -295,49 +289,47 @@
         <deprecated>false</deprecated>
         <externalId>false</externalId>
         <label>Event status</label>
+        <picklist>
+            <picklistValues>
+                <fullName>Canceled (rescheduled by Customer)</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Canceled (reschedule requested by Owner)</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Canceled by Customer</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Canceled by Owner</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Completed</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>No-show</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Rescheduled by Customer</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Rescheduled by Owner</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Scheduled</fullName>
+                <default>false</default>
+            </picklistValues>
+            <sorted>false</sorted>
+        </picklist>
         <required>false</required>
         <type>Picklist</type>
-        <valueSet>
-            <valueSetDefinition>
-                <sorted>false</sorted>
-                <value>
-                    <fullName>Canceled (rescheduled by Customer)</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>Canceled (reschedule requested by Owner)</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>Canceled by Customer</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>Canceled by Owner</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>Completed</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>No-show</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>Rescheduled by Customer</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>Rescheduled by Owner</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>Scheduled</fullName>
-                    <default>false</default>
-                </value>
-            </valueSetDefinition>
-        </valueSet>
     </fields>
     <fields>
         <fullName>Snooze_Activity__c</fullName>
@@ -516,6 +508,17 @@
         <required>false</required>
         <scale>0</scale>
         <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>cirrusadv__Outcome__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>The outcome selected as part of a Cirrus Insight Flight.</inlineHelpText>
+        <label>Outcome</label>
+        <length>80</length>
+        <required>false</required>
+        <type>Text</type>
         <unique>false</unique>
     </fields>
     <fields>

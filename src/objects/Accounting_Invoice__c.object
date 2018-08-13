@@ -21,6 +21,10 @@
         <type>Default</type>
     </actionOverrides>
     <actionOverrides>
+        <actionName>Follow</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
         <actionName>List</actionName>
         <type>Default</type>
     </actionOverrides>
@@ -86,6 +90,22 @@
         <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Days_Overdue__c</fullName>
+        <description>Number of days the invoice is overdue</description>
+        <externalId>false</externalId>
+        <formula>TODAY() - (date_due__c)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <inlineHelpText>Number of days the invoice is overdue</inlineHelpText>
+        <label>Days Overdue</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
         <unique>false</unique>
     </fields>
     <fields>
@@ -253,23 +273,21 @@ YEAR(DATEVALUE(accounting_billingaccount_date_created__c)) == YEAR(DATEVALUE(dat
         <fullName>Server_Name__c</fullName>
         <externalId>false</externalId>
         <label>Server Name</label>
+        <picklist>
+            <picklistValues>
+                <fullName>CommCareHQ</fullName>
+                <default>true</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>CommCareHQ India</fullName>
+                <default>false</default>
+            </picklistValues>
+            <sorted>false</sorted>
+        </picklist>
         <required>false</required>
         <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Picklist</type>
-        <valueSet>
-            <valueSetDefinition>
-                <sorted>false</sorted>
-                <value>
-                    <fullName>CommCareHQ</fullName>
-                    <default>true</default>
-                </value>
-                <value>
-                    <fullName>CommCareHQ India</fullName>
-                    <default>false</default>
-                </value>
-            </valueSetDefinition>
-        </valueSet>
     </fields>
     <fields>
         <fullName>Softwareplan_Edition__c</fullName>
@@ -377,7 +395,7 @@ YEAR(DATEVALUE(accounting_billingaccount_date_created__c)) == YEAR(DATEVALUE(dat
         <externalId>false</externalId>
         <inlineHelpText>Check this box to indicate an invoice Dimagi is writing off. The invoice is real, but we do not expect to receive payment.</inlineHelpText>
         <label>Write Off</label>
-        <trackHistory>false</trackHistory>
+        <trackHistory>true</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Checkbox</type>
     </fields>

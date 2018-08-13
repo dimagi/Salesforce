@@ -43,7 +43,7 @@ recipientType="Contact" relatedToType="Project_Report_Out__c" >
     </tr>
 </table>
 <br/>
-<b>Project Dashboard: </b>{!RelatedTo.Project_Dashboard__c}<br/>
+<b>Project Overview Document (POD): </b>{!RelatedTo.Project_Dashboard__c}<br/>
 <b>% of Work Completed: </b><apex:outputText value="{!FLOOR(RelatedTo.Deliverables_Completed__c)}%"/><br/>
 <b>Execution Efficiency: </b><apex:outputText value="{!FLOOR(RelatedTo.Execution_Efficiency__c)}%"/><br/>
 <b>Resource Planning: </b>{!RelatedTo.Resource_Planning__c}<br/><br/>
@@ -84,7 +84,7 @@ No Last PRO found
 </apex:outputPanel>
 
 <br/><br/>
-<a href="https://dimagi.secure.force.com/projectreportout?state={!RelatedTo.Contract__c}">Fix Distribution List</a>
+<a href="http://dimagi.force.com/projectreportout?state={!RelatedTo.Contract__c}">Fix Distribution List</a>
 
 
 </messaging:htmlEmailBody>

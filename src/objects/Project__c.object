@@ -21,6 +21,10 @@
         <type>Default</type>
     </actionOverrides>
     <actionOverrides>
+        <actionName>Follow</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
         <actionName>List</actionName>
         <type>Default</type>
     </actionOverrides>
@@ -66,58 +70,56 @@
         <fullName>Area__c</fullName>
         <externalId>false</externalId>
         <label>Sector</label>
+        <picklist>
+            <picklistValues>
+                <fullName>Agriculture and Food Security</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Economic Development</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Education and Training</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Emergency Response</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Financial Services for the Poor</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Gender Equality and Women&apos;s Empowerment</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Governance and Accountability</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Health</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Logistics</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Other</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Water, Sanitation, &amp; Hygiene</fullName>
+                <default>false</default>
+            </picklistValues>
+            <sorted>false</sorted>
+        </picklist>
         <required>false</required>
         <trackTrending>false</trackTrending>
         <type>MultiselectPicklist</type>
-        <valueSet>
-            <valueSetDefinition>
-                <sorted>false</sorted>
-                <value>
-                    <fullName>Agriculture and Food Security</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>Economic Development</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>Education and Training</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>Emergency Response</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>Financial Services for the Poor</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>Gender Equality and Women&apos;s Empowerment</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>Governance and Accountability</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>Health</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>Logistics</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>Other</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>Water, Sanitation, &amp; Hygiene</fullName>
-                    <default>false</default>
-                </value>
-            </valueSetDefinition>
-        </valueSet>
         <visibleLines>6</visibleLines>
     </fields>
     <fields>
@@ -146,22 +148,20 @@
         <fullName>Billable_Travel__c</fullName>
         <externalId>false</externalId>
         <label>Billable Travel</label>
+        <picklist>
+            <picklistValues>
+                <fullName>Yes</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>No</fullName>
+                <default>false</default>
+            </picklistValues>
+            <sorted>false</sorted>
+        </picklist>
         <required>false</required>
         <trackTrending>false</trackTrending>
         <type>Picklist</type>
-        <valueSet>
-            <valueSetDefinition>
-                <sorted>false</sorted>
-                <value>
-                    <fullName>Yes</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>No</fullName>
-                    <default>false</default>
-                </value>
-            </valueSetDefinition>
-        </valueSet>
     </fields>
     <fields>
         <fullName>Country_Text__c</fullName>
@@ -198,22 +198,20 @@
         <fullName>HIPAA_Compliant__c</fullName>
         <externalId>false</externalId>
         <label>HIPAA Compliant</label>
+        <picklist>
+            <picklistValues>
+                <fullName>No</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Yes</fullName>
+                <default>false</default>
+            </picklistValues>
+            <sorted>false</sorted>
+        </picklist>
         <required>false</required>
         <trackTrending>false</trackTrending>
         <type>Picklist</type>
-        <valueSet>
-            <valueSetDefinition>
-                <sorted>false</sorted>
-                <value>
-                    <fullName>No</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>Yes</fullName>
-                    <default>false</default>
-                </value>
-            </valueSetDefinition>
-        </valueSet>
     </fields>
     <fields>
         <fullName>Implementing_Account__c</fullName>
@@ -245,34 +243,32 @@
         <fullName>License_Edition__c</fullName>
         <externalId>false</externalId>
         <label>License Edition</label>
+        <picklist>
+            <picklistValues>
+                <fullName>Community</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Standard</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Pro</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Advanced</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Enterprise</fullName>
+                <default>false</default>
+            </picklistValues>
+            <sorted>false</sorted>
+        </picklist>
         <required>false</required>
         <trackTrending>false</trackTrending>
         <type>Picklist</type>
-        <valueSet>
-            <valueSetDefinition>
-                <sorted>false</sorted>
-                <value>
-                    <fullName>Community</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>Standard</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>Pro</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>Advanced</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>Enterprise</fullName>
-                    <default>false</default>
-                </value>
-            </valueSetDefinition>
-        </valueSet>
     </fields>
     <fields>
         <fullName>Product_Text__c</fullName>
@@ -355,26 +351,24 @@
         <externalId>false</externalId>
         <inlineHelpText>Most deployments should be Implementation unless they are exclusively Consulting or Software Dev.</inlineHelpText>
         <label>Deployment Type</label>
+        <picklist>
+            <picklistValues>
+                <fullName>Implementation</fullName>
+                <default>true</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Consulting</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Core Software Development</fullName>
+                <default>false</default>
+            </picklistValues>
+            <sorted>false</sorted>
+        </picklist>
         <required>false</required>
         <trackTrending>false</trackTrending>
         <type>Picklist</type>
-        <valueSet>
-            <valueSetDefinition>
-                <sorted>false</sorted>
-                <value>
-                    <fullName>Implementation</fullName>
-                    <default>true</default>
-                </value>
-                <value>
-                    <fullName>Consulting</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>Core Software Development</fullName>
-                    <default>false</default>
-                </value>
-            </valueSetDefinition>
-        </valueSet>
     </fields>
     <fields>
         <fullName>Proposal_Dropbox_Location__c</fullName>
@@ -399,26 +393,24 @@
         <externalId>false</externalId>
         <inlineHelpText>&quot;Inactive&quot; means either not started or on hold. &quot;Complete&quot; means the project is closed.</inlineHelpText>
         <label>Status</label>
+        <picklist>
+            <picklistValues>
+                <fullName>Active</fullName>
+                <default>true</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Complete</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Inactive</fullName>
+                <default>false</default>
+            </picklistValues>
+            <sorted>false</sorted>
+        </picklist>
         <required>false</required>
         <trackTrending>false</trackTrending>
         <type>Picklist</type>
-        <valueSet>
-            <valueSetDefinition>
-                <sorted>false</sorted>
-                <value>
-                    <fullName>Active</fullName>
-                    <default>true</default>
-                </value>
-                <value>
-                    <fullName>Complete</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>Inactive</fullName>
-                    <default>false</default>
-                </value>
-            </valueSetDefinition>
-        </valueSet>
     </fields>
     <fields>
         <fullName>Sub_Area_Text__c</fullName>
@@ -434,246 +426,244 @@
         <fullName>Sub_Area__c</fullName>
         <externalId>false</externalId>
         <label>Sub Sector</label>
+        <picklist>
+            <picklistValues>
+                <fullName>*** Agriculture and Food Security ***</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Agriculture</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Food Security</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>*** Economic Development ***</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Rural Development</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Urban Development</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Safety &amp; Security</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>*** Education and Training ***</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Adult Training</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Child Education</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Early Childhood Development</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>*** Emergency Response ***</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Emergency Response</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>*** Financial Services for the Poor ***</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Conditional Cash Transfer</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Financial Services to the Poor</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Mobile Banking</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>*** Gender Equality and Women&apos;s Emp ***</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Gender Services</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Sex Workers</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>*** Governance and Accountability ***</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Governence</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Social Accountability</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>*** Health ***</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Cardiac Diseases</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Care coordination</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Cervical Cancer</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Diagnostics</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Diarrhea</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Family Planning</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>HIV/AIDS</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Infectious Diseases</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Informatics</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Malaria</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Maternal, Newborn, &amp; Child Health</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Medication adherence</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Mental Health</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Neglected Tropical Diseases</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Non-Communicable Diseases</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Nutrition</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Other</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Polio</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Primary Care</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Respiratory Diseases</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Surgery</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Surveillance</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Telemedicine</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Tuberculosis</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Vaccinations</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>*** Logistics ***</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Commodity Tracking/Procurement</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Human Resources</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>*** Other ***</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Environment</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Orphans and Vulnerable Children</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Telecommunications</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>*** Water, Sanitation, &amp; Hygiene ***</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Water, Sanitation, &amp; Hygiene</fullName>
+                <default>false</default>
+            </picklistValues>
+            <sorted>false</sorted>
+        </picklist>
         <required>false</required>
         <trackTrending>false</trackTrending>
         <type>MultiselectPicklist</type>
-        <valueSet>
-            <valueSetDefinition>
-                <sorted>false</sorted>
-                <value>
-                    <fullName>*** Agriculture and Food Security ***</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>Agriculture</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>Food Security</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>*** Economic Development ***</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>Rural Development</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>Urban Development</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>Safety &amp; Security</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>*** Education and Training ***</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>Adult Training</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>Child Education</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>Early Childhood Development</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>*** Emergency Response ***</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>Emergency Response</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>*** Financial Services for the Poor ***</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>Conditional Cash Transfer</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>Financial Services to the Poor</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>Mobile Banking</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>*** Gender Equality and Women&apos;s Emp ***</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>Gender Services</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>Sex Workers</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>*** Governance and Accountability ***</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>Governence</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>Social Accountability</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>*** Health ***</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>Cardiac Diseases</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>Care coordination</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>Cervical Cancer</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>Diagnostics</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>Diarrhea</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>Family Planning</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>HIV/AIDS</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>Infectious Diseases</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>Informatics</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>Malaria</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>Maternal, Newborn, &amp; Child Health</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>Medication adherence</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>Mental Health</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>Neglected Tropical Diseases</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>Non-Communicable Diseases</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>Nutrition</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>Other</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>Polio</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>Primary Care</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>Respiratory Diseases</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>Surgery</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>Surveillance</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>Telemedicine</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>Tuberculosis</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>Vaccinations</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>*** Logistics ***</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>Commodity Tracking/Procurement</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>Human Resources</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>*** Other ***</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>Environment</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>Orphans and Vulnerable Children</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>Telecommunications</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>*** Water, Sanitation, &amp; Hygiene ***</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>Water, Sanitation, &amp; Hygiene</fullName>
-                    <default>false</default>
-                </value>
-            </valueSetDefinition>
-        </valueSet>
         <visibleLines>6</visibleLines>
     </fields>
     <fields>

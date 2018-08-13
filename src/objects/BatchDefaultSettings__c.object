@@ -12,6 +12,30 @@
         <type>Text</type>
         <unique>false</unique>
     </fields>
+    <fields>
+        <fullName>Fogbugz_Cases_Fetch_Last_Date__c</fullName>
+        <externalId>false</externalId>
+        <label>Fogbugz Cases Fetch Last Date</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>DateTime</type>
+    </fields>
+    <fields>
+        <fullName>Last_Batch_Error_Check_Date__c</fullName>
+        <externalId>false</externalId>
+        <label>Last Batch Error Check Date</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>DateTime</type>
+    </fields>
+    <fields>
+        <fullName>Time_Card_Calculation_Last_Date__c</fullName>
+        <externalId>false</externalId>
+        <label>Time Card Calculation Last Date</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>DateTime</type>
+    </fields>
     <label>Batch Default Settings</label>
     <visibility>Protected</visibility>
 </CustomObject>

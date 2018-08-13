@@ -21,6 +21,10 @@
         <type>Default</type>
     </actionOverrides>
     <actionOverrides>
+        <actionName>Follow</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
         <actionName>List</actionName>
         <type>Default</type>
     </actionOverrides>
@@ -120,6 +124,29 @@ IF(CONTAINS(Area__c ,&quot;Contract Negotiations&quot;),&quot;Opp Mgmt - Misc&qu
 
 &quot;ERROR&quot;))))))))))))))))))))))))))</formula>
         <label>BD Area Category</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Billing_Rate__c</fullName>
+        <externalId>false</externalId>
+        <label>Billing Rate</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>10</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Case_Number__c</fullName>
+        <externalId>false</externalId>
+        <formula>LEFT(Case__c, FIND(&quot;:&quot;, Case__c) - 1)</formula>
+        <label>Case Number</label>
         <required>false</required>
         <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
@@ -257,6 +284,15 @@ IF(CONTAINS(Client__r.Name,&quot;Product:&quot;),&quot;Product&quot;,
         <unique>false</unique>
     </fields>
     <fields>
+        <fullName>Need_recalculation__c</fullName>
+        <defaultValue>false</defaultValue>
+        <externalId>false</externalId>
+        <label>Need recalculation</label>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
         <fullName>Project__c</fullName>
         <externalId>false</externalId>
         <label>Project</label>
@@ -266,6 +302,43 @@ IF(CONTAINS(Client__r.Name,&quot;Product:&quot;),&quot;Product&quot;,
         <trackTrending>false</trackTrending>
         <type>Text</type>
         <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Time_Card_Cost_Without_Rate__c</fullName>
+        <externalId>false</externalId>
+        <formula>Total__c * Time_Card_Salary__c</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Time Card Cost Without Rate</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>10</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>Time_Card_Rate_Cost__c</fullName>
+        <externalId>false</externalId>
+        <formula>Total__c *  Billing_Rate__c *  Time_Card_Salary__c</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Time Card Rate Cost</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>8</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>Time_Card_Salary__c</fullName>
+        <externalId>false</externalId>
+        <label>Time Card Salary</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>8</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
     </fields>
     <fields>
         <fullName>Time_card_cost__c</fullName>
@@ -328,6 +401,23 @@ IF(CONTAINS(Client__r.Name,&quot;Product:&quot;),&quot;Product&quot;,
         <columns>Employee__c</columns>
         <filterScope>Everything</filterScope>
         <label>All</label>
+    </listViews>
+    <listViews>
+        <fullName>Tufts_Time_Cards</fullName>
+        <columns>NAME</columns>
+        <columns>Client__c</columns>
+        <columns>Employee__c</columns>
+        <columns>Total_Days__c</columns>
+        <columns>Total__c</columns>
+        <columns>Month__c</columns>
+        <columns>Date__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Client__c</field>
+            <operation>contains</operation>
+            <value>Tufts University:INDDEX Global Nutrition Platform</value>
+        </filters>
+        <label>Tufts Time Cards</label>
     </listViews>
     <nameField>
         <displayFormat>T-{0000}</displayFormat>
