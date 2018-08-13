@@ -34,11 +34,31 @@
         <unique>false</unique>
     </fields>
     <fields>
+        <fullName>Default_Opportunity_Owner_Impl__c</fullName>
+        <externalId>false</externalId>
+        <label>Default Opportunity Owner Impl</label>
+        <length>255</length>
+        <required>true</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Default_Opportunity_Owner_Prod__c</fullName>
+        <externalId>false</externalId>
+        <label>Default Opportunity Owner Prod</label>
+        <length>255</length>
+        <required>true</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
         <fullName>Default_Opportunity_Owner__c</fullName>
         <externalId>false</externalId>
         <label>Default Opportunity Owner</label>
         <length>255</length>
-        <required>true</required>
+        <required>false</required>
         <trackTrending>false</trackTrending>
         <type>Text</type>
         <unique>false</unique>

@@ -21,6 +21,10 @@
         <type>Default</type>
     </actionOverrides>
     <actionOverrides>
+        <actionName>Follow</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
         <actionName>List</actionName>
         <type>Default</type>
     </actionOverrides>
@@ -108,59 +112,57 @@
         <externalId>false</externalId>
         <inlineHelpText>What is the a field this Contract is in. Can select multiple.</inlineHelpText>
         <label>Sector</label>
+        <picklist>
+            <picklistValues>
+                <fullName>Agriculture and Food Security</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Economic Development</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Education and Training</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Emergency Response</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Financial Services for the Poor</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Gender Equality and Women&apos;s Empowerment</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Governance and Accountability</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Health</fullName>
+                <default>true</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Logistics</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Other</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Water, Sanitation, &amp; Hygiene</fullName>
+                <default>false</default>
+            </picklistValues>
+            <sorted>false</sorted>
+        </picklist>
         <required>false</required>
         <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>MultiselectPicklist</type>
-        <valueSet>
-            <valueSetDefinition>
-                <sorted>false</sorted>
-                <value>
-                    <fullName>Agriculture and Food Security</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>Economic Development</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>Education and Training</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>Emergency Response</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>Financial Services for the Poor</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>Gender Equality and Women&apos;s Empowerment</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>Governance and Accountability</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>Health</fullName>
-                    <default>true</default>
-                </value>
-                <value>
-                    <fullName>Logistics</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>Other</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>Water, Sanitation, &amp; Hygiene</fullName>
-                    <default>false</default>
-                </value>
-            </valueSetDefinition>
-        </valueSet>
         <visibleLines>6</visibleLines>
     </fields>
     <fields>
@@ -169,23 +171,21 @@
         <externalId>false</externalId>
         <inlineHelpText>If we have signed a BAA for this contract (and are therefore enforcing HIPAA compliance)</inlineHelpText>
         <label>HIPAA Contract</label>
+        <picklist>
+            <picklistValues>
+                <fullName>BAA</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>DTA</fullName>
+                <default>false</default>
+            </picklistValues>
+            <sorted>false</sorted>
+        </picklist>
         <required>false</required>
         <trackHistory>true</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Picklist</type>
-        <valueSet>
-            <valueSetDefinition>
-                <sorted>false</sorted>
-                <value>
-                    <fullName>BAA</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>DTA</fullName>
-                    <default>false</default>
-                </value>
-            </valueSetDefinition>
-        </valueSet>
     </fields>
     <fields>
         <fullName>Backstop__c</fullName>
@@ -225,23 +225,21 @@
         <fullName>Billable_Travel__c</fullName>
         <externalId>false</externalId>
         <label>Billable Travel</label>
+        <picklist>
+            <picklistValues>
+                <fullName>Yes</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>No</fullName>
+                <default>false</default>
+            </picklistValues>
+            <sorted>false</sorted>
+        </picklist>
         <required>false</required>
         <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Picklist</type>
-        <valueSet>
-            <valueSetDefinition>
-                <sorted>false</sorted>
-                <value>
-                    <fullName>Yes</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>No</fullName>
-                    <default>false</default>
-                </value>
-            </valueSetDefinition>
-        </valueSet>
     </fields>
     <fields>
         <fullName>Billing_Deficit__c</fullName>
@@ -290,14 +288,14 @@
     </fields>
     <fields>
         <fullName>Buffer_at_GS_BD_Handover__c</fullName>
-        <description>The % is set after the GS-BD Handover, and is FIXED throughout the project lifespan (and used to calculate the BD &amp; GS OKRs).  https://confluence.dimagi.com/display/BD/BD+-%3E+GS+Handoff</description>
+        <description>The % is set at the GS-BD Handover, and is FIXED throughout the project lifespan (it is used to calculate the BD &amp; GS OKRs).</description>
         <externalId>false</externalId>
-        <inlineHelpText>The % is set after the GS-BD Handover, and is FIXED throughout the project lifespan (and used to calculate the BD &amp; GS OKRs).  https://confluence.dimagi.com/display/BD/BD+-%3E+GS+Handoff</inlineHelpText>
+        <inlineHelpText>The % is set at the GS-BD Handover, and is FIXED throughout the project lifespan (it is used to calculate the BD &amp; GS OKRs).</inlineHelpText>
         <label>Buffer % at GS-BD Handover</label>
         <precision>18</precision>
         <required>false</required>
         <scale>0</scale>
-        <trackHistory>false</trackHistory>
+        <trackHistory>true</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Percent</type>
     </fields>
@@ -343,6 +341,18 @@
         <type>Currency</type>
     </fields>
     <fields>
+        <fullName>Calculated_Services_Spend__c</fullName>
+        <description>Field used for calculate Service Spend in backend, do not use this field and do not move it to Contract Layout.</description>
+        <externalId>false</externalId>
+        <label>Calculated Services Spend</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>8</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
         <fullName>Channel__c</fullName>
         <description>What Channel is the Opportunity (Sales, B2B, Pre-Bid, Other Competitive Bid, NIH, etc.)? 
 See https://confluence.dimagi.com/display/BD/BD+Channels</description>
@@ -350,43 +360,41 @@ See https://confluence.dimagi.com/display/BD/BD+Channels</description>
         <inlineHelpText>What Channel is the Opportunity (Sales, B2B, Pre-Bid, Other Competitive Bid, NIH, etc.)? 
 See https://confluence.dimagi.com/display/BD/BD+Channels</inlineHelpText>
         <label>Channel</label>
+        <picklist>
+            <picklistValues>
+                <fullName>Inside Sales</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>B2B - Standard</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>B2B - Enterprise</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Pre-Bid</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Other Competitive Bid</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>NIH Grant</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>CORE Funding (Gates)</fullName>
+                <default>false</default>
+            </picklistValues>
+            <sorted>false</sorted>
+        </picklist>
         <required>false</required>
         <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Picklist</type>
-        <valueSet>
-            <valueSetDefinition>
-                <sorted>false</sorted>
-                <value>
-                    <fullName>Inside Sales</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>B2B - Standard</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>B2B - Enterprise</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>Pre-Bid</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>Other Competitive Bid</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>NIH Grant</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>CORE Funding (Gates)</fullName>
-                    <default>false</default>
-                </value>
-            </valueSetDefinition>
-        </valueSet>
     </fields>
     <fields>
         <fullName>Contract_End_Date__c</fullName>
@@ -395,7 +403,7 @@ See https://confluence.dimagi.com/display/BD/BD+Channels</inlineHelpText>
         <inlineHelpText>When the project budget period ends.</inlineHelpText>
         <label>Funding End Date</label>
         <required>false</required>
-        <trackHistory>true</trackHistory>
+        <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Date</type>
     </fields>
@@ -408,7 +416,7 @@ See https://confluence.dimagi.com/display/BD/BD+Channels</inlineHelpText>
         <precision>16</precision>
         <required>false</required>
         <scale>2</scale>
-        <trackHistory>true</trackHistory>
+        <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Currency</type>
     </fields>
@@ -439,27 +447,25 @@ See https://confluence.dimagi.com/display/BD/BD+Channels</inlineHelpText>
         <externalId>false</externalId>
         <inlineHelpText>Set based on if the contract is Firm Fixed Price (FFP - billing based on deliverables or milestones completed only) or Time &amp; Materials (T&amp;M - billing based on actual time spent toward the efforts)</inlineHelpText>
         <label>Contract Type</label>
+        <picklist>
+            <picklistValues>
+                <fullName>FFP</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>T&amp;M</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Cost Plus</fullName>
+                <default>false</default>
+            </picklistValues>
+            <sorted>false</sorted>
+        </picklist>
         <required>false</required>
         <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Picklist</type>
-        <valueSet>
-            <valueSetDefinition>
-                <sorted>false</sorted>
-                <value>
-                    <fullName>FFP</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>T&amp;M</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>Cost Plus</fullName>
-                    <default>false</default>
-                </value>
-            </valueSetDefinition>
-        </valueSet>
     </fields>
     <fields>
         <fullName>Contracting_Business_Unit__c</fullName>
@@ -862,9 +868,9 @@ See https://confluence.dimagi.com/display/BD/BD+Channels</inlineHelpText>
     <fields>
         <fullName>Efficiency_Owner_BU__c</fullName>
         <deleteConstraint>SetNull</deleteConstraint>
-        <description>This field is for the Aggregate Weighted Execution Efficiency by BU. Sometimes the Execution Owner (BU) field doesn&apos;t represent the right BU for evaluating Efficiency, so we update this field for exceptions</description>
+        <description>This field is used in specific SalesForce reports on Aggregate Execution Efficiency. Sometimes the &quot;Execution Owner (BU)&quot; field doesn&apos;t represent the correct BU for evaluating Execution Efficiency, so we update this field for exceptions.</description>
         <externalId>false</externalId>
-        <inlineHelpText>This field is for the Aggregate Weighted Execution Efficiency by BU. Sometimes the Execution Owner (BU) field doesn&apos;t represent the right BU for evaluating Efficiency, so we update this field for exceptions</inlineHelpText>
+        <inlineHelpText>This field is used in specific SalesForce reports on Aggregate Execution Efficiency. Sometimes the &quot;Execution Owner (BU)&quot; field doesn&apos;t represent the correct BU for evaluating Execution Efficiency, so we update this field for exceptions.</inlineHelpText>
         <label>Efficiency Owner (BU)</label>
         <referenceTo>Business_Unit__c</referenceTo>
         <relationshipLabel>Contracts (Execution Owner)</relationshipLabel>
@@ -885,12 +891,12 @@ See https://confluence.dimagi.com/display/BD/BD+Channels</inlineHelpText>
     </fields>
     <fields>
         <fullName>Execution_Efficiency__c</fullName>
-        <description>(Services Budget * % of Work Completed) / Services Spend
-If any blanks in variables is set to 100%.</description>
+        <description>(Project Services Budget * % of Work Completed) / Services Spend
+If any blanks in variables, it&apos;s set to 100%.</description>
         <externalId>false</externalId>
         <formula>if(and(Services_Budget__c  &gt; 0, Services_Spend__c &gt;0),(Services_Budget__c *  Percent_through_SOW_deliverables__c )/ Services_Spend__c, 1)</formula>
-        <inlineHelpText>(Services Budget * % of Work Completed) / Services Spend
-If any blanks in variables is set to 100%.</inlineHelpText>
+        <inlineHelpText>(Project Services Budget * % of Work Completed) / Services Spend
+If any blanks in variables, it&apos;s set to 100%.</inlineHelpText>
         <label>Execution Efficiency</label>
         <precision>18</precision>
         <required>false</required>
@@ -933,9 +939,9 @@ If any blanks in variables is set to 100%.</inlineHelpText>
     </fields>
     <fields>
         <fullName>Expected_Buffer__c</fullName>
-        <description>Percent of the Total Contract minus Expenses that will not be directly allocated via Fogbugz or Intacct data, and is expected to fund other core activities.</description>
+        <description>Percent of the Total Contract minus Expenses that will not be directly allocated via Fogbugz or Intacct data, and is expected to fund other core activities.This should be the same as &apos;Buffer % at GS-BD Handover&apos; at the start of the contract. If this needs to be revised during the course of the project, it should only be updated after consultation with the project backstop.</description>
         <externalId>false</externalId>
-        <inlineHelpText>Percent of the Total Contract minus Expenses that will not be directly allocated via Fogbugz or Intacct data, and is expected to fund other core activities.</inlineHelpText>
+        <inlineHelpText>This should be the same as &apos;Buffer % at GS-BD Handover&apos; at the start of the contract. If this needs to be revised during the course of the project, it should only be updated after consultation with the project backstop.</inlineHelpText>
         <label>Expected % Buffer</label>
         <precision>18</precision>
         <required>false</required>
@@ -973,27 +979,37 @@ If any blanks in variables is set to 100%.</inlineHelpText>
         <type>Percent</type>
     </fields>
     <fields>
+        <fullName>FB_Id__c</fullName>
+        <externalId>true</externalId>
+        <label>FB Id</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
         <fullName>FTE_Tracker__c</fullName>
         <externalId>false</externalId>
         <label>FTE Tracker</label>
+        <picklist>
+            <picklistValues>
+                <fullName>No</fullName>
+                <default>true</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Yes</fullName>
+                <default>false</default>
+            </picklistValues>
+            <restrictedPicklist>true</restrictedPicklist>
+            <sorted>false</sorted>
+        </picklist>
         <required>false</required>
         <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Picklist</type>
-        <valueSet>
-            <restricted>true</restricted>
-            <valueSetDefinition>
-                <sorted>false</sorted>
-                <value>
-                    <fullName>No</fullName>
-                    <default>true</default>
-                </value>
-                <value>
-                    <fullName>Yes</fullName>
-                    <default>false</default>
-                </value>
-            </valueSetDefinition>
-        </valueSet>
     </fields>
     <fields>
         <fullName>Field_Manager__c</fullName>
@@ -1023,7 +1039,7 @@ If any blanks in variables is set to 100%.</inlineHelpText>
         <externalId>false</externalId>
         <label>Financial Notes</label>
         <length>100000</length>
-        <trackHistory>true</trackHistory>
+        <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Html</type>
         <visibleLines>15</visibleLines>
@@ -1072,11 +1088,11 @@ If any blanks in variables is set to 100%.</inlineHelpText>
     </fields>
     <fields>
         <fullName>GS_Execution_Budget__c</fullName>
-        <description>Services Budget * % of Services Budget for GS</description>
+        <description>Project Services Budget * % of Services Budget for GS</description>
         <externalId>false</externalId>
         <formula>Services_Budget__c *  of_Services_budget_for_GS__c</formula>
         <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
-        <inlineHelpText>Services Budget * % of Serivces Budget for GS</inlineHelpText>
+        <inlineHelpText>Project Services Budget * % of Serivces Budget for GS</inlineHelpText>
         <label>GS Project Services Budget</label>
         <precision>18</precision>
         <required>false</required>
@@ -1132,12 +1148,23 @@ If any blanks in variables is set to 100%.</inlineHelpText>
         <type>Currency</type>
     </fields>
     <fields>
+        <fullName>GS_Revenue_Calculation__c</fullName>
+        <defaultValue>true</defaultValue>
+        <description>Project Management Data from this contract factors into the calculation of GS revenue</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Project Management Data from this contract factors into the calculation of GS revenue</inlineHelpText>
+        <label>Used In GS Revenue Calculation</label>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
         <fullName>GS_Services_Completed_Handover__c</fullName>
-        <description>% Work Completed * GS Services Budget @ Handover</description>
+        <description>% Work Completed * GS Project Services Budget @ Handover</description>
         <externalId>false</externalId>
         <formula>Percent_through_SOW_deliverables__c * GS_Project_Services_Budget_Handoff__c</formula>
         <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
-        <inlineHelpText>% Work Completed * GS Services Budget @ Handover</inlineHelpText>
+        <inlineHelpText>% Work Completed * GS Project Services Budget @ Handover</inlineHelpText>
         <label>GS Services Completed @ Handover</label>
         <precision>18</precision>
         <required>false</required>
@@ -1148,11 +1175,11 @@ If any blanks in variables is set to 100%.</inlineHelpText>
     </fields>
     <fields>
         <fullName>GS_Services_Completed__c</fullName>
-        <description>% Work Completed * GS Services Budget</description>
+        <description>% Work Completed * GS Project Services Budget</description>
         <externalId>false</externalId>
         <formula>Percent_through_SOW_deliverables__c *  GS_Execution_Budget__c</formula>
         <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
-        <inlineHelpText>% Work Completed * GS Services Budget</inlineHelpText>
+        <inlineHelpText>% Work Completed * GS Project Services Budget</inlineHelpText>
         <label>GS Services Completed</label>
         <precision>18</precision>
         <required>false</required>
@@ -1323,31 +1350,29 @@ Total_Services_Work_Remaining__c * (9 / (MONTH(Contract_End_Date__c) + 12*YEAR(C
         <externalId>false</externalId>
         <inlineHelpText>Set to Self Service, Bundles (Standard), Enterprise (custom, non-standard), or Innovation (grant with non-implementation work). For more information see: https://confluence.dimagi.com/display/BD/Implementation+Types</inlineHelpText>
         <label>Implementation Type</label>
+        <picklist>
+            <picklistValues>
+                <fullName>Self Service</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Bundles and Services</fullName>
+                <default>true</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Enterprise</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Innovation Grant</fullName>
+                <default>false</default>
+            </picklistValues>
+            <sorted>false</sorted>
+        </picklist>
         <required>false</required>
         <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Picklist</type>
-        <valueSet>
-            <valueSetDefinition>
-                <sorted>false</sorted>
-                <value>
-                    <fullName>Self Service</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>Bundles and Services</fullName>
-                    <default>true</default>
-                </value>
-                <value>
-                    <fullName>Enterprise</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>Innovation Grant</fullName>
-                    <default>false</default>
-                </value>
-            </valueSetDefinition>
-        </valueSet>
     </fields>
     <fields>
         <fullName>Implementing_Account__c</fullName>
@@ -1366,27 +1391,48 @@ Total_Services_Work_Remaining__c * (9 / (MONTH(Contract_End_Date__c) + 12*YEAR(C
         <fullName>In_Charge_Of_Report_Out__c</fullName>
         <externalId>false</externalId>
         <label>In Charge Of Report Out</label>
+        <picklist>
+            <picklistValues>
+                <fullName>Project Manager</fullName>
+                <default>true</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Field Manager</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Backstop</fullName>
+                <default>false</default>
+            </picklistValues>
+            <sorted>false</sorted>
+        </picklist>
         <required>false</required>
         <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Picklist</type>
-        <valueSet>
-            <valueSetDefinition>
-                <sorted>false</sorted>
-                <value>
-                    <fullName>Project Manager</fullName>
-                    <default>true</default>
-                </value>
-                <value>
-                    <fullName>Field Manager</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>Backstop</fullName>
-                    <default>false</default>
-                </value>
-            </valueSetDefinition>
-        </valueSet>
+    </fields>
+    <fields>
+        <fullName>Internal_Contract__c</fullName>
+        <description>Field for Internal Initiatives, Yes is an internal initiative and No is not an internal initiative</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Field for Internal Initiatives, Yes is an internal initiative and No is not an internal initiative</inlineHelpText>
+        <label>Internal Contract</label>
+        <picklist>
+            <picklistValues>
+                <fullName>No</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Yes</fullName>
+                <default>false</default>
+            </picklistValues>
+            <restrictedPicklist>true</restrictedPicklist>
+            <sorted>false</sorted>
+        </picklist>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
     </fields>
     <fields>
         <fullName>Internal_Sub_contract_BUDGET__c</fullName>
@@ -1419,29 +1465,29 @@ Total_Services_Work_Remaining__c * (9 / (MONTH(Contract_End_Date__c) + 12*YEAR(C
         <externalId>false</externalId>
         <inlineHelpText>For internal accounting. Is this an internal subcontract between Dimagi business units?</inlineHelpText>
         <label>Intracompany Sub-contract</label>
+        <picklist>
+            <picklistValues>
+                <fullName>No</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Yes</fullName>
+                <default>false</default>
+            </picklistValues>
+            <sorted>false</sorted>
+        </picklist>
         <required>false</required>
-        <trackHistory>false</trackHistory>
+        <trackHistory>true</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Picklist</type>
-        <valueSet>
-            <valueSetDefinition>
-                <sorted>false</sorted>
-                <value>
-                    <fullName>No</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>Yes</fullName>
-                    <default>false</default>
-                </value>
-            </valueSetDefinition>
-        </valueSet>
     </fields>
     <fields>
         <fullName>Invoiced__c</fullName>
+        <description>All Time Income divided by Total Amount of Contract</description>
         <externalId>false</externalId>
         <formula>ALL_TIME_Income__c  /  Total_Amount_of_Contract__c</formula>
         <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <inlineHelpText>All Time Income divided by Total Amount of Contract</inlineHelpText>
         <label>% Invoiced</label>
         <precision>18</precision>
         <required>false</required>
@@ -1537,35 +1583,33 @@ Total_Services_Work_Remaining__c * (9 / (MONTH(Contract_End_Date__c) + 12*YEAR(C
         <externalId>false</externalId>
         <inlineHelpText>How is the long term relationship with the partner with respect to how this project went, with 1 being a poor relationship and low likelihood of partnering again and 5 being very strong relationship and a high likelihood of partnering again.</inlineHelpText>
         <label>Long Term Relationship (Post Contract)</label>
+        <picklist>
+            <picklistValues>
+                <fullName>1</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>2</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>3</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>4</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>5</fullName>
+                <default>false</default>
+            </picklistValues>
+            <sorted>false</sorted>
+        </picklist>
         <required>false</required>
         <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Picklist</type>
-        <valueSet>
-            <valueSetDefinition>
-                <sorted>false</sorted>
-                <value>
-                    <fullName>1</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>2</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>3</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>4</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>5</fullName>
-                    <default>false</default>
-                </value>
-            </valueSetDefinition>
-        </valueSet>
     </fields>
     <fields>
         <fullName>Long_term_partnership_or_one_off__c</fullName>
@@ -1620,27 +1664,25 @@ Total_Services_Work_Remaining__c * (9 / (MONTH(Contract_End_Date__c) + 12*YEAR(C
         <externalId>false</externalId>
         <inlineHelpText>Was the contract executed following the Maturity model?</inlineHelpText>
         <label>Maturity implementation</label>
+        <picklist>
+            <picklistValues>
+                <fullName>Not Updated</fullName>
+                <default>true</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Yes</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>No</fullName>
+                <default>false</default>
+            </picklistValues>
+            <sorted>false</sorted>
+        </picklist>
         <required>false</required>
-        <trackHistory>true</trackHistory>
+        <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Picklist</type>
-        <valueSet>
-            <valueSetDefinition>
-                <sorted>false</sorted>
-                <value>
-                    <fullName>Not Updated</fullName>
-                    <default>true</default>
-                </value>
-                <value>
-                    <fullName>Yes</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>No</fullName>
-                    <default>false</default>
-                </value>
-            </valueSetDefinition>
-        </valueSet>
     </fields>
     <fields>
         <fullName>Net_Income_based_on_SOW_Completed__c</fullName>
@@ -1723,9 +1765,9 @@ Total_Services_Work_Remaining__c * (9 / (MONTH(Contract_End_Date__c) + 12*YEAR(C
     </fields>
     <fields>
         <fullName>Percent_through_SOW_deliverables__c</fullName>
-        <description>Set by the Dimagi PM in PRO (estimated % complete through the SOW/deliverables/work)</description>
+        <description>Set by the Dimagi PM via the PRO. It is the estimated % completed through the deliverables on the contract.</description>
         <externalId>false</externalId>
-        <inlineHelpText>Set by the Dimagi PM in PRO (estimated % complete through the SOW/deliverables/work)</inlineHelpText>
+        <inlineHelpText>Set by the Dimagi PM via the PRO. It is estimated % completed through the deliverables on the contract.</inlineHelpText>
         <label>% of Work Completed</label>
         <precision>18</precision>
         <required>false</required>
@@ -1837,39 +1879,37 @@ Total_Services_Work_Remaining__c * (9 / (MONTH(Contract_End_Date__c) + 12*YEAR(C
         <fullName>Product_Owner__c</fullName>
         <externalId>false</externalId>
         <label>Product Owner</label>
+        <picklist>
+            <picklistValues>
+                <fullName>INC</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>DSI</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>DSA</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>DWA</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>DMoz</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>DLAC</fullName>
+                <default>false</default>
+            </picklistValues>
+            <sorted>false</sorted>
+        </picklist>
         <required>false</required>
         <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Picklist</type>
-        <valueSet>
-            <valueSetDefinition>
-                <sorted>false</sorted>
-                <value>
-                    <fullName>INC</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>DSI</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>DSA</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>DWA</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>DMoz</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>DLAC</fullName>
-                    <default>false</default>
-                </value>
-            </valueSetDefinition>
-        </valueSet>
     </fields>
     <fields>
         <fullName>Product_Pro_Income__c</fullName>
@@ -1928,6 +1968,39 @@ Total_Services_Work_Remaining__c * (9 / (MONTH(Contract_End_Date__c) + 12*YEAR(C
         <type>TextArea</type>
     </fields>
     <fields>
+        <fullName>Project_Billing_Rate_Updated__c</fullName>
+        <defaultValue>false</defaultValue>
+        <externalId>false</externalId>
+        <label>Project Billing Rate Updated</label>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Project_Billing_Rate__c</fullName>
+        <externalId>false</externalId>
+        <label>Project Billing Rate</label>
+        <picklist>
+            <picklistValues>
+                <fullName>Loaded Daily Rate</fullName>
+                <default>true</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Fringe Loaded Daily Rate</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Unloaded Daily Rate</fullName>
+                <default>false</default>
+            </picklistValues>
+            <sorted>false</sorted>
+        </picklist>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+    </fields>
+    <fields>
         <fullName>Project_Dropbox_Location__c</fullName>
         <externalId>false</externalId>
         <inlineHelpText>This should be in Dimagi - Projects</inlineHelpText>
@@ -1943,23 +2016,21 @@ Total_Services_Work_Remaining__c * (9 / (MONTH(Contract_End_Date__c) + 12*YEAR(C
         <externalId>false</externalId>
         <inlineHelpText>This is a dropdown to identify the type of expenses the project is on (Per Actuals or Per Diem). For more information: https://confluence.dimagi.com/display/internal/Travel+-+Expense+Policy</inlineHelpText>
         <label>Project Expenses</label>
+        <picklist>
+            <picklistValues>
+                <fullName>Actuals</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Per diem</fullName>
+                <default>false</default>
+            </picklistValues>
+            <sorted>false</sorted>
+        </picklist>
         <required>false</required>
         <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Picklist</type>
-        <valueSet>
-            <valueSetDefinition>
-                <sorted>false</sorted>
-                <value>
-                    <fullName>Actuals</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>Per diem</fullName>
-                    <default>false</default>
-                </value>
-            </valueSetDefinition>
-        </valueSet>
     </fields>
     <fields>
         <fullName>Project_Impact__c</fullName>
@@ -1967,35 +2038,33 @@ Total_Services_Work_Remaining__c * (9 / (MONTH(Contract_End_Date__c) + 12*YEAR(C
         <externalId>false</externalId>
         <inlineHelpText>How impactful is the project in terms of delivering benefits to those the program seeks to help with 1 being very low impact and 5 being very high impact.</inlineHelpText>
         <label>Project Impact (Post Contract data)</label>
+        <picklist>
+            <picklistValues>
+                <fullName>1</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>2</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>3</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>4</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>5</fullName>
+                <default>false</default>
+            </picklistValues>
+            <sorted>false</sorted>
+        </picklist>
         <required>false</required>
         <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Picklist</type>
-        <valueSet>
-            <valueSetDefinition>
-                <sorted>false</sorted>
-                <value>
-                    <fullName>1</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>2</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>3</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>4</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>5</fullName>
-                    <default>false</default>
-                </value>
-            </valueSetDefinition>
-        </valueSet>
     </fields>
     <fields>
         <fullName>Project_Manager__c</fullName>
@@ -2083,6 +2152,15 @@ Total_Services_Work_Remaining__c * (9 / (MONTH(Contract_End_Date__c) + 12*YEAR(C
         <type>Currency</type>
     </fields>
     <fields>
+        <fullName>Require_Services_Spend_Refresh__c</fullName>
+        <defaultValue>false</defaultValue>
+        <externalId>false</externalId>
+        <label>Require Services Spend Refresh</label>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
         <fullName>Requires_Developer_Work__c</fullName>
         <defaultValue>false</defaultValue>
         <description>The most recent update to Fogbugz ticket.</description>
@@ -2098,23 +2176,21 @@ Total_Services_Work_Remaining__c * (9 / (MONTH(Contract_End_Date__c) + 12*YEAR(C
         <externalId>false</externalId>
         <inlineHelpText>Does this contract need a Project Report Out?</inlineHelpText>
         <label>Requires Report Out</label>
+        <picklist>
+            <picklistValues>
+                <fullName>No</fullName>
+                <default>true</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Yes</fullName>
+                <default>false</default>
+            </picklistValues>
+            <sorted>false</sorted>
+        </picklist>
         <required>false</required>
         <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Picklist</type>
-        <valueSet>
-            <valueSetDefinition>
-                <sorted>false</sorted>
-                <value>
-                    <fullName>No</fullName>
-                    <default>true</default>
-                </value>
-                <value>
-                    <fullName>Yes</fullName>
-                    <default>false</default>
-                </value>
-            </valueSetDefinition>
-        </valueSet>
     </fields>
     <fields>
         <fullName>Safety_Contact__c</fullName>
@@ -2265,23 +2341,21 @@ Total_Services_Work_Remaining__c * (9 / (MONTH(Contract_End_Date__c) + 12*YEAR(C
         <fullName>Snapshot_Source_Type__c</fullName>
         <externalId>false</externalId>
         <label>Snapshot Source Type</label>
+        <picklist>
+            <picklistValues>
+                <fullName>Contract</fullName>
+                <default>true</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Opportunity</fullName>
+                <default>false</default>
+            </picklistValues>
+            <sorted>false</sorted>
+        </picklist>
         <required>false</required>
         <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Picklist</type>
-        <valueSet>
-            <valueSetDefinition>
-                <sorted>false</sorted>
-                <value>
-                    <fullName>Contract</fullName>
-                    <default>true</default>
-                </value>
-                <value>
-                    <fullName>Opportunity</fullName>
-                    <default>false</default>
-                </value>
-            </valueSetDefinition>
-        </valueSet>
     </fields>
     <fields>
         <fullName>Snapshot_Stage_Closed__c</fullName>
@@ -2289,19 +2363,17 @@ Total_Services_Work_Remaining__c * (9 / (MONTH(Contract_End_Date__c) + 12*YEAR(C
         <externalId>false</externalId>
         <inlineHelpText>Used to hardcode the stage in snapshots.</inlineHelpText>
         <label>Snapshot Stage Closed</label>
+        <picklist>
+            <picklistValues>
+                <fullName>Closed</fullName>
+                <default>true</default>
+            </picklistValues>
+            <sorted>false</sorted>
+        </picklist>
         <required>false</required>
         <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Picklist</type>
-        <valueSet>
-            <valueSetDefinition>
-                <sorted>false</sorted>
-                <value>
-                    <fullName>Closed</fullName>
-                    <default>true</default>
-                </value>
-            </valueSetDefinition>
-        </valueSet>
     </fields>
     <fields>
         <fullName>Snapshot_Stage_Outstanding__c</fullName>
@@ -2309,38 +2381,34 @@ Total_Services_Work_Remaining__c * (9 / (MONTH(Contract_End_Date__c) + 12*YEAR(C
         <externalId>false</externalId>
         <inlineHelpText>Used to hardcode the stage in snapshots.</inlineHelpText>
         <label>Snapshot Stage Outstanding</label>
+        <picklist>
+            <picklistValues>
+                <fullName>Outstanding Contracted</fullName>
+                <default>true</default>
+            </picklistValues>
+            <sorted>false</sorted>
+        </picklist>
         <required>false</required>
         <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Picklist</type>
-        <valueSet>
-            <valueSetDefinition>
-                <sorted>false</sorted>
-                <value>
-                    <fullName>Outstanding Contracted</fullName>
-                    <default>true</default>
-                </value>
-            </valueSetDefinition>
-        </valueSet>
     </fields>
     <fields>
         <fullName>Snapshot_Stage_Total__c</fullName>
         <externalId>false</externalId>
         <inlineHelpText>Used for creating Pipeline Snapshots.</inlineHelpText>
         <label>Snapshot Stage Total</label>
+        <picklist>
+            <picklistValues>
+                <fullName>Total</fullName>
+                <default>true</default>
+            </picklistValues>
+            <sorted>false</sorted>
+        </picklist>
         <required>false</required>
         <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Picklist</type>
-        <valueSet>
-            <valueSetDefinition>
-                <sorted>false</sorted>
-                <value>
-                    <fullName>Total</fullName>
-                    <default>true</default>
-                </value>
-            </valueSetDefinition>
-        </valueSet>
     </fields>
     <fields>
         <fullName>Snooze_Date__c</fullName>
@@ -2367,274 +2435,270 @@ Total_Services_Work_Remaining__c * (9 / (MONTH(Contract_End_Date__c) + 12*YEAR(C
         <fullName>Status__c</fullName>
         <externalId>false</externalId>
         <label>Status</label>
+        <picklist>
+            <picklistValues>
+                <fullName>Draft</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Active</fullName>
+                <default>true</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Complete</fullName>
+                <default>false</default>
+            </picklistValues>
+            <sorted>false</sorted>
+        </picklist>
         <required>false</required>
         <trackHistory>true</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Picklist</type>
-        <valueSet>
-            <valueSetDefinition>
-                <sorted>false</sorted>
-                <value>
-                    <fullName>Draft</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>Active</fullName>
-                    <default>true</default>
-                </value>
-                <value>
-                    <fullName>Complete</fullName>
-                    <default>false</default>
-                </value>
-            </valueSetDefinition>
-        </valueSet>
     </fields>
     <fields>
         <fullName>Sub_Area__c</fullName>
         <externalId>false</externalId>
         <inlineHelpText>Pick the sub-area(s) that corresponds to the area(s) that you selected.</inlineHelpText>
         <label>Sub Sector</label>
+        <picklist>
+            <picklistValues>
+                <fullName>*** Agriculture and Food Security ***</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Agriculture</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Food Security</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>*** Economic Development ***</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Rural Development</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Safety &amp; Security</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Urban Development</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>*** Education and Training ***</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Adult Training</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Child Education</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Early Childhood Development</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>*** Emergency Response ***</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Emergency Response</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>*** Financial Services for the Poor ***</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Conditional Cash Transfer</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Financial Services to the Poor</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Mobile Banking</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>*** Gender Equality and Women&apos;s Emp ***</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Gender Services</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Sex Workers</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>*** Governance and Accountability ***</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Governance</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Social Accountability</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>*** Health ***</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Cardiac Diseases</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Care coordination</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Cervical Cancer</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Diagnostics</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Diarrhea</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Family Planning</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>HIV/AIDS</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Infectious Diseases</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Informatics</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Malaria</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Maternal, Newborn, &amp; Child Health</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Medication adherence</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Mental Health</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Neglected Tropical Diseases</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Non-Communicable Diseases</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Nutrition</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Polio</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Primary Care</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Respiratory Diseases</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Surgery</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Surveillance</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Telemedicine</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Tuberculosis</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Vaccinations</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>*** Logistics ***</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Commodity Tracking/Procurement</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Human Resources</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>*** Other ***</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Environment</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Orphans and Vulnerable Children</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Telecommunications</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Other</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>*** Water, Sanitation, &amp; Hygiene ***</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Water, Sanitation, &amp; Hygiene</fullName>
+                <default>false</default>
+            </picklistValues>
+            <sorted>false</sorted>
+        </picklist>
         <required>false</required>
         <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>MultiselectPicklist</type>
-        <valueSet>
-            <valueSetDefinition>
-                <sorted>false</sorted>
-                <value>
-                    <fullName>*** Agriculture and Food Security ***</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>Agriculture</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>Food Security</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>*** Economic Development ***</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>Rural Development</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>Safety &amp; Security</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>Urban Development</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>*** Education and Training ***</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>Adult Training</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>Child Education</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>Early Childhood Development</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>*** Emergency Response ***</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>Emergency Response</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>*** Financial Services for the Poor ***</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>Conditional Cash Transfer</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>Financial Services to the Poor</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>Mobile Banking</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>*** Gender Equality and Women&apos;s Emp ***</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>Gender Services</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>Sex Workers</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>*** Governance and Accountability ***</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>Governance</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>Social Accountability</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>*** Health ***</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>Cardiac Diseases</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>Care coordination</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>Cervical Cancer</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>Diagnostics</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>Diarrhea</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>Family Planning</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>HIV/AIDS</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>Infectious Diseases</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>Informatics</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>Malaria</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>Maternal, Newborn, &amp; Child Health</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>Medication adherence</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>Mental Health</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>Neglected Tropical Diseases</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>Non-Communicable Diseases</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>Nutrition</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>Polio</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>Primary Care</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>Respiratory Diseases</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>Surgery</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>Surveillance</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>Telemedicine</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>Tuberculosis</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>Vaccinations</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>*** Logistics ***</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>Commodity Tracking/Procurement</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>Human Resources</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>*** Other ***</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>Environment</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>Orphans and Vulnerable Children</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>Telecommunications</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>Other</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>*** Water, Sanitation, &amp; Hygiene ***</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>Water, Sanitation, &amp; Hygiene</fullName>
-                    <default>false</default>
-                </value>
-            </valueSetDefinition>
-        </valueSet>
         <visibleLines>6</visibleLines>
     </fields>
     <fields>
@@ -2653,43 +2717,41 @@ Total_Services_Work_Remaining__c * (9 / (MONTH(Contract_End_Date__c) + 12*YEAR(C
         <externalId>false</externalId>
         <inlineHelpText>How was the team&apos;s satisfaction with the project and working with the partner, considering fairness, direct communication and working conditions where 1 is very low team satisfaction and 5 is extremely high team satisfaction.</inlineHelpText>
         <label>Team Satisfaction (Post Contract data)</label>
+        <picklist>
+            <picklistValues>
+                <fullName>1</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>2</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>3</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>4</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>5</fullName>
+                <default>false</default>
+            </picklistValues>
+            <sorted>false</sorted>
+        </picklist>
         <required>false</required>
         <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Picklist</type>
-        <valueSet>
-            <valueSetDefinition>
-                <sorted>false</sorted>
-                <value>
-                    <fullName>1</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>2</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>3</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>4</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>5</fullName>
-                    <default>false</default>
-                </value>
-            </valueSetDefinition>
-        </valueSet>
     </fields>
     <fields>
         <fullName>Tech_Execution_Budget__c</fullName>
-        <description>Services Budget * (1 - % of Services budget for GS)</description>
+        <description>Project Services Budget * (1 - % Services budget for GS)</description>
         <externalId>false</externalId>
         <formula>Services_Budget__c *(1- of_Services_budget_for_GS__c )</formula>
         <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
-        <inlineHelpText>Services Budget * (1 - % of Services budget for GS)</inlineHelpText>
+        <inlineHelpText>Project Services Budget * (1 - % Services budget for GS)</inlineHelpText>
         <label>Tech Project Services Budget</label>
         <precision>18</precision>
         <required>false</required>
@@ -2899,35 +2961,33 @@ Total_Services_Work_Remaining__c * (9 / (MONTH(Contract_End_Date__c) + 12*YEAR(C
         <externalId>false</externalId>
         <inlineHelpText>How many workers are submitting forms using CommCare where 1 is many fewer than expected at contract outset and 5 is many more than expected at contract outset.</inlineHelpText>
         <label>Usage (Post Contract data)</label>
+        <picklist>
+            <picklistValues>
+                <fullName>1</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>2</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>3</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>4</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>5</fullName>
+                <default>false</default>
+            </picklistValues>
+            <sorted>false</sorted>
+        </picklist>
         <required>false</required>
         <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Picklist</type>
-        <valueSet>
-            <valueSetDefinition>
-                <sorted>false</sorted>
-                <value>
-                    <fullName>1</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>2</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>3</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>4</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>5</fullName>
-                    <default>false</default>
-                </value>
-            </valueSetDefinition>
-        </valueSet>
     </fields>
     <fields>
         <fullName>Weighted_Efficiency__c</fullName>
@@ -3183,9 +3243,9 @@ Total_Non_Expense_Income_Remaining__c * (9 / (MONTH(Contract_End_Date__c) + 12*Y
     <fields>
         <fullName>of_Services_budget_for_GS__c</fullName>
         <defaultValue>1</defaultValue>
-        <description>This is the % of the remaining budget (after removing expenses and buffer %) that is planned for GS work</description>
+        <description>This is the % of the Project Services Budget that is planned for GS work.</description>
         <externalId>false</externalId>
-        <inlineHelpText>This is the % of the remaining budget (after removing expenses and buffer %) that is planned for GS work</inlineHelpText>
+        <inlineHelpText>This is the % of the Project Services Budget that is planned for GS work.</inlineHelpText>
         <label>% Services budget for GS</label>
         <precision>18</precision>
         <required>false</required>
@@ -3424,6 +3484,7 @@ Total_Non_Expense_Income_Remaining__c * (9 / (MONTH(Contract_End_Date__c) + 12*Y
     <listViews>
         <fullName>DWA_Contracts</fullName>
         <columns>NAME</columns>
+        <columns>Total_Amount_of_Contract__c</columns>
         <columns>Contract_Start_Date__c</columns>
         <columns>Contract_End_Date__c</columns>
         <columns>Product_Text__c</columns>
@@ -3527,6 +3588,17 @@ Total_Non_Expense_Income_Remaining__c * (9 / (MONTH(Contract_End_Date__c) + 12*Y
         <errorDisplayField>Parent_Contract__c</errorDisplayField>
         <errorMessage>You must select a parent contract for Intracompany sub-contracts.</errorMessage>
     </validationRules>
+    <webLinks>
+        <fullName>Recalculate_Services_Spend</fullName>
+        <availability>online</availability>
+        <displayType>button</displayType>
+        <height>600</height>
+        <linkType>page</linkType>
+        <masterLabel>Recalculate Services Spend</masterLabel>
+        <openType>sidebar</openType>
+        <page>ServicesSpendRecalculationPage</page>
+        <protected>false</protected>
+    </webLinks>
     <webLinks>
         <fullName>Refresh_Total_Spending</fullName>
         <availability>online</availability>

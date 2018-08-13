@@ -21,6 +21,10 @@
         <type>Default</type>
     </actionOverrides>
     <actionOverrides>
+        <actionName>Follow</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
         <actionName>List</actionName>
         <type>Default</type>
     </actionOverrides>
@@ -128,6 +132,17 @@
         <defaultValue>0</defaultValue>
         <externalId>false</externalId>
         <label>Graph Value 7</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Graph_Value_8__c</fullName>
+        <externalId>false</externalId>
+        <label>Graph Value 8</label>
         <precision>18</precision>
         <required>false</required>
         <scale>2</scale>

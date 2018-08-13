@@ -21,6 +21,10 @@
         <type>Default</type>
     </actionOverrides>
     <actionOverrides>
+        <actionName>Follow</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
         <actionName>List</actionName>
         <type>Default</type>
     </actionOverrides>
@@ -115,39 +119,37 @@
         <fullName>Delta_Type__c</fullName>
         <externalId>false</externalId>
         <label>Delta Type</label>
+        <picklist>
+            <picklistValues>
+                <fullName>No Change</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>New Opp EV</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Increased EV</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Decreased EV</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Closed Opp - Lost / No Go</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Closed Opp - Won</fullName>
+                <default>false</default>
+            </picklistValues>
+            <sorted>false</sorted>
+        </picklist>
         <required>false</required>
         <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Picklist</type>
-        <valueSet>
-            <valueSetDefinition>
-                <sorted>false</sorted>
-                <value>
-                    <fullName>No Change</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>New Opp EV</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>Increased EV</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>Decreased EV</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>Closed Opp - Lost / No Go</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>Closed Opp - Won</fullName>
-                    <default>false</default>
-                </value>
-            </valueSetDefinition>
-        </valueSet>
     </fields>
     <fields>
         <fullName>Diff_Buffer_EV__c</fullName>
@@ -162,9 +164,11 @@
     </fields>
     <fields>
         <fullName>Diff_expected_buffer__c</fullName>
+        <description>Net EV * Expected Buffer %</description>
         <externalId>false</externalId>
         <formula>DIFF_Expected_Value_Minus_Expense__c * 	Pipeline_Snapshot__r.Expected_Buffer__c</formula>
         <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <inlineHelpText>Net EV * Expected Buffer %</inlineHelpText>
         <label>Diff - expected buffer</label>
         <precision>18</precision>
         <required>false</required>
@@ -202,6 +206,19 @@
         <precision>18</precision>
         <required>false</required>
         <scale>0</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>Opp_Buffer_EV__c</fullName>
+        <description>Buffer EV Value copied from Opportunity when EV Batch job runs. It help us calculate Diff Buffer EV when opp was Closed Won</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Buffer EV Value copied from Opportunity when EV Batch job runs. It help us calculate Diff Buffer EV when opp was Closed Won</inlineHelpText>
+        <label>Opp Buffer EV</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
         <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Currency</type>

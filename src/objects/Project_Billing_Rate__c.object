@@ -51,124 +51,101 @@
     <enableBulkApi>true</enableBulkApi>
     <enableFeeds>false</enableFeeds>
     <enableHistory>false</enableHistory>
-    <enableReports>true</enableReports>
+    <enableReports>false</enableReports>
     <enableSearch>true</enableSearch>
     <enableSharing>true</enableSharing>
     <enableStreamingApi>true</enableStreamingApi>
     <fields>
-        <fullName>Server_Name__c</fullName>
+        <fullName>Custom_1__c</fullName>
+        <defaultValue>0</defaultValue>
         <externalId>false</externalId>
-        <label>Server Name</label>
-        <picklist>
-            <picklistValues>
-                <fullName>CommCareHQ</fullName>
-                <default>true</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>CommCareHQ India</fullName>
-                <default>false</default>
-            </picklistValues>
-            <sorted>false</sorted>
-        </picklist>
-        <required>false</required>
-        <trackTrending>false</trackTrending>
-        <type>Picklist</type>
-    </fields>
-    <fields>
-        <fullName>Subscription__c</fullName>
-        <deleteConstraint>SetNull</deleteConstraint>
-        <externalId>false</externalId>
-        <label>Subscription</label>
-        <referenceTo>Accounting_Subscription__c</referenceTo>
-        <relationshipName>Accounting_creditline</relationshipName>
-        <required>false</required>
-        <trackTrending>false</trackTrending>
-        <type>Lookup</type>
-    </fields>
-    <fields>
-        <fullName>account__c</fullName>
-        <deleteConstraint>SetNull</deleteConstraint>
-        <externalId>false</externalId>
-        <label>account</label>
-        <referenceTo>Accounting_BillingAccount__c</referenceTo>
-        <relationshipName>Accounting_creditline</relationshipName>
-        <required>false</required>
-        <trackTrending>false</trackTrending>
-        <type>Lookup</type>
-    </fields>
-    <fields>
-        <fullName>balance__c</fullName>
-        <externalId>false</externalId>
-        <label>balance</label>
+        <label>Custom 1</label>
         <precision>18</precision>
         <required>false</required>
-        <scale>4</scale>
+        <scale>2</scale>
         <trackTrending>false</trackTrending>
-        <type>Number</type>
-        <unique>false</unique>
+        <type>Percent</type>
     </fields>
     <fields>
-        <fullName>date_created__c</fullName>
+        <fullName>Custom_2__c</fullName>
+        <defaultValue>0</defaultValue>
         <externalId>false</externalId>
-        <label>date_created</label>
+        <label>Custom 2</label>
+        <precision>18</precision>
         <required>false</required>
+        <scale>2</scale>
         <trackTrending>false</trackTrending>
-        <type>DateTime</type>
+        <type>Percent</type>
     </fields>
     <fields>
-        <fullName>feature_type__c</fullName>
+        <fullName>Custom_3__c</fullName>
+        <defaultValue>0</defaultValue>
         <externalId>false</externalId>
-        <label>feature_type</label>
-        <length>255</length>
+        <label>Custom 3</label>
+        <precision>18</precision>
         <required>false</required>
+        <scale>2</scale>
         <trackTrending>false</trackTrending>
-        <type>Text</type>
-        <unique>false</unique>
+        <type>Percent</type>
     </fields>
     <fields>
-        <fullName>id__c</fullName>
-        <externalId>true</externalId>
-        <label>id</label>
-        <length>255</length>
-        <required>false</required>
-        <trackTrending>false</trackTrending>
-        <type>Text</type>
-        <unique>false</unique>
-    </fields>
-    <fields>
-        <fullName>is_active__c</fullName>
-        <defaultValue>false</defaultValue>
+        <fullName>Date__c</fullName>
         <externalId>false</externalId>
-        <label>is_active</label>
+        <label>Effective Date</label>
+        <required>true</required>
         <trackTrending>false</trackTrending>
-        <type>Checkbox</type>
+        <type>Date</type>
     </fields>
     <fields>
-        <fullName>product_type__c</fullName>
+        <fullName>Fee__c</fullName>
+        <defaultValue>0</defaultValue>
         <externalId>false</externalId>
-        <label>product_type</label>
-        <length>255</length>
+        <label>Fee</label>
+        <precision>18</precision>
         <required>false</required>
+        <scale>2</scale>
         <trackTrending>false</trackTrending>
-        <type>Text</type>
-        <unique>false</unique>
+        <type>Percent</type>
     </fields>
-    <label>Accounting_CreditLine</label>
-    <listViews>
-        <fullName>All</fullName>
-        <columns>NAME</columns>
-        <columns>account__c</columns>
-        <columns>Subscription__c</columns>
-        <columns>balance__c</columns>
-        <filterScope>Everything</filterScope>
-        <label>All</label>
-    </listViews>
+    <fields>
+        <fullName>Fringe__c</fullName>
+        <defaultValue>0</defaultValue>
+        <externalId>false</externalId>
+        <label>Fringe</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackTrending>false</trackTrending>
+        <type>Percent</type>
+    </fields>
+    <fields>
+        <fullName>G_A__c</fullName>
+        <defaultValue>0</defaultValue>
+        <externalId>false</externalId>
+        <label>G&amp;A</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackTrending>false</trackTrending>
+        <type>Percent</type>
+    </fields>
+    <fields>
+        <fullName>Overhead__c</fullName>
+        <defaultValue>0</defaultValue>
+        <externalId>false</externalId>
+        <label>Overhead</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackTrending>false</trackTrending>
+        <type>Percent</type>
+    </fields>
+    <label>Project Billing Rate</label>
     <nameField>
-        <displayFormat>{0000}</displayFormat>
-        <label>Credit Line#</label>
-        <type>AutoNumber</type>
+        <label>Project Billing Rate Name</label>
+        <type>Text</type>
     </nameField>
-    <pluralLabel>Accounting_CreditLine</pluralLabel>
+    <pluralLabel>Project Billing Rates</pluralLabel>
     <searchLayouts/>
     <sharingModel>ReadWrite</sharingModel>
 </CustomObject>
