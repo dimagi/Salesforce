@@ -1,0 +1,17 @@
+<apex:page controller="ContractDomainsRelatedListController">
+    <apex:form id="domainsForm">
+        <apex:pageBlock title="Contract : {!dContract.Name}" id="selectedDomains">
+            <apex:outputPanel layout="block" id="messages">
+                <apex:pageMessages />
+            </apex:outputPanel>
+
+             <apex:outputLabel value="Select Domain :  "></apex:outputLabel>
+            <apex:inputField value="{!domainWrapper.domain_lookup__c}"></apex:inputField>
+
+            <apex:pageBlockButtons >
+                <apex:commandButton action="{!save}" value="Add Domain"/>
+                <apex:commandButton action="{!cancel}" value="Cancel"/>
+            </apex:pageBlockButtons>
+        </apex:pageBlock>
+    </apex:form>
+</apex:page>
