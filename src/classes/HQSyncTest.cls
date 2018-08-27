@@ -960,9 +960,9 @@ public class HQSyncTest {
         insert domainFromDb2;
 
         Test.startTest();
-        Test.setMock(HttpCalloutMock.class, new hqInt_HttpMock());
+        Test.setMock(HttpCalloutMock.class, new HQSyncAPIMock());
         Date current = Date.today();
-        List<String> servers = HqBatchJobHelper.getCommcareServers(false);
+        List<String> servers = HQSyncUtils.getCommcareServers(false);
         if (servers.size() > 0 && current != null) {
             String serverCode = servers.get(0);
             servers.remove(0);

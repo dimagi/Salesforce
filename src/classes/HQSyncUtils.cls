@@ -207,11 +207,11 @@ public class HQSyncUtils {
                 Database.executeBatch(new HQSyncAccountingBatch(1, Accounting_feature__c.SObjectType.getDescribe().getLabel(), new HQSyncProcessors.HQSyncFeatureProcessor(),
                                            newServerCode, 'accounting_features/', nextServers), 1);
             } else {
-                HqBatchJobHelper.endBatchJobs();
+                endAccountingJobs();
                 Database.executeBatch(new CalculateDomainsLifeTimeMRRBatch(), 100);
             }
         } catch (Exception e) {
-            HqBatchJobHelper.endBatchJobs();
+            endAccountingJobs();
         }
     }
 

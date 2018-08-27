@@ -31,7 +31,7 @@ public class HQSyncAccountingBatch extends HQSyncBatch {
             String subject = this.serverName + ' - ' + 'CommCare Salesforce Job Run Report - ' + this.customObject + ' Object';
             String emailBody = 'Total Successfully loaded ' + this.customObject + ' records = ' + this.addedRecords + '\n\n';
             hqInt_BatchErrorLogger.sendErrorEmails(info.getJobId(), subject, emailBody);
-            HqBatchJobHelper.runNextBatchJob(this.batchNo + 1, this.serverName, this.servers);
+            HQSyncUtils.runAccountingBatchJob(this.batchNo + 1, this.serverName, this.servers);
         }
     }
 

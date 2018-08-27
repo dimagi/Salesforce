@@ -1,7 +1,7 @@
 public class HQSyncDomainBatch extends HQSyncBatch {
 
     public HQSyncDomainBatch(String serverName, List<Integer> offsets, List<String> servers) {
-        super(serverName, offsets, servers, 'project_space_metadata');
+        super(serverName, offsets, servers, HQSyncUtils.DOMAIN_SUFFIX);
     }
 
     public override void finish(Database.BatchableContext info) {

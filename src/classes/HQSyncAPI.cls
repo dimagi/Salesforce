@@ -11,7 +11,7 @@ public class HQSyncAPI {
     public HQSyncAPI(CommcareToSalesforceSettings__c serverSettings, String endpointSuffix) {
         this.serverSettings = serverSettings;
         this.suffix = endpointSuffix;
-        this.endPoint = this.serverSettings.Server_URL__c + (this.serverSettings.Server_URL__c.endsWith('/') ? '' : '/') + suffix + '/';
+        this.endPoint = this.serverSettings.Server_URL__c + (this.serverSettings.Server_URL__c.endsWith('/') ? '' : '/') + suffix;
         this.endPoint = this.endPoint + (this.endPoint.endsWith('/') ? '' : '/');
     }
 

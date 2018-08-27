@@ -6,7 +6,7 @@ public class HqMaltTablesScheduler implements Schedulable {
     // we need run this job on 3 each month!!!
     public void execute(SchedulableContext sc) {
         Date current = Date.today().addMonths(-1).toStartOfMonth();
-        List<String> servers = HqBatchJobHelper.getCommcareServers(false);
+        List<String> servers = HQSyncUtils.getCommcareServers(false);
         if (servers.size() > 0 && current != null) {
             String serverCode = servers.get(0);
             servers.remove(0);

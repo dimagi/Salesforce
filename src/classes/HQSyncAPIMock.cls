@@ -40,6 +40,8 @@ public class HQSyncAPIMock implements HttpCalloutMock {
     public HTTPResponse respond(HTTPRequest req) {
         HttpResponse res = new HttpResponse();
         res.setStatusCode(this.httpStatus);
+        String endpoint = req.getEndpoint();
+        System.debug('HQ Sync Endpoint : ' + endpoint);
         String body;
 
         if (this.customBody != null) {
