@@ -12,17 +12,21 @@ public virtual class HQSyncBatch implements Database.Batchable<Integer>, Databas
     protected List<Integer> offsets;
     protected List<String> servers;
     protected Integer size;
+    protected String loggerName;
+    protected String jobName;
+    protected Integer currentOffset;
 
-    public HQSyncBatch(String serverName, List<Integer> offsets, List<String> servers, String suffix) {
+    public HQSyncBatch(String serverName, List<Integer> offsets, List<String> servers, String suffix, String loggerName, String jobName) {
         this.serverName = serverName;
         this.offsets = offsets;
         this.servers = servers;
+        this.loggerName = loggerName;
+        this.jobName = jobName;
         this.serverSettings = CommcareToSalesforceSettings__c.getInstance(this.serverName);
         this.addedRecords = 0;
         this.parameters = new Map<String, String>();
 
         if (this.serverSettings == null) {
-            this.handleError();
             NoDataFoundException ex = new NoDataFoundException();
             ex.setMessage('Cannot find settings for server with given code : ' + this.serverName);
             throw ex;
@@ -40,7 +44,12 @@ public virtual class HQSyncBatch implements Database.Batchable<Integer>, Databas
             return this.offsets;
         }
 
-        Integer totalCount = this.hqAPI.getTotalCount(this.parameters);
+        Integer totalCount = 0;
+        try {
+            totalCount = this.hqAPI.getTotalCount(this.parameters);
+        } catch (Exception e) {
+            StatusLoggerUtils.logInfo(this.loggerName, jobName, this.addedRecords, 'Cannot fetch total count for server - ' + this.serverName);
+        }
         this.parameters.put(HQSyncUtils.LIMIT_PARAM, String.valueOf(this.size));
 
         return HQSyncUtils.buildsOffsetList(totalCount, this.size);
@@ -52,7 +61,7 @@ public virtual class HQSyncBatch implements Database.Batchable<Integer>, Databas
             Integer requests = 0;
             Exception e;
             HttpResponse response = null;
-
+            this.currentOffset = offset;
             this.parameters.put(HQSyncUtils.OFFSET_PARAM, String.valueOf(offset));
 
             while (!success && requests < 3) { // we want try 3 times to fetch data if we faced any errors
@@ -67,7 +76,7 @@ public virtual class HQSyncBatch implements Database.Batchable<Integer>, Databas
             }
 
             if (success == false && e != null) {
-                // TODO LOG
+                handleError(e, offset);
             }
         }
     }
@@ -79,6 +88,6 @@ public virtual class HQSyncBatch implements Database.Batchable<Integer>, Databas
         return 0;
     }
 
-    protected virtual void handleError() {
+    protected virtual void handleError(Exception e, Integer offset) {
     }
 }

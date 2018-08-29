@@ -1,15 +1,11 @@
 public class HQSyncDomainBatch extends HQSyncBatch {
 
     public HQSyncDomainBatch(String serverName, List<Integer> offsets, List<String> servers) {
-        super(serverName, offsets, servers, HQSyncUtils.DOMAIN_SUFFIX);
+        super(serverName, offsets, servers, HQSyncUtils.DOMAIN_SUFFIX, StatusLoggerUtils.HQ_SYNC_LOGGER, 'Domain');
     }
 
     public override void finish(Database.BatchableContext info) {
-        if(!Test.IsRunningTest()) {
-            String subject = this.serverName + ' - CommCare Salesforce Job Run Report - Domain, Internal Prop, Deployment';
-            String emailBody = 'Total Successfully loaded domain records = ' + this.addedRecords + '\n\n';
-            hqInt_BatchErrorLogger.sendErrorEmails(info.getJobId(), subject, emailBody);
-        }
+        StatusLoggerUtils.logInfo(StatusLoggerUtils.HQ_SYNC_LOGGER, this.jobName, this.addedRecords, 'Finished domains synchronization for server - ' + this.serverName);
 
         if (this.servers.size() > 0) {
             String nextServer = this.servers.get(0);
@@ -61,7 +57,7 @@ public class HQSyncDomainBatch extends HQSyncBatch {
         return domainRecMap.size();
     }
 
-    protected override void handleError() {
-
+    protected override void handleError(Exception e, Integer offset) {
+        StatusLoggerUtils.logError(StatusLoggerUtils.HQ_SYNC_LOGGER, this.jobName, offset, this.serverName + ' - ' + e.getMessage());
     }
 }

@@ -9,6 +9,8 @@ public class HQSyncUtils {
     public static final String OBJECTS_PARAM = 'objects';
 
     public static final String DOMAIN_SUFFIX = 'project_space_metadata';
+    public static final String MALT_SUFFIX = 'malt_tables';
+    public static final String GIR_SUFFIX = 'todo';
 
     /**
      * Replace reserved Apex words from given JSON file.
@@ -139,6 +141,7 @@ public class HQSyncUtils {
      * Ends Accounting objects synchronization.
      */
     public static void endAccountingJobs() {
+        StatusLoggerUtils.sendLog(StatusLoggerUtils.HQ_SYNC_LOGGER, BatchDefaultSettings__c.getOrgDefaults().Error_Emails__c.split(','));
         Commcare_Job_Settings__c settings = Commcare_Job_Settings__c.getOrgDefaults();
         settings.Is_Job_Running__c = false;
         settings.Server_Code__c = '';
@@ -212,6 +215,8 @@ public class HQSyncUtils {
             }
         } catch (Exception e) {
             endAccountingJobs();
+            BatchDefaultSettings__c settings = BatchDefaultSettings__c.getOrgDefaults();
+            EmailHelper.sendEmailFromException(settings.Error_Emails__c.split(','), 'Cannot run Accounting HQ batch job', '', e);
         }
     }
 
@@ -337,5 +342,12 @@ public class HQSyncUtils {
 
             update subscriptions;
         }
+    }
+
+    public static void setSObjectFieldValue(SObject sObj, Decimal value, String domain, Integer num) {
+        String indetifierField = 'Identifier_' + String.valueOf(num) + '__c';
+        String valueField = 'Value_' + String.valueOf(num) + '__c';
+        sObj.put(indetifierField, domain);
+        sObj.put(valueField, value);
     }
 }
