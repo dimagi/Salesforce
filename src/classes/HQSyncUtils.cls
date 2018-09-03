@@ -10,7 +10,7 @@ public class HQSyncUtils {
 
     public static final String DOMAIN_SUFFIX = 'project_space_metadata';
     public static final String MALT_SUFFIX = 'malt_tables';
-    public static final String GIR_SUFFIX = 'todo';
+    public static final String GIR_SUFFIX = 'gir_tables';
 
     /**
      * Replace reserved Apex words from given JSON file.
@@ -102,6 +102,9 @@ public class HQSyncUtils {
      * Ends Domains synchronization.
      */
     public static void endDomainJob() {
+        if (!Test.isRunningTest()) {
+            StatusLoggerUtils.sendLog(StatusLoggerUtils.HQ_SYNC_LOGGER, BatchDefaultSettings__c.getOrgDefaults().Error_Emails__c.split(','));
+        }
         Commcare_Job_Settings__c settings = Commcare_Job_Settings__c.getOrgDefaults();
 
         if (settings.Is_Domain_Job_Running__c == false) {
@@ -141,7 +144,9 @@ public class HQSyncUtils {
      * Ends Accounting objects synchronization.
      */
     public static void endAccountingJobs() {
-        StatusLoggerUtils.sendLog(StatusLoggerUtils.HQ_SYNC_LOGGER, BatchDefaultSettings__c.getOrgDefaults().Error_Emails__c.split(','));
+        if (!Test.isRunningTest()) {
+            StatusLoggerUtils.sendLog(StatusLoggerUtils.HQ_SYNC_LOGGER, BatchDefaultSettings__c.getOrgDefaults().Error_Emails__c.split(','));
+        }
         Commcare_Job_Settings__c settings = Commcare_Job_Settings__c.getOrgDefaults();
         settings.Is_Job_Running__c = false;
         settings.Server_Code__c = '';
@@ -344,10 +349,18 @@ public class HQSyncUtils {
         }
     }
 
-    public static void setSObjectFieldValue(SObject sObj, Decimal value, String domain, Integer num) {
-        String indetifierField = 'Identifier_' + String.valueOf(num) + '__c';
-        String valueField = 'Value_' + String.valueOf(num) + '__c';
-        sObj.put(indetifierField, domain);
-        sObj.put(valueField, value);
+    public static List<Integer> getErrorOffsetList(String objectType, String serverName, Date monthDate) {
+        List<HQ_Sync_Error__c> totalErrors = [SELECT Offset__c FROM HQ_Sync_Error__c WHERE Object_Type__c =: objectType AND Server_Name__c =: serverName AND Date__c =: monthDate AND Offset__c = -1];
+        if (totalErrors.size() > 0) { // if there is and error with offset -1 it means that total count fetch failed
+            delete totalErrors;
+            return null;
+        }
+
+        List<Integer> offsetList = new List<Integer>();
+        List<HQ_Sync_Error__c> compressedData = [SELECT Offset__c FROM HQ_Sync_Error__c WHERE Object_Type__c =: objectType AND Server_Name__c =: serverName AND Date__c =: monthDate];
+        for (HQ_Sync_Error__c hqData : compressedData) {
+            offsetList.add((hqData.Offset__c != null ? hqData.Offset__c.intValue() : 0));
+        }
+        return offsetList;
     }
 }

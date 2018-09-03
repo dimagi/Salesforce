@@ -3,18 +3,20 @@
  */
 public virtual class HQSyncBatch implements Database.Batchable<Integer>, Database.AllowsCallouts, Database.Stateful {
 
-    protected HQSyncAPI hqAPI;
-    protected CommcareToSalesforceSettings__c serverSettings;
 
+    protected CommcareToSalesforceSettings__c serverSettings;
+    protected HQSyncAPI hqAPI;
     protected Map<String, String> parameters;
-    protected Integer addedRecords;
     protected String serverName;
-    protected List<Integer> offsets;
     protected List<String> servers;
+
     protected Integer size;
+    protected Integer addedRecords;
+    protected List<Integer> offsets;
     protected String loggerName;
     protected String jobName;
     protected Integer currentOffset;
+    protected Integer currentTotalSize;
 
     public HQSyncBatch(String serverName, List<Integer> offsets, List<String> servers, String suffix, String loggerName, String jobName) {
         this.serverName = serverName;
@@ -24,6 +26,7 @@ public virtual class HQSyncBatch implements Database.Batchable<Integer>, Databas
         this.jobName = jobName;
         this.serverSettings = CommcareToSalesforceSettings__c.getInstance(this.serverName);
         this.addedRecords = 0;
+        this.currentTotalSize = 0;
         this.parameters = new Map<String, String>();
 
         if (this.serverSettings == null) {
@@ -37,22 +40,30 @@ public virtual class HQSyncBatch implements Database.Batchable<Integer>, Databas
         if (this.servers.contains(this.serverName)) {
             this.servers.remove(this.servers.indexOf(this.serverName));
         }
+        this.parameters.put(HQSyncUtils.FORMAT_PARAM, HQSyncUtils.JSON_PARAM);
+        this.parameters.put(HQSyncUtils.OFFSET_PARAM, '0');
+        this.parameters.put(HQSyncUtils.LIMIT_PARAM, String.valueOf(this.size));
     }
 
     public virtual Iterable<Integer> start(Database.BatchableContext BC) {
         if (this.offsets != null) {
+            System.debug('Offset elements : ' + this.offsets.get(0));
             return this.offsets;
         }
 
-        Integer totalCount = 0;
+        this.currentTotalSize = 0;
         try {
-            totalCount = this.hqAPI.getTotalCount(this.parameters);
+            this.currentTotalSize = this.hqAPI.getTotalCount(this.parameters);
         } catch (Exception e) {
-            StatusLoggerUtils.logInfo(this.loggerName, jobName, this.addedRecords, 'Cannot fetch total count for server - ' + this.serverName);
+            handleError(e, 'Cannot fetch total count.', -1);
         }
         this.parameters.put(HQSyncUtils.LIMIT_PARAM, String.valueOf(this.size));
 
-        return HQSyncUtils.buildsOffsetList(totalCount, this.size);
+        if (this.currentTotalSize == 0) {
+            return new List<Integer>();
+        }
+
+        return HQSyncUtils.buildsOffsetList(this.currentTotalSize, this.size);
     }
 
     public virtual void execute(Database.BatchableContext info, List<Integer> offsetList) {
@@ -76,7 +87,7 @@ public virtual class HQSyncBatch implements Database.Batchable<Integer>, Databas
             }
 
             if (success == false && e != null) {
-                handleError(e, offset);
+                handleError(e, '', offset);
             }
         }
     }
@@ -88,6 +99,6 @@ public virtual class HQSyncBatch implements Database.Batchable<Integer>, Databas
         return 0;
     }
 
-    protected virtual void handleError(Exception e, Integer offset) {
+    protected virtual void handleError(Exception e, String message, Integer offset) {
     }
 }

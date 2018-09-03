@@ -7,7 +7,7 @@ public class HQSyncMaltTablesBatch extends HQSyncBatch {
         super(serverCode, null, nextServers, HQSyncUtils.MALT_SUFFIX, StatusLoggerUtils.MALT_SYNC_LOGGER, 'Malt Tables');
         this.monthDate = monthDate;
         this.forErrors = forErrors;
-        this.size = 100;
+        this.size = 60;
 
         Date tmpDate = monthDate;
         String startDate = tmpDate.year() + '-' + tmpDate.month() + '-' + tmpDate.day();
@@ -16,17 +16,30 @@ public class HQSyncMaltTablesBatch extends HQSyncBatch {
 
         this.parameters.put('month__gte' , startDate);
         this.parameters.put('month__lte' , endDate);
+
+        if (this.forErrors == true) {
+            this.offsets = HQSyncUtils.getErrorOffsetList('Malt Tables', this.serverName, this.monthDate);
+        }
     }
 
     public override void finish(Database.BatchableContext info) {
-        StatusLoggerUtils.logInfo(StatusLoggerUtils.MALT_SYNC_LOGGER, this.jobName + ' - ' + this.serverName, this.addedRecords, 'Finished malt tables synchronization for server - ' + this.serverName);
+        StatusLoggerUtils.logInfo(StatusLoggerUtils.MALT_SYNC_LOGGER, this.jobName + ' - ' + this.serverName, this.addedRecords, 'Finished malt tables synchronization for server - '
+                                                                            + this.serverName + ' for errors : ' + this.forErrors);
 
         if (this.servers.size() > 0) {
             String nextServer = this.servers.get(0);
             this.servers.remove(0);
-            Database.executeBatch(new HQSyncMaltTablesBatch(this.monthDate, nextServer, this.servers, false), 1);
+            Database.executeBatch(new HQSyncMaltTablesBatch(this.monthDate, nextServer, this.servers, this.forErrors), 1);
         } else {
-            StatusLoggerUtils.sendLog(StatusLoggerUtils.MALT_SYNC_LOGGER, BatchDefaultSettings__c.getOrgDefaults().Error_Emails__c.split(','));
+            if (!Test.isRunningTest()) {
+                StatusLoggerUtils.sendLog(StatusLoggerUtils.MALT_SYNC_LOGGER, BatchDefaultSettings__c.getOrgDefaults().Error_Emails__c.split(','));
+                List<String> serversTmp = HQSyncUtils.getCommcareServers(false);
+                if (serversTmp.size() > 0) {
+                    String serverCode = serversTmp.get(0);
+                    serversTmp.remove(0);
+                    Database.executeBatch(new HQSyncGIRBatch(this.monthDate, serverCode, serversTmp, this.forErrors), 1);
+                }
+            }
         }
     }
 
@@ -34,9 +47,7 @@ public class HQSyncMaltTablesBatch extends HQSyncBatch {
         JSONParser parser = HQSyncUtils.createParser(jsonString);
         Integer size = 0;
         HQSyncModels.MaltTablesModel objModel;
-        HQ_Sync_Compressed_Data__c compressedData = new HQ_Sync_Compressed_Data__c(Server_Name__c = this.serverName, Field_Name__c = 'num_of_forms',
-                                                            Offset__c = this.currentOffset, Type__c = 'Malt Tables', Status__c = 'Success');
-        SObject sObj = (SObject) compressedData;
+        Map<String, Decimal> domainsWam = new Map<String, Decimal>();
 
         while (parser.nextToken() != null) {
             if (parser.getCurrentToken() == JSONToken.START_OBJECT) {
@@ -46,22 +57,43 @@ public class HQSyncMaltTablesBatch extends HQSyncBatch {
                     if (objModel.domain_name.length() > 80) {
                         objModel.domain_name = objModel.domain_name.subString(0, 80);
                     }
-                    HQSyncUtils.setSObjectFieldValue(sObj, objModel.num_of_forms != null ? objModel.num_of_forms : 0, objModel.domain_name, size + 1);
+
+                    if (objModel.num_of_forms == null && objModel.num_of_forms == 0) {
+                        continue; // we skip this object if forms is equal to 0 or null we don't need add anything
+                    }
+
+                    if (domainsWam.containsKey(objModel.domain_name)) {
+                        domainsWam.put(objModel.domain_name, domainsWam.get(objModel.domain_name) + objModel.num_of_forms);
+                    } else {
+                        domainsWam.put(objModel.domain_name, (objModel.num_of_forms != null ? objModel.num_of_forms : 0));
+                    }
                     size++;
                 }
                 parser.skipChildren();
             }
         }
 
-        compressedData = (HQ_Sync_Compressed_Data__c) sObj;
-        compressedData.Size__c = size;
-        insert compressedData;
+        List<Domain__c> domainsToUpdate = new List<Domain__c>();
+        for (Domain__c domain : [SELECT Id, Name, Forms_for_Period_TMP__c FROM Domain__c WHERE Name IN: domainsWam.keySet()]) {
+            if (domainsWam.containsKey(domain.Name)) { // we update Forms_for_Period_TMP__c because we have Forms_for_Period__c history and we don't want a lot of history updateds for example 15 for 1 object sync no sense
+                domain.Forms_for_Period_TMP__c = (domain.Forms_for_Period_TMP__c != null ? domain.Forms_for_Period_TMP__c : 0) + domainsWam.get(domain.Name);
+                domainsToUpdate.add(domain);
+            }
+        }
 
+        List<HQ_Sync_Error__c> oldRunsErrors = [SELECT Id FROM HQ_Sync_Error__c WHERE Object_Type__c = 'Malt Tables' AND Server_Name__c =: this.serverName AND Date__c =: this.monthDate AND Offset__c =: this.currentOffset];
+        if (oldRunsErrors.size() > 0) { // if there was an error before we must delete it to avoid duplicated sum
+            delete oldRunsErrors;
+        }
+
+        if (domainsToUpdate.size() > 0) {
+            update domainsToUpdate;
+        }
         return size;
     }
 
-    protected override void handleError(Exception e, Integer offset) {
-        StatusLoggerUtils.logError(StatusLoggerUtils.MALT_SYNC_LOGGER, this.jobName + ' - ' + this.serverName, offset, e.getMessage());
-        // insert new sobj for error offset
+    protected override void handleError(Exception e, String message, Integer offset) {
+        StatusLoggerUtils.logError(StatusLoggerUtils.MALT_SYNC_LOGGER, this.jobName, offset, this.serverName + ' - ' + message + ' - ' + e.getMessage());
+        insert new HQ_Sync_Error__c(Server_Name__c = this.serverName, Offset__c = offset, Object_Type__c = 'Malt Tables', Date__c = this.monthDate);
     }
 }

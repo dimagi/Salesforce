@@ -21,7 +21,7 @@ public class HQSyncAccountingBatch extends HQSyncBatch {
     }
 
     public override void finish(Database.BatchableContext info) {
-        if (this.batchNo >= 16 && StatusLoggerUtils.errorsForLoggerWithoutTitle(StatusLoggerUtils.HQ_SYNC_LOGGER, 'Domain')) { // If there was an error we don't want update last sync date
+        if (this.batchNo >= 16 && !StatusLoggerUtils.errorsForLoggerWithoutTitle(StatusLoggerUtils.HQ_SYNC_LOGGER, 'Domain')) { // If there was an error we don't want update last sync date
             this.serverSettings.Last_Run_Date__c = Commcare_Job_Settings__c.getOrgDefaults().Job_Start_Date__c;
             update this.serverSettings;
         }
@@ -36,7 +36,7 @@ public class HQSyncAccountingBatch extends HQSyncBatch {
         return dataProcessor.processJSON(jsonString, this.serverName);
     }
 
-    protected override void handleError(Exception e, Integer offset) {
-        StatusLoggerUtils.logError(StatusLoggerUtils.HQ_SYNC_LOGGER, this.jobName, offset, this.serverName + ' - ' + e.getMessage());
+    protected override void handleError(Exception e, String message, Integer offset) {
+        StatusLoggerUtils.logError(StatusLoggerUtils.HQ_SYNC_LOGGER, this.jobName, offset, this.serverName + ' - ' + message + ' - ' + e.getMessage());
     }
 }

@@ -45,6 +45,8 @@ public class HQSyncModels {
      */
     public class GIRModel {
         public Decimal id;
+        public String domain_name;
+        public Integer wams_current;
     }
 
     /**

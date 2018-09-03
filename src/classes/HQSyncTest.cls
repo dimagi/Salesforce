@@ -944,38 +944,128 @@ public class HQSyncTest {
     }
 
     @isTest
-    public static void shouldCalculateWAM() {
-        HQSyncDomainModel.DomainModel d1 = new HQSyncDomainModel.DomainModel();
-        d1.x_id = 'sample_external_id';
-        d1.Name = 'domain_1';
-        d1.tags = new List<String> { ' ' };
-        Domain__c domainFromDb1 = d1.createDbObject('CommCare HQ', null);
-        insert domainFromDb1;
-
-        HQSyncDomainModel.DomainModel d2 = new HQSyncDomainModel.DomainModel();
-        d2.x_id = 'test-external-2';
-        d2.Name = 'domain_2';
-        d2.tags = new List<String> { ' ' };
-        Domain__c domainFromDb2 = d2.createDbObject('CommCare HQ', null);
-        insert domainFromDb2;
+    public static void shouldFetchMaltTables() {
+        Domain__c domainFromDb1 = buildDomain(1);
+        Domain__c domainFromDb2 = buildDomain(2);
 
         Test.startTest();
         Test.setMock(HttpCalloutMock.class, new HQSyncAPIMock());
-        Date current = Date.today();
-        List<String> servers = HQSyncUtils.getCommcareServers(false);
-        if (servers.size() > 0 && current != null) {
-            String serverCode = servers.get(0);
-            servers.remove(0);
-            Database.executeBatch(new HqMaltTablesBatch(serverCode, servers, current, true), 1);
-        }
+        Database.executeBatch(new HQSyncMaltTablesBatch(Date.today().addDays(-13), 'CommCare HQ', HQSyncUtils.getCommcareServers(false), false), 1);
         Test.stopTest();
 
-        Domain__c assertDomain = [SELECT Id, Wam__c, Forms_For_Period__c FROM Domain__c WHERE Id =: domainFromDb1.Id];
-        System.assertEquals(52, assertDomain.Forms_For_Period__c);
-        System.assertEquals(2, assertDomain.Wam__c);
-        assertDomain = [SELECT Id, Wam__c, Forms_For_Period__c FROM Domain__c WHERE Id =: domainFromDb2.Id];
-        System.assertEquals(39, assertDomain.Forms_For_Period__c);
-        System.assertEquals(3, assertDomain.Wam__c);
+        List<HQ_Sync_Error__c> compressedData = [SELECT Id FROM HQ_Sync_Error__c];
+        System.assertEquals(0, compressedData.size());
+
+        Domain__c tmpDomain = [SELECT Name, Wam__c, Wam_TMP__c, Forms_for_Period__c, Forms_for_Period_TMP__c FROM Domain__c WHERE Name = 'domain_name_1'];
+        System.assertEquals(null, tmpDomain.Forms_for_Period__c);
+        System.assertEquals(52, tmpDomain.Forms_for_Period_TMP__c);
+        tmpDomain = [SELECT Name, Wam__c, Wam_TMP__c, Forms_for_Period__c, Forms_for_Period_TMP__c FROM Domain__c WHERE Name = 'domain_name_2'];
+        System.assertEquals(null, tmpDomain.Forms_for_Period__c);
+        System.assertEquals(28, tmpDomain.Forms_for_Period_TMP__c);
+    }
+
+    @isTest
+    public static void shouldFetchGIRData() {
+        Domain__c domainFromDb1 = buildDomain(1);
+        Domain__c domainFromDb2 = buildDomain(2);
+        Domain__c domainFromDb3 = buildDomain(3);
+
+        Test.startTest();
+        Test.setMock(HttpCalloutMock.class, new HQSyncAPIMock());
+        Database.executeBatch(new HQSyncGIRBatch(Date.today().addDays(-13), 'CommCare HQ', HQSyncUtils.getCommcareServers(false), false), 1);
+        Test.stopTest();
+
+        List<HQ_Sync_Error__c> compressedData = [SELECT Id FROM HQ_Sync_Error__c];
+        System.assertEquals(0, compressedData.size());
+
+        Domain__c tmpDomain = [SELECT Name, Wam__c, Wam_TMP__c, Forms_for_Period__c, Forms_for_Period_TMP__c FROM Domain__c WHERE Name = 'domain_name_1'];
+        System.assertEquals(null, tmpDomain.Wam__c);
+        System.assertEquals(39, tmpDomain.Wam_TMP__c);
+        tmpDomain = [SELECT Name, Wam__c, Wam_TMP__c, Forms_for_Period__c, Forms_for_Period_TMP__c FROM Domain__c WHERE Name = 'domain_name_2'];
+        System.assertEquals(null, tmpDomain.Wam__c);
+        System.assertEquals(340, tmpDomain.Wam_TMP__c);
+        tmpDomain = [SELECT Name, Wam__c, Wam_TMP__c, Forms_for_Period__c, Forms_for_Period_TMP__c FROM Domain__c WHERE Name = 'domain_name_3'];
+        System.assertEquals(null, tmpDomain.Wam__c);
+        System.assertEquals(9, tmpDomain.Wam_TMP__c);
+    }
+
+    @isTest
+    public static void shouldRunMaltTablesFromOffsetErrors() {
+        Domain__c domainFromDb1 = buildDomain(1);
+        Domain__c domainFromDb2 = buildDomain(2);
+        insert new HQ_Sync_Error__c (Offset__c = 660, Server_Name__c = 'CommCare HQ', Object_Type__c = 'Malt Tables', Date__c = Date.today().addDays(-13));
+
+        Test.startTest();
+        Test.setMock(HttpCalloutMock.class, new HQSyncAPIMock(new Map<String, String> { 'offset' => '660'}));
+        Database.executeBatch(new HQSyncMaltTablesBatch(Date.today().addDays(-13), 'CommCare HQ', HQSyncUtils.getCommcareServers(false), true), 1);
+        Test.stopTest();
+
+        List<HQ_Sync_Error__c> compressedData = [SELECT Id FROM HQ_Sync_Error__c];
+        System.assertEquals(0, compressedData.size());
+
+        Domain__c tmpDomain = [SELECT Name, Wam__c, Wam_TMP__c, Forms_for_Period__c, Forms_for_Period_TMP__c FROM Domain__c WHERE Name = 'domain_name_1'];
+        System.assertEquals(null, tmpDomain.Forms_for_Period__c);
+        System.assertEquals(52, tmpDomain.Forms_for_Period_TMP__c);
+        tmpDomain = [SELECT Name, Wam__c, Wam_TMP__c, Forms_for_Period__c, Forms_for_Period_TMP__c FROM Domain__c WHERE Name = 'domain_name_2'];
+        System.assertEquals(null, tmpDomain.Forms_for_Period__c);
+        System.assertEquals(28, tmpDomain.Forms_for_Period_TMP__c);
+    }
+
+    @isTest
+    public static void shouldRunGIRTablesFromOffsetErrors() {
+        Domain__c domainFromDb1 = buildDomain(1);
+        Domain__c domainFromDb2 = buildDomain(2);
+        Domain__c domainFromDb3 = buildDomain(3);
+        insert new HQ_Sync_Error__c (Offset__c = 720, Server_Name__c = 'CommCare HQ', Object_Type__c = 'GIR', Date__c = Date.today().addDays(-13));
+
+        Test.startTest();
+        Test.setMock(HttpCalloutMock.class, new HQSyncAPIMock(new Map<String, String> { 'offset' => '720'}));
+        Database.executeBatch(new HQSyncGIRBatch(Date.today().addDays(-13), 'CommCare HQ', HQSyncUtils.getCommcareServers(false), true), 1);
+        Test.stopTest();
+
+        List<HQ_Sync_Error__c> compressedData = [SELECT Id FROM HQ_Sync_Error__c];
+        System.assertEquals(0, compressedData.size());
+
+        Domain__c tmpDomain = [SELECT Name, Wam__c, Wam_TMP__c, Forms_for_Period__c, Forms_for_Period_TMP__c FROM Domain__c WHERE Name = 'domain_name_1'];
+        System.assertEquals(null, tmpDomain.Wam__c);
+        System.assertEquals(39, tmpDomain.Wam_TMP__c);
+        tmpDomain = [SELECT Name, Wam__c, Wam_TMP__c, Forms_for_Period__c, Forms_for_Period_TMP__c FROM Domain__c WHERE Name = 'domain_name_2'];
+        System.assertEquals(null, tmpDomain.Wam__c);
+        System.assertEquals(340, tmpDomain.Wam_TMP__c);
+        tmpDomain = [SELECT Name, Wam__c, Wam_TMP__c, Forms_for_Period__c, Forms_for_Period_TMP__c FROM Domain__c WHERE Name = 'domain_name_3'];
+        System.assertEquals(null, tmpDomain.Wam__c);
+        System.assertEquals(9, tmpDomain.Wam_TMP__c);
+    }
+
+    @isTest
+    public static void shouldUpdateWamAndFormsForPeriodInDomain() {
+        Domain__c domainFromDb1 = buildDomain(1);
+        Domain__c domainFromDb2 = buildDomain(2);
+        Domain__c domainFromDb3 = buildDomain(3);
+
+        update new Domain__c(Id = domainFromDb1.Id, Wam_TMP__c = 22, Forms_for_Period_TMP__c = 478);
+        update new Domain__c(Id = domainFromDb2.Id, Wam_TMP__c = 11, Forms_for_Period_TMP__c = 1000);
+        update new Domain__c(Id = domainFromDb3.Id, Wam_TMP__c = 9, Forms_for_Period_TMP__c = 9999);
+
+        Test.startTest();
+        Database.executeBatch(new HQSyncUpdateDomainFieldsBatch(false));
+        Test.stopTest();
+
+        Domain__c tmpDomain = [SELECT Name, Wam__c, Wam_TMP__c, Forms_for_Period__c, Forms_for_Period_TMP__c FROM Domain__c WHERE Name = 'domain_name_1'];
+        System.assertEquals(22, tmpDomain.Wam__c);
+        System.assertEquals(0, tmpDomain.Wam_TMP__c);
+        System.assertEquals(478, tmpDomain.Forms_for_Period__c);
+        System.assertEquals(0, tmpDomain.Forms_for_Period_TMP__c);
+        tmpDomain = [SELECT Name, Wam__c, Wam_TMP__c, Forms_for_Period__c, Forms_for_Period_TMP__c FROM Domain__c WHERE Name = 'domain_name_2'];
+        System.assertEquals(11, tmpDomain.Wam__c);
+        System.assertEquals(0, tmpDomain.Wam_TMP__c);
+        System.assertEquals(1000, tmpDomain.Forms_for_Period__c);
+        System.assertEquals(0, tmpDomain.Forms_for_Period_TMP__c);
+        tmpDomain = [SELECT Name, Wam__c, Wam_TMP__c, Forms_for_Period__c, Forms_for_Period_TMP__c FROM Domain__c WHERE Name = 'domain_name_3'];
+        System.assertEquals(9, tmpDomain.Wam__c);
+        System.assertEquals(0, tmpDomain.Wam_TMP__c);
+        System.assertEquals(9999, tmpDomain.Forms_for_Period__c);
+        System.assertEquals(0, tmpDomain.Forms_for_Period_TMP__c);
     }
 
     @isTest

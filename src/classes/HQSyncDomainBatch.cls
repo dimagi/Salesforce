@@ -57,7 +57,7 @@ public class HQSyncDomainBatch extends HQSyncBatch {
         return domainRecMap.size();
     }
 
-    protected override void handleError(Exception e, Integer offset) {
-        StatusLoggerUtils.logError(StatusLoggerUtils.HQ_SYNC_LOGGER, this.jobName, offset, this.serverName + ' - ' + e.getMessage());
+    protected override void handleError(Exception e, String message, Integer offset) {
+        StatusLoggerUtils.logError(StatusLoggerUtils.HQ_SYNC_LOGGER, this.jobName, offset, this.serverName + ' - ' + message + ' - ' + e.getMessage());
     }
 }
