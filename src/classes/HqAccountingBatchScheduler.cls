@@ -4,6 +4,6 @@
 public class HqAccountingBatchScheduler implements Schedulable {
 
     public void execute(SchedulableContext sc) {
-        HqBatchJobHelper.startBatchJobs();
+
     }
 }
