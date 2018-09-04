@@ -10,6 +10,7 @@ public class GlobalMetricsComponentController {
     private List<Global_Metric_Graph__c> performanceData;
     private List<Global_Metric_Graph__c> upTime;
     private List<Global_Metric_Graph__c> gsData;
+    private List<Global_Metric_Graph__c> gsRevenue;
     private List<Global_Metric_Graph__c> mrr;
     private List<Global_Metric_Graph__c> aggregateEff;
     private List<Global_Metric_Graph__c> icds;
@@ -107,6 +108,18 @@ public class GlobalMetricsComponentController {
         return '';
     }
     public void setAggregateEffData(String aggValues) {}
+
+    public String getGsRevenueData() {
+        if (this.gsRevenue == null) {
+            this.gsRevenue = [SELECT X_Text__c, Graph_Value_1__c, Graph_Value_2__c, Graph_Value_3__c, Graph_Value_4__c, Graph_Value_5__c, Graph_Value_6__c, Graph_Value_7__c
+                        FROM Global_Metric_Graph__c WHERE Name =: CorporateDashboardHelper.GS_REVENUE ORDER BY Helper_Date__c];
+        }
+        if (this.gsRevenue != null) {
+            return JSON.serialize(this.gsRevenue);
+        }
+        return '';
+    }
+    public void setGsRevenueData(String gsRevenueValues) {}
 
     public String getMrrData() {
         if (this.mrr == null) {
