@@ -23,17 +23,17 @@ public class HQSyncGIRBatch extends HQSyncBatch {
     }
 
     public override void finish(Database.BatchableContext info) {
-        StatusLoggerUtils.logInfo(StatusLoggerUtils.GIR_SYNC_LOGGER, this.jobName + ' - ' + this.serverName, this.addedRecords, 'Finished GIR synchronization for server - '
+        StatusLoggerUtils.logInfo(StatusLoggerUtils.GIR_SYNC_LOGGER, this.jobName, this.addedRecords, 'Finished GIR synchronization for server - '
                                                                             + this.serverName + ' for errors : ' + this.forErrors);
 
         if (this.servers.size() > 0) {
             String nextServer = this.servers.get(0);
             this.servers.remove(0);
-            Database.executeBatch(new HQSyncMaltTablesBatch(this.monthDate, nextServer, this.servers, this.forErrors), 1);
+            Database.executeBatch(new HQSyncGIRBatch(this.monthDate, nextServer, this.servers, this.forErrors), 1);
         } else {
             if (!Test.isRunningTest()) {
                 StatusLoggerUtils.sendLog(StatusLoggerUtils.GIR_SYNC_LOGGER, BatchDefaultSettings__c.getOrgDefaults().Error_Emails__c.split(','));
-                if ([SELECT Count() FROM HQ_Sync_Error__c WHERE (Object_Type__c = 'Malt Tables' OR Object_Type__c = 'GIR') AND Date__c =: this.monthDate] > 0) {
+                if ([SELECT Count() FROM HQ_Sync_Error__c WHERE (Object_Type__c = 'Malt Tables' OR Object_Type__c = 'GIR') AND Date__c =: this.monthDate] == 0) {
                    Database.executeBatch(new HQSyncUpdateDomainFieldsBatch(true));
                 }
             }
