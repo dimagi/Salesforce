@@ -6,24 +6,25 @@ public without sharing class RenewalSubscriptionsBatch implements Database.Batch
     private static final String IMPL_RENEWAL = 'Implementation Renewal';
     private static final String PROD_RENEWAL = 'Product Renewal';
 
+    private Integer recordCounter;
     private Date currentDate;
     private Business_Unit__c incBusinessUnit;
     private User defaultOppOwnerImplementation;
     private User defaultOppOwnerProduct;
     private Subscription_Renewal_Settings__c settings;
-    private List<DatabaseErrorInfo> oppsErrors;
-    private List<DatabaseErrorInfo> subsErrors;
+
     private Map<String, PricebookEntry> priceBookEntries;
     private PricebookEntry commCareEntry;
     private Map<String, Decimal> salesPrices;
     private Set<Id> domainsToSkip;
 
     public RenewalSubscriptionsBatch () {
-        this.currentDate = Date.today();
+        this(Date.today());
     }
 
     public RenewalSubscriptionsBatch (Date currentDate) {
         this.currentDate = currentDate;
+        this.recordCounter = 0;
     }
 
     public List<Accounting_Subscription__c> start(Database.BatchableContext context) {
@@ -49,8 +50,6 @@ public without sharing class RenewalSubscriptionsBatch implements Database.Batch
             }
         }
 
-        this.oppsErrors = new List<DatabaseErrorInfo>();
-        this.subsErrors = new List<DatabaseErrorInfo>();
         this.domainsToSkip = new Set<Id>();
         this.priceBookEntries = new Map<String, PricebookEntry>();
 
@@ -83,17 +82,12 @@ public without sharing class RenewalSubscriptionsBatch implements Database.Batch
     }
 
     public void execute(Database.BatchableContext context, List<Accounting_Subscription__c> subs) {
-        List<Opportunity> newOpps = new List<Opportunity>();
-        List<Accounting_Subscription__c> subsToUpdate = new List<Accounting_Subscription__c>();
-        List<OpportunityLineItem> opportunityProducts = new List<OpportunityLineItem>();
-        List<OpportunityLineItem> opportunityCommcareProducts = new List<OpportunityLineItem>();
-
         Set<Id> domainsSet = new Set<Id>();
         for (Accounting_Subscription__c subscription : subs) {
             domainsSet.add(subscription.Accounting_subscriber_domain__c);
         }
 
-        Map<Id, Domain__c> domains = new Map<Id, Domain__c> ([SELECT Id, Opportunity__c FROM Domain__c WHERE Id IN: domainsSet]);
+        Map<Id, Domain__c> domains = new Map<Id, Domain__c> ([SELECT Id, Name, Opportunity__c FROM Domain__c WHERE Id IN: domainsSet]);
         List<Domain__c> domainsToUpdate = new List<Domain__c>();
 
         String dateString = (this.currentDate.month() < 10 ? '0' + this.currentDate.month() : '' + this.currentDate.month())
@@ -106,7 +100,7 @@ public without sharing class RenewalSubscriptionsBatch implements Database.Batch
                    (subscription.Accounting_subscriber_domain__r.Opportunity__r.IsClosed == true && subscription.Accounting_subscriber_domain__r.Opportunity__r.CloseDate >= this.currentDate))) {
                 this.domainsToSkip.add(subscription.Accounting_subscriber_domain__c);
             }
-            if (!this.domainsToSkip.contains(subscription.Accounting_subscriber_domain__c) && subscription.Renewal_Opportunity_created__c == false) {
+            if (!this.domainsToSkip.contains(subscription.Accounting_subscriber_domain__c)) {
                 String oppSource = '';
                 if (subscription.service_type__c == 'IMPLEMENTATION') {
                     oppSource = IMPL_RENEWAL;
@@ -147,17 +141,22 @@ public without sharing class RenewalSubscriptionsBatch implements Database.Batch
                                                         Opportunity_Source__c = oppSource
                                                     );
 
-                subscription.Renewal_Opportunity_created__c = true;
-                newOpps.add(newOpp);
-                subsToUpdate.add(subscription);
-
                 PricebookEntry pbe = this.priceBookEntries.get(subscription.Software_Plan_Edition__c);
                 Decimal price = this.salesPrices.get(subscription.Software_Plan_Edition__c);
-                opportunityProducts.add(new OpportunityLineItem(PricebookEntryId = pbe.Id, Quantity = 12, UnitPrice = price));
-                opportunityCommcareProducts.add(new OpportunityLineItem(PricebookEntryId = commCareEntry.Id, Quantity = 1, UnitPrice = commCareEntry.UnitPrice));
-
                 Domain__c domainToUpdate = domains.get(subscription.Accounting_subscriber_domain__c);
-                domainsToUpdate.add(domainToUpdate);
+
+                Savepoint sp = Database.setSavepoint();
+                try {
+                    insert newOpp;
+                    domainToUpdate.Opportunity__c = newOpp.Id;
+                    update domainToUpdate;
+                    insert new OpportunityLineItem(PricebookEntryId = pbe.Id, Quantity = 12, UnitPrice = price, OpportunityId = newOpp.Id);
+                    insert new OpportunityLineItem(PricebookEntryId = commCareEntry.Id, Quantity = 1, UnitPrice = commCareEntry.UnitPrice, OpportunityId = newOpp.Id);
+                    this.recordCounter++;
+                } catch (DMLException e) {
+                    StatusLoggerUtils.logError(StatusLoggerUtils.RENEWAL_LOGGER, domainToUpdate.Name + ' - ' + subscription.Name, 0, e.getMessage());
+                    Database.rollback(sp);
+                }
             }
 
             // we must create Opp only for the latest subscription which will end
@@ -165,85 +164,16 @@ public without sharing class RenewalSubscriptionsBatch implements Database.Batch
                 this.domainsToSkip.add(subscription.Accounting_subscriber_domain__c);
             }
         }
-
-        // Create new Opps
-        if (newOpps.size() > 0) {
-            List<Database.SaveResult> insertResults = Database.insert(newOpps, false);
-            for(Integer i = 0; i < insertResults.size(); i++){
-                if (!insertResults.get(i).isSuccess()){
-                    Database.Error error = insertResults.get(i).getErrors().get(0);
-                    System.debug('Opp Error : Fields - ' + error.getFields() + ' Message - ' + error.getMessage());
-                    this.oppsErrors.add(new DatabaseErrorInfo(newOpps.get(i).Domain_Name__c, 'Fields - ' + error.getFields() + ' Message - ' + error.getMessage()));
-                }
-            }
-            for (Integer i = 0; i < newOpps.size(); i++) {
-                Opportunity o = newOpps.get(i);
-                if (!String.isBlank(o.Id)) {
-                    opportunityProducts.get(i).OpportunityId = o.Id;
-                    opportunityCommcareProducts.get(i).OpportunityId = o.Id;
-                    domainsToUpdate.get(i).Opportunity__c = o.Id;
-                }
-            }
-        }
-
-        // Add Opp products
-        if (opportunityProducts.size() > 0) {
-            processProductsErrors(Database.insert(opportunityProducts, false), newOpps);
-            processProductsErrors(Database.insert(opportunityCommcareProducts, false), newOpps);
-            processProductsErrors(Database.update(domainsToUpdate, false), newOpps);
-        }
-
-        // Update subscriptions
-        if (subsToUpdate.size() > 0) {
-            List<Database.SaveResult> updateResults = Database.update(subsToUpdate, false);
-            for(Integer i = 0; i < updateResults.size(); i++){
-                if (!updateResults.get(i).isSuccess()){
-                    Database.Error error = updateResults.get(i).getErrors().get(0);
-                    this.subsErrors.add(new DatabaseErrorInfo(updateResults.get(i).getId(), 'Fields - ' + error.getFields() + ' Message - ' + error.getMessage()));
-                }
-            }
-        }
     }
 
     public void finish(Database.BatchableContext context) {
+        StatusLoggerUtils.logInfo(StatusLoggerUtils.RENEWAL_LOGGER, 'Renewal Script', this.recordCounter,
+                                                    'Finished Renewal Job with date : ' + this.currentDate);
         if (Test.isRunningTest()) {
             return;
         }
-
         Database.executeBatch(new CreateFBCasesBatch(), 5);
-
-        String emailBody = 'RenewalSubscriptionsBatch : ' + Date.today();
-        Boolean tableStart = false;
-
-        if (oppsErrors.size() > 0) {
-            emailBody += '</br></br>OPP Errors : </br>';
-            emailBody += '<table border="1"><tr><td>Domain Id</td><td>Error Message</td></tr>';
-            for (DatabaseErrorInfo er : this.oppsErrors) {
-                emailBody += '<tr><td>' + er.objectId + '</td><td>' + er.errorMessage + '</td></tr>';
-            }
-            emailBody += '</table></br></br>Subs Errors : </br>';
-        }
-
-        if (subsErrors.size() > 0) {
-            emailBody += '<table border="1"><tr><td>Sub Id</td><td>Error Message</td></tr>';
-            for (DatabaseErrorInfo er : this.subsErrors) {
-                emailBody += '<tr><td>' + er.objectId + '</td><td>' + er.errorMessage + '</td></tr>';
-            }
-            emailBody += '</table>';
-        }
-
-        EmailHelper.sendEmail(settings.Error_Emails__c.split(','), 'Subscription Renewal Job Status', emailBody);
-    }
-
-    public class DatabaseErrorInfo {
-
-        public DatabaseErrorInfo (String id, String message) {
-            this.objectId = id;
-            this.errorMessage = message;
-        }
-
-        public String objectId { get; set; }
-        public String errorMessage { get; set; }
+        StatusLoggerUtils.sendLog(StatusLoggerUtils.GIR_SYNC_LOGGER, BatchDefaultSettings__c.getOrgDefaults().Error_Emails__c.split(','));
     }
 
     /**
@@ -260,23 +190,13 @@ public without sharing class RenewalSubscriptionsBatch implements Database.Batch
      * Returns Subscriptions which ends in 60 days for domains which dosen't contain subscriptions from future (which ends after 60 days).
      */
     public List<Accounting_Subscription__c> getSubscriptionsForRenewal(Set<String> domainsWithFutureSubscriptions) {
-        return [SELECT Id, date_start__c, date_end__c, service_type__c, Accounting_subscriber_domain__c, Accounting_subscriber_domain__r.Name, Dimagi_Contact__c, Accounting_subscriber_domain__r.Account__r.Name,
-                Accounting_subscriber_domain__r.cpAllWebUsers__c, Software_Plan_Edition__c, Renewal_Opportunity_created__c,
+        return [SELECT Id, Name, date_start__c, date_end__c, service_type__c, Accounting_subscriber_domain__c, Accounting_subscriber_domain__r.Name, Dimagi_Contact__c, Accounting_subscriber_domain__r.Account__r.Name,
+                Accounting_subscriber_domain__r.cpAllWebUsers__c, Software_Plan_Edition__c,
                 Accounting_subscriber_domain__r.Opportunity__r.CreatedDate, Accounting_subscriber_domain__r.Opportunity__c,
                 Accounting_subscriber_domain__r.Opportunity__r.CloseDate, Accounting_subscriber_domain__r.Opportunity__r.IsClosed
                 FROM Accounting_Subscription__c
                 WHERE Accounting_subscriber_domain__r.Name != '' AND date_end__c != null AND date_end__c <=: this.currentDate.addDays(60)
                 AND date_end__c >=: this.currentDate AND Accounting_subscriber_domain__r.Name NOT IN: domainsWithFutureSubscriptions AND is_active__c = true
                 AND is_hidden_to_ops__c = false AND is_trial__c = false AND Server_Name__c = 'CommCareHQ' ORDER BY date_end__c DESC];
-    }
-
-    private void processProductsErrors(List<Database.SaveResult> insertResults, List<Opportunity> newOpps) {
-        for(Integer i = 0; i < insertResults.size(); i++){
-            if (!insertResults.get(i).isSuccess()){
-                Database.Error error = insertResults.get(i).getErrors().get(0);
-                System.debug('Opp Error : Fields - ' + error.getFields() + ' Message - ' + error.getMessage());
-                this.oppsErrors.add(new DatabaseErrorInfo(newOpps.get(i).Domain_Name__c, 'Cannot create Product/updateDomain: Fields - ' + error.getFields() + ' Message - ' + error.getMessage()));
-            }
-        }
     }
 }

@@ -10,6 +10,7 @@ public class StatusLoggerUtils {
     public static final String HQ_SYNC_LOGGER = 'HQ_LOGGER';
     public static final String MALT_SYNC_LOGGER = 'MALT_LOGGER';
     public static final String GIR_SYNC_LOGGER = 'GIR_LOGGER';
+    public static final String RENEWAL_LOGGER = 'RENEWAL_LOGGER';
 
     /**
      * Logs INFO row for given log name.
