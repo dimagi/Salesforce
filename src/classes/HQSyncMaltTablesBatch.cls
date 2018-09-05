@@ -23,7 +23,7 @@ public class HQSyncMaltTablesBatch extends HQSyncBatch {
     }
 
     public override void finish(Database.BatchableContext info) {
-        StatusLoggerUtils.logInfo(StatusLoggerUtils.MALT_SYNC_LOGGER, this.jobName + ' - ' + this.serverName, this.addedRecords, 'Finished malt tables synchronization for server - '
+        StatusLoggerUtils.logInfo(StatusLoggerUtils.MALT_SYNC_LOGGER, this.jobName, this.addedRecords, 'Finished malt tables synchronization for server - '
                                                                             + this.serverName + ' for errors : ' + this.forErrors);
 
         if (this.servers.size() > 0) {

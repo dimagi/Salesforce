@@ -66,7 +66,7 @@ public class StatusLoggerUtils {
         List<Status_Log__c> logsInfo = [SELECT Title__c, Counter__c, Message__c, Date__c FROM Status_Log__c WHERE Name =: logName AND Status__c =: INFO_LOG ORDER BY Date__c DESC];
         List<Status_Log__c> logsError = [SELECT Title__c, Counter__c, Message__c, Date__c FROM Status_Log__c WHERE Name =: logName AND Status__c =: ERROR_LOG ORDER BY Date__c DESC];
 
-        String body = '<br/>INFO :<br/><table border="1">';
+        String body = '<div><br/>INFO :<br/><table border="1">';
         body += '<tr style="font-weight:bold"><td>Name</td><td>Message</td><td>Num</td><td>Date</td></tr>';
 
         for (Status_Log__c log : logsInfo) {
@@ -81,7 +81,7 @@ public class StatusLoggerUtils {
             body += '<tr><td>' + log.Title__c + '</td><td>' + log.Message__c + '</td><td>' + log.Counter__c + '</td><td>' + log.Date__c + '</td></tr>';
         }
 
-        body += '</table>';
+        body += '</table></div>';
 
         EmailHelper.sendEmail(reciepients, LOGGER_SUBJECT + logName, body);
         if (logsInfo.size() > 0) {
