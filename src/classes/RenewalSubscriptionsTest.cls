@@ -70,28 +70,28 @@ public class RenewalSubscriptionsTest {
         insert planVersion3;
 
         Accounting_Subscription__c subscription1 = new Accounting_Subscription__c(Server_Name__c = 'CommCareHQ', is_trial__c = false, date_start__c = Date.newInstance(2016, 1, 1), date_end__c = Date.newInstance(2017, 1, 1), service_type__c = 'Implementation', is_active__c = true,
-                                                                                  Renewal_Opportunity_created__c = false, account__c = billingAccount1.Id, Accounting_subscriber_domain__c = domain1.Id, plan_version__c = planVersion1.Id);
+                                                                                  account__c = billingAccount1.Id, Accounting_subscriber_domain__c = domain1.Id, plan_version__c = planVersion1.Id);
         insert subscription1; // should create
 
         Accounting_Subscription__c subscription2 = new Accounting_Subscription__c(Server_Name__c = 'CommCareHQ', is_trial__c = false, date_start__c = Date.newInstance(2016, 1, 1), date_end__c = Date.newInstance(2016, 11, 2), service_type__c = 'Implementation', is_active__c = false,
-                                                                                  Renewal_Opportunity_created__c = false, account__c = billingAccount2.Id, Accounting_subscriber_domain__c = domain2.Id, plan_version__c = planVersion2.Id);
+                                                                                  account__c = billingAccount2.Id, Accounting_subscriber_domain__c = domain2.Id, plan_version__c = planVersion2.Id);
         insert subscription2;
         Accounting_Subscription__c subscription3 = new Accounting_Subscription__c(Server_Name__c = 'CommCareHQ', is_trial__c = false, date_start__c = Date.newInstance(2016, 6, 1), date_end__c = Date.newInstance(2016, 12, 3), service_type__c = 'Implementation', is_active__c = true,
-                                                                                  Renewal_Opportunity_created__c = false, account__c = billingAccount3.Id, Accounting_subscriber_domain__c = domain2.Id, plan_version__c = planVersion2.Id);
+                                                                                  account__c = billingAccount3.Id, Accounting_subscriber_domain__c = domain2.Id, plan_version__c = planVersion2.Id);
         insert subscription3;
         Accounting_Subscription__c subscription4 = new Accounting_Subscription__c(Server_Name__c = 'CommCareHQ', is_trial__c = false, date_start__c = Date.newInstance(2016, 12, 3), date_end__c = Date.newInstance(2017, 5, 20), service_type__c = 'Implementation', is_active__c = true,
-                                                                                  Renewal_Opportunity_created__c = false, account__c = billingAccount4.Id, Accounting_subscriber_domain__c = domain2.Id, plan_version__c = planVersion2.Id);
+                                                                                  account__c = billingAccount4.Id, Accounting_subscriber_domain__c = domain2.Id, plan_version__c = planVersion2.Id);
         insert subscription4; // has future subscription no create
 
         Accounting_Subscription__c subscription5 = new Accounting_Subscription__c(Server_Name__c = 'CommCareHQ', is_trial__c = false, date_start__c = Date.newInstance(2016, 1, 1), date_end__c = Date.newInstance(2017, 5, 1), service_type__c = 'Implementation', is_active__c = true,
-                                                                                  Renewal_Opportunity_created__c = false, account__c = billingAccount5.Id, Accounting_subscriber_domain__c = domain3.Id, plan_version__c = planVersion3.Id);
+                                                                                  account__c = billingAccount5.Id, Accounting_subscriber_domain__c = domain3.Id, plan_version__c = planVersion3.Id);
         insert subscription5; // no create no 60 days
 
         Accounting_Subscription__c subscription6 = new Accounting_Subscription__c(Server_Name__c = 'CommCareHQ', is_trial__c = false, date_start__c = Date.newInstance(2016, 1, 1), date_end__c = Date.newInstance(2017, 1, 1), service_type__c = 'Product', is_active__c = true,
-                                                                                  Renewal_Opportunity_created__c = false, account__c = billingAccount5.Id, Accounting_subscriber_domain__c = domain4.Id, plan_version__c = planVersion3.Id);
+                                                                                  account__c = billingAccount5.Id, Accounting_subscriber_domain__c = domain4.Id, plan_version__c = planVersion3.Id);
         insert subscription6;
         Accounting_Subscription__c subscription7 = new Accounting_Subscription__c(Server_Name__c = 'CommCareHQ', is_trial__c = false, date_start__c = Date.newInstance(2016, 1, 1), date_end__c = Date.newInstance(2017, 1, 12), service_type__c = 'Product', is_active__c = true,
-                                                                                  Renewal_Opportunity_created__c = false, account__c = billingAccount5.Id, Accounting_subscriber_domain__c = domain4.Id, plan_version__c = planVersion3.Id);
+                                                                                  account__c = billingAccount5.Id, Accounting_subscriber_domain__c = domain4.Id, plan_version__c = planVersion3.Id);
         insert subscription7;// should created for the second one
 
         Test.startTest();
@@ -214,10 +214,10 @@ public class RenewalSubscriptionsTest {
         insert planVersion3;
 
         Accounting_Subscription__c subscription1 = new Accounting_Subscription__c(Server_Name__c = 'CommCareHQ', is_trial__c = false, date_start__c = Date.today().addDays(-47), date_end__c = Date.today().addDays(-45), service_type__c = 'Product', is_active__c = false,
-                                                                                  Renewal_Opportunity_created__c = false, account__c = billingAccount1.Id, Accounting_subscriber_domain__c = domain1.Id, plan_version__c = planVersion1.Id);
+                                                                                  account__c = billingAccount1.Id, Accounting_subscriber_domain__c = domain1.Id, plan_version__c = planVersion1.Id);
         insert subscription1;
         Accounting_Subscription__c subscription2 = new Accounting_Subscription__c(Server_Name__c = 'CommCareHQ', is_trial__c = false, date_start__c = Date.today().addDays(-45), date_end__c = Date.today().addDays(7), service_type__c = 'Product', is_active__c = true,
-                                                                                  Renewal_Opportunity_created__c = false, account__c = billingAccount2.Id, Accounting_subscriber_domain__c = domain1.Id, plan_version__c = planVersion2.Id);
+                                                                                  account__c = billingAccount2.Id, Accounting_subscriber_domain__c = domain1.Id, plan_version__c = planVersion2.Id);
         insert subscription2;
 
         Test.startTest();
