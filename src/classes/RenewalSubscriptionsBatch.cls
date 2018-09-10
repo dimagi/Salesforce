@@ -173,7 +173,7 @@ public without sharing class RenewalSubscriptionsBatch implements Database.Batch
             return;
         }
         Database.executeBatch(new CreateFBCasesBatch(), 5);
-        StatusLoggerUtils.sendLog(StatusLoggerUtils.GIR_SYNC_LOGGER, BatchDefaultSettings__c.getOrgDefaults().Error_Emails__c.split(','));
+        StatusLoggerUtils.sendLog(StatusLoggerUtils.RENEWAL_LOGGER, BatchDefaultSettings__c.getOrgDefaults().Error_Emails__c.split(','));
     }
 
     /**
