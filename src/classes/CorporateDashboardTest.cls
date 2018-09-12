@@ -173,18 +173,18 @@ public class CorporateDashboardTest {
         CorporateDashboardHelper.refreshAllGraphs();
         Test.stopTest();
 
-        List<Global_Metric_Graph__c> mrrGraph = [SELECT X_Text__c, Graph_Value_1__c, Graph_Value_2__c, Graph_Value_3__c, Graph_Value_4__c,
+        List<Global_Metric_Graph__c> headcountGraph = [SELECT X_Text__c, Graph_Value_1__c, Graph_Value_2__c, Graph_Value_3__c, Graph_Value_4__c,
                                                          Graph_Value_5__c, Graph_Value_6__c, Graph_Value_7__c, Helper_Date__c
                                                          FROM Global_Metric_Graph__c WHERE Name =: CorporateDashboardHelper.GS_HEADCOUNT
                                                          ORDER BY Helper_Date__c];
-        System.assertEquals(2, mrrGraph.size());
-        System.assertEquals(2, mrrGraph.get(0).Graph_Value_2__c);
-        System.assertEquals(1, mrrGraph.get(0).Graph_Value_3__c);
-        System.assertEquals(1, mrrGraph.get(0).Graph_Value_4__c);
+        System.assertEquals(2, headcountGraph.size());
+        System.assertEquals(2, headcountGraph.get(0).Graph_Value_1__c);
+        System.assertEquals(1, headcountGraph.get(0).Graph_Value_2__c);
+        System.assertEquals(1, headcountGraph.get(0).Graph_Value_3__c);
 
-        System.assertEquals(3, mrrGraph.get(1).Graph_Value_2__c);
-        System.assertEquals(1, mrrGraph.get(1).Graph_Value_3__c);
-        System.assertEquals(2, mrrGraph.get(1).Graph_Value_4__c);
+        System.assertEquals(3, headcountGraph.get(1).Graph_Value_1__c);
+        System.assertEquals(1, headcountGraph.get(1).Graph_Value_2__c);
+        System.assertEquals(2, headcountGraph.get(1).Graph_Value_3__c);
     }
 
     private static void setUpGSRevenueData() {

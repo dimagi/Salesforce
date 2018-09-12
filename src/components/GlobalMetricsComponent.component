@@ -560,7 +560,7 @@
                     </div>
                     <div id="netEVBottomValue" class="graphBottomTitle"><h2>Sum of DIFF-Expected Value Minus Expense (Millions)</h2></div>
                 </div>
-                <div id="buffergsRevenueEV" class="gaugeGraph">
+                <div id="bufferEV" class="gaugeGraph">
                     <div class="graphTitle">
                         <h2>
                             <a href="https://dimagi.my.salesforce.com/00Ob00000047qYz" target="_blank">YTD Buffer EV generated - Target $6.0 million</a>
