@@ -33,7 +33,7 @@ public class HQSyncDomainBatch extends HQSyncBatch {
         }
 
         Map<String, Id> externalIdMap = new Map<String, Id>();
-        for (Domain__c domain : [SELECT Id, Internal_Properties__c, id__c FROM Domain__c WHERE id__c in :domainRecMap.keySet() AND Server_Name__c =: serverName]) {
+        for (Domain__c domain : [SELECT Id, Internal_Properties__c, id__c FROM Domain__c WHERE id__c in :domainRecMap.keySet() AND Server_Name__c =: this.serverName]) {
             externalIdMap.put(domain.id__c, domain.Id);
 
             Internal_Properties__c internalPropObj = internalPropsRecMap.get(domain.id__c);

@@ -71,8 +71,8 @@ public class HQSyncGIRBatch extends HQSyncBatch {
         }
 
         List<Domain__c> domainsToUpdate = new List<Domain__c>();
-        for (Domain__c domain : [SELECT Id, Name, Wam_TMP__c FROM Domain__c WHERE Name IN: domainsWam.keySet()]) {
-            if (domainsWam.containsKey(domain.Name)) { // we update Forms_for_Period_TMP__c because we have Forms_for_Period__c history and we don't want a lot of history updateds for example 15 for 1 object sync no sense
+        for (Domain__c domain : [SELECT Id, Name, Wam_TMP__c FROM Domain__c WHERE Name IN: domainsWam.keySet() AND Server_Name__c =: this.serverName]) {
+            if (domainsWam.containsKey(domain.Name)) { // we update Wam_TMP__c because we have Wam__c history and we don't want a lot of history updateds for example 15 for 1 object sync no sense
                 domain.Wam_TMP__c = (domain.Wam_TMP__c != null ? domain.Wam_TMP__c : 0) + domainsWam.get(domain.Name);
                 domainsToUpdate.add(domain);
             }
