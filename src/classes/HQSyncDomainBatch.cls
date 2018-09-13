@@ -32,13 +32,18 @@ public class HQSyncDomainBatch extends HQSyncBatch {
            }
         }
 
-        if (internalPropsRecMap.size() > 0) {
-            upsert internalPropsRecMap.values();
-        }
-
         Map<String, Id> externalIdMap = new Map<String, Id>();
         for (Domain__c domain : [SELECT Id, Internal_Properties__c, id__c FROM Domain__c WHERE id__c in :domainRecMap.keySet() AND Server_Name__c =: serverName]) {
             externalIdMap.put(domain.id__c, domain.Id);
+
+            Internal_Properties__c internalPropObj = internalPropsRecMap.get(domain.id__c);
+            if (internalPropObj != null && domain.Internal_Properties__c != null) {
+                internalPropObj.Id = domain.Internal_Properties__c;
+            }
+        }
+
+        if (internalPropsRecMap.size() > 0) {
+            upsert internalPropsRecMap.values();
         }
 
         for (Domain__c domain : domainRecMap.values()) {
