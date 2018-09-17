@@ -19,9 +19,9 @@ trigger DContractFTETrackerTrigger on DContract__c (after update) {
         Integer yearValue = FTE_Tracker_Settings__c.getOrgDefaults().FTE_Year__c != null ? FTE_Tracker_Settings__c.getOrgDefaults().FTE_Year__c.intValue()
                                 : Date.today().year();
         if (!Test.isRunningTest()) {
-            Database.executeBatch(new FTEGenerateEmployeesWorkCardBatch(contracts, yearValue), 1);
+            Database.executeBatch(new FTEGenerateEmployeesWorkCardBatch(contracts, yearValue,false), 1);
         } else {
-            Database.executeBatch(new FTEGenerateEmployeesWorkCardBatch(contracts, yearValue));
+            Database.executeBatch(new FTEGenerateEmployeesWorkCardBatch(contracts, yearValue, false));
         }
     }
 }

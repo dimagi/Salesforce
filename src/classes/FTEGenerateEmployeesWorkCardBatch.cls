@@ -5,13 +5,18 @@ public without sharing class FTEGenerateEmployeesWorkCardBatch implements Databa
 
     private Integer calculationYear;
     private Set<Id> contractsId;
+    private Set<Id> employeesId;
 
     public FTEGenerateEmployeesWorkCardBatch(Integer year) {
-        this.calculationYear = year;
+        this(null, year, false);
     }
 
-    public FTEGenerateEmployeesWorkCardBatch(Set<Id> contractsId, Integer year) {
-        this.contractsId = contractsId;
+    public FTEGenerateEmployeesWorkCardBatch(Set<Id> idSet, Integer year, Boolean emplSet) {
+        if (emplSet = true) {
+            this.employeesId = idSet;
+        } else {
+            this.contractsId = idSet;
+        }
         this.calculationYear = year;
     }
 
@@ -23,7 +28,14 @@ public without sharing class FTEGenerateEmployeesWorkCardBatch implements Databa
                     delete oldCards;
                 }
                 return [SELECT Id, Name FROM SFDC_Employee__c WHERE Employee_Status__c = 'Active' ORDER BY Name];
+            } else if (this.employeesId != null) {
+                List<FTE_Work_Card__c> oldCards = [SELECT Id FROM FTE_Work_Card__c WHERE Employee__c IN: this.employeesId];
+                if (oldCards.size() > 0) {
+                    delete oldCards;
+                }
+                return [SELECT Id, Name FROM SFDC_Employee__c WHERE Employee_Status__c = 'Active' AND ID IN: this.employeesId ORDER BY Name];
             }
+
             List<Time_Card__c> contractTimeCards = [SELECT Id, Employee__c FROM Time_Card__c WHERE
                                                         Client__c IN: this.contractsId AND CALENDAR_YEAR(Date__c) =: this.calculationYear];
             Set<Id> employees = new Set<Id>();

@@ -178,16 +178,15 @@ public class FTECsvUploadController {
 
             SObject sObj = new FTE_Data_Record__c();
             for (Integer i = 1 + columnsToSkip; i < 13 + columnsToSkip; i++) {
-                String strHelper = '0';
+                String strHelper = '';
                 if (dataCell.size() > i) {
                     strHelper = dataCell.get(i).trim();
-                    if (String.isBlank(strHelper)) {
-                        strHelper = '0';
-                    }
                 }
 
                 if (strHelper.isNumeric() || csvPattern.matcher(strHelper).matches()) {
                     sObj.put('Month_' + (i - columnsToSkip) + '__c', Decimal.valueOf(strHelper));
+                } else if (String.isBlank(strHelper)) {
+                    sObj.put('Month_' + (i - columnsToSkip) + '__c',-1);
                 } else {
                     ApexPages.addMessage(new ApexPages.message(ApexPages.severity.ERROR, 'Line ' + lineNum + ' : ' + 'bad number format - ' + strHelper));
                     return null;
