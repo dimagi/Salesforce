@@ -29,11 +29,11 @@ public class UnusedInternalPropertiesDeploymentTest {
     }
 
     static private void createDomainObject(Integer i, Id intProp) {
-        hqInt_Model_DomainClass d = new hqInt_Model_DomainClass();
+        HQSyncDomainModel.DomainModel d = new HQSyncDomainModel.DomainModel();
         d.x_id = 'domain_' + i;
         d.Name = 'domain_name_' + i;
         d.tags = new List<String> { ' ' };
-        Domain__c domainFromDb = d.createDbObject(null, 'CommCareHQ');
+        Domain__c domainFromDb = d.createDbObject('CommCareHQ', null);
         domainFromDb.Internal_Properties__c = intProp;
         insert domainFromDb;
     }

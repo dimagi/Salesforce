@@ -251,7 +251,7 @@
             });
 
             nv.addGraph(function() {
-                var chart, headCount = loadHeadCountData();
+                var chart, headCount = loadGSData(JSON.parse($j("[id$=headCountDataId]").val()));
                 chart = buildMultiBatChart('Record Count', 'Snapshot Date');
                 $j("[id$=headcount").append("<svg></svg>");
                 d3.select('#headcount svg').datum(headCount)
@@ -259,18 +259,28 @@
                 nv.utils.windowResize(chart.update);
                 return chart;
             });
+
+            nv.addGraph(function() {
+                var chart, gsRevenuRecords = loadGSData(JSON.parse($j("[id$=gsRevenueDataId]").val()));
+                chart = buildMultiBatChart('Sum of GS Revenue (Thousands)', 'Month');
+                $j("[id$=gsRevenue").append("<svg></svg>");
+                d3.select('#gsRevenue svg').datum(gsRevenuRecords)
+                    .transition().duration(500).call(chart);
+                nv.utils.windowResize(chart.update);
+                return chart;
+            });
         }
 
-        function loadHeadCountData() {
-            var graphData = JSON.parse($j("[id$=headCountDataId]").val());
+        function loadGSData(graphData) {
             var dlac = [], inc = [], dwa = [], dsi = [], dsa = [];
             for (i = 0; i < graphData.length; i++) {
-                dlac.push({x: graphData[i].X_Text__c, y: graphData[i].Graph_Value_6__c});
-                inc.push({x: graphData[i].X_Text__c, y: graphData[i].Graph_Value_2__c});
-                dwa.push({x: graphData[i].X_Text__c, y: graphData[i].Graph_Value_3__c});
-                dsi.push({x: graphData[i].X_Text__c, y: graphData[i].Graph_Value_4__c});
-                dsa.push({x: graphData[i].X_Text__c, y: graphData[i].Graph_Value_5__c});
+                inc.push({x: graphData[i].X_Text__c, y: graphData[i].Graph_Value_1__c});
+                dwa.push({x: graphData[i].X_Text__c, y: graphData[i].Graph_Value_2__c});
+                dsi.push({x: graphData[i].X_Text__c, y: graphData[i].Graph_Value_3__c});
+                dsa.push({x: graphData[i].X_Text__c, y: graphData[i].Graph_Value_4__c});
+                dlac.push({x: graphData[i].X_Text__c, y: graphData[i].Graph_Value_5__c});
             }
+
             return [ {key: "Inc", values: inc}, {key: "DWA", values: dwa},
                      {key: "DSI", values: dsi}, {key: "DSA", values: dsa}, {key: "DLAC", values: dlac} ];
         }
@@ -478,6 +488,7 @@
     <apex:inputHidden id="icdsDataId" value="{!icdsData}" />
     <apex:inputHidden id="serverUpTimeId" value="{!serverUpTime}" />
     <apex:inputHidden id="headCountDataId" value="{!headCountData}" />
+    <apex:inputHidden id="gsRevenueDataId" value="{!gsRevenueData}" />
 
     <a href="https://confluence.dimagi.com/display/internal/Global+Metrics" target="_blank"><h2>Graph definitions</h2></a><br /><br />
 
@@ -626,6 +637,15 @@
                     <div class="graphTitle">
                         <h2>
                             <a href="https://dimagi.my.salesforce.com/00O0X000004meTr" target="_blank">GS Headcount</a>
+                        </h2>
+                    </div>
+                </div>
+            </div>
+            <div class="chartsData">
+                <div id="gsRevenue" class="graph">
+                    <div class="graphTitle">
+                        <h2>
+                            <a href="https://dimagi.my.salesforce.com/00O0X000004mpWX" target="_blank">GS Revenue</a>
                         </h2>
                     </div>
                 </div>

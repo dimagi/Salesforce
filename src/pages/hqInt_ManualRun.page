@@ -1,14 +1,36 @@
-<apex:page showHeader="true" sidebar="true" controller="hqInt_ManualRunController">
+<apex:page showHeader="true" sidebar="true" controller="HQSyncController">
     <apex:form >
-        <apex:tabPanel switchType="server" selectedTab="tabTwo" id="AccountTabPanel" tabClass="activeTab" inactiveTabClass="inactiveTab">
-            <apex:tab label="Phase Two" name="tabTwo" id="tabTwo">
-                <apex:pageBlock id="phase2Block">
-                    <apex:actionPoller action="{!fetchRunningInstancesPhase2}" reRender="phase2Block" interval="10" status="status"/>
-                    <apex:selectList id="phaseTwoServer" value="{!phaseTwoServer}" disabled="{!if(phase2Running == true || batchIsRunning == true, true, false)}" multiselect="false" size="1">
+        <apex:tabPanel switchType="server" selectedTab="tabOne" id="accountTabPanel" tabClass="activeTab" inactiveTabClass="inactiveTab">
+
+            <apex:tab label="Domain synchronization - phase one" name="tabOne" id="tabOne">
+                <apex:pageBlock title="CommcareHq Job Run - Domain, Internal Properties, Deployment">
+                    <apex:outputPanel rendered="{!domainIsRunning}">
+                        <apex:image url="/img/loading32.gif"/>
+                        <apex:commandButton action="{!fetchDomainInstances}" value="Refresh Status" rendered="{!domainIsRunning}"/>
+                        <br/><br/>This Job is running !
+                        <br/><br/><br/>
+                        <b>Job Submitted Date</b> :  <apex:outputField value="{!batchClassJob.CreatedDate}"/><br/>
+                        <b>Batches Processed</b> : {!batchClassJob.JobItemsProcessed}/{!batchClassJob.TotalJobItems}
+                        <br/><br/><br/>
+                        For more information on this job, please go to setup -> Monitoring -> Apex Jobs
+                        <br/>NOTE : Only 1 instance of this job can run at a time.
+                    </apex:outputPanel>
+                    <br/><br/>
+                    <apex:selectList id="phaseOneServer" value="{!phaseOneServer}" disabled="{!if(accountingRunning == true || domainIsRunning == true, true, false)}" multiselect="false" size="1">
                         <apex:selectOptions value="{!serverCodes}"/>
                     </apex:selectList>
-                    <apex:commandButton action="{!runBatchJobPhase2}" disabled="{!if(phase2Running == true || batchIsRunning == true, true, false)}" value="Run Job Now"/>
-                    <apex:commandButton action="{!fetchRunningInstancesPhase2}" value="Refresh Status"/>
+                    <apex:commandButton action="{!runDomainsSynchronizationJob}" value="Run Job Now" disabled="{!if(accountingRunning == true || domainIsRunning == true, true, false)}"/>
+                </apex:pageBlock>
+            </apex:tab>
+
+            <apex:tab label="Accounting synchronization- phase two" name="tabTwo" id="tabTwo">
+                <apex:pageBlock id="phase2Block">
+                    <apex:actionPoller action="{!fetchAccountingInstances}" reRender="phase2Block" interval="10" status="status"/>
+                    <apex:selectList id="phaseTwoServer" value="{!phaseTwoServer}" disabled="{!if(accountingRunning == true || domainIsRunning == true, true, false)}" multiselect="false" size="1">
+                        <apex:selectOptions value="{!serverCodes}"/>
+                    </apex:selectList>
+                    <apex:commandButton action="{!runAccountingJob}" disabled="{!if(accountingRunning == true || domainIsRunning == true, true, false)}" value="Run Job Now"/>
+                    <apex:commandButton action="{!fetchAccountingInstances}" value="Refresh Status"/>
 
                     <div style="height:20px;">
                         <apex:actionStatus startText="Refreshing..." id="status"/>
@@ -28,26 +50,6 @@
                 </apex:pageBlock>
             </apex:tab>
 
-            <apex:tab label="Phase One" name="tabOne" id="tabOne">
-                <apex:pageBlock title="CommcareHq Job Run - Domain, Internal Properties, Deployment">
-                    <apex:outputPanel rendered="{!batchIsRunning}">
-                        <apex:image url="/img/loading32.gif"/>
-                        <apex:commandButton action="{!fetchRunningInstances}" value="Refresh Status" rendered="{!batchIsRunning}"/>
-                        <br/><br/>This Job is running !
-                        <br/><br/><br/>
-                        <b>Job Submitted Date</b> :  <apex:outputField value="{!batchClassJob.CreatedDate}"/><br/>
-                        <b>Batches Processed</b> : {!batchClassJob.JobItemsProcessed}/{!batchClassJob.TotalJobItems}
-                        <br/><br/><br/>
-                        For more information on this job, please go to setup -> Monitoring -> Apex Jobs
-                        <br/>NOTE : Only 1 instance of this job can run at a time.
-                    </apex:outputPanel>
-                    <br/><br/>
-                    <apex:selectList id="phaseOneServer" value="{!phaseOneServer}" disabled="{!if(phase2Running == true || batchIsRunning == true, true, false)}" multiselect="false" size="1">
-                        <apex:selectOptions value="{!serverCodes}"/>
-                    </apex:selectList>
-                    <apex:commandButton action="{!runBatchJob}" value="Run Job Now" disabled="{!if(phase2Running == true || batchIsRunning == true, true, false)}"/>
-                </apex:pageBlock>
-            </apex:tab>
         </apex:tabPanel>
     </apex:form>
 </apex:page>

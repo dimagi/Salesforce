@@ -17,6 +17,28 @@ public class CorporateDashboardTest {
     }
 
     @isTest
+    public static void shouldLoadGSRevenue() {
+        setUpGSRevenueData();
+
+        Test.startTest();
+        CorporateDashboardHelper.refreshAllGraphs();
+        Test.stopTest();
+
+        List<Global_Metric_Graph__c> gsRevenueGraph = [SELECT X_Text__c, Graph_Value_1__c, Graph_Value_2__c, Graph_Value_3__c
+                                                   FROM Global_Metric_Graph__c WHERE Name =: CorporateDashboardHelper.GS_REVENUE
+                                                   ORDER BY Helper_Date__c DESC];
+
+        System.assertEquals(11, gsRevenueGraph.get(0).Graph_Value_1__c);
+        System.assertEquals(5.25, gsRevenueGraph.get(0).Graph_Value_2__c);
+        System.assertEquals(15.25, gsRevenueGraph.get(0).Graph_Value_3__c);
+
+        System.assertEquals(1, gsRevenueGraph.get(1).Graph_Value_1__c);
+        System.assertEquals(5.2, gsRevenueGraph.get(1).Graph_Value_2__c);
+        System.assertEquals(6.25, gsRevenueGraph.get(1).Graph_Value_3__c);
+
+    }
+
+    @isTest
     public static void shouldLoadICDSGraphs() {
         Date currentDate = Date.today();
         insert new ICDS_Domain_Snapshot__c(Active_Users__c = 45000, Forms__c = 13000000, WAMs__c = 345000, Date__c = currentDate.addMonths(-2));
@@ -151,18 +173,84 @@ public class CorporateDashboardTest {
         CorporateDashboardHelper.refreshAllGraphs();
         Test.stopTest();
 
-        List<Global_Metric_Graph__c> mrrGraph = [SELECT X_Text__c, Graph_Value_1__c, Graph_Value_2__c, Graph_Value_3__c, Graph_Value_4__c,
+        List<Global_Metric_Graph__c> headcountGraph = [SELECT X_Text__c, Graph_Value_1__c, Graph_Value_2__c, Graph_Value_3__c, Graph_Value_4__c,
                                                          Graph_Value_5__c, Graph_Value_6__c, Graph_Value_7__c, Helper_Date__c
                                                          FROM Global_Metric_Graph__c WHERE Name =: CorporateDashboardHelper.GS_HEADCOUNT
                                                          ORDER BY Helper_Date__c];
-        System.assertEquals(2, mrrGraph.size());
-        System.assertEquals(2, mrrGraph.get(0).Graph_Value_2__c);
-        System.assertEquals(1, mrrGraph.get(0).Graph_Value_3__c);
-        System.assertEquals(1, mrrGraph.get(0).Graph_Value_4__c);
+        System.assertEquals(2, headcountGraph.size());
+        System.assertEquals(2, headcountGraph.get(0).Graph_Value_1__c);
+        System.assertEquals(1, headcountGraph.get(0).Graph_Value_2__c);
+        System.assertEquals(1, headcountGraph.get(0).Graph_Value_3__c);
 
-        System.assertEquals(3, mrrGraph.get(1).Graph_Value_2__c);
-        System.assertEquals(1, mrrGraph.get(1).Graph_Value_3__c);
-        System.assertEquals(2, mrrGraph.get(1).Graph_Value_4__c);
+        System.assertEquals(3, headcountGraph.get(1).Graph_Value_1__c);
+        System.assertEquals(1, headcountGraph.get(1).Graph_Value_2__c);
+        System.assertEquals(2, headcountGraph.get(1).Graph_Value_3__c);
+    }
+
+    private static void setUpGSRevenueData() {
+        //Inc : current month - 10000 * 50% + 6000 * 100% = 11000 / 1000 = 11
+        //Inc : previous month - 10000 * 10% + 6000 * 0% = 1000 / 1000 = 1
+        //DWA : current month - 100000 * 5% + 2500 * 10% = 5250 / 1000 = 5,25
+        //DWA : previous month - 100000 * 5% + 2500 * 8% = 5200 / 1000 = 5,2
+        //DSI : current month - 40000 * 25% + 15000 * 35% = 15250 / 1000 = 15,25
+        //DSI : previous month - 40000 * 10% + 15000 * 15% = 6250 / 1000 = 6,25
+        Business_Unit__c bizUnit1 = new Business_Unit__c(Name = 'Inc');
+        Business_Unit__c bizUnit2 = new Business_Unit__c(Name = 'DWA');
+        Business_Unit__c bizUnit3 = new Business_Unit__c(Name = 'DSI');
+        insert bizUnit1;
+        insert bizUnit2;
+        insert bizUnit3;
+
+        DContract__c contract1 = new DContract__c(Name = 'Test 1', Efficiency_Owner_BU__c = bizUnit1.Id, GS_Revenue_Calculation__c = true);
+        DContract__c contract2 = new DContract__c(Name = 'Test 2', Efficiency_Owner_BU__c = bizUnit1.Id, GS_Revenue_Calculation__c = true);
+        DContract__c contract3 = new DContract__c(Name = 'Test 3', Efficiency_Owner_BU__c = bizUnit2.Id, GS_Revenue_Calculation__c = true);
+        DContract__c contract4 = new DContract__c(Name = 'Test 4', Efficiency_Owner_BU__c = bizUnit2.Id, GS_Revenue_Calculation__c = true);
+        DContract__c contract5 = new DContract__c(Name = 'Test 5', Efficiency_Owner_BU__c = bizUnit3.Id, GS_Revenue_Calculation__c = true);
+        DContract__c contract6 = new DContract__c(Name = 'Test 6', Efficiency_Owner_BU__c = bizUnit3.Id, GS_Revenue_Calculation__c = true);
+        insert contract1;
+        insert contract2;
+        insert contract3;
+        insert contract4;
+        insert contract5;
+        insert contract6;
+
+        insert new Pipeline_Snapshot__c(Month_Date__c = Date.today(), Contract__c = contract1.Id,
+                                        Stage__c = 'Outstanding Contracted', Intracompany_Sub_contract__c = 'No',
+                                        GS_Project_Services_Budget_Handoff_Cp__c = 10000, Work_Completed_for_Period__c = 50);
+        insert new Pipeline_Snapshot__c(Month_Date__c = Date.today(), Contract__c = contract2.Id,
+                                        Stage__c = 'Outstanding Contracted', Intracompany_Sub_contract__c = 'No',
+                                        GS_Project_Services_Budget_Handoff_Cp__c = 6000, Work_Completed_for_Period__c = 100);
+        insert new Pipeline_Snapshot__c(Month_Date__c = Date.today(), Contract__c = contract3.Id,
+                                        Stage__c = 'Outstanding Contracted', Intracompany_Sub_contract__c = 'No',
+                                        GS_Project_Services_Budget_Handoff_Cp__c = 100000, Work_Completed_for_Period__c = 5);
+        insert new Pipeline_Snapshot__c(Month_Date__c = Date.today(), Contract__c = contract4.Id,
+                                        Stage__c = 'Outstanding Contracted', Intracompany_Sub_contract__c = 'No',
+                                        GS_Project_Services_Budget_Handoff_Cp__c = 2500, Work_Completed_for_Period__c = 10);
+        insert new Pipeline_Snapshot__c(Month_Date__c = Date.today(), Contract__c = contract5.Id,
+                                        Stage__c = 'Outstanding Contracted', Intracompany_Sub_contract__c = 'No',
+                                        GS_Project_Services_Budget_Handoff_Cp__c = 40000, Work_Completed_for_Period__c = 25);
+        insert new Pipeline_Snapshot__c(Month_Date__c = Date.today(), Contract__c = contract6.Id,
+                                        Stage__c = 'Outstanding Contracted', Intracompany_Sub_contract__c = 'No',
+                                        GS_Project_Services_Budget_Handoff_Cp__c = 15000, Work_Completed_for_Period__c = 35);
+
+        insert new Pipeline_Snapshot__c(Month_Date__c = Date.today().addMonths(-1), Contract__c = contract1.Id,
+                                        Stage__c = 'Outstanding Contracted', Intracompany_Sub_contract__c = 'No',
+                                        GS_Project_Services_Budget_Handoff_Cp__c = 10000, Work_Completed_for_Period__c = 10);
+        insert new Pipeline_Snapshot__c(Month_Date__c = Date.today().addMonths(-1), Contract__c = contract2.Id,
+                                        Stage__c = 'Outstanding Contracted', Intracompany_Sub_contract__c = 'No',
+                                        GS_Project_Services_Budget_Handoff_Cp__c = 6000, Work_Completed_for_Period__c = 0);
+        insert new Pipeline_Snapshot__c(Month_Date__c = Date.today().addMonths(-1), Contract__c = contract3.Id,
+                                        Stage__c = 'Outstanding Contracted', Intracompany_Sub_contract__c = 'No',
+                                        GS_Project_Services_Budget_Handoff_Cp__c = 100000, Work_Completed_for_Period__c = 5);
+        insert new Pipeline_Snapshot__c(Month_Date__c = Date.today().addMonths(-1), Contract__c = contract4.Id,
+                                        Stage__c = 'Outstanding Contracted', Intracompany_Sub_contract__c = 'No',
+                                        GS_Project_Services_Budget_Handoff_Cp__c = 2500, Work_Completed_for_Period__c = 8);
+        insert new Pipeline_Snapshot__c(Month_Date__c = Date.today().addMonths(-1), Contract__c = contract5.Id,
+                                        Stage__c = 'Outstanding Contracted', Intracompany_Sub_contract__c = 'No',
+                                        GS_Project_Services_Budget_Handoff_Cp__c = 40000, Work_Completed_for_Period__c = 10);
+        insert new Pipeline_Snapshot__c(Month_Date__c = Date.today().addMonths(-1), Contract__c = contract6.Id,
+                                        Stage__c = 'Outstanding Contracted', Intracompany_Sub_contract__c = 'No',
+                                        GS_Project_Services_Budget_Handoff_Cp__c = 15000, Work_Completed_for_Period__c = 15);
     }
 
     private static void setHiresData() {
@@ -174,31 +262,41 @@ public class CorporateDashboardTest {
         insert bizUnit3;
 
         insert new SFDC_Employee_Snapshot__c(Name = 'emp_snp_1', Employee_Status__c = 'Active', Employee_Type__c = 'Employee', Sub_Unit__c = 'Global Services',
-                                                Snapshot_Date__c = Date.today(), Business_Unit__c = bizUnit1.Id, Exchange_Rate__c = 1);
+                                                Per_Week_Hours__c = 11, Global_Services__c = 31, Snapshot_Date__c = Date.today(), Business_Unit__c = bizUnit1.Id,
+                                                Exchange_Rate__c = 1);
         insert new SFDC_Employee_Snapshot__c(Name = 'emp_snp_1', Employee_Status__c = 'Active', Employee_Type__c = 'Employee', Sub_Unit__c = 'Global Services',
-                                                Snapshot_Date__c = Date.today().addMonths(-1), Business_Unit__c = bizUnit1.Id, Exchange_Rate__c = 1);
+                                                Per_Week_Hours__c = 11, Global_Services__c = 31, Snapshot_Date__c = Date.today().addMonths(-1), Business_Unit__c = bizUnit1.Id,
+                                                Exchange_Rate__c = 1);
 
         insert new SFDC_Employee_Snapshot__c(Name = 'emp_snp_2', Employee_Status__c = 'Active', Employee_Type__c = 'Employee', Sub_Unit__c = 'Global Services',
-                                                Snapshot_Date__c = Date.today(), Business_Unit__c = bizUnit2.Id, Exchange_Rate__c = 1);
+                                                Per_Week_Hours__c = 11, Global_Services__c = 31, Snapshot_Date__c = Date.today(), Business_Unit__c = bizUnit2.Id,
+                                                Exchange_Rate__c = 1);
         insert new SFDC_Employee_Snapshot__c(Name = 'emp_snp_2', Employee_Status__c = 'Active', Employee_Type__c = 'Employee', Sub_Unit__c = 'Global Services',
-                                                Snapshot_Date__c = Date.today().addMonths(-1), Business_Unit__c = bizUnit2.Id, Exchange_Rate__c = 1);
+                                                Per_Week_Hours__c = 11, Global_Services__c = 31, Snapshot_Date__c = Date.today().addMonths(-1), Business_Unit__c = bizUnit2.Id,
+                                                Exchange_Rate__c = 1);
 
         insert new SFDC_Employee_Snapshot__c(Name = 'emp_snp_3', Employee_Status__c = 'Active', Employee_Type__c = 'Employee', Sub_Unit__c = 'Global Services',
-                                                Snapshot_Date__c = Date.today(), Business_Unit__c = bizUnit3.Id, Exchange_Rate__c = 1);
+                                                Per_Week_Hours__c = 11, Global_Services__c = 31, Snapshot_Date__c = Date.today(), Business_Unit__c = bizUnit3.Id,
+                                                Exchange_Rate__c = 1);
 
         insert new SFDC_Employee_Snapshot__c(Name = 'emp_snp_4', Employee_Status__c = 'Active', Employee_Type__c = 'Employee', Sub_Unit__c = 'Global Services',
-                                                Snapshot_Date__c = Date.today().addMonths(-1), Business_Unit__c = bizUnit3.Id, Exchange_Rate__c = 1);
+                                                Per_Week_Hours__c = 11, Global_Services__c = 31, Snapshot_Date__c = Date.today().addMonths(-1), Business_Unit__c = bizUnit3.Id,
+                                                Exchange_Rate__c = 1);
 
         insert new SFDC_Employee_Snapshot__c(Name = 'emp_snp_5', Employee_Status__c = 'Active', Employee_Type__c = 'Employee', Sub_Unit__c = 'Global Services',
-                                                Snapshot_Date__c = Date.today(), Business_Unit__c = bizUnit3.Id, Exchange_Rate__c = 1);
+                                                Per_Week_Hours__c = 11, Global_Services__c = 31, Snapshot_Date__c = Date.today(), Business_Unit__c = bizUnit3.Id,
+                                                Exchange_Rate__c = 1);
 
         insert new SFDC_Employee_Snapshot__c(Name = 'emp_snp_6', Employee_Status__c = 'Active', Employee_Type__c = 'Employee', Sub_Unit__c = 'Global Services',
-                                                Snapshot_Date__c = Date.today(), Business_Unit__c = bizUnit1.Id, Exchange_Rate__c = 1);
+                                                Per_Week_Hours__c = 11, Global_Services__c = 31, Snapshot_Date__c = Date.today(), Business_Unit__c = bizUnit1.Id,
+                                                Exchange_Rate__c = 1);
         insert new SFDC_Employee_Snapshot__c(Name = 'emp_snp_6', Employee_Status__c = 'Active', Employee_Type__c = 'Employee', Sub_Unit__c = 'Global Services',
-                                                Snapshot_Date__c = Date.today().addMonths(-1), Business_Unit__c = bizUnit1.Id, Exchange_Rate__c = 1);
+                                                Per_Week_Hours__c = 11, Global_Services__c = 31, Snapshot_Date__c = Date.today().addMonths(-1), Business_Unit__c = bizUnit1.Id,
+                                                Exchange_Rate__c = 1);
 
         insert new SFDC_Employee_Snapshot__c(Name = 'emp_snp_7', Employee_Status__c = 'Active', Employee_Type__c = 'Employee', Sub_Unit__c = 'Global Services',
-                                                Snapshot_Date__c = Date.today(), Business_Unit__c = bizUnit1.Id, Exchange_Rate__c = 1);
+                                                Per_Week_Hours__c = 11, Global_Services__c = 31, Snapshot_Date__c = Date.today(), Business_Unit__c = bizUnit1.Id,
+                                                Exchange_Rate__c = 1);
     }
 
     private static void setUpMrrData() {

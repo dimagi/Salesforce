@@ -21,6 +21,7 @@
     .graphContainer {
         text-align: center;
         display: inline-block;
+        margin-top: 5px;
         width: 23% !important;
     }
     .qLabel {
@@ -211,6 +212,11 @@
                         <div class="graphContainer">
                             <a href="/00O0X000004meTr">
                                 <img class="graph" src="/servlet/servlet.ChartServer?rsid=0FL0X000001iuPE&ruid=005b0000001SrLL&did=01Zb0000000gCws&s=8&fs=12&tfg=12&tfs=-16777216&explode=0&c=column&cs=2&title=GS+Headcount&eh=no&compo=yes&fg=-16777216&bg1=-1&bg2=-1&bgdir=2&dl1=Snapshot+Date&dl2=Business+Unit&l=2&sax=yes&Yman=no&nc=0&actUrl=%2F00O0X000004meTr&sd=1&scv=no&sct=no&spt=no&bd=yes&cu=USD&ab=X&u=0&vt=0&ab2=Y&u2=0&vt2=0&vl0=Record+Count&spoc=no&topn=no&gc0=-1&gc1=-1&gc2=-1&sona=0&cacheParam={!randomParam}" />
+                            </a>
+                        </div>
+                        <div class="graphContainer">
+                            <a href="/00O0X000004mpWX">
+                                <img class="graph" src="/servlet/servlet.ChartServer?rsid=0FL0X000002JUqX&ruid=005b0000001SrLL&did=01Zb0000000gCws&s=8&fs=12&tfg=12&tfs=-16777216&explode=0&c=column&cs=2&title=Monthly+GS+Revenue&eh=no&compo=yes&fg=-16777216&bg1=-1&bg2=-1&bgdir=2&dl1=Month&dl2=Contract%3A+Efficiency+Owner+%28BU%29&l=2&sax=yes&Yman=no&nc=0&actUrl=%2F00O0X000004mpWX&sd=1&scv=no&sct=no&spt=no&bd=yes&cu=USD&ab=X&u=0&vt=0&ab2=Y&u2=0&vt2=2&vl0=Sum+of+GS+Revenue&spoc=no&topn=no&gc0=-1&gc1=-1&gc2=-1&sona=0&cacheParam={!randomParam}" />
                             </a>
                         </div>
                     </div>

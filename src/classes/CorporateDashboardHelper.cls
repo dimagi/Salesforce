@@ -5,6 +5,7 @@ public class CorporateDashboardHelper {
 
     public static final String GS_GRAPHS = 'Gs';
     public static final String GS_HEADCOUNT = 'Gs Headcount';
+    public static final String GS_REVENUE = 'Gs Revenue';
     public static final String PERFORMANCE_GRAPHS = 'CommCare Performance';
     public static final String UP_TIME_GRAPHS = 'Server Up Time';
     public static final String MRR_GRAPH = 'Mrr';
@@ -27,6 +28,7 @@ public class CorporateDashboardHelper {
         BatchDefaultSettings__c batchSettings = BatchDefaultSettings__c.getOrgDefaults();
         try {
             loadGsHeadcountData();
+            loadGSRevenueData();
             loadGSData();
             loadPerformanceData();
             loadServerUpTimeData();
@@ -46,12 +48,52 @@ public class CorporateDashboardHelper {
         }
     }
 
+    public static void loadGSRevenueData() {
+        List<Global_Metric_Graph__c> gsRevenueData = new List<Global_Metric_Graph__c>();
+        AggregateResult[] records = [SELECT Month_Date__c, Contract__r.Efficiency_Owner_BU__r.Name, SUM(GS_Revenue__c)
+                                     FROM Pipeline_Snapshot__c WHERE Month_Date__c >=: Date.today().addMonths(-6)
+                                     AND Intracompany_Sub_contract__c = 'No' AND Stage__c != 'Closed' AND Stage__c != 'Total'
+                                     AND Contract__r.GS_Revenue_Calculation__c = true AND GS_Revenue__c > 0
+                                     GROUP BY Month_Date__c, Contract__r.Efficiency_Owner_BU__r.Name ORDER BY Month_Date__c];
+
+        if (records.size() > 0) {
+            Date snpDateLast = (Date) records.get(0).get('Month_Date__c');
+            Global_Metric_Graph__c helper = new Global_Metric_Graph__c(Name = GS_REVENUE, X_Text__c = getDateText(snpDateLast), Graph_Value_1__c = 0, Graph_Value_2__c = 0, Graph_Value_3__c = 0,
+                                                        Graph_Value_4__c = 0, Graph_Value_5__c = 0, Graph_Value_6__c = 0, Helper_Date__c = snpDateLast);
+            for (AggregateResult ar : records) {
+                Date snpDate = (Date) ar.get('Month_Date__c');
+                String buName = (String) ar.get('Name');
+                Decimal sumValue = (Decimal) (ar.get('expr0'));
+                System.debug('Record : ' + snpDate + ' ' + buName + ' ' + sumValue);
+                if (snpDateLast != snpDate) {
+                    snpDateLast = snpDate;
+                    gsRevenueData.add(helper);
+                    helper = new Global_Metric_Graph__c(Name = GS_REVENUE, X_Text__c = getDateText(snpDate), Graph_Value_1__c = 0, Graph_Value_2__c = 0, Graph_Value_3__c = 0,
+                                                        Graph_Value_4__c = 0, Graph_Value_5__c = 0, Graph_Value_6__c = 0, Helper_Date__c = snpDate);
+                }
+                if (buName == 'Inc') {
+                    helper.Graph_Value_1__c = sumValue / 1000.00;
+                } else if (buName == 'DWA') {
+                    helper.Graph_Value_2__c = sumValue / 1000.00;
+                } else if (buName == 'DSI') {
+                    helper.Graph_Value_3__c = sumValue / 1000.00;
+                } else if (buName == 'DSA') {
+                    helper.Graph_Value_4__c = sumValue / 1000.00;
+                } else if (buName == 'DLAC') {
+                    helper.Graph_Value_5__c = sumValue / 1000.00;
+                }
+            }
+            gsRevenueData.add(helper);
+        }
+        deleteAndAddMetrics(gsRevenueData, GS_REVENUE);
+    }
+
     public static void loadGsHeadcountData() {
         List<Global_Metric_Graph__c> headcountData = new List<Global_Metric_Graph__c>();
         AggregateResult[] records = [SELECT Snapshot_Date__c, Business_Unit__r.Name, Count(Id)
                                      FROM SFDC_Employee_Snapshot__c WHERE Snapshot_Date__c >=: Date.today().addMonths(-8)
                                      AND (Employee_Type__c = 'Contractor' OR Employee_Type__c = 'Employee') AND Employee_Status__c = 'Active'
-                                     AND  Sub_Unit__c = 'Global Services'
+                                     AND Per_Week_Hours__c > 10 AND Global_Services__c > 30
                                      GROUP BY Snapshot_Date__c, Business_Unit__r.Name ORDER BY Snapshot_Date__c];
 
         System.debug('Employee Data : ' + records);
@@ -70,17 +112,17 @@ public class CorporateDashboardHelper {
                     helper = new Global_Metric_Graph__c(Name = GS_HEADCOUNT, X_Text__c = getDateText(snpDate), Graph_Value_1__c = 0, Graph_Value_2__c = 0, Graph_Value_3__c = 0,
                                                         Graph_Value_4__c = 0, Graph_Value_5__c = 0, Graph_Value_6__c = 0, Helper_Date__c = snpDate);
                 }
-                helper.Graph_Value_1__c += countRecords;
+
                 if (buName == 'Inc') {
-                    helper.Graph_Value_2__c = countRecords;
+                    helper.Graph_Value_1__c = countRecords;
                 } else if (buName == 'DWA') {
-                    helper.Graph_Value_3__c = countRecords;
+                    helper.Graph_Value_2__c = countRecords;
                 } else if (buName == 'DSI') {
-                    helper.Graph_Value_4__c = countRecords;
+                    helper.Graph_Value_3__c = countRecords;
                 } else if (buName == 'DSA') {
-                    helper.Graph_Value_5__c = countRecords;
+                    helper.Graph_Value_4__c = countRecords;
                 } else if (buName == 'DLAC') {
-                    helper.Graph_Value_6__c = countRecords;
+                    helper.Graph_Value_5__c = countRecords;
                 }
             }
             headcountData.add(helper);

@@ -26,26 +26,26 @@ private class OpportunityTriggersTest {
                                           Implementing_Business_Unit__c = bunit.Id, AccountId = acc3.Id);
         insert opp3;
 
-        hqInt_Model_DomainClass d1 = new hqInt_Model_DomainClass();
+        HQSyncDomainModel.DomainModel d1 = new HQSyncDomainModel.DomainModel();
         d1.x_id = 'sample_external_id_1';
         d1.Name = 'd1';
         d1.tags = new List<String> { ' ' };
-        Domain__c domainFromDb1 = d1.createDbObject(null, 'CommCare HQ');
+        Domain__c domainFromDb1 = d1.createDbObject('CommCare HQ', null);
         domainFromDb1.Opportunity__c = opp1.Id;
         insert domainFromDb1;
-        hqInt_Model_DomainClass d2 = new hqInt_Model_DomainClass();
+        HQSyncDomainModel.DomainModel d2 = new HQSyncDomainModel.DomainModel();
         d2.x_id = 'sample_external_id_2';
         d2.Name = 'd2';
         d2.tags = new List<String> { ' ' };
-        Domain__c domainFromDb2 = d2.createDbObject(null, 'CommCare HQ');
+        Domain__c domainFromDb2 = d2.createDbObject('CommCare HQ', null);
         domainFromDb2.Account__c = acc2.Id;
         domainFromDb2.Opportunity__c = opp2.Id;
         insert domainFromDb2;
-        hqInt_Model_DomainClass d3 = new hqInt_Model_DomainClass();
+        HQSyncDomainModel.DomainModel d3 = new HQSyncDomainModel.DomainModel();
         d3.x_id = 'sample_external_id_3';
         d3.Name = 'd3';
         d3.tags = new List<String> { ' ' };
-        Domain__c domainFromDb3 = d3.createDbObject(null, 'CommCare HQ');
+        Domain__c domainFromDb3 = d3.createDbObject('CommCare HQ', null);
         domainFromDb3.Account__c = acc3.Id;
         domainFromDb3.Opportunity__c = opp3.Id;
         insert domainFromDb3;
@@ -88,11 +88,11 @@ private class OpportunityTriggersTest {
         insert opp2;
 
 
-        hqInt_Model_DomainClass d1 = new hqInt_Model_DomainClass();
+        HQSyncDomainModel.DomainModel d1 = new HQSyncDomainModel.DomainModel();
         d1.x_id = 'sample_external_id_1';
         d1.Name = 'd1';
         d1.tags = new List<String> { ' ' };
-        Domain__c domainFromDb1 = d1.createDbObject(null, 'CommCare HQ');
+        Domain__c domainFromDb1 = d1.createDbObject('CommCare HQ', null);
         domainFromDb1.Opportunity__c = opp1.Id;
         insert domainFromDb1;
 

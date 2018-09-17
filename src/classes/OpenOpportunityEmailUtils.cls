@@ -24,9 +24,9 @@ public with sharing class OpenOpportunityEmailUtils {
     private static String YELLOW_COLOR = '#F3F781';
     private static String GREEN_COLOR = '#41A317';
     private static String COLOR_KEY = '<table border="1"><tr style="background:' + GREEN_COLOR + '"><td>Opportunity has transitioned in the last week.</td></tr><tr style="background:' + YELLOW_COLOR + '"><td>Opportunity has no Account attached.</td></tr><tr style="background:' + RED_COLOR + '"><td>Opportunity is overdue for an update.<br><b>-- Stage 1,2,5:</b> 30 days.<br><b>-- Stage 3,4,6:</b> 10 days</td></tr></table><br><br>';
-	// End Color Key
-	// Instructions added by Nick
-	private static String INSTRUCTIONS = '<b>Keep Warm (<a href="https://confluence.dimagi.com/display/internal/Salesforce+Accounts+Keep+Warm">Instructions</a>)</b><br>"Keep Warm" functionality is used when you want to be reminded to follow-up with an account after a certain period of time. For instance, you had an opportunity with CRS - Tanzania that fizzled out but you want to remember to check on them in three months time.You should use this functionality instead of creating Opportunities in Stage 1 and/or Stage 2. Stage 1/2 opps should not be used as keep warm reminders.<br><br><b>Do not turn this red:</b><br>Each opportunity has a check box at the top to make it not show up on this report. You will NEVER be reminded of an opp if you use this.<br><br>';
+    // End Color Key
+    // Instructions added by Nick
+    private static String INSTRUCTIONS = '<b>Keep Warm (<a href="https://confluence.dimagi.com/display/internal/Overdue+Opportunities+Workflow">Instructions</a>)</b><br>"Keep Warm" functionality is used when you want to be reminded to follow-up with an account after a certain period of time. For instance, you had an opportunity with CRS - Tanzania that fizzled out but you want to remember to check on them in three months time.You should use this functionality instead of creating Opportunities in Stage 1 and/or Stage 2. Stage 1/2 opps should not be used as keep warm reminders.<br><br><b>Do not turn this red:</b><br>Each opportunity has a check box at the top to make it not show up on this report. You will NEVER be reminded of an opp if you use this.<br><br>';
     private static final String FOGBUGZ_LINK = 'https://manage.dimagi.com/default.asp?';
 
 	/**************************************************

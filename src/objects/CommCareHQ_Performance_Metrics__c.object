@@ -21,6 +21,10 @@
         <type>Default</type>
     </actionOverrides>
     <actionOverrides>
+        <actionName>Follow</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
         <actionName>List</actionName>
         <type>Default</type>
     </actionOverrides>
@@ -186,6 +190,27 @@
         <trackTrending>false</trackTrending>
         <type>Number</type>
         <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>eNikshay_Server_Response_Time__c</fullName>
+        <externalId>false</externalId>
+        <label>eNikshay Server Response Time</label>
+        <precision>10</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>eNikshay_Up_Time__c</fullName>
+        <externalId>false</externalId>
+        <label>eNikshay Uptime</label>
+        <precision>7</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackTrending>false</trackTrending>
+        <type>Percent</type>
     </fields>
     <label>CommCareHQ Performance Metrics</label>
     <listViews>

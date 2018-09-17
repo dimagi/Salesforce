@@ -367,6 +367,9 @@ public without sharing class DimagiToolsController {
         if (currentSnapshot != null) { // we must update snapshot
             proContractSnapshot.Id = currentSnapshot;
         }
+        if (dcontract != null) {
+            dcontract.recalculateFormulas();
+        }
 
         return SnapshotHelper.fillPROSnapshot(pro.Report_Out_Date__c, proContractSnapshot, dcontract, SnapshotHelper.getLastPROSnapshot(dcontract, currentSnapshot));
     }

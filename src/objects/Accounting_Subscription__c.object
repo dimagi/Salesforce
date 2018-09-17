@@ -21,6 +21,10 @@
         <type>Default</type>
     </actionOverrides>
     <actionOverrides>
+        <actionName>Follow</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
         <actionName>List</actionName>
         <type>Default</type>
     </actionOverrides>
@@ -100,6 +104,17 @@
         <unique>false</unique>
     </fields>
     <fields>
+        <fullName>Justify_why_Skip_Auto_Downgrade__c</fullName>
+        <externalId>false</externalId>
+        <label>Justify why &quot;Skip Auto Downgrade&quot;</label>
+        <length>255</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
         <fullName>Lifespan_in_Months__c</fullName>
         <description>Length of subscription in months. If no end date, length so far.</description>
         <externalId>false</externalId>
@@ -148,28 +163,26 @@
         <externalId>false</externalId>
         <inlineHelpText>Inside Sales process means the lead source is inbound AND responded to at least one of the Sales team&apos;s email or directly contacted the Sales team</inlineHelpText>
         <label>Part of inside sales process</label>
+        <picklist>
+            <picklistValues>
+                <fullName>Yes</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>No</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Unsure</fullName>
+                <default>false</default>
+            </picklistValues>
+            <restrictedPicklist>true</restrictedPicklist>
+            <sorted>false</sorted>
+        </picklist>
         <required>false</required>
         <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Picklist</type>
-        <valueSet>
-            <restricted>true</restricted>
-            <valueSetDefinition>
-                <sorted>false</sorted>
-                <value>
-                    <fullName>Yes</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>No</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>Unsure</fullName>
-                    <default>false</default>
-                </value>
-            </valueSetDefinition>
-        </valueSet>
     </fields>
     <fields>
         <fullName>Real_Active_or_Paying__c</fullName>
@@ -194,23 +207,21 @@
         <fullName>Server_Name__c</fullName>
         <externalId>false</externalId>
         <label>Server Name</label>
+        <picklist>
+            <picklistValues>
+                <fullName>CommCareHQ</fullName>
+                <default>true</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>CommCareHQ India</fullName>
+                <default>false</default>
+            </picklistValues>
+            <sorted>false</sorted>
+        </picklist>
         <required>false</required>
         <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Picklist</type>
-        <valueSet>
-            <valueSetDefinition>
-                <sorted>false</sorted>
-                <value>
-                    <fullName>CommCareHQ</fullName>
-                    <default>true</default>
-                </value>
-                <value>
-                    <fullName>CommCareHQ India</fullName>
-                    <default>false</default>
-                </value>
-            </valueSetDefinition>
-        </valueSet>
     </fields>
     <fields>
         <fullName>Software_Plan_Edition__c</fullName>
