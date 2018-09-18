@@ -5,13 +5,18 @@ public without sharing class FTEGenerateEmployeesWorkCardBatch implements Databa
 
     private Integer calculationYear;
     private Set<Id> contractsId;
+    private Set<Id> employeesId;
 
     public FTEGenerateEmployeesWorkCardBatch(Integer year) {
-        this.calculationYear = year;
+        this(null, year, false);
     }
 
-    public FTEGenerateEmployeesWorkCardBatch(Set<Id> contractsId, Integer year) {
-        this.contractsId = contractsId;
+    public FTEGenerateEmployeesWorkCardBatch(Set<Id> idSet, Integer year, Boolean emplSet) {
+        if (emplSet = true) {
+            this.employeesId = idSet;
+        } else {
+            this.contractsId = idSet;
+        }
         this.calculationYear = year;
     }
 
@@ -23,7 +28,14 @@ public without sharing class FTEGenerateEmployeesWorkCardBatch implements Databa
                     delete oldCards;
                 }
                 return [SELECT Id, Name FROM SFDC_Employee__c WHERE Employee_Status__c = 'Active' ORDER BY Name];
+            } else if (this.employeesId != null) {
+                List<FTE_Work_Card__c> oldCards = [SELECT Id FROM FTE_Work_Card__c WHERE Employee__c IN: this.employeesId];
+                if (oldCards.size() > 0) {
+                    delete oldCards;
+                }
+                return [SELECT Id, Name FROM SFDC_Employee__c WHERE Employee_Status__c = 'Active' AND ID IN: this.employeesId ORDER BY Name];
             }
+
             List<Time_Card__c> contractTimeCards = [SELECT Id, Employee__c FROM Time_Card__c WHERE
                                                         Client__c IN: this.contractsId AND CALENDAR_YEAR(Date__c) =: this.calculationYear];
             Set<Id> employees = new Set<Id>();
@@ -70,7 +82,7 @@ public without sharing class FTEGenerateEmployeesWorkCardBatch implements Databa
                 System.debug('TC Date: ' + tc.Date__c);
                 System.debug('TC Time: ' + tc.Date__c);
                 if (tc.Date__c.month() != month) {
-                    monthDays = roundtoDays(monthHours);
+                    monthDays = FTETrackerHelper.roundtoDays(monthHours);
                     sObj.put('Month_' + month + '__c', monthDays);
                     month = tc.Date__c.month();
                     monthHours = 0;
@@ -88,12 +100,12 @@ public without sharing class FTEGenerateEmployeesWorkCardBatch implements Databa
                 totalCost += realHours * (tc.Time_Card_Salary__c != null ? tc.Time_Card_Salary__c : 0);
             }
 
-            monthDays = roundtoDays(monthHours);
+            monthDays = FTETrackerHelper.roundtoDays(monthHours);
             sObj.put('Month_' + month + '__c', monthDays);
 
             employeeWorkCard = (FTE_Work_Card__c) sObj;
             employeeWorkCard.Total_Hours__c = totalHours;
-            employeeWorkCard.Total__c = roundtoDays(totalHours);
+            employeeWorkCard.Total__c = FTETrackerHelper.roundtoDays(totalHours);
             employeeWorkCard.Unloaded_Rate_Total_Cost__c = totalCost.setScale(2);
 
             System.debug('WC totalHours: ' + totalHours);
@@ -103,11 +115,5 @@ public without sharing class FTEGenerateEmployeesWorkCardBatch implements Databa
 
     public void finish(Database.BatchableContext BC) {
 
-    }
-
-    public Decimal roundtoDays(Decimal hours) {
-        Decimal totalDays = (hours / 8.0).intValue();
-        Decimal restValue = hours - (totalDays * 8);
-        return totalDays + (0.25 * (restValue / 2.0).setScale(0, System.RoundingMode.HALF_UP));
     }
 }

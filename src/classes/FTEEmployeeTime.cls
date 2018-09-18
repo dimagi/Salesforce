@@ -21,7 +21,7 @@ public class FTEEmployeeTime {
 
     public void calculateDays() {
         for (Integer i = 0 ; i < this.hoursArray.size(); i++) {
-            this.daysArray[i] = roundtoDays(this.hoursArray[i]);
+            this.daysArray[i] = FTETrackerHelper.roundtoDays(this.hoursArray[i]);
         }
         this.daysArray[13] =  this.daysArray[13].setScale(2);
     }
@@ -31,11 +31,5 @@ public class FTEEmployeeTime {
             this.hoursArray[i] += empTime.hoursArray[i];
         }
         this.daysArray[13] += empTime.daysArray[13];
-    }
-
-    public Decimal roundtoDays(Decimal hours) {
-        Decimal totalDays = (hours / 8.0).intValue();
-        Decimal restValue = hours - (totalDays * 8);
-        return totalDays + (0.25 * (restValue / 2.0).setScale(0, System.RoundingMode.HALF_UP));
     }
 }

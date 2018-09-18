@@ -1,17 +1,8 @@
 /**
  * This is editable class, should be used to do data migration. For example filling new fields with relation.
  */
-public class ScriptBatchJob implements Database.Batchable<Time_Card__c>, Database.Stateful {
 
-    private Date helperDate;
-
-    public ScriptBatchJob() {
-        this(null);
-    }
-
-    public ScriptBatchJob(Date helperDate) {
-        this.helperDate = helperDate;
-    }
+public class ScriptBatchJob implements Database.Batchable<Integer>, Database.AllowsCallouts, Database.Stateful {
 
     public List<Time_Card__c> start(Database.BatchableContext context) {
         return [SELECT Id, Case_Number__c, Date__c, Employee__c, Client__c, Fogbugz_Id__c FROM Time_Card__c WHERE CreatedDate  >=: this.helperDate AND FTE_only__c != true];

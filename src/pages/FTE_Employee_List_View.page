@@ -92,6 +92,7 @@
                 </apex:actionFunction>
 
                 <apex:commandButton action="{!goToProjectListView}" value="Project List" id="backButton" />
+                <apex:commandButton action="{!goToCSVUploadView}" value="CSV File Upload" id="uploadButton" />
             </apex:outputPanel>
         </apex:form>
     </apex:pageBlock>

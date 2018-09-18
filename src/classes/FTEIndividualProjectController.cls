@@ -83,8 +83,8 @@ public class FTEIndividualProjectController {
             projectTimeMap.put(timeCard.Employee__c, tmpHelper);
         }
         this.individualContractDataList = projectTimeMap.values();
-        Map<Id, SFDC_Employee__c> empMap = new Map<Id, SFDC_Employee__c>([SELECT Id, Name, Unloaded_Daily_Rate__c 
-                        FROM SFDC_Employee__c WHERE Id IN: projectTimeMap.keySet()]);
+        Map<Id, SFDC_Employee__c> empMap = new Map<Id, SFDC_Employee__c>([SELECT Id, Name FROM SFDC_Employee__c WHERE Id IN: projectTimeMap.keySet()]);
+
         for (FTEEmployeeTime empT : this.individualContractDataList) {
             empT.calculateDays();
             totalProjectTime.sumHoursAndCost(empT);
