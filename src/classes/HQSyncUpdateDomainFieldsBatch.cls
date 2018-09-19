@@ -1,23 +1,44 @@
 public class HQSyncUpdateDomainFieldsBatch implements Database.Batchable<Domain__c>, Database.Stateful{
 
-    private Boolean runDomainSnapshot;
+    private Boolean upsertDomainSnapshot;
+    private Map<String, Decimal> wamMap;
+    private Map<String, Decimal> formsForPeriodMap;
 
-    public HQSyncUpdateDomainFieldsBatch(Boolean runDomainSnapshot) {
-        this.runDomainSnapshot = runDomainSnapshot;
+    public HQSyncUpdateDomainFieldsBatch(Boolean upsertDomainSnapshot) {
+        this.upsertDomainSnapshot = upsertDomainSnapshot;
     }
 
     public List<Domain__c> start(Database.BatchableContext BC) {
-        return [SELECT Id, Name, Wam__c, Wam_TMP__c, Forms_for_Period__c, Forms_for_Period_TMP__c FROM Domain__c];
+        this.wamMap = new Map<String, Decimal> { 'Advanced' => 0, 'Community' => 0, 'Enterprise' => 0, 'Standard' => 0, 'Pro' => 0};
+        this.formsForPeriodMap = new Map<String, Decimal> { 'Advanced' => 0, 'Community' => 0, 'Enterprise' => 0, 'Standard' => 0, 'Pro' => 0};
+        return [SELECT Id, Name, Wam__c, Wam_TMP__c, Forms_for_Period__c, Forms_for_Period_TMP__c,
+                    is_active__c, cpIsActive__c FROM Domain__c];
     }
 
     public void execute(Database.BatchableContext info, List<Domain__c> scope) {
+        Map<Id, Domain__c> wamAndFormsDomains = new Map<Id, Domain__c>();
         for (Domain__c domain : scope) {
             domain.Wam__c = domain.Wam_TMP__c != null ? domain.Wam_TMP__c : 0;
             domain.Wam_TMP__c = 0;
             domain.Forms_for_Period__c = domain.Forms_for_Period_TMP__c != null ? domain.Forms_for_Period_TMP__c : 0;
             domain.Forms_for_Period_TMP__c = 0;
+
+            if (domain.is_active__c == true && domain.cpIsActive__c == true) {
+                wamAndFormsDomains.put(domain.Id, domain);
+            }
         }
+
         update scope;
+
+        for (Accounting_Subscription__c sub : [SELECT Id, Accounting_subscriber_domain__c, Software_Plan_Edition__c FROM Accounting_Subscription__c
+               WHERE Accounting_subscriber_domain__c IN: wamAndFormsDomains.keySet() AND is_active__c = true AND Software_Plan_Edition__c IN: this.wamMap.keySet()]) {
+
+            Domain__C domain = wamAndFormsDomains.get(sub.Accounting_subscriber_domain__c);
+            this.wamMap.put(sub.Software_Plan_Edition__c, this.wamMap.get(sub.Software_Plan_Edition__c)
+                    + (domain.Wam__c != null ? domain.Wam__c : 0));
+            this.formsForPeriodMap.put(sub.Software_Plan_Edition__c, this.formsForPeriodMap.get(sub.Software_Plan_Edition__c)
+                    + (domain.Forms_for_Period__c != null ? domain.Forms_for_Period__c : 0));
+        }
     }
 
     public void finish(Database.BatchableContext info) {
@@ -26,9 +47,18 @@ public class HQSyncUpdateDomainFieldsBatch implements Database.Batchable<Domain_
             delete errors;
         }
 
-        if (this.runDomainSnapshot) {
+        if (this.upsertDomainSnapshot) {
             Date snpDate = Date.today().toStartOfMonth().addDays(-1);
-            Database.executeBatch(new DomainSnapshotFromHistoryBatch(snpDate));
+            for (String key : this.wamMap.keySet()) {
+                List<Domain_Monthly_Snapshot__c> snpList = [SELECT Id, Wam__c, Forms_for_Period__c FROM Domain_Monthly_Snapshot__c WHERE Snapshot_Date__c =: snpDate AND Software_Plan_Edition__c =: key];
+                Domain_Monthly_Snapshot__c snapshot = new Domain_Monthly_Snapshot__c(Software_Plan_Edition__c = key, Snapshot_Date__c = snpDate);
+                if (snpList.size() > 0) {
+                    snapshot = snpList.get(0);
+                }
+                snapshot.Wam__c = this.wamMap.get(key);
+                snapshot.Forms_for_Period__c = this.formsForPeriodMap.get(key);
+                upsert snapshot;
+            }
         }
     }
 }
