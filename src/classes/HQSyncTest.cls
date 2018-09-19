@@ -931,12 +931,12 @@ public class HQSyncTest {
      */
 
     @isTest
-    public static void shouldCreateDomainMonthlySnapshotFromHistory() {
+    public static void shouldCreateDomainMonthlySnapshot() {
         generateDataForDomainSnapshot();
 
         Test.startTest();
         Date current = Date.newInstance(2017, 3, 1);
-        Database.executeBatch(new DomainSnapshotFromHistoryBatch(current));
+        Database.executeBatch(new DomainMonthlySnapshotBatch(current));
         Test.stopTest();
 
         // Community => subscription1 AND subscription4 => Wam = 15 + 60 = 75, Mobile Users = 20 + 65 = 85, Forms = 325 + 370 = 695 - last (250) = 445
@@ -963,6 +963,47 @@ public class HQSyncTest {
         System.assertEquals(0, domainSn.Wam__c);
         System.assertEquals(50, domainSn.Active_Mobile_Users__c);
         System.assertEquals(0, domainSn.Forms_for_Period__c);
+        System.assertEquals(355, domainSn.Forms__c);
+        System.assertEquals(1, domainSn.Scale_of_Programs__c);
+    }
+
+    @isTest
+    public static void shouldUpdateWamAndFormsDomainMonthlySnapshot() {
+        generateDataForDomainSnapshot();
+
+        insert new Domain_Monthly_Snapshot__c(Snapshot_Date__c = Date.today().toStartOfMonth().addDays(-1), Software_Plan_Edition__c = 'Community',
+                                                Active_Mobile_Users__c = 85, Forms__c = 695, Scale_of_Programs__c = 2, Wam__c = 0, Forms_for_Period__c = 0);
+        insert new Domain_Monthly_Snapshot__c(Snapshot_Date__c = Date.today().toStartOfMonth().addDays(-1), Software_Plan_Edition__c = 'Standard',
+                                                Active_Mobile_Users__c = 115, Forms__c = 725, Scale_of_Programs__c = 2, Wam__c = 0, Forms_for_Period__c = 0);
+        insert new Domain_Monthly_Snapshot__c(Snapshot_Date__c = Date.today().toStartOfMonth().addDays(-1), Software_Plan_Edition__c = 'Pro',
+                                                Active_Mobile_Users__c = 50, Forms__c = 355, Scale_of_Programs__c = 1, Wam__c = 0, Forms_for_Period__c = 0);
+
+        Test.startTest();
+        Database.executeBatch(new HQSyncUpdateDomainFieldsBatch(true));
+        Test.stopTest();
+
+        System.assertEquals(5, [SELECT Id FROM Domain_Monthly_Snapshot__c].size());
+        Domain_Monthly_Snapshot__c domainSn = [SELECT Active_Mobile_Users__c, Forms__c, Wam__c, Scale_of_Programs__c, Forms_for_Period__c
+                                               FROM Domain_Monthly_Snapshot__c WHERE Software_Plan_Edition__c = 'Community' ORDER BY Snapshot_Date__c DESC LIMIT 1];
+        System.assertEquals(75, domainSn.Wam__c);
+        System.assertEquals(85, domainSn.Active_Mobile_Users__c);
+        System.assertEquals(1300, domainSn.Forms_for_Period__c);
+        System.assertEquals(695, domainSn.Forms__c);
+        System.assertEquals(2, domainSn.Scale_of_Programs__c);
+
+        domainSn = [SELECT Active_Mobile_Users__c, Forms__c, Wam__c, Scale_of_Programs__c, Forms_for_Period__c
+                                               FROM Domain_Monthly_Snapshot__c WHERE Software_Plan_Edition__c = 'Standard' ORDER BY Snapshot_Date__c DESC LIMIT 1];
+        System.assertEquals(105, domainSn.Wam__c);
+        System.assertEquals(115, domainSn.Active_Mobile_Users__c);
+        System.assertEquals(1500, domainSn.Forms_for_Period__c);
+        System.assertEquals(725, domainSn.Forms__c);
+        System.assertEquals(2, domainSn.Scale_of_Programs__c);
+
+        domainSn = [SELECT Active_Mobile_Users__c, Forms__c, Wam__c, Scale_of_Programs__c, Forms_for_Period__c
+                                               FROM Domain_Monthly_Snapshot__c WHERE Software_Plan_Edition__c = 'Pro' ORDER BY Snapshot_Date__c DESC LIMIT 1];
+        System.assertEquals(45, domainSn.Wam__c);
+        System.assertEquals(50, domainSn.Active_Mobile_Users__c);
+        System.assertEquals(700, domainSn.Forms_for_Period__c);
         System.assertEquals(355, domainSn.Forms__c);
         System.assertEquals(1, domainSn.Scale_of_Programs__c);
     }
@@ -1310,16 +1351,16 @@ public class HQSyncTest {
         insert InternalPropRec4;
         insert InternalPropRec5;
 
-        Domain__c domain1 = new Domain__c(Name = 'domain_1', Server_Name__c = 'CommCare HQ', is_test__c = 'false', cpIsActive__c = true,
-                                          Wam__c = 15, cpActiveMobileUsers__c = 20, cpAllForms__c = 325, Internal_Properties__c = InternalPropRec1.Id);
-        Domain__c domain2 = new Domain__c(Name = 'domain_2', Server_Name__c = 'CommCare HQ', is_test__c = 'false', cpIsActive__c = true,
-                                          Wam__c = 30, cpActiveMobileUsers__c = 35, cpAllForms__c = 340, Internal_Properties__c = InternalPropRec2.Id);
-        Domain__c domain3 = new Domain__c(Name = 'domain_3', Server_Name__c = 'CommCare HQ', is_test__c = 'false', cpIsActive__c = true,
-                                          Wam__c = 45, cpActiveMobileUsers__c = 50, cpAllForms__c = 355, Internal_Properties__c = InternalPropRec3.Id);
-        Domain__c domain4 = new Domain__c(Name = 'domain_4', Server_Name__c = 'CommCare HQ', is_test__c = 'false', cpIsActive__c = true,
-                                          Wam__c = 60, cpActiveMobileUsers__c = 65, cpAllForms__c = 370, Internal_Properties__c = InternalPropRec4.Id);
-        Domain__c domain5 = new Domain__c(Name = 'domain_5', Server_Name__c = 'CommCare HQ', is_test__c = 'false', cpIsActive__c = true,
-                                          Wam__c = 75, cpActiveMobileUsers__c = 80, cpAllForms__c = 385, Internal_Properties__c = InternalPropRec5.Id);
+        Domain__c domain1 = new Domain__c(Name = 'domain_1', Server_Name__c = 'CommCare HQ', is_test__c = 'false', cpIsActive__c = true, Forms_for_Period_TMP__c = 500,
+                                          Wam_TMP__c = 15, cpActiveMobileUsers__c = 20, cpAllForms__c = 325, Internal_Properties__c = InternalPropRec1.Id, is_active__c = true);
+        Domain__c domain2 = new Domain__c(Name = 'domain_2', Server_Name__c = 'CommCare HQ', is_test__c = 'false', cpIsActive__c = true, Forms_for_Period_TMP__c = 600,
+                                          Wam_TMP__c = 30, cpActiveMobileUsers__c = 35, cpAllForms__c = 340, Internal_Properties__c = InternalPropRec2.Id, is_active__c = true);
+        Domain__c domain3 = new Domain__c(Name = 'domain_3', Server_Name__c = 'CommCare HQ', is_test__c = 'false', cpIsActive__c = true, Forms_for_Period_TMP__c = 700,
+                                          Wam_TMP__c = 45, cpActiveMobileUsers__c = 50, cpAllForms__c = 355, Internal_Properties__c = InternalPropRec3.Id, is_active__c = true);
+        Domain__c domain4 = new Domain__c(Name = 'domain_4', Server_Name__c = 'CommCare HQ', is_test__c = 'false', cpIsActive__c = true, Forms_for_Period_TMP__c = 800,
+                                          Wam_TMP__c = 60, cpActiveMobileUsers__c = 65, cpAllForms__c = 370, Internal_Properties__c = InternalPropRec4.Id, is_active__c = true);
+        Domain__c domain5 = new Domain__c(Name = 'domain_5', Server_Name__c = 'CommCare HQ', is_test__c = 'false', cpIsActive__c = true, Forms_for_Period_TMP__c = 900,
+                                          Wam_TMP__c = 75, cpActiveMobileUsers__c = 80, cpAllForms__c = 385, Internal_Properties__c = InternalPropRec5.Id, is_active__c = true);
 
         insert domain1;
         insert domain2;
