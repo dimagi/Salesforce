@@ -2,9 +2,11 @@ public without sharing class FTEHoursUploadBatch implements Database.Batchable<F
 
     private Integer batchYear;
     private Set<Id> employeesSet;
+    private Set<Id> contractSet;
 
     public List<FTE_Data_Record__c> start(Database.BatchableContext BC) {
         this.employeesSet = new Set<Id>();
+        this.contractSet = new Set<Id>();
         List<FTE_Data_Record__c> result = [SELECT Year__c, Year_Text__c, Month_1__c, Month_2__c, Month_3__c, Month_4__c, Month_5__c, Month_6__c, Month_7__c, Month_8__c, Month_9__c,
                 Month_10__c, Month_11__c, Month_12__c, Message__c, Employee__c, Employee__r.Name, Processed__c, Contract__c, Contract__r.Name, Line_Number__c
                 FROM FTE_Data_Record__c ORDER BY Line_Number__c];
@@ -15,6 +17,7 @@ public without sharing class FTEHoursUploadBatch implements Database.Batchable<F
                 fteContract.FTE_Tracker__c = 'Yes';
                 fteContract.Skip_FTE_Tracker_Trigger__c = true;
                 update fteContract;
+                contractSet.add(fteContract.Id);
             }
         }
 
@@ -81,7 +84,7 @@ public without sharing class FTEHoursUploadBatch implements Database.Batchable<F
         Integer yearValue = FTE_Tracker_Settings__c.getOrgDefaults().FTE_Year__c != null ? FTE_Tracker_Settings__c.getOrgDefaults().FTE_Year__c.intValue()
                                 : Date.today().year();
         if (!Test.isRunningTest() && yearValue == this.batchYear) {
-            Database.executeBatch(new FTEGenerateEmployeesWorkCardBatch(this.employeesSet, yearValue, true), 1);
+            Database.executeBatch(new FTEGenerateEmployeesWorkCardBatch(this.employeesSet, this.contractSet, yearValue), 1);
         }
     }
 }
