@@ -8,54 +8,48 @@ public without sharing class FTEGenerateEmployeesWorkCardBatch implements Databa
     private Set<Id> employeesId;
 
     public FTEGenerateEmployeesWorkCardBatch(Integer year) {
-        this(null, year, false);
+        this(new Set<Id>(), new Set<Id>(), year);
     }
 
-    public FTEGenerateEmployeesWorkCardBatch(Set<Id> idSet, Integer year, Boolean emplSet) {
-        if (emplSet = true) {
-            this.employeesId = idSet;
-        } else {
-            this.contractsId = idSet;
-        }
+    public FTEGenerateEmployeesWorkCardBatch(Set<Id> emplSet, Set<Id> contractSet, Integer year) {
+        this.employeesId = emplSet;
+        this.contractsId = contractSet;
         this.calculationYear = year;
     }
 
     public List<SFDC_Employee__c> start(Database.BatchableContext BC) {
         try {
-            if (this.contractsId == null) {
-                List<FTE_Work_Card__c> oldCards = [SELECT Id FROM FTE_Work_Card__c];
-                if (oldCards.size() > 0) {
-                    delete oldCards;
+            if (this.employeesId.size() > 0 || this.contractsId.size() > 0) {
+                List<Time_Card__c> contractTimeCards = [SELECT Id, Employee__c FROM Time_Card__c WHERE
+                                                       (Client__c IN: this.contractsId OR FTE_Contract__c IN: this.contractsId)
+                                                       AND CALENDAR_YEAR(Date__c) =: this.calculationYear];
+                for (Time_Card__c tc : contractTimeCards) {
+                    if (!this.employeesId.contains(tc.Employee__c)) {
+                        this.employeesId.add(tc.Employee__c);
+                    }
                 }
-                return [SELECT Id, Name FROM SFDC_Employee__c WHERE Employee_Status__c = 'Active' ORDER BY Name];
-            } else if (this.employeesId != null) {
-                List<FTE_Work_Card__c> oldCards = [SELECT Id FROM FTE_Work_Card__c WHERE Employee__c IN: this.employeesId];
-                if (oldCards.size() > 0) {
-                    delete oldCards;
-                }
-                return [SELECT Id, Name FROM SFDC_Employee__c WHERE Employee_Status__c = 'Active' AND ID IN: this.employeesId ORDER BY Name];
+                return [SELECT Id, Name FROM SFDC_Employee__c WHERE ID IN: this.employeesId ORDER BY Name];
             }
 
-            List<Time_Card__c> contractTimeCards = [SELECT Id, Employee__c FROM Time_Card__c WHERE
-                                                        Client__c IN: this.contractsId AND CALENDAR_YEAR(Date__c) =: this.calculationYear];
-            Set<Id> employees = new Set<Id>();
-            for (Time_Card__c tc : contractTimeCards) {
-                if (!employees.contains(tc.Employee__c)) {
-                    employees.add(tc.Employee__c);
-                }
+            List<FTE_Work_Card__c> oldCards = [SELECT Id FROM FTE_Work_Card__c];
+            if (oldCards.size() > 0) {
+                delete oldCards;
             }
-            return [SELECT Id, Name FROM SFDC_Employee__c WHERE Id IN: employees AND Employee_Status__c = 'Active' ORDER BY Name];
+            return [SELECT Id, Name FROM SFDC_Employee__c ORDER BY Name];
+
         } catch (Exception ex) {
             if (!Test.isRunningTest()) {
                 EmailHelper.sendEmailFromException(BatchDefaultSettings__c.getOrgDefaults().Error_Emails__c.split(','), 'Cannot calculate Employee FTE Work Card', 'Error : ', ex);
             }
         }
+
         // We need return empty list to avoid errors with sending email about exception
         return new List<SFDC_Employee__c>();
     }
 
     public void execute(Database.BatchableContext BC, List<SFDC_Employee__c> scope) {
         for (SFDC_Employee__c employee : scope) {
+            Boolean isEmpty = true;
             List<FTE_Work_Card__c> employeeWorkCards = [SELECT Id FROM FTE_Work_Card__c WHERE Employee__c =: employee.Id];
             FTE_Work_Card__c employeeWorkCard = new FTE_Work_Card__c(Employee__c = employee.Id, Year__c = this.calculationYear, Month_1__c = 0,
                                                         Month_2__c = 0, Month_3__c = 0, Month_4__c = 0, Month_5__c = 0, Month_6__c = 0,
@@ -78,6 +72,10 @@ public without sharing class FTEGenerateEmployeesWorkCardBatch implements Databa
                                                         OR (Client__r.FTE_Tracker__c != 'Yes' AND FTE_Contract__r.FTE_Tracker__c = 'Yes'))
                                                         AND Total__c != null ORDER BY Date__c]; // we need only fetch timcards assigned and unassigned which are moving time to assigned
             System.debug('TC List: ' + employeeYearTimeCards.size());
+            if (employeeYearTimeCards.size() > 0) {
+                isEmpty = false;
+            }
+
             for (Time_Card__c tc : employeeYearTimeCards) {
                 System.debug('TC Date: ' + tc.Date__c);
                 System.debug('TC Time: ' + tc.Date__c);
@@ -109,7 +107,9 @@ public without sharing class FTEGenerateEmployeesWorkCardBatch implements Databa
             employeeWorkCard.Unloaded_Rate_Total_Cost__c = totalCost.setScale(2);
 
             System.debug('WC totalHours: ' + totalHours);
-            upsert employeeWorkCard;
+            if (!isEmpty) {
+                upsert employeeWorkCard;
+            }
         }
     }
 
