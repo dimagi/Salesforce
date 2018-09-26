@@ -77,4 +77,21 @@ public class FTETrackerHelper {
         }
         return workingDays <= 230 ? workingDays : 230;
     }
+
+    /**
+     * Code from : https://salesforce.stackexchange.com/questions/11805/blob-is-not-a-valid-utf-8-string-error/25421
+     *             https://gist.github.com/nxtr/bca4984cd3753261995c421711729629
+     * @param input    Blob data representing correct string in @inCharset encoding
+     * @param inCharset    encoding of the Blob data (for example 'ISO 8859-2')
+     */
+    public static String blobToString(Blob input, String inCharset){
+        String hex = EncodingUtil.convertToHex(input);
+        System.assertEquals(0, hex.length() & 1);
+        final Integer bytesCount = hex.length() >> 1;
+        String[] bytes = new String[bytesCount];
+        for(Integer i = 0; i < bytesCount; ++i) {
+            bytes[i] =  hex.mid(i << 1, 2);
+        }
+        return EncodingUtil.urlDecode('%' + String.join(bytes, '%'), inCharset);
+    }
 }
