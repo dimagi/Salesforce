@@ -93,7 +93,13 @@ public class FTECsvUploadController {
         this.employeeNameSet = new Set<String>();
 
         List<FTE_Data_Record__c> fteData = new List<FTE_Data_Record__c>();
-        List<String> fileRows = fileContent.toString().replaceAll('\r', '').split('\n'); //remove all \r to be sure we will not have some bar elements
+        List<String> fileRows;
+
+        try {
+            fileRows = fileContent.toString().replaceAll('\r', '').split('\n'); //remove all \r to be sure we will not have some bar elements
+        } catch (Exception e) {
+            fileRows = FTETrackerHelper.blobToString(fileContent, 'ISO 8859-2').replaceAll('\r', '').split('\n'); // Try parse if file is not valid UTF-8
+        }
         Integer lineNum = 1;
 
         // Remove empty rows to load contract name, 
