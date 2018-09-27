@@ -96,9 +96,9 @@ public class FTECsvUploadController {
         List<String> fileRows;
 
         try {
-            fileRows = fileContent.toString().replaceAll('\r', '').split('\n'); //remove all \r to be sure we will not have some bar elements
+            fileRows = fileContent.toString().replaceAll('\r', '').replaceAll('\\u00A0', ' ').split('\n'); //remove all \r to be sure we will not have some bar elements
         } catch (Exception e) {
-            fileRows = FTETrackerHelper.blobToString(fileContent, 'ISO 8859-2').replaceAll('\r', '').split('\n'); // Try parse if file is not valid UTF-8
+            fileRows = FTETrackerHelper.blobToString(fileContent, 'ISO 8859-2').replaceAll('\r', '').replaceAll('\\u00A0', ' ').split('\n'); // Try parse if file is not valid UTF-8
         }
         Integer lineNum = 1;
 
