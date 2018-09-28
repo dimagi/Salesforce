@@ -189,8 +189,7 @@ public class BillingRateController {
     }
 
     public void runRecalculationBatchJob() {
-        ApexClass[] batchClass = [SELECT Id FROM ApexClass WHERE Name='TimeCardCalculator' OR Name = 'BatchCalculateTotalHoursOfTimeCard' OR Name = 'BatchUpdateContractServicesSpend'
-                                                                OR Name = 'BatchRecalculateTimeCardCost' OR Name = 'TimeCardCaseUpdateBatch'];
+        ApexClass[] batchClass = [SELECT Id FROM ApexClass WHERE Name='TimeCardCalculator' OR Name = 'TimeCardCaseUpdateBatch'];
         AsyncApexJob[] batchClassJobList = [SELECT Id, JobItemsProcessed, TotalJobItems, createdDate FROM AsyncApexJob WHERE ApexClassID IN: batchClass
                                             AND Status IN ('Holding', 'Queued', 'Preparing', 'Processing') ORDER BY createdDate DESC LIMIT 1];
 

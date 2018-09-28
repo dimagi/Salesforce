@@ -31,7 +31,7 @@ public class TimeCardCaseUpdateBatch implements Database.Batchable<FogBugzCase>,
         List<Time_Card__c> tcList = new List<Time_Card__c>();
         for (FogBugzCase fbCase : scope) {
             if (fbCase.client == null || fbCase.client == '') {
-                continue; // we must skip empty clients in cases - less processing, we don't have time cardss for such cases
+                continue; // we must skip empty clients in cases - less processing, we don't have time cards for such cases
             }
 
             String dbCaseTitle = fbCase.caseId + ': ' + fbCase.title;
@@ -62,7 +62,7 @@ public class TimeCardCaseUpdateBatch implements Database.Batchable<FogBugzCase>,
 
             if (timeCardsToUpdate.size() > 0 && newContract == null && !Test.isRunningTest()) {
                 EmailHelper.sendEmail(BatchDefaultSettings__c.getOrgDefaults().Error_Emails__c.split(','),
-                        'Contract Fogbugz Id Mismatch', 'Cannot find contract with Fogbugz Id : ' + fbCase.client);
+                        'Contract Fogbugz Id Mismatch', 'Case Id : ' + fbCase.caseId + ', Cannot find contract with Fogbugz Id : ' + fbCase.client);
             }
         }
 
@@ -72,6 +72,8 @@ public class TimeCardCaseUpdateBatch implements Database.Batchable<FogBugzCase>,
     }
 
     public void finish(Database.BatchableContext context) {
-        Database.executeBatch(new BatchRecalculateTimeCardCost(null)); // Next batch job calculates salary for old time cards. In future this step will be removed
+        if (!Test.isRunningTest()) {
+            Database.executeBatch(new TimeCardCalculator());
+        }
     }
 }
