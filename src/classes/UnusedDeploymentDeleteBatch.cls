@@ -1,6 +1,5 @@
 /**
- * TODO delete this class from production
+ * TODO DELETE
  */
-public class UnusedDeploymentDeleteBatch {
-
+public without sharing class UnusedDeploymentDeleteBatch {
 }

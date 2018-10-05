@@ -4,7 +4,8 @@ public class SalaryHistoryTest {
     /**
      * 1 date record and 3 history (first with empty OldValue)
      */
-    static testMethod void shouldFetchHistoryForEmp1() {
+    @isTest
+    public static void shouldFetchHistoryForEmp1() {
         Test.startTest();
 
         SalaryHistoryHelper salaryHelper = new SalaryHistoryHelper();
@@ -26,7 +27,8 @@ public class SalaryHistoryTest {
     /**
      * Empty list
      */
-    static testMethod void shouldFetchHistoryForEmp2() {
+    @isTest
+    public static void shouldFetchHistoryForEmp2() {
         Test.startTest();
 
         SalaryHistoryHelper salaryHelper = new SalaryHistoryHelper();
@@ -44,7 +46,8 @@ public class SalaryHistoryTest {
     /**
      * 0 date record and 3 history (first with filled OldValue)
      */
-    static testMethod void shouldFetchHistoryForEmp3() {
+    @isTest
+    public static void shouldFetchHistoryForEmp3() {
         Test.startTest();
 
         SalaryHistoryHelper salaryHelper = new SalaryHistoryHelper();
@@ -68,7 +71,8 @@ public class SalaryHistoryTest {
     /**
      * 2 date record and 2 history
      */
-    static testMethod void shouldFetchHistoryForEmp4() {
+    @isTest
+    public static void shouldFetchHistoryForEmp4() {
         Test.startTest();
 
         SalaryHistoryHelper salaryHelper = new SalaryHistoryHelper();
@@ -87,7 +91,8 @@ public class SalaryHistoryTest {
         Test.stopTest();
     }
 
-    static testMethod void shouldIgnoreBadExchangeRate() {
+    @isTest
+    public static void shouldIgnoreBadExchangeRate() {
         Test.startTest();
 
         SalaryHistoryHelper salaryHelper = new SalaryHistoryHelper();
@@ -104,7 +109,8 @@ public class SalaryHistoryTest {
         Test.stopTest();
     }
 
-    static testMethod void shouldMergeListsEmp6() {
+    @isTest
+    public static void shouldMergeListsEmp6() {
         Test.startTest();
 
         SalaryHistoryHelper salaryHelper = new SalaryHistoryHelper();
@@ -142,7 +148,8 @@ public class SalaryHistoryTest {
         Test.stopTest();
     }
 
-    static testMethod void shouldMergeListsEmp7() {
+    @isTest
+    public static void shouldMergeListsEmp7() {
         Test.startTest();
 
         Loaded_Daily_Rate_Settings__c settings = new Loaded_Daily_Rate_Settings__c(Settings_Effective_Date__c = Date.newInstance(1900, 1, 1),
@@ -164,7 +171,8 @@ public class SalaryHistoryTest {
         Test.stopTest();
     }
 
-    static testMethod void shouldMergeListsEmp8() {
+    @isTest
+    public static void shouldMergeListsEmp8() {
         Test.startTest();
 
         Loaded_Daily_Rate_Settings__c settings = new Loaded_Daily_Rate_Settings__c(Settings_Effective_Date__c = Date.newInstance(1900, 1, 1),
@@ -190,7 +198,8 @@ public class SalaryHistoryTest {
         Test.stopTest();
     }
 
-    static testMethod void testIntegrationWithCalculationBatchJob() {
+    @isTest
+    public static void testIntegrationWithCalculationBatchJob() {
         insert new Project_Billing_Rate__c(Name = 'Loaded Daily Rate', Date__c = Date.newInstance(1990, 01, 01), Custom_1__c = 0, Custom_2__c = 0, Custom_3__c = 0,
                                             Fee__c = 10, Fringe__c = 30, G_A__c = 10, Overhead__c = 52);
         // 3 Employess, 3 contracts, one is subcontract
@@ -216,64 +225,51 @@ public class SalaryHistoryTest {
         DContract__c parent_2 = new DContract__c(Name = 'Sample Parent 2', Status__c = 'Active', Requires_Report_Out__c = 'No', Intracompany_Sub_contract__c = 'No');
         insert parent_2;
 
+        List<Time_Card__c> timecards = new List<Time_Card__c>();
         // Employee 1:
         // Salary = 1 * SalaryHistoryHelper.calculateSalary(20000, 2) = 11.50
-        Time_Card__c tc_1_employee_1 = new Time_Card__c(Total__c = 1, Date__c = Date.newInstance(2010, 12, 30), Employee__c = employee_1.Id, Client__c = parent_1.Id);
-        insert tc_1_employee_1;
+        timecards.add(new Time_Card__c(Total__c = 1, Date__c = Date.newInstance(2010, 12, 30), Employee__c = employee_1.Id, Client__c = parent_1.Id));
         // Salary = 3 * SalaryHistoryHelper.calculateSalary(20000, 2) = 3 * 11.50 = 34,5
-        Time_Card__c tc_2_employee_1 = new Time_Card__c(Total__c = 3, Date__c = Date.newInstance(2010, 11, 1), Employee__c = employee_1.Id, Client__c = parent_1.Id);
-        insert tc_2_employee_1;
+        timecards.add(new Time_Card__c(Total__c = 3, Date__c = Date.newInstance(2010, 11, 1), Employee__c = employee_1.Id, Client__c = parent_1.Id));
         // Salary = 6 * SalaryHistoryHelper.calculateSalary(40000, 2) = 6 * 22.99 = 137,94
-        Time_Card__c tc_3_employee_1 = new Time_Card__c(Total__c = 6, Date__c = Date.newInstance(2011, 1, 1), Employee__c = employee_1.Id, Client__c = child.Id);
-        insert tc_3_employee_1;
+        timecards.add(new Time_Card__c(Total__c = 6, Date__c = Date.newInstance(2011, 1, 1), Employee__c = employee_1.Id, Client__c = child.Id));
         // Salary = 1 * SalaryHistoryHelper.calculateSalary(40000, 3) = 7 * 15.33 = 107,31
-        Time_Card__c tc_4_employee_1 = new Time_Card__c(Total__c = 7, Date__c = Date.newInstance(2011, 5, 22), Employee__c = employee_1.Id, Client__c = parent_2.Id);
-        insert tc_4_employee_1;
+        timecards.add(new Time_Card__c(Total__c = 7, Date__c = Date.newInstance(2011, 5, 22), Employee__c = employee_1.Id, Client__c = parent_2.Id));
         // Salary = 1 * SalaryHistoryHelper.calculateSalary(20000, 2) = 8 * 34.48 = 275,84
-        Time_Card__c tc_5_employee_1 = new Time_Card__c(Total__c = 8, Date__c = Date.newInstance(2016, 3, 3), Employee__c = employee_1.Id, Client__c = parent_2.Id);
-        insert tc_5_employee_1;
+        timecards.add(new Time_Card__c(Total__c = 8, Date__c = Date.newInstance(2016, 3, 3), Employee__c = employee_1.Id, Client__c = parent_2.Id));
         // child = 137.94, parent_1 46 = 183.94 , parent_2 = 275,84 + 107,31 = 383.15
 
         // Employee 2:
         // Salary = 1 * SalaryHistoryHelper.calculateSalary(45000, 2) = 25.86
-        Time_Card__c tc_1_employee_2 = new Time_Card__c(Total__c = 1, Date__c = Date.newInstance(2010, 12, 30), Employee__c = employee_2.Id, Client__c = parent_1.Id);
-        insert tc_1_employee_2;
+        timecards.add(new Time_Card__c(Total__c = 1, Date__c = Date.newInstance(2010, 12, 30), Employee__c = employee_2.Id, Client__c = parent_1.Id));
         // Salary = 3 * SalaryHistoryHelper.calculateSalary(45000, 2) = 3 * 25.86 = 77,58
-        Time_Card__c tc_2_employee_2 = new Time_Card__c(Total__c = 3, Date__c = Date.newInstance(2010, 11, 1), Employee__c = employee_2.Id, Client__c = parent_1.Id);
-        insert tc_2_employee_2;
+        timecards.add(new Time_Card__c(Total__c = 3, Date__c = Date.newInstance(2010, 11, 1), Employee__c = employee_2.Id, Client__c = parent_1.Id));
         // Salary = 6 * SalaryHistoryHelper.calculateSalary(45000, 2) = 6 * 25.86 = 155,16
-        Time_Card__c tc_3_employee_2 = new Time_Card__c(Total__c = 6, Date__c = Date.newInstance(2011, 1, 1), Employee__c = employee_2.Id, Client__c = parent_1.Id);
-        insert tc_3_employee_2;
+        timecards.add(New Time_Card__c(Total__c = 6, Date__c = Date.newInstance(2011, 1, 1), Employee__c = employee_2.Id, Client__c = parent_1.Id));
         // Salary = 1 * SalaryHistoryHelper.calculateSalary(45000, 2) = 7 * 25.86 = 181,02
-        Time_Card__c tc_4_employee_2 = new Time_Card__c(Total__c = 7, Date__c = Date.newInstance(2011, 5, 22), Employee__c = employee_2.Id, Client__c = parent_1.Id);
-        insert tc_4_employee_2;
+        timecards.add(new Time_Card__c(Total__c = 7, Date__c = Date.newInstance(2011, 5, 22), Employee__c = employee_2.Id, Client__c = parent_1.Id));
         // Salary = 1 * SalaryHistoryHelper.calculateSalary(45000, 2) = 8 * 25.86 = 206,88
-        Time_Card__c tc_5_employee_2 = new Time_Card__c(Total__c = 8, Date__c = Date.newInstance(2016, 3, 3), Employee__c = employee_2.Id, Client__c = parent_2.Id);
-        insert tc_5_employee_2;
+        timecards.add(new Time_Card__c(Total__c = 8, Date__c = Date.newInstance(2016, 3, 3), Employee__c = employee_2.Id, Client__c = parent_2.Id));
         // child = 0, parent_1 = 439.62 , parent_2 = 206,88
 
         // Employee 3:
         // Salary = 1 * SalaryHistoryHelper.calculateSalary(200000, 4) = 57.48
-        Time_Card__c tc_1_employee_3 = new Time_Card__c(Total__c = 1, Date__c = Date.newInstance(2010, 12, 30), Employee__c = employee_3.Id, Client__c = child.Id);
-        insert tc_1_employee_3;
+        timecards.add(new Time_Card__c(Total__c = 1, Date__c = Date.newInstance(2010, 12, 30), Employee__c = employee_3.Id, Client__c = child.Id));
         // Salary = 3 * SalaryHistoryHelper.calculateSalary(200000, 4) = 3 * 57.48 = 172.44
-        Time_Card__c tc_2_employee_3 = new Time_Card__c(Total__c = 3, Date__c = Date.newInstance(2010, 11, 1), Employee__c = employee_3.Id, Client__c = child.Id);
-        insert tc_2_employee_3;
+        timecards.add(new Time_Card__c(Total__c = 3, Date__c = Date.newInstance(2010, 11, 1), Employee__c = employee_3.Id, Client__c = child.Id));
         // Salary = 6 * SalaryHistoryHelper.calculateSalary(200000, 2) = 6 * 114.95 = 689.7
-        Time_Card__c tc_3_employee_3 = new Time_Card__c(Total__c = 6, Date__c = Date.newInstance(2013, 6, 1), Employee__c = employee_3.Id, Client__c = child.Id);
-        insert tc_3_employee_3;
+        timecards.add(new Time_Card__c(Total__c = 6, Date__c = Date.newInstance(2013, 6, 1), Employee__c = employee_3.Id, Client__c = child.Id));
         // Salary = 1 * SalaryHistoryHelper.calculateSalary(200000, 2) = 7 * 114.95 = 804.65
-        Time_Card__c tc_4_employee_3 = new Time_Card__c(Total__c = 7, Date__c = Date.newInstance(2015, 5, 22), Employee__c = employee_3.Id, Client__c = parent_1.Id);
-        insert tc_4_employee_3;
+        timecards.add(new Time_Card__c(Total__c = 7, Date__c = Date.newInstance(2015, 5, 22), Employee__c = employee_3.Id, Client__c = parent_1.Id));
         // Salary = 1 * SalaryHistoryHelper.calculateSalary(200000, 4) = 8 * 57.48 = 459.84
-        Time_Card__c tc_5_employee_3 = new Time_Card__c(Total__c = 8, Date__c = Date.newInstance(2013, 5, 30), Employee__c = employee_3.Id, Client__c = parent_2.Id);
-        insert tc_5_employee_3;
+        timecards.add(new Time_Card__c(Total__c = 8, Date__c = Date.newInstance(2013, 5, 30), Employee__c = employee_3.Id, Client__c = parent_2.Id));
         // child = 919.62, parent_1 = 804.65 + 919.62 CH , parent_2 = 459.84
 
+        insert timecards;
+
         // TOTAL : child = 1057.56, parent_1 = 46 + 439.62 + 804.65 + 1057.56 CH = 2347.83 , parent_2 = 383.15 + 206,88 + 459.84 = 1049.87
-        List<Time_Card__c> tcListIds = [SELECT Id FROM Time_Card__c];
         Set<Id> idsSet = new Set<Id>();
-        for (Time_Card__c tc : tcListIds) {
+        for (Time_Card__c tc : timecards) {
             idsSet.add(tc.Id);
         }
         Database.executeBatch(new BatchRecalculateTimeCardCost(idsSet), 200);
@@ -286,19 +282,7 @@ public class SalaryHistoryTest {
             testData.add(iter.next());
         }
         tcCalcJob.execute(null, testData);
-
-        BatchCalculateTotalHoursOfTimeCard batch1 = new BatchCalculateTotalHoursOfTimeCard();
-        iter = batch1.start(null).iterator();
-        testData = new List<sObject>();
-        while (iter.hasNext()) {
-            testData.add(iter.next());
-        }
-        System.debug('testData : ' + testData);
-        batch1.execute(null, testData);
-        System.debug('testData : ' + testData);
-        System.debug('batch1.getServicesSpendMap() : ' + batch1.getServicesSpendMap());
-        BatchUpdateContractServicesSpend batch2 = new BatchUpdateContractServicesSpend(batch1.getServicesSpendMap(), true);
-        batch2.execute(null, batch2.start(null));
+        tcCalcJob.finish(null);
 
         DContract__c dcontractFromDB = [SELECT Id, Name, Services_Spend__c FROM DContract__c WHERE Id =: parent_1.Id];
         System.assertEquals(2347.85, dcontractFromDB.Services_Spend__c);
@@ -308,7 +292,8 @@ public class SalaryHistoryTest {
         System.assertEquals(1049.88, dcontractFromDB.Services_Spend__c);
     }
 
-    static testMethod void shouldSortList() {
+    @isTest
+    public static void shouldSortList() {
         List<SalaryHistoryRecord> salaryList = new List<SalaryHistoryRecord>();
         salaryList.add(new SalaryHistoryRecord(11, Date.newInstance(2015, 4, 11)));
         salaryList.add(new SalaryHistoryRecord(12, Date.newInstance(1900, 1, 1)));
@@ -323,7 +308,8 @@ public class SalaryHistoryTest {
         System.assertEquals(Date.newInstance(2016, 2, 22), salaryList.get(3).getValueDate());
     }
 
-    static testMethod void testCalcualtionScale() {
+    @isTest
+    public static void testCalcualtionScale() {
         insert new Project_Billing_Rate__c(Name = 'Loaded Daily Rate', Date__c = Date.newInstance(1990, 01, 01), Custom_1__c = 0, Custom_2__c = 0, Custom_3__c = 0,
                                             Fee__c = 10, Fringe__c = 30, G_A__c = 10, Overhead__c = 52);
         Test.startTest();
@@ -464,11 +450,13 @@ public class SalaryHistoryTest {
         insert timecards;
         List<Time_Card__c> tcListIds = [SELECT Id FROM Time_Card__c];
         Set<Id> idsSet = new Set<Id>();
+
         for (Time_Card__c tc : tcListIds) {
             idsSet.add(tc.Id);
         }
         Database.executeBatch(new BatchRecalculateTimeCardCost(idsSet), 200);
         Test.stopTest();
+
         TimeCardCalculator tcCalcJob = new TimeCardCalculator();
         Database.QueryLocatorIterator iter = tcCalcJob.start(null).iterator();
         List<sObject> testData = new List<sObject>();
@@ -476,44 +464,14 @@ public class SalaryHistoryTest {
             testData.add(iter.next());
         }
         tcCalcJob.execute(null, testData);
-
-        BatchCalculateTotalHoursOfTimeCard batch1 = new BatchCalculateTotalHoursOfTimeCard();
-        iter = batch1.start(null).iterator();
-        testData = new List<sObject>();
-        while (iter.hasNext()) {
-            testData.add(iter.next());
-        }
-        batch1.execute(null, testData);
-        batch1.finish(null);
-
-        BatchUpdateContractServicesSpend batch2 = new BatchUpdateContractServicesSpend(batch1.getServicesSpendMap(), true);
-        batch2.execute(null, batch2.start(null));
-        batch2.finish(null);
+        tcCalcJob.finish(null);
 
         DContract__c dcontractFromDB = [SELECT Id, Name, Services_Spend__c FROM DContract__c WHERE Id =: parent.Id];
         System.assertEquals(13779.88, dcontractFromDB.Services_Spend__c);
     }
 
-    static testmethod void shouldSortBillingRate() {
-        insert new Project_Billing_Rate__c(Name = 'Loaded Daily Rate', Date__c = Date.newInstance(1990, 01, 01), Custom_1__c = 0, Custom_2__c = 0, Custom_3__c = 0,
-                                            Fee__c = 10, Fringe__c = 30, G_A__c = 10, Overhead__c = 52);
-        insert new Project_Billing_Rate__c(Name = 'Loaded Daily Rate', Date__c = Date.newInstance(2015, 01, 01), Custom_1__c = 0, Custom_2__c = 0, Custom_3__c = 0,
-                                            Fee__c = 15, Fringe__c = 30, G_A__c = 10, Overhead__c = 52);
-        insert new Project_Billing_Rate__c(Name = 'Loaded Daily Rate', Date__c = Date.newInstance(2014, 01, 01), Custom_1__c = 0, Custom_2__c = 0, Custom_3__c = 0,
-                                            Fee__c = 20, Fringe__c = 30, G_A__c = 10, Overhead__c = 52);
-        insert new Project_Billing_Rate__c(Name = 'Loaded Daily Rate', Date__c = Date.newInstance(2017, 01, 01), Custom_1__c = 0, Custom_2__c = 0, Custom_3__c = 0,
-                                            Fee__c = 25, Fringe__c = 30, G_A__c = 10, Overhead__c = 52);
-
-        SalaryHistoryHelper sh = new SalaryHistoryHelper();
-
-        List<SalaryHistoryRecord> billingRates = sh.loadBillingRatesHistory('Loaded Daily Rate');
-        System.assertEquals(2.39096, billingRates.get(0).getValue());
-        System.assertEquals(2.60832, billingRates.get(1).getValue());
-        System.assertEquals(2.49964, billingRates.get(2).getValue());
-        System.assertEquals(2.717, billingRates.get(3).getValue());
-    }
-
-    static testMethod void shouldCalculateTotalCostAfterUpsert() {
+    @isTest
+    public static void shouldCalculateTotalCostAfterUpsert() {
         insert new Project_Billing_Rate__c(Name = 'Loaded Daily Rate', Date__c = Date.newInstance(1990, 01, 01), Custom_1__c = 0, Custom_2__c = 0, Custom_3__c = 0,
                                             Fee__c = 10, Fringe__c = 30, G_A__c = 10, Overhead__c = 52);
 
@@ -580,282 +538,5 @@ public class SalaryHistoryTest {
         System.assertEquals(107.28666666, tcFromDB.Time_Card_Rate_Cost__c);
         tcFromDB = [SELECT Id, Time_Card_Rate_Cost__c FROM Time_Card__c WHERE Id =: tc_5_employee_1.Id LIMIT 1];
         System.assertEquals(275.87999994, tcFromDB.Time_Card_Rate_Cost__c);
-    }
-
-    /**
-     * Test for Billing Rates UI Manager
-     */
-
-    static testMethod void billingRateManagerShouldAddNewRate() {
-        insert new Project_Billing_Rate__c(Name = 'Loaded Daily Rate 1', Date__c = Date.newInstance(1990, 01, 01), Custom_1__c = 0, Custom_2__c = 0, Custom_3__c = 0,
-                                            Fee__c = 10, Fringe__c = 30, G_A__c = 10, Overhead__c = 52);
-        insert new Project_Billing_Rate__c(Name = 'Loaded Daily Rate 1', Date__c = Date.newInstance(2015, 01, 01), Custom_1__c = 0, Custom_2__c = 0, Custom_3__c = 0,
-                                            Fee__c = 15, Fringe__c = 30, G_A__c = 10, Overhead__c = 52);
-        insert new Project_Billing_Rate__c(Name = 'Loaded Daily Rate 2', Date__c = Date.newInstance(2014, 01, 01), Custom_1__c = 0, Custom_2__c = 0, Custom_3__c = 0,
-                                            Fee__c = 20, Fringe__c = 30, G_A__c = 10, Overhead__c = 52);
-        insert new Project_Billing_Rate__c(Name = 'Loaded Daily Rate 3', Date__c = Date.newInstance(2017, 01, 01), Custom_1__c = 0, Custom_2__c = 0, Custom_3__c = 0,
-                                            Fee__c = 25, Fringe__c = 30, G_A__c = 10, Overhead__c = 52);
-        PageReference pageRef = Page.Billing_Rates_List;
-        Test.setCurrentPage(pageRef);
-
-        Test.startTest();
-        BillingRateController brc = new BillingRateController();
-        brc.initManageRates();
-        System.assertEquals(3, brc.billingRates.size());
-
-        brc.newBillingRate.Name = 'Simple new rate';
-        brc.newBillingRate.Fee__c = 30;
-        brc.newBillingRate.Fringe__c = 15;
-        brc.newBillingRate.G_A__c = 10;
-        brc.newBillingRate.Overhead__c = 5;
-        brc.newBillingRate.Custom_1__c = 11;
-        brc.newBillingRate.Custom_2__c = 12;
-        brc.newBillingRate.Custom_3__c = 13;
-        brc.saveNewRate();
-        Test.stopTest();
-
-        System.assertEquals(4, brc.billingRates.size());
-        Project_Billing_Rate__c newRate = [SELECT Id, Name, Date__c, Custom_1__c, Overhead__c, G_A__c, Fringe__c, Fee__c, Custom_2__c, Custom_3__c FROM Project_Billing_Rate__c WHERE Name = 'Simple new rate'];
-        System.assertEquals(11, newRate.Custom_1__c);
-        System.assertEquals(12, newRate.Custom_2__c);
-        System.assertEquals(13, newRate.Custom_3__c);
-        System.assertEquals(15, newRate.Fringe__c);
-        System.assertEquals(30, newRate.Fee__c);
-        System.assertEquals(10, newRate.G_A__c);
-        System.assertEquals(5, newRate.Overhead__c);
-        System.assertEquals(Date.newInstance(2000, 1, 1), newRate.Date__c);
-    }
-
-    static testMethod void billingRateManagerShouldntAddNewRateWithSameName() {
-        insert new Project_Billing_Rate__c(Name = 'Loaded Daily Rate 1', Date__c = Date.newInstance(1990, 01, 01), Custom_1__c = 0, Custom_2__c = 0, Custom_3__c = 0,
-                                            Fee__c = 10, Fringe__c = 30, G_A__c = 10, Overhead__c = 52);
-        insert new Project_Billing_Rate__c(Name = 'Loaded Daily Rate 1', Date__c = Date.newInstance(2015, 01, 01), Custom_1__c = 0, Custom_2__c = 0, Custom_3__c = 0,
-                                            Fee__c = 15, Fringe__c = 30, G_A__c = 10, Overhead__c = 52);
-        insert new Project_Billing_Rate__c(Name = 'Loaded Daily Rate 2', Date__c = Date.newInstance(2014, 01, 01), Custom_1__c = 0, Custom_2__c = 0, Custom_3__c = 0,
-                                            Fee__c = 20, Fringe__c = 30, G_A__c = 10, Overhead__c = 52);
-        insert new Project_Billing_Rate__c(Name = 'Loaded Daily Rate 3', Date__c = Date.newInstance(2017, 01, 01), Custom_1__c = 0, Custom_2__c = 0, Custom_3__c = 0,
-                                            Fee__c = 25, Fringe__c = 30, G_A__c = 10, Overhead__c = 52);
-        PageReference pageRef = Page.Billing_Rates_List;
-        Test.setCurrentPage(pageRef);
-
-        Test.startTest();
-        BillingRateController brc = new BillingRateController();
-        brc.initManageRates();
-        System.assertEquals(3, brc.billingRates.size());
-
-        brc.newBillingRate.Name = 'Loaded Daily Rate 3';
-        brc.newBillingRate.Fee__c = 30;
-        brc.newBillingRate.Fringe__c = 15;
-        brc.saveNewRate();
-        Test.stopTest();
-
-        System.assertEquals(3, brc.billingRates.size());
-    }
-
-    static testMethod void billingRateManagerShouldInsertNewRateRow() {
-        insert new Project_Billing_Rate__c(Name = 'Loaded Daily Rate 1', Date__c = Date.newInstance(1990, 01, 01), Custom_1__c = 0, Custom_2__c = 0, Custom_3__c = 0,
-                                            Fee__c = 10, Fringe__c = 30, G_A__c = 10, Overhead__c = 52);
-        insert new Project_Billing_Rate__c(Name = 'Loaded Daily Rate 1', Date__c = Date.newInstance(2015, 01, 01), Custom_1__c = 0, Custom_2__c = 0, Custom_3__c = 0,
-                                            Fee__c = 15, Fringe__c = 30, G_A__c = 10, Overhead__c = 52);
-        insert new Project_Billing_Rate__c(Name = 'Loaded Daily Rate 2', Date__c = Date.newInstance(2014, 01, 01), Custom_1__c = 0, Custom_2__c = 0, Custom_3__c = 0,
-                                            Fee__c = 20, Fringe__c = 30, G_A__c = 10, Overhead__c = 52);
-        insert new Project_Billing_Rate__c(Name = 'Loaded Daily Rate 3', Date__c = Date.newInstance(2017, 01, 01), Custom_1__c = 0, Custom_2__c = 0, Custom_3__c = 0,
-                                            Fee__c = 25, Fringe__c = 30, G_A__c = 10, Overhead__c = 52);
-        PageReference pageRef = Page.Billing_Rate_Manager;
-        pageRef.getParameters().put('billingRateName', EncodingUtil.urlDecode('Loaded Daily Rate 1', 'UTF-8'));
-        Test.setCurrentPage(pageRef);
-
-        Test.startTest();
-        BillingRateController brc = new BillingRateController();
-        brc.initManageRate();
-        System.assertEquals(2, brc.rateHistoryList.size());
-        System.assertEquals('Loaded Daily Rate 1', brc.newBillingRate.Name);
-
-        brc.newBillingRate.Fee__c = 30;
-        brc.newBillingRate.Fringe__c = 15;
-        brc.newBillingRate.G_A__c = 10;
-        brc.newBillingRate.Overhead__c = 5;
-        brc.newBillingRate.Custom_1__c = 11;
-        brc.newBillingRate.Custom_2__c = 12;
-        brc.newBillingRate.Custom_3__c = 13;
-        brc.saveNewRateHistory();
-        Test.stopTest();
-
-        System.assertEquals(3, brc.rateHistoryList.size());
-        Project_Billing_Rate__c newRate = [SELECT Id, Name, Date__c, Custom_1__c, Overhead__c, G_A__c, Fringe__c, Fee__c, Custom_2__c, Custom_3__c FROM Project_Billing_Rate__c WHERE Name = 'Loaded Daily Rate 1'
-                                                AND Date__c =: Date.today()];
-        System.assertEquals(11, newRate.Custom_1__c);
-        System.assertEquals(12, newRate.Custom_2__c);
-        System.assertEquals(13, newRate.Custom_3__c);
-        System.assertEquals(15, newRate.Fringe__c);
-        System.assertEquals(30, newRate.Fee__c);
-        System.assertEquals(10, newRate.G_A__c);
-        System.assertEquals(5, newRate.Overhead__c);
-        System.assertEquals(Date.today(), newRate.Date__c);
-    }
-
-    static testMethod void billingRateManagerShouldUpdateRateHistory() {
-        Project_Billing_Rate__c br1 = new Project_Billing_Rate__c(Name = 'Loaded Daily Rate 1', Date__c = Date.newInstance(1990, 01, 01), Custom_1__c = 0, Custom_2__c = 0, Custom_3__c = 0,
-                                            Fee__c = 10, Fringe__c = 30, G_A__c = 10, Overhead__c = 52);
-        Project_Billing_Rate__c br2 = new Project_Billing_Rate__c(Name = 'Loaded Daily Rate 1', Date__c = Date.newInstance(2015, 01, 01), Custom_1__c = 0, Custom_2__c = 0, Custom_3__c = 0,
-                                            Fee__c = 15, Fringe__c = 30, G_A__c = 10, Overhead__c = 52);
-        insert br1;
-        insert br2;
-
-        PageReference pageRef = Page.Billing_Rate_Manager;
-        pageRef.getParameters().put('billingRateName', EncodingUtil.urlDecode('Loaded Daily Rate 1', 'UTF-8'));
-        pageRef.getParameters().put('billingRateId', br2.Id);
-        Test.setCurrentPage(pageRef);
-
-        Test.startTest();
-        BillingRateController brc = new BillingRateController();
-        brc.initUpdateRate();
-        brc.newBillingRate.Fee__c = 30;
-        brc.newBillingRate.Fringe__c = 15;
-        brc.newBillingRate.G_A__c = 10;
-        brc.newBillingRate.Overhead__c = 5;
-        brc.newBillingRate.Custom_1__c = 11;
-        brc.newBillingRate.Custom_2__c = 12;
-        brc.newBillingRate.Custom_3__c = 13;
-        brc.updateRateHistory();
-        Test.stopTest();
-
-        brc.initManageRate();
-        System.assertEquals(2, brc.rateHistoryList.size());
-        Project_Billing_Rate__c newRate = [SELECT Id, Name, Date__c, Custom_1__c, Overhead__c, G_A__c, Fringe__c, Fee__c, Custom_2__c, Custom_3__c FROM Project_Billing_Rate__c WHERE Id =: br2.Id];
-        System.assertEquals(11, newRate.Custom_1__c);
-        System.assertEquals(12, newRate.Custom_2__c);
-        System.assertEquals(13, newRate.Custom_3__c);
-        System.assertEquals(15, newRate.Fringe__c);
-        System.assertEquals(30, newRate.Fee__c);
-        System.assertEquals(10, newRate.G_A__c);
-        System.assertEquals(5, newRate.Overhead__c);
-        System.assertEquals(Date.newInstance(2015, 01, 01), newRate.Date__c);
-    }
-
-    static testMethod void billingRateManagerShouldRunRecalculationBatch1() {
-        Project_Billing_Rate__c rate1_1 = new Project_Billing_Rate__c(Name = 'Loaded Daily Rate', Date__c = Date.newInstance(1990, 01, 01), Custom_1__c = 0, Custom_2__c = 0, Custom_3__c = 0,
-                                            Fee__c = 10, Fringe__c = 30, G_A__c = 10, Overhead__c = 52);
-        Project_Billing_Rate__c rate1_2 = new Project_Billing_Rate__c(Name = 'Loaded Daily Rate', Date__c = Date.newInstance(2011, 01, 01), Custom_1__c = 0, Custom_2__c = 0, Custom_3__c = 0,
-                                            Fee__c = 15, Fringe__c = 30, G_A__c = 10, Overhead__c = 52);
-        Project_Billing_Rate__c rate1_3 = new Project_Billing_Rate__c(Name = 'Loaded Daily Rate', Date__c = Date.newInstance(2012, 01, 01), Custom_1__c = 0, Custom_2__c = 0, Custom_3__c = 0,
-                                            Fee__c = 10, Fringe__c = 30, G_A__c = 10, Overhead__c = 52);
-        insert rate1_1;
-        insert rate1_2;
-        insert rate1_3;
-
-        SFDC_Employee__c employee_1 = new SFDC_Employee__c(Name = 'emp_6', Salary__c = 60000, Exchange_Rate__c = 2,
-                                                          Effective_Salary_Date__c = Date.newInstance(2011, 11, 1),
-                                                          Effective_Exchange_Rate_Date__c = Date.newInstance(2013, 1, 1));
-        DContract__c parent_1 = new DContract__c(Name = 'Sample Parent', Status__c = 'Active', Requires_Report_Out__c = 'No', Intracompany_Sub_contract__c = 'No', Project_Billing_Rate__c = 'Loaded Daily Rate');
-        insert parent_1;
-        Time_Card__c tc_1_employee_1 = new Time_Card__c(Total__c = 1, Date__c = Date.newInstance(2010, 12, 30), Employee__c = employee_1.Id, Client__c = parent_1.Id);
-        insert tc_1_employee_1;
-        Time_Card__c tc_2_employee_1 = new Time_Card__c(Total__c = 3, Date__c = Date.newInstance(2010, 11, 1), Employee__c = employee_1.Id, Client__c = parent_1.Id);
-        insert tc_2_employee_1;
-        Time_Card__c tc_3_employee_1 = new Time_Card__c(Total__c = 6, Date__c = Date.newInstance(2011, 1, 1), Employee__c = employee_1.Id, Client__c = parent_1.Id);
-        insert tc_3_employee_1;
-        Time_Card__c tc_4_employee_1 = new Time_Card__c(Total__c = 7, Date__c = Date.newInstance(2011, 5, 22), Employee__c = employee_1.Id, Client__c = parent_1.Id);
-        insert tc_4_employee_1;
-        Time_Card__c tc_5_employee_1 = new Time_Card__c(Total__c = 8, Date__c = Date.newInstance(2016, 3, 3), Employee__c = employee_1.Id, Client__c = parent_1.Id);
-        insert tc_5_employee_1;
-
-        PageReference pageRef = Page.Billing_Rate_Manager;
-        pageRef.getParameters().put('billingRateName', EncodingUtil.urlDecode('Loaded Daily Rate', 'UTF-8'));
-        pageRef.getParameters().put('billingRateId', rate1_2.Id);
-        Test.setCurrentPage(pageRef);
-
-        Test.startTest();
-        BillingRateController brc = new BillingRateController();
-        brc.initUpdateRate();
-        brc.newBillingRate.Fee__c = 30;
-        brc.newBillingRate.Fringe__c = 15;
-        brc.newBillingRate.G_A__c = 10;
-        brc.newBillingRate.Overhead__c = 5;
-        brc.newBillingRate.Custom_1__c = 11;
-        brc.newBillingRate.Custom_2__c = 12;
-        brc.newBillingRate.Custom_3__c = 13;
-        brc.updateRateHistory();
-        brc.runRecalculationBatchJob();
-        Test.stopTest();
-
-        Time_Card__c tcDB_1 = [SELECT Id, Billing_Rate__c FROM Time_Card__c WHERE Id =: tc_1_employee_1.Id];
-        System.assertEquals(null, tcDB_1.Billing_Rate__c);
-        Time_Card__c tcDB_2 = [SELECT Id, Billing_Rate__c FROM Time_Card__c WHERE Id =: tc_2_employee_1.Id];
-        System.assertEquals(null, tcDB_2.Billing_Rate__c);
-        Time_Card__c tcDB_3 = [SELECT Id, Billing_Rate__c FROM Time_Card__c WHERE Id =: tc_3_employee_1.Id];
-        System.assertEquals(2.4257309076, tcDB_3.Billing_Rate__c);
-        Time_Card__c tcDB_4 = [SELECT Id, Billing_Rate__c FROM Time_Card__c WHERE Id =: tc_4_employee_1.Id];
-        System.assertEquals(2.4257309076, tcDB_4.Billing_Rate__c);
-        Time_Card__c tcDB_5 = [SELECT Id, Billing_Rate__c FROM Time_Card__c WHERE Id =: tc_5_employee_1.Id];
-        System.assertEquals(null, tcDB_5.Billing_Rate__c);
-    }
-
-    static testMethod void billingRateManagerShouldRunRecalculationBatch2() {
-        Project_Billing_Rate__c rate1_1 = new Project_Billing_Rate__c(Name = 'Loaded Daily Rate', Date__c = Date.newInstance(1990, 01, 01), Custom_1__c = 0, Custom_2__c = 0, Custom_3__c = 0,
-                                            Fee__c = 10, Fringe__c = 30, G_A__c = 10, Overhead__c = 52);
-        Project_Billing_Rate__c rate1_2 = new Project_Billing_Rate__c(Name = 'Loaded Daily Rate', Date__c = Date.newInstance(2011, 01, 01), Custom_1__c = 0, Custom_2__c = 0, Custom_3__c = 0,
-                                            Fee__c = 15, Fringe__c = 30, G_A__c = 10, Overhead__c = 52);
-        Project_Billing_Rate__c rate1_3 = new Project_Billing_Rate__c(Name = 'Loaded Daily Rate', Date__c = Date.newInstance(2012, 01, 01), Custom_1__c = 0, Custom_2__c = 0, Custom_3__c = 0,
-                                            Fee__c = 10, Fringe__c = 30, G_A__c = 10, Overhead__c = 52);
-        insert rate1_1;
-        insert rate1_2;
-        insert rate1_3;
-
-        SFDC_Employee__c employee_1 = new SFDC_Employee__c(Name = 'emp_6', Salary__c = 60000, Exchange_Rate__c = 2,
-                                                          Effective_Salary_Date__c = Date.newInstance(2011, 11, 1),
-                                                          Effective_Exchange_Rate_Date__c = Date.newInstance(2013, 1, 1));
-        DContract__c parent_1 = new DContract__c(Name = 'Sample Parent', Status__c = 'Active', Requires_Report_Out__c = 'No', Intracompany_Sub_contract__c = 'No', Project_Billing_Rate__c = 'Loaded Daily Rate');
-        insert parent_1;
-        Time_Card__c tc_1_employee_1 = new Time_Card__c(Total__c = 1, Date__c = Date.newInstance(2010, 12, 30), Employee__c = employee_1.Id, Client__c = parent_1.Id);
-        insert tc_1_employee_1;
-        Time_Card__c tc_2_employee_1 = new Time_Card__c(Total__c = 3, Date__c = Date.newInstance(2010, 11, 1), Employee__c = employee_1.Id, Client__c = parent_1.Id);
-        insert tc_2_employee_1;
-        Time_Card__c tc_3_employee_1 = new Time_Card__c(Total__c = 6, Date__c = Date.newInstance(2011, 1, 1), Employee__c = employee_1.Id, Client__c = parent_1.Id);
-        insert tc_3_employee_1;
-        Time_Card__c tc_4_employee_1 = new Time_Card__c(Total__c = 7, Date__c = Date.newInstance(2011, 5, 22), Employee__c = employee_1.Id, Client__c = parent_1.Id);
-        insert tc_4_employee_1;
-        Time_Card__c tc_5_employee_1 = new Time_Card__c(Total__c = 8, Date__c = Date.newInstance(2016, 3, 3), Employee__c = employee_1.Id, Client__c = parent_1.Id);
-        insert tc_5_employee_1;
-
-        PageReference pageRef = Page.Billing_Rate_Manager;
-        pageRef.getParameters().put('billingRateName', EncodingUtil.urlDecode('Loaded Daily Rate', 'UTF-8'));
-        pageRef.getParameters().put('billingRateId', rate1_2.Id);
-        Test.setCurrentPage(pageRef);
-
-        Test.startTest();
-        BillingRateController brc = new BillingRateController();
-        brc.initUpdateRate();
-        brc.newBillingRate.Fee__c = 30;
-        brc.newBillingRate.Fringe__c = 15;
-        brc.newBillingRate.G_A__c = 10;
-        brc.newBillingRate.Overhead__c = 5;
-        brc.newBillingRate.Custom_1__c = 11;
-        brc.newBillingRate.Custom_2__c = 12;
-        brc.newBillingRate.Custom_3__c = 13;
-        brc.updateRateHistory();
-        brc.initManageRate();
-        brc.newBillingRate.Fee__c = 30;
-        brc.newBillingRate.Fringe__c = 15;
-        brc.newBillingRate.G_A__c = 10;
-        brc.newBillingRate.Overhead__c = 5;
-        brc.newBillingRate.Custom_1__c = 50;
-        brc.newBillingRate.Custom_2__c = 12;
-        brc.newBillingRate.Custom_3__c = 50;
-        brc.newBillingRate.Date__c = Date.newInstance(2016, 3, 3);
-        brc.saveNewRateHistory();
-        brc.runRecalculationBatchJob();
-        Test.stopTest();
-
-        Time_Card__c tcDB_1 = [SELECT Id, Billing_Rate__c FROM Time_Card__c WHERE Id =: tc_1_employee_1.Id];
-        System.assertEquals(null, tcDB_1.Billing_Rate__c);
-        Time_Card__c tcDB_2 = [SELECT Id, Billing_Rate__c FROM Time_Card__c WHERE Id =: tc_2_employee_1.Id];
-        System.assertEquals(null, tcDB_2.Billing_Rate__c);
-        Time_Card__c tcDB_3 = [SELECT Id, Billing_Rate__c FROM Time_Card__c WHERE Id =: tc_3_employee_1.Id];
-        System.assertEquals(2.4257309076, tcDB_3.Billing_Rate__c);
-        Time_Card__c tcDB_4 = [SELECT Id, Billing_Rate__c FROM Time_Card__c WHERE Id =: tc_4_employee_1.Id];
-        System.assertEquals(2.4257309076, tcDB_4.Billing_Rate__c);
-        Time_Card__c tcDB_5 = [SELECT Id, Billing_Rate__c FROM Time_Card__c WHERE Id =: tc_5_employee_1.Id];
-        System.assertEquals(4.351347, tcDB_5.Billing_Rate__c);
     }
 }

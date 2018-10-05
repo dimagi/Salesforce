@@ -1,5 +1,5 @@
 /**
- *
+ * Wrapper class for salary and billing rate history.
  */
 public class SalaryHistoryRecord  implements Comparable {
 

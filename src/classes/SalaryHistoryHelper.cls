@@ -3,35 +3,6 @@
  */
 public without sharing class SalaryHistoryHelper {
 
-    public List<SalaryHistoryRecord> loadBillingRatesHistory(String billingRateName) {
-        List<SalaryHistoryRecord> billingRateHistory = new List<SalaryHistoryRecord>();
-        if (billingRateName == '' || billingRateName == null) {
-            billingRateName = 'Loaded Daily Rate';
-        }
-
-        List<Project_Billing_Rate__c> ratesRecords = [SELECT Id, Date__c, Custom_1__c, Custom_2__c, Custom_3__c, Fee__c, Fringe__c, G_A__c, Overhead__c FROM Project_Billing_Rate__c
-                                                        WHERE Name =: billingRateName ORDER BY Date__c];
-
-        for (Project_Billing_Rate__c rate : ratesRecords) {
-            Decimal custom1 = rate.Custom_1__c != null ? 1.00 + (rate.Custom_1__c / 100.00) : 1;
-            Decimal custom2 = rate.Custom_2__c != null ? 1.00 + (rate.Custom_2__c / 100.00) : 1;
-            Decimal custom3 = rate.Custom_3__c != null ? 1.00 + (rate.Custom_3__c / 100.00) : 1;
-            Decimal fee = rate.Fee__c != null ? 1.00 + (rate.Fee__c / 100.00) : 1;
-            Decimal fringe = rate.Fringe__c != null ? 1.00 + (rate.Fringe__c / 100.00) : 1;
-            Decimal ga = rate.G_A__c != null ? 1.00 + (rate.G_A__c / 100.00) : 1;
-            Decimal over = rate.Overhead__c != null ? 1.00 + (rate.Overhead__c / 100.00) : 1;
-
-            Decimal rateValue = custom1 * custom2 * custom3 * fee * fringe * ga * over;
-            billingRateHistory.add(new SalaryHistoryRecord(rateValue, rate.Date__c));
-        }
-
-        if (billingRateHistory.size() == 0) {
-            billingRateHistory.add(new SalaryHistoryRecord(1.0, Date.newInstance(1900, 1, 1))); // 100% of Daily Rate
-        }
-
-        return billingRateHistory;
-    }
-
     /**
      * Builds employee salary and exchange rate history.
      */
@@ -45,7 +16,7 @@ public without sharing class SalaryHistoryHelper {
         Integer salaryIndex = 0;
 
         // Cases for first History record:
-        // * No history 
+        // * No history
         // * Salary is empty and no history
         // * History record which updates from null to value (start value)
         // * History record which updates from first value to second (OldValue field is start value)

@@ -13,6 +13,7 @@ public without sharing class BatchRecalculateTimeCardCost implements Database.Ba
     private Boolean copyContracts;
     private Set<Id> copiedContracts;
     private List<Id> contractIds;
+    private Set<Id> contractsToRefresh;
 
     public BatchRecalculateTimeCardCost(Set<Id> timeCards) {
         this(timeCards, new List<Id>(), false);
@@ -29,6 +30,7 @@ public without sharing class BatchRecalculateTimeCardCost implements Database.Ba
         this.employeeSalaryHistory = new List<SalaryHistoryRecord>();
         this.lastUpdatedDateTime = DateTime.now().addDays(-1);
         this.oldCalculations = Date.newInstance(2017, 12, 1);
+        this.contractsToRefresh = new Set<Id>();
     }
 
     public Database.QueryLocator start(Database.BatchableContext context) {
@@ -42,7 +44,7 @@ public without sharing class BatchRecalculateTimeCardCost implements Database.Ba
         } else { // daily calculate added old time cards (with Date__c before 2017-12-01)
             query = 'SELECT Billing_Rate__c, Time_Card_Salary__c, Total__c, Employee__c, Date__c, Client__r.Project_Billing_Rate__c FROM Time_Card__c WHERE CreatedDate>=:lastUpdatedDateTime AND Date__c<:oldCalculations AND Employee__c != \'\' ORDER BY Employee__c';
         }
-        System.debug('Query : ' + query);
+
         return Database.getQueryLocator(query);
     }
 
@@ -68,7 +70,6 @@ public without sharing class BatchRecalculateTimeCardCost implements Database.Ba
                 this.lastEmployee = tc.Employee__c;
                 this.employeeSalaryHistory = this.salaryHistoryHelper.mergeSalaryHistory([SELECT Name, Hire_Date__c, Expected_Termination_Date__c, Salary__c, Effective_Salary_Date__c,
                                                                                           Exchange_Rate__c, Effective_Exchange_Rate_Date__c, Working_Days__c FROM SFDC_Employee__c WHERE Id =: tc.Employee__c]);
-                System.debug('New employee : ' + tc.Employee__c);
                 lastToSalaryDate = this.employeeSalaryHistory.size() > 1 ? this.employeeSalaryHistory.get(1).getValueDate() : Date.today().addYears(1);
                 lastSalary = this.employeeSalaryHistory.get(0).getValue().setScale(8);
                 lastFromSalaryDate = Date.newInstance(1900, 1, 1);
@@ -95,6 +96,7 @@ public without sharing class BatchRecalculateTimeCardCost implements Database.Ba
                 if (tc.Date__c < Date.newInstance(2017, 12, 1)) {
                     tc.Time_Card_Salary__c = lastSalary.setScale(8);
                     toUpdate.add(tc);
+                    this.contractsToRefresh.add(tc.Client__c);
                 }
             }
         }
@@ -102,11 +104,14 @@ public without sharing class BatchRecalculateTimeCardCost implements Database.Ba
         if (toUpdate.size() > 0) {
             update toUpdate;
         }
+        if (this.contractsToRefresh.size() > 0) {
+             TimeCardCalculatorUtils.markContractsToRefresh(this.contractsToRefresh);
+        }
     }
 
     public void finish(Database.BatchableContext context) {
         if (!Test.isRunningTest()) {
-            Database.executeBatch(new TimeCardCalculator(), 40); // calculate billing rate and salary for new time cards(after 2017-12-01 we are using employee snapshot for calculations)
+            Database.executeBatch(new TimeCardCalculator()); // calculate billing rate and salary for new time cards(after 2017-12-01 we are using employee snapshot for calculations)
         }
     }
 
