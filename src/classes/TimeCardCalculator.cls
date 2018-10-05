@@ -81,8 +81,6 @@ public without sharing class TimeCardCalculator implements Database.Batchable<sO
             this.contractsToRecalculate.addAll(TimeCardCalculatorUtils.getParentAndChildContracts(setId));
         }
 
-        System.debug('Id : ' + this.contractsToRecalculate);
-
         return Database.getQueryLocator(selectTc + whereTc + orderBy);
     }
 

@@ -73,7 +73,7 @@ public class TimeCardCaseUpdateBatch implements Database.Batchable<FogBugzCase>,
 
     public void finish(Database.BatchableContext context) {
         if (!Test.isRunningTest()) {
-            Database.executeBatch(new TimeCardCalculator());
+            Database.executeBatch(new BatchRecalculateTimeCardCost(null));
         }
     }
 }

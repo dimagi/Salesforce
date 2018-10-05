@@ -39,4 +39,29 @@ public class TimeCardCalculatorUtils {
             }
         }
     }
+
+    @future
+    public static void calculateTimeCardSalaryAndBillingRate(Set<Id> timeCardIds) {
+        List<Time_Card__c> timeCards = [SELECT Id, Client__c, Client__r.Project_Billing_Rate__c, Employee__c, Time_Card_Salary__c, Billing_Rate__c, Date__c FROM Time_Card__c WHERE Id IN: timeCardIds];
+
+        TimeCardCalculatorHelper calculatorHelper = new TimeCardCalculatorHelper();
+        calculatorHelper.loadEmployeesSalary(timeCards);
+        Set<Id> clientsToRefresh = new Set<Id>();
+
+        for (Time_Card__c timeCard : timeCards) {
+            Decimal emplSalary = calculatorHelper.getSalary(timeCard.Employee__c, timeCard.Date__c);
+            Decimal billingRate = calculatorHelper.getBillingRate(timeCard.Client__r.Project_Billing_Rate__c, timeCard.Date__c);
+            timeCard.Time_Card_Salary__c = emplSalary;
+            timeCard.Billing_Rate__c = billingRate;
+            clientsToRefresh.add(timeCard.Client__c);
+        }
+
+        if (timeCards.size() > 0) {
+            update timeCards;
+        }
+
+        if (clientsToRefresh.size() > 0) {
+            markContractsToRefresh(clientsToRefresh);
+        }
+    }
 }

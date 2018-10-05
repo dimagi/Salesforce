@@ -7,32 +7,21 @@ public class TimeCardTriggerController {
         // We must avoid situation when we exceed transaction limits (100 SOQL),
         // there is possibility that each time card will be from different month or for different employee
         TimeCardCalculatorHelper timeCardHelper = new TimeCardCalculatorHelper();
-        Map<Id, Set<Date>> emplSnpMap = new Map<Id, Set<Date>>();
-        Map<Id, String> billingRateMap = new Map<Id, String>();
         Set<Id> contractsIds = new Set<Id>();
-
-        for (Time_Card__c timeCard : newTimeCards) {
-            contractsIds.add(timeCard.Client__c);
-            Date lastMonthDate = Date.newInstance(timeCard.Date__c.year(), timeCard.Date__c.month(), Date.daysInMonth(timeCard.Date__c.year(), timeCard.Date__c.month()));
-            if (emplSnpMap.containsKey(timeCard.Employee__c)) {
-                Set<Date> dateSet = emplSnpMap.get(timeCard.Employee__c);
-                dateSet.add(lastMonthDate);
-                emplSnpMap.put(timeCard.Employee__c, dateSet);
-            } else {
-                emplSnpMap.put(timeCard.Employee__c, new Set<Date> { lastMonthDate });
-            }
-        }
-        timeCardHelper.loadEmployeesSalary(emplSnpMap);
-
-        for (DContract__c client : [SELECT Id, Project_Billing_Rate__c FROM DContract__c WHERE Id IN: contractsIds]) {
-            billingRateMap.put(client.Id, client.Project_Billing_Rate__c);
-        }
+        timeCardHelper.loadEmployeesSalary(newTimeCards);
+        Date dateThreshold = Date.newInstance(2017, 12, 1);
 
         List<Time_Card__c> tcToUpdate = new List<Time_Card__c>();
         for (Time_Card__c timeCard : newTimeCards) {
-            Decimal emplSalary = timeCardHelper.getSalary(timeCard.Employee__c, timeCard.Date__c);
-            Decimal billingRate = timeCardHelper.getBillingRate(billingRateMap.get(timeCard.Client__c), timeCard.Date__c);
-            tcToUpdate.add(new Time_Card__c(Id = timeCard.Id, Time_Card_Salary__c = emplSalary, Billing_Rate__c = billingRate));
+            contractsIds.add(timeCard.Client__c);
+            Time_Card__c tc = new Time_Card__c(Id = timeCard.Id);
+            if (timeCard.Date__c >= dateThreshold) {
+                Decimal emplSalary = timeCardHelper.getSalary(timeCard.Employee__c, timeCard.Date__c);
+                tc.Time_Card_Salary__c = emplSalary;
+            }
+            Decimal billingRate = timeCardHelper.getBillingRate(timeCardHelper.getClientBillingRate(timeCard.Client__c), timeCard.Date__c);
+            tc.Billing_Rate__c = billingRate;
+            tcToUpdate.add(tc);
         }
 
         TimeCardCalculatorUtils.markContractsToRefresh(contractsIds);
@@ -53,7 +42,7 @@ public class TimeCardTriggerController {
         for (Time_Card__c tc : updatedTimeCards) {
             if (tc.FTE_Only__c != true) {
                 Time_Card__c oldTC = beforeUpdateTimeCards.get(tc.Id);
-                if (tc.Client__c != oldTC.Client__c) {
+                if (oldTC.Client__c != null && tc.Client__c != oldTC.Client__c) {
 
                     contractsIds.add(oldTC.Client__c);
                     contractsIds.add(tc.Client__c);
@@ -93,7 +82,9 @@ public class TimeCardTriggerController {
             RecursiveTriggerHelper.setRecursiveFlag();
             update timeCardsToUpdate;
         }
-        TimeCardCalculatorUtils.markContractsToRefresh(contractsIds);
+        if (contractsIds.size() > 0) {
+            TimeCardCalculatorUtils.markContractsToRefresh(contractsIds);
+        }
     }
 
     public static void handleAfterDelete(List<Time_Card__c> deletedTimeCards) {

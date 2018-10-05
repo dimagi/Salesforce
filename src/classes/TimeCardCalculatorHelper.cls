@@ -6,6 +6,7 @@ public class TimeCardCalculatorHelper {
     // salary
     private Map<Id, Decimal> employeeSalaryMap;
     private Map<Id, Map<Date, Decimal>> employeeSalarySnpMap;
+    private Map<Id, String> billingRateMap;
 
     // billing rate
     private String lastRateName = '';
@@ -32,7 +33,31 @@ public class TimeCardCalculatorHelper {
         return this.employeeSalaryMap.containsKey(employeeId);
     }
 
-    public void loadEmployeesSalary(Map<Id, Set<Date>> emplMap) {
+    public String getClientBillingRate(Id clientId) {
+        return this.billingRateMap.get(clientId);
+    }
+
+    public void loadEmployeesSalary(List<Time_Card__c> timeCards) {
+        Map<Id, Set<Date>> emplMap = new Map<Id, Set<Date>>();
+        Set<Id> contractsIds = new Set<Id>();
+
+        for (Time_Card__c timeCard : timeCards) {
+            contractsIds.add(timeCard.Client__c);
+            Date lastMonthDate = Date.newInstance(timeCard.Date__c.year(), timeCard.Date__c.month(), Date.daysInMonth(timeCard.Date__c.year(), timeCard.Date__c.month()));
+            if (emplMap.containsKey(timeCard.Employee__c)) {
+                Set<Date> dateSet = emplMap.get(timeCard.Employee__c);
+                dateSet.add(lastMonthDate);
+                emplMap.put(timeCard.Employee__c, dateSet);
+            } else {
+                emplMap.put(timeCard.Employee__c, new Set<Date> { lastMonthDate });
+            }
+        }
+
+        this.billingRateMap = new Map<Id, String>();
+        for (DContract__c client : [SELECT Id, Project_Billing_Rate__c FROM DContract__c WHERE Id IN: contractsIds]) {
+            this.billingRateMap.put(client.Id, client.Project_Billing_Rate__c);
+        }
+
         for (Id emplId : emplMap.keySet()) {
             loadEmployeeSalary(emplId, emplMap.get(emplId));
         }
@@ -97,6 +122,7 @@ public class TimeCardCalculatorHelper {
             this.lastToRateDate = this.currentRateHistory.size() > index + 1 ? this.currentRateHistory.get(index + 1).getValueDate() : Date.today().addYears(1);
         }
 
+        System.debug(billingRate + ' Billing Rate for time card : ' + tcDate + ' ' + this.contractRate + ' ' + this.lastFromRateDate + ' ' + this.lastToRateDate);
         return this.contractRate;
     }
 

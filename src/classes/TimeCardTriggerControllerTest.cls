@@ -31,7 +31,7 @@ public class TimeCardTriggerControllerTest {
         insert new Project_Billing_Rate__c(Name = 'Loaded Daily Rate', Date__c = Date.newInstance(1990, 01, 01), Custom_1__c = 0, Custom_2__c = 0, Custom_3__c = 0,
                                             Fee__c = 10, Fringe__c = 30, G_A__c = 10, Overhead__c = 52);
 
-        insert new Project_Billing_Rate__c(Name = 'Test Daily Rate', Date__c = Date.newInstance(1990, 01, 01), Custom_1__c = 0, Custom_2__c = 0, Custom_3__c = 0,
+        insert new Project_Billing_Rate__c(Name = 'Test Daily Rate', Date__c = Date.newInstance(2018, 01, 01), Custom_1__c = 0, Custom_2__c = 0, Custom_3__c = 0,
                                             Fee__c = 10, Fringe__c = 10, G_A__c = 10, Overhead__c = 52);
         insert new Project_Billing_Rate__c(Name = 'Test Daily Rate', Date__c = Date.newInstance(2018, 01, 20), Custom_1__c = 0, Custom_2__c = 0, Custom_3__c = 0,
                                             Fee__c = 10, Fringe__c = 20, G_A__c = 10, Overhead__c = 52);
@@ -193,7 +193,7 @@ public class TimeCardTriggerControllerTest {
         insert emplSnp3;
 
         Test.startTest();
-        // January : Salary -> (30000 / (260 / 2)) / 8 Billing Rate -> before 20 : (1.1 * 1.1 * 1.1 * 1.52) = 2.02312, from 20 (1.1 * 1.2 * 1.1 * 1.52) = 2.20704
+        // January : Salary -> (30000 / (260 / 2)) / 8 Billing Rate -> before 20 : (1.1 * 1.1 * 1.1 * 1.52) = 2.02312, from 20 (1.1 * 1.2 * 1.1 * 1.52) = 2.20704  
         Time_Card__c timeCardObj1 = new Time_Card__c(Time_Card_Salary__c = 0, Billing_Rate__c = 2.0, Total__c = 8, Date__c = Date.newInstance(2018 , 1, 2),
                                                         Employee__c = employeeObj.Id, Client__c = child1.Id);
         Time_Card__c timeCardObj2 = new Time_Card__c(Time_Card_Salary__c = 0, Billing_Rate__c = 3.0, Total__c = 4, Date__c = Date.newInstance(2018 , 1, 12),
@@ -236,14 +236,19 @@ public class TimeCardTriggerControllerTest {
         tcCalculator.execute(null, testData);
         tcCalculator.finish(null);
 
-        Decimal child1Value = (8 * (((30000 / 2.0) / (260.0 / 2.0)) / 8.0).setScale(8) * 2.0231200000).setScale(8) + (10 * (((30000 / 2.0) / (260.0 / 2.0)) / 8.0).setScale(8) * 2.2070400000).setScale(8)
-                                + (8 * (((40000 / 3.0) / (260.0 / 2.0)) / 8.0).setScale(8) * 2.2070400000).setScale(8) + (10 * (((40000 / 3.0) / (260.0 / 2.0)) / 8.0).setScale(8) * 2.2070400000).setScale(8)
-                                + (8 * ((45000 / (260.0 * (30.0 / 40.0))) / 8.0).setScale(8) * 2.3909600000).setScale(8) + (10 * ((45000 / (260.0 * (30.0 / 40.0))) / 8.0).setScale(8) * 2.3909600000).setScale(8)
-                                + (8 * ((50000 / 260.0) / 8.0).setScale(8) * 2.3909600000).setScale(8) + (10 * ((50000 / 260.0) / 8.0).setScale(8) * 2.3909600000);
+        Decimal child1Value = (8 * (((30000 / 2.0) / (260.0 / 2.0)) / 8.0).setScale(8) * 2.0231200000).setScale(8)
+                            + (10 * (((30000 / 2.0) / (260.0 / 2.0)) / 8.0).setScale(8) * 2.2070400000).setScale(8)
+                            + (8 * (((40000 / 3.0) / (260.0 / 2.0)) / 8.0).setScale(8) * 2.2070400000).setScale(8)
+                            + (10 * (((40000 / 3.0) / (260.0 / 2.0)) / 8.0).setScale(8) * 2.2070400000).setScale(8)
+                            + (8 * ((45000 / (260.0 * (30.0 / 40.0))) / 8.0).setScale(8) * 2.3909600000).setScale(8)
+                            + (10 * ((45000 / (260.0 * (30.0 / 40.0))) / 8.0).setScale(8) * 2.3909600000).setScale(8)
+                            + (8 * ((50000 / 260.0) / 8.0).setScale(8) * 2.3909600000).setScale(8)
+                            + (10 * ((50000 / 260.0) / 8.0).setScale(8) * 2.3909600000);
+
         Decimal parentValue = (4 * (((30000 / 2.0) / (260.0 / 2.0)) / 8.0).setScale(8) * 2.0231200000).setScale(8)
-                                + (4 * (((40000 / 3.0) / (260.0 / 2.0)) / 8.0).setScale(8) * 2.2070400000).setScale(8)
-                                + (4 * ((45000 / (260.0 * (30.0 / 40.0))) / 8.0).setScale(8) * 2.3909600000).setScale(8)
-                                + (4 * ((50000 / 260.0) / 8.0).setScale(8) * 2.3909600000).setScale(8);
+                            + (4 * (((40000 / 3.0) / (260.0 / 2.0)) / 8.0).setScale(8) * 2.2070400000).setScale(8)
+                            + (4 * ((45000 / (260.0 * (30.0 / 40.0))) / 8.0).setScale(8) * 2.3909600000).setScale(8)
+                            + (4 * ((50000 / 260.0) / 8.0).setScale(8) * 2.3909600000).setScale(8);
 
         for (Time_Card__c tc : [SELECT Id, Date__c, Time_Card_Salary__c, Billing_Rate__c,  Client__r.Name FROM TIme_Card__c]) {
             System.debug('Debug tc : ' + tc.Client__r.Name + ' ' + tc.Date__c + ' ' + tc.Billing_Rate__c + ' ' + tc.Time_Card_Salary__c);
@@ -674,6 +679,68 @@ public class TimeCardTriggerControllerTest {
 
         dcontractFromDB = [SELECT Id, Name, Services_Spend__c FROM DContract__c WHERE Id =: child4.Id];
         System.assertEquals(1101.24, dcontractFromDB.Services_Spend__c);
+    }
+
+    @isTest
+    public static void futureMethodShouldRecalculateTimeCardCostAndBillingRate() {
+        Test.startTest();
+        SFDC_Employee__c employeeObj1 = new SFDC_Employee__c(Name = 'Old Test Employee', Salary__c = 50000, Exchange_Rate__c = 1,  Effective_Salary_Date__c = Date.newInstance(2016, 2, 24),
+                                                                    Effective_Exchange_Rate_Date__c = Date.newInstance(2016, 2, 24), Per_Week_Hours__c = 40);
+        insert employeeObj1;
+
+        SFDC_Employee__c employeeObj2 = new SFDC_Employee__c(Name = 'Old Test Employee', Salary__c = 80000, Exchange_Rate__c = 1,  Effective_Salary_Date__c = Date.newInstance(2016, 2, 24),
+                                                                    Effective_Exchange_Rate_Date__c = Date.newInstance(2016, 2, 24), Per_Week_Hours__c = 40);
+        insert employeeObj2;
+
+        insert new Project_Billing_Rate__c(Name = 'Loaded Daily Rate Updated', Date__c = Date.newInstance(1990, 01, 01), Custom_1__c = 0, Custom_2__c = 0, Custom_3__c = 0,
+                                            Fee__c = 10, Fringe__c = 30, G_A__c = 10, Overhead__c = 25);
+
+        DContract__c parent1 = new DContract__c(Name = 'Old Sample Parent', Status__c = 'Active', Requires_Report_Out__c = 'No', Intracompany_Sub_contract__c = 'No');
+        insert parent1;
+        DContract__c child1 = new DContract__c(Name = 'Old Sample Child 1', Status__c = 'Active', Requires_Report_Out__c = 'No', Intracompany_Sub_contract__c = 'Yes', Parent_Contract__c = parent1.Id);
+        insert child1;
+
+        Time_Card__c timeCardObj1 = new Time_Card__c(Total__c = 8, Date__c = Date.today().addMonths(-2), Employee__c = employeeObj1.Id, Client__c = parent1.Id);
+        Time_Card__c timeCardObj2 = new Time_Card__c(Total__c = 4, Date__c = Date.today().addMonths(-2), Employee__c = employeeObj1.Id, Client__c = parent1.Id);
+        Time_Card__c timeCardObj3 = new Time_Card__c(Total__c = 10, Date__c = Date.today().addMonths(-2), Employee__c = employeeObj1.Id, Client__c = child1.Id);
+        Time_Card__c timeCardObj4 = new Time_Card__c(Total__c = 8, Date__c = Date.today().addMonths(-2), Employee__c = employeeObj1.Id, Client__c = child1.Id);
+
+        List<Time_Card__c> newTimeCards = new List<Time_Card__c> {timeCardObj1, timeCardObj2, timeCardObj3, timeCardObj4};
+        insert newTimeCards;
+
+        timeCardObj1.Employee__c = employeeObj2.Id;
+        timeCardObj2.Employee__c = employeeObj2.Id;
+        child1.Project_Billing_Rate__c = 'Loaded Daily Rate Updated';
+        update new List<Time_Card__c> {timeCardObj1, timeCardObj2};
+        update child1;
+
+        TimeCardCalculatorUtils.calculateTimeCardSalaryAndBillingRate(new Set<Id> {timeCardObj1.Id, timeCardObj2.Id, timeCardObj3.Id, timeCardObj4.Id});
+        Test.stopTest();
+
+        DContract__c testContract = [SELECT Id, Require_Services_Spend_Refresh__c FROM DContract__c WHERE Id =: parent1.Id];
+        System.assertEquals(true, testContract.Require_Services_Spend_Refresh__c);
+
+        testContract = [SELECT Id, Require_Services_Spend_Refresh__c FROM DContract__c WHERE Id =: child1.Id];
+        System.assertEquals(true, testContract.Require_Services_Spend_Refresh__c);
+
+        Decimal salary1 = (((50000 / 1.0) / (260 * (40.0 / 40.0))) / 8.0).setScale(8);
+        Decimal salary2 = (((80000 / 1.0) / (260 * (40.0 / 40.0))) / 8.0).setScale(8);
+
+        Time_Card__c tc1DB = [SELECT Id, Billing_Rate__c, Time_Card_Salary__c FROM Time_Card__c WHERE Id =: timeCardObj1.Id];
+        System.assertEquals(salary2, tc1DB.Time_Card_Salary__c);
+        System.assertEquals(2.39096, tc1DB.Billing_Rate__c);
+
+        Time_Card__c tc2DB = [SELECT Id, Billing_Rate__c, Time_Card_Salary__c FROM Time_Card__c WHERE Id =: timeCardObj2.Id];
+        System.assertEquals(salary2, tc2DB.Time_Card_Salary__c);
+        System.assertEquals(2.39096, tc2DB.Billing_Rate__c);
+
+        Time_Card__c tc3DB = [SELECT Id, Billing_Rate__c, Time_Card_Salary__c FROM Time_Card__c WHERE Id =: timeCardObj3.Id];
+        System.assertEquals(salary1, tc3DB.Time_Card_Salary__c);
+        System.assertEquals(1.96625, tc3DB.Billing_Rate__c);
+
+        Time_Card__c tc4DB = [SELECT Id, Billing_Rate__c, Time_Card_Salary__c FROM Time_Card__c WHERE Id =: timeCardObj4.Id];
+        System.assertEquals(salary1, tc4DB.Time_Card_Salary__c);
+        System.assertEquals(1.96625, tc4DB.Billing_Rate__c);
     }
 
     /**
