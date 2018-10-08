@@ -21,10 +21,6 @@
         <type>Default</type>
     </actionOverrides>
     <actionOverrides>
-        <actionName>Follow</actionName>
-        <type>Default</type>
-    </actionOverrides>
-    <actionOverrides>
         <actionName>List</actionName>
         <type>Default</type>
     </actionOverrides>
@@ -384,6 +380,18 @@
         <type>Checkbox</type>
     </fields>
     <fields>
+        <fullName>Downgrade_notes__c</fullName>
+        <description>This field is meant to capture any anecdotal notes we have about why a project space chose to downgrade</description>
+        <externalId>false</externalId>
+        <inlineHelpText>CS/ Sales-- enter any relevant information you have about why this domain downgraded their plan</inlineHelpText>
+        <label>Downgrade notes</label>
+        <length>32768</length>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>LongTextArea</type>
+        <visibleLines>3</visibleLines>
+    </fields>
+    <fields>
         <fullName>Email__c</fullName>
         <externalId>false</externalId>
         <formula>creating_user__c</formula>
@@ -402,6 +410,18 @@
         <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Forms_for_Period_TMP__c</fullName>
+        <externalId>false</externalId>
+        <label>Forms for Period TMP</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
     </fields>
     <fields>
         <fullName>Forms_for_Period__c</fullName>
@@ -760,22 +780,24 @@
         <externalId>false</externalId>
         <inlineHelpText>Has this domain purchased an onboarding package (executed by Customer Success team)?</inlineHelpText>
         <label>Onboarding package</label>
-        <picklist>
-            <picklistValues>
-                <fullName>Quick-start (~ 6 hrs)</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Advanced onboarding (~15 hrs)</fullName>
-                <default>false</default>
-            </picklistValues>
-            <restrictedPicklist>true</restrictedPicklist>
-            <sorted>false</sorted>
-        </picklist>
         <required>false</required>
         <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Picklist</type>
+        <valueSet>
+            <restricted>true</restricted>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>Quick-start (~ 6 hrs)</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Advanced onboarding (~15 hrs)</fullName>
+                    <default>false</default>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
     </fields>
     <fields>
         <fullName>Opportunity__c</fullName>
@@ -794,46 +816,52 @@
         <fullName>Origin_of_project_space__c</fullName>
         <externalId>false</externalId>
         <label>Origin of project space</label>
-        <picklist>
-            <picklistValues>
-                <fullName>Indirect Inside Sales (Sales team connection but no opp)</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Organic growth of Inside Sales customer (New project space)</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Organic Growth of non inside sales customer</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>BD team</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Other Dimagi Referral (mostly GS team)</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Partner Program</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Unknown/ Likely real self-start</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Other</fullName>
-                <default>false</default>
-            </picklistValues>
-            <restrictedPicklist>true</restrictedPicklist>
-            <sorted>false</sorted>
-        </picklist>
         <required>false</required>
         <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Picklist</type>
+        <valueSet>
+            <restricted>true</restricted>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>Indirect Inside Sales (Sales team connection but no opp)</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Organic growth of Inside Sales customer (New project space)</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Organic Growth of non inside sales customer</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Organic growth of GS clients</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>BD team</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Other Dimagi Referral (mostly GS team)</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Partner Program</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Unknown/ Likely real self-start</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Other</fullName>
+                    <default>false</default>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
     </fields>
     <fields>
         <fullName>Partner_Program_Organization__c</fullName>
@@ -841,18 +869,20 @@
         <externalId>false</externalId>
         <inlineHelpText>Select the Partner Program organization from the dropdown menu</inlineHelpText>
         <label>Partner Program Organization</label>
-        <picklist>
-            <picklistValues>
-                <fullName>AgImpact</fullName>
-                <default>false</default>
-            </picklistValues>
-            <restrictedPicklist>true</restrictedPicklist>
-            <sorted>false</sorted>
-        </picklist>
         <required>false</required>
         <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Picklist</type>
+        <valueSet>
+            <restricted>true</restricted>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>AgImpact</fullName>
+                    <default>false</default>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
     </fields>
     <fields>
         <fullName>Partner_Program__c</fullName>
@@ -909,21 +939,23 @@
         <fullName>Server_Name__c</fullName>
         <externalId>false</externalId>
         <label>Server Name</label>
-        <picklist>
-            <picklistValues>
-                <fullName>CommCareHQ</fullName>
-                <default>true</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>CommCareHQ India</fullName>
-                <default>false</default>
-            </picklistValues>
-            <sorted>false</sorted>
-        </picklist>
         <required>false</required>
         <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Picklist</type>
+        <valueSet>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>CommCareHQ</fullName>
+                    <default>true</default>
+                </value>
+                <value>
+                    <fullName>CommCareHQ India</fullName>
+                    <default>false</default>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
     </fields>
     <fields>
         <fullName>View_Project_Space_Settings_in_HQ__c</fullName>
@@ -934,6 +966,20 @@
         <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Wam_TMP__c</fullName>
+        <description>Field used for backed calculations, do not use it</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Field used for backed calculations, do not use it</inlineHelpText>
+        <label>Wam TMP</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
         <unique>false</unique>
     </fields>
     <fields>

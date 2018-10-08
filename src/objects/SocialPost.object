@@ -140,6 +140,9 @@
         <fullName>Name</fullName>
     </fields>
     <fields>
+        <fullName>Notes</fullName>
+    </fields>
+    <fields>
         <fullName>OutboundSocialAccountId</fullName>
         <type>Lookup</type>
     </fields>
@@ -261,11 +264,13 @@
         <customTabListAdditionalFields>Posted</customTabListAdditionalFields>
         <customTabListAdditionalFields>Parent</customTabListAdditionalFields>
         <customTabListAdditionalFields>ReviewedStatus</customTabListAdditionalFields>
+        <customTabListAdditionalFields>Notes</customTabListAdditionalFields>
         <searchResultsAdditionalFields>Persona</searchResultsAdditionalFields>
         <searchResultsAdditionalFields>Content</searchResultsAdditionalFields>
         <searchResultsAdditionalFields>Posted</searchResultsAdditionalFields>
         <searchResultsAdditionalFields>Parent</searchResultsAdditionalFields>
         <searchResultsAdditionalFields>ReviewedStatus</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>Notes</searchResultsAdditionalFields>
     </searchLayouts>
     <sharingModel>ReadWrite</sharingModel>
 </CustomObject>
