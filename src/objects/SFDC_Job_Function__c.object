@@ -21,10 +21,6 @@
         <type>Default</type>
     </actionOverrides>
     <actionOverrides>
-        <actionName>Follow</actionName>
-        <type>Default</type>
-    </actionOverrides>
-    <actionOverrides>
         <actionName>List</actionName>
         <type>Default</type>
     </actionOverrides>
@@ -59,134 +55,142 @@
         <fullName>Benefit_Options__c</fullName>
         <externalId>false</externalId>
         <label>Benefit Options</label>
-        <picklist>
-            <picklistValues>
-                <fullName>Health</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Dental</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Vision</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>401k</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Life</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Other</fullName>
-                <default>false</default>
-            </picklistValues>
-            <sorted>false</sorted>
-        </picklist>
         <required>false</required>
         <trackTrending>false</trackTrending>
         <type>MultiselectPicklist</type>
+        <valueSet>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>Health</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Dental</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Vision</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>401k</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Life</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Other</fullName>
+                    <default>false</default>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
         <visibleLines>3</visibleLines>
     </fields>
     <fields>
         <fullName>Core_Location__c</fullName>
         <externalId>false</externalId>
         <label>Core Location</label>
-        <picklist>
-            <picklistValues>
-                <fullName>Country Office</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>HQ/Corporate Office</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Regional Office</fullName>
-                <default>false</default>
-            </picklistValues>
-            <sorted>false</sorted>
-        </picklist>
         <required>false</required>
         <trackTrending>false</trackTrending>
         <type>Picklist</type>
+        <valueSet>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>Country Office</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>HQ/Corporate Office</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Regional Office</fullName>
+                    <default>false</default>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
     </fields>
     <fields>
         <fullName>Department__c</fullName>
         <externalId>false</externalId>
         <label>Department</label>
-        <picklist>
-            <picklistValues>
-                <fullName>Business Development</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Executive Committee</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Finance</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>HR &amp; Operations</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Marketing</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Software Support</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Services</fullName>
-                <default>false</default>
-            </picklistValues>
-            <sorted>false</sorted>
-        </picklist>
         <required>false</required>
         <trackTrending>false</trackTrending>
         <type>Picklist</type>
+        <valueSet>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>Business Development</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Executive Committee</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Finance</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>HR &amp; Operations</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Marketing</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Software Support</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Services</fullName>
+                    <default>false</default>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
     </fields>
     <fields>
         <fullName>Salary_Range__c</fullName>
         <externalId>false</externalId>
         <label>Salary Range</label>
-        <picklist>
-            <picklistValues>
-                <fullName>$30,000-$45,000</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>$46,000-$60,000</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>$61,000-$85,000</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>$86,000-$100,000</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>$101,000-$150,000</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>$150,000+</fullName>
-                <default>false</default>
-            </picklistValues>
-            <sorted>false</sorted>
-        </picklist>
         <required>false</required>
         <trackTrending>false</trackTrending>
         <type>Picklist</type>
+        <valueSet>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>$30,000-$45,000</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>$46,000-$60,000</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>$61,000-$85,000</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>$86,000-$100,000</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>$101,000-$150,000</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>$150,000+</fullName>
+                    <default>false</default>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
     </fields>
     <label>Job Function</label>
     <nameField>

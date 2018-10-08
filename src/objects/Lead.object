@@ -45,10 +45,6 @@
         <type>Default</type>
     </actionOverrides>
     <actionOverrides>
-        <actionName>Follow</actionName>
-        <type>Default</type>
-    </actionOverrides>
-    <actionOverrides>
         <actionName>List</actionName>
         <type>Default</type>
     </actionOverrides>
@@ -62,6 +58,10 @@
     </actionOverrides>
     <actionOverrides>
         <actionName>SaveEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>SmsHighlightAction</actionName>
         <type>Default</type>
     </actionOverrides>
     <actionOverrides>
@@ -456,37 +456,39 @@ if(ISBLANK(Hubspot_Create_Date__c),&apos;Outbound&apos;,&apos;Other&apos;)))))))
         <externalId>false</externalId>
         <inlineHelpText>List of potential areas of CommCare that have been demo&apos;d to the lead</inlineHelpText>
         <label>Demos received</label>
-        <picklist>
-            <picklistValues>
-                <fullName>CommCare Mobile Application</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>CommCare HQ</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>CommCare Messaging</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>CommCare Supply</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Report Builder</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Other</fullName>
-                <default>false</default>
-            </picklistValues>
-            <sorted>false</sorted>
-        </picklist>
         <required>false</required>
         <trackFeedHistory>false</trackFeedHistory>
         <trackHistory>false</trackHistory>
         <type>MultiselectPicklist</type>
+        <valueSet>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>CommCare Mobile Application</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>CommCare HQ</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>CommCare Messaging</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>CommCare Supply</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Report Builder</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Other</fullName>
+                    <default>false</default>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
         <visibleLines>5</visibleLines>
     </fields>
     <fields>
@@ -700,6 +702,19 @@ Contact_after_Lead_Conversion__r.Became_a_Sales_Qualified_Lead_Date__c))</formul
         <type>Date</type>
     </fields>
     <fields>
+        <fullName>Group_Became_an_Opp_Date__c</fullName>
+        <externalId>false</externalId>
+        <formula>IF(ISBLANK(ConvertedContactId),  Became_an_Opportunity_Date__c , 
+IF(ISBLANK(Contact_after_Lead_Conversion__r.Became_an_Opportunity_Date__c), 
+Became_an_Opportunity_Date__c, 
+Contact_after_Lead_Conversion__r.Became_an_Opportunity_Date__c))</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Group Became an Opp Date</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <type>Date</type>
+    </fields>
+    <fields>
         <fullName>Group_Year_Month_Date_created_in_CCHQ__c</fullName>
         <externalId>false</externalId>
         <formula>IF(ISBLANK(ConvertedContactId), Year_and_Month_Date_created_in_CCHQ__c,  Contact_after_Lead_Conversion__r.Year_and_Month_Date_created_in_CCHQ__c)</formula>
@@ -739,46 +754,48 @@ Contact_after_Lead_Conversion__r.Became_a_Sales_Qualified_Lead_Date__c))</formul
         <fullName>How_a_Lead_contacted_us__c</fullName>
         <externalId>false</externalId>
         <label>How a Lead contacted us</label>
-        <picklist>
-            <picklistValues>
-                <fullName>Emailed us directly (answered email)</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Emailed info@</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Called us directly</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Scheduled a call</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Tried to schedule a call but did not</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Contacted us on social media</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Filled in a contact us form</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Contacted through Live Chat</fullName>
-                <default>false</default>
-            </picklistValues>
-            <restrictedPicklist>true</restrictedPicklist>
-            <sorted>false</sorted>
-        </picklist>
         <required>false</required>
         <trackFeedHistory>false</trackFeedHistory>
         <trackHistory>false</trackHistory>
         <type>MultiselectPicklist</type>
+        <valueSet>
+            <restricted>true</restricted>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>Emailed us directly (answered email)</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Emailed info@</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Called us directly</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Scheduled a call</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Tried to schedule a call but did not</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Contacted us on social media</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Filled in a contact us form</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Contacted through Live Chat</fullName>
+                    <default>false</default>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
         <visibleLines>4</visibleLines>
     </fields>
     <fields>
@@ -786,33 +803,35 @@ Contact_after_Lead_Conversion__r.Became_a_Sales_Qualified_Lead_Date__c))</formul
         <externalId>false</externalId>
         <inlineHelpText>Used on the Contact Us form on CCHQ</inlineHelpText>
         <label>How did you hear about us?</label>
-        <picklist>
-            <picklistValues>
-                <fullName>--None--</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Colleague</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Newsletter</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Web Search</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Other</fullName>
-                <default>false</default>
-            </picklistValues>
-            <sorted>false</sorted>
-        </picklist>
         <required>false</required>
         <trackFeedHistory>false</trackFeedHistory>
         <trackHistory>false</trackHistory>
         <type>Picklist</type>
+        <valueSet>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>--None--</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Colleague</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Newsletter</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Web Search</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Other</fullName>
+                    <default>false</default>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
     </fields>
     <fields>
         <fullName>HubSpot_A_B_Variable_Deploy__c</fullName>
@@ -829,102 +848,110 @@ Contact_after_Lead_Conversion__r.Became_a_Sales_Qualified_Lead_Date__c))</formul
         <fullName>HubSpot_Attended_event_Meetup__c</fullName>
         <externalId>false</externalId>
         <label>HubSpot - Attended event [Meetup]</label>
-        <picklist>
-            <picklistValues>
-                <fullName>1</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>2</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>3</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>4</fullName>
-                <default>false</default>
-            </picklistValues>
-            <sorted>false</sorted>
-        </picklist>
         <required>false</required>
         <trackFeedHistory>false</trackFeedHistory>
         <trackHistory>false</trackHistory>
         <type>Picklist</type>
+        <valueSet>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>1</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>2</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>3</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>4</fullName>
+                    <default>false</default>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
     </fields>
     <fields>
         <fullName>HubSpot_Attended_event_Webinar__c</fullName>
         <externalId>false</externalId>
         <label>HubSpot - Attended event [Webinar]</label>
-        <picklist>
-            <picklistValues>
-                <fullName>1</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>2</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>3</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>4</fullName>
-                <default>false</default>
-            </picklistValues>
-            <sorted>false</sorted>
-        </picklist>
         <required>false</required>
         <trackFeedHistory>false</trackFeedHistory>
         <trackHistory>false</trackHistory>
         <type>Picklist</type>
+        <valueSet>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>1</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>2</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>3</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>4</fullName>
+                    <default>false</default>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
     </fields>
     <fields>
         <fullName>HubSpot_Attended_event_Workshop__c</fullName>
         <externalId>false</externalId>
         <label>HubSpot - Attended event [Workshop]</label>
-        <picklist>
-            <picklistValues>
-                <fullName>1</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>2</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>3</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>4</fullName>
-                <default>false</default>
-            </picklistValues>
-            <sorted>false</sorted>
-        </picklist>
         <required>false</required>
         <trackFeedHistory>false</trackFeedHistory>
         <trackHistory>false</trackHistory>
         <type>Picklist</type>
+        <valueSet>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>1</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>2</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>3</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>4</fullName>
+                    <default>false</default>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
     </fields>
     <fields>
         <fullName>HubSpot_Blog_Subscriber__c</fullName>
         <externalId>false</externalId>
         <label>HubSpot - Blog Subscriber</label>
-        <picklist>
-            <picklistValues>
-                <fullName>Yes</fullName>
-                <default>false</default>
-            </picklistValues>
-            <restrictedPicklist>true</restrictedPicklist>
-            <sorted>false</sorted>
-        </picklist>
         <required>false</required>
         <trackFeedHistory>false</trackFeedHistory>
         <trackHistory>false</trackHistory>
         <type>Picklist</type>
+        <valueSet>
+            <restricted>true</restricted>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>Yes</fullName>
+                    <default>false</default>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
     </fields>
     <fields>
         <fullName>HubSpot_Confirmed_Account__c</fullName>
@@ -941,77 +968,79 @@ Contact_after_Lead_Conversion__r.Became_a_Sales_Qualified_Lead_Date__c))</formul
         <externalId>false</externalId>
         <inlineHelpText>Did we connect on the phone? Yes or no.</inlineHelpText>
         <label>HubSpot - Connected via Phone-Phone Test</label>
-        <picklist>
-            <picklistValues>
-                <fullName>Yes</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Yes - but need to call back</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Yes - but preferred email communication</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Yes - but no longer considering CommCare</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Yes - asked to talk via Skype</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Yes - but did not want to hear from us</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Yes - but didn&apos;t speak same language</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Yes - part of existing project</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Yes - but just exploring</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Yes - but careers</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>No - good number, but couldn&apos;t reach after 6 tries</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>No - bad number</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>No - timezone was too hard to connect</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>No - talking to co-worker or existing relationship</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>No - became ineligible or didn&apos;t mark</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>No - Dimagi Employee or Internal Test</fullName>
-                <default>false</default>
-            </picklistValues>
-            <sorted>false</sorted>
-        </picklist>
         <required>false</required>
         <trackFeedHistory>false</trackFeedHistory>
         <trackHistory>false</trackHistory>
         <type>Picklist</type>
+        <valueSet>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>Yes</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Yes - but need to call back</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Yes - but preferred email communication</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Yes - but no longer considering CommCare</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Yes - asked to talk via Skype</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Yes - but did not want to hear from us</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Yes - but didn&apos;t speak same language</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Yes - part of existing project</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Yes - but just exploring</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Yes - but careers</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>No - good number, but couldn&apos;t reach after 6 tries</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>No - bad number</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>No - timezone was too hard to connect</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>No - talking to co-worker or existing relationship</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>No - became ineligible or didn&apos;t mark</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>No - Dimagi Employee or Internal Test</fullName>
+                    <default>false</default>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
     </fields>
     <fields>
         <fullName>HubSpot_Date_Created_in_CCHQ__c</fullName>
@@ -1148,29 +1177,31 @@ Contact_after_Lead_Conversion__r.Became_a_Sales_Qualified_Lead_Date__c))</formul
         <fullName>HubSpot_Default_HubSpot_Blog_Email_Sub__c</fullName>
         <externalId>false</externalId>
         <label>HubSpot - Default HubSpot Blog Email Sub</label>
-        <picklist>
-            <picklistValues>
-                <fullName>instant</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>daily</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>weekly</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>monthly</fullName>
-                <default>false</default>
-            </picklistValues>
-            <sorted>false</sorted>
-        </picklist>
         <required>false</required>
         <trackFeedHistory>false</trackFeedHistory>
         <trackHistory>false</trackHistory>
         <type>Picklist</type>
+        <valueSet>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>instant</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>daily</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>weekly</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>monthly</fullName>
+                    <default>false</default>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
     </fields>
     <fields>
         <fullName>HubSpot_Eligible_for_a_proactive_call__c</fullName>
@@ -1195,21 +1226,23 @@ Contact_after_Lead_Conversion__r.Became_a_Sales_Qualified_Lead_Date__c))</formul
         <fullName>HubSpot_Email_Subscriptions__c</fullName>
         <externalId>false</externalId>
         <label>HubSpot - Email Subscriptions</label>
-        <picklist>
-            <picklistValues>
-                <fullName>Webinars</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Blog Updates</fullName>
-                <default>false</default>
-            </picklistValues>
-            <sorted>false</sorted>
-        </picklist>
         <required>false</required>
         <trackFeedHistory>false</trackFeedHistory>
         <trackHistory>false</trackHistory>
         <type>MultiselectPicklist</type>
+        <valueSet>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>Webinars</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Blog Updates</fullName>
+                    <default>false</default>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
         <visibleLines>4</visibleLines>
     </fields>
     <fields>
@@ -1334,49 +1367,51 @@ Contact_after_Lead_Conversion__r.Became_a_Sales_Qualified_Lead_Date__c))</formul
         <externalId>false</externalId>
         <inlineHelpText>A contact&apos;s persona</inlineHelpText>
         <label>HubSpot - Persona</label>
-        <picklist>
-            <picklistValues>
-                <fullName>persona_1</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>persona_3</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>persona_5</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>persona_6</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>persona_8</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>persona_9</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>persona_10</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>persona_11</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>persona_12</fullName>
-                <default>false</default>
-            </picklistValues>
-            <sorted>false</sorted>
-        </picklist>
         <required>false</required>
         <trackFeedHistory>false</trackFeedHistory>
         <trackHistory>false</trackHistory>
         <type>Picklist</type>
+        <valueSet>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>persona_1</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>persona_3</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>persona_5</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>persona_6</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>persona_8</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>persona_9</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>persona_10</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>persona_11</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>persona_12</fullName>
+                    <default>false</default>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
     </fields>
     <fields>
         <fullName>HubSpot_Recent_Conversion_Date__c</fullName>
@@ -1418,37 +1453,117 @@ Contact_after_Lead_Conversion__r.Became_a_Sales_Qualified_Lead_Date__c))</formul
         <externalId>false</externalId>
         <inlineHelpText># of times called as part of Create an Account phone number test.</inlineHelpText>
         <label>HubSpot - # of times called - Phone Test</label>
-        <picklist>
-            <picklistValues>
-                <fullName>1</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>2</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>3</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>4</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>5</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>6</fullName>
-                <default>false</default>
-            </picklistValues>
-            <sorted>false</sorted>
-        </picklist>
         <required>false</required>
         <trackFeedHistory>false</trackFeedHistory>
         <trackHistory>false</trackHistory>
         <type>Picklist</type>
+        <valueSet>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>1</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>2</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>3</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>4</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>5</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>6</fullName>
+                    <default>false</default>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+    <fields>
+        <fullName>HubSpot_score_Became_a_Customer__c</fullName>
+        <description>The HS score of a customer.</description>
+        <externalId>false</externalId>
+        <label>HubSpot score - Became a Customer</label>
+        <precision>10</precision>
+        <required>false</required>
+        <scale>5</scale>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>HubSpot_score_Became_a_Lead__c</fullName>
+        <description>The HS score of a lead.</description>
+        <externalId>false</externalId>
+        <label>HubSpot score - Became a Lead</label>
+        <precision>10</precision>
+        <required>false</required>
+        <scale>5</scale>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>HubSpot_score_Became_a_Sales_Qualified__c</fullName>
+        <description>The HS score of an SQL.</description>
+        <externalId>false</externalId>
+        <label>HubSpot score - Became a Sales Qualified</label>
+        <precision>10</precision>
+        <required>false</required>
+        <scale>5</scale>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>HubSpot_score_Became_a_WT_SQL_Bucket__c</fullName>
+        <description>The HS score of an SQL at the time they became WT, grouped into High, Medium, or Low buckets to inform SDR qualification methods.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>The HS score of an SQL at the time they became WT, grouped into High, Medium, or Low buckets to inform SDR qualification methods.</inlineHelpText>
+        <label>HubSpot score - Became a WT SQL - Bucket</label>
+        <length>20</length>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>HubSpot_score_Became_an_Opportunity__c</fullName>
+        <description>The HS score of an Opportunity</description>
+        <externalId>false</externalId>
+        <label>HubSpot score - Became an Opportunity</label>
+        <precision>10</precision>
+        <required>false</required>
+        <scale>5</scale>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>HubSpotscore_BecameaWTSQL__c</fullName>
+        <description>The HubSpot score of an SQL at the time they became Working - Talking. Used to inform the qualification method.</description>
+        <externalId>false</externalId>
+        <label>HubSpot score - Became a WT SQL</label>
+        <precision>12</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <type>Number</type>
+        <unique>false</unique>
     </fields>
     <fields>
         <fullName>Hubspot_A_B__c</fullName>
@@ -1551,45 +1666,47 @@ Contact_after_Lead_Conversion__r.Became_a_Sales_Qualified_Lead_Date__c))</formul
 This should probably be edited only rarely, as this integration is automated. The primary time you would edit this field is when a Lead is considered to be a Sales Qualified Lead by some action taken outside of the Hubspot system and needs to be reflected in Salesforce. Example: A lead emails you directly and says that they are interested in CommCare and have budget, resulting in a qualified sales lead. Then you would mark this field as SQL.</description>
         <externalId>false</externalId>
         <label>Hubspot LIfecycle Stage</label>
-        <picklist>
-            <picklistValues>
-                <fullName>Subscriber</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Lead</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Marketing Qualified Lead</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Sales Qualified Lead</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Opportunity</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Customer</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Evangelist</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Other</fullName>
-                <default>false</default>
-            </picklistValues>
-            <sorted>false</sorted>
-        </picklist>
         <required>false</required>
         <trackFeedHistory>false</trackFeedHistory>
         <trackHistory>false</trackHistory>
         <type>Picklist</type>
+        <valueSet>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>Subscriber</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Lead</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Marketing Qualified Lead</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Sales Qualified Lead</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Opportunity</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Customer</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Evangelist</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Other</fullName>
+                    <default>false</default>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
     </fields>
     <fields>
         <fullName>Hubspot_Last_activity_date__c</fullName>
@@ -1758,37 +1875,39 @@ If (Hubspot__c&gt;=-50, &quot;5-Very low&quot;,
         <fullName>Hubspot_SQL_qualifying_actions__c</fullName>
         <externalId>false</externalId>
         <label>Hubspot - SQL qualifying actions</label>
-        <picklist>
-            <picklistValues>
-                <fullName>Visited pricing page at least twice</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Contacted us</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Attended an event</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>On domain that submitted &gt;=1 HQ form</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Reborn SQL created new project space</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Invited to domain &gt;=1 HQ form submitted</fullName>
-                <default>false</default>
-            </picklistValues>
-            <sorted>false</sorted>
-        </picklist>
         <required>false</required>
         <trackFeedHistory>false</trackFeedHistory>
         <trackHistory>false</trackHistory>
         <type>MultiselectPicklist</type>
+        <valueSet>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>Visited pricing page at least twice</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Contacted us</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Attended an event</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>On domain that submitted &gt;=1 HQ form</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Reborn SQL created new project space</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Invited to domain &gt;=1 HQ form submitted</fullName>
+                    <default>false</default>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
         <visibleLines>3</visibleLines>
     </fields>
     <fields>
@@ -1829,49 +1948,51 @@ If (Hubspot__c&gt;=-50, &quot;5-Very low&quot;,
         <externalId>false</externalId>
         <inlineHelpText>This indicates how much time has passed before we were able to get on the phone with someone.</inlineHelpText>
         <label>Hubspot - Time to First Attempt on Phone</label>
-        <picklist>
-            <picklistValues>
-                <fullName>&lt; 30 minutes</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>&lt; 1 hour</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>&lt; 2 hours</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>&lt; 5 hours</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>&lt;12 hours</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>1 day</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>2 day</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>1 week</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>2 weeks</fullName>
-                <default>false</default>
-            </picklistValues>
-            <sorted>false</sorted>
-        </picklist>
         <required>false</required>
         <trackFeedHistory>false</trackFeedHistory>
         <trackHistory>false</trackHistory>
         <type>Picklist</type>
+        <valueSet>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>&lt; 30 minutes</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>&lt; 1 hour</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>&lt; 2 hours</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>&lt; 5 hours</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>&lt;12 hours</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>1 day</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>2 day</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>1 week</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>2 weeks</fullName>
+                    <default>false</default>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
     </fields>
     <fields>
         <fullName>Hubspot_User_Accepted_domain_invitatio__c</fullName>
@@ -1925,45 +2046,6 @@ If (Hubspot__c&gt;=-50, &quot;5-Very low&quot;,
     </fields>
     <fields>
         <fullName>Industry</fullName>
-        <picklist>
-            <picklistValues>
-                <fullName>Agriculture</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Consulting</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Education</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Finance</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Health</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Nutrition</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Telecommunications</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Water &amp; Sanitation</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Other</fullName>
-                <default>false</default>
-            </picklistValues>
-            <sorted>false</sorted>
-        </picklist>
         <trackFeedHistory>false</trackFeedHistory>
         <trackHistory>false</trackHistory>
         <type>Picklist</type>
@@ -1990,25 +2072,27 @@ If (Hubspot__c&gt;=-50, &quot;5-Very low&quot;,
         <fullName>Language__c</fullName>
         <externalId>false</externalId>
         <label>Language</label>
-        <picklist>
-            <picklistValues>
-                <fullName>English</fullName>
-                <default>true</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>French</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Spanish</fullName>
-                <default>false</default>
-            </picklistValues>
-            <sorted>false</sorted>
-        </picklist>
         <required>false</required>
         <trackFeedHistory>false</trackFeedHistory>
         <trackHistory>false</trackHistory>
         <type>Picklist</type>
+        <valueSet>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>English</fullName>
+                    <default>true</default>
+                </value>
+                <value>
+                    <fullName>French</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Spanish</fullName>
+                    <default>false</default>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
     </fields>
     <fields>
         <fullName>LastTransferDate</fullName>
@@ -2087,89 +2171,6 @@ If (Hubspot__c&gt;=-50, &quot;5-Very low&quot;,
     </fields>
     <fields>
         <fullName>LeadSource</fullName>
-        <picklist>
-            <picklistValues>
-                <fullName>Inbound - Contacted us directly</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Inbound - Proactive calls</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Inbound - Referred within same Org</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Inbound - Referred by Another Org</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Inbound - Referred by Dimagi staff</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Outbound</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Outbound - Conference or Event</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Outbound - Met during project deployment</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Outbound - Membership or Coalition List</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Outbound - Personal Contact</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Outbound - Pulled from Forum</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Outbound - Pulled from Social Media</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Outbound - Pulled from Website</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Outbound - Referral</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Outbound - Sales team outreach</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Other</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Inbound - Event Sign Up</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Inbound - HQ signup</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Inbound - Webinar Sign Up</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Inbound- Workshop Sign Up</fullName>
-                <default>false</default>
-            </picklistValues>
-            <sorted>false</sorted>
-        </picklist>
         <trackFeedHistory>false</trackFeedHistory>
         <trackHistory>true</trackHistory>
         <type>Picklist</type>
@@ -2179,53 +2180,55 @@ If (Hubspot__c&gt;=-50, &quot;5-Very low&quot;,
         <description>Select why you have gathered this lead.  If you are doing research for potential partners for a funding opp, select RFP Partner explore, etc.</description>
         <externalId>false</externalId>
         <label>Lead Gen Initiative</label>
-        <picklist>
-            <picklistValues>
-                <fullName>Conference Hit List</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>RFP Partner Explore</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Sub Sector Research</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Country Research</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>University Research</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>General (no specific initiative)</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Workshop Outreach</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Awardee Outreach</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Sector Specific Lead Gen</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>B2B Outbound Lead Gen</fullName>
-                <default>false</default>
-            </picklistValues>
-            <sorted>false</sorted>
-        </picklist>
         <required>false</required>
         <trackFeedHistory>false</trackFeedHistory>
         <trackHistory>false</trackHistory>
         <type>Picklist</type>
+        <valueSet>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>Conference Hit List</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>RFP Partner Explore</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Sub Sector Research</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Country Research</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>University Research</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>General (no specific initiative)</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Workshop Outreach</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Awardee Outreach</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Sector Specific Lead Gen</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>B2B Outbound Lead Gen</fullName>
+                    <default>false</default>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
     </fields>
     <fields>
         <fullName>Lead_Owner_Business_Unit__c</fullName>
@@ -2257,48 +2260,77 @@ If (Hubspot__c&gt;=-50, &quot;5-Very low&quot;,
         <externalId>false</externalId>
         <inlineHelpText>To be filled in only if the lead became inbound by one of those 4 ways. Otherwise if the Lead source get automatically updated by Hubspot to be inbound, then this drilldown field should remain blank</inlineHelpText>
         <label>Lead Source - Drilldown</label>
-        <picklist>
-            <controllingField>LeadSource</controllingField>
-            <picklistValues>
-                <fullName>Inbound - Found us through Google Search</fullName>
-                <default>false</default>
-                <controllingFieldValues>Inbound - Contacted us directly</controllingFieldValues>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Inbound - Found us on Social Media</fullName>
-                <default>false</default>
-                <controllingFieldValues>Inbound - Contacted us directly</controllingFieldValues>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Inbound - Learnt about us on another website</fullName>
-                <default>false</default>
-                <controllingFieldValues>Inbound - Contacted us directly</controllingFieldValues>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Inbound - Learnt about us through an article</fullName>
-                <default>false</default>
-                <controllingFieldValues>Inbound - Contacted us directly</controllingFieldValues>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Inbound - Contacted us after seeing us at a conference</fullName>
-                <default>false</default>
-                <controllingFieldValues>Inbound - Contacted us directly</controllingFieldValues>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Inbound - Through Colleagues / Networking</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Inbound - Colleagues/Networking</fullName>
-                <default>false</default>
-            </picklistValues>
-            <restrictedPicklist>true</restrictedPicklist>
-            <sorted>false</sorted>
-        </picklist>
         <required>false</required>
         <trackFeedHistory>false</trackFeedHistory>
         <trackHistory>false</trackHistory>
         <type>Picklist</type>
+        <valueSet>
+            <controllingField>LeadSource</controllingField>
+            <restricted>true</restricted>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>Inbound - Found us through Google Search</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Inbound - Found us on Social Media</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Inbound - Learnt about us on another website</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Inbound - Learnt about us through an article</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Inbound - Contacted us after seeing us at a conference</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Inbound - Through Colleagues / Networking</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Inbound - Colleagues/Networking</fullName>
+                    <default>false</default>
+                    <isActive>false</isActive>
+                </value>
+            </valueSetDefinition>
+            <valueSettings>
+                <controllingFieldValue>Inbound - Contacted us directly</controllingFieldValue>
+                <valueName>Inbound - Found us through Google Search</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>Inbound - Contacted us directly</controllingFieldValue>
+                <valueName>Inbound - Found us on Social Media</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>Inbound - Contacted us directly</controllingFieldValue>
+                <valueName>Inbound - Learnt about us on another website</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>Inbound - Contacted us directly</controllingFieldValue>
+                <valueName>Inbound - Learnt about us through an article</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>Inbound - Contacted us directly</controllingFieldValue>
+                <valueName>Inbound - Contacted us after seeing us at a conference</valueName>
+            </valueSettings>
+        </valueSet>
+    </fields>
+    <fields>
+        <fullName>Lead_Source_google_search__c</fullName>
+        <description>Add any comments on which google search was performed (which keyword) if the user answers that they found us through Google Search</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Add any comments on which google search was performed (which keyword) if the user answers that they found us through Google Search</inlineHelpText>
+        <label>Lead Source comment on google search</label>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <type>TextArea</type>
     </fields>
     <fields>
         <fullName>Lead_Status_Reason__c</fullName>
@@ -2306,278 +2338,433 @@ If (Hubspot__c&gt;=-50, &quot;5-Very low&quot;,
         <externalId>false</externalId>
         <inlineHelpText>Choose a reason that helps clarify the lead status.</inlineHelpText>
         <label>Lead Status Reason</label>
-        <picklist>
-            <controllingField>Status</controllingField>
-            <picklistValues>
-                <fullName>Contacted - Sent Email #1</fullName>
-                <default>false</default>
-                <controllingFieldValues>Working - Contacted</controllingFieldValues>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Contacted - Sent Email #2</fullName>
-                <default>false</default>
-                <controllingFieldValues>Working - Contacted</controllingFieldValues>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Contacted - Sent Email #3</fullName>
-                <default>false</default>
-                <controllingFieldValues>Working - Contacted</controllingFieldValues>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Working - Exploratory Call - Trying for</fullName>
-                <default>false</default>
-                <controllingFieldValues>Working - Talking</controllingFieldValues>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Working - Exploratory Call Scheduled</fullName>
-                <default>false</default>
-                <controllingFieldValues>Working - Talking</controllingFieldValues>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Working - No show reminder #1</fullName>
-                <default>false</default>
-                <controllingFieldValues>Working - Talking</controllingFieldValues>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Working - No show reminder #2</fullName>
-                <default>false</default>
-                <controllingFieldValues>Working - Talking</controllingFieldValues>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Working - No show reminder #3</fullName>
-                <default>false</default>
-                <controllingFieldValues>Working - Talking</controllingFieldValues>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Working - Nudge #1</fullName>
-                <default>false</default>
-                <controllingFieldValues>Working - Talking</controllingFieldValues>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Working - Nudge #2</fullName>
-                <default>false</default>
-                <controllingFieldValues>Working - Talking</controllingFieldValues>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Working - Nudge #3</fullName>
-                <default>false</default>
-                <controllingFieldValues>Working - Talking</controllingFieldValues>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Working - Nudge #4</fullName>
-                <default>false</default>
-                <controllingFieldValues>Working - Talking</controllingFieldValues>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Incorrect or invalid email address</fullName>
-                <default>false</default>
-                <controllingFieldValues>Archived - Not Interested</controllingFieldValues>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Recruiting / Hiring</fullName>
-                <default>false</default>
-                <controllingFieldValues>Archived - Not Interested</controllingFieldValues>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Stopped responding</fullName>
-                <default>false</default>
-                <controllingFieldValues>Passive &amp; Friendly</controllingFieldValues>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Opportunity identified but timeline &gt; 6 months out</fullName>
-                <default>false</default>
-                <controllingFieldValues>Passive &amp; Friendly</controllingFieldValues>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Existing client / project</fullName>
-                <default>false</default>
-                <controllingFieldValues>Converting to contact - not an opp</controllingFieldValues>
-                <controllingFieldValues>Passive &amp; Friendly</controllingFieldValues>
-            </picklistValues>
-            <picklistValues>
-                <fullName>No response</fullName>
-                <default>false</default>
-                <controllingFieldValues>Archived - Not Interested</controllingFieldValues>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Email opt-out</fullName>
-                <default>false</default>
-                <controllingFieldValues>Archived - Not Interested</controllingFieldValues>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Spam</fullName>
-                <default>false</default>
-                <controllingFieldValues>Archived - Not Interested</controllingFieldValues>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Competitor</fullName>
-                <default>false</default>
-                <controllingFieldValues>Archived - Not Interested</controllingFieldValues>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Partner program</fullName>
-                <default>false</default>
-                <controllingFieldValues>Passive &amp; Friendly</controllingFieldValues>
-            </picklistValues>
-            <picklistValues>
-                <fullName>No opportunity identified yet</fullName>
-                <default>false</default>
-                <controllingFieldValues>Passive &amp; Friendly</controllingFieldValues>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Test email address</fullName>
-                <default>false</default>
-                <controllingFieldValues>Archived - Not Interested</controllingFieldValues>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Speaking request / research</fullName>
-                <default>false</default>
-                <controllingFieldValues>Archived - Not Interested</controllingFieldValues>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Contact information request</fullName>
-                <default>false</default>
-                <controllingFieldValues>Archived - Not Interested</controllingFieldValues>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Decided to use another solution</fullName>
-                <default>false</default>
-                <controllingFieldValues>Passive &amp; Friendly</controllingFieldValues>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Request for sponsorship</fullName>
-                <default>false</default>
-                <controllingFieldValues>Archived - Not Interested</controllingFieldValues>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Invited user</fullName>
-                <default>false</default>
-                <controllingFieldValues>Pending - Qualified</controllingFieldValues>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Former Dimagier</fullName>
-                <default>false</default>
-                <controllingFieldValues>Passive &amp; Friendly</controllingFieldValues>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Existing opportunity (temporary)</fullName>
-                <default>false</default>
-                <controllingFieldValues>Converting to contact - not an opp</controllingFieldValues>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Self-start on Community Edition</fullName>
-                <default>false</default>
-                <controllingFieldValues>Passive &amp; Friendly</controllingFieldValues>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Reborn SQL</fullName>
-                <default>false</default>
-                <controllingFieldValues>Pending - Qualified</controllingFieldValues>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Contacted - Sent Email #4</fullName>
-                <default>false</default>
-                <controllingFieldValues>Working - Contacted</controllingFieldValues>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Customer support</fullName>
-                <default>false</default>
-                <controllingFieldValues>Working - Talking</controllingFieldValues>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Contacted- Hubspot SQL Workflow active</fullName>
-                <default>false</default>
-                <controllingFieldValues>Working - Talking</controllingFieldValues>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Not a good fit / not what they expected</fullName>
-                <default>false</default>
-                <controllingFieldValues>Archived - Not Interested</controllingFieldValues>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Assigned to another Dimagi staff</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Working - Contacted - Nudge #1</fullName>
-                <default>false</default>
-                <controllingFieldValues>Working - Contacted</controllingFieldValues>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Working - Contacted - Nudge #2</fullName>
-                <default>false</default>
-                <controllingFieldValues>Working - Contacted</controllingFieldValues>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Working - Contacted - Nudge #3</fullName>
-                <default>false</default>
-                <controllingFieldValues>Working - Contacted</controllingFieldValues>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Working - Demo Nudge #1</fullName>
-                <default>false</default>
-                <controllingFieldValues>Working - Talking</controllingFieldValues>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Working - Demo Nudge #2</fullName>
-                <default>false</default>
-                <controllingFieldValues>Working - Talking</controllingFieldValues>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Working - Demo Nudge #3</fullName>
-                <default>false</default>
-                <controllingFieldValues>Working - Talking</controllingFieldValues>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Miscellaneous</fullName>
-                <default>false</default>
-                <controllingFieldValues>Archived - Not Interested</controllingFieldValues>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Handed-off outside of Sales Team</fullName>
-                <default>false</default>
-                <controllingFieldValues>Passive &amp; Friendly</controllingFieldValues>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Stopped Responding after P&amp;F Nurture</fullName>
-                <default>false</default>
-                <controllingFieldValues>Passive &amp; Friendly</controllingFieldValues>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Waiting for Trial Extension to end</fullName>
-                <default>false</default>
-                <controllingFieldValues>Working - Talking</controllingFieldValues>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Waiting for Report Builder Trial to end</fullName>
-                <default>false</default>
-                <controllingFieldValues>Working - Talking</controllingFieldValues>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Not ready after P&amp;F Nurture</fullName>
-                <default>false</default>
-                <controllingFieldValues>Passive &amp; Friendly</controllingFieldValues>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Came back to W-T through Live Chat</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Student Project</fullName>
-                <default>false</default>
-                <controllingFieldValues>Passive &amp; Friendly</controllingFieldValues>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Qualified but needs to schedule a closing call</fullName>
-                <default>false</default>
-                <controllingFieldValues>Working - Talking</controllingFieldValues>
-            </picklistValues>
-            <sorted>false</sorted>
-        </picklist>
         <required>false</required>
         <trackFeedHistory>false</trackFeedHistory>
         <trackHistory>true</trackHistory>
         <type>Picklist</type>
+        <valueSet>
+            <controllingField>Status</controllingField>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>Contacted - Sent Email #1</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Contacted - Sent Email #2</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Contacted - Sent Email #3</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Working - Exploratory Call - Trying for</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Working - Exploratory Call Scheduled</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Working - No show reminder #1</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Working - No show reminder #2</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Working - No show reminder #3</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Working - Nudge #1</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Working - Nudge #2</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Working - Nudge #3</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Working - Nudge #4</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Incorrect or invalid email address</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Recruiting / Hiring</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Stopped responding</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Opportunity identified but timeline &gt; 6 months out</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Existing client / project</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>No response</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Email opt-out</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Spam</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Competitor</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Partner program</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>No opportunity identified yet</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Test email address</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Speaking request / research</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Contact information request</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Decided to use another solution</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Request for sponsorship</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Invited user</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Former Dimagier</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Existing opportunity (temporary)</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Self-start on Community Edition</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Reborn SQL</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Contacted - Sent Email #4</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Customer support</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Contacted- Hubspot SQL Workflow active</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Not a good fit / not what they expected</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Assigned to another Dimagi staff</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Working - Contacted - Nudge #1</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Working - Contacted - Nudge #2</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Working - Contacted - Nudge #3</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Working - Demo Nudge #1</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Working - Demo Nudge #2</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Working - Demo Nudge #3</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Miscellaneous</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Handed-off outside of Sales Team</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Stopped Responding after P&amp;F Nurture</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Waiting for Trial Extension to end</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Waiting for Report Builder Trial to end</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Not ready after P&amp;F Nurture</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Came back to W-T through Live Chat</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Student Project</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Qualified but needs to schedule a closing call</fullName>
+                    <default>false</default>
+                </value>
+            </valueSetDefinition>
+            <valueSettings>
+                <controllingFieldValue>Converting to contact - not an opp</controllingFieldValue>
+                <controllingFieldValue>Passive &amp; Friendly</controllingFieldValue>
+                <valueName>Existing client / project</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>Converting to contact - not an opp</controllingFieldValue>
+                <valueName>Existing opportunity (temporary)</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>Passive &amp; Friendly</controllingFieldValue>
+                <valueName>Stopped responding</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>Passive &amp; Friendly</controllingFieldValue>
+                <valueName>Opportunity identified but timeline &gt; 6 months out</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>Passive &amp; Friendly</controllingFieldValue>
+                <valueName>Partner program</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>Passive &amp; Friendly</controllingFieldValue>
+                <valueName>No opportunity identified yet</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>Passive &amp; Friendly</controllingFieldValue>
+                <valueName>Decided to use another solution</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>Passive &amp; Friendly</controllingFieldValue>
+                <valueName>Former Dimagier</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>Passive &amp; Friendly</controllingFieldValue>
+                <valueName>Self-start on Community Edition</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>Passive &amp; Friendly</controllingFieldValue>
+                <valueName>Handed-off outside of Sales Team</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>Passive &amp; Friendly</controllingFieldValue>
+                <valueName>Stopped Responding after P&amp;F Nurture</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>Passive &amp; Friendly</controllingFieldValue>
+                <valueName>Not ready after P&amp;F Nurture</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>Passive &amp; Friendly</controllingFieldValue>
+                <valueName>Student Project</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>Pending - Qualified</controllingFieldValue>
+                <valueName>Invited user</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>Pending - Qualified</controllingFieldValue>
+                <valueName>Reborn SQL</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>Working - Contacted</controllingFieldValue>
+                <valueName>Contacted - Sent Email #1</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>Working - Contacted</controllingFieldValue>
+                <valueName>Contacted - Sent Email #2</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>Working - Contacted</controllingFieldValue>
+                <valueName>Contacted - Sent Email #3</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>Working - Contacted</controllingFieldValue>
+                <valueName>Contacted - Sent Email #4</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>Working - Contacted</controllingFieldValue>
+                <valueName>Working - Contacted - Nudge #1</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>Working - Contacted</controllingFieldValue>
+                <valueName>Working - Contacted - Nudge #2</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>Working - Contacted</controllingFieldValue>
+                <valueName>Working - Contacted - Nudge #3</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>Archived - Not Interested</controllingFieldValue>
+                <valueName>Incorrect or invalid email address</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>Archived - Not Interested</controllingFieldValue>
+                <valueName>Recruiting / Hiring</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>Archived - Not Interested</controllingFieldValue>
+                <valueName>No response</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>Archived - Not Interested</controllingFieldValue>
+                <valueName>Email opt-out</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>Archived - Not Interested</controllingFieldValue>
+                <valueName>Spam</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>Archived - Not Interested</controllingFieldValue>
+                <valueName>Competitor</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>Archived - Not Interested</controllingFieldValue>
+                <valueName>Test email address</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>Archived - Not Interested</controllingFieldValue>
+                <valueName>Speaking request / research</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>Archived - Not Interested</controllingFieldValue>
+                <valueName>Contact information request</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>Archived - Not Interested</controllingFieldValue>
+                <valueName>Request for sponsorship</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>Archived - Not Interested</controllingFieldValue>
+                <valueName>Not a good fit / not what they expected</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>Archived - Not Interested</controllingFieldValue>
+                <valueName>Miscellaneous</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>Working - Talking</controllingFieldValue>
+                <valueName>Working - Exploratory Call - Trying for</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>Working - Talking</controllingFieldValue>
+                <valueName>Working - Exploratory Call Scheduled</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>Working - Talking</controllingFieldValue>
+                <valueName>Working - No show reminder #1</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>Working - Talking</controllingFieldValue>
+                <valueName>Working - No show reminder #2</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>Working - Talking</controllingFieldValue>
+                <valueName>Working - No show reminder #3</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>Working - Talking</controllingFieldValue>
+                <valueName>Working - Nudge #1</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>Working - Talking</controllingFieldValue>
+                <valueName>Working - Nudge #2</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>Working - Talking</controllingFieldValue>
+                <valueName>Working - Nudge #3</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>Working - Talking</controllingFieldValue>
+                <valueName>Working - Nudge #4</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>Working - Talking</controllingFieldValue>
+                <valueName>Customer support</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>Working - Talking</controllingFieldValue>
+                <valueName>Contacted- Hubspot SQL Workflow active</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>Working - Talking</controllingFieldValue>
+                <valueName>Working - Demo Nudge #1</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>Working - Talking</controllingFieldValue>
+                <valueName>Working - Demo Nudge #2</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>Working - Talking</controllingFieldValue>
+                <valueName>Working - Demo Nudge #3</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>Working - Talking</controllingFieldValue>
+                <valueName>Waiting for Trial Extension to end</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>Working - Talking</controllingFieldValue>
+                <valueName>Waiting for Report Builder Trial to end</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>Working - Talking</controllingFieldValue>
+                <valueName>Qualified but needs to schedule a closing call</valueName>
+            </valueSettings>
+        </valueSet>
     </fields>
     <fields>
         <fullName>Lead_time_Response_date_entering_nudge__c</fullName>
@@ -2722,18 +2909,20 @@ if( AND(Earliest_date_of_conversion_to_P_F__c &lt; Earliest_date_of_conversion_t
         <externalId>false</externalId>
         <inlineHelpText>Tagged as Yes through a Hubspot workflow if they clicked on any Paid Ads (Blank otherwise)</inlineHelpText>
         <label>Paid Ad Lead</label>
-        <picklist>
-            <picklistValues>
-                <fullName>Yes</fullName>
-                <default>false</default>
-            </picklistValues>
-            <restrictedPicklist>true</restrictedPicklist>
-            <sorted>false</sorted>
-        </picklist>
         <required>false</required>
         <trackFeedHistory>false</trackFeedHistory>
         <trackHistory>false</trackHistory>
         <type>Picklist</type>
+        <valueSet>
+            <restricted>true</restricted>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>Yes</fullName>
+                    <default>false</default>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
     </fields>
     <fields>
         <fullName>Phone</fullName>
@@ -2759,38 +2948,40 @@ if( AND(Earliest_date_of_conversion_to_P_F__c &lt; Earliest_date_of_conversion_t
         <externalId>false</externalId>
         <inlineHelpText>Best Guess at Software Plan</inlineHelpText>
         <label>Plan Budget</label>
-        <picklist>
-            <picklistValues>
-                <fullName>Unknown</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Community</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Standard</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Pro</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Advanced</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Enterprise</fullName>
-                <default>false</default>
-            </picklistValues>
-            <restrictedPicklist>true</restrictedPicklist>
-            <sorted>false</sorted>
-        </picklist>
         <required>false</required>
         <trackFeedHistory>false</trackFeedHistory>
         <trackHistory>false</trackHistory>
         <type>Picklist</type>
+        <valueSet>
+            <restricted>true</restricted>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>Unknown</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Community</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Standard</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Pro</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Advanced</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Enterprise</fullName>
+                    <default>false</default>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
     </fields>
     <fields>
         <fullName>Potential_Candidate__c</fullName>
@@ -2981,21 +3172,6 @@ IF( Hubspot__c &gt; 250, &quot;6 Good Fit – Bad Outcome&quot;, &quot;4 Weak Fi
     </fields>
     <fields>
         <fullName>Rating</fullName>
-        <picklist>
-            <picklistValues>
-                <fullName>Hot</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Warm</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Cold</fullName>
-                <default>false</default>
-            </picklistValues>
-            <sorted>false</sorted>
-        </picklist>
         <trackFeedHistory>false</trackFeedHistory>
         <trackHistory>false</trackHistory>
         <type>Picklist</type>
@@ -3037,53 +3213,55 @@ IF( Hubspot__c &gt; 250, &quot;6 Good Fit – Bad Outcome&quot;, &quot;4 Weak Fi
         <fullName>Ryan_Lead_Status_do_not_use__c</fullName>
         <externalId>false</externalId>
         <label>Ryan Lead Status (do not use)</label>
-        <picklist>
-            <picklistValues>
-                <fullName>Qualified</fullName>
-                <default>true</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Contacted</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Working / Talking</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Call Scheduled</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Call #1 Held</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Call #2 Held</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Call #3 Held</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>No-show / Reschedule</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Archived / Not interested</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Passive &amp; friendly</fullName>
-                <default>false</default>
-            </picklistValues>
-            <sorted>false</sorted>
-        </picklist>
         <required>false</required>
         <trackFeedHistory>false</trackFeedHistory>
         <trackHistory>false</trackHistory>
         <type>Picklist</type>
+        <valueSet>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>Qualified</fullName>
+                    <default>true</default>
+                </value>
+                <value>
+                    <fullName>Contacted</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Working / Talking</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Call Scheduled</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Call #1 Held</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Call #2 Held</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Call #3 Held</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>No-show / Reschedule</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Archived / Not interested</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Passive &amp; friendly</fullName>
+                    <default>false</default>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
     </fields>
     <fields>
         <fullName>SFSSDupeCatcher__Override_DupeCatcher__c</fullName>
@@ -3136,267 +3314,226 @@ IF( Hubspot__c &gt; 250, &quot;6 Good Fit – Bad Outcome&quot;, &quot;4 Weak Fi
         <fullName>State__c</fullName>
         <externalId>false</externalId>
         <label>State</label>
-        <picklist>
-            <picklistValues>
-                <fullName>AL</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>AK</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>AZ</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>AR</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>CA</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>CO</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>CT</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>DE</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>FL</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>GA</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>HI</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>ID</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>IL</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>IN</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>IA</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>KS</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>KY</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>LA</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>ME</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>MD</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>MA</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>MI</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>MN</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>MS</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>MO</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>MT</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>NE</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>NV</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>NH</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>NJ</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>NM</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>NY</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>NC</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>ND</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>OH</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>OK</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>OR</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>PA</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>RI</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>SC</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>SD</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>TN</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>TX</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>UT</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>VT</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>VA</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>WA</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>WV</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>WI</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>WY</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>DC</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>PR</fullName>
-                <default>false</default>
-            </picklistValues>
-            <sorted>false</sorted>
-        </picklist>
         <required>false</required>
         <trackFeedHistory>false</trackFeedHistory>
         <trackHistory>false</trackHistory>
         <type>Picklist</type>
+        <valueSet>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>AL</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>AK</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>AZ</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>AR</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>CA</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>CO</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>CT</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>DE</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>FL</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>GA</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>HI</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>ID</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>IL</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>IN</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>IA</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>KS</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>KY</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>LA</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>ME</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>MD</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>MA</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>MI</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>MN</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>MS</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>MO</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>MT</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>NE</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>NV</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>NH</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>NJ</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>NM</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>NY</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>NC</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>ND</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>OH</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>OK</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>OR</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>PA</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>RI</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>SC</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>SD</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>TN</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>TX</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>UT</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>VT</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>VA</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>WA</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>WV</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>WI</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>WY</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>DC</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>PR</fullName>
+                    <default>false</default>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
     </fields>
     <fields>
         <fullName>Status</fullName>
-        <picklist>
-            <picklistValues>
-                <fullName>Passive &amp; Friendly</fullName>
-                <default>false</default>
-                <converted>false</converted>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Converted</fullName>
-                <default>false</default>
-                <converted>true</converted>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Pending - Unqualified</fullName>
-                <default>true</default>
-                <converted>false</converted>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Pending - Qualified</fullName>
-                <default>false</default>
-                <converted>false</converted>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Working - Contacted</fullName>
-                <default>false</default>
-                <converted>false</converted>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Archived - Not Interested</fullName>
-                <default>false</default>
-                <converted>false</converted>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Working - Talking</fullName>
-                <default>false</default>
-                <converted>false</converted>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Converting to contact - not an opp</fullName>
-                <default>false</default>
-                <converted>true</converted>
-            </picklistValues>
-            <sorted>false</sorted>
-        </picklist>
         <trackFeedHistory>true</trackFeedHistory>
         <trackHistory>true</trackHistory>
         <type>Picklist</type>
@@ -4657,6 +4794,41 @@ IF(
         <label>Peru Leads MS</label>
     </listViews>
     <listViews>
+        <fullName>RH_overdue_leads</fullName>
+        <booleanFilter>(1 OR 2) AND 3 AND 4</booleanFilter>
+        <columns>Follow_up_Date__c</columns>
+        <columns>FULL_NAME</columns>
+        <columns>LEAD.COMPANY</columns>
+        <columns>LEAD.STATE</columns>
+        <columns>LEAD.EMAIL</columns>
+        <columns>LEAD.STATUS</columns>
+        <columns>LEAD.CREATED_DATE</columns>
+        <columns>CORE.USERS.ALIAS</columns>
+        <columns>LEAD.UNREAD</columns>
+        <filterScope>Mine</filterScope>
+        <filters>
+            <field>Follow_up_Date__c</field>
+            <operation>equals</operation>
+            <value>TODAY</value>
+        </filters>
+        <filters>
+            <field>Follow_up_Date__c</field>
+            <operation>lessThan</operation>
+            <value>TODAY</value>
+        </filters>
+        <filters>
+            <field>LEAD.STATUS</field>
+            <operation>notEqual</operation>
+            <value>Passive &amp; Friendly,Archived - Not Interested</value>
+        </filters>
+        <filters>
+            <field>LEAD.STATUS</field>
+            <operation>notEqual</operation>
+            <value>Converted,Converting to contact - not an opp</value>
+        </filters>
+        <label>RH - overdue leads</label>
+    </listViews>
+    <listViews>
         <fullName>RR_follow_up_dates_in_the_future</fullName>
         <booleanFilter>(1 OR 2) AND 3 AND 4</booleanFilter>
         <columns>Follow_up_Date__c</columns>
@@ -5183,6 +5355,26 @@ IF(
             <value>jonathan</value>
         </filters>
         <label>owned by jon</label>
+    </listViews>
+    <listViews>
+        <fullName>referred_leads</fullName>
+        <columns>Became_an_Opportunity_Date__c</columns>
+        <columns>Calculated_Lead_Source__c</columns>
+        <columns>FULL_NAME</columns>
+        <columns>LEAD.COMPANY</columns>
+        <columns>LEAD.STATE</columns>
+        <columns>LEAD.EMAIL</columns>
+        <columns>LEAD.STATUS</columns>
+        <columns>LEAD.CREATED_DATE</columns>
+        <columns>CORE.USERS.ALIAS</columns>
+        <columns>LEAD.UNREAD</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Calculated_Lead_Source__c</field>
+            <operation>equals</operation>
+            <value>inbound - external referral</value>
+        </filters>
+        <label>referred leads</label>
     </listViews>
     <listViews>
         <fullName>spring_webinar_april_2015</fullName>

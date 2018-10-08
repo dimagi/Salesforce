@@ -11,7 +11,6 @@ public with sharing class FakeTestForCoverage {
 
     public static void dummyMethod() {
         Integer a;
-
         a = 1;
         a = 1;
         a = 1;

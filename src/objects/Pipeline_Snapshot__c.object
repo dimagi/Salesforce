@@ -21,10 +21,6 @@
         <type>Default</type>
     </actionOverrides>
     <actionOverrides>
-        <actionName>Follow</actionName>
-        <type>Default</type>
-    </actionOverrides>
-    <actionOverrides>
         <actionName>List</actionName>
         <type>Default</type>
     </actionOverrides>
@@ -742,20 +738,22 @@ IF(OR(ISBLANK (Amount__c), ISBLANK(Duration_months__c)), NULL, Monthly_Recurring
         <fullName>Intracompany_Sub_contract__c</fullName>
         <externalId>false</externalId>
         <label>Intracompany Sub-contract</label>
-        <picklist>
-            <picklistValues>
-                <fullName>Yes</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>No</fullName>
-                <default>false</default>
-            </picklistValues>
-            <sorted>false</sorted>
-        </picklist>
         <required>false</required>
         <trackTrending>false</trackTrending>
         <type>Picklist</type>
+        <valueSet>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>Yes</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>No</fullName>
+                    <default>false</default>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
     </fields>
     <fields>
         <fullName>Month_Date__c</fullName>
@@ -929,24 +927,26 @@ IF(OR(ISBLANK(Amount__c), ISBLANK (Duration_months__c)), NULL, Amount__c / Durat
         <fullName>RFP_Response__c</fullName>
         <externalId>false</externalId>
         <label>RFP Response</label>
-        <picklist>
-            <picklistValues>
-                <fullName>Non-RFP</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Prime-RFP</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Sub-RFP</fullName>
-                <default>false</default>
-            </picklistValues>
-            <sorted>false</sorted>
-        </picklist>
         <required>false</required>
         <trackTrending>false</trackTrending>
         <type>Picklist</type>
+        <valueSet>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>Non-RFP</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Prime-RFP</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Sub-RFP</fullName>
+                    <default>false</default>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
     </fields>
     <fields>
         <fullName>Services_Spend__c</fullName>
@@ -973,91 +973,95 @@ IF(OR(ISBLANK(Amount__c), ISBLANK (Duration_months__c)), NULL, Amount__c / Durat
         <externalId>false</externalId>
         <inlineHelpText>Did this come from a contract or an opportunity?</inlineHelpText>
         <label>Source Type</label>
-        <picklist>
-            <picklistValues>
-                <fullName>Contract</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Opportunity</fullName>
-                <default>false</default>
-            </picklistValues>
-            <sorted>false</sorted>
-        </picklist>
         <required>false</required>
         <trackTrending>false</trackTrending>
         <type>Picklist</type>
+        <valueSet>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>Contract</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Opportunity</fullName>
+                    <default>false</default>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
     </fields>
     <fields>
         <fullName>Stage__c</fullName>
         <externalId>false</externalId>
         <label>Stage</label>
-        <picklist>
-            <picklistValues>
-                <fullName>Stage 1 - Connect</fullName>
-                <color>#0B6FCE</color>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Stage 2 - Talking</fullName>
-                <color>#78C953</color>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Stage 3 - Prospect</fullName>
-                <color>#E27001</color>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Stage 4 - Proposal Development</fullName>
-                <color>#DDDDDD</color>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Stage 5 - Submitted</fullName>
-                <color>#BBBBBB</color>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Stage 6 - In Negotiations</fullName>
-                <color>#999999</color>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Closed</fullName>
-                <color>#A845DC</color>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Outstanding Contracted</fullName>
-                <color>#F3D904</color>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Total</fullName>
-                <color>#A53711</color>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Cash on Hand</fullName>
-                <color>#009900</color>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Predicted pipeline</fullName>
-                <color>#0B6FCE</color>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Core run rate</fullName>
-                <color>#FF0000</color>
-                <default>false</default>
-            </picklistValues>
-            <sorted>false</sorted>
-        </picklist>
         <required>false</required>
         <trackTrending>false</trackTrending>
         <type>Picklist</type>
+        <valueSet>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>Stage 1 - Connect</fullName>
+                    <color>#0B6FCE</color>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Stage 2 - Talking</fullName>
+                    <color>#78C953</color>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Stage 3 - Prospect</fullName>
+                    <color>#E27001</color>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Stage 4 - Proposal Development</fullName>
+                    <color>#DDDDDD</color>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Stage 5 - Submitted</fullName>
+                    <color>#BBBBBB</color>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Stage 6 - In Negotiations</fullName>
+                    <color>#999999</color>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Closed</fullName>
+                    <color>#A845DC</color>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Outstanding Contracted</fullName>
+                    <color>#F3D904</color>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Total</fullName>
+                    <color>#A53711</color>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Cash on Hand</fullName>
+                    <color>#009900</color>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Predicted pipeline</fullName>
+                    <color>#0B6FCE</color>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Core run rate</fullName>
+                    <color>#FF0000</color>
+                    <default>false</default>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
     </fields>
     <fields>
         <fullName>Three_Month_EV__c</fullName>

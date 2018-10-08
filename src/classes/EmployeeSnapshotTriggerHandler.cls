@@ -23,7 +23,8 @@ public class EmployeeSnapshotTriggerHandler {
         Date endDate = emplSnp.Snapshot_Date__c;
         Date startDate = endDate.toStartOfMonth();
         Set<Id> contractIds = new Set<Id>();
-        List<Time_Card__c> timeCards = [SELECT Id, Time_Card_Salary__c FROM Time_Card__c WHERE Employee__c =: emplSnp.Employee_Record__c AND Date__c >=: startDate AND Date__c <=: endDate AND FTE_Only__c != true];
+        List<Time_Card__c> timeCards = [SELECT Id, Time_Card_Salary__c FROM Time_Card__c WHERE Employee__c =: emplSnp.Employee_Record__c
+                                        AND Date__c >=: startDate AND Date__c <=: endDate AND FTE_Only__c != true];
 
         if (timeCards.size() > 0) {
             Decimal emplSalary = TimeCardCalculatorUtils.calculateSalaryForEmplSnapshot(emplSnp);

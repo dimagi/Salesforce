@@ -13,9 +13,9 @@ trigger ProjectBillingRateUpdatedTrigger on DContract__c (after update) {
             Database.SaveResult[] srList = Database.update(contracts, false);
             RecursiveTriggerHelper.setRecursiveFlag();
             if (!Test.isRunningTest()) {
-                EmailHelper.sendEmailFromDatabaseSaveResultErrors(BatchDefaultSettings__c.getOrgDefaults().Error_Emails__c.split(','),
-                        'Contract Update Errors', 'Cannot Update Contracts : ', srList);
-            }
+                 EmailHelper.sendEmailFromDatabaseSaveResultErrors(BatchDefaultSettings__c.getOrgDefaults().Error_Emails__c.split(','),
+                         'Contract Update Errors', 'Cannot Update Contracts : ', srList);
+             }
         }
     }
 }
