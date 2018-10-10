@@ -92,7 +92,8 @@ public class CorporateDashboardHelper {
         List<Global_Metric_Graph__c> headcountData = new List<Global_Metric_Graph__c>();
         AggregateResult[] records = [SELECT Snapshot_Date__c, Business_Unit__r.Name, Count(Id)
                                      FROM SFDC_Employee_Snapshot__c WHERE Snapshot_Date__c >=: Date.today().addMonths(-8)
-                                     AND (Employee_Type__c = 'Contractor' OR Employee_Type__c = 'Employee') AND Employee_Status__c = 'Active'
+                                     AND (Employee_Type__c = 'Contractor' OR Employee_Type__c = 'Employee' OR Employee_Type__c = 'External Contractor')
+                                     AND Employee_Status__c = 'Active'
                                      AND Per_Week_Hours__c > 10 AND Global_Services__c > 30
                                      GROUP BY Snapshot_Date__c, Business_Unit__r.Name ORDER BY Snapshot_Date__c];
 
