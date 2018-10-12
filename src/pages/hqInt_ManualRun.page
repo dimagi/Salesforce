@@ -1,9 +1,26 @@
 <apex:page showHeader="true" sidebar="true" controller="HQSyncController">
+    <style type="text/css">
+        .serversSelect {
+            height: 21.2px;
+            vertical-align: top;
+        }
+        .manualRunButton {
+            vertical-align: top;
+            margin: 0px 0px 0px 3px !important;
+        }
+        .lastSyncSpan {
+            height: 21.2px;
+            margin-left: 3px;
+            vertical-align: -webkit-baseline-middle !important;
+        }
+    </style>
+
     <apex:form >
         <apex:tabPanel switchType="server" selectedTab="tabOne" id="accountTabPanel" tabClass="activeTab" inactiveTabClass="inactiveTab">
 
             <apex:tab label="Domain synchronization - phase one" name="tabOne" id="tabOne">
-                <apex:pageBlock title="CommcareHq Job Run - Domain, Internal Properties, Deployment">
+                <apex:pageBlock title="CommcareHq Job Run - Domain, Internal Properties, Deployment" id="phase1Block">
+                    <apex:actionPoller action="{!fetchDomainInstances}" reRender="phase1Block" interval="10" />
                     <apex:outputPanel rendered="{!domainIsRunning}">
                         <apex:image url="/img/loading32.gif"/>
                         <apex:commandButton action="{!fetchDomainInstances}" value="Refresh Status" rendered="{!domainIsRunning}"/>
@@ -16,21 +33,30 @@
                         <br/>NOTE : Only 1 instance of this job can run at a time.
                     </apex:outputPanel>
                     <br/><br/>
-                    <apex:selectList id="phaseOneServer" value="{!phaseOneServer}" disabled="{!if(accountingRunning == true || domainIsRunning == true, true, false)}" multiselect="false" size="1">
-                        <apex:selectOptions value="{!serverCodes}"/>
-                    </apex:selectList>
-                    <apex:commandButton action="{!runDomainsSynchronizationJob}" value="Run Job Now" disabled="{!if(accountingRunning == true || domainIsRunning == true, true, false)}"/>
+                    <div>
+                        <apex:selectList styleClass="serversSelect" id="phaseOneServer" value="{!phaseOneServer}" disabled="{!if(accountingIsRunning == true || domainIsRunning == true, true, false)}"
+                                            multiselect="false" size="1">
+                            <apex:actionSupport event="onchange" rerender="phase1Block"/>
+                            <apex:selectOptions value="{!serverCodes}"/>
+                        </apex:selectList>
+                        <apex:commandButton styleClass="manualRunButton" action="{!runDomainsSynchronizationJob}" value="Run Job Now" disabled="{!if(accountingIsRunning == true || domainIsRunning == true, true, false)}"/>
+                    </div>
                 </apex:pageBlock>
             </apex:tab>
 
             <apex:tab label="Accounting synchronization- phase two" name="tabTwo" id="tabTwo">
                 <apex:pageBlock id="phase2Block">
                     <apex:actionPoller action="{!fetchAccountingInstances}" reRender="phase2Block" interval="10" status="status"/>
-                    <apex:selectList id="phaseTwoServer" value="{!phaseTwoServer}" disabled="{!if(accountingRunning == true || domainIsRunning == true, true, false)}" multiselect="false" size="1">
-                        <apex:selectOptions value="{!serverCodes}"/>
-                    </apex:selectList>
-                    <apex:commandButton action="{!runAccountingJob}" disabled="{!if(accountingRunning == true || domainIsRunning == true, true, false)}" value="Run Job Now"/>
-                    <apex:commandButton action="{!fetchAccountingInstances}" value="Refresh Status"/>
+                    <div>
+                        <apex:selectList styleClass="serversSelect" id="phaseTwoServer" value="{!phaseTwoServer}" disabled="{!if(accountingIsRunning == true || domainIsRunning == true, true, false)}"
+                                multiselect="false" size="1">
+                            <apex:actionSupport event="onchange" rerender="phase2Block"/>
+                            <apex:selectOptions value="{!serverCodes}"/>
+                        </apex:selectList>
+                        <apex:commandButton styleClass="manualRunButton" action="{!runAccountingJob}" disabled="{!if(accountingIsRunning == true || domainIsRunning == true, true, false)}" value="Run Job Now"/>
+                        <apex:commandButton styleClass="manualRunButton" action="{!fetchAccountingInstances}" value="Refresh Status"/>
+                        <span class="lastSyncSpan" >Last {!phaseTwoServer} accounting successful date {!serverSuccessfulDate}</span>
+                    </div>
 
                     <div style="height:20px;">
                         <apex:actionStatus startText="Refreshing..." id="status"/>

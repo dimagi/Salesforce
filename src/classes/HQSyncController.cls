@@ -2,11 +2,12 @@ public class HQSyncController {
 
     public String phaseOneServer { get; set;}
     public String phaseTwoServer { get; set;}
-    public List<SelectOption> serverCodes { get; set;}
-    public Boolean domainIsRunning { get; set;}
-    public Boolean accountingRunning { get; set;}
 
-    public String batchSubmittedDate { get; set;}
+    public List<SelectOption> serverCodes { get; set;}
+
+    public Boolean domainIsRunning { get; set;}
+    public Boolean accountingIsRunning { get; set;}
+
     public AsyncApexJob batchClassJob { get; set;}
     public List<JobWrapper> phase2Jobs { get; set;}
 
@@ -49,7 +50,6 @@ public class HQSyncController {
         if(batchClassJobList != null && batchClassJobList.size() > 0) {
             this.domainIsRunning = true;
             this.batchClassJob = batchClassJobList[0];
-            this.batchSubmittedDate = batchClassJobList[0].createdDate.format();
         }
     }
 
@@ -89,11 +89,11 @@ public class HQSyncController {
         objectNames.add(Accounting_CreditLine__c.SObjectType.getDescribe().getLabel());
         objectNames.add(Accounting_CreditAdjustment__c.SObjectType.getDescribe().getLabel());
 
-        this.accountingRunning = false;
+        this.accountingIsRunning = false;
         Commcare_Job_Settings__c settings = Commcare_Job_Settings__c.getOrgDefaults();
-        this.accountingRunning = settings.Is_Job_Running__c;
+        this.accountingIsRunning = settings.Is_Job_Running__c;
         String customObject = settings.Job_Helper_Field__c;
-        this.phaseTwoServer = this.accountingRunning == true ? settings.Server_Code__c : this.phaseTwoServer;
+        this.phaseTwoServer = this.accountingIsRunning == true ? settings.Server_Code__c : this.phaseTwoServer;
 
         this.batchClassJob = null;
         AsyncApexJob[] batchClassJobList = [SELECT Id, JobItemsProcessed, TotalJobItems, createdDate, ApexClass.Id, ApexClass.Name, Status, CompletedDate
@@ -102,7 +102,7 @@ public class HQSyncController {
                                             ORDER BY createdDate DESC LIMIT 1];
 
         if(batchClassJobList != null && batchClassJobList.size() > 0) {
-            this.accountingRunning = true;
+            this.accountingIsRunning = true;
             this.batchClassJob = batchClassJobList[0];
         }
 
@@ -129,10 +129,22 @@ public class HQSyncController {
         }
     }
 
+    public String getServerSuccessfulDate() {
+        String lastDate = 'cannot load last successful date';
+        List<CommcareToSalesforceSettings__c> serverSettingsList = CommcareToSalesforceSettings__c.getAll().values();
+        for (CommcareToSalesforceSettings__c serverSettings : serverSettingsList) {
+            if (serverSettings.Name == this.phaseTwoServer && serverSettings.Last_Run_Date__c != null) {
+                lastDate = serverSettings.Last_Run_Date__c.month() + '/' + serverSettings.Last_Run_Date__c.day() + '/' + serverSettings.Last_Run_Date__c.year();
+                break;
+            }
+        }
+        return lastDate;
+    }
+
     public PageReference runAccountingJob() {
         fetchAccountingInstances();
 
-        if (this.accountingRunning == false) {
+        if (this.accountingIsRunning == false) {
             Commcare_Job_Settings__c settings = Commcare_Job_Settings__c.getOrgDefaults();
             settings.Job_Start_Date__c = Date.today();
             settings.Is_Job_Running__c = true;
