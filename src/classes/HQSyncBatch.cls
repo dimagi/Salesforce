@@ -78,11 +78,19 @@ public virtual class HQSyncBatch implements Database.Batchable<Integer>, Databas
             while (!success && requests < 3) { // we want try 3 times to fetch data if we faced any errors
                 try {
                     response = this.hqAPI.httpGet(this.parameters);
-                    this.addedRecords += this.processJSON(HQSyncUtils.replaceReservedWords(response.getBody()));
                     success = true;
                 } catch (Exception ex) {
                     e = ex;
                     requests++;
+                }
+            }
+
+            if (success) { // we want separete errors from request and from parsing (pending job error), we want try parse only one time
+                try {
+                    this.addedRecords += this.processJSON(HQSyncUtils.replaceReservedWords(response.getBody()));
+                } catch (Exception ex) {
+                    success = false;
+                    e = ex;
                 }
             }
 

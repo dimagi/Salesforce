@@ -32,8 +32,12 @@ public class StatusLoggerUtils {
      * Logs data for given log name.
      */
     public static void log(String loggerName, String rowTitle, Integer counter, String message, String status) {
+        String logMessage = message;
+        if (message.length() > 255) {
+            logMessage = logMessage.subString(0, 255);
+        }
         insert new Status_Log__c(Name = loggerName, Title__c = rowTitle,
-                                 Counter__c = counter, Message__c = message,
+                                 Counter__c = counter, Message__c = logMessage,
                                  Date__c = DateTime.now(), Status__c = status);
     }
 
