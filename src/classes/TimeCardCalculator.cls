@@ -47,7 +47,7 @@ public without sharing class TimeCardCalculator implements Database.Batchable<sO
     public Database.QueryLocator start(Database.BatchableContext context) {
         String selectTc = 'SELECT Id, Need_recalculation__c, Date__c, Billing_Rate__c, Time_Card_Salary__c, Client__c, Total__c FROM Time_Card__c ';
         String whereTc = 'WHERE Client__c IN: contractsToRecalculate';
-        String orderBy = ' ORDER BY Client__r.Intracompany_Sub_contract__c DESC, Client__c, Date__c DESC';
+        String orderBy = ' ORDER BY Client__r.Is_child_contract__c DESC, Client__c, Date__c DESC';
 
         if (this.contractsToRecalculate.size() > 0) { // Contract UI button or manual run
             this.contractsToRecalculate.addAll(TimeCardCalculatorUtils.getParentAndChildContracts(this.contractsToRecalculate));
@@ -97,7 +97,7 @@ public without sharing class TimeCardCalculator implements Database.Batchable<sO
 
             if (this.currentContract == null || this.currentContract.Id != timeCard.Client__c) { // we started new contract
                 if (this.currentContract != null) {
-                    if (this.currentContract.Intracompany_Sub_contract__c == 'Yes') {
+                    if (this.currentContract.Is_child_contract__c == true) {
                         // If child we store sum in the map for parent
                         if (this.childsServicesSpend.containsKey(this.currentContract.Parent_Contract__c)) {
                             this.childsServicesSpend.put(this.currentContract.Parent_Contract__c, 
@@ -119,7 +119,7 @@ public without sharing class TimeCardCalculator implements Database.Batchable<sO
 
                 // Fetch new Contract
                 this.currentServicesSpend = 0;
-                this.currentContract = [SELECT Id, Parent_Contract__c, Project_Billing_Rate__c, Intracompany_Sub_contract__c, Project_Billing_Rate_Updated__c, Require_Services_Spend_Refresh__c
+                this.currentContract = [SELECT Id, Parent_Contract__c, Project_Billing_Rate__c, Is_child_contract__c, Project_Billing_Rate_Updated__c, Require_Services_Spend_Refresh__c
                                                     FROM DContract__c WHERE Id =: timeCard.Client__c];
                                                                         // we remove it from list because we want set 0 to contracts without time cards, for example situation if client will change so we must set 0 to contracts without time cards
                 this.contractsToRecalculate.remove(this.currentContract.Id);
@@ -145,7 +145,7 @@ public without sharing class TimeCardCalculator implements Database.Batchable<sO
     public void finish(Database.BatchableContext context) {
         List<DContract__c> contractsForSave = new List<DContract__c>();
         if (this.currentContract != null) { // save last contract
-            if (this.currentContract.Intracompany_Sub_contract__c == 'Yes') {
+            if (this.currentContract.Is_child_contract__c == true) {
                 if (this.childsServicesSpend.containsKey(this.currentContract.Parent_Contract__c)) {
                     this.childsServicesSpend.put(this.currentContract.Parent_Contract__c, 
                                     this.currentServicesSpend + this.childsServicesSpend.get(this.currentContract.Parent_Contract__c));
@@ -154,7 +154,7 @@ public without sharing class TimeCardCalculator implements Database.Batchable<sO
                 }
                 Database.update(new DContract__c(Id = this.currentContract.Id, Services_Spend__c = this.currentServicesSpend.setScale(2)), false);
                 this.contractsToRecalculate.remove(this.currentContract.Id);
-                this.currentContract = [SELECT Id, Project_Billing_Rate__c, Intracompany_Sub_contract__c FROM DContract__c WHERE Id =: this.currentContract.Parent_Contract__c];
+                this.currentContract = [SELECT Id, Project_Billing_Rate__c, Is_child_contract__c FROM DContract__c WHERE Id =: this.currentContract.Parent_Contract__c];
                 this.currentServicesSpend = 0;
             }
 
