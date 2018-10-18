@@ -23,17 +23,6 @@ public class HQSyncUtils {
     }
 
     /**
-     * Builds HTTP request parameters from given map.
-     */
-    public static String buildURLParams(Map<String, String> parameters) {
-        List<String> strParams = new List<String>();
-        for (String paramKey : parameters.keySet()) {
-            strParams.add(paramKey + '=' + parameters.get(paramKey));
-        }
-        return String.join(strParams, '&');
-    }
-
-    /**
      * Generates offset list from total count and request size.
      */
     public static List<Integer> buildsOffsetList(Integer totalCount, Integer size) {

@@ -36,7 +36,7 @@ public class HQSyncAPI {
 
     public HTTPResponse httpGet(Map<String, String> parameters) {
         HttpRequest req = new HttpRequest();
-        req.setEndpoint(this.endPoint + '?' + HQSyncUtils.buildURLParams(parameters));
+        req.setEndpoint(this.endPoint + '?' + SFUtils.buildURLParams(parameters));
         req.setMethod('GET');
 
         String username = this.serverSettings.CommCare_User_Name__c;
