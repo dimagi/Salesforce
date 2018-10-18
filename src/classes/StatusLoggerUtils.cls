@@ -13,6 +13,7 @@ public class StatusLoggerUtils {
     public static final String RENEWAL_LOGGER = 'RENEWAL_LOGGER';
     public static final String DOMAIN_SNP_LOGGER = 'DOMAIN_SNP_LOGGER';
     public static final String TIME_CARD_LOGGER = 'TIME_CARD_LOGGER';
+    public static final String ZENDESK_LOGGER = 'ZENDESK_LOGGER';
 
     /**
      * Logs INFO row for given log name.

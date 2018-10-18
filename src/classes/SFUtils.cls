@@ -3,6 +3,31 @@
  */
 public class SFUtils {
 
+    /**
+     * Replace count word from given JSON file.
+     */
+    public static String replaceCountWords(String myString) {
+       myString = myString.replaceAll('\n', '\\\\n');
+       myString = myString.replaceAll('"count":', '"x_count":');
+       return myString;
+    }
+
+    /**
+     * Builds HTTP request parameters from given map, use only '='.
+     */
+    public static String buildURLParams(Map<String, String> parameters) {
+        List<String> strParams = new List<String>();
+        for (String paramKey : parameters.keySet()) {
+            strParams.add(paramKey + '=' + parameters.get(paramKey));
+        }
+        return String.join(strParams, '&');
+    }
+
+
+
+    /**
+     * Count working days from startDate to endDate. Does not include holidays.
+     */
     public static Integer getWorkingDays(Date startDate, Date endDate) {
         Integer workingDays = 0;
         if(startDate == null || endDate == null) {

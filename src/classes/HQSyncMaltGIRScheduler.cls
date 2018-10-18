@@ -1,3 +1,6 @@
+/**
+ * Scheduler for GIR and Malt Tables data. It runs each 4th day in month. If there was errors, data will be loaded later.
+ */
 public class HQSyncMaltGIRScheduler implements Schedulable {
 
     public void execute(SchedulableContext sc) {
