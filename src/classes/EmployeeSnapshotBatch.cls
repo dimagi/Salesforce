@@ -37,7 +37,7 @@
                       Total_Stock_Value__c, X401K_Payroll_Deduction__c, Unit__c, Unloaded_Daily_Rate__c, USD_Currency_Per_Pay_period__c, User_link__c, User_ID__c, Vacation_Days__c, Visa_Expiration_Date__c,
                       VISA_No__c, VISA_Type__c, Voter_ID__c, Yearly_Comp__c, Working_Days__c, Additional_Comments__c, Blood_Group__c, Distinguishing_Features__c, Emergency_Contact_Country_of_Residence__c,
                       Emergency_Contact_next_of_kin__c, Eye_Colour__c, Height__c, Local_Emerg_Cont_Country_of_Residence__c, Local_Emergency_Contact_next_of_kin__c, Medical_Conditions_Allergies__c,
-                      Medical_Permission__c, Red_Form_Filled_Date__c, Religion_Impact__c, Regular_Medication__c FROM SFDC_Employee__c];
+                      Medical_Permission__c, Red_Form_Filled_Date__c, Religion_Impact__c, Regular_Medication__c, New_Business__c, BizOps__c, Sub_Department__c FROM SFDC_Employee__c];
     }
 
     public void execute(Database.BatchableContext context, List<SFDC_Employee__c> scope) {
@@ -91,7 +91,8 @@
                                 Additional_Comments__c = empl.Additional_Comments__c, Blood_Group__c = empl.Blood_Group__c, Distinguishing_Features__c = empl.Distinguishing_Features__c, Emergency_Contact_Country_of_Residence__c = empl.Emergency_Contact_Country_of_Residence__c,
                                 Emergency_Contact_next_of_kin__c = empl.Emergency_Contact_next_of_kin__c, Eye_Colour__c = empl.Eye_Colour__c, Height__c = empl.Height__c, Local_Emerg_Cont_Country_of_Residence__c = empl.Local_Emerg_Cont_Country_of_Residence__c,
                                 Local_Emergency_Contact_next_of_kin__c = empl.Local_Emergency_Contact_next_of_kin__c, Medical_Conditions_Allergies__c = empl.Medical_Conditions_Allergies__c, Medical_Permission__c = empl.Medical_Permission__c,
-                                Red_Form_Filled_Date__c = empl.Red_Form_Filled_Date__c, Religion_Impact__c = empl.Religion_Impact__c, Regular_Medication__c = empl.Regular_Medication__c
+                                Red_Form_Filled_Date__c = empl.Red_Form_Filled_Date__c, Religion_Impact__c = empl.Religion_Impact__c, Regular_Medication__c = empl.Regular_Medication__c, New_Business__c = empl.New_Business__c,
+                                BizOps__c = empl.BizOps__c, Sub_Department__c = empl.Sub_Department__c
                             ));
             }
 
