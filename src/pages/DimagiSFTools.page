@@ -510,7 +510,7 @@
                                 </apex:pageBlockSectionItem>
                             </apex:pageBlockSection>
 
-                            <apex:pageBlockSection title="Timespend on Project by Person (Updated in real time from Fogbugz)" collapsible="false" columns="1">
+                            <apex:pageBlockSection title="Timespend on Project by Person (Updated weekly from Fogbugz)" collapsible="false" columns="1">
                                 <apex:pageBlockSectionItem >
                                     <apex:outputPanel >
                                         <apex:outputText value="Last Fogbugz synchronization date : {!lastFBSyncDate}, UTC" />
