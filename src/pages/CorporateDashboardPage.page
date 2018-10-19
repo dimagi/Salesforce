@@ -71,7 +71,7 @@
                         </div>
                         <div class="graphContainer">
                             <a href="/00Ob00000048BiR">
-                                <img class="graph" src="/servlet/servlet.ChartServer?rsid=0FLb00000019FqJ&ruid=005b0000001SrLL&did=01Zb0000000gCws&s=8&fs=12&tfg=12&tfs=-16777216&explode=0&c=column&cs=2&title=Active+Project+Spaces&eh=no&compo=yes&fg=-16777216&bg1=-1&bg2=-1&bgdir=2&dl1=Snapshot+Date&dl2=Software+Plan+Edition&l=2&sax=yes&Yman=no&nc=0&actUrl=%2F00Ob00000048BiR&sd=1&scv=no&sct=no&spt=no&bd=yes&cu=USD&ab=X&u=0&vt=0&ab2=Y&u2=0&vt2=0&vl0=Sum+of+Scale+of+Programs&spoc=no&topn=no&gc0=-1&gc1=-1&gc2=-1&cacheParam={!randomParam}" />
+                                <img class="graph" src="/servlet/servlet.ChartServer?rsid=0FLb00000019FqJ&ruid=005b0000001SrLL&did=01Zb0000000gCws&s=8&fs=12&tfg=12&tfs=-16777216&explode=0&c=column&cs=2&title=Active+Project+Spaces&eh=no&compo=yes&fg=-16777216&bg1=-1&bg2=-1&bgdir=2&dl1=Snapshot+Date&dl2=Software+Plan+Edition&l=2&sax=yes&Yman=no&nc=0&actUrl=%2F00Ob00000048BiR&sd=1&scv=no&sct=no&spt=no&bd=yes&cu=USD&ab=X&u=0&vt=0&ab2=Y&u2=0&vt2=0&vl0=Sum+of+Scale+of+Programs&spoc=no&topn=no&gc0=-1&gc1=-1&gc2=-1&sona=0&cacheParam={!randomParam}" />
                             </a>
                         </div>
                     </div>
@@ -117,7 +117,7 @@
                         </div>
                         <div class="graphContainer">
                             <a href="/00Ob00000048Bib">
-                                <img class="graph" src="/servlet/servlet.ChartServer?rsid=0FLb00000019FrR&ruid=005b0000001SrLL&did=01Zb0000000gCws&s=8&fs=12&tfg=12&tfs=-16777216&explode=0&c=column&cs=2&title=Monthly+Recurring+Revenue&eh=no&compo=yes&fg=-16777216&bg1=-1&bg2=-1&bgdir=2&dl1=Invoice+End+Date&dl2=Edition&l=2&sax=yes&Yman=no&nc=0&actUrl=%2F00Ob00000048Bib&sd=1&scv=no&sct=no&spt=no&bd=yes&cu=USD&ab=X&u=0&vt=0&ab2=Y&u2=0&vt2=2&vl0=Sum+of+Monthly+fee&spoc=no&topn=no&gc0=-1&gc1=-1&gc2=-1&sona=0&cacheParam={!randomParam}" />
+                                <img class="graph" src="/servlet/servlet.ChartServer?rsid=0FL0X000002JfcR&ruid=005b0000001SrLL&did=01Zb0000000gCws&s=8&fs=12&tfg=12&tfs=-16777216&explode=0&c=column&cs=2&title=Monthly+Recurring+Revenue&eh=no&compo=yes&fg=-16777216&bg1=-1&bg2=-1&bgdir=2&dl1=Invoice+End+Date&dl2=Software+Edition&l=2&sax=yes&Yman=no&nc=0&actUrl=%2F00Ob00000048Bib&sd=1&scv=no&sct=no&spt=no&bd=yes&cu=USD&ab=X&u=0&vt=0&ab2=Y&u2=0&vt2=2&vl0=Sum+of+Monthly+fee&spoc=no&topn=no&gc0=-1&gc1=-1&gc2=-1&sona=0&refreshts=1539945685000&cacheParam={!randomParam}" />
                             </a>
                             <span class="qLabel"></span>
                         </div>
@@ -217,6 +217,15 @@
                         <div class="graphContainer">
                             <a href="/00O0X000004mpWX">
                                 <img class="graph" src="/servlet/servlet.ChartServer?rsid=0FL0X000002JUqX&ruid=005b0000001SrLL&did=01Zb0000000gCws&s=8&fs=12&tfg=12&tfs=-16777216&explode=0&c=column&cs=2&title=Monthly+GS+Revenue&eh=no&compo=yes&fg=-16777216&bg1=-1&bg2=-1&bgdir=2&dl1=Month&dl2=Contract%3A+Efficiency+Owner+%28BU%29&l=2&sax=yes&Yman=no&nc=0&actUrl=%2F00O0X000004mpWX&sd=1&scv=no&sct=no&spt=no&bd=yes&cu=USD&ab=X&u=0&vt=0&ab2=Y&u2=0&vt2=2&vl0=Sum+of+GS+Revenue&spoc=no&topn=no&gc0=-1&gc1=-1&gc2=-1&sona=0&cacheParam={!randomParam}" />
+                            </a>
+                        </div>
+                    </div>
+                </apex:pageBlock>
+                <apex:pageBlock id="supp" title="Support" mode="edit" >
+                    <div class="chartsDataContainer">
+                        <div class="graphContainer">
+                            <a href="/00O0X000005wO8V">
+                                <img class="graph" src="/servlet/servlet.ChartServer?rsid=0FL0X000002Jin8&ruid=005b0000001SrLL&did=01Zb0000000gCws&s=8&fs=12&tfg=12&tfs=-16777216&explode=0&c=column&cs=2&title=%23+of+Tickets+Created&eh=no&compo=yes&fg=-16777216&bg1=-1&bg2=-1&bgdir=2&dl1=Date&dl2=Plan&l=2&sax=yes&Yman=no&nc=0&actUrl=%2F00O0X000005wO8V&sd=1&scv=no&sct=no&spt=no&bd=yes&cu=USD&ab=X&u=0&vt=0&ab2=Y&u2=0&vt2=0&vl0=Sum+of+Number+of+Tickets+Created&spoc=no&topn=no&gc0=-1&gc1=-1&gc2=-1&sona=0&cacheParam={!randomParam}" />
                             </a>
                         </div>
                     </div>

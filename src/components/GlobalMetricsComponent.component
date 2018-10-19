@@ -269,6 +269,16 @@
                 nv.utils.windowResize(chart.update);
                 return chart;
             });
+
+            nv.addGraph(function() {
+                var chart, zendeskRecords = $j("[id$=zendeskTicketsId]").val();
+                chart = buildMultiBatChart('# of Tickets Created', 'Date');
+                $j("[id$=zendeskTickets").append("<svg></svg>");
+                d3.select('#zendeskTickets svg').datum(fillZendeskGraphData(JSON.parse(zendeskRecords), false))
+                    .transition().duration(500).call(chart);
+                nv.utils.windowResize(chart.update);
+                return chart;
+            });
         }
 
         function loadGSData(graphData) {
@@ -464,11 +474,26 @@
                 }
             }
             if (forMrr == true) {
-                return [{ values: advanced, key: "Advanced"}, { values: community, key: "Community"}, { values: enterprise, key: "Enterprise"}, { values: pro, key: "Pro"},
-                    { values: standard, key: "Standard"}, { values: reseller, key: "Reseller"}, { values: managedHosting, key: "Managed Hosting"}];
+                return [{ values: enterprise, key: "Enterprise"}, { values: advanced, key: "Advanced"}, { values: pro, key: "Pro"}, { values: standard, key: "Standard"},
+                        { values: community, key: "Community"}, { values: managedHosting, key: "Managed Hosting"}, { values: reseller, key: "Reseller"}];
             }
             return [{ values: advanced, key: "Advanced"}, { values: community, key: "Community"}, { values: enterprise, key: "Enterprise"}, { values: pro, key: "Pro"},
                 { values: standard, key: "Standard"}];
+        }
+
+        function fillZendeskGraphData(graphData, forMrr) {
+            var i, enterprise = [], advanced = [], pro = [], standard = [], community = [], staff = [], icds = [];
+            for (i = 0; i < graphData.length; i++) {
+                enterprise.push({x: graphData[i].X_Text__c, y: graphData[i].Graph_Value_1__c});
+                advanced.push({x: graphData[i].X_Text__c, y: graphData[i].Graph_Value_2__c});
+                pro.push({x: graphData[i].X_Text__c, y: graphData[i].Graph_Value_3__c});
+                standard.push({x: graphData[i].X_Text__c, y: graphData[i].Graph_Value_4__c});
+                community.push({x: graphData[i].X_Text__c, y: graphData[i].Graph_Value_5__c});
+                staff.push({x: graphData[i].X_Text__c, y: graphData[i].Graph_Value_6__c});
+                icds.push({x: graphData[i].X_Text__c, y: graphData[i].Graph_Value_7__c});
+            }
+            return [{ values: enterprise, key: "Enterprise"}, { values: advanced, key: "Advanced"}, { values: pro, key: "Pro"}, { values: standard, key: "Standard"},
+                    { values: community, key: "Community"}, { values: staff, key: "Staff"}, { values: icds, key: "ICDS"}];
         }
     </script>
 
@@ -489,6 +514,7 @@
     <apex:inputHidden id="serverUpTimeId" value="{!serverUpTime}" />
     <apex:inputHidden id="headCountDataId" value="{!headCountData}" />
     <apex:inputHidden id="gsRevenueDataId" value="{!gsRevenueData}" />
+    <apex:inputHidden id="zendeskTicketsId" value="{!zendeskData}" />
 
     <a href="https://confluence.dimagi.com/display/internal/Global+Metrics" target="_blank"><h2>Graph definitions</h2></a><br /><br />
 
@@ -646,6 +672,17 @@
                     <div class="graphTitle">
                         <h2>
                             <a href="https://dimagi.my.salesforce.com/00O0X000004mpWX" target="_blank">GS Revenue</a>
+                        </h2>
+                    </div>
+                </div>
+            </div>
+        </apex:pageBlockSection>
+        <apex:pageBlockSection title="Support" collapsible="false" columns="1" >
+            <div class="chartsData">
+                <div id="zendeskTickets" class="graph">
+                    <div class="graphTitle">
+                        <h2>
+                            <a href="https://dimagi.my.salesforce.com/00O0X000005wO8V" target="_blank"># of Tickets Created</a>
                         </h2>
                     </div>
                 </div>

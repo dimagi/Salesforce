@@ -17,6 +17,50 @@ public class CorporateDashboardTest {
     }
 
     @isTest
+    public static void shouldLoadZendeskData() {
+        List<Zendesk_Tickets_Statistics__c> zendeskTestData = new List<Zendesk_Tickets_Statistics__c>
+            { new Zendesk_Tickets_Statistics__c(Plan__c = 'Enterprise', Number_of_Tickets_Created__c = 11, Date__c = Date.today()),
+              new Zendesk_Tickets_Statistics__c(Plan__c = 'Advanced', Number_of_Tickets_Created__c = 12, Date__c = Date.today()),
+              new Zendesk_Tickets_Statistics__c(Plan__c = 'Pro', Number_of_Tickets_Created__c = 13, Date__c = Date.today()),
+              new Zendesk_Tickets_Statistics__c(Plan__c = 'Standard', Number_of_Tickets_Created__c = 14, Date__c = Date.today()),
+              new Zendesk_Tickets_Statistics__c(Plan__c = 'Community', Number_of_Tickets_Created__c = 15, Date__c = Date.today()),
+              new Zendesk_Tickets_Statistics__c(Plan__c = 'Staff', Number_of_Tickets_Created__c = 16, Date__c = Date.today()),
+              new Zendesk_Tickets_Statistics__c(Plan__c = 'ICDS', Number_of_Tickets_Created__c = 17, Date__c = Date.today()),
+              new Zendesk_Tickets_Statistics__c(Plan__c = 'Enterprise', Number_of_Tickets_Created__c = 118, Date__c = Date.today().addMonths(-1)),
+              new Zendesk_Tickets_Statistics__c(Plan__c = 'Advanced', Number_of_Tickets_Created__c = 119, Date__c = Date.today().addMonths(-1)),
+              new Zendesk_Tickets_Statistics__c(Plan__c = 'Pro', Number_of_Tickets_Created__c = 120, Date__c = Date.today().addMonths(-1)),
+              new Zendesk_Tickets_Statistics__c(Plan__c = 'Standard', Number_of_Tickets_Created__c = 121, Date__c = Date.today().addMonths(-1)),
+              new Zendesk_Tickets_Statistics__c(Plan__c = 'Community', Number_of_Tickets_Created__c = 122, Date__c = Date.today().addMonths(-1)),
+              new Zendesk_Tickets_Statistics__c(Plan__c = 'Staff', Number_of_Tickets_Created__c = 123, Date__c = Date.today().addMonths(-1)),
+              new Zendesk_Tickets_Statistics__c(Plan__c = 'ICDS', Number_of_Tickets_Created__c = 124, Date__c = Date.today().addMonths(-1)) };
+        insert zendeskTestData;
+
+        Test.startTest();
+        CorporateDashboardHelper.refreshAllGraphs();
+        Test.stopTest();
+
+        List<Global_Metric_Graph__c> zendeskGraph = [SELECT X_Text__c, Graph_Value_1__c, Graph_Value_2__c, Graph_Value_3__c, Graph_Value_4__c, Graph_Value_5__c,
+                                                        Graph_Value_6__c, Graph_Value_7__c FROM Global_Metric_Graph__c WHERE
+                                                        Name =: CorporateDashboardHelper.ZENDESK_TICKET_GRAPH ORDER BY Helper_Date__c DESC];
+
+        System.assertEquals(11, zendeskGraph.get(0).Graph_Value_1__c);
+        System.assertEquals(12, zendeskGraph.get(0).Graph_Value_2__c);
+        System.assertEquals(13, zendeskGraph.get(0).Graph_Value_3__c);
+        System.assertEquals(14, zendeskGraph.get(0).Graph_Value_4__c);
+        System.assertEquals(15, zendeskGraph.get(0).Graph_Value_5__c);
+        System.assertEquals(16, zendeskGraph.get(0).Graph_Value_6__c);
+        System.assertEquals(17, zendeskGraph.get(0).Graph_Value_7__c);
+
+        System.assertEquals(118, zendeskGraph.get(1).Graph_Value_1__c);
+        System.assertEquals(119, zendeskGraph.get(1).Graph_Value_2__c);
+        System.assertEquals(120, zendeskGraph.get(1).Graph_Value_3__c);
+        System.assertEquals(121, zendeskGraph.get(1).Graph_Value_4__c);
+        System.assertEquals(122, zendeskGraph.get(1).Graph_Value_5__c);
+        System.assertEquals(123, zendeskGraph.get(1).Graph_Value_6__c);
+        System.assertEquals(124, zendeskGraph.get(1).Graph_Value_7__c);
+    }
+
+    @isTest
     public static void shouldLoadGSRevenue() {
         setUpGSRevenueData();
 

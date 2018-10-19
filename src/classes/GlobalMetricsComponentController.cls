@@ -14,6 +14,7 @@ public class GlobalMetricsComponentController {
     private List<Global_Metric_Graph__c> mrr;
     private List<Global_Metric_Graph__c> aggregateEff;
     private List<Global_Metric_Graph__c> icds;
+    private List<Global_Metric_Graph__c> zendesk;
     private Global_Metric_Graph__c oppExpectedRec;
     private Global_Metric_Graph__c evExpectedRec;
     private Global_Metric_Graph__c bufferEvGenRec;
@@ -21,6 +22,18 @@ public class GlobalMetricsComponentController {
     public GlobalMetricsComponentController() {
 
     }
+
+    public String getZendeskData() {
+        if (this.zendesk == null) {
+            this.zendesk = [SELECT X_Text__c, Graph_Value_1__c, Graph_Value_2__c, Graph_Value_3__c, Graph_Value_4__c, Graph_Value_5__c, Graph_Value_6__c, Graph_Value_7__c
+                        FROM Global_Metric_Graph__c WHERE Name =: CorporateDashboardHelper.ZENDESK_TICKET_GRAPH ORDER BY Helper_Date__c];
+        }
+        if (this.zendesk != null) {
+            return JSON.serialize(this.zendesk);
+        }
+        return '';
+    }
+    public void setZendeskData(String zendesk) {}
 
     public String getHeadCountData() {
         if (this.headCount == null) {
