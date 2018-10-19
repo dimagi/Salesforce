@@ -18,6 +18,7 @@ public class CorporateDashboardHelper {
     public static final String USER_GRAPH = 'Domain User';
     public static final String PROGRAMS_GRAPH = 'Domain Programs';
     public static final String ICDS_GRAPHS = 'Domain ICDS';
+    public static final String ZENDESK_TICKET_GRAPH = 'Zendesk Ticket';
 
     @future
     public static void refreshAllGraphsFuture() {
@@ -38,6 +39,7 @@ public class CorporateDashboardHelper {
             loadDomainSnapshotData();
             loadICDSDomainSnapshotData();
             loadMrr();
+            loadZendeskTicketsData();
         } catch (Exception ex) {
             System.debug('CorporateDashboardHelper error : ' + ex);
             System.debug('CorporateDashboardHelper error : ' + ex.getLineNumber());
@@ -480,6 +482,50 @@ public class CorporateDashboardHelper {
         }
 
         deleteAndAddMetrics(icdsData, ICDS_GRAPHS);
+    }
+
+    public static void loadZendeskTicketsData() {
+        List<Global_Metric_Graph__c> zendeskData = new List<Global_Metric_Graph__c>();
+        AggregateResult[] records = [SELECT Date__c, Plan__c, AVG(Number_of_Tickets_Created__c)
+                                     FROM Zendesk_Tickets_Statistics__c WHERE Date__c >=: Date.today().addMonths(-12)
+                                     GROUP BY Date__c, Plan__c ORDER BY Date__c];
+
+        if (records.size() > 0) {
+            Date snpDateLast = (Date) records.get(0).get('Date__c');
+            Global_Metric_Graph__c helper = new Global_Metric_Graph__c(Name = ZENDESK_TICKET_GRAPH, X_Text__c = getDateText(snpDateLast), Graph_Value_1__c = 0, Graph_Value_2__c = 0, Graph_Value_3__c = 0,
+                                                        Graph_Value_4__c = 0, Graph_Value_5__c = 0, Graph_Value_6__c = 0, Graph_Value_7__c = 0, Helper_Date__c = snpDateLast);
+            for (AggregateResult ar : records) {
+                Date snpDate = (Date) ar.get('Date__c');
+                String planName = (String) ar.get('Plan__c');
+                Decimal avgValue = (Decimal) (ar.get('expr0'));
+                System.debug('Record : ' + snpDate +  + ' ' + avgValue);
+
+                if (snpDateLast != snpDate) {
+                    snpDateLast = snpDate;
+                    zendeskData.add(helper);
+                    helper = new Global_Metric_Graph__c(Name = ZENDESK_TICKET_GRAPH, X_Text__c = getDateText(snpDate), Graph_Value_1__c = 0, Graph_Value_2__c = 0, Graph_Value_3__c = 0,
+                                                        Graph_Value_4__c = 0, Graph_Value_5__c = 0, Graph_Value_6__c = 0, Graph_Value_7__c = 0, Helper_Date__c = snpDate);
+                }
+
+                if (planName == 'Enterprise') {
+                    helper.Graph_Value_1__c = avgValue;
+                } else if (planName == 'Advanced') {
+                    helper.Graph_Value_2__c = avgValue;
+                } else if (planName == 'Pro') {
+                    helper.Graph_Value_3__c = avgValue;
+                } else if (planName == 'Standard') {
+                    helper.Graph_Value_4__c = avgValue;
+                } else if (planName == 'Community') {
+                    helper.Graph_Value_5__c = avgValue;
+                } else if (planName == 'Staff') {
+                    helper.Graph_Value_6__c = avgValue;
+                } else if (planName == 'ICDS') {
+                    helper.Graph_Value_7__c = avgValue;
+                }
+            }
+            zendeskData.add(helper);
+        }
+        deleteAndAddMetrics(zendeskData, ZENDESK_TICKET_GRAPH);
     }
 
     public static String getDateText(Date snDate) {
