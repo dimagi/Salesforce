@@ -64,6 +64,15 @@ public class HQSyncDomainModel {
         public Integer cp_n_apps_with_icon;
         public Integer cp_n_apps;
         public Integer cp_n_apps_with_multi_lang;
+        public Integer cp_n_downloads_custom_exports;
+        public Integer cp_n_viewed_ucr_reports;
+        public Integer cp_n_viewed_non_ucr_reports;
+        public Integer cp_n_reports_created;
+        public Integer cp_n_reports_edited;
+        public Integer cp_n_saved_scheduled_reports;
+        public Integer cp_n_click_app_deploy;
+        public Integer cp_n_saved_app_changes;
+        public Integer cp_n_form_builder_entered;
     }
 
     /**
@@ -409,6 +418,16 @@ public class HQSyncDomainModel {
                 domainObj.Domain_cp_n_apps_with_icon__c = calculatedProperties.cp_n_apps_with_icon;
                 domainObj.Domain_cp_n_apps__c = calculatedProperties.cp_n_apps;
                 domainObj.Domain_cp_n_apps_with_multi_lang__c = calculatedProperties.cp_n_apps_with_multi_lang;
+
+                domainObj.Domain_cp_n_downloads_custom_exports__c = calculatedProperties.cp_n_downloads_custom_exports;
+                domainObj.Domain_cp_n_viewed_ucr_reports__c = calculatedProperties.cp_n_viewed_ucr_reports;
+                domainObj.Domain_cp_n_viewed_non_ucr_reports__c = calculatedProperties.cp_n_viewed_non_ucr_reports;
+                domainObj.Domain_cp_n_reports_created__c = calculatedProperties.cp_n_reports_created;
+                domainObj.Domain_cp_n_reports_edited__c = calculatedProperties.cp_n_reports_edited;
+                domainObj.Domain_cp_n_saved_scheduled_reports__c = calculatedProperties.cp_n_saved_scheduled_reports;
+                domainObj.Domain_cp_n_click_app_deploy__c = calculatedProperties.cp_n_click_app_deploy;
+                domainObj.Domain_cp_n_saved_app_changes__c = calculatedProperties.cp_n_saved_app_changes;
+                domainObj.Domain_cp_n_form_builder_entered__c = calculatedProperties.cp_n_form_builder_entered;
             }
             domainObj.Server_Name__c = serverName;
 
