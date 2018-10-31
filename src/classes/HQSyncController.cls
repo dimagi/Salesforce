@@ -83,7 +83,8 @@ public class HQSyncController {
         objectNames.add(Accounting_Paymentrecord__c.SObjectType.getDescribe().getLabel());
         objectNames.add(Accounting_Billingaccount__c.SObjectType.getDescribe().getLabel());
         objectNames.add(Accounting_Subscription__c.SObjectType.getDescribe().getLabel());
-        objectNames.add(Accounting_Invoice__c.SObjectType.getDescribe().getLabel());
+        objectNames.add(Accounting_Invoice__c.SObjectType.getDescribe().getLabel() + ' ' + HQSyncUtils.SUBSCRIPTION_INVOICE + ' Invoice');
+        objectNames.add(Accounting_Invoice__c.SObjectType.getDescribe().getLabel() + ' ' + HQSyncUtils.CUSTOMER_INVOICE + ' Invoice');
         objectNames.add(Accounting_LineItems__c.SObjectType.getDescribe().getLabel());
         objectNames.add(Accounting_SubscriptionAdjustment__c.SObjectType.getDescribe().getLabel());
         objectNames.add(Accounting_CreditLine__c.SObjectType.getDescribe().getLabel());

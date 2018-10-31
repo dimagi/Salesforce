@@ -264,6 +264,77 @@ public class HQSyncProcessors {
         }
     }
 
+    public class HQSyncCustomerInvoiceProcessor implements HQSyncDataProcessor {
+
+        public Integer processJSON(String jsonString, String serverName) {
+            JSONParser parser = HQSyncUtils.createParser(jsonString);
+            Set <String> parentObjectIdSet = new Set <String>(); //PARENT=Billing Account
+            Set<String> ids = new Set<String>();
+            List<Accounting_Invoice__c> listSobject = new List<Accounting_Invoice__c>();
+            List<HQSyncModels.AccountingCustomerInvoice> listModelObj = new List <HQSyncModels.AccountingCustomerInvoice>();
+
+            while (parser.nextToken() != null) {
+                if (parser.getCurrentToken() == JSONToken.START_OBJECT) {
+                    // Read entire invoice object, including its array of line items.
+                    HQSyncModels.AccountingCustomerInvoice obj = (HQSyncModels.AccountingCustomerInvoice) parser.readValueAs(HQSyncModels.AccountingCustomerInvoice.class);
+                    if(obj.account_id != null) {
+                        parentObjectIdSet.add(obj.account_id);
+                    }
+                    listModelObj.add(obj);
+                    ids.add(obj.id);
+                    parser.skipChildren();
+                }
+            }
+
+            Map<String, Id> externalIdMap = new Map<String, Id>();
+            for (Accounting_Invoice__c sfp : [SELECT Id, id__c FROM Accounting_Invoice__c WHERE id__c IN: ids AND Server_Name__c =: serverName AND Invoice_Type__c =: HQSyncUtils.CUSTOMER_INVOICE]) {
+                externalIdMap.put(sfp.id__c, sfp.Id);
+            }
+            System.debug('test 1');
+            Map<String, Accounting_Billingaccount__c> mapBillingAccount = new Map <String, Accounting_Billingaccount__c>();
+            Set<String> domainNames = new Set<String>();
+            for (Accounting_Billingaccount__c parentObj : [SELECT Id, id__c, created_by_domain__c FROM Accounting_Billingaccount__c WHERE id__c in :parentObjectIdSet AND Server_Name__c =: serverName]) {
+                mapBillingAccount.put(parentObj.id__c, parentObj);
+                if (parentObj.created_by_domain__c != null && parentObj.created_by_domain__c != '') {
+                    domainNames.add(parentObj.created_by_domain__c);
+                }
+            }
+            System.debug('test 2');
+            Map<String, Domain__c> mapDomains = new Map<String, Domain__c>();
+            for (Domain__c domain : [SELECT Id, Name, id__c FROM Domain__c WHERE Server_Name__c =: serverName AND Name IN: domainNames]) {
+                System.debug('test 2.1');
+                mapDomains.put(domain.Name, domain);
+                System.debug('test 2.2');
+            }
+            System.debug('test 3');
+            for (HQSyncModels.AccountingCustomerInvoice invoice : listModelObj) {
+                Id parentId;
+                Accounting_Billingaccount__c parentObj;
+                if(invoice.account_id != null && mapBillingAccount.containsKey(invoice.account_id)) {
+                    parentObj = mapBillingAccount.get(invoice.account_id);
+                    parentId = parentObj.Id;
+                }
+                System.debug('test 4');
+
+                Id domainId;
+                if (invoice.account_id != null && parentObj != null && parentObj.created_by_domain__c != null) {
+                    System.debug('test 5');
+                    Domain__c  domainObj = mapDomains.get(parentObj.created_by_domain__c);
+                    domainId = domainObj != null ? domainObj.Id : null;
+                }
+
+                Accounting_Invoice__c sobj = invoice.createDbObject(parentId, domainId, serverName);
+                if (externalIdMap.containsKey(sobj.id__c)) {
+                    sobj.Id = externalIdMap.get(sobj.id__c);
+                }
+                listSobject.add(sobj);
+            }
+            System.debug('test 6');
+            upsert listSobject;
+            return listSobject.size();
+        }
+    }
+
     public class HQSyncInvoiceProcessor implements HQSyncDataProcessor {
 
         public Integer processJSON(String jsonString, String serverName) {
@@ -292,9 +363,8 @@ public class HQSyncProcessors {
                 }
             }
 
-
             Map<String, Id> externalIdMap = new Map<String, Id>();
-            for (Accounting_Invoice__c sfp : [SELECT Id, id__c FROM Accounting_Invoice__c WHERE id__c IN: ids AND Server_Name__c =: serverName]) {
+            for (Accounting_Invoice__c sfp : [SELECT Id, id__c FROM Accounting_Invoice__c WHERE id__c IN: ids AND Server_Name__c =: serverName AND Invoice_Type__c =: HQSyncUtils.SUBSCRIPTION_INVOICE]) {
                 externalIdMap.put(sfp.id__c, sfp.Id);
             }
 
@@ -342,7 +412,7 @@ public class HQSyncProcessors {
             //prepare a map of Accid to invid
             Map <String, String> mapAccIdToInvId = new Map <String, String>();
             for(Accounting_Invoice__c invoice : [SELECT id ,Accounting_Subscription__r.account__c FROM Accounting_Invoice__c WHERE Id in : listSobject
-                                                 AND Accounting_Subscription__r.account__c != null AND Server_Name__c =: serverName]) {
+                                                 AND Accounting_Subscription__r.account__c != null AND Server_Name__c =: serverName AND Invoice_Type__c =: HQSyncUtils.SUBSCRIPTION_INVOICE]) {
                 mapAccIdToInvId.put(invoice.Accounting_Subscription__r.account__c, invoice.Id);
             }
 
@@ -576,8 +646,10 @@ public class HQSyncProcessors {
             List<HQSyncModels.AccountingLineItem> listModelObj = new List <HQSyncModels.AccountingLineItem>();
             List<Accounting_LineItems__c> listSobject = new List <Accounting_LineItems__c>();
             Set<String> parentInvoiceObjectIdSet = new Set<String>();
+            Set<String> parentCustomerInvoiceObjectIdSet = new Set<String>();
             Set<String> parentFeatureObjectIdSet = new Set<String>();
             Set<String> ids = new Set<String>();
+            List<String> badLineItems = new List<String>(); // TODO remove in future
 
             while (parser.nextToken() != null) {
                 if (parser.getCurrentToken() == JSONToken.START_OBJECT) {
@@ -585,11 +657,20 @@ public class HQSyncProcessors {
                     if(obj.invoice != null) {
                         parentInvoiceObjectIdSet.add(obj.invoice);
                     }
+                    if (obj.customer_invoice != null) {
+                        parentCustomerInvoiceObjectIdSet.add(obj.customer_invoice);
+                    }
                     if(obj.feature_rate != null) {
                         parentFeatureObjectIdSet.add(obj.feature_rate);
                     }
+
+                    if (obj.invoice != null && obj.customer_invoice != null) {
+                        badLineItems.add(obj.id);
+                    }
+
                     listModelObj.add(obj);
                     ids.add(obj.id);
+
                     parser.skipChildren();
                 }
             }
@@ -600,8 +681,13 @@ public class HQSyncProcessors {
             }
 
             Map <String, Id> mapInvoiceJsonIdToSfId = new Map <String, Id>();
-            for (Accounting_Invoice__c parentObj : [SELECT Id, id__c FROM Accounting_Invoice__c WHERE id__c in :parentInvoiceObjectIdSet AND Server_Name__c =: serverName]) {
+            for (Accounting_Invoice__c parentObj : [SELECT Id, id__c FROM Accounting_Invoice__c WHERE id__c in :parentInvoiceObjectIdSet AND Server_Name__c =: serverName AND Invoice_Type__c =: HQSyncUtils.SUBSCRIPTION_INVOICE]) {
                 mapInvoiceJsonIdToSfId.put(parentObj.id__c, parentObj.Id);
+            }
+
+            Map <String, Id> mapCustomerInvoiceJsonIdToSfId = new Map <String, Id>();
+            for (Accounting_Invoice__c parentObj : [SELECT Id, id__c FROM Accounting_Invoice__c WHERE id__c in :parentCustomerInvoiceObjectIdSet AND Server_Name__c =: serverName AND Invoice_Type__c =: HQSyncUtils.CUSTOMER_INVOICE]) {
+                mapCustomerInvoiceJsonIdToSfId.put(parentObj.id__c, parentObj.Id);
             }
 
             Map <String, Id> mapFeatureRateJsonIdToSfId = new Map <String, Id>();
@@ -610,15 +696,19 @@ public class HQSyncProcessors {
             }
 
             for (HQSyncModels.AccountingLineItem lineItem : listModelObj) {
-                System.debug('lineItem: ' + lineItem);
                 Id parentInvoiceSfId;
                 Id parentFeatureRateSfId;
+
                 if(mapInvoiceJsonIdToSfId.containsKey(lineItem.invoice)) {
                     parentInvoiceSfId = mapInvoiceJsonIdToSfId.get(lineItem.invoice);
+                } else if (mapCustomerInvoiceJsonIdToSfId.containsKey(lineItem.customer_invoice)) {
+                    parentInvoiceSfId = mapCustomerInvoiceJsonIdToSfId.get(lineItem.customer_invoice);
                 }
+
                 if(mapFeatureRateJsonIdToSfId.containsKey(lineItem.feature_rate)) {
                     parentFeatureRateSfId = mapFeatureRateJsonIdToSfId.get(lineItem.feature_rate);
                 }
+
                 if(parentInvoiceSfId != null) {
                     Accounting_LineItems__c sobj = lineItem.createDbObject(parentInvoiceSfId, parentFeatureRateSfId, serverName);
                     if (externalIdMap.containsKey(sobj.id__c)) {
@@ -629,6 +719,12 @@ public class HQSyncProcessors {
             }
 
             upsert listSobject;
+
+            if (badLineItems.size() > 0 && !Test.isRunningTest()) { // TODO remove in future
+                EmailHelper.sendEmail(BatchDefaultSettings__c.getOrgDefaults().Error_Emails__c.split(','), 'Duplicated invoice relation',
+                                                'We have duplicated invoice relations in line items : ' + String.join(badLineItems, ', '));
+            }
+
             return listSobject.size();
         }
     }
@@ -888,7 +984,7 @@ public class HQSyncProcessors {
             for (Accounting_LineItems__c parentObj : [SELECT Id, id__c FROM Accounting_LineItems__c WHERE id__c in :mapLineItemJsonIdToSfId.keySet() AND Server_Name__c =: serverName]) {
                 mapLineItemJsonIdToSfId.put(parentObj.id__c, parentObj.Id);
             }
-            for (Accounting_Invoice__c parentObj : [SELECT Id, id__c FROM Accounting_Invoice__c WHERE id__c in :mapInvoiceJsonIdToSfId.keySet() AND Server_Name__c =: serverName]) {
+            for (Accounting_Invoice__c parentObj : [SELECT Id, id__c FROM Accounting_Invoice__c WHERE id__c in :mapInvoiceJsonIdToSfId.keySet() AND Server_Name__c =: serverName AND Invoice_Type__c =: HQSyncUtils.SUBSCRIPTION_INVOICE]) {
                 mapInvoiceJsonIdToSfId.put(parentObj.id__c, parentObj.Id);
             }
             for (Accounting_Paymentrecord__c parentObj : [SELECT Id, id__c FROM Accounting_Paymentrecord__c WHERE id__c in :mapPaymentRecJsonIdToSfId.keySet() AND Server_Name__c =: serverName]) {

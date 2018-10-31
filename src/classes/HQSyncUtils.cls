@@ -12,6 +12,9 @@ public class HQSyncUtils {
     public static final String MALT_SUFFIX = 'malt_tables';
     public static final String GIR_SUFFIX = 'gir_tables';
 
+    public static final String CUSTOMER_INVOICE = 'Customer';
+    public static final String SUBSCRIPTION_INVOICE = 'Subscription';
+
     /**
      * Replace reserved Apex words from given JSON file.
      */
@@ -183,18 +186,21 @@ public class HQSyncUtils {
                 Database.executeBatch(new HQSyncAccountingBatch(batchToBeRun, Accounting_Subscription__c.SObjectType.getDescribe().getLabel(),
                                         new HQSyncProcessors.HQSyncSubscriptionProcessor(), serverCode, 'subscription/', nextServers), 1);
             } else if (batchToBeRun == 12) {
-                Database.executeBatch(new HQSyncAccountingBatch(batchToBeRun, Accounting_Invoice__c.SObjectType.getDescribe().getLabel(),
+                Database.executeBatch(new HQSyncAccountingBatch(batchToBeRun, Accounting_Invoice__c.SObjectType.getDescribe().getLabel() + ' ' + SUBSCRIPTION_INVOICE + ' Invoice',
                                         new HQSyncProcessors.HQSyncInvoiceProcessor(), serverCode, 'invoice/', nextServers), 1);
             } else if (batchToBeRun == 13) {
+                Database.executeBatch(new HQSyncAccountingBatch(batchToBeRun, Accounting_Invoice__c.SObjectType.getDescribe().getLabel() + ' ' + CUSTOMER_INVOICE + ' Invoice',
+                                        new HQSyncProcessors.HQSyncCustomerInvoiceProcessor(), serverCode, 'customer_invoice/', nextServers), 1);
+            } else if (batchToBeRun == 14) {
                 Database.executeBatch(new HQSyncAccountingBatch(batchToBeRun, Accounting_LineItems__c.SObjectType.getDescribe().getLabel(),
                                         new HQSyncProcessors.HQSyncLineItemProcessor(), serverCode, 'accounting_line_items/', nextServers), 1);
-            } else if (batchToBeRun == 14) {
+            } else if (batchToBeRun == 15) {
                 Database.executeBatch(new HQSyncAccountingBatch(batchToBeRun, Accounting_SubscriptionAdjustment__c.SObjectType.getDescribe().getLabel(),
                                         new HQSyncProcessors.HQSyncSubscriptionAdjustmentProcessor(), serverCode, 'subscription_and_adjustment/', nextServers), 1);
-            } else if (batchToBeRun == 15) {
+            } else if (batchToBeRun == 16) {
                 Database.executeBatch(new HQSyncAccountingBatch(batchToBeRun, Accounting_CreditLine__c.SObjectType.getDescribe().getLabel(),
                                         new HQSyncProcessors.HQSyncCreditLineProcessor(), serverCode, 'credit_line/', nextServers), 1);
-            } else if (batchToBeRun == 16) {
+            } else if (batchToBeRun == 17) {
                 Database.executeBatch(new HQSyncAccountingBatch(batchToBeRun, Accounting_CreditAdjustment__c.SObjectType.getDescribe().getLabel(),
                                         new HQSyncProcessors.HQSyncCreditAdjustmentProcessor(), serverCode, 'credit_adjustment/', nextServers), 1);
             } else if (nextServers.size() > 0) {
@@ -220,7 +226,8 @@ public class HQSyncUtils {
     public static void updateMissingRelations(String serverName) {
         try {
             updateMissingSubscriberDomain(serverName);
-            updateMissingSpaceLink(serverName);
+            updateMissingSpaceLinkSubscriptionInvoice(serverName);
+            updateMissingSpaceLinkCustomerInvoice(serverName);
             updateMissingSubscriptionDomain(serverName);
         } catch (Exception ex) {
             Commcare_Job_Settings__c settings = Commcare_Job_Settings__c.getOrgDefaults();
@@ -230,13 +237,13 @@ public class HQSyncUtils {
     }
 
     /**
-     * Updates missing space link in invoice object.
+     * Updates missing space link in subscription invoice object.
      */
-    public static void updateMissingSpaceLink(String serverName) {
+    public static void updateMissingSpaceLinkSubscriptionInvoice(String serverName) {
         List<Accounting_Invoice__c> accountingInvoice = [SELECT id__c, Accounting_Subscription__r.Accounting_Subscriber__r.domain__c, Project_Space__c
-                                                         FROM Accounting_Invoice__c WHERE Project_Space__c = '' AND Server_Name__c =: serverName];
+                                                         FROM Accounting_Invoice__c WHERE Project_Space__c = '' AND Server_Name__c =: serverName AND Invoice_Type__c =: SUBSCRIPTION_INVOICE];
         List<Accounting_Invoice__c> accountingInvoiceToUpdate = new List<Accounting_Invoice__c>();
-        System.debug('---Accounting Invoice with blank domain relation link---' + accountingInvoice);
+
         if (accountingInvoice.size() == 0) {
             return;
         }
@@ -248,8 +255,6 @@ public class HQSyncUtils {
                 accountingInvoiceToUpdate.add(ac);
             }
         }
-
-        System.debug('---domainNames---' + domainNames);
 
         if (domainNames.size() > 0) {
             Map <String, Id> mapDomainNameId = new Map<String, Id>();
@@ -268,6 +273,42 @@ public class HQSyncUtils {
         }
     }
 
+    /**
+     * Updates missing space link in customer invoice object.
+     */
+    public static void updateMissingSpaceLinkCustomerInvoice(String serverName) {
+        List<Accounting_Invoice__c> accountingInvoice = [SELECT id__c, Accounting_Billing_Account__r.created_by_domain__c, Project_Space__c
+                                                         FROM Accounting_Invoice__c WHERE Project_Space__c = null AND Server_Name__c =: serverName
+                                                         AND Invoice_Type__c =: CUSTOMER_INVOICE AND Accounting_Billing_Account__c != null];
+        List<Accounting_Invoice__c> accountingInvoiceToUpdate = new List<Accounting_Invoice__c>();
+        System.debug('accountingInvoice: ' + accountingInvoice);
+        if (accountingInvoice.size() == 0) {
+            return;
+        }
+
+        Set<String> domainNames = new Set<String>();
+        for(Accounting_Invoice__c ac : accountingInvoice) {
+            if (ac.Accounting_Billing_Account__r.created_by_domain__c != null && ac.Accounting_Billing_Account__r.created_by_domain__c != '') {
+                domainNames.add(ac.Accounting_Billing_Account__r.created_by_domain__c);
+                accountingInvoiceToUpdate.add(ac);
+            }
+        }
+
+        if (domainNames.size() > 0) {
+            Map <String, Id> mapDomainNameId = new Map<String, Id>();
+            for(Domain__c domain : [SELECT Id, Name FROM Domain__c WHERE Name in: domainNames AND Server_Name__c =: serverName]) {
+                mapDomainNameId.put(domain.Name, domain.Id);
+            }
+
+            for (Accounting_Invoice__c ac : accountingInvoiceToUpdate) {
+                Id domainId = mapDomainNameId.get(ac.Accounting_Billing_Account__r.created_by_domain__c);
+                if (domainId != null) {
+                    ac.Project_Space__c = domainId;
+                }
+            }
+            update accountingInvoiceToUpdate;
+        }
+    }
 
     /**
      * Updates missing domain relation in subscriber object.

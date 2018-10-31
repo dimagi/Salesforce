@@ -272,7 +272,7 @@ public class CorporateDashboardHelper {
             resultInv = [SELECT CALENDAR_MONTH(date_end__c), Softwareplan_Edition__c, SUM(accounting_software_monthly_fee__c)
                          FROM Accounting_Invoice__c
                          WHERE (accounting_subscription_service_type__c = 'Self_service' OR accounting_subscription_service_type__c = 'Product')
-                         AND is_hidden__c = false AND is_hidden_to_ops__c = false AND calculated_MRR__c > 0
+                         AND is_hidden__c = false AND is_hidden_to_ops__c = false AND calculated_MRR__c > 0 AND Invoice_Type__c =: HQSyncUtils.SUBSCRIPTION_INVOICE
                          AND Ops_Override__c = false AND date_end__c >=: fiscalYearStart AND date_end__c <=: fiscalYearEnd
                          GROUP BY CALENDAR_MONTH(date_end__c), Softwareplan_Edition__c ORDER BY CALENDAR_MONTH(date_end__c)];
         } else {
