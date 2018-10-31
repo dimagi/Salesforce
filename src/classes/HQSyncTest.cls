@@ -733,6 +733,47 @@ public class HQSyncTest {
     }
 
     @isTest
+    public static void testCustomerInvoice() {
+        Accounting_BillingAccount__c bacc1 = new Accounting_BillingAccount__c(id__c = '1', Server_Name__c = 'CommCare HQ', created_by_domain__c = 'domain_name_1');
+        Accounting_BillingAccount__c bacc2 = new Accounting_BillingAccount__c(id__c = '2', Server_Name__c = 'CommCare HQ', created_by_domain__c = 'domain_name_2');
+        Accounting_BillingAccount__c bacc3 = new Accounting_BillingAccount__c(id__c = '3', Server_Name__c = 'CommCare HQ');
+        insert new List<Accounting_BillingAccount__c> {bacc1, bacc2, bacc3};
+        Domain__c domain1 = buildDomain(1);
+        Domain__c domain2 = buildDomain(2);
+
+        Test.startTest();
+        Test.setMock(HttpCalloutMock.class, new HQSyncAPIMock());
+        HQSyncUtils.runAccountingBatchJob(13, 'CommCare HQ', new List<String>());
+        Test.stopTest();
+
+        List<Accounting_Invoice__c> invs = [SELECT id__c FROM Accounting_Invoice__c WHERE Invoice_Type__c =: HQSyncUtils.CUSTOMER_INVOICE];
+        System.assertEquals(4, invs.size());
+
+        Accounting_Invoice__c invoice = [SELECT id__c, Accounting_Subscription__c, Project_Space__c, Accounting_Billing_Account__c FROM Accounting_Invoice__c WHERE id__c = '1'];
+        System.assertEquals(null, invoice.Accounting_Subscription__c);
+        System.assertNotEquals(null, invoice.Accounting_Billing_Account__c);
+        System.assertEquals(bacc1.Id, invoice.Accounting_Billing_Account__c);
+        System.assertEquals(domain1.Id, invoice.Project_Space__c);
+
+        invoice = [SELECT id__c, Accounting_Subscription__c, Project_Space__c, Accounting_Billing_Account__c FROM Accounting_Invoice__c WHERE id__c = '2'];
+        System.assertEquals(null, invoice.Accounting_Subscription__c);
+        System.assertNotEquals(null, invoice.Accounting_Billing_Account__c);
+        System.assertEquals(bacc2.Id, invoice.Accounting_Billing_Account__c);
+        System.assertEquals(domain2.Id, invoice.Project_Space__c);
+
+        invoice = [SELECT id__c, Accounting_Subscription__c, Project_Space__c, Accounting_Billing_Account__c FROM Accounting_Invoice__c WHERE id__c = '3'];
+        System.assertEquals(null, invoice.Accounting_Subscription__c);
+        System.assertEquals(null, invoice.Accounting_Billing_Account__c);
+        System.assertEquals(null, invoice.Project_Space__c);
+
+        invoice = [SELECT id__c, Accounting_Subscription__c, Project_Space__c, Accounting_Billing_Account__c FROM Accounting_Invoice__c WHERE id__c = '4'];
+        System.assertEquals(null, invoice.Accounting_Subscription__c);
+        System.assertNotEquals(null, invoice.Accounting_Billing_Account__c);
+        System.assertEquals(bacc3.Id, invoice.Accounting_Billing_Account__c);
+        System.assertEquals(null, invoice.Project_Space__c);
+    }
+
+    @isTest
     public static void testInvoice() {
         Accounting_Subscription__c sub1 = new Accounting_Subscription__c(id__c = '277', Server_Name__c = 'CommCare HQ');
         insert sub1;
@@ -747,7 +788,7 @@ public class HQSyncTest {
         HQSyncUtils.runAccountingBatchJob(12, 'CommCare HQ', new List<String>());
         Test.stopTest();
 
-        List<Accounting_Invoice__c> invs = [SELECT id__c FROM Accounting_Invoice__c];
+        List<Accounting_Invoice__c> invs = [SELECT id__c FROM Accounting_Invoice__c WHERE Invoice_Type__c =: HQSyncUtils.SUBSCRIPTION_INVOICE];
         System.assertEquals(3, invs.size());
 
         Accounting_Invoice__c invoice = [SELECT id__c, Accounting_Subscription__c FROM Accounting_Invoice__c WHERE id__c = '1'];
@@ -771,29 +812,51 @@ public class HQSyncTest {
         insert inv1;
         Accounting_Invoice__c inv2 = new Accounting_Invoice__c(id__c = '2', Server_Name__c = 'CommCare HQ');
         insert inv2;
+        Accounting_Invoice__c inv3 = new Accounting_Invoice__c(id__c = '1', Server_Name__c = 'CommCare HQ', Invoice_Type__c = HQSyncUtils.CUSTOMER_INVOICE);
+        insert inv3;
+        Accounting_Invoice__c inv4 = new Accounting_Invoice__c(id__c = '2', Server_Name__c = 'CommCare HQ', Invoice_Type__c = HQSyncUtils.CUSTOMER_INVOICE);
+        insert inv4;
 
         Accounting_LineItems__c lineItem1 = new Accounting_LineItems__c(id__c = '1', invoice__c = inv1.Id, Server_Name__c = 'CommCare HQ');
         insert lineItem1;
 
         Test.startTest();
         Test.setMock(HttpCalloutMock.class, new HQSyncAPIMock());
-        HQSyncUtils.runAccountingBatchJob(13, 'CommCare HQ', new List<String>());
+        HQSyncUtils.runAccountingBatchJob(14, 'CommCare HQ', new List<String>());
         Test.stopTest();
 
         List<Accounting_LineItems__c> invs = [SELECT id__c FROM Accounting_LineItems__c];
-        System.assertEquals(3, invs.size());
+        System.assertEquals(6, invs.size());
 
         Accounting_LineItems__c lineItem = [SELECT id__c, invoice__c, Accounting_FeatureRate__c FROM Accounting_LineItems__c WHERE id__c = '1'];
         System.assertEquals(null, lineItem.Accounting_FeatureRate__c);
+        System.assertNotEquals(null, lineItem.invoice__c);
         System.assertEquals(inv1.Id, lineItem.invoice__c);
 
         lineItem = [SELECT id__c, invoice__c, Accounting_FeatureRate__c FROM Accounting_LineItems__c WHERE id__c = '2'];
         System.assertEquals(frate1.Id, lineItem.Accounting_FeatureRate__c);
+        System.assertNotEquals(null, lineItem.invoice__c);
         System.assertEquals(inv1.Id, lineItem.invoice__c);
 
         lineItem = [SELECT id__c, invoice__c, Accounting_FeatureRate__c FROM Accounting_LineItems__c WHERE id__c = '3'];
         System.assertEquals(frate2.Id, lineItem.Accounting_FeatureRate__c);
+        System.assertNotEquals(null, lineItem.invoice__c);
         System.assertEquals(inv2.Id, lineItem.invoice__c);
+
+        Accounting_LineItems__c customerlineItem = [SELECT id__c, invoice__c, Accounting_FeatureRate__c FROM Accounting_LineItems__c WHERE id__c = '4'];
+        System.assertEquals(frate2.Id, customerlineItem.Accounting_FeatureRate__c);
+        System.assertNotEquals(null, customerlineItem.invoice__c);
+        System.assertEquals(inv3.Id, customerlineItem.invoice__c);
+
+        customerlineItem = [SELECT id__c, invoice__c, Accounting_FeatureRate__c FROM Accounting_LineItems__c WHERE id__c = '5'];
+        System.assertEquals(frate2.Id, customerlineItem.Accounting_FeatureRate__c);
+        System.assertNotEquals(null, customerlineItem.invoice__c);
+        System.assertEquals(inv3.Id, customerlineItem.invoice__c);
+
+        customerlineItem = [SELECT id__c, invoice__c, Accounting_FeatureRate__c FROM Accounting_LineItems__c WHERE id__c = '6'];
+        System.assertEquals(frate2.Id, customerlineItem.Accounting_FeatureRate__c);
+        System.assertNotEquals(null, customerlineItem.invoice__c);
+        System.assertEquals(inv4.Id, customerlineItem.invoice__c);
     }
 
     @isTest
@@ -808,7 +871,7 @@ public class HQSyncTest {
 
         Test.startTest();
         Test.setMock(HttpCalloutMock.class, new HQSyncAPIMock());
-        HQSyncUtils.runAccountingBatchJob(14, 'CommCare HQ', new List<String>());
+        HQSyncUtils.runAccountingBatchJob(15, 'CommCare HQ', new List<String>());
         Test.stopTest();
 
         List<Accounting_SubscriptionAdjustment__c> invs = [SELECT id__c, subscription__c FROM Accounting_SubscriptionAdjustment__c];
@@ -836,7 +899,7 @@ public class HQSyncTest {
 
         Test.startTest();
         Test.setMock(HttpCalloutMock.class, new HQSyncAPIMock());
-        HQSyncUtils.runAccountingBatchJob(15, 'CommCare HQ', new List<String>());
+        HQSyncUtils.runAccountingBatchJob(16, 'CommCare HQ', new List<String>());
         Test.stopTest();
 
         List<Accounting_CreditLine__c> invs = [SELECT id__c FROM Accounting_CreditLine__c];
@@ -862,7 +925,7 @@ public class HQSyncTest {
 
         Test.startTest();
         Test.setMock(HttpCalloutMock.class, new HQSyncAPIMock());
-        HQSyncUtils.runAccountingBatchJob(16, 'CommCare HQ', new List<String>());
+        HQSyncUtils.runAccountingBatchJob(17, 'CommCare HQ', new List<String>());
         Test.stopTest();
 
         List<Accounting_CreditAdjustment__c> invs = [SELECT id__c FROM Accounting_CreditAdjustment__c];
@@ -904,6 +967,10 @@ public class HQSyncTest {
         Domain__c d1 = buildDomain(1);
         Domain__c d2 = buildDomain(2);
         Domain__c d3 = buildDomain(3);
+        Accounting_BillingAccount__c bacc1 = new Accounting_BillingAccount__c(id__c = '2', Server_Name__c = 'CommCare HQ', created_by_domain__c = 'domain_name_1');
+        Accounting_BillingAccount__c bacc2 = new Accounting_BillingAccount__c(id__c = '2', Server_Name__c = 'CommCare HQ', created_by_domain__c = 'domain_name_2');
+        Accounting_BillingAccount__c bacc3 = new Accounting_BillingAccount__c(id__c = '2', Server_Name__c = 'CommCare HQ');
+        insert new List<Accounting_BillingAccount__c> { bacc1, bacc2, bacc3 };
         Accounting_Subscriber__c s1 = buildSubscriber(1, null);
         Accounting_Subscriber__c s2 = buildSubscriber(2, null);
         Accounting_Subscriber__c s3 = buildSubscriber(3, d3.Id);
@@ -913,17 +980,34 @@ public class HQSyncTest {
         buildInvoice(1, sub1.Id, null);
         buildInvoice(2, sub2.Id, null);
         buildInvoice(3, sub3.Id, d3.Id);
+        buildCustomerInvoice(1, bacc1.Id, null);
+        buildCustomerInvoice(2, bacc2.Id, null);
+        buildCustomerInvoice(3, bacc3.Id, null);
+        buildCustomerInvoice(4, null, null);
 
         Test.startTest();
         HQSyncUtils.updateMissingRelations('CommCare HQ');
         Test.stopTest();
 
-        Accounting_Invoice__c invoice = [SELECT id__c, Project_Space__c FROM Accounting_Invoice__c WHERE id__c = 'external_id_1'];
+        System.assertEquals(3, [SELECT Id FROM Accounting_Invoice__c WHERE Invoice_Type__c =: HQSyncUtils.SUBSCRIPTION_INVOICE].size());
+
+        Accounting_Invoice__c invoice = [SELECT id__c, Project_Space__c FROM Accounting_Invoice__c WHERE id__c = 'external_id_1' AND Invoice_Type__c =: HQSyncUtils.SUBSCRIPTION_INVOICE];
         System.assertEquals(d1.Id, invoice.Project_Space__c);
-        invoice = [SELECT id__c, Project_Space__c FROM Accounting_Invoice__c WHERE id__c = 'external_id_2'];
+        invoice = [SELECT id__c, Project_Space__c FROM Accounting_Invoice__c WHERE id__c = 'external_id_2' AND Invoice_Type__c =: HQSyncUtils.SUBSCRIPTION_INVOICE];
         System.assertEquals(d2.Id, invoice.Project_Space__c);
-        invoice = [SELECT id__c, Project_Space__c FROM Accounting_Invoice__c WHERE id__c = 'external_id_3'];
+        invoice = [SELECT id__c, Project_Space__c FROM Accounting_Invoice__c WHERE id__c = 'external_id_3' AND Invoice_Type__c =: HQSyncUtils.SUBSCRIPTION_INVOICE];
         System.assertEquals(d3.Id, invoice.Project_Space__c);
+
+        System.assertEquals(4, [SELECT Id FROM Accounting_Invoice__c WHERE Invoice_Type__c =: HQSyncUtils.CUSTOMER_INVOICE].size());
+
+        Accounting_Invoice__c customerInvoice = [SELECT id__c, Project_Space__c FROM Accounting_Invoice__c WHERE id__c = 'external_id_1' AND Invoice_Type__c =: HQSyncUtils.CUSTOMER_INVOICE];
+        System.assertEquals(d1.Id, customerInvoice.Project_Space__c);
+        customerInvoice = [SELECT id__c, Project_Space__c FROM Accounting_Invoice__c WHERE id__c = 'external_id_2' AND Invoice_Type__c =: HQSyncUtils.CUSTOMER_INVOICE];
+        System.assertEquals(d2.Id, customerInvoice.Project_Space__c);
+        customerInvoice = [SELECT id__c, Project_Space__c FROM Accounting_Invoice__c WHERE id__c = 'external_id_3' AND Invoice_Type__c =: HQSyncUtils.CUSTOMER_INVOICE];
+        System.assertEquals(null, customerInvoice.Project_Space__c);
+        customerInvoice = [SELECT id__c, Project_Space__c FROM Accounting_Invoice__c WHERE id__c = 'external_id_4' AND Invoice_Type__c =: HQSyncUtils.CUSTOMER_INVOICE];
+        System.assertEquals(null, customerInvoice.Project_Space__c);
     }
 
     /**
@@ -1275,6 +1359,16 @@ public class HQSyncTest {
         a.is_hidden = false;
         a.is_hidden_to_ops = false;
         Accounting_Invoice__c aFromDB  = a.createDbObject(subsciptionId, domainId, 'Pro', 'CommCare HQ');
+        insert aFromDb;
+        return aFromDb;
+    }
+
+    static private Accounting_Invoice__c buildCustomerInvoice(Integer i, Id billingAccountId, Id domainId) {
+        HQSyncModels.AccountingCustomerInvoice a = new HQSyncModels.AccountingCustomerInvoice();
+        a.id = 'external_id_' + i;
+        a.is_hidden = false;
+        a.is_hidden_to_ops = false;
+        Accounting_Invoice__c aFromDB  = a.createDbObject(billingAccountId, domainId, 'CommCare HQ');
         insert aFromDb;
         return aFromDb;
     }

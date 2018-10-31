@@ -50,7 +50,35 @@ public class HQSyncModels {
     }
 
     /**
-     * Accounting Invoice fetched daily.
+     * Accounting Customer Invoice fetched daily.
+     */
+    public class AccountingCustomerInvoice {
+
+        public String id;
+        public String account_id;
+        public Double tax_rate;
+        public Double balance;
+        public Date date_due;
+        public Date date_paid;
+        public DateTime date_created;
+        public Date date_start;
+        public Date date_end;
+        public Boolean is_hidden;
+        public Boolean is_hidden_to_ops;
+        public Double applied_credit;
+        public Double subtotal;
+
+        public Accounting_Invoice__c createDbObject(Id billingAccountId, Id domainId, String serverName) {
+            return new Accounting_Invoice__c(id__c = this.id, Accounting_Billing_Account__c = billingAccountId, tax_rate__c = this.tax_rate,
+                            balance__c = this.balance, date_due__c = this.date_due, date_paid__c = this.date_paid, date_created__c = this.date_created,
+                            date_start__c = this.date_start, date_end__c = this.date_end, is_hidden__c = this.is_hidden, Project_Space__c = domainId,
+                            is_hidden_to_ops__c = this.is_hidden_to_ops, Total__c = this.subtotal, Total_Credits__c = this.applied_credit,
+                            Server_Name__c = serverName, Invoice_Type__c = HQSyncUtils.CUSTOMER_INVOICE);
+        }
+    }
+
+    /**
+     * Accounting Subscription Invoice fetched daily.
      */
     public class AccountingInvoice {
 
@@ -74,7 +102,7 @@ public class HQSyncModels {
                             balance__c = this.balance, date_due__c = this.date_due, date_paid__c = this.date_paid, date_created__c = this.date_created,
                             date_received__c = this.date_received, date_start__c = this.date_start, date_end__c = this.date_end, is_hidden__c = this.is_hidden,
                             is_hidden_to_ops__c = this.is_hidden_to_ops, Total__c = this.subtotal, Total_Credits__c = this.applied_credit, Project_Space__c = domainId,
-                            Server_Name__c = serverName, Softwareplan_Edition__c = softPlan);
+                            Server_Name__c = serverName, Softwareplan_Edition__c = softPlan, Invoice_Type__c = HQSyncUtils.SUBSCRIPTION_INVOICE);
         }
     }
 
@@ -364,16 +392,17 @@ public class HQSyncModels {
      */
     public class AccountingLineItem {
 
-        public string id;
-        public string invoice;
-        public string feature_rate;
-        public string base_description;
-        public double base_cost;
-        public string unit_description;
-        public double unit_cost;
-        public integer quantity;
-        public double subtotal;
-        public double applied_credit;
+        public String id;
+        public String customer_invoice;
+        public String invoice;
+        public String feature_rate;
+        public String base_description;
+        public Double base_cost;
+        public String unit_description;
+        public Double unit_cost;
+        public Integer quantity;
+        public Double subtotal;
+        public Double applied_credit;
 
         public Accounting_LineItems__c createDbObject(String invoiceId, String featurerateId, String serverName) {
             Accounting_LineItems__c obj = new Accounting_LineItems__c();

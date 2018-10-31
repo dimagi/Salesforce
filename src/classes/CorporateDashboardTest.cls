@@ -347,27 +347,27 @@ public class CorporateDashboardTest {
         Date currentDay = Date.today();
         Accounting_Subscription__c sub = new Accounting_Subscription__c(service_type__c = 'Self_service');
         insert sub;
-        Accounting_Invoice__c inv1 = new Accounting_Invoice__c(Accounting_Subscription__c = sub.Id,
+        Accounting_Invoice__c inv1 = new Accounting_Invoice__c(Accounting_Subscription__c = sub.Id, Invoice_Type__c = 'Subscription',
                                                                is_hidden__c = false, Ops_Override__c = false,
                                                                is_hidden_to_ops__c = false,
                                                                date_end__c = currentDay, Softwareplan_Edition__c = 'Pro');
-        Accounting_Invoice__c inv2 = new Accounting_Invoice__c(Accounting_Subscription__c = sub.Id,
+        Accounting_Invoice__c inv2 = new Accounting_Invoice__c(Accounting_Subscription__c = sub.Id, Invoice_Type__c = 'Subscription',
                                                                is_hidden__c = false, Ops_Override__c = false,
                                                                is_hidden_to_ops__c = false,
                                                                date_end__c = currentDay, Softwareplan_Edition__c = 'Pro');
-        Accounting_Invoice__c inv3 = new Accounting_Invoice__c(Accounting_Subscription__c = sub.Id,
+        Accounting_Invoice__c inv3 = new Accounting_Invoice__c(Accounting_Subscription__c = sub.Id, Invoice_Type__c = 'Subscription',
                                                                is_hidden__c = false, Ops_Override__c = false,
                                                                is_hidden_to_ops__c = false,
                                                                date_end__c = currentDay, Softwareplan_Edition__c = 'Pro');
-        Accounting_Invoice__c inv4 = new Accounting_Invoice__c(Accounting_Subscription__c = sub.Id,
+        Accounting_Invoice__c inv4 = new Accounting_Invoice__c(Accounting_Subscription__c = sub.Id, Invoice_Type__c = 'Subscription',
                                                                is_hidden__c = false, Ops_Override__c = false,
                                                                is_hidden_to_ops__c = false,
                                                                date_end__c = currentDay.addMonths(-1), Softwareplan_Edition__c = 'Pro');
-        Accounting_Invoice__c inv5 = new Accounting_Invoice__c(Accounting_Subscription__c = sub.Id,
+        Accounting_Invoice__c inv5 = new Accounting_Invoice__c(Accounting_Subscription__c = sub.Id, Invoice_Type__c = 'Subscription',
                                                                is_hidden__c = false, Ops_Override__c = false,
                                                                is_hidden_to_ops__c = false,
                                                                date_end__c = currentDay.addMonths(-1), Softwareplan_Edition__c = 'Pro');
-        Accounting_Invoice__c inv6 = new Accounting_Invoice__c(Accounting_Subscription__c = sub.Id,
+        Accounting_Invoice__c inv6 = new Accounting_Invoice__c(Accounting_Subscription__c = sub.Id, Invoice_Type__c = 'Subscription',
                                                                is_hidden__c = false, Ops_Override__c = false,
                                                                is_hidden_to_ops__c = false,
                                                                date_end__c = currentDay.addMonths(-1), Softwareplan_Edition__c = 'Pro');
