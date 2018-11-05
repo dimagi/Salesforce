@@ -55,7 +55,7 @@ public class HQSyncModels {
     public class AccountingCustomerInvoice {
 
         public String id;
-        public String account_id;
+        public String account;
         public Double tax_rate;
         public Double balance;
         public Date date_due;

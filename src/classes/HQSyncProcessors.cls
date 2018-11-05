@@ -277,8 +277,8 @@ public class HQSyncProcessors {
                 if (parser.getCurrentToken() == JSONToken.START_OBJECT) {
                     // Read entire invoice object, including its array of line items.
                     HQSyncModels.AccountingCustomerInvoice obj = (HQSyncModels.AccountingCustomerInvoice) parser.readValueAs(HQSyncModels.AccountingCustomerInvoice.class);
-                    if(obj.account_id != null) {
-                        parentObjectIdSet.add(obj.account_id);
+                    if(obj.account != null) {
+                        parentObjectIdSet.add(obj.account);
                     }
                     listModelObj.add(obj);
                     ids.add(obj.id);
@@ -310,14 +310,14 @@ public class HQSyncProcessors {
             for (HQSyncModels.AccountingCustomerInvoice invoice : listModelObj) {
                 Id parentId;
                 Accounting_Billingaccount__c parentObj;
-                if(invoice.account_id != null && mapBillingAccount.containsKey(invoice.account_id)) {
-                    parentObj = mapBillingAccount.get(invoice.account_id);
+                if(invoice.account != null && mapBillingAccount.containsKey(invoice.account)) {
+                    parentObj = mapBillingAccount.get(invoice.account);
                     parentId = parentObj.Id;
                 }
                 System.debug('test 4');
 
                 Id domainId;
-                if (invoice.account_id != null && parentObj != null && parentObj.created_by_domain__c != null) {
+                if (invoice.account != null && parentObj != null && parentObj.created_by_domain__c != null) {
                     System.debug('test 5');
                     Domain__c  domainObj = mapDomains.get(parentObj.created_by_domain__c);
                     domainId = domainObj != null ? domainObj.Id : null;
