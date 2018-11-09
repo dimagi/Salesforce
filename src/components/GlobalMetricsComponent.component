@@ -1,4 +1,14 @@
 <apex:component controller="GlobalMetricsComponentController" allowDML="true">
+    <apex:attribute name="employeeEmailComp"
+        type="String"
+        assignTo="{!employeeEmail}"
+        required="true"
+        description="This employee email adress, required to fill in RED Form." />
+    <apex:attribute name="pageControllerComp"
+        type="DimagiToolsController"
+        assignTo="{!pageController}"
+        required="true"
+        description="The controller for the page." />
 
     <script type="text/javascript">
 

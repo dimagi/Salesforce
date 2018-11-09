@@ -23,7 +23,25 @@ public class SFUtils {
         return String.join(strParams, '&');
     }
 
+    /**
+     * Get a list of picklist values from an existing object field.
+     */
+    public static List<SelectOption> getPicklistValues(SObject obj, String fieldName) {
+        List<SelectOption> options = new list<SelectOption>();
+        Schema.sObjectType objType = obj.getSObjectType();
+        Schema.DescribeSObjectResult objDescribe = objType.getDescribe();
 
+        Map<String, Schema.SObjectField> fieldMap = objDescribe.fields.getMap();
+        List<Schema.PicklistEntry> values = fieldMap.get(fieldName).getDescribe().getPickListValues();
+
+        for (Schema.PicklistEntry a : values) {
+           options.add(new SelectOption(a.getValue(), ''));
+        }
+
+        options.add(new SelectOption('N/A', ''));
+
+        return options;
+    }
 
     /**
      * Count working days from startDate to endDate. Does not include holidays.
