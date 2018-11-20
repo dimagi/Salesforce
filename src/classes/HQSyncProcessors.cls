@@ -270,6 +270,7 @@ public class HQSyncProcessors {
             JSONParser parser = HQSyncUtils.createParser(jsonString);
             Set <String> parentObjectIdSet = new Set <String>(); //PARENT=Billing Account
             Set<String> ids = new Set<String>();
+            Set<String> softwarePlanVersions = new Set<String>();
             List<Accounting_Invoice__c> listSobject = new List<Accounting_Invoice__c>();
             List<HQSyncModels.AccountingCustomerInvoice> listModelObj = new List <HQSyncModels.AccountingCustomerInvoice>();
 
@@ -282,6 +283,11 @@ public class HQSyncProcessors {
                     }
                     listModelObj.add(obj);
                     ids.add(obj.id);
+                    if (String.isNotBlank(obj.plan_versions)) {
+                        for (String planVersionId : obj.plan_versions.split(',')) {
+                            softwarePlanVersions.add(planVersionId);
+                        }
+                    }
                     parser.skipChildren();
                 }
             }
@@ -290,7 +296,7 @@ public class HQSyncProcessors {
             for (Accounting_Invoice__c sfp : [SELECT Id, id__c FROM Accounting_Invoice__c WHERE id__c IN: ids AND Server_Name__c =: serverName AND Invoice_Type__c =: HQSyncUtils.CUSTOMER_INVOICE]) {
                 externalIdMap.put(sfp.id__c, sfp.Id);
             }
-            System.debug('test 1');
+
             Map<String, Accounting_Billingaccount__c> mapBillingAccount = new Map <String, Accounting_Billingaccount__c>();
             Set<String> domainNames = new Set<String>();
             for (Accounting_Billingaccount__c parentObj : [SELECT Id, id__c, created_by_domain__c FROM Accounting_Billingaccount__c WHERE id__c in :parentObjectIdSet AND Server_Name__c =: serverName]) {
@@ -299,14 +305,18 @@ public class HQSyncProcessors {
                     domainNames.add(parentObj.created_by_domain__c);
                 }
             }
-            System.debug('test 2');
+
+            Map<String, Accounting_SoftwarePlanVersion__c> softwarePlanVersionMap = new Map<String, Accounting_SoftwarePlanVersion__c>();
+            for (Accounting_SoftwarePlanVersion__c spv : [SELECT Id,  id__c, Software_Product_Rate__r.monthly_fee__c FROM Accounting_SoftwarePlanVersion__c
+                                                            WHERE id__c IN: softwarePlanVersions AND Server_Name__c =: serverName]) {
+                softwarePlanVersionMap.put(spv.id__c, spv);
+            }
+
             Map<String, Domain__c> mapDomains = new Map<String, Domain__c>();
             for (Domain__c domain : [SELECT Id, Name, id__c FROM Domain__c WHERE Server_Name__c =: serverName AND Name IN: domainNames]) {
-                System.debug('test 2.1');
                 mapDomains.put(domain.Name, domain);
-                System.debug('test 2.2');
             }
-            System.debug('test 3');
+
             for (HQSyncModels.AccountingCustomerInvoice invoice : listModelObj) {
                 Id parentId;
                 Accounting_Billingaccount__c parentObj;
@@ -314,11 +324,9 @@ public class HQSyncProcessors {
                     parentObj = mapBillingAccount.get(invoice.account);
                     parentId = parentObj.Id;
                 }
-                System.debug('test 4');
 
                 Id domainId;
                 if (invoice.account != null && parentObj != null && parentObj.created_by_domain__c != null) {
-                    System.debug('test 5');
                     Domain__c  domainObj = mapDomains.get(parentObj.created_by_domain__c);
                     domainId = domainObj != null ? domainObj.Id : null;
                 }
@@ -327,10 +335,23 @@ public class HQSyncProcessors {
                 if (externalIdMap.containsKey(sobj.id__c)) {
                     sobj.Id = externalIdMap.get(sobj.id__c);
                 }
+
+                Decimal monthlyFee = 0;
+                if (String.isNotBlank(invoice.plan_versions)) {
+                    for (String planVersionId : invoice.plan_versions.split(',')) {
+                        if (softwarePlanVersionMap.containsKey(planVersionId)) {
+                            Accounting_SoftwarePlanVersion__c spv = softwarePlanVersionMap.get(planVersionId);
+                            monthlyFee += spv.Software_Product_Rate__r.monthly_fee__c != null ? spv.Software_Product_Rate__r.monthly_fee__c : 0;
+                        }
+                    }
+                }
+
+                sobj.Customer_Invoice_Monthly_fee__c = monthlyFee;
                 listSobject.add(sobj);
             }
-            System.debug('test 6');
+
             upsert listSobject;
+
             return listSobject.size();
         }
     }
