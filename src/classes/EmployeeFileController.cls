@@ -3,7 +3,8 @@
  */
 public class EmployeeFileController {
 
-    public String employeeEmail {get; set;}
+    public String employeeEmail { get; set; }
+    public DimagiToolsController pageController { get; set; }
 
     private Record_of_Emergency_Data_Form__c redForm;
     private Id employeeId;
@@ -12,20 +13,18 @@ public class EmployeeFileController {
     public EmployeeFileController() {
     }
 
-    public EmployeeFileController(String employeeEmail) {
-        this.employeeEmail = employeeEmail;
-    }
-
     public void saveREDForm() {
-        if (this.userEmployeeObj != null && this.employeeEmail != null) {
-            redForm.Employee__c = userEmployeeObj.Id;
-            redForm.Filled_Date__c = Date.today();
-            insert this.redForm;
-            delete this.redForm; // we must delete it here, we cannot delete this record in Trigger
-            this.redForm.Id = null; // we want each time add a new record, Trigger is working only after instert
-            ApexPages.addMessage(new ApexPages.message(ApexPages.severity.CONFIRM, 'Your Record of Emergency Data Form was added.'));
-        } else {
-            ApexPages.addMessage(new ApexPages.message(ApexPages.severity.ERROR, 'Cannot Find Employee. Empl obj : ' + this.userEmployeeObj + ' emplEmail : ' + this.employeeEmail));
+        if (this.pageController.isTokenValid()) {
+            if (this.userEmployeeObj != null && this.employeeEmail != null) {
+                redForm.Employee__c = userEmployeeObj.Id;
+                redForm.Filled_Date__c = Date.today();
+                insert this.redForm;
+                delete this.redForm; // we must delete it here, we cannot delete this record in Trigger
+                this.redForm.Id = null; // we want each time add a new record, Trigger is working only after instert
+                ApexPages.addMessage(new ApexPages.message(ApexPages.severity.CONFIRM, 'Your Record of Emergency Data Form was added.'));
+            } else {
+                ApexPages.addMessage(new ApexPages.message(ApexPages.severity.ERROR, 'Cannot Find Employee. Empl obj : ' + this.userEmployeeObj + ' emplEmail : ' + this.employeeEmail));
+            }
         }
     }
 
@@ -92,8 +91,10 @@ public class EmployeeFileController {
     public Record_of_Emergency_Data_Form__c getRedForm() {
         if (this.redForm == null) {
             this.redForm = new Record_of_Emergency_Data_Form__c();
-            if (this.employeeEmail != null) {
-                copyEmployeeData();
+            if (this.pageController.isTokenValid()) {
+                if (this.employeeEmail != null) {
+                    copyEmployeeData();
+                }
             }
         }
         return this.redForm;

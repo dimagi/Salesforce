@@ -1,119 +1,311 @@
-@isTest(SeeAllData=true)
+@isTest
 public class ProjectReportOutControllerTest {
 
-    static testMethod void ProjectReportOutControllerTest1() {
-        DimagiToolsController proObj = new DimagiToolsController();
-        proObj.initAction();
-        proObj.getProContracts();
-        proObj.getProjectsList();
+    @isTest
+    public static void shouldValidatePRO() {
+        Id p = [SELECT Id FROM Profile WHERE Name = 'Standard User'].Id;
+        User user = new User(Alias = 'test1234', Email = 'test1234@no1email.com',
+                            EmailEncodingKey = 'UTF-8', LastName = 'Testing', LanguageLocaleKey = 'en_US',
+                            LocaleSidKey = 'en_US', ProfileId = p, Country = 'United States', IsActive = true,
+                            TimezoneSidKey = 'America/Los_Angeles', username='tester1234@no1email.com');
+        insert user;
 
-        proObj.getProjectsForFinancialTab();
-        proObj.loadContractBudgetAndSpentData();
+        DContract__c dcontract1 = null;
+        System.runAs(user) { // Make new user owner of a contract to fill in all data in PRO component
+            dcontract1 = new DContract__c(Name = 'Sample Test 1', Services_Spend__c = 100, Total_Amount_of_Contract__c = 1000, Requires_Report_Out__c = 'Yes');
+            insert dcontract1;
+        }
 
-        List<DimagiToolsController.PROProject> contractList = proObj.getProjectsList();
-        proObj.contractIdName.put(contractList[0].contract.id,contractList[0].contract);
-        proObj.reportContractId = contractList[0].contract.id;
+        PROComponentController proCtrl = new PROComponentController();
+        proCtrl.employeeEmail = 'test1234@no1email.com';
+        proCtrl.pageController = new DimagiToolsController();
 
-        proObj.loadProjectReport();
-        proObj.validData();
+        Test.startTest();
+        proCtrl.getProContracts();
+        proCtrl.reportContractId = null;
+        proCtrl.pro.PM_email__c = null;
+        proCtrl.pro.Report_Out_Date__c = null;
+        proCtrl.proTabContractPercntgethroughSOW = null;
 
-        proObj.status = 'Red';
-        proObj.pro.PM_email__c = 'akanksha@dimagi.com';
-        proObj.pro.Report_Out_Date__c = Date.newInstance(2014, 12, 25);
-        PageReference pagRef = proObj.save();
-        
-        proObj.submitAnother();
-        proObj.authenticateButton();
- 
-        List<selectoption> objList = proObj.StatusList;
-
-        DimagiToolsController.getRandomNonce();
+        System.assertEquals(false, proCtrl.validData());
+        proCtrl.reportContractId = dcontract1.Id;
+        System.assertEquals(false, proCtrl.validData());
+        proCtrl.status = 'Green';
+        System.assertEquals(false, proCtrl.validData());
+        proCtrl.pro.PM_email__c = 'test1234@no1email.com';
+        System.assertEquals(false, proCtrl.validData());
+        proCtrl.pro.Report_Out_Date__c = Date.today();
+        System.assertEquals(false, proCtrl.validData());
+        proCtrl.proTabContractPercntgethroughSOW = 10;
+        System.assertEquals(true, proCtrl.validData());
+        Test.stopTest();
     }
 
-    static testMethod void ProjectReportOutControllerTest2() {
-        DimagiToolsController proObj = new DimagiToolsController();
-        List<DimagiToolsController.PROProject> contractList= proObj.getProjectsList();
-        proObj.selectedProjectId=contractList[0].contract.id;
+    @isTest
+    public static void shouldSaveAndUpdatePRO() {
+        Id p = [SELECT Id FROM Profile WHERE Name = 'Standard User'].Id;
+        User user = new User(Alias = 'test1234', Email = 'test1234@no1email.com',
+                            EmailEncodingKey = 'UTF-8', LastName = 'Testing', LanguageLocaleKey = 'en_US',
+                            LocaleSidKey = 'en_US', ProfileId = p, Country = 'United States', IsActive = true,
+                            TimezoneSidKey = 'America/Los_Angeles', username='tester1234@no1email.com');
+        insert user;
 
-        proObj.fillProjectDetails();
-        proObj.ValidateProject();
-        
-        proObj.saveProject();
-        proObj.currentLoginEmail='aakansha@dimagi.com';
-        proObj.AddMe();
+        DContract__c dcontract1 = null;
+        System.runAs(user) { // Make new user owner of a contract to fill in all data in PRO component
+            dcontract1 = new DContract__c(Name = 'Sample Test 1', Services_Spend__c = 100, Total_Amount_of_Contract__c = 1000, Requires_Report_Out__c = 'Yes');
+            insert dcontract1;
+        }
 
-        proObj.AddContact();
-        proObj.RemoveContact();
-        proObj.currentLoginEmail='ltse@dimagi.com';
-        proObj.AddMe();
-        proObj.AddEmail();
-        proObj.RemoveEmail();
-        proObj.addProjectToUserList();
-        proObj.removeProjectFromUserList();
-        proObj.sendReportEmail(contractList[0].contract.id);
+        PROComponentController proCtrl = new PROComponentController();
+        proCtrl.employeeEmail = 'test1234@no1email.com';
+        proCtrl.pageController = new DimagiToolsController();
 
-        proObj.seachProjectName = 'proj';
-        proObj.searchProject();
+        Test.startTest();
+        proCtrl.getProContracts();
+        proCtrl.status = 'Green';
+        proCtrl.proTabContractPercntgethroughSOW = 10;
+        System.assertEquals(true, proCtrl.validData());
+        proCtrl.pro.Report_Out_Date__c = Date.newInstance(2018, 11, 8);
+        proCtrl.save();
+        System.assertNotEquals(null, [SELECT Id FROM Project_Report_Out__c WHERE Status__c = 'Green' LIMIT 1]);
+        proCtrl.loadSubmittedPro();
+        proCtrl.submitAnother();
+        proCtrl.status = 'Red';
+        proCtrl.pro.Report_Out_Date__c = Date.newInstance(2018, 11, 8);
+        proCtrl.proTabContractPercntgethroughSOW = 10;
+        System.assertEquals(true, proCtrl.validData());
+        proCtrl.save();
+        Test.stopTest();
 
-        SFDC_Employee__c employeeObj = new SFDC_Employee__c(
-            name = 'Mustafa Turab',
-            Salary__c = 5000,
-            Exchange_Rate__c = 10,
-            Effective_Salary_Date__c = Date.newInstance(2016, 2, 24),
-            Effective_Exchange_Rate_Date__c = Date.newInstance(2016, 2, 24)
-        );
+        Project_Report_Out__c newPro = [SELECT Id, Name, Last_Report_ID__c, Contract_Snapshot__c, Contract__c,
+                                           Status__c, Ability_to_meet_Schedule__c, Ability_to_stay_within_Scope__c,
+                                           Current_System_Usage__c, Partner_Relationship__c, User_Name__c,
+                                           Key_Accomplishments_Last_Two_Weeks__c, Key_Next_Steps_next_2_weeks__c,
+                                           Issues_Questions_Notables__c, Client_Facing__c, Requires_Developer_Work__c,
+                                           Project_Dashboard__c, Resource_Planning__c, Cap_planning_GDoc__c, PM_email__c
+                                           FROM Project_Report_Out__c LIMIT 1];
+        System.assertNotEquals(null, newPro);
+        System.assertEquals('Red', newPro.Status__c);
+        System.assertEquals(dcontract1.Id, newPro.Contract__c);
+        System.assertNotEquals(null, newPro.Contract_Snapshot__c);
+        System.assertEquals('test1234@no1email.com', newPro.PM_email__c);
+    }
+
+    @isTest
+    public static void shouldLoadFinancialData() {
+        DContract__c dcontract1 = new DContract__c(Name = '1_Sample Test', Services_Spend__c = 100, Total_Amount_of_Contract__c = 1000, Requires_Report_Out__c = 'Yes');
+        insert dcontract1;
+        DContract__c dcontract2 = new DContract__c(Name = '2_Sample Test', Services_Spend__c = 100, Total_Amount_of_Contract__c = 1000, Requires_Report_Out__c = 'Yes');
+        insert dcontract2;
+        DContract__c dcontract3 = new DContract__c(Name = '3_Sample Test', Services_Spend__c = 100, Total_Amount_of_Contract__c = 1000, Requires_Report_Out__c = 'Yes');
+        insert dcontract3;
+        SFDC_Employee__c employeeObj = new SFDC_Employee__c(Name = 'Sample Employee', Email_Address__c = 'test1234@no1email.com', Salary__c = 50000, Exchange_Rate__c = 1, Per_Week_Hours__c = 40);
         insert employeeObj;
-        Time_Card__c timeCardObj1 = new Time_Card__c(
-            Date__c = Date.today().addMonths(-1),
-            Employee__c = employeeObj.Id,
-            Client__c = proObj.financialContractId,
-            Total__c = 1
-        );
-        insert timeCardObj1;
-        Time_Card__c timeCardObj2 = new Time_Card__c(
-            Date__c = Date.today().addMonths(-2),
-            Employee__c = employeeObj.Id,
-            Client__c = proObj.financialContractId,
-            Total__c = 1
-        );
-        insert timeCardObj2;
-        Time_Card__c timeCardObj3 = new Time_Card__c(
-            Date__c = Date.today().addMonths(-3),
-            Employee__c = employeeObj.Id,
-            Client__c = proObj.financialContractId,
-            Total__c = 1
-        );
-        insert timeCardObj3;
-        Time_Card__c timeCardObj4 = new Time_Card__c(
-            Date__c = Date.today().addMonths(-4),
-            Employee__c = employeeObj.Id,
-            Client__c = proObj.financialContractId,
-            Total__c = 1
-        );
-        insert timeCardObj4;
-        Time_Card__c timeCardObj5 = new Time_Card__c(
-            Date__c = Date.today().addMonths(-5),
-            Employee__c = employeeObj.Id,
-            Client__c = proObj.financialContractId,
-            Total__c = 1
-        );
-        insert timeCardObj5;
-        Time_Card__c timeCardObj6 = new Time_Card__c(
-            Date__c = Date.today().addMonths(-6),
-            Employee__c = employeeObj.Id,
-            Client__c = proObj.financialContractId,
-            Total__c = 1
-        );
-        insert timeCardObj6;
+        insert new List<Time_Card__c> { new Time_Card__c(Date__c = Date.today(), Total__c = 8, Client__c = dcontract1.Id, Employee__c = employeeObj.Id),
+                                        new Time_Card__c(Date__c = Date.today(), Total__c = 6, Client__c = dcontract1.Id, Employee__c = employeeObj.Id),
+                                        new Time_Card__c(Date__c = Date.today(), Total__c = 4, Client__c = dcontract1.Id, Employee__c = employeeObj.Id),
+                                        new Time_Card__c(Date__c = Date.today(), Total__c = 5, Client__c = dcontract1.Id, Employee__c = employeeObj.Id),
+                                        new Time_Card__c(Date__c = Date.today(), Total__c = 6, Client__c = dcontract1.Id, Employee__c = employeeObj.Id),
+                                        new Time_Card__c(Date__c = Date.today(), Total__c = 3, Client__c = dcontract1.Id, Employee__c = employeeObj.Id),
+                                        new Time_Card__c(Date__c = Date.today(), Total__c = 2, Client__c = dcontract1.Id, Employee__c = employeeObj.Id),
+                                        new Time_Card__c(Date__c = Date.today(), Total__c = 3, Client__c = dcontract1.Id, Employee__c = employeeObj.Id),
+                                        new Time_Card__c(Date__c = Date.today(), Total__c = 8, Client__c = dcontract1.Id, Employee__c = employeeObj.Id),
+                                        new Time_Card__c(Date__c = Date.today(), Total__c = 9, Client__c = dcontract1.Id, Employee__c = employeeObj.Id),
+                                        new Time_Card__c(Date__c = Date.today(), Total__c = 5, Client__c = dcontract1.Id, Employee__c = employeeObj.Id),
+                                        new Time_Card__c(Date__c = Date.today(), Total__c = 5, Client__c = dcontract1.Id, Employee__c = employeeObj.Id)};
 
-        proObj.getProjectsForFinancialTab();
-        proObj.loadContractBudgetAndSpentData();
+        PRO_Searched_Contract__c proSearchCon = new PRO_Searched_Contract__c(Email__c = 'test1234@no1email.com', Contract__c = dcontract1.Id);
+        insert proSearchCon;
+
+        PROFinancialComponentController financialCtrl = new PROFinancialComponentController();
+        financialCtrl.employeeEmail = 'test1234@no1email.com';
+        financialCtrl.pageController = new DimagiToolsController();
+
+        Test.startTest();
+        System.assertEquals(1, financialCtrl.getProjectsForFinancialTab().size());
+        System.assertEquals(true, financialCtrl.executionStatusList.size() > 0);
+        System.assertEquals(true, financialCtrl.timeSpendHistoryList.size() > 0);
+        System.assertEquals(true, financialCtrl.proExpenseSpendList.size() > 0);
+        System.assertEquals(true, financialCtrl.proBudgetList.size() > 0);
+
+        Test.stopTest();
+    }
+
+    @isTest
+    public static void shouldAddRemoveUserToFinancialData() {
+        DContract__c dcontract1 = new DContract__c(Name = '1_Sample Test', Services_Spend__c = 100, Total_Amount_of_Contract__c = 1000, Requires_Report_Out__c = 'Yes');
+        insert dcontract1;
+        DContract__c dcontract2 = new DContract__c(Name = '2_Sample Test', Services_Spend__c = 100, Total_Amount_of_Contract__c = 1000, Requires_Report_Out__c = 'Yes');
+        insert dcontract2;
+        DContract__c dcontract3 = new DContract__c(Name = '3_Sample Test', Services_Spend__c = 100, Total_Amount_of_Contract__c = 1000, Requires_Report_Out__c = 'Yes');
+        insert dcontract3;
+        SFDC_Employee__c employeeObj = new SFDC_Employee__c(Name = 'Sample Employee', Email_Address__c = 'test1234@no1email.com', Salary__c = 50000, Exchange_Rate__c = 1, Per_Week_Hours__c = 40);
+        insert employeeObj;
+        insert new Time_Card__c(Date__c = Date.today(), Total__c = 8, Client__c = dcontract1.Id, Employee__c = employeeObj.Id);
+
+        PROFinancialComponentController financialCtrl = new PROFinancialComponentController();
+        financialCtrl.employeeEmail = 'test1234@no1email.com';
+        financialCtrl.pageController = new DimagiToolsController();
+
+        Test.startTest();
+        System.assertEquals(0, financialCtrl.getProjectsForFinancialTab().size());
+        financialCtrl.seachProjectName = '2_Sample';
+        financialCtrl.searchProject();
+        System.assertEquals(1, financialCtrl.searchedProjects.size());
+        financialCtrl.contractToAdd = dcontract2.Id;
+        financialCtrl.addProjectToUserList();
+        System.assertEquals(1, financialCtrl.getProjectsForFinancialTab().size());
+        financialCtrl.contractToRemove = dcontract2.Id;
+        financialCtrl.removeProjectFromUserList();
+        System.assertEquals(0, financialCtrl.getProjectsForFinancialTab().size());
+        Test.stopTest();
+    }
+
+    @isTest
+    public static void shouldLoadAllProjectsList() {
+        DContract__c dcontract1 = new DContract__c(Name = '1_Sample Test', Services_Spend__c = 100, Total_Amount_of_Contract__c = 1000, Requires_Report_Out__c = 'Yes');
+        insert dcontract1;
+        DContract__c dcontract2 = new DContract__c(Name = '2_Sample Test', Services_Spend__c = 100, Total_Amount_of_Contract__c = 1000, Requires_Report_Out__c = 'Yes');
+        insert dcontract2;
+        DContract__c dcontract3 = new DContract__c(Name = '3_Sample Test', Services_Spend__c = 100, Total_Amount_of_Contract__c = 1000, Requires_Report_Out__c = 'Yes');
+        insert dcontract3;
+
+        PROAllProjectsComponentController allprojectsCtrl = new PROAllProjectsComponentController();
+        allprojectsCtrl.employeeEmail = 'test1234@no1email.com';
+        allprojectsCtrl.pageController = new DimagiToolsController();
+
+        Test.startTest();
+        System.assertEquals(3, allprojectsCtrl.getProjectsList().size());
+        Test.stopTest();
+    }
+
+    @isTest
+    public static void shouldUpdateDataInAllProjectsTab() {
+        DContract__c dcontract1 = new DContract__c(Name = '1_Sample Test', Services_Spend__c = 100, Total_Amount_of_Contract__c = 1000, Requires_Report_Out__c = 'Yes');
+        insert dcontract1;
+        DContract__c dcontract2 = new DContract__c(Name = '2_Sample Test', Services_Spend__c = 100, Total_Amount_of_Contract__c = 1000, Requires_Report_Out__c = 'Yes');
+        insert dcontract2;
+        DContract__c dcontract3 = new DContract__c(Name = '3_Sample Test', Services_Spend__c = 100, Total_Amount_of_Contract__c = 1000, Requires_Report_Out__c = 'Yes');
+        insert dcontract3;
+        Contact cont1 = new Contact(FirstName = 'contact1', LastName = 'test',Email = 'a.b.test@dimagi.com');
+        insert cont1;
+        Contact cont2 = new Contact(FirstName = 'contact2', LastName = 'test',Email = 'b.c.test@dimagi.com');
+        insert cont2;
+        Contact cont3 = new Contact(FirstName = 'me', LastName = 'test',Email = 'test1234@dimagi.com');
+        insert cont3;
+
+        PROAllProjectsComponentController allprojectsCtrl = new PROAllProjectsComponentController();
+        allprojectsCtrl.employeeEmail = 'test1234@dimagi.com';
+        allprojectsCtrl.pageController = new DimagiToolsController();
+
+        Test.startTest();
+        System.assertEquals(3, allprojectsCtrl.getProjectsList().size());
+        System.assertEquals(0, allprojectsCtrl.contractContacts.size());
+        allprojectsCtrl.addMe();
+        allprojectsCtrl.addEmail();
+        allprojectsCtrl.contractContacts[1].Email__c = 'clientteest@testclien.com';
+        allprojectsCtrl.addContact();
+        allprojectsCtrl.contractContacts[2].Contact__c = cont2.Id;
+        allprojectsCtrl.saveContact();
+        System.assertEquals(3, allprojectsCtrl.contractContacts.size());
+
+        allprojectsCtrl.project.In_Charge_Of_Report_Out__c = 'Backstop';
+        allprojectsCtrl.project.Project_Manager__c = cont1.Id;
+        allprojectsCtrl.project.Backstop__c = cont2.Id;
+        allprojectsCtrl.project.Field_Manager__c = cont3.Id;
+        allprojectsCtrl.saveProjectOnly();
+
+        allprojectsCtrl = new PROAllProjectsComponentController();
+        allprojectsCtrl.employeeEmail = 'test1234@dimagi.com';
+        allprojectsCtrl.pageController = new DimagiToolsController();
+        System.assertEquals(3, allprojectsCtrl.getProjectsList().size());
+        System.assertEquals(3, allprojectsCtrl.contractContacts.size());
+        System.assertEquals('Backstop', allprojectsCtrl.project.In_Charge_Of_Report_Out__c);
+        System.assertEquals(cont1.Id, allprojectsCtrl.project.Project_Manager__c);
+        System.assertEquals(cont2.Id, allprojectsCtrl.project.Backstop__c);
+        System.assertEquals(cont3.Id, allprojectsCtrl.project.Field_Manager__c);
+
+        allprojectsCtrl.removeContactId = cont2.Id;
+        allprojectsCtrl.removeContact();
+        allprojectsCtrl.removeEmailId = 'clientteest@testclien.com';
+        allprojectsCtrl.removeEmail();
+        allprojectsCtrl.project.Field_Manager__c = null;
+        allprojectsCtrl.project.In_Charge_Of_Report_Out__c = 'Project_Manager';
+        allprojectsCtrl.saveProject();
+
+        allprojectsCtrl = new PROAllProjectsComponentController();
+        allprojectsCtrl.employeeEmail = 'test1234@dimagi.com';
+        allprojectsCtrl.pageController = new DimagiToolsController();
+        System.assertEquals(3, allprojectsCtrl.getProjectsList().size());
+        System.assertEquals(1, allprojectsCtrl.contractContacts.size());
+        System.assertEquals('Project_Manager', allprojectsCtrl.project.In_Charge_Of_Report_Out__c);
+        System.assertEquals(cont1.Id, allprojectsCtrl.project.Project_Manager__c);
+        System.assertEquals(cont2.Id, allprojectsCtrl.project.Backstop__c);
+        System.assertEquals(null, allprojectsCtrl.project.Field_Manager__c);
+        Test.stopTest();
+    }
+
+    @isTest
+    public static void shouldLoadEmptyGraphData() {
+        GlobalMetricsComponentController metricsCtrl = new GlobalMetricsComponentController();
+        metricsCtrl.employeeEmail = 'test1234@dimagi.com';
+        metricsCtrl.pageController = new DimagiToolsController();
+
+        Test.startTest(); // we want try without data because we don;t want exception on DimagiSfTools
+        metricsCtrl.getZendeskData();
+        metricsCtrl.setZendeskData(''); // invoke empty setters to increase code coverage, we need it to avoid is not property issue
+
+        metricsCtrl.getHeadCountData();
+        metricsCtrl.setHeadCountData('');
+
+        metricsCtrl.getIcdsData();
+        metricsCtrl.setIcdsData('');
+
+        metricsCtrl.getEvExpected();
+        metricsCtrl.setEvExpected('');
+
+        metricsCtrl.getOppExpected();
+        metricsCtrl.setOppExpected('');
+
+        metricsCtrl.getBufferEvGen();
+        metricsCtrl.setBufferEvGen('');
+
+        metricsCtrl.getAggregateEffData();
+        metricsCtrl.setAggregateEffData('');
+
+        metricsCtrl.getGsRevenueData();
+        metricsCtrl.setGsRevenueData('');
+
+        metricsCtrl.getMrrData();
+        metricsCtrl.setMrrData('');
+
+        metricsCtrl.getGsGraphData();
+        metricsCtrl.setGsGraphData('');
+
+        metricsCtrl.getPerformanceGraphData();
+        metricsCtrl.setPerformanceGraphData('');
+
+        metricsCtrl.getUserGraphData();
+        metricsCtrl.setUserGraphData('');
+
+        metricsCtrl.getFormGraphData();
+        metricsCtrl.setFormGraphData('');
+
+        metricsCtrl.getWamGraphData();
+        metricsCtrl.setWamGraphData('');
+
+        metricsCtrl.getProgramGraphData();
+        metricsCtrl.setProgramGraphData('');
+
+        metricsCtrl.loadScaleData();
+        Test.stopTest();
     }
 
     /**
      * Tests for Record_of_Emergency_Data_Form__c
      */
-    public static testMethod void triggerShouldUpdateEmployeePersonalData() {
+    @isTest
+    public static void triggerShouldUpdateEmployeePersonalData() {
         addEmployee('simple-user@test.com');
         SFDC_Employee__c emplRec = [SELECT Id FROM SFDC_Employee__c WHERE Email_Address__c = 'simple-user@test.com'];
         Record_of_Emergency_Data_Form__c redForm = new Record_of_Emergency_Data_Form__c(Employee__c = emplRec.Id, Employee_First_Name__c = 'First Name', Employee_Middle_Name__c = 'Middle Name',
@@ -132,7 +324,9 @@ public class ProjectReportOutControllerTest {
         insert redForm;
         Test.stopTest();
 
-        EmployeeFileController empFileController = new EmployeeFileController('simple-user@test.com');
+        EmployeeFileController empFileController = new EmployeeFileController();
+        empFileController.employeeEmail = 'simple-user@test.com';
+        empFileController.pageController = new DimagiToolsController();
         redForm = empFileController.getRedForm();
         assertPersonalDate(redForm, 'First Name', 'Last Name', 'Middle Name', 'DSI', Date.newInstance(Date.today().year() - 30, 3, 3), 'France', 'Woman', '000999111', 'poiulkj', Date.newInstance(Date.today().year() + 7, 5, 5),
                             'Simple City', 'Other 323', 'New one', 'England');
@@ -141,9 +335,12 @@ public class ProjectReportOutControllerTest {
         assertVoluntaryInformation(redForm, '-', 'Green', '0', '1 No', '-', '2 No', '3 No', 'Yes', 'No Additional Comments');
     }
 
-    public static testMethod void shouldAddRedFormAndUpdateEmployee() {
+    @isTest
+    public static void shouldAddRedFormAndUpdateEmployee() {
         addEmployee('simple-user@test.com');
-        EmployeeFileController empFileController = new EmployeeFileController('simple-user@test.com');
+        EmployeeFileController empFileController = new EmployeeFileController();
+        empFileController.employeeEmail = 'simple-user@test.com';
+        empFileController.pageController = new DimagiToolsController();
         Record_of_Emergency_Data_Form__c redForm = empFileController.getRedForm();
 
         System.assertNotEquals(null, redForm);
@@ -197,7 +394,9 @@ public class ProjectReportOutControllerTest {
         Test.stopTest();
 
         // New instance to copy values from updated employee object
-        empFileController = new EmployeeFileController('simple-user@test.com');
+        empFileController = new EmployeeFileController();
+        empFileController.employeeEmail = 'simple-user@test.com';
+        empFileController.pageController = new DimagiToolsController();
         redForm = empFileController.getRedForm();
         assertPersonalDate(redForm, 'First Name', 'Last Name', 'Middle Name', 'DSI', Date.newInstance(Date.today().year() - 30, 3, 3), 'France', 'Woman', '000999111', 'poiulkj', Date.newInstance(Date.today().year() + 7, 5, 5),
                             'Simple City', 'Other 323', 'New one', 'England');

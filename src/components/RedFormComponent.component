@@ -1,112 +1,120 @@
 <apex:component controller="EmployeeFileController" allowDML="true">
-    <apex:attribute name="employeeEmailComp" description="This employee email adress, required to fill in RED Form."
-        assignTo="{!employeeEmail}" type="String" required="true" />
+    <apex:attribute name="employeeEmailComp"
+        type="String"
+        assignTo="{!employeeEmail}"
+        required="true"
+        description="This employee email adress, required to fill in RED Form." />
+    <apex:attribute name="pageControllerComp"
+        type="DimagiToolsController"
+        assignTo="{!pageController}"
+        required="true"
+        description="The controller for the page." />
 
-        <!-- Record of Emergency Data Form  -->
-        <apex:pageBlock title="Record of Emergency Data Form" mode="edit" id="redFormId">
-            <apex:pageBlockButtons >
-                <apex:commandButton action="{!saveREDForm}" value="Save / Review" reRender="redFormId" status="loadingDiv"/>
-            </apex:pageBlockButtons>
-            <apex:outputPanel layout="block" id="messages">
-                <apex:pageMessages />
-            </apex:outputPanel>
+    <!-- Record of Emergency Data Form  -->
+    <apex:pageBlock title="Record of Emergency Data Form" mode="edit" id="redFormId">
+        <apex:pageBlockButtons >
+            <apex:commandButton action="{!saveREDForm}" value="Save / Review" reRender="redFormId" status="loadingDiv"/>
+        </apex:pageBlockButtons>
+        <apex:outputPanel layout="block" id="messages">
+            <apex:pageMessages />
+        </apex:outputPanel>
 
-            <apex:pageBlockSection title="Personal Details" columns="2">
-                <apex:inputField value="{!redForm.Employee_First_Name__c}"/>
-                <apex:inputField value="{!redForm.Employee_Last_Name__c}"/>
-                <apex:inputField value="{!redForm.Employee_Middle_Name__c}"/>
-                <apex:inputField onclick="setYear(50, 0)" value="{!redForm.DOB__c}"/>
-                <apex:inputField value="{!redForm.Citizenship__c}" />
-                <apex:inputField value="{!redForm.Gender__c}" />
-                <apex:inputField value="{!redForm.Personal_Phone_Number__c}" />
-                <apex:inputField value="{!redForm.Passport_No__c}" />
-                <apex:inputField onclick="setYear(0, 10)" value="{!redForm.Passport_Expiration_Date__c}" />
-                <apex:inputField value="{!redForm.Current_Address_City__c}" />
-                <apex:inputField value="{!redForm.Current_Address_Street__c}" />
-                <apex:inputField value="{!redForm.Current_Address_State__c}" />
-                <apex:inputField value="{!redForm.Current_Address_Country__c}" />
-            </apex:pageBlockSection>
-            <apex:pageBlockSection title="Emergency Contacts" columns="1">
-                <div>
-                    <span>
-                        <i>Please provide details of two people that can be contacted in the event of an emergency
-                        (they may be your 'Next of Kin')</i>
-                    </span>
-                </div>
-                <apex:pageBlockSection title="Emergency Contact" columns="1" collapsible="false">
-                    <apex:inputField value="{!redForm.Emergency_Contact__c}"/>
-                    <apex:inputField value="{!redForm.Emergency_Contact_Relationship__c}"/>
-                    <apex:inputField value="{!redForm.Emergency_Contact_Phone__c}"/>
-                    <apex:inputField value="{!redForm.Emergency_Email__c}" />
-                    <apex:pageBlockSectionItem >
-                        <apex:outputLabel value="Country of residence" for="em_contact_residence_1" />
-                        <apex:inputField id="em_contact_residence_1" value="{!redForm.Emergency_Contact_Country_of_Residence__c}"/>
-                    </apex:pageBlockSectionItem>
-                    <apex:pageBlockSectionItem >
-                        <apex:outputLabel value="Is this your next of kin?" for="em_contact_kin_1" />
-                        <apex:inputField id="em_contact_kin_1" value="{!redForm.Emergency_Contact_next_of_kin__c}" />
-                    </apex:pageBlockSectionItem>
-                </apex:pageBlockSection>
-                <apex:pageBlockSection title="Local Emergency Contact" columns="1" collapsible="false">
-                    <apex:pageBlockSectionItem >
-                        <apex:outputLabel value="Emergency Contact" for="em_contact_name_2" />
-                        <apex:inputField id="em_contact_name_2" value="{!redForm.Local_Emergency_Contact__c}"/>
-                    </apex:pageBlockSectionItem>
-                    <apex:pageBlockSectionItem >
-                        <apex:outputLabel value="Emergency Contact Relationship" for="em_contact_rel_2" />
-                        <apex:inputField id="em_contact_rel_2" value="{!redForm.Local_Emergency_Contact_Relationship__c}"/>
-                    </apex:pageBlockSectionItem>
-                    <apex:pageBlockSectionItem >
-                        <apex:outputLabel value="Emergency Contact Phone" for="em_contact_phone_2" />
-                        <apex:inputField id="em_contact_phone_2" value="{!redForm.Local_Emergency_Contact_Phone__c}"/>
-                    </apex:pageBlockSectionItem>
-                    <apex:pageBlockSectionItem >
-                        <apex:outputLabel value="Emergency Email" for="em_contact_email_2" />
-                        <apex:inputField id="em_contact_email_2" value="{!redForm.Local_Emergency_Email__c}" />
-                    </apex:pageBlockSectionItem>
-                    <apex:pageBlockSectionItem >
-                        <apex:outputLabel value="Country of residence" for="em_contact_residence_2" />
-                        <apex:inputField id="em_contact_residence_2" value="{!redForm.Local_Emerg_Cont_Country_of_Residence__c}"/>
-                    </apex:pageBlockSectionItem>
-                    <apex:pageBlockSectionItem >
-                        <apex:outputLabel value="Is this your next of kin?" for="em_contact_kin_2" />
-                        <apex:inputField id="em_contact_kin_2" value="{!redForm.Local_Emergency_Contact_next_of_kin__c}" />
-                    </apex:pageBlockSectionItem>
-                </apex:pageBlockSection>
-            </apex:pageBlockSection>
-            <apex:pageBlockSection title="Voluntary Information Section" columns="1">
-                <div>
-                    <span>
-                        <i>Providing this information is <b><u>voluntary</u></b>. 
-                        You are under no obligation to provide any or all of the questions asked below.
-                        All information will securely stored and only accessible by the People Operations team.
-                        In the event that you are incapacitated for any reason or need emergency treatment,
-                        or in the event of a safety and security incident, this information will help Dimagi more effectively
-                        support you.</i>
-                    </span>
-                </div>
-                <apex:inputField value="{!redForm.Height__c}"/>
-                <apex:inputField value="{!redForm.Eye_Colour__c}"/>
-                <apex:inputField value="{!redForm.Blood_Group__c}"/>
+        <apex:pageBlockSection title="Personal Details" columns="2">
+            <apex:inputField value="{!redForm.Employee_First_Name__c}"/>
+            <apex:inputField value="{!redForm.Employee_Last_Name__c}"/>
+            <apex:inputField value="{!redForm.Employee_Middle_Name__c}"/>
+            <apex:inputField onclick="setYear(50, 0)" value="{!redForm.DOB__c}"/>
+            <apex:inputField value="{!redForm.Citizenship__c}" />
+            <apex:inputField value="{!redForm.Gender__c}" />
+            <apex:inputField value="{!redForm.Personal_Phone_Number__c}" />
+            <apex:inputField value="{!redForm.Passport_No__c}" />
+            <apex:inputField onclick="setYear(0, 10)" value="{!redForm.Passport_Expiration_Date__c}" />
+            <apex:inputField value="{!redForm.Current_Address_City__c}" />
+            <apex:inputField value="{!redForm.Current_Address_Street__c}" />
+            <apex:inputField value="{!redForm.Current_Address_State__c}" />
+            <apex:inputField value="{!redForm.Current_Address_Country__c}" />
+        </apex:pageBlockSection>
+        <apex:pageBlockSection title="Emergency Contacts" columns="1">
+            <div>
+                <span>
+                    <i>Please provide details of two people that can be contacted in the event of an emergency
+                    (they may be your 'Next of Kin')</i>
+                </span>
+            </div>
+            <apex:pageBlockSection title="Emergency Contact" columns="1" collapsible="false">
+                <apex:inputField value="{!redForm.Emergency_Contact__c}"/>
+                <apex:inputField value="{!redForm.Emergency_Contact_Relationship__c}"/>
+                <apex:inputField value="{!redForm.Emergency_Contact_Phone__c}"/>
+                <apex:inputField value="{!redForm.Emergency_Email__c}" />
                 <apex:pageBlockSectionItem >
-                    <apex:outputLabel value="Does your religion/faith have any impact on your healthcare or travel ability?" for="em_contact_religion" />
-                    <apex:inputTextarea cols="100" id="em_contact_religion" value="{!redForm.Religion_Impact__c}"/>
+                    <apex:outputLabel value="Country of residence" for="em_contact_residence_1" />
+                    <apex:inputField id="em_contact_residence_1" value="{!redForm.Emergency_Contact_Country_of_Residence__c}"/>
                 </apex:pageBlockSectionItem>
                 <apex:pageBlockSectionItem >
-                    <apex:outputLabel value="Distinguishing Features (e.g. scars, birth marks, tattoos)" for="em_contact_religion" />
-                    <apex:inputTextarea cols="100" id="em_contact_religion" value="{!redForm.Distinguishing_Features__c}"/>
-                </apex:pageBlockSectionItem>
-                <apex:inputTextarea cols="100" value="{!redForm.Medical_Conditions_Allergies__c}"/>
-                <apex:inputTextarea cols="100" value="{!redForm.Regular_Medication__c}"/>
-                <apex:pageBlockSectionItem >
-                    <apex:outputPanel >Do you give permission for a medical practitioner to administer <a target="_blank" href="http://www.who.int/mediacentre/factsheets/fs244/en/">emergency contraception</a> or post-exposure prophylaxis (<a target="_blank" href="http://www.who.int/hiv/topics/prophylaxis/info/en/">PEP</a>) if the situation requires it, and you are not in a position to decide or state your preference? "
-                    </apex:outputPanel>
-                    <apex:inputField id="em_contact_md_permission" value="{!redForm.Medical_Permission__c}"/>
-                </apex:pageBlockSectionItem>
-                <apex:pageBlockSectionItem >
-                    <apex:outputLabel value="Please add additional comments as necessary" for="em_contact_comments" />
-                    <apex:inputTextarea cols="100" id="em_contact_comments" value="{!redForm.Additional_Comments__c}"/>
+                    <apex:outputLabel value="Is this your next of kin?" for="em_contact_kin_1" />
+                    <apex:inputField id="em_contact_kin_1" value="{!redForm.Emergency_Contact_next_of_kin__c}" />
                 </apex:pageBlockSectionItem>
             </apex:pageBlockSection>
-        </apex:pageBlock>
+            <apex:pageBlockSection title="Local Emergency Contact" columns="1" collapsible="false">
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="Emergency Contact" for="em_contact_name_2" />
+                    <apex:inputField id="em_contact_name_2" value="{!redForm.Local_Emergency_Contact__c}"/>
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="Emergency Contact Relationship" for="em_contact_rel_2" />
+                    <apex:inputField id="em_contact_rel_2" value="{!redForm.Local_Emergency_Contact_Relationship__c}"/>
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="Emergency Contact Phone" for="em_contact_phone_2" />
+                    <apex:inputField id="em_contact_phone_2" value="{!redForm.Local_Emergency_Contact_Phone__c}"/>
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="Emergency Email" for="em_contact_email_2" />
+                    <apex:inputField id="em_contact_email_2" value="{!redForm.Local_Emergency_Email__c}" />
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="Country of residence" for="em_contact_residence_2" />
+                    <apex:inputField id="em_contact_residence_2" value="{!redForm.Local_Emerg_Cont_Country_of_Residence__c}"/>
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="Is this your next of kin?" for="em_contact_kin_2" />
+                    <apex:inputField id="em_contact_kin_2" value="{!redForm.Local_Emergency_Contact_next_of_kin__c}" />
+                </apex:pageBlockSectionItem>
+            </apex:pageBlockSection>
+        </apex:pageBlockSection>
+        <apex:pageBlockSection title="Voluntary Information Section" columns="1">
+            <div>
+                <span>
+                    <i>Providing this information is <b><u>voluntary</u></b>.
+                    You are under no obligation to provide any or all of the questions asked below.
+                    All information will securely stored and only accessible by the People Operations team.
+                    In the event that you are incapacitated for any reason or need emergency treatment,
+                    or in the event of a safety and security incident, this information will help Dimagi more effectively
+                    support you.</i>
+                </span>
+            </div>
+            <apex:inputField value="{!redForm.Height__c}"/>
+            <apex:inputField value="{!redForm.Eye_Colour__c}"/>
+            <apex:inputField value="{!redForm.Blood_Group__c}"/>
+            <apex:pageBlockSectionItem >
+                <apex:outputLabel value="Does your religion/faith have any impact on your healthcare or travel ability?" for="em_contact_religion" />
+                <apex:inputTextarea cols="100" id="em_contact_religion" value="{!redForm.Religion_Impact__c}"/>
+            </apex:pageBlockSectionItem>
+            <apex:pageBlockSectionItem >
+                <apex:outputLabel value="Distinguishing Features (e.g. scars, birth marks, tattoos)" for="em_contact_religion" />
+                <apex:inputTextarea cols="100" id="em_contact_religion" value="{!redForm.Distinguishing_Features__c}"/>
+            </apex:pageBlockSectionItem>
+            <apex:inputTextarea cols="100" value="{!redForm.Medical_Conditions_Allergies__c}"/>
+            <apex:inputTextarea cols="100" value="{!redForm.Regular_Medication__c}"/>
+            <apex:pageBlockSectionItem >
+                <apex:outputPanel >Do you give permission for a medical practitioner to administer <a target="_blank" href="http://www.who.int/mediacentre/factsheets/fs244/en/">emergency contraception</a> or post-exposure prophylaxis (<a target="_blank" href="http://www.who.int/hiv/topics/prophylaxis/info/en/">PEP</a>) if the situation requires it, and you are not in a position to decide or state your preference? "
+                </apex:outputPanel>
+                <apex:inputField id="em_contact_md_permission" value="{!redForm.Medical_Permission__c}"/>
+            </apex:pageBlockSectionItem>
+            <apex:pageBlockSectionItem >
+                <apex:outputLabel value="Please add additional comments as necessary" for="em_contact_comments" />
+                <apex:inputTextarea cols="100" id="em_contact_comments" value="{!redForm.Additional_Comments__c}"/>
+            </apex:pageBlockSectionItem>
+        </apex:pageBlockSection>
+    </apex:pageBlock>
 </apex:component>

@@ -1,0 +1,134 @@
+<apex:component controller="PROAllProjectsComponentController" allowDML="true">
+    <apex:attribute name="employeeEmailComp"
+        type="String"
+        assignTo="{!employeeEmail}"
+        required="true"
+        description="This employee email adress." />
+    <apex:attribute name="pageControllerComp"
+        type="DimagiToolsController"
+        assignTo="{!pageController}"
+        required="true"
+        description="The controller for the page." />
+    <apex:attribute name="projectIdComp"
+        type="String"
+        assignTo="{!projectId}"
+        required="true"
+        description="Default project Id." />
+
+    <script type="text/javascript">
+        function clickProject(elem) {
+            var contractId = $j(elem).find(".accId").find('span').html();
+            $j('[id$=selectedProjectId]').val(contractId);
+            readProjectCell();
+        }
+    </script>
+
+    <!-- All Projects Data  -->
+    <apex:pageBlock title="All Projects" id="projectTabBlock">
+        <apex:inputHidden id="projectId" value="{!projectId}"/>
+        <apex:pageBlockButtons >
+            <apex:commandButton status="loadingDiv" action="{!saveProject}" value="Save" reRender="projectTabBlock"/>
+        </apex:pageBlockButtons>
+
+        <apex:outputPanel layout="block" id="messages">
+            <apex:pageMessages />
+        </apex:outputPanel>
+
+        <apex:pageBlockSection >
+            <apex:pageBlockSectionItem >
+                <apex:outputLabel value="Project" />
+                <apex:outputPanel styleClass="requiredInput" layout="block">
+                    <apex:inputHidden value="{!selectedProjectId}" id="selectedProjectId"/>
+                    <apex:actionFunction status="loadingDiv" name="readProjectCell" action="{!fillProjectDetails}" reRender="projectTabBlock"></apex:actionFunction>
+                    <apex:pageBlockTable value="{!projectsList}" var="acc" onRowClick="clickProject(this);" style="width:300px" id="proTable1" styleClass="tablesorter" >
+                        <apex:column headerValue="" value="{!acc.Contract.Id}" styleClass="accId" style="display:none" headerClass="hedareClsNone"   />
+                        <apex:column headerValue="Project Name" value="{!acc.Contract.Name}"  styleClass="{!acc.CSSClass}"  />
+                        <apex:column headerValue="Last Report Out Date" value="{!acc.Contract.Last_Report_Out_Date__c}" styleClass="{!acc.CSSClass}"  />
+                    </apex:pageBlockTable>
+                </apex:outputPanel>
+            </apex:pageBlockSectionItem>
+        </apex:pageBlockSection>
+
+	    <apex:pageBlockSection title="Roles" collapsible="false" columns="1">
+	        <apex:pageBlockSectionItem >
+	            <apex:outputLabel value="Project Manager" for="ProjectManager"/>
+	            <apex:inputField id="ProjectManager" value="{!project.Project_Manager__c}" onchange="ShowMessage()" />
+	        </apex:pageBlockSectionItem>
+
+	        <apex:pageBlockSectionItem >
+	            <apex:outputLabel value="Field Manager" for="FieldManager"/>
+	            <apex:inputField id="FieldManager" value="{!project.Field_Manager__c}" />
+	        </apex:pageBlockSectionItem>
+
+	        <apex:pageBlockSectionItem >
+	            <apex:outputLabel value="Backstop" for="Backstop"/>
+	            <apex:inputField id="Backstop" value="{!project.Backstop__c}" />
+	        </apex:pageBlockSectionItem>
+
+            <apex:pageBlockSectionItem >
+                <apex:outputLabel value="In Charge of Report Out" for="InChangeOfReportOut"/>
+
+	            <apex:selectList value="{!project.In_Charge_Of_Report_Out__c}" multiselect="false" id="InChangeOfReportOut" size="1">
+	                <apex:selectOption itemValue="Project Manager" itemLabel="Project Manager"></apex:selectOption>
+	                <apex:selectOption itemValue="Field Manager" itemLabel="Field Manager"></apex:selectOption>
+	                <apex:selectOption itemValue="Backstop" itemLabel="Backstop"></apex:selectOption>
+	            </apex:selectList>
+	        </apex:pageBlockSectionItem>
+
+	        <apex:pageBlockSectionItem >
+	            <apex:outputLabel value="" />
+	            <apex:commandButton action="{!saveProjectOnly}" value="Save Changes"
+	                disabled="{!!enableAddButton}" status="loadingDiv" reRender="projectTabBlock"/>
+	        </apex:pageBlockSectionItem>
+	    </apex:pageBlockSection>
+
+        <apex:pageBlockSection title="Report Out Email List" collapsible="false" columns="1" id="PROEmailTab" >
+            <apex:repeat value="{!contractContactsProject}" var="cont" >
+                <apex:pageBlockSectionItem rendered="{!IF(cont.Type__c!='Management',true,false)}" >
+                    <apex:outputLabel value="{!cont.Type__c}"></apex:outputLabel>
+                    <apex:outputField id="BLabel" value="{!cont.Contact__c}" />
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem rendered="{!IF(cont.Type__c=='Management',true,false)}" >
+                    <apex:outputLabel value="{!cont.Type__c}"></apex:outputLabel>
+                    <apex:outputField id="BLabel" value="{!cont.Email__c}" />
+                </apex:pageBlockSectionItem>
+            </apex:repeat>
+
+            <apex:repeat value="{!contractContacts}" var="cont">
+                <apex:pageBlockSectionItem rendered="{!IF(cont.Type__c=='Person',true,false)}">
+                    <apex:outputLabel value="{!cont.Type__c}"></apex:outputLabel>
+                    <apex:outputPanel >
+                        <apex:inputField id="Backstop" value="{!cont.Contact__c}" />
+                        <apex:commandButton value="Remove" action="{!RemoveContact}" status="loadingDiv" reRender="PROEmailTab">
+                            <apex:param name="removeContactId" value="{!cont.Contact__c}" assignTo="{!removeContactId}"/>
+                        </apex:commandButton>
+                    </apex:outputPanel>
+                </apex:pageBlockSectionItem>
+
+                <apex:pageBlockSectionItem rendered="{!IF(cont.Type__c=='Email',true,false)}">
+                    <apex:outputLabel value="{!cont.Type__c}"></apex:outputLabel>
+                    <apex:outputPanel >
+                        <apex:inputField id="Backstop" value="{!cont.Email__c}" />
+                        <apex:commandButton value="Remove" action="{!removeEmail}" status="loadingDiv" reRender="PROEmailTab">
+                            <apex:param name="removeContactId" value="{!cont.Email__c}" assignTo="{!removeEmailId}"/>
+                        </apex:commandButton>
+                    </apex:outputPanel>
+                </apex:pageBlockSectionItem>
+            </apex:repeat>
+
+            <apex:pageBlockSectionItem >
+                <apex:outputLabel value="" />
+                <apex:outputPanel >
+                    <apex:commandButton action="{!addContact}" value="Add Person" reRender="PROEmailTab,messages" disabled="{!!enableAddButton}" status="loadingDiv" />
+                    <apex:commandButton action="{!addEmail}" value="Add Email" reRender="PROEmailTab,messages" disabled="{!!enableAddButton}" status="loadingDiv" />
+                    <apex:commandButton action="{!addMe}" value="Add Me" reRender="PROEmailTab,messages" disabled="{!!enableAddButton}" status="loadingDiv" />
+                </apex:outputPanel>
+            </apex:pageBlockSectionItem>
+
+            <apex:pageBlockSectionItem >
+                <apex:outputLabel value="" />
+                <apex:commandButton action="{!saveContact}" value="Save Changes" reRender="PROEmailTab" disabled="{!!enableAddButton}" status="loadingDiv" />
+            </apex:pageBlockSectionItem>
+        </apex:pageBlockSection>
+    </apex:pageBlock>
+</apex:component>

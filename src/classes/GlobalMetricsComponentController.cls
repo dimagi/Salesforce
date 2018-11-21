@@ -1,5 +1,8 @@
 public class GlobalMetricsComponentController {
 
+    public String employeeEmail { get; set; }
+    public DimagiToolsController pageController { get; set; }
+
     public DateTime dashboardRefreshTime { get; set;}
 
     private List<Global_Metric_Graph__c> headCount;
@@ -220,6 +223,9 @@ public class GlobalMetricsComponentController {
     public void setProgramGraphData(String programValues) {}
 
     public PageReference loadScaleData() {
+        if (!this.pageController.isTokenValid()) {
+            return null;
+        }
         try {
             List<Global_Metric_Graph__c> metrics = [SELECT Id, CreatedDate FROM Global_Metric_Graph__c LIMIT 1];
             if (metrics.size() > 0) {
