@@ -1,3 +1,6 @@
+/**
+ * TODO : Delete
+ */
 public class BatchCalculateEVDiff implements Database.Batchable<Pipeline_Snapshot__c>, Database.Stateful {
 
     private Date currentDate;

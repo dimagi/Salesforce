@@ -1,3 +1,6 @@
+/**
+ * TODO refacor
+ */
 public class EmployeeInsertUpdateTriggerHelper{
     
     public static void RemoveInactiveEmployeeFromEmailList(List<SFDC_Employee__c> employees,Map<id,SFDC_Employee__c> oldMap){

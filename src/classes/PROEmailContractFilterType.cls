@@ -1,4 +1,4 @@
-public enum PROEmailContractFilterType{
+public enum PROEmailContractFilterType {
         FirstNag,
         SecondNag,
         ThirdNag,

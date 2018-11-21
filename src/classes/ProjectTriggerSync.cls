@@ -6,6 +6,9 @@
  *	@author: Gabriel Rilo - updated by Nick Nestle for Projects
  *	@date:	 3/25/2013
  */
+ /**
+ * TODO refactor
+ */
 public with sharing class ProjectTriggerSync {
 	
 	// Set of Closed stages.

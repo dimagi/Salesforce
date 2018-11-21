@@ -1,3 +1,6 @@
+/**
+ * Trigger handler for Employee Snapshot custom object.
+ */
 public class EmployeeSnapshotTriggerHandler {
 
     public static void handleAfterInsert(List<SFDC_Employee_Snapshot__c> newSnapshots) { // notice batch size must be small, currently used only by batch job and sieze is controlled

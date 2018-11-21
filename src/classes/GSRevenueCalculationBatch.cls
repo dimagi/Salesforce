@@ -1,5 +1,5 @@
 /**
- * Calculates GS revenue for Dimagi Contracts. It calcualtes it for one Business Unit.
+ * TODO : delete
  */
 public without sharing class GSRevenueCalculationBatch implements Database.Batchable<DContract__c>, Database.Stateful{
 

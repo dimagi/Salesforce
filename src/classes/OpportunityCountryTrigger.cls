@@ -3,9 +3,10 @@
  *
  * @author  Virginia Fernández
  * @date    04/12/2013
+ * TODO: refactor
  */
 public with sharing class OpportunityCountryTrigger {
-	
+
     public static void onUpdate(OpportunityCountry__c[] newOppCountries) {
         Set<Id> oppIds = new Set<Id>();
         

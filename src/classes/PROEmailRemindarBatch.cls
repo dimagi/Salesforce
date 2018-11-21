@@ -1,4 +1,4 @@
-global class PROEmailRemindarBatch implements Database.Batchable<DContract__c>, Database.Stateful {
+public class PROEmailRemindarBatch implements Database.Batchable<DContract__c>, Database.Stateful {
 
     PROEmailContractFilterHelper contractFilterHelper = null;
     PROEmailProcessHelper processHelper = null;
@@ -46,11 +46,11 @@ global class PROEmailRemindarBatch implements Database.Batchable<DContract__c>, 
         fourthNagProcessed = new List<DContract__c>();
     }
 
-    global List<DContract__c> start(Database.BatchableContext context) {
+    public List<DContract__c> start(Database.BatchableContext context) {
         return GetContract();
     }
 
-    global void execute(Database.BatchableContext context, List<DContract__c> contracts) {
+    public void execute(Database.BatchableContext context, List<DContract__c> contracts) {
 
         List<DContract__c> firstNagContract = new List<DContract__c>();
         List<DContract__c> secondNagContract = new List<DContract__c>();
@@ -81,7 +81,7 @@ global class PROEmailRemindarBatch implements Database.Batchable<DContract__c>, 
         fourthNagProcessed.addAll(fourthNagContract);
     }
 
-    global void finish(Database.BatchableContext context) {
+    public void finish(Database.BatchableContext context) {
             processHelper.processFirstNag(firstNagProcessed);
             processHelper.processSecondNag(secondNagProcessed);
             processHelper.processThirdNag(thirdNagProcessed);

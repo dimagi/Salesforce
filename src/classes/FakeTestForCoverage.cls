@@ -7,6 +7,9 @@
  * @author  Antonio Grassi
  * @date    03/04/2013
  */
+ /**
+ * TODO DELETE
+ */
 public with sharing class FakeTestForCoverage {
 
     public static void dummyMethod() {

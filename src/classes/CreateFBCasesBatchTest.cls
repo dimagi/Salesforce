@@ -1,7 +1,8 @@
 @isTest
 private class CreateFBCasesBatchTest {
 
-    static testMethod void shouldCreateCase() {
+    @isTest
+    public static void shouldCreateCase() {
         FogBugzHTTPMock fakeHTTP = new FogBugzHTTPMock(TestFogBugzAPI.UPSERT_CASE_RESPONSE);
         Test.setMock(HttpCalloutMock.class, fakeHTTP);
         Test.startTest();

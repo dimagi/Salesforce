@@ -1,5 +1,7 @@
 /* Created by Nick to try to store Area multi select in a text field */
-
+/**
+ * TODO refactor
+ */
 public with sharing class ProjectTriggerArea {
 	
 	// Entry point from update event

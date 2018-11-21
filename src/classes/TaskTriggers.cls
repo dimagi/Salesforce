@@ -4,6 +4,9 @@
  * @author  Antonio Grassi
  * @date    11/16/2012
  */
+/**
+ * TODO: refactor
+ */
 public with sharing class TaskTriggers {
 
     @future(callout=true)

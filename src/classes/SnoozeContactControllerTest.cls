@@ -1,7 +1,8 @@
 @isTest
-public class SnoozeContactControllerTest{
+public class SnoozeContactControllerTest {
 
-    public static testMethod void testMethod1() {
+    @isTest
+    public static void testMethod1() {
         Account theAccount = new Account(
             Name = 'Test Account'
         );
@@ -11,11 +12,11 @@ public class SnoozeContactControllerTest{
             AccountId = theAccount.Id
         );
         insert theContact;
-        
-        ApexPages.currentPage().getParameters().put('id',theContact.Id);
+
+        ApexPages.currentPage().getParameters().put('id', theContact.Id);
         SnoozeContactController obj = new SnoozeContactController ();
         obj.autoRun();
-        Task theTask = [Select id from Task where WhoId = :theContact.Id];
-        system.assertNotEquals(theTask,null);
+        Task theTask = [SELECT id FROM Task WHERE WhoId =: theContact.Id];
+        System.assertNotEquals(theTask,null);
     }
 }

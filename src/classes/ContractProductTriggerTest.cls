@@ -3,6 +3,7 @@
  *
  * @author  Virginia Fernández
  * @date    04/11/2013
+  * TODO: refactor
  */
 @isTest
 private class ContractProductTriggerTest {

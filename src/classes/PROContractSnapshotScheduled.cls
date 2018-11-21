@@ -1,9 +1,9 @@
 /*
 * Class responsible for scheduling (every 2nd & 4th Thursday) PROContractSnapshotBatch.
 */
-global class PROContractSnapshotScheduled implements Schedulable {
+public class PROContractSnapshotScheduled implements Schedulable {
 
-    global void execute(SchedulableContext sc) {
+    public void execute(SchedulableContext sc) {
         Date currentDate = Date.today();
         Integer currentYear = currentDate.year();
         Integer currentMonth = currentDate.month();
