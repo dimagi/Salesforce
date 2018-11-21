@@ -14,6 +14,7 @@ public class PROComponentController {
     public Decimal proTabContractPercntgethroughSOW { get; set; }
     public Project_Report_Out__c pro { get; set; }
     public DContract__c proTabContract { get; set; }
+    public Map<Id, DContract__C> contractIdName { get; set; }
     public List<SelectOption> statusList {
         get {
             return SFUtils.getPicklistValues(new Project_Report_Out__c(), 'Status__c');
@@ -23,7 +24,6 @@ public class PROComponentController {
     public Project_Report_Out__c submittedPro { get; set; }
     public Boolean editMode { get; set; }
 
-    private Map<Id, DContract__C> contractIdName;
     private Id submitedPROId;
 
     public PROComponentController() {
@@ -243,7 +243,7 @@ public class PROComponentController {
             }
         }
 
-        if (contactList.size() > 0) {
+        if (contactList.size() > 0 && !Test.isRunningTest()) {
             Messaging.SingleEmailMessage msg = new Messaging.SingleEmailMessage();
             msg.setTemplateId(templateId);
             msg.setTargetObjectId(contactList[0].Id);

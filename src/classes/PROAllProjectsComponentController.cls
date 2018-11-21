@@ -59,9 +59,9 @@ public  class PROAllProjectsComponentController {
         this.contractContacts = new List<Contract_Contact__c>();
 
         List<DContract__c> contractList = [SELECT Id, Project_Manager__c, Backstop__c, Field_Manager__c, In_Charge_Of_Report_Out__c FROM DContract__c
-                                           WHERE Id =: this.selectedProjectId];
+                                                 WHERE Id =: this.selectedProjectId];
 
-        if (contractList!=null && contractList.size() > 0) {
+        if (contractList != null && contractList.size() > 0) {
             this.project = contractList[0];
         }
 
@@ -144,7 +144,7 @@ public  class PROAllProjectsComponentController {
 
             for (Integer index = 0; index < this.contractContacts.size(); index++) {
                 Contract_Contact__c ct = this.contractContacts[index];
-                if (ct.Email__c == removeEmailId) {
+                if (ct.Email__c == this.removeEmailId) {
                     if (ct.id != null) {
                         this.deleteContactList.add(ct);
                     }
