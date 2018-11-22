@@ -1,6 +1,7 @@
 /**
  * Interface containing methods Trigger Handlers must implement to enforce best practice
  * and bulkification of triggers.
+ TODO :delete
  */
 public interface ITrigger 
 {

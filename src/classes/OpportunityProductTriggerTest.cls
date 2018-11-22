@@ -1,4 +1,7 @@
 @isTest (seeAllData=true)
+/**
+ * TODO: refactor
+ */
 private class OpportunityProductTriggerTest {
 	
 	public static testmethod void opportunityProductTriggerTest() {

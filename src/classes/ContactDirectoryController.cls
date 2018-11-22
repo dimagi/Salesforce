@@ -1,3 +1,6 @@
+/**
+ * TODO: Remove url code add
+ */
 public class ContactDirectoryController{
     
     private String OAUTH_CALLBACK_URL='https://dimagi--dsandbox--c.cs20.visual.force.com/apex/ContactDirectory';

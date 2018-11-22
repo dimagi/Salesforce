@@ -1,6 +1,6 @@
 /**
  * Tests the updates of Deployment Product_Text__c field with the names of the Deployment Products
- *
+ * refactor
  * @author  Virginia Fernández
  * @date    04/11/2013
  */

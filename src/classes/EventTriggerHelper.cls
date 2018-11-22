@@ -1,3 +1,6 @@
+/**
+ * TODO refacor
+ */
 public class EventTriggerHelper{
     public static void createEventOnOpportunity(List<Event> eventList) {
         

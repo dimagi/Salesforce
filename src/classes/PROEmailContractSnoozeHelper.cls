@@ -33,15 +33,15 @@ public class PROEmailContractSnoozeHelper {
         List<DContract__c> contractList = [SELECT id FROM DContract__c
                                            WHERE Is_First_Nag_Sent__c = true
                                            AND((In_Charge_Of_Report_Out__c='Project Manager' AND  Project_Manager__C=:ownerId) OR
-                                           (In_Charge_Of_Report_Out__c='Field Manager' and  Field_Manager__C=:ownerId) OR
-                                           (In_Charge_Of_Report_Out__c='Backstop' and  Backstop__C=:ownerId))];
+                                           (In_Charge_Of_Report_Out__c='Field Manager' AND  Field_Manager__C=:ownerId) OR
+                                           (In_Charge_Of_Report_Out__c='Backstop' AND  Backstop__C=:ownerId))];
         if (contractList.size() > 0) {
            SnoozeContract(contractList,snoozeDays);
         }
     }
 
     public void SnoozeContract(Id contractId,integer snoozeDays) {
-        List<DContract__c> contractList = [SELECT id FROM DContract__c WHERE Id =: contractId and Is_First_Nag_Sent__c = true];
+        List<DContract__c> contractList = [SELECT id FROM DContract__c WHERE Id =: contractId AND Is_First_Nag_Sent__c = true];
         if( contractList.size() > 0) {
           SnoozeContract(contractList,snoozeDays);
         }

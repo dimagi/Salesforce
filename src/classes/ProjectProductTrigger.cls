@@ -1,3 +1,6 @@
+/**
+ * TODO refactor
+ */
 public with sharing class ProjectProductTrigger {
 	
 	// entry for Inserts

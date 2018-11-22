@@ -1,6 +1,9 @@
 /*
     Test class for Employee insert update trigger
 */
+/**
+ * TODO refacor
+ */
 @isTest
 public class EmployeeInsertUpdateTriggerTest {
     

@@ -2,7 +2,7 @@
 * Batch responsible for creating the PRO Contract Snapshot custom object for projects that
 * are active but do not require a report out.
 */
-global class PROContractSnapshotBatch implements Database.Batchable<DContract__c>, Database.Stateful {
+public class PROContractSnapshotBatch implements Database.Batchable<DContract__c>, Database.Stateful {
 
     private Date currentDate;
     private List<PRO_Contract_Snapshot__c> failedReocrds = new List<PRO_Contract_Snapshot__c>();
@@ -11,11 +11,11 @@ global class PROContractSnapshotBatch implements Database.Batchable<DContract__c
         this.currentDate = Date.today();
     }
 
-    global List<DContract__c> start(Database.BatchableContext context) {
+    public List<DContract__c> start(Database.BatchableContext context) {
        return GetContract();
     }
 
-    global void execute(Database.BatchableContext context, List<DContract__c> contracts) {
+    public void execute(Database.BatchableContext context, List<DContract__c> contracts) {
         try {
             List<PRO_Contract_Snapshot__c> insertList = new List<PRO_Contract_Snapshot__c>();
             Map<Id, PRO_Contract_Snapshot__c> oldSnapshots = SnapshotHelper.getOldPROSnapshot(contracts, this.currentDate);
@@ -50,7 +50,7 @@ global class PROContractSnapshotBatch implements Database.Batchable<DContract__c
         }
     }
 
-    global void finish(Database.BatchableContext context) {
+    public void finish(Database.BatchableContext context) {
         List<String> toAddresses = new List<String>();
         Contract_Snapshot_Settings__c settings = Contract_Snapshot_Settings__c.getOrgDefaults();
 

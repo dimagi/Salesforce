@@ -1,7 +1,8 @@
 @isTest
 public class ContractSnapshotTest {
 
-    static testMethod void shouldCreateSnapshotAfterSubmitingPRO() {
+    @isTest
+    public static void shouldCreateSnapshotAfterSubmitingPRO() {
         PROComponentController componentController = new PROComponentController();
         componentController.employeeEmail = 'test.email@test.com';
         componentController.pageController = new DimagiToolsController();
@@ -34,7 +35,8 @@ public class ContractSnapshotTest {
         assertSnapshotData(snapshot);
     }
 
-    static testMethod void jobShouldCreateSnapshotForActiveProject() {
+    @isTest
+    public static void jobShouldCreateSnapshotForActiveProject() {
         DContract__c dcontract = addContract();
 
         PRO_Contract_Snapshot__c proSn1 = new PRO_Contract_Snapshot__c(Contract__c = dcontract.Id, Percent_Of_Work_Completed__c = 4, Snapshot_Date__c = Date.today().addDays(-40));
@@ -59,7 +61,8 @@ public class ContractSnapshotTest {
         System.assertEquals(19, snapshot.Work_Completed_for_Period__c);
     }
 
-    static testMethod void shouldCalculateForPeriodInPipelineSnapshot() {
+    @isTest
+    public static void shouldCalculateForPeriodInPipelineSnapshot() {
         DContract__c dcontract1 = new DContract__c(Name = 'Sample Test 1', Services_Spend__c = 100, Total_Amount_of_Contract__c = 1000);
         DContract__c dcontract2 = new DContract__c(Name = 'Sample Test 2', Services_Spend__c = 155, Total_Amount_of_Contract__c = 5500);
         DContract__c dcontract3 = new DContract__c(Name = 'Sample Test 3', Services_Spend__c = 23, Total_Amount_of_Contract__c = 222);
@@ -95,7 +98,8 @@ public class ContractSnapshotTest {
         System.assertEquals(3, psFromDB.Services_Spend_for_Period__c);
     }
 
-    static testMethod void shouldCalculateGSRevenue() {
+    @isTest
+    public static void shouldCalculateGSRevenue() {
         Business_Unit__c bu = new Business_Unit__c(Name = 'Inc');
         insert bu;
 
@@ -147,7 +151,8 @@ public class ContractSnapshotTest {
         System.assertEquals(300.00, value.setScale(2));
     }
 
-    static testMethod void shouldCalculateGSQualitySituation1() {
+    @isTest
+    public static void shouldCalculateGSQualitySituation1() {
         Business_Unit__c bu = new Business_Unit__c(Name = 'Inc');
         insert bu;
         DContract__c dcontract1 = new DContract__c(Name = 'Sample Test 1', Prime_Contracting_Business_Unit__c = bu.Id, Percent_through_SOW_deliverables__c = 10, Expected_Buffer__c = 0,
@@ -222,7 +227,8 @@ public class ContractSnapshotTest {
         // Expected Value (Customer) = (250 + 223 + 900 + 776) / (1000 + 1367 + 1333 + 4567) = 2149 / 8267 = 25,99
     }
 
-    static testMethod void shouldCalculateGSQualitySituation2() {
+    @isTest
+    public static void shouldCalculateGSQualitySituation2() {
         Business_Unit__c bu = new Business_Unit__c(Name = 'Inc');
         insert bu;
         DContract__c dcontract1 = new DContract__c(Name = 'Sample Test 1', Prime_Contracting_Business_Unit__c = bu.Id, Percent_through_SOW_deliverables__c = 10, Expected_Buffer__c = 0,
@@ -297,7 +303,8 @@ public class ContractSnapshotTest {
         // Expected Value (Customer) = (250 + 223 + 900 + 776) / (1000 + 1367 + 1333 + 4567) = 2149 / 8267 = 25,99
     }
 
-    static testMethod void shouldCalculateGSQualitySituation3() {
+    @isTest
+    public static void shouldCalculateGSQualitySituation3() {
         Business_Unit__c bu = new Business_Unit__c(Name = 'Inc');
         insert bu;
         DContract__c dcontract1 = new DContract__c(Name = 'Sample Test 1', Prime_Contracting_Business_Unit__c = bu.Id, Percent_through_SOW_deliverables__c = 10, Expected_Buffer__c = 0,
@@ -372,7 +379,8 @@ public class ContractSnapshotTest {
         // Expected Value (Customer) = (250 + 223 + 900 + 776) / (1000 + 1367 + 1333 + 4567) = 2149 / 8267 = 25,99
     }
 
-    static testMethod void shouldCalculateGSQualityTotal() {
+    @isTest
+    public static void shouldCalculateGSQualityTotal() {
         Business_Unit__c bu1 = new Business_Unit__c(Name = 'Inc');
         insert bu1;
         Business_Unit__c bu2 = new Business_Unit__c(Name = 'DSI');
@@ -428,7 +436,7 @@ public class ContractSnapshotTest {
         // Expected Value (Customer) = (100 + 200 + 300 + 400) / (500 + 900 + 1000 + 1500) = 1000 / 3900 = 25,64
     }
 
-    static private void assertSnapshotData(PRO_Contract_Snapshot__c snapshot) {
+    private static void assertSnapshotData(PRO_Contract_Snapshot__c snapshot) {
         System.assertEquals('Sample Test Name', snapshot.Name);
         System.assertEquals(30, snapshot.Percent_Of_Work_Completed__c);
         System.assertEquals(35, snapshot.Percent_Services_Budget_For_GS__c);
@@ -443,7 +451,7 @@ public class ContractSnapshotTest {
         System.assertEquals(58, snapshot.Budget_Used__c);
     }
 
-    static private DContract__c addContract() {
+    private static DContract__c addContract() {
         DContract__c dcontract = new DContract__c();
 
         dcontract.Name = 'Sample Test Name';

@@ -1,3 +1,6 @@
+/**
+ * TODO: refactor
+ */
 public class ContactTriggerHelper{
 
     public static void UpdateEmployee(Map<Id,Contact> oldContactMap,List<Contact> contactList) {

@@ -4,6 +4,7 @@ Class Description: Class for Deployment creating from an Contract testing
 Author: Virginia Fernández (vfernandez@adooxen.com)
 Update Date: 2013-04-09
 Additional Comments: 
+ * TODO: refactor
 **************************************************/
 @isTest
 private class ContractDeploymentControllerTest {

@@ -1,6 +1,6 @@
 /**
  * Tests the updates of the Country_Text__c field in Opportunity with the names of the Opportunity Countries
- *
+  * TODO: refactor
  * @author  Virginia Fernández
  * @date    04/12/2013
  */

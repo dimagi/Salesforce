@@ -1,6 +1,6 @@
-global class PROEmailRemindarClearDataBatch_Scheduled implements Schedulable {
-   global void execute(SchedulableContext sc) {
+public class PROEmailRemindarClearDataBatch_Scheduled implements Schedulable {
+   public void execute(SchedulableContext sc) {
       PROEmailRemindarClearDataBatch b = new PROEmailRemindarClearDataBatch(); 
-      database.executeBatch(b,50);
+      Database.executeBatch(b,50);
    }
 }

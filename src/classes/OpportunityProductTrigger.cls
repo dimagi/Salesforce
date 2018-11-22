@@ -3,6 +3,7 @@
  *
  * @author  Virginia Fernández
  * @date    04/12/2013
+ * TODO: refactor
  */
 public with sharing class OpportunityProductTrigger {
 

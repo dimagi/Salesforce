@@ -1,3 +1,6 @@
+/**
+ * TODO refacor
+ */
 public class EmployeeGateway {
     public static Map<Id, String> getEmployeeBusinessUnitNames(Set<Id> employeeRecordIds) {
     	Map<Id, String> businessUnitNames = new Map<Id, String>();

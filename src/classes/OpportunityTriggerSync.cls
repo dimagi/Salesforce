@@ -2,7 +2,7 @@
  *	This class implements the logic needed to keep OpporunityLocations in sync
  *	with OpportunityCountries. This allows Opportunities to be related to all
  *	Countries for those that have locations related to the Opportunity.
- *
+  * TODO: refactor
  *	@author: Gabriel Rilo
  *	@date:	 3/25/2013
  */

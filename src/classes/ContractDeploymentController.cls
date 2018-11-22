@@ -4,6 +4,7 @@ Class Description: Class for Deployment creating from an Contract
 Author: Virginia Fernández (vfernandez@adooxen.com)
 Update Date: 2013-04-09
 Additional Comments: 
+ * TODO: refactor
 **************************************************/
 public with sharing class ContractDeploymentController {
 	private DContract__c c;

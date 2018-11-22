@@ -1,4 +1,7 @@
 @isTest
+/**
+ * TODO refacor
+ */
 public class EventTriggerTest {
     static testmethod void testbatch() {
 
