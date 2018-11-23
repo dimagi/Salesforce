@@ -7,7 +7,7 @@ public class CreateFBCasesBatch implements Database.Batchable<sObject>, Database
 
     public Database.QueryLocator start(Database.BatchableContext BC) {
         return Database.getQueryLocator('SELECT Id, Name, StageName, Fogbugz_Opened_By__c, Fogbugz_Probability__c, Amount, Owner.Name, IsClosed, Fogbugz_Ticket_Number__c'
-                                            + 'FROM Opportunity WHERE IsClosed = false AND Fogbugz_Ticket_Number__c = \'\'');
+                                            + ' FROM Opportunity WHERE IsClosed = false AND Fogbugz_Ticket_Number__c = \'\'');
     }
 
     public void execute(Database.BatchableContext BC, List<sObject> scope) {
