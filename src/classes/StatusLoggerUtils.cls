@@ -104,15 +104,14 @@ public class StatusLoggerUtils {
         }
 
         body += '</table>';
-
-        body += '</table>';
         body += '<br/>WARNINGS :<br/><table border="1">';
         body += '<tr style="font-weight:bold"><td>Name</td><td>Message</td><td>Num</td><td>Date</td></tr>';
 
-        for (Status_Log__c log : logsError) {
+        for (Status_Log__c log : logsWarns) {
             body += '<tr><td>' + log.Title__c + '</td><td>' + log.Message__c + '</td><td>' + log.Counter__c + '</td><td>' + log.Date__c + '</td></tr>';
         }
 
+        body += '</table>';
         body += '<br/>ERRORS :<br/><table border="1">';
         body += '<tr style="font-weight:bold"><td>Name</td><td>Message</td><td>Num</td><td>Date</td></tr>';
 

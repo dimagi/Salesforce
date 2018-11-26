@@ -17,36 +17,28 @@ public class ZendeskTest {
         Test.setMock(HttpCalloutMock.class, new ZendeskAPIMock());
         ZendeskSynchronizer.fetchZendeskTicketCount(2018, 9);
         Test.stopTest();
+        assertZendeskData(Date.newInstance(2018, 9, 30));
+    }
 
-        System.assertEquals(7, [SELECT Id, Number_of_Tickets_Created__c, Date__c FROM Zendesk_Tickets_Statistics__c].size());
+    @isTest
+    public static void shouldSyncAllPlansWithFuture() {
+        Test.startTest();
+        Test.setMock(HttpCalloutMock.class, new ZendeskAPIMock());
+        ZendeskSynchronizer.fetchZendeskTicketCountFuture(2018, 9);
+        Test.stopTest();
+        assertZendeskData(Date.newInstance(2018, 9, 30));
+    }
 
-        Zendesk_Tickets_Statistics__c zendeskStats = [SELECT Id, Number_of_Tickets_Created__c, Date__c FROM Zendesk_Tickets_Statistics__c WHERE Plan__c = 'Enterprise'];
-        System.assertEquals(Date.newInstance(2018, 9, 30), zendeskStats.Date__c);
-        System.assertEquals(12, zendeskStats.Number_of_Tickets_Created__c);
-
-        zendeskStats = [SELECT Id, Number_of_Tickets_Created__c, Date__c FROM Zendesk_Tickets_Statistics__c WHERE Plan__c = 'Advanced'];
-        System.assertEquals(Date.newInstance(2018, 9, 30), zendeskStats.Date__c);
-        System.assertEquals(5, zendeskStats.Number_of_Tickets_Created__c);
-
-        zendeskStats = [SELECT Id, Number_of_Tickets_Created__c, Date__c FROM Zendesk_Tickets_Statistics__c WHERE Plan__c = 'Pro'];
-        System.assertEquals(Date.newInstance(2018, 9, 30), zendeskStats.Date__c);
-        System.assertEquals(10, zendeskStats.Number_of_Tickets_Created__c);
-
-        zendeskStats = [SELECT Id, Number_of_Tickets_Created__c, Date__c FROM Zendesk_Tickets_Statistics__c WHERE Plan__c = 'Standard'];
-        System.assertEquals(Date.newInstance(2018, 9, 30), zendeskStats.Date__c);
-        System.assertEquals(22, zendeskStats.Number_of_Tickets_Created__c);
-
-        zendeskStats = [SELECT Id, Number_of_Tickets_Created__c, Date__c FROM Zendesk_Tickets_Statistics__c WHERE Plan__c = 'Community'];
-        System.assertEquals(Date.newInstance(2018, 9, 30), zendeskStats.Date__c);
-        System.assertEquals(15, zendeskStats.Number_of_Tickets_Created__c);
-
-        zendeskStats = [SELECT Id, Number_of_Tickets_Created__c, Date__c FROM Zendesk_Tickets_Statistics__c WHERE Plan__c = 'Staff'];
-        System.assertEquals(Date.newInstance(2018, 9, 30), zendeskStats.Date__c);
-        System.assertEquals(3, zendeskStats.Number_of_Tickets_Created__c);
-
-        zendeskStats = [SELECT Id, Number_of_Tickets_Created__c, Date__c FROM Zendesk_Tickets_Statistics__c WHERE Plan__c = 'ICDS'];
-        System.assertEquals(Date.newInstance(2018, 9, 30), zendeskStats.Date__c);
-        System.assertEquals(1, zendeskStats.Number_of_Tickets_Created__c);
+    @isTest
+    public static void shouldSetProperDate() {
+        Test.startTest();
+        Test.setMock(HttpCalloutMock.class, new ZendeskAPIMock());
+        ZendeskScheduler zendeskScheduler = new ZendeskScheduler();
+        zendeskScheduler.execute(null);
+        Test.stopTest();
+        Date testDate = Date.today().addDays(-1);
+        Date expectedDate = Date.newInstance(testDate.year(), testDate.month(), Date.daysInMonth(testDate.year(), testDate.month()));
+        assertZendeskData(expectedDate); // it is scheduled at 1st of each month
     }
 
     @isTest
@@ -77,6 +69,37 @@ public class ZendeskTest {
         System.assert([SELECT Id FROM Status_Log__c WHERE Name =: StatusLoggerUtils.ZENDESK_LOGGER AND Status__c =: StatusLoggerUtils.ERROR_LOG].size() == 1);
     }
 
+    private static void assertZendeskData(Date testDate) {
+        System.assertEquals(7, [SELECT Id, Number_of_Tickets_Created__c, Date__c FROM Zendesk_Tickets_Statistics__c].size());
+
+        Zendesk_Tickets_Statistics__c zendeskStats = [SELECT Id, Number_of_Tickets_Created__c, Date__c FROM Zendesk_Tickets_Statistics__c WHERE Plan__c = 'Enterprise'];
+        System.assertEquals(testDate, zendeskStats.Date__c);
+        System.assertEquals(12, zendeskStats.Number_of_Tickets_Created__c);
+
+        zendeskStats = [SELECT Id, Number_of_Tickets_Created__c, Date__c FROM Zendesk_Tickets_Statistics__c WHERE Plan__c = 'Advanced'];
+        System.assertEquals(testDate, zendeskStats.Date__c);
+        System.assertEquals(5, zendeskStats.Number_of_Tickets_Created__c);
+
+        zendeskStats = [SELECT Id, Number_of_Tickets_Created__c, Date__c FROM Zendesk_Tickets_Statistics__c WHERE Plan__c = 'Pro'];
+        System.assertEquals(testDate, zendeskStats.Date__c);
+        System.assertEquals(10, zendeskStats.Number_of_Tickets_Created__c);
+
+        zendeskStats = [SELECT Id, Number_of_Tickets_Created__c, Date__c FROM Zendesk_Tickets_Statistics__c WHERE Plan__c = 'Standard'];
+        System.assertEquals(testDate, zendeskStats.Date__c);
+        System.assertEquals(22, zendeskStats.Number_of_Tickets_Created__c);
+
+        zendeskStats = [SELECT Id, Number_of_Tickets_Created__c, Date__c FROM Zendesk_Tickets_Statistics__c WHERE Plan__c = 'Community'];
+        System.assertEquals(testDate, zendeskStats.Date__c);
+        System.assertEquals(15, zendeskStats.Number_of_Tickets_Created__c);
+
+        zendeskStats = [SELECT Id, Number_of_Tickets_Created__c, Date__c FROM Zendesk_Tickets_Statistics__c WHERE Plan__c = 'Staff'];
+        System.assertEquals(testDate, zendeskStats.Date__c);
+        System.assertEquals(3, zendeskStats.Number_of_Tickets_Created__c);
+
+        zendeskStats = [SELECT Id, Number_of_Tickets_Created__c, Date__c FROM Zendesk_Tickets_Statistics__c WHERE Plan__c = 'ICDS'];
+        System.assertEquals(testDate, zendeskStats.Date__c);
+        System.assertEquals(1, zendeskStats.Number_of_Tickets_Created__c);
+    }
 
     public class ZendeskAPIMock implements HttpCalloutMock {
 
