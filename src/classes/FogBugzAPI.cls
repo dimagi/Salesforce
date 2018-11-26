@@ -1,12 +1,7 @@
 /**
- * Client for the FogBugzAPI
- *
- * @author  Antonio Grassi
- * @modifiedBy Virginia Fernández
- *
- * @date    11/13/2012
+ * API class used for connecting with FogBugz.
  */
-public with sharing class FogBugzAPI {
+public class FogBugzAPI {
 
     private static final String DEFAULT_FB_URL = 'https://manage.dimagi.com/api.asp?';
     private static final String FB_LIST_COLS = 'ixPersonOpenedBy,dtLastUpdated,sVersion';
@@ -19,21 +14,9 @@ public with sharing class FogBugzAPI {
      * Id and last modified date.
      */
     public Map<String, FogBugzCase> listCases() {
-        HTTPRequest req = new HTTPRequest();
-        req.setEndpoint(FogBugz_Settings__c.getOrgDefaults().FB_URL__c != null ? FogBugz_Settings__c.getOrgDefaults().FB_URL__c : DEFAULT_FB_URL);
-        req.setBody('token=' + FogBugz_Settings__c.getOrgDefaults().Token__c + '&cmd=search&cols=' + FB_LIST_COLS);
-        req.setTimeout(FB_HTTP_TIMEOUT);
-        req.setMethod('POST');
-
+        HTTPRequest req = buildFogBugzRequest('&cmd=search&cols=' + FB_LIST_COLS);
         HTTP connection = new HTTP();
-        HTTPResponse res = null;
-
-        if (!Test.isRunningTest()) { 
-            res = connection.send(req);
-        } else {
-            FogBugzHttpCalloutMock mock = new FogBugzHttpCalloutMock();
-            res = mock.respond(req);
-        }
+        HTTPResponse res = connection.send(req);
 
         if (res.getStatusCode() != 200) {
             throw new CalloutException('Bad Response Status : ' + res.getStatusCode() + ' - message - ' + res.getBody());
@@ -48,22 +31,10 @@ public with sharing class FogBugzAPI {
     }
 
     public List<FogBugzCase> getLastUpdatedCases(DateTime lastUpdateDate) {
-        HTTPRequest req = new HTTPRequest();
-        req.setEndpoint(FogBugz_Settings__c.getOrgDefaults().FB_URL__c != null ? FogBugz_Settings__c.getOrgDefaults().FB_URL__c : DEFAULT_FB_URL);
         String timeString = lastUpdateDate.formatGMT('yyyy-MM-dd\'T\'HH:mm:ss.SSS\'Z\'');
-        req.setBody('token=' + FogBugz_Settings__c.getOrgDefaults().Token__c + '&cmd=search&cols=' + FB_CASES_UPDATED_COLS + '&q=edited: "' + timeString + '..now"');
-        req.setTimeout(FB_HTTP_TIMEOUT);
-        req.setMethod('POST');
-
+        HTTPRequest req = buildFogBugzRequest('&cmd=search&cols=' + FB_CASES_UPDATED_COLS + '&q=edited: "' + timeString + '..now"');
         HTTP connection = new HTTP();
-        HTTPResponse res = null;
-
-        if (Test.isRunningTest()) {
-            FogBugzHttpCalloutMock mock = new FogBugzHttpCalloutMock();
-            res = mock.respond(req);
-        } else {
-            res = connection.send(req);
-        }
+        HTTPResponse res = connection.send(req);
 
         if (res.getBody() != null) {
             List<FogBugzCase> cases = parseLastUpdatedCases(res.getBody());
@@ -75,21 +46,9 @@ public with sharing class FogBugzAPI {
     }
 
     public FogBugzCase getCase(String caseId) {
-        HTTPRequest req = new HTTPRequest();
-        req.setEndpoint(FogBugz_Settings__c.getOrgDefaults().FB_URL__c != null ? FogBugz_Settings__c.getOrgDefaults().FB_URL__c : DEFAULT_FB_URL);
-        req.setBody('token=' + FogBugz_Settings__c.getOrgDefaults().Token__c + '&cmd=search&cols=' + FB_CASE_COLS + '&q=' + caseId);
-        req.setTimeout(FB_HTTP_TIMEOUT);
-        req.setMethod('POST');
-
+        HTTPRequest req = buildFogBugzRequest('&cmd=search&cols=' + FB_CASE_COLS + '&q=' + caseId);
         HTTP connection = new HTTP();
-        HTTPResponse res = null;
-
-        if (!Test.isRunningTest()) {
-            res = connection.send(req);
-        } else {
-            FogBugzHttpCalloutMock mock = new FogBugzHttpCalloutMock();
-            res = mock.respond(req);
-        }
+        HTTPResponse res = connection.send(req);
 
         if (res.getBody() != null) {
             Map<String,FogBugzCase> cases = parseCases(res.getBody());
@@ -101,19 +60,8 @@ public with sharing class FogBugzAPI {
     }
 
     public String setCurrentFilter(Integer filterId) {
-        HTTPRequest req = new HTTPRequest();
-        req.setEndpoint(FogBugz_Settings__c.getOrgDefaults().FB_URL__c != null ? FogBugz_Settings__c.getOrgDefaults().FB_URL__c : DEFAULT_FB_URL);
-        req.setBody('token=' + FogBugz_Settings__c.getOrgDefaults().Token__c + '&cmd=setCurrentFilter&sFilter=' + filterId.format());
-        req.setTimeout(FB_HTTP_TIMEOUT);
-        req.setMethod('POST');
-
+        HTTPRequest req = buildFogBugzRequest('&cmd=setCurrentFilter&sFilter=' + filterId.format());
         HTTP connection = new HTTP();
-
-        if (Test.isRunningTest()) {
-            FogBugzHttpCalloutMock mock = new FogBugzHttpCalloutMock();
-            return mock.respond(req).getBody();
-        }
-
         return connection.send(req).getBody();
     }
 
@@ -135,15 +83,7 @@ public with sharing class FogBugzAPI {
 
         HTTPRequest req = buildHTTPRequest(params);
         HTTP connection = new HTTP();
-        HTTPResponse res = null;
-
-        if (Test.isRunningTest()) {
-            FogBugzHttpCalloutMock mock = new FogBugzHttpCalloutMock();
-            res = mock.respond(req);
-        } else {
-            res = connection.send(req);
-        }
-
+        HTTPResponse res = connection.send(req);
         fbCase.caseId = parseUpsertId(res.getBody());
 
         if (close) {
@@ -154,7 +94,8 @@ public with sharing class FogBugzAPI {
         if (String.isBlank(fbCase.caseId)) {
             if (!Test.isRunningTest() && !System.isBatch()) {
                 String adress = FogBugz_Settings__c.getOrgDefaults().Error_Email__c;
-                EmailHelper.sendEmail(new String[] {adress}, 'Cannot create FogBugz case', 'Cannot create FogbBugz case for Oppurtinity<br/> Response:<br/>' + res.getBody());
+                EmailHelper.sendEmail(new String[] {adress}, 'Cannot create FogBugz case',
+                                        'Cannot create FogbBugz case for Oppurtinity<br/> Response:<br/>' + res.getBody());
             }
         }
 
@@ -170,15 +111,7 @@ public with sharing class FogBugzAPI {
 
         HTTPRequest req = buildHTTPRequest(params);
         HTTP connection = new HTTP();
-        HTTPResponse res = null;
-
-        if (Test.isRunningTest()) {
-            FogBugzHttpCalloutMock mock = new FogBugzHttpCalloutMock();
-            res = mock.respond(req);
-        } else {
-            res = connection.send(req);
-        }
-
+        HTTPResponse res = connection.send(req);
         return parseUpsertId(res.getBody());
     }
 
@@ -191,15 +124,7 @@ public with sharing class FogBugzAPI {
 
         HTTPRequest req = buildHTTPRequest(params);
         HTTP connection = new HTTP();
-        HTTPResponse res = null;
-
-        if (Test.isRunningTest()) {
-            FogBugzHttpCalloutMock mock = new FogBugzHttpCalloutMock();
-            res = mock.respond(req);
-        } else {
-            res = connection.send(req);
-        }
-
+        HTTPResponse res = connection.send(req);
         return parseUpsertId(res.getBody());
     }
 
@@ -211,17 +136,8 @@ public with sharing class FogBugzAPI {
         };
 
         HTTPRequest req = buildHTTPRequest(params);
-
         HTTP connection = new HTTP();
-        HTTPResponse res = null;
-
-        if (Test.isRunningTest()) {
-            FogBugzHttpCalloutMock mock = new FogBugzHttpCalloutMock();
-            res = mock.respond(req);
-        } else {
-            res = connection.send(req);
-        }
-
+        HTTPResponse res = connection.send(req);
         return parseUpsertId(res.getBody());
     }
 
@@ -234,15 +150,7 @@ public with sharing class FogBugzAPI {
 
         HTTPRequest req = buildHTTPRequest(params);
         HTTP connection = new HTTP();
-        HTTPResponse res = null;
-
-        if (Test.isRunningTest()) {
-            FogBugzHttpCalloutMock mock = new FogBugzHttpCalloutMock();
-            res = mock.respond(req);
-        } else {
-            res = connection.send(req);
-        }
-
+        HTTPResponse res = connection.send(req);
         return parseUpsertId(res.getBody());
     }
 
@@ -286,15 +194,7 @@ public with sharing class FogBugzAPI {
 
         HTTPRequest req = buildHTTPRequest(params);
         HTTP connection = new HTTP();
-        HTTPResponse res = null;
-
-        if (Test.isRunningTest()) {
-            FogBugzHttpCalloutMock mock = new FogBugzHttpCalloutMock();
-            res = mock.respond(req);
-        } else {
-            res = connection.send(req);
-        }
-
+        HTTPResponse res = connection.send(req);
         if (close) {
             this.resolveCase(fbCase);
             return this.closeCase(fbCase);
@@ -314,15 +214,7 @@ public with sharing class FogBugzAPI {
 
         HTTPRequest req = buildHTTPRequest(params);
         HTTP connection = new HTTP();
-        HTTPResponse res = null;
-
-        if (Test.isRunningTest()) {
-            FogBugzHttpCalloutMock mock = new FogBugzHttpCalloutMock();
-            res = mock.respond(req);
-        } else {
-            res = connection.send(req);
-        }
-
+        HTTPResponse res = connection.send(req);
         return parseUpsertId(res.getBody());
     }
 
@@ -334,14 +226,7 @@ public with sharing class FogBugzAPI {
 
         HTTPRequest req = buildHTTPRequest(params);
         HTTP connection = new HTTP();
-        HTTPResponse res = null;
-
-        if (Test.isRunningTest()) {
-            FogBugzHttpCalloutMock mock = new FogBugzHttpCalloutMock();
-            res = mock.respond(req);
-        } else {
-            res = connection.send(req);
-        }
+        HTTPResponse res = connection.send(req);
 
         String email = null;
         if (res != null && res.getBody() != null) {
@@ -474,6 +359,16 @@ public with sharing class FogBugzAPI {
         return tags;
     }
 
+    private HTTPRequest buildFogBugzRequest(String param) {
+        HTTPRequest req = new HTTPRequest();
+        req.setEndpoint(FogBugz_Settings__c.getOrgDefaults().FB_URL__c != null ?
+                            FogBugz_Settings__c.getOrgDefaults().FB_URL__c : DEFAULT_FB_URL);
+        req.setBody('token=' + FogBugz_Settings__c.getOrgDefaults().Token__c + param);
+        req.setTimeout(FB_HTTP_TIMEOUT);
+        req.setMethod('POST');
+        return req;
+    }
+
     private HTTPRequest buildHTTPRequest(Map<String, String> parameters) {
         HTTPRequest req = new HttpRequest();
         req.setEndpoint(FogBugz_Settings__c.getOrgDefaults().FB_URL__c != null ? FogBugz_Settings__c.getOrgDefaults().FB_URL__c : DEFAULT_FB_URL);
@@ -493,15 +388,7 @@ public with sharing class FogBugzAPI {
 
         HTTPRequest req = buildHTTPRequest(paramsTags);
         HTTP connection = new HTTP();
-        HTTPResponse res = null;
-
-        if (Test.isRunningTest()) {
-           FogBugzHttpCalloutMock mock = new FogBugzHttpCalloutMock();
-           res = mock.respond(req);
-        } else {
-           res = connection.send(req);
-        }
-
+        HTTPResponse res = connection.send(req);
         return parseCaseTags(res.getBody());
     }
 

@@ -8,6 +8,8 @@ global class FogBugzHttpCalloutMock implements HttpCalloutMock {
 
     private String responseBody;
 
+    public final static String TEST_FB_ID = 'testFBId';
+    public final static String TEST_SF_ID = 'testSFId';
     public static final String RESPONSE_TAGS = '<?xml version="1.0" encoding="UTF-8"?><response><cases count="1">' +
                                                  '<case ixBug="testFBId" operations="edit,assign,resolve,email,remind">' +
                                                  '<tags><tag><![CDATA[[0/20]]]></tag><tag><![CDATA[Test]]></tag><tag><![CDATA[CommCare]]></tag></case>' +
