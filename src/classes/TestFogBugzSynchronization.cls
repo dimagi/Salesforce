@@ -1,10 +1,3 @@
-/**
- * Tests for the FogBugz sync high level cases
- *
- * @author  Antonio Grassi
- * @date    11/15/2012
- */
-
 @isTest
 public class TestFogBugzSynchronization {
 
@@ -18,8 +11,11 @@ public class TestFogBugzSynchronization {
         upsert settings;
     }
 
-    static testMethod void testOpportunityToCaseWithCaseId() {
+    @isTest
+    public static void testOpportunityToCaseWithCaseId() {
         setupSettings();
+        Test.setMock(HttpCalloutMock.class, new FogBugzHttpCalloutMock());
+        Test.startTest();
         Opportunity o = new Opportunity(
             Name = 'Test name',
             StageName = 'Test stage',
@@ -27,39 +23,29 @@ public class TestFogBugzSynchronization {
             Fogbugz_Ticket_Number__c = 'Should not change'
         );
         insert o;
-
+        Test.stopTest();
         Opportunity refreshed = [SELECT Id, Fogbugz_Ticket_Number__c FROM Opportunity WHERE Id = :o.Id];
         System.assertEquals('Should not change', refreshed.Fogbugz_Ticket_Number__c, 'Opportunity already had a FogBugz id and was updated');
     }
 
-    static testMethod void testOpportunityToCaseWithoutCaseId() {
+    @isTest
+    public static void testOpportunityToCaseWithoutCaseId() {
         setupSettings();
+        Test.setMock(HttpCalloutMock.class, new FogBugzHttpCalloutMock());
         Test.startTest();
         Opportunity o = createTestOpportunity(null);
         Test.stopTest();
 
         Opportunity refreshed = [SELECT Id, Fogbugz_Ticket_Number__c FROM Opportunity WHERE Id = :o.Id];
-        System.assertEquals(TestFogBugzAPI.TEST_FB_ID, refreshed.Fogbugz_Ticket_Number__c, 'FogBugz id was not updated on Opportunity');
+        System.assertEquals(FogBugzHttpCalloutMock.TEST_FB_ID, refreshed.Fogbugz_Ticket_Number__c, 'FogBugz id was not updated on Opportunity');
     }
 
-    static Opportunity createTestOpportunity(String fbCaseId) {
+    @isTest
+    public static void testFB2SFSyncExistentCase() {
         setupSettings();
-        Opportunity o = new Opportunity(
-            Name = 'Change me',
-            StageName = 'Change me',
-            CloseDate = Date.today(),
-            Fogbugz_Assigned_To__c = 'Change me',
-            Fogbugz_Ticket_Number__c = fbCaseId
-        );
-        insert o;
-        return o;
-    }
-
-    static testMethod void testFB2SFSyncExistentCase() {
-        setupSettings();
-        Opportunity o = createTestOpportunity(TestFogBugzAPI.TEST_FB_ID);
-
+        Test.setMock(HttpCalloutMock.class, new FogBugzHttpCalloutMock());
         Test.startTest();
+        Opportunity o = createTestOpportunity(FogBugzHttpCalloutMock.TEST_FB_ID);
         Database.executeBatch(new FogBugzSynchronizerBatch(1, true), 1);
         Test.stopTest();
 
@@ -73,34 +59,43 @@ public class TestFogBugzSynchronization {
         System.assertEquals(Datetime.newInstanceGMT(2012, 1, 1, 0, 0, 0), refreshed.Fogbugz_Last_Updated_Date__c, 'FB last modified not updated');
     }
 
-    static testMethod void testFB2SFSyncNotExistentCase() {
+    @isTest
+    public static void testFB2SFSyncNotExistentCase() {
         setupSettings();
         // We checked the update on the above test case, we'll just cover the batch job code
         // here as there's nothing we can test
-
+        Test.setMock(HttpCalloutMock.class, new FogBugzHttpCalloutMock());
         Test.startTest();
-
-        FogBugzHTTPMock fakeHTTP = new FogBugzHTTPMock(TestFogBugzAPI.GET_CASES_RESPONSE);
-        Test.setMock(HttpCalloutMock.class, fakeHTTP);
         Database.executeBatch(new FogBugzSynchronizerBatch(1, true), 1);
-
         Test.stopTest();
     }
 
-    static testMethod void testFB2SFSyncNote() {
+    @isTest
+    public static void testFB2SFSyncNote() {
         setupSettings();
-        // We can just do coverage here, as we cannot perform callouts to check the
-        // note was created in FB
-        Opportunity o = createTestOpportunity(TestFogBugzAPI.TEST_FB_ID);
+        Test.setMock(HttpCalloutMock.class, new FogBugzHttpCalloutMock());
+        Test.startTest();
+        Opportunity o = createTestOpportunity(FogBugzHttpCalloutMock.TEST_FB_ID);
 
         Task t = new Task(Description = 'Test',
                           Priority = 'Normal',
                           Status = 'Test',
                           WhatId = o.Id,
                           Subject = 'Email: Test subject');
-
-        Test.startTest();
         insert t;
         Test.stopTest();
+    }
+
+    public static Opportunity createTestOpportunity(String fbCaseId) {
+        setupSettings();
+        Opportunity o = new Opportunity(
+            Name = 'Change me',
+            StageName = 'Change me',
+            CloseDate = Date.today(),
+            Fogbugz_Assigned_To__c = 'Change me',
+            Fogbugz_Ticket_Number__c = fbCaseId
+        );
+        insert o;
+        return o;
     }
 }

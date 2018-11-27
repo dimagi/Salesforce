@@ -73,15 +73,15 @@ public class TestFBApi {
 
         FogBugzCase fbCase = api.getCase('testFBId');
         System.assert(fbCase != null);
-        System.assertEquals(fbCase.title, 'Title');
-        System.assertEquals(fbCase.area, 'area');
-        System.assertEquals(fbCase.assignedTo, 'salesforce');
+        System.assertEquals(fbCase.title, 'Test title');
+        System.assertEquals(fbCase.area, 'Test area');
+        System.assertEquals(fbCase.assignedTo, 'Test assignee');
         System.assertEquals(fbCase.externalBugID, '1');
         System.assertEquals(fbCase.caseId, 'testFBId');
         System.assertEquals(fbCase.ixPersonOpenedBy, 'salesforce');
         System.assertEquals(fbCase.latestEvent, 'event');
         System.assertEquals(fbCase.hrsElapsed, 41.7327995300293);
-        System.assertEquals(fbCase.lastModifiedDate, Datetime.valueOfGmt('2013-04-25T22:47:59Z'.replace('T', ' ').removeEnd('Z')));
+        System.assertEquals(fbCase.lastModifiedDate, Datetime.valueOfGmt('2012-1-1T00:00:00Z'.replace('T', ' ').removeEnd('Z')));
 
         Test.stopTest();
     }

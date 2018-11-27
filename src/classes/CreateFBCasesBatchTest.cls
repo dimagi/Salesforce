@@ -1,13 +1,26 @@
 @isTest
-private class CreateFBCasesBatchTest {
+public class CreateFBCasesBatchTest {
 
     @isTest
     public static void shouldCreateCase() {
-        FogBugzHTTPMock fakeHTTP = new FogBugzHTTPMock(TestFogBugzAPI.UPSERT_CASE_RESPONSE);
-        Test.setMock(HttpCalloutMock.class, fakeHTTP);
+        setUpTestData();
+        Test.setMock(HttpCalloutMock.class, new FogBugzHttpCalloutMock());
         Test.startTest();
-        FogBugzAPI api = new FogBugzAPI();
+        Opportunity oppFromDB = [SELECT Id, Name, StageName, Fogbugz_Opened_By__c, Fogbugz_Probability__c, Amount, Owner.Name,
+                                        IsClosed, Fogbugz_Ticket_Number__c FROM Opportunity LIMIT 1];
+        System.assertEquals(null, oppFromDB.Fogbugz_Ticket_Number__c);
 
+        Database.BatchableContext bc;
+        List<Opportunity> scope = new List<Opportunity>();
+        scope.add(oppFromDB);
+        (new CreateFBCasesBatch().execute(bc, scope));
+        Test.stopTest();
+
+        Opportunity oppFromDBAfterUpdate = [SELECT Id, Fogbugz_Ticket_Number__c FROM Opportunity LIMIT 1];
+        System.assertEquals('testFBId', oppFromDBAfterUpdate.Fogbugz_Ticket_Number__c);
+    }
+
+    private static void setUpTestData() {
         Business_Unit__c bunit = new Business_Unit__c();
         bunit.Name = 'Test';
         insert bunit; 
@@ -19,18 +32,5 @@ private class CreateFBCasesBatchTest {
         opp.Implementing_Business_Unit__c = bunit.Id;
 
         insert opp;
-
-        Opportunity oppFromDB = [SELECT Id, Name, StageName, Fogbugz_Opened_By__c, Fogbugz_Probability__c, Amount, Owner.Name,
-                                        IsClosed, Fogbugz_Ticket_Number__c FROM Opportunity WHERE IsClosed = false AND Fogbugz_Ticket_Number__c = ''];
-        System.assertEquals(null, oppFromDB.Fogbugz_Ticket_Number__c);
-
-        Database.BatchableContext bc;
-        List<Opportunity> scope = new List<Opportunity>();
-        scope.add(oppFromDB);
-        (new CreateFBCasesBatch().execute(bc, scope));
-        Test.stopTest();
-
-        Opportunity oppFromDBAfterUpdate = [SELECT Id, Fogbugz_Ticket_Number__c FROM Opportunity WHERE Id =: opp.Id];
-        System.assertEquals('testFBId', oppFromDBAfterUpdate.Fogbugz_Ticket_Number__c);
     }
 }

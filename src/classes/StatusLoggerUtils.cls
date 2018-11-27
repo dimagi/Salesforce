@@ -21,6 +21,7 @@ public class StatusLoggerUtils {
     public static final String ZENDESK_LOGGER = 'ZENDESK_LOGGER';
     public static final String AEE_LOGGER = 'AGGREGATE_EXECUTION_EFFICIENCY_LOGGER';
     public static final String CASE_CREATE_LOGGER = 'SF_FB_CASE_LOGGER';
+    public static final String FOGBUGZ_SYNC_LOGGER = 'FOGBUGZ_SYNC_LOGGER';
 
     /**
      * Logs INFO row for given log name.

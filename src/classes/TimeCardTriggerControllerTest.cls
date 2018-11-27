@@ -340,6 +340,7 @@ public class TimeCardTriggerControllerTest {
         }
         update toUpdate;
 
+        Test.setMock(HttpCalloutMock.class, new FogBugzHttpCalloutMock());
         Test.startTest();
         Database.executeBatch(new TimeCardCaseUpdateBatch(), 200);
         Test.stopTest();

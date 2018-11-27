@@ -113,20 +113,21 @@ private class OpportunityTriggersTest {
         Business_Unit__c bunit = new Business_Unit__c();
         bunit.Name = 'Test';
         insert bunit; 
-        
+
         Opportunity opp = new Opportunity();
         opp.Name = 'Test';
         opp.StageName = 'Stage 1 - Connect';
         opp.CloseDate = Date.newInstance(2013, 4, 9);
         opp.Implementing_Business_Unit__c = bunit.Id;
-        opp.Fogbugz_Ticket_Number__c = TestFogBugzAPI.TEST_FB_ID;
+        opp.Fogbugz_Ticket_Number__c = FogBugzHttpCalloutMock.TEST_FB_ID;
         insert opp;
-        
+
+        Test.setMock(HttpCalloutMock.class, new FogBugzHttpCalloutMock());
         Test.startTest();
-        
         delete opp;
-        
         Test.stopTest();
+
+        System.assertEquals(0, [SELECT Id FROM Opportunity].size());
     }
 
     @isTest
@@ -140,7 +141,7 @@ private class OpportunityTriggersTest {
         opp.StageName = 'Stage 1 - Connect';
         opp.CloseDate = Date.newInstance(2013, 4, 9);
         opp.Implementing_Business_Unit__c = bunit.Id;
-        opp.Fogbugz_Ticket_Number__c = TestFogBugzAPI.TEST_FB_ID;
+        opp.Fogbugz_Ticket_Number__c = FogBugzHttpCalloutMock.TEST_FB_ID;
         insert opp;
         
         Test.startTest();
@@ -165,7 +166,7 @@ private class OpportunityTriggersTest {
         opp.StageName = 'Stage 1 - Connect';
         opp.CloseDate = Date.newInstance(2013, 4, 9);
         opp.Implementing_Business_Unit__c = bunit.Id;
-        opp.Fogbugz_Ticket_Number__c = TestFogBugzAPI.TEST_FB_ID;
+        opp.Fogbugz_Ticket_Number__c = FogBugzHttpCalloutMock.TEST_FB_ID;
         opp.Amount = 10;
         insert opp;
         
@@ -188,7 +189,7 @@ private class OpportunityTriggersTest {
         opp.StageName = 'Stage 1 - Connect';
         opp.CloseDate = Date.newInstance(2013, 4, 9);
         opp.Implementing_Business_Unit__c = bunit.Id;
-        opp.Fogbugz_Ticket_Number__c = TestFogBugzAPI.TEST_FB_ID;
+        opp.Fogbugz_Ticket_Number__c = FogBugzHttpCalloutMock.TEST_FB_ID;
         insert opp;
         
         Test.startTest();
@@ -213,7 +214,7 @@ private class OpportunityTriggersTest {
         opp.StageName = 'Closed';
         opp.CloseDate = Date.newInstance(2013, 4, 9);
         opp.Implementing_Business_Unit__c = bunit.Id;
-        opp.Fogbugz_Ticket_Number__c = TestFogBugzAPI.TEST_FB_ID;
+        opp.Fogbugz_Ticket_Number__c = FogBugzHttpCalloutMock.TEST_FB_ID;
         
         Test.startTest();
         

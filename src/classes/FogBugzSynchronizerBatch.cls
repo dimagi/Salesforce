@@ -1,13 +1,7 @@
 /**
- * This batch job updates the externalBugId of the FB cases that didn't exist
- * previously in SF as Opportunities
- *
- * @author  Antonio Grassi
- * @date    11/15/2012
+ * This batch job synchronize Opps with FogBugz cases.
  */
-global without sharing class FogBugzSynchronizerBatch implements Database.Batchable<Opportunity>, Database.AllowsCallouts, Database.Stateful {
-
-    public final Boolean testMode;
+public without sharing class FogBugzSynchronizerBatch implements Database.Batchable<Opportunity>, Database.AllowsCallouts, Database.Stateful {
 
     private DateTime jobStartDateTime;
     private Boolean syncSuccess;
@@ -15,19 +9,16 @@ global without sharing class FogBugzSynchronizerBatch implements Database.Batcha
     private Integer filterId;
     private Boolean lastJob;
 
-    public FogBugzSynchronizerBatch(Integer filterId, Boolean testMode) {
-        this.testMode = testMode;
-        this.filterId = filterId;
-        this.lastJob = false;
+    public FogBugzSynchronizerBatch(Integer filterId) {
+        this(filterId, false);
     }
 
-    public FogBugzSynchronizerBatch(Integer filterId, Boolean lastJob, Boolean testMode) {
-        this.testMode = testMode;
+    public FogBugzSynchronizerBatch(Integer filterId, Boolean lastJob) {
         this.filterId = filterId;
         this.lastJob = lastJob;
     }
 
-    global Iterable<Opportunity> start(Database.BatchableContext BC) {
+    public Iterable<Opportunity> start(Database.BatchableContext BC) {
         FogBugz_Settings__c settings = FogBugz_Settings__c.getOrgDefaults();
         this.jobStartDateTime = Datetime.now();
         this.syncSuccess = true;
@@ -40,20 +31,19 @@ global without sharing class FogBugzSynchronizerBatch implements Database.Batcha
             Opportunity[] modifiedOps = preFetchOpportunities(settings.Last_Time_Sync_Ran__c);
             return new OpportunityIterable(modifiedOps);
         } catch(exception e) {
+            StatusLoggerUtils.logError(StatusLoggerUtils.FOGBUGZ_SYNC_LOGGER, 'Start method exception filter : ' + this.filterId, 0, e.getMessage());
             this.syncSuccess = false;
-            EmailHelper.sendEmailFromException(this.errorEmailAdress, 'Fogbugz Sync - Error in start method',
-                                                'Last sync date time wasn\'t updated, we catch following exception', e);
             return new OpportunityIterable(new Opportunity[]{});
         }
     }
 
-    global void execute(Database.BatchableContext bc, List<Opportunity> scope) {
+    public void execute(Database.BatchableContext bc, List<Opportunity> scope) {
         FogBugzAPI api = new FogBugzAPI();
 
         for (Opportunity o : scope) {
             if (o.Fogbugz_Opened_By__c != null) {
                 Boolean ownerFound = false;
-                String userMail = Test.isRunningTest() ? 'do@not.exist.com' : api.getPersonEmail(o.Fogbugz_Opened_By__c);
+                String userMail = api.getPersonEmail(o.Fogbugz_Opened_By__c);
 
                 if (userMail != null) {
                     User[] us = [SELECT Id FROM User WHERE Email = :userMail];
@@ -84,6 +74,30 @@ global without sharing class FogBugzSynchronizerBatch implements Database.Batcha
         }
     }
 
+    public void finish(Database.BatchableContext bc) {
+        FogBugz_Settings__c fbSettings = FogBugz_Settings__c.getOrgDefaults();
+        if (!this.lastJob) {
+            this.lastJob = fbSettings.Sync_Filter_Closed__c != null ? this.lastJob : true;
+        }
+
+        if (this.lastJob) {
+            fbSettings.Sync_Script_Running__c = false;
+            if (this.syncSuccess) { // we can update sync date when all cases was updated
+                fbSettings.Last_Time_Sync_Ran__c = this.jobStartDateTime;
+            }
+            update fbSettings;
+        } else {
+            Database.executeBatch(new FogBugzSynchronizerBatch(fbSettings.Sync_Filter_Closed__c.intValue(), true), 1);
+        }
+
+        if(!Test.isRunningTest()) {
+            StatusLoggerUtils.logInfo(StatusLoggerUtils.FOGBUGZ_SYNC_LOGGER, 'End sync job: ' + this.filterId, 0, 'End sync job');
+            if (this.lastJob && DateTime.now().hour() == 9) { // send one email a day at 9:00 am
+                StatusLoggerUtils.sendLog(StatusLoggerUtils.FOGBUGZ_SYNC_LOGGER);
+            }
+        }
+    }
+
     private Opportunity[] preFetchOpportunities(Datetime minTime) {
         Opportunity[] allOpportunities = new Opportunity[]{};
         Opportunity[] newOpportunities = new Opportunity[]{};
@@ -91,18 +105,11 @@ global without sharing class FogBugzSynchronizerBatch implements Database.Batcha
         FogBugz_Settings__c fbSettings = FogBugz_Settings__c.getOrgDefaults();
         fbSettings.Sync_Script_Running__c = true;
         FogBugzAPI api = new FogBugzAPI();
-
-        if (!testMode) {
-            api.setCurrentFilter(this.filterId);
-        }
-
-        Map<String, FogBugzCase> fbIdToCaseMap = testMode ?
-                                                 api.parseCases(TestFogBugzAPI.GET_CASES_RESPONSE) :
-                                                 api.listCases();
+        api.setCurrentFilter(this.filterId);
+        Map<String, FogBugzCase> fbIdToCaseMap = api.listCases();
 
         // We delay a little this upsert to avoid the "uncommitted work pending" exception when performing the FB API HTTP requests
         upsert fbSettings;
-        sendEmailBeforeSyncOpps(fbIdToCaseMap, minTime);
 
         if (fbIdToCaseMap.size() > 0) {
             Map<String, Opportunity> existentOpportunities = FogBugzUtils.fetchOpportunitiesByFBId(fbIdToCaseMap.keySet());
@@ -148,45 +155,6 @@ global without sharing class FogBugzSynchronizerBatch implements Database.Batcha
             }
         }
         return allOpportunities;
-    }
-
-    global void finish(Database.BatchableContext bc) {
-        FogBugz_Settings__c fbSettings = FogBugz_Settings__c.getOrgDefaults();
-        if (!this.lastJob) {
-            this.lastJob = fbSettings.Sync_Filter_Closed__c != null ? this.lastJob : true;
-        }
-
-        if (this.lastJob) {
-            fbSettings.Sync_Script_Running__c = false;
-            if (this.syncSuccess) { // we can update sync date when all cases was updated
-                fbSettings.Last_Time_Sync_Ran__c = this.jobStartDateTime;
-            }
-            update fbSettings;
-        } else {
-            Database.executeBatch(new FogBugzSynchronizerBatch(fbSettings.Sync_Filter_Closed__c.intValue(), true, false), 1);
-        }
-
-        if(!test.isRunningTest()) {
-            hqInt_BatchErrorLogger.sendErrorEmails(BC.getJobId(), 'Fogbugz Success & Errors Filter: '
-                                                        + this.filterId, 'Fogbugz Batch Run Results Logs:');
-        }
-    }
-
-    /**
-     * Sends email to admin, needed for reproduce bug 235623.
-     */
-    private void sendEmailBeforeSyncOpps(Map<String, FogBugzCase> fbIdToCaseMap, DateTime syncedDate) {
-        if (Test.isRunningTest()) {
-            return;
-        }
-
-        String emailBody = 'syncedDate: ' + syncedDate + ' <br/><br/>';
-        emailBody += '<table border="1">';
-        for (FogBugzCase fbCase : fbIdToCaseMap.values()) {
-            emailBody += '<tr><td>' + fbCase.caseId + '</td><td>Last modified date: ' + fbCase.lastModifiedDate + '</td></tr>';
-        }
-        emailBody += '</table>';
-        EmailHelper.sendEmail(this.errorEmailAdress, 'Fogbugz Sync - Cases listed by FB filter: ' + this.filterId, emailBody);
     }
 
     /**

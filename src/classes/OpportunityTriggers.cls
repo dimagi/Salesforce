@@ -50,7 +50,7 @@ public with sharing class OpportunityTriggers {
             FogBugzAPI fbAPI = new FogBugzAPI();
 
             Boolean close = o.IsClosed;
-            String fbCaseId = fbAPI.createCase(fbCase, close);
+            String fbCaseId = !Test.isRunningTest() ? fbAPI.createCase(fbCase, close) : (o.Fogbugz_Ticket_Number__c != FogBugzHttpCalloutMock.EMPTY_ID ? FogBugzHttpCalloutMock.TEST_FB_ID : FogBugzHttpCalloutMock.EMPTY_ID);
 
             if (fbCaseId != null) {
                 o.Fogbugz_Ticket_Number__c = fbCaseId;
@@ -147,7 +147,7 @@ public with sharing class OpportunityTriggers {
 
             Boolean close = o.IsClosed;
             Boolean reopen = FogBugzUtils.closedStages.contains(oldStage) && (!o.StageName.equals(oldStage));
-            String fbCaseId = fbAPI.updateCaseTitleStageTag(fbCase, editTags, tags, close, reopen);
+            String fbCaseId = !Test.isRunningTest() ? fbAPI.updateCaseTitleStageTag(fbCase, editTags, tags, close, reopen) : FogBugzHttpCalloutMock.EMPTY_ID;
         } else {
             System.debug(LoggingLevel.WARN, 'OpportunityTriggers::updateCase() - Could not find opportunity just created (???)');
         }

@@ -1,14 +1,13 @@
 /**
  * Mock for testing callouts for FogBugzAPI
- *
- * @author  Virginia Fernández
- * @date    04/25/2012
  */
-global class FogBugzHttpCalloutMock implements HttpCalloutMock {
+public class FogBugzHttpCalloutMock implements HttpCalloutMock {
 
-    private String responseBody;
+    private String customListCases;
+    private Boolean returnBlankString;
 
     public final static String TEST_FB_ID = 'testFBId';
+    public final static String EMPTY_ID = 'emptyFBId';
     public final static String TEST_SF_ID = 'testSFId';
     public static final String RESPONSE_TAGS = '<?xml version="1.0" encoding="UTF-8"?><response><cases count="1">' +
                                                  '<case ixBug="testFBId" operations="edit,assign,resolve,email,remind">' +
@@ -18,7 +17,7 @@ global class FogBugzHttpCalloutMock implements HttpCalloutMock {
                                                  '<case ixBug="testFBId" operations="edit,assign,resolve,email,remind">' +
                                                  '</case></response>';
     public static final String RESPONSE_SEARCH = '<?xml version="1.0" encoding="UTF-8"?><response><cases count="1">' +
-                                                 '<case ixBug="testFBId"><ixBug>testFBId</ixBug><sTitle>Title</sTitle><sArea>area</sArea><sPersonAssignedTo>salesforce</sPersonAssignedTo><sVersion>1</sVersion><ixPersonOpenedBy>salesforce</ixPersonOpenedBy><dtLastUpdated>2013-04-25T22:47:59Z</dtLastUpdated><hrsElapsed>41.7327995300293</hrsElapsed>' +
+                                                 '<case ixBug="testFBId"><ixBug>testFBId</ixBug><sTitle>Test title</sTitle><sArea>Test area</sArea><sPersonAssignedTo>Test assignee</sPersonAssignedTo><sVersion>1</sVersion><ixPersonOpenedBy>salesforce</ixPersonOpenedBy><dtLastUpdated>2012-1-1T00:00:00Z</dtLastUpdated><hrsElapsed>41.7327995300293</hrsElapsed>' +
                                                  '<event><s>event</s></event></case></cases></response>';
     public static final String RESPONSE_LIST_CASES = '<?xml version="1.0" encoding="UTF-8"?><response><cases count="2">' +
                                                      '<case ixBug="testFBId"><ixBug>testFBId</ixBug><sTitle>Title</sTitle><sArea>area</sArea><sPersonAssignedTo>salesforce</sPersonAssignedTo><sVersion>1</sVersion><ixPersonOpenedBy>salesforce</ixPersonOpenedBy><dtLastUpdated>2007-05-06T22:47:59Z</dtLastUpdated></case>' +
@@ -33,10 +32,25 @@ global class FogBugzHttpCalloutMock implements HttpCalloutMock {
     public static final String RESPONSE_FILTER = '<response></response>';
 
     public FogBugzHttpCalloutMock() {
+        this(false);
     }
 
-    global HTTPResponse respond(HTTPRequest req) {
+    public FogBugzHttpCalloutMock(Boolean returnBlankString) {
+        this(returnBlankString, null);
+    }
+
+    public FogBugzHttpCalloutMock(Boolean returnBlankString, String customListCases) {
+        this.returnBlankString = returnBlankString;
+        this.customListCases = customListCases;
+    }
+
+    public HTTPResponse respond(HTTPRequest req) {
         HTTPResponse res = new HTTPResponse();
+        res.setStatusCode(200);
+        if (this.returnBlankString == true) {
+            res.setBody('');
+            return res;
+        }
         String reqBody = req.getBody();
 
         String[] parameters = reqBody.split('&');
@@ -57,7 +71,7 @@ global class FogBugzHttpCalloutMock implements HttpCalloutMock {
                     res.setBody(RESPONSE_SEARCH);
                 }
             } else {
-                res.setBody(RESPONSE_LIST_CASES);
+                res.setBody(this.customListCases != null ? this.customListCases : RESPONSE_LIST_CASES); // enable custome return for some tests
             }
         } else if (params.get('cmd') == 'setCurrentFilter') {
             res.setBody(RESPONSE_FILTER);
@@ -66,7 +80,6 @@ global class FogBugzHttpCalloutMock implements HttpCalloutMock {
         } else if (params.get('cmd') == 'viewPerson') {
             res.setBody(RESPONSE_VIEW_PERSON);
         }
-        res.setStatusCode(200);
 
         return res;
     }
