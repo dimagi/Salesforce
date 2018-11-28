@@ -29,7 +29,7 @@ public with sharing class TaskTriggers {
     				FogBugzAPI api = new FogBugzAPI();
     				
     				String res = Test.isRunningTest() ?
-    				             TestFogBugzAPI.TEST_FB_ID :
+    				             FogBugzHttpCalloutMock.TEST_FB_ID :
     				             api.addNote(o.Fogbugz_Ticket_Number__c, t.Description == null ? '' : t.Description);
     				
     				if (res == null) {

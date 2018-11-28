@@ -74,9 +74,7 @@ public without sharing class FogBugzUtils {
         FogBugzAPI api = new FogBugzAPI();
 
         // Fetch complete details for opportunity
-        FogBugzCase fbCase = Test.isRunningTest() ?
-                             api.parseCases(TestFogBugzAPI.GET_CASES_RESPONSE).values()[0] :
-                             api.getCase(o.Fogbugz_Ticket_Number__c);
+        FogBugzCase fbCase = api.getCase(o.Fogbugz_Ticket_Number__c);
 
         if (fbCase != null) {
             if (!checkTimes || o.Fogbugz_Last_Updated_Date__c == null || fbCase.lastModifiedDate == null ||
@@ -88,7 +86,8 @@ public without sharing class FogBugzUtils {
                     String res = Test.isRunningTest() ? 'testFBId' : api.updateCase(fbCase);
                     if (res == null) {
                         System.debug(LoggingLevel.ERROR, 'FB2SFSynchronizer::execute() - Error while updating FB case #' + fbCase.caseId);
-                        hqInt_BatchErrorLogger.logError(batchId, 'Fogbugz Error', 'FB2SFSynchronizer::execute() - Error while updating FB case #' + fbCase.caseId, '');
+                        StatusLoggerUtils.logError(StatusLoggerUtils.FOGBUGZ_SYNC_LOGGER, 'Fogbugz Sync Error batchId : ' + batchId, 0,
+                                            'FB2SFSynchronizer::execute() - Error while updating FB case #' + fbCase.caseId);
                     }
                 }
 
@@ -124,17 +123,20 @@ public without sharing class FogBugzUtils {
                 upsert o;
             } else {
                 System.debug(LoggingLevel.INFO, 'FogBugzUtils::syncOpportunityFromFB() - Case not updated in FB, case #' + o.Fogbugz_Ticket_Number__c);
-                hqInt_BatchErrorLogger.logError(batchId, 'Fogbugz Sync', 'FogBugzUtils::syncOpportunityFromFB() - Case not updated in FB, case #' + o.Fogbugz_Ticket_Number__c,'');
+                StatusLoggerUtils.logWarning(StatusLoggerUtils.FOGBUGZ_SYNC_LOGGER, 'Fogbugz Sync batchId : ' + batchId, 0,
+                                            'FogBugzUtils::syncOpportunityFromFB() - Case not updated in FB, case #' + o.Fogbugz_Ticket_Number__c);
                 success = false;
             }
         } else {
             System.debug(LoggingLevel.WARN, 'FogBugzUtils::syncOpportunityFromFB() - Could not retrieve details for FB case #' + o.Fogbugz_Ticket_Number__c);
-            hqInt_BatchErrorLogger.logError(batchId, 'Fogbugz Error', 'FogBugzUtils::syncOpportunityFromFB() - Could not retrieve details for FB case #' + o.Fogbugz_Ticket_Number__c,'');
+            StatusLoggerUtils.logError(StatusLoggerUtils.FOGBUGZ_SYNC_LOGGER, 'Fogbugz Sync Error batchId : ' + batchId, 0,
+                                            'FogBugzUtils::syncOpportunityFromFB() - Could not retrieve details for FB case #' + o.Fogbugz_Ticket_Number__c);
             success = false;
         }
 
         if(success == true) {
-            hqInt_BatchErrorLogger.logError(batchId, 'Fogbugz Opp Successfully synced - FogBugz Ticket No - ' + o.Fogbugz_Ticket_Number__c, '', '');
+            StatusLoggerUtils.logInfo(StatusLoggerUtils.FOGBUGZ_SYNC_LOGGER, 'Fogbugz Sync batchId : ' + batchId, 0,
+                                            'Fogbugz Opp Successfully synced - FogBugz Ticket No - ' + o.Fogbugz_Ticket_Number__c);
         }
         return success;
     }

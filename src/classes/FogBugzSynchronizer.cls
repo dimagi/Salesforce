@@ -1,12 +1,9 @@
 /**
- * Retrieves FogBugz cases and upserts SF opportunities
- *
- * @author  Antonio Grassi
- * @date    11/14/2012
+ * Schedules FB Case - Opp sync each hour.
  */
-global without sharing class FogBugzSynchronizer implements Schedulable {
+public class FogBugzSynchronizer implements Schedulable {
 
-    global void execute(SchedulableContext SC) {
+    public void execute(SchedulableContext SC) {
         FogBugz_Settings__c fbSettings = FogBugz_Settings__c.getOrgDefaults();
 
         if (!fbSettings.Sync_Script_Running__c) {
