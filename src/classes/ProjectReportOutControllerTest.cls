@@ -2,6 +2,25 @@
 public class ProjectReportOutControllerTest {
 
     @isTest
+    public static void shouldRedirectFromOldPROController() {
+        PRO_OAuth_Settings__c newSettings = new PRO_OAuth_Settings__c(Auth_Callback_URL__c = 'www.test-test.com', Name = 'Test Name');
+        insert newSettings;
+        ProjectReportOutController proController = new ProjectReportOutController();
+
+        PageReference pageRef = Page.ProjectReportOut;
+        pageRef.getParameters().put('state', 'test-state');
+        Test.setCurrentPage(pageRef);
+
+        Test.startTest();
+        PageReference testPageRef = proController.redirectToSFTools();
+        System.assertNotEquals(null, testPageRef);
+        System.assertEquals('www.test-test.com?state=test-state', testPageRef.getUrl());
+        System.assertEquals(1, testPageRef.getParameters().size());
+        System.assertEquals('test-state', testPageRef.getParameters().get('state'));
+        Test.stopTest();
+    }
+
+    @isTest
     public static void shouldValidatePRO() {
         Id p = [SELECT Id FROM Profile WHERE Name = 'Standard User'].Id;
         User user = new User(Alias = 'test1234', Email = 'test1234@no1email.com',

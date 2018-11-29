@@ -89,10 +89,6 @@ public class StatusLoggerUtils {
      * Send email to reciepients for given log name. After sanding an emails it removes logs with given log name from DB.
      */
     public static void sendLog(String logName, List<String> reciepients) {
-        if (Test.isRunningTest()) {
-            return;
-        }
-
         List<Status_Log__c> logsInfo = [SELECT Title__c, Counter__c, Message__c, Date__c FROM Status_Log__c WHERE Name =: logName AND Status__c =: INFO_LOG ORDER BY Date__c DESC];
         List<Status_Log__c> logsWarns = [SELECT Title__c, Counter__c, Message__c, Date__c FROM Status_Log__c WHERE Name =: logName AND Status__c =: WARNING_LOG ORDER BY Date__c DESC];
         List<Status_Log__c> logsError = [SELECT Title__c, Counter__c, Message__c, Date__c FROM Status_Log__c WHERE Name =: logName AND Status__c =: ERROR_LOG ORDER BY Date__c DESC];
@@ -123,7 +119,10 @@ public class StatusLoggerUtils {
         body += '</table></div>';
         body += '<br/>Send date : ' + DateTime.now() + '<br/>';
 
-        EmailHelper.sendEmail(reciepients, LOGGER_SUBJECT + logName, body);
+        if (!Test.isRunningTest()) {
+            EmailHelper.sendEmail(reciepients, LOGGER_SUBJECT + logName, body);
+        }
+
         clearData(logsInfo);
         clearData(logsWarns);
         clearData(logsError);
