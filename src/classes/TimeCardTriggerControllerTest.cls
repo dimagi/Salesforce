@@ -868,7 +868,7 @@ public class TimeCardTriggerControllerTest {
     }
 
     @isTest
-    public static void billingRateManagerShouldUpdateRateHistory() {
+    public static void billingRateManagerShouldUpdateRateHistory1() {
         Project_Billing_Rate__c br1 = new Project_Billing_Rate__c(Name = 'Loaded Daily Rate 1', Date__c = Date.newInstance(1990, 01, 01), Custom_1__c = 0, Custom_2__c = 0, Custom_3__c = 0,
                                             Fee__c = 10, Fringe__c = 30, G_A__c = 10, Overhead__c = 52);
         Project_Billing_Rate__c br2 = new Project_Billing_Rate__c(Name = 'Loaded Daily Rate 1', Date__c = Date.newInstance(2015, 01, 01), Custom_1__c = 0, Custom_2__c = 0, Custom_3__c = 0,
@@ -905,6 +905,35 @@ public class TimeCardTriggerControllerTest {
         System.assertEquals(10, newRate.G_A__c);
         System.assertEquals(5, newRate.Overhead__c);
         System.assertEquals(Date.newInstance(2015, 01, 01), newRate.Date__c);
+    }
+
+    @isTest
+    public static void billingRateManagerShouldUpdateRateHistory2() {
+        Project_Billing_Rate__c br1 = new Project_Billing_Rate__c(Name = 'Loaded Daily Rate 1', Date__c = Date.newInstance(1990, 01, 01), Custom_1__c = 0, Custom_2__c = 0, Custom_3__c = 0,
+                                            Fee__c = 10, Fringe__c = 30, G_A__c = 10, Overhead__c = 52);
+        Project_Billing_Rate__c br2 = new Project_Billing_Rate__c(Name = 'Loaded Daily Rate 1', Date__c = Date.newInstance(2015, 01, 01), Custom_1__c = 0, Custom_2__c = 0, Custom_3__c = 0,
+                                            Fee__c = 15, Fringe__c = 30, G_A__c = 10, Overhead__c = 52);
+        insert br1;
+        insert br2;
+
+        PageReference pageRef = Page.Billing_Rate_Manager;
+        pageRef.getParameters().put('billingRateName', EncodingUtil.urlDecode('Loaded Daily Rate 1', 'UTF-8'));
+        pageRef.getParameters().put('billingRateId', br2.Id);
+        Test.setCurrentPage(pageRef);
+
+        Test.startTest();
+        BillingRateController brc = new BillingRateController();
+        brc.initUpdateRate();
+        brc.deleteRateRow();
+        Test.stopTest();
+
+        brc.initManageRate();
+        System.assertEquals(1, brc.rateHistoryList.size());
+        System.assertEquals(1, [SELECT Id FROM Project_Billing_Rate__c WHERE Name = 'Loaded Daily Rate 1'].size());
+        List<Project_Billing_Rate_Update__c> upData = [SELECT From_Range__c, To_Range__c FROM Project_Billing_Rate_Update__c WHERE Name = 'Loaded Daily Rate 1'];
+        System.assertEquals(1, upData.size());
+        System.assertEquals(Date.newInstance(2015, 01, 01), upData.get(0).From_Range__c);
+        System.assertEquals(Date.today(), upData.get(0).To_Range__c);
     }
 
     @isTest
@@ -1032,5 +1061,34 @@ public class TimeCardTriggerControllerTest {
         System.assertEquals(2.4257309076, tcDB_4.Billing_Rate__c);
         Time_Card__c tcDB_5 = [SELECT Id, Billing_Rate__c FROM Time_Card__c WHERE Id =: tc_5_employee_1.Id];
         System.assertEquals(4.351347, tcDB_5.Billing_Rate__c);
+    }
+
+    @isTest
+    public static void billingRateCtrlShouldReturnPageReference() {
+        Project_Billing_Rate__c rate1_1 = new Project_Billing_Rate__c(Name = 'Loaded Daily Rate', Date__c = Date.newInstance(1990, 01, 01), Custom_1__c = 0, Custom_2__c = 0, Custom_3__c = 0,
+                                                                      Fee__c = 10, Fringe__c = 30, G_A__c = 10, Overhead__c = 52);
+        insert rate1_1;
+
+        PageReference pageRef = Page.Billing_Rate_Manager;
+        pageRef.getParameters().put('billingRateName', EncodingUtil.urlDecode('Loaded Daily Rate', 'UTF-8'));
+        pageRef.getParameters().put('billingRateId', rate1_1.Id);
+        Test.setCurrentPage(pageRef);
+
+        Test.startTest();
+        BillingRateController brc = new BillingRateController();
+        brc.initManageRate();
+
+        brc.billingRateId = rate1_1.Id;
+        PageReference pageRef1 = brc.goToRateUpdateView();
+        System.assertNotEquals(null, pageRef1);
+        System.assertEquals(true, pageRef1.getRedirect());
+        System.assertEquals(2, pageRef1.getParameters().size());
+        System.assertEquals('Loaded+Daily+Rate', pageRef1.getParameters().get('billingRateName'));
+        System.assertEquals(rate1_1.Id, pageRef1.getParameters().get('billingRateId'));
+
+        PageReference pageRef2 = brc.goToRateListView();
+        System.assertNotEquals(null, pageRef2);
+        System.assertEquals(true, pageRef2.getRedirect());
+        Test.stopTest();
     }
 }

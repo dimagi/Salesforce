@@ -25,9 +25,6 @@ public class AggregateExecutionEfficiencySnpJob {
 
                 Decimal sumServices = ar.get('expr0') != null ? (Decimal) ar.get('expr0') : 0;
                 Decimal sumEff = ar.get('expr0') != null ? (Decimal) ar.get('expr1') : 0;
-
-                totalSumServices += sumServices;
-                totalSumEff += sumEff;
                 Decimal valuetoSet = 1;
 
                 if (sumServices > 0) {
@@ -36,6 +33,8 @@ public class AggregateExecutionEfficiencySnpJob {
 
                 String fieldName = (currName + '__c').toLowerCase();
                 if (hasSObjectField(fieldName, sObjSnapshot)) {
+                    totalSumServices += sumServices;
+                    totalSumEff += sumEff;
                     sObjSnapshot.put(fieldName, valuetoSet);
                 }
             }
