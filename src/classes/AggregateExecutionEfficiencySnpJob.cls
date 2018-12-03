@@ -9,7 +9,7 @@ public class AggregateExecutionEfficiencySnpJob {
                                          AND (NOT Name LIKE '%MOTECH suite%') AND Implementation_Type__c != 'Self Service'
                                          AND Implementation_Type__c != '' AND Efficiency_Owner_BU__c != null
                                          AND Intracompany_Sub_contract__c = 'No' AND Percent_through_SOW_deliverables__c != 100
-                                         AND Status__c != 'Complete'
+                                         AND Status__c != 'Complete' AND GS_Revenue_Calculation__c != false
                                          GROUP BY Efficiency_Owner_BU__r.Name ORDER BY Efficiency_Owner_BU__r.Name];
 
         Decimal totalSumServices = 0;
