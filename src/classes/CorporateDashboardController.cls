@@ -54,20 +54,20 @@ public without sharing class CorporateDashboardController {
                 Date lastDate = metrics.get(0).Date__c;
                 for (CommCareHQ_Performance_Metrics__c rec : metrics) {
                     if (rec.Date__c.year() != lastDate.year() || rec.Date__c.month() != lastDate.month()) {
-                        tmpData.graphValue2 = (tmpData.recordCount1 != 0 ? tmpData.graphValue2 / tmpData.recordCount1 : 0) / 1000.00;
-                        tmpData.graphValue1 = (tmpData.recordCount2 != 0 ? tmpData.graphValue1 / tmpData.recordCount2 : 0);
+                        tmpData.graphValue1 = (tmpData.recordCount1 != 0 ? tmpData.graphValue1 / tmpData.recordCount1 : 0);
+                        tmpData.graphValue2 = (tmpData.recordCount2 != 0 ? tmpData.graphValue2 / tmpData.recordCount2 : 0) / 1000.00;
                         tmpData.graphValue3 = (tmpData.recordCount3 != 0 ? tmpData.graphValue3 / tmpData.recordCount3 : 0);
                         tmpData.name = getDateText(lastDate);
                         this.performanceData.add(tmpData);
                         tmpData = new LineChartData('', 0, 0, 0, 0);
                     }
 
-                    if (rec.Number_of_Submissions__c != null) {
-                        tmpData.graphValue2 += rec.Number_of_Submissions__c;
-                        tmpData.recordCount1++;
-                    }
                     if (rec.Avg_Page_Load__c != null) {
                         tmpData.graphValue1 += rec.Avg_Page_Load__c;
+                        tmpData.recordCount1++;
+                    }
+                    if (rec.Number_of_Submissions__c != null) {
+                        tmpData.graphValue2 += rec.Number_of_Submissions__c;
                         tmpData.recordCount2++;
                     }
                     if (rec.Server_Apdex__c != null) {
@@ -78,8 +78,8 @@ public without sharing class CorporateDashboardController {
                 }
                 // we must add the last date from list:
                 tmpData.name = getDateText(lastDate);
-                tmpData.graphValue2 = (tmpData.recordCount1 != 0 ? tmpData.graphValue2 / tmpData.recordCount1 : 0) / 1000.00;
-                tmpData.graphValue1 = (tmpData.recordCount2 != 0 ? tmpData.graphValue1 / tmpData.recordCount2 : 0);
+                tmpData.graphValue1 = (tmpData.recordCount1 != 0 ? tmpData.graphValue1 / tmpData.recordCount1 : 0);
+                tmpData.graphValue2 = (tmpData.recordCount2 != 0 ? tmpData.graphValue2 / tmpData.recordCount2 : 0) / 1000.00;
                 tmpData.graphValue3 = (tmpData.recordCount3 != 0 ? tmpData.graphValue3 / tmpData.recordCount3 : 0);
                 this.performanceData.add(tmpData);
             }
@@ -105,7 +105,6 @@ public without sharing class CorporateDashboardController {
         this.upTimeData = new List<LineChartData>();
         Boolean error = false;
         String message = '';
-        ApexPages.addMessage(new ApexPages.message(ApexPages.severity.ERROR, 'part 1'));
         try {
             List<CommCareHQ_Performance_Metrics__c> metrics = [SELECT Date__c, ICDS_Uptime__c, Prod_Uptime__c, India_Server_Uptime__c, eNikshay_Up_Time__c
                                                            FROM CommCareHQ_Performance_Metrics__c
@@ -116,8 +115,8 @@ public without sharing class CorporateDashboardController {
                 Date lastDate = metrics.get(0).Date__c;
                 for (CommCareHQ_Performance_Metrics__c rec : metrics) {
                     if (rec.Date__c.year() != lastDate.year() || rec.Date__c.month() != lastDate.month()) {
-                        tmpData.graphValue2 = (tmpData.recordCount1 != 0 ? tmpData.graphValue2 / tmpData.recordCount1 : 0);
-                        tmpData.graphValue1 = (tmpData.recordCount2 != 0 ? tmpData.graphValue1 / tmpData.recordCount2 : 0);
+                        tmpData.graphValue1 = (tmpData.recordCount1 != 0 ? tmpData.graphValue1 / tmpData.recordCount1 : 0);
+                        tmpData.graphValue2 = (tmpData.recordCount2 != 0 ? tmpData.graphValue2 / tmpData.recordCount2 : 0);
                         tmpData.graphValue3 = (tmpData.recordCount3 != 0 ? tmpData.graphValue3 / tmpData.recordCount3 : 0);
                         tmpData.graphValue4 = (tmpData.recordCount4 != 0 ? tmpData.graphValue4 / tmpData.recordCount4 : 0);
                         tmpData.name = getDateText(lastDate);
@@ -125,12 +124,12 @@ public without sharing class CorporateDashboardController {
                         tmpData = new LineChartData('', 0, 0, 0, 0);
                     }
 
-                    if (rec.India_Server_Uptime__c != null) {
-                        tmpData.graphValue2 += rec.India_Server_Uptime__c;
-                        tmpData.recordCount1++;
-                    }
                     if (rec.Prod_Uptime__c != null) {
                         tmpData.graphValue1 += rec.Prod_Uptime__c;
+                        tmpData.recordCount1++;
+                    }
+                    if (rec.India_Server_Uptime__c != null) {
+                        tmpData.graphValue2 += rec.India_Server_Uptime__c;
                         tmpData.recordCount2++;
                     }
                     if (rec.ICDS_Uptime__c != null) {
@@ -145,8 +144,8 @@ public without sharing class CorporateDashboardController {
                 }
                 // we must add the last date from list:
                 tmpData.name = getDateText(lastDate);
-                tmpData.graphValue2 = (tmpData.recordCount1 != 0 ? tmpData.graphValue2 / tmpData.recordCount1 : 0);
-                tmpData.graphValue1 = (tmpData.recordCount2 != 0 ? tmpData.graphValue1 / tmpData.recordCount2 : 0);
+                tmpData.graphValue1 = (tmpData.recordCount1 != 0 ? tmpData.graphValue1 / tmpData.recordCount1 : 0);
+                tmpData.graphValue2 = (tmpData.recordCount2 != 0 ? tmpData.graphValue2 / tmpData.recordCount2 : 0);
                 tmpData.graphValue3 = (tmpData.recordCount3 != 0 ? tmpData.graphValue3 / tmpData.recordCount3 : 0);
                 tmpData.graphValue4 = (tmpData.recordCount4 != 0 ? tmpData.graphValue4 / tmpData.recordCount4 : 0);
                 this.upTimeData.add(tmpData);

@@ -52,7 +52,9 @@ public class GenericErrorMessangerBatch implements Database.Batchable<AsyncApexJ
             }
             message += '</table>';
 
-            EmailHelper.sendEmail(batchSettings.Error_Emails__c.split(','), 'Generic Error Messanger', message);
+            if (!Test.isRunningTest()) {
+                EmailHelper.sendEmail(batchSettings.Error_Emails__c.split(','), 'Generic Error Messanger', message);
+            }
         }
     }
 }

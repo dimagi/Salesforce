@@ -76,4 +76,28 @@ public class UtilsTest {
         System.assertEquals(0, [SELECT Id FROM Status_Log__c WHERE Status__c =: StatusLoggerUtils.ERROR_LOG].size());
         Test.stopTest();
     }
+
+    @isTest
+    public static void shouldSendGenericErrorEmail() {
+        BatchDefaultSettings__c batchSettings = BatchDefaultSettings__c.getOrgDefaults();
+        DateTime testTime = DateTime.now().addHours(-2);
+        batchSettings.Last_Batch_Error_Check_Date__c = testTime;
+        insert batchSettings;
+
+        Id class1Id = [SELECT Id, Name FROM ApexClass WHERE Name = 'GenericErrorMessangerBatch'].Id;
+        Id class2Id = [SELECT Id, Name FROM ApexClass WHERE Name = 'GenericErrorMessangerScheduler'].Id;
+        Id class3Id = [SELECT Id, Name FROM ApexClass WHERE Name = 'StatusLoggerUtils'].Id;
+
+        Test.startTest();
+        GenericErrorMessangerScheduler testScheduler = new GenericErrorMessangerScheduler();
+        testScheduler.execute(null); // Increase CC in scheduler methods
+        Test.stopTest();
+
+        // We run each method manually because we cannot insert/mock this records in DB
+        GenericErrorMessangerBatch messageBatch = new GenericErrorMessangerBatch();
+        System.assertEquals(0, messageBatch.start(null).size());
+        messageBatch.execute(null, new List<AsyncApexJob> ());
+        messageBatch.finish(null);
+        System.assertNotEquals(testTime, BatchDefaultSettings__c.getOrgDefaults().Last_Batch_Error_Check_Date__c);
+    }
 }

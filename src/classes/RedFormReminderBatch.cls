@@ -17,13 +17,13 @@ public without sharing class RedFormReminderBatch implements Database.Batchable<
     public RedFormReminderBatch(Boolean quarterMode) {
         this.quarterMode = quarterMode;
         this.redFormSettings = Red_Form_Settings__c.getOrgDefaults();
-    }
-
-    public List<SFDC_Employee__c> start(Database.BatchableContext context) {
         this.firstEmail = new List<SFDC_Employee__c>();
         this.secondEmail = new List<SFDC_Employee__c>();
         this.globalEmail = new List<SFDC_Employee__c>();
         this.quarterEmail = new List<SFDC_Employee__c>();
+    }
+
+    public List<SFDC_Employee__c> start(Database.BatchableContext context) {
         OrgWideEmailAddress orgWideAddress = [SELECT Id FROM OrgWideEmailAddress WHERE
                                                         Address = 'dimagi-salesforce@dimagi.com' LIMIT 1];
         this.orgWideId = orgWideAddress.Id;
@@ -139,5 +139,21 @@ public without sharing class RedFormReminderBatch implements Database.Batchable<
         emailContent += 'Best,<br/>Dimagi';
 
         return emailContent;
+    }
+
+    public List<SFDC_Employee__c> getFirstEmail() {
+        return this.firstEmail;
+    }
+
+    public List<SFDC_Employee__c> getSecondEmail() {
+        return this.secondEmail;
+    }
+
+    public List<SFDC_Employee__c> getGlobalEmail() {
+        return this.globalEmail;
+    }
+
+    public List<SFDC_Employee__c> getQuarterEmail() {
+        return this.quarterEmail;
     }
 }
