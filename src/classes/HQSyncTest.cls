@@ -1356,6 +1356,25 @@ public class HQSyncTest {
         System.assertEquals(acc1.Id, assertDomain.Account__c);
     }
 
+    @isTest
+    public static void testManualSyncController() {
+        Test.setMock(HttpCalloutMock.class, new HQSyncAPIMock());
+        Test.startTest();
+        HQSyncController hqCtrl = new HQSyncController();
+        System.assertEquals(false, hqCtrl.domainIsRunning);
+        System.assertEquals(false, hqCtrl.accountingIsRunning);
+        System.assertEquals(1, hqCtrl.serverCodes.size());
+        System.assertEquals('CommCare HQ', hqCtrl.serverCodes.get(0).getValue());
+        System.assertEquals(null, hqCtrl.batchClassJob);
+        System.assertNotEquals(null, hqCtrl.phase2Jobs);
+
+        hqCtrl.runDomainsSynchronizationJob();
+        hqCtrl.runAccountingJob();
+        System.assertEquals(true, hqCtrl.domainIsRunning);
+        System.assertEquals(true, hqCtrl.accountingIsRunning);
+        Test.stopTest();
+    }
+
     static private Decimal calculateMRRForDomain(Id domainId, Integer expectedSize) {
         Decimal sumForDomain = 0;
         List<Accounting_Subscription__c> subsForDomain1 = [SELECT Lifetime_MRR__c, accounting_software_monthly_fee__c FROM Accounting_Subscription__c WHERE Accounting_subscriber_domain__c =: domainId];

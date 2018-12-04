@@ -231,6 +231,78 @@ public class CorporateDashboardTest {
         System.assertEquals(2, headcountGraph.get(1).Graph_Value_3__c);
     }
 
+    @isTest
+    public static void shouldLoadPerformanceGraphsCtrl() {
+        setUpPerformanceData();
+        DateTime startTime = System.now();
+        CorporateDashboardController ctrl1 = new CorporateDashboardController();
+        ctrl1.refreshing = true;
+        while (System.now().getTime() - startTime.getTime() < 10) {
+            // we want different time to generate different param in second ctrl
+        }
+        CorporateDashboardController ctrl2 = new CorporateDashboardController();
+
+        List<CorporateDashboardController.LineChartData> resultPerformance;
+        List<CorporateDashboardController.LineChartData> resultUpPerformance;
+
+        Test.setMock(HttpCalloutMock.class, new DashboardCalloutMock());
+        Test.startTest();
+        // Should reset refresh flag
+        System.assertEquals(true, ctrl1.refreshing);
+        ctrl1.resetRefreshFlag();
+        System.assertEquals(false, ctrl1.refreshing);
+        ctrl1.resizeWindow();
+
+        // Should fenerate different rand param
+        System.assertNotEquals(ctrl1.randomParam, ctrl2.randomParam);
+
+        // Should call refresh dashboard
+        ctrl1.refreshDashboard();
+        System.assertEquals(true, ctrl1.refreshing);
+
+        resultPerformance = ctrl1.getData();
+        resultUpPerformance = ctrl1.getUpData();
+        Test.stopTest();
+
+        System.assertEquals(2, resultPerformance.size());
+        System.assertEquals(7, resultPerformance.get(0).graphValue1);
+        System.assertEquals(30, resultPerformance.get(0).graphValue2);
+        System.assertEquals(9, resultPerformance.get(0).graphValue3);
+
+        System.assertEquals(2, resultPerformance.get(0).recordCount1);
+        System.assertEquals(2, resultPerformance.get(0).recordCount2);
+        System.assertEquals(2, resultPerformance.get(0).recordCount3);
+
+        System.assertEquals(5, resultPerformance.get(1).graphValue1);
+        System.assertEquals(17.5, resultPerformance.get(1).graphValue2);
+        System.assertEquals(8, resultPerformance.get(1).graphValue3);
+
+        System.assertEquals(2, resultPerformance.get(1).recordCount1);
+        System.assertEquals(2, resultPerformance.get(1).recordCount2);
+        System.assertEquals(2, resultPerformance.get(1).recordCount3);
+
+        System.assertEquals(2, resultUpPerformance.size());
+        System.assertEquals(92.33, resultUpPerformance.get(0).graphValue1.setScale(2));
+        System.assertEquals(95, resultUpPerformance.get(0).graphValue2.setScale(2));
+        System.assertEquals(66.67, resultUpPerformance.get(0).graphValue3.setScale(2));
+        System.assertEquals(23.33, resultUpPerformance.get(0).graphValue4.setScale(2));
+
+        System.assertEquals(3, resultUpPerformance.get(0).recordCount1);
+        System.assertEquals(3, resultUpPerformance.get(0).recordCount2);
+        System.assertEquals(3, resultUpPerformance.get(0).recordCount3);
+        System.assertEquals(3, resultUpPerformance.get(0).recordCount4);
+
+        System.assertEquals(82.33, resultUpPerformance.get(1).graphValue1.setScale(2));
+        System.assertEquals(96.67, resultUpPerformance.get(1).graphValue2.setScale(2));
+        System.assertEquals(80, resultUpPerformance.get(1).graphValue3.setScale(2));
+        System.assertEquals(46.67, resultUpPerformance.get(1).graphValue4.setScale(2));
+
+        System.assertEquals(3, resultUpPerformance.get(1).recordCount1);
+        System.assertEquals(3, resultUpPerformance.get(1).recordCount2);
+        System.assertEquals(3, resultUpPerformance.get(1).recordCount3);
+        System.assertEquals(3, resultUpPerformance.get(1).recordCount4);
+    }
+
     private static void setUpGSRevenueData() {
         //Inc : current month - 10000 * 50% + 6000 * 100% = 11000 / 1000 = 11
         //Inc : previous month - 10000 * 10% + 6000 * 0% = 1000 / 1000 = 1
@@ -381,61 +453,31 @@ public class CorporateDashboardTest {
 
     private static void setUpPerformanceData() {
         Date currentDay = Date.today();
-        CommCareHQ_Performance_Metrics__c performance1 = new CommCareHQ_Performance_Metrics__c(Date__c = currentDay.addMonths(-1),
-                                                                                               Server_Apdex__c = null,
-                                                                                               Number_of_Submissions__c = 30000,
-                                                                                               Avg_Page_Load__c = 3);
-        CommCareHQ_Performance_Metrics__c performance2 = new CommCareHQ_Performance_Metrics__c(Date__c = currentDay.addMonths(-1),
-                                                                                               Server_Apdex__c = 9,
-                                                                                               Number_of_Submissions__c = 5000,
-                                                                                               Avg_Page_Load__c = null);
-        CommCareHQ_Performance_Metrics__c performance3 = new CommCareHQ_Performance_Metrics__c(Date__c = currentDay.addMonths(-1),
-                                                                                               Server_Apdex__c = 7,
-                                                                                               Number_of_Submissions__c = null,
-                                                                                               Avg_Page_Load__c = 7);
-        CommCareHQ_Performance_Metrics__c performance4 = new CommCareHQ_Performance_Metrics__c(Date__c = currentDay.addMonths(-2),
-                                                                                               Server_Apdex__c = null,
-                                                                                               Number_of_Submissions__c = 30000,
-                                                                                               Avg_Page_Load__c = 7);
-        CommCareHQ_Performance_Metrics__c performance5 = new CommCareHQ_Performance_Metrics__c(Date__c = currentDay.addMonths(-2),
-                                                                                               Server_Apdex__c = 9,
-                                                                                               Number_of_Submissions__c = 30000,
-                                                                                               Avg_Page_Load__c = null);
-        CommCareHQ_Performance_Metrics__c performance6 = new CommCareHQ_Performance_Metrics__c(Date__c = currentDay.addMonths(-2),
-                                                                                               Server_Apdex__c = 9,
-                                                                                               Number_of_Submissions__c = null,
-                                                                                               Avg_Page_Load__c = 7);
-        insert performance1;
-        insert performance2;
-        insert performance3;
-        insert performance4;
-        insert performance5;
-        insert performance6;
+        CommCareHQ_Performance_Metrics__c p1 = new CommCareHQ_Performance_Metrics__c(Date__c = currentDay.addMonths(-1), Server_Apdex__c = null, Number_of_Submissions__c = 30000, Avg_Page_Load__c = 3);
+        CommCareHQ_Performance_Metrics__c p2 = new CommCareHQ_Performance_Metrics__c(Date__c = currentDay.addMonths(-1), Server_Apdex__c = 9, Number_of_Submissions__c = 5000, Avg_Page_Load__c = null);
+        CommCareHQ_Performance_Metrics__c p3 = new CommCareHQ_Performance_Metrics__c(Date__c = currentDay.addMonths(-1), Server_Apdex__c = 7, Number_of_Submissions__c = null, Avg_Page_Load__c = 7);
+        CommCareHQ_Performance_Metrics__c p4 = new CommCareHQ_Performance_Metrics__c(Date__c = currentDay.addMonths(-2), Server_Apdex__c = null, Number_of_Submissions__c = 30000, Avg_Page_Load__c = 7);
+        CommCareHQ_Performance_Metrics__c p5 = new CommCareHQ_Performance_Metrics__c(Date__c = currentDay.addMonths(-2), Server_Apdex__c = 9, Number_of_Submissions__c = 30000, Avg_Page_Load__c = null);
+        CommCareHQ_Performance_Metrics__c p6 = new CommCareHQ_Performance_Metrics__c(Date__c = currentDay.addMonths(-2), Server_Apdex__c = 9, Number_of_Submissions__c = null, Avg_Page_Load__c = 7);
+
+        CommCareHQ_Performance_Metrics__c p7 = new CommCareHQ_Performance_Metrics__c(Date__c = currentDay.addMonths(-1), ICDS_Uptime__c = 90, Prod_Uptime__c = 90, India_Server_Uptime__c = 100, eNikshay_Up_Time__c = 80);
+        CommCareHQ_Performance_Metrics__c p8 = new CommCareHQ_Performance_Metrics__c(Date__c = currentDay.addMonths(-1), ICDS_Uptime__c = 80, Prod_Uptime__c = 80, India_Server_Uptime__c = 100, eNikshay_Up_Time__c = 30);
+        CommCareHQ_Performance_Metrics__c p9 = new CommCareHQ_Performance_Metrics__c(Date__c = currentDay.addMonths(-1), ICDS_Uptime__c = 70, Prod_Uptime__c = 77, India_Server_Uptime__c = 90, eNikshay_Up_Time__c = 30);
+        CommCareHQ_Performance_Metrics__c p10 = new CommCareHQ_Performance_Metrics__c(Date__c = currentDay.addMonths(-2), ICDS_Uptime__c = 50, Prod_Uptime__c = 80, India_Server_Uptime__c = 100, eNikshay_Up_Time__c = 50);
+        CommCareHQ_Performance_Metrics__c p11 = new CommCareHQ_Performance_Metrics__c(Date__c = currentDay.addMonths(-2), ICDS_Uptime__c = 50, Prod_Uptime__c = 99, India_Server_Uptime__c = 89, eNikshay_Up_Time__c = 20);
+        CommCareHQ_Performance_Metrics__c p12 = new CommCareHQ_Performance_Metrics__c(Date__c = currentDay.addMonths(-2), ICDS_Uptime__c = 100, Prod_Uptime__c = 98, India_Server_Uptime__c = 96, eNikshay_Up_Time__c = 0);
+
+        insert new List<CommCareHQ_Performance_Metrics__c> { p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, p11, p12 };
     }
 
     private static void setUpUpTimeData() {
         Date currentDay = Date.today();
-        CommCareHQ_Performance_Metrics__c performance1 = new CommCareHQ_Performance_Metrics__c(Date__c = currentDay.addMonths(-3),
-                                                                                               ICDS_Uptime__c = 55,
-                                                                                               India_Server_Uptime__c = 95,
-                                                                                               Prod_Uptime__c = 92);
-        CommCareHQ_Performance_Metrics__c performance2 = new CommCareHQ_Performance_Metrics__c(Date__c = currentDay.addMonths(-2),
-                                                                                               ICDS_Uptime__c = 75,
-                                                                                               India_Server_Uptime__c = 98,
-                                                                                               Prod_Uptime__c = 100);
-        CommCareHQ_Performance_Metrics__c performance3 = new CommCareHQ_Performance_Metrics__c(Date__c = currentDay.addMonths(-1),
-                                                                                               ICDS_Uptime__c = 50,
-                                                                                               India_Server_Uptime__c = 99,
-                                                                                               Prod_Uptime__c = 99);
-        CommCareHQ_Performance_Metrics__c performance4 = new CommCareHQ_Performance_Metrics__c(Date__c = currentDay.addMonths(-1),
-                                                                                               ICDS_Uptime__c = 100,
-                                                                                               India_Server_Uptime__c = 99,
-                                                                                               Prod_Uptime__c = 99);
+        CommCareHQ_Performance_Metrics__c p1 = new CommCareHQ_Performance_Metrics__c(Date__c = currentDay.addMonths(-3), ICDS_Uptime__c = 55, India_Server_Uptime__c = 95, Prod_Uptime__c = 92);
+        CommCareHQ_Performance_Metrics__c p2 = new CommCareHQ_Performance_Metrics__c(Date__c = currentDay.addMonths(-2), ICDS_Uptime__c = 75, India_Server_Uptime__c = 98, Prod_Uptime__c = 100);
+        CommCareHQ_Performance_Metrics__c p3 = new CommCareHQ_Performance_Metrics__c(Date__c = currentDay.addMonths(-1), ICDS_Uptime__c = 50, India_Server_Uptime__c = 99, Prod_Uptime__c = 99);
+        CommCareHQ_Performance_Metrics__c p4 = new CommCareHQ_Performance_Metrics__c(Date__c = currentDay.addMonths(-1), ICDS_Uptime__c = 100, India_Server_Uptime__c = 99, Prod_Uptime__c = 99);
 
-        insert performance1;
-        insert performance2;
-        insert performance3;
-        insert performance4;
+        insert new List<CommCareHQ_Performance_Metrics__c> { p1, p2, p3, p4 };
     }
 
     private static void setUpGSData() {
@@ -503,5 +545,17 @@ public class CorporateDashboardTest {
         insert sn13;
         insert sn14;
         insert sn15;
+    }
+
+    public class DashboardCalloutMock implements HttpCalloutMock {
+
+        public DashboardCalloutMock() {}
+
+        public HTTPResponse respond(HTTPRequest req) {
+            HTTPResponse res = new HTTPResponse();
+            res.setStatusCode(200);
+            res.setBody('ok');
+            return res;
+        }
     }
 }

@@ -3,7 +3,11 @@
  */
 public class CreateFBCasesBatch implements Database.Batchable<sObject>, Database.AllowsCallouts, Database.Stateful {
 
-    public CreateFBCasesBatch() {}
+    private List<String> oppErrors;
+
+    public CreateFBCasesBatch() {
+        this.oppErrors = new List<String>();
+    }
 
     public Database.QueryLocator start(Database.BatchableContext BC) {
         return Database.getQueryLocator('SELECT Id, Name, StageName, Fogbugz_Opened_By__c, Fogbugz_Probability__c, Amount, Owner.Name, IsClosed, Fogbugz_Ticket_Number__c'
@@ -23,9 +27,8 @@ public class CreateFBCasesBatch implements Database.Batchable<sObject>, Database
                 o.Fogbugz_Ticket_Number__c = fbCaseId;
                 opps.add(o);
                 System.debug('CreateFBCasesBatch caseId after update: ' + fbCaseId);
-                StatusLoggerUtils.logInfo(StatusLoggerUtils.CASE_CREATE_LOGGER, o.Id + ' ' + o.Name, 0, 'Creating case for Opportunity.');
             } else {
-               StatusLoggerUtils.logError(StatusLoggerUtils.CASE_CREATE_LOGGER, o.Id + ' ' + o.Name, 0, 'Error while creating case for Opportunity.');
+               oppErrors.add(o.Id + ' ' + o.Name + ' : CreateFBCasesBatch - Error while creating case');
                System.debug(LoggingLevel.ERROR, 'CreateFBCasesBatch - Error while creating case');
             }
         }
@@ -35,6 +38,13 @@ public class CreateFBCasesBatch implements Database.Batchable<sObject>, Database
      }
 
     public void finish(Database.BatchableContext info) {
-        StatusLoggerUtils.sendLog(StatusLoggerUtils.CASE_CREATE_LOGGER);
+        String body = 'Job Status : ' + DateTime.now() + '</br></br>';
+        for (String line : this.oppErrors) {
+            body += line + '</br>';
+        }
+
+        if (!Test.isRunningTest()) {
+            EmailHelper.sendEmail(FogBugz_Settings__c.getOrgDefaults().Error_Email__c, 'CreateFBCasesBatch Job Status', body);
+        }
     }
 }
