@@ -1,12 +1,85 @@
-/**
- * TODO Refactor for new class and rename
- */
 @isTest
-public class BatchCalculateEVDiffTest {
+public class OpportunityPipelineSnapshotTest {
+
+    @testSetup
+    public static void setUpOppData() {
+        Account snapShotAccount = new Account(Name = 'Test Account');
+        insert snapShotAccount;
+        Opportunity opp1 = new Opportunity(Name = 'Test Opportunity 1', StageName = 'Stage 5 - Submitted', Channel_Response__c = 'Inside Sales', Amount = 50000,
+                                                Expense_Income__c = 15000, Expected_Buffer__c = 50, Duration_months__c = 18, Country_Text__c = 'Sample text 1 test',
+                                                Product_Text__c = 'Product test 1', CloseDate = date.today().addMonths(5), Probability = 30, AccountId = snapShotAccount.Id);
+        Opportunity opp2 = new Opportunity(Name = 'Test Opportunity 2', StageName = 'Stage 5 - Submitted', Channel_Response__c = 'Inside Sales', Amount = 70000,
+                                                Expense_Income__c = 23000, Expected_Buffer__c = 40, Duration_months__c = 24, Country_Text__c = 'Sample text 2 test',
+                                                Product_Text__c = 'Product test 2', CloseDate = date.today().addMonths(6), Probability = 40, AccountId = snapShotAccount.Id);
+        insert opp1;
+        insert opp2;
+    }
+
+    @isTest
+    public static void testPipelineSnapshotCtrl() {
+        Opportunity opp1 = [SELECT Id FROM Opportunity WHERE Name = 'Test Opportunity 1'];
+        Opportunity opp2 = [SELECT Id FROM Opportunity WHERE Name = 'Test Opportunity 2'];
+         Account snapShotAccount = [SELECT Id FROM Account WHERE Name = 'Test Account'];
+        Opportunity opp3 = new Opportunity(Name = 'Test Opportunity 3', StageName = 'Stage 5 - Submitted', Channel_Response__c = 'Inside Sales', Amount = 50000,
+                                                Expense_Income__c = 15000, Expected_Buffer__c = 50, Duration_months__c = 18, Country_Text__c = 'Sample text 1 test',
+                                                Product_Text__c = 'Product test 1', CloseDate = date.today().addMonths(5), Probability = 30, AccountId = snapShotAccount.Id);
+        Opportunity opp4 = new Opportunity(Name = 'Test Opportunity 4', StageName = 'Stage 5 - Submitted', Channel_Response__c = 'Inside Sales', Amount = 50000,
+                                                Expense_Income__c = 15000, Expected_Buffer__c = 50, Duration_months__c = 18, Country_Text__c = 'Sample text 1 test',
+                                                Product_Text__c = 'Product test 1', CloseDate = date.today().addMonths(5), Probability = 30, AccountId = snapShotAccount.Id);
+        insert opp3;
+        insert opp4;
+
+        Date currentDate = Date.today().addMonths(-1);
+        Integer numberOfDays = Date.daysInMonth(currentDate.year(), currentDate.month());
+        Date testDate = Date.newInstance(currentDate.year(), currentDate.month(), numberOfDays);
+
+        Pipeline_Snapshot__c snapShot1 = new Pipeline_Snapshot__c(Opportunity__c = opp1.Id, Opportunity_Amount_Minus_Expense_Income__c = 2000,
+                                                                                Amount_Minus_Expense_Income__c = 2000, Probability__c = 100, Opportunity_Amount__c = 2000,
+                                                                                Amount__c = 2000, Account__c = snapShotAccount.Id, Country__c = 'Test Country', Duration_months__c = 4,
+                                                                                Funder_Account__c = snapShotAccount.Id, Month_Date__c = testDate, Source_Type__c = 'Opportunity',
+                                                                                Name = 'Test PS for date  ' + testDate);
+        insert snapShot1;
+        Pipeline_Snapshot__c snapShot2 = new Pipeline_Snapshot__c(Opportunity__c = opp2.Id, Opportunity_Amount_Minus_Expense_Income__c = 2000,
+                                                                                Amount_Minus_Expense_Income__c = 2000, Probability__c = 100, Opportunity_Amount__c = 2000,
+                                                                                Amount__c = 2000, Account__c = snapShotAccount.Id, Country__c = 'Test Country', Duration_months__c = 4,
+                                                                                Funder_Account__c = snapShotAccount.Id, Month_Date__c = testDate, Source_Type__c = 'Opportunity',
+                                                                                Name = 'Test PS for date  ' + testDate);
+        insert snapShot2;
+        Pipeline_Snapshot__c snapShot3 = new Pipeline_Snapshot__c(Opportunity__c = opp3.Id, Opportunity_Amount_Minus_Expense_Income__c = 2000,
+                                                                                Amount_Minus_Expense_Income__c = 2000, Probability__c = 100, Opportunity_Amount__c = 2000,
+                                                                                Amount__c = 2000, Account__c = snapShotAccount.Id, Country__c = 'Test Country', Duration_months__c = 4,
+                                                                                Funder_Account__c = snapShotAccount.Id, Month_Date__c = testDate, Source_Type__c = 'Opportunity',
+                                                                                Name = 'Test PS for date  ' + testDate);
+        insert snapShot3;
+        Pipeline_Snapshot__c snapShot4 = new Pipeline_Snapshot__c(Opportunity__c = opp4.Id, Opportunity_Amount_Minus_Expense_Income__c = 2000,
+                                                                                Amount_Minus_Expense_Income__c = 2000, Probability__c = 100, Opportunity_Amount__c = 2000,
+                                                                                Amount__c = 2000, Account__c = snapShotAccount.Id, Country__c = 'Test Country', Duration_months__c = 4,
+                                                                                Funder_Account__c = snapShotAccount.Id, Month_Date__c = testDate, Source_Type__c = 'Opportunity',
+                                                                                Name = 'Test PS for date  ' + testDate); // TO DELETE
+        insert snapShot4;
+
+        Test.startTest();
+        OpportunityPipelineSnapshotController ctrl = new OpportunityPipelineSnapshotController();
+        ctrl.initOpportunityPipelineSnapshot();
+        System.assertEquals(4, ctrl.currentPSCount);
+        System.assertEquals(testDate, ctrl.lastMonthSnapshotDate);
+
+        List<Pipeline_Snapshot__c> testResult = ctrl.getSnpList();
+        System.assertEquals(4, testResult.size());
+        System.assertEquals(4, ctrl.resultSize);
+        System.assertEquals(10, ctrl.pageSize);
+        System.assertEquals(1, ctrl.pageNumber);
+        System.assertEquals(false, ctrl.hasNext);
+        System.assertEquals(false, ctrl.hasPrevious);
+        ctrl.runOpportunityPipelineSnapshotBatchJob();
+        Test.stopTest();
+        ctrl = new OpportunityPipelineSnapshotController();
+        ctrl.initOpportunityPipelineSnapshot();
+        System.assertEquals(4, ctrl.currentPSCount);
+    }
 
     @isTest
     public static void shouldCreatePipelineSnapshots() {
-        setUpOppData();
         Opportunity opp1 = [SELECT Id FROM Opportunity WHERE Name = 'Test Opportunity 1'];
         Opportunity opp2 = [SELECT Id FROM Opportunity WHERE Name = 'Test Opportunity 2'];
         Account snapShotAccount = [SELECT Id FROM Account WHERE Name = 'Test Account'];
@@ -33,7 +106,6 @@ public class BatchCalculateEVDiffTest {
 
     @isTest
     public static void shouldRemoveOnlyThisMonthPipelineSnapshotsAndEVDiffs() {
-        setUpOppData();
         Opportunity opp1 = [SELECT Id FROM Opportunity WHERE Name = 'Test Opportunity 1'];
         Opportunity opp2 = [SELECT Id FROM Opportunity WHERE Name = 'Test Opportunity 2'];
         Account snapShotAccount = [SELECT Id FROM Account WHERE Name = 'Test Account'];
@@ -111,7 +183,6 @@ public class BatchCalculateEVDiffTest {
 
     @isTest
     public static void shouldCalculateForPeriodInPipelineSnapshotOpp() {
-        setUpOppData();
         Opportunity opp1 = [SELECT Id FROM Opportunity WHERE Name = 'Test Opportunity 1'];
         Opportunity opp2 = [SELECT Id FROM Opportunity WHERE Name = 'Test Opportunity 2'];
         Account snapShotAccount = [SELECT Id FROM Account WHERE Name = 'Test Account'];
@@ -168,16 +239,24 @@ public class BatchCalculateEVDiffTest {
         update currentOpp;
 
         Test.startTest();
-        BatchCalculateEVDiff januaryBatch = new BatchCalculateEVDiff(Date.newInstance(2016, 1, 1));
-        januaryBatch.execute(null, januaryBatch.start(null));
-        BatchCalculateEVDiff febBatch = new BatchCalculateEVDiff(Date.newInstance(2016, 2, 1));
-        febBatch.execute(null, febBatch.start(null));
-        BatchCalculateEVDiff marchBatch = new BatchCalculateEVDiff(Date.newInstance(2016, 3, 1));
-        marchBatch.execute(null, marchBatch.start(null));
-        marchBatch.execute(null, marchBatch.start(null));
+        snapShot1.recalculateFormulas();
+        snapShot2.recalculateFormulas();
+        snapShot3.recalculateFormulas();
+        NetEVDifferenceTriggerGateway gateway = new NetEVDifferenceTriggerGateway();
+        gateway.processLastMonthSnapshots(new List<Pipeline_Snapshot__c> { snapShot1 });
+        gateway.processLastMonthSnapshots(new List<Pipeline_Snapshot__c> { snapShot2 });
+        gateway.processLastMonthSnapshots(new List<Pipeline_Snapshot__c> { snapShot3 });
+        gateway.processLastMonthSnapshots(new List<Pipeline_Snapshot__c> { snapShot3 });
+
         NetEVDifferenceTriggerGateway.processPriorMonthSnapshotsWithClosedStatus(Date.newInstance(2016, 4, 14));
         Test.stopTest();
 
+        List<Pipeline_Snapshot_EV_DIff__c> allRecords = [SELECT Opportunity_Name__c, Delta_Type__c, DIFF_12_Month_Cash_Minus_Expense_Income__c, DIFF_18_Month_Cash_Minus_Expenses_Income__c,
+                                                                 DIFF_24_Month_Cash_Minus_Expense_Income__c, DIFF_Amount_Minus_Expense_Income__c, DIFF_Expected_Value_Minus_Expense__c,
+                                                                 Month_Date__c FROM Pipeline_Snapshot_EV_DIff__c ORDER BY Month_Date__c ASC];
+        for (Pipeline_Snapshot_EV_DIff__c snp : allRecords) {
+            System.debug('snp : ' + snp.Opportunity_Name__c + ' - ' + snp.Delta_Type__c +' date : ' + snp.Month_Date__c);
+        }
         List<Pipeline_Snapshot_EV_DIff__c> snapShotsEVDiffAll = [SELECT Delta_Type__c, DIFF_12_Month_Cash_Minus_Expense_Income__c, DIFF_18_Month_Cash_Minus_Expenses_Income__c,
                                                                  DIFF_24_Month_Cash_Minus_Expense_Income__c, DIFF_Amount_Minus_Expense_Income__c, DIFF_Expected_Value_Minus_Expense__c,
                                                                 Month_Date__c, Opportunity_Name__c FROM Pipeline_Snapshot_EV_DIff__c ORDER BY Month_Date__c ASC];
@@ -260,24 +339,33 @@ public class BatchCalculateEVDiffTest {
         update currentOpp3;
 
         Test.startTest();
-        BatchCalculateEVDiff januaryBatch = new BatchCalculateEVDiff(Date.newInstance(2016, 1, 1));
-        januaryBatch.execute(null, januaryBatch.start(null));
-        BatchCalculateEVDiff febBatch = new BatchCalculateEVDiff(Date.newInstance(2016, 2, 1));
-        febBatch.execute(null, febBatch.start(null));
-        febBatch.execute(null, febBatch.start(null));
-        BatchCalculateEVDiff marchBatch = new BatchCalculateEVDiff(Date.newInstance(2016, 3, 1));
-        marchBatch.execute(null, marchBatch.start(null));
-        marchBatch.execute(null, marchBatch.start(null));
-        febBatch.execute(null, febBatch.start(null));
+        snapShot1_1.recalculateFormulas();
+        snapShot1_2.recalculateFormulas();
+        snapShot1_3.recalculateFormulas();
+        snapShot2_1.recalculateFormulas();
+        snapShot2_2.recalculateFormulas();
+        snapShot2_3.recalculateFormulas();
+        NetEVDifferenceTriggerGateway gateway = new NetEVDifferenceTriggerGateway();
+        gateway.processLastMonthSnapshots(new List<Pipeline_Snapshot__c> { snapShot1_1, snapShot1_2, snapShot1_3 });
+        gateway.processLastMonthSnapshots(new List<Pipeline_Snapshot__c> { snapShot2_1, snapShot2_2, snapShot2_3 });
+        gateway.processLastMonthSnapshots(new List<Pipeline_Snapshot__c> { snapShot1_1, snapShot1_2, snapShot1_3 });
+        gateway.processLastMonthSnapshots(new List<Pipeline_Snapshot__c> { snapShot1_1, snapShot1_2, snapShot1_3 });
+        gateway.processLastMonthSnapshots(new List<Pipeline_Snapshot__c> { snapShot2_1, snapShot2_2, snapShot2_3 });
         NetEVDifferenceTriggerGateway.processPriorMonthSnapshotsWithClosedStatus(Date.newInstance(2016, 3, 25));
         NetEVDifferenceTriggerGateway.processPriorMonthSnapshotsWithClosedStatus(Date.newInstance(2016, 3, 25));
         NetEVDifferenceTriggerGateway.processPriorMonthSnapshotsWithClosedStatus(Date.newInstance(2016, 3, 25));
         Test.stopTest();
 
+        List<Pipeline_Snapshot_EV_DIff__c> allRecords = [SELECT Opportunity_Name__c, Delta_Type__c, DIFF_12_Month_Cash_Minus_Expense_Income__c, DIFF_18_Month_Cash_Minus_Expenses_Income__c,
+                                                                 DIFF_24_Month_Cash_Minus_Expense_Income__c, DIFF_Amount_Minus_Expense_Income__c, DIFF_Expected_Value_Minus_Expense__c,
+                                                                 Month_Date__c FROM Pipeline_Snapshot_EV_DIff__c ORDER BY Month_Date__c ASC];
+        for (Pipeline_Snapshot_EV_DIff__c snp : allRecords) {
+            System.debug('snp : ' + snp.Opportunity_Name__c + ' - ' + snp.Delta_Type__c +' date : ' + snp.Month_Date__c);
+        }
         List<Pipeline_Snapshot_EV_DIff__c> snapShotsEVDiffAll = [SELECT Delta_Type__c, DIFF_12_Month_Cash_Minus_Expense_Income__c, DIFF_18_Month_Cash_Minus_Expenses_Income__c,
                                                                  DIFF_24_Month_Cash_Minus_Expense_Income__c, DIFF_Amount_Minus_Expense_Income__c, DIFF_Expected_Value_Minus_Expense__c,
                                                                  Month_Date__c, Opportunity_Name__c FROM Pipeline_Snapshot_EV_DIff__c
-                                                                 WHERE Opportunity_Name__c =: currentOpp1.Name ORDER BY Month_Date__c ASC];
+                                                                 WHERE Opportunity__c =: currentOpp1.Id ORDER BY Month_Date__c ASC];
 
         System.assert(snapShotsEVDiffAll.size() == 3);
         System.assertEquals(NetEVDifferenceTriggerGateway.NEW_OPP , snapShotsEVDiffAll.get(0).Delta_Type__c);
@@ -288,7 +376,7 @@ public class BatchCalculateEVDiffTest {
         snapShotsEVDiffAll = [SELECT Delta_Type__c, DIFF_12_Month_Cash_Minus_Expense_Income__c, DIFF_18_Month_Cash_Minus_Expenses_Income__c,
                                                                  DIFF_24_Month_Cash_Minus_Expense_Income__c, DIFF_Amount_Minus_Expense_Income__c, DIFF_Expected_Value_Minus_Expense__c,
                                                                  Month_Date__c, Opportunity_Name__c FROM Pipeline_Snapshot_EV_DIff__c
-                                                                 WHERE Opportunity_Name__c =: currentOpp2.Name ORDER BY Month_Date__c ASC];
+                                                                 WHERE Opportunity__c =: currentOpp2.Id ORDER BY Month_Date__c ASC];
 
         System.assert(snapShotsEVDiffAll.size() == 3);
         System.assertEquals(NetEVDifferenceTriggerGateway.NEW_OPP , snapShotsEVDiffAll.get(0).Delta_Type__c);
@@ -299,26 +387,13 @@ public class BatchCalculateEVDiffTest {
         snapShotsEVDiffAll = [SELECT Delta_Type__c, DIFF_12_Month_Cash_Minus_Expense_Income__c, DIFF_18_Month_Cash_Minus_Expenses_Income__c,
                                                                  DIFF_24_Month_Cash_Minus_Expense_Income__c, DIFF_Amount_Minus_Expense_Income__c, DIFF_Expected_Value_Minus_Expense__c,
                                                                  Month_Date__c, Opportunity_Name__c FROM Pipeline_Snapshot_EV_DIff__c
-                                                                 WHERE Opportunity_Name__c =: currentOpp3.Name ORDER BY Month_Date__c ASC];
+                                                                 WHERE Opportunity__c =: currentOpp3.Id ORDER BY Month_Date__c ASC];
 
         System.assert(snapShotsEVDiffAll.size() == 3);
         System.assertEquals(NetEVDifferenceTriggerGateway.NEW_OPP , snapShotsEVDiffAll.get(0).Delta_Type__c);
         System.assertEquals(NetEVDifferenceTriggerGateway.INCREASED , snapShotsEVDiffAll.get(1).Delta_Type__c);
         System.assertEquals(NetEVDifferenceTriggerGateway.LOST , snapShotsEVDiffAll.get(2).Delta_Type__c);
         System.assertEquals(Date.newInstance(2016, 3, 31) , snapShotsEVDiffAll.get(2).Month_Date__c);
-    }
-
-    private static void setUpOppData() {
-        Account snapShotAccount = new Account(Name = 'Test Account');
-        insert snapShotAccount;
-        Opportunity opp1 = new Opportunity(Name = 'Test Opportunity 1', StageName = 'Stage 5 - Submitted', Channel_Response__c = 'Inside Sales', Amount = 50000,
-                                                Expense_Income__c = 15000, Expected_Buffer__c = 50, Duration_months__c = 18, Country_Text__c = 'Sample text 1 test',
-                                                Product_Text__c = 'Product test 1', CloseDate = date.today().addMonths(5), Probability = 30, AccountId = snapShotAccount.Id);
-        Opportunity opp2 = new Opportunity(Name = 'Test Opportunity 2', StageName = 'Stage 5 - Submitted', Channel_Response__c = 'Inside Sales', Amount = 70000,
-                                                Expense_Income__c = 23000, Expected_Buffer__c = 40, Duration_months__c = 24, Country_Text__c = 'Sample text 2 test',
-                                                Product_Text__c = 'Product test 2', CloseDate = date.today().addMonths(6), Probability = 40, AccountId = snapShotAccount.Id);
-        insert opp1;
-        insert opp2;
     }
 
     private static void assertPipelineSnapshotValues(Pipeline_Snapshot__c psToTest, String expectedName, Id expectedAccount, Decimal expectedAmount, Decimal expectedAmountMinus,
