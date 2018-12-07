@@ -100,4 +100,51 @@ public class UtilsTest {
         messageBatch.finish(null);
         System.assertNotEquals(testTime, BatchDefaultSettings__c.getOrgDefaults().Last_Batch_Error_Check_Date__c);
     }
+
+    @isTest
+    public static void shouldGetFieldValueFromJSON() {
+        String testResult = SFAuthUtils.getFromJSON('{"menu": { "id": "1", "my_test_field": "67890", "test": { "array_val": [ {"val_1": "4", "val_2": "tt"}, {"val_1": "33", "val_2": "val"}, {"val_1": "2", "val_2": "1"}]}}}',
+                                                    'my_test_field');
+        System.assertEquals('67890', testResult);
+        testResult = SFAuthUtils.getFromJSON('{"menu": { "id": "1", "my_test_field": "67890", "test": { "array_val": [ {"val_1": "4", "val_2": "tt"}, {"val_1": "33", "val_2": "val"}, {"val_1": "2", "val_2": "1"}], "array_type": "my_type"}}}',
+                                                    'array_type');
+        System.assertEquals('my_type', testResult);
+    }
+
+    @isTest
+    public static void shouldDoCallout() {
+        Test.setMock(HttpCalloutMock.class, new CustomResponseMock('www.test-endpoint.com/test/test-rest', 'Good Response', 200));
+        Test.startTest();
+        String testResult = SFAuthUtils.basicAuthCallout('www.test-endpoint.com/test/test-rest', '', 'Test-Body', 'POST');
+        Test.stopTest();
+        System.assertEquals('Good Response', testResult);
+    }
+
+    public class CustomResponseMock implements HttpCalloutMock {
+
+        private String customUrl;
+        private String expectedResBody;
+        private Integer expectedCode;
+
+        public CustomResponseMock(String customUrl, String expectedResBody, Integer expectedCode) {
+            this.customUrl = customUrl;
+            this.expectedResBody = expectedResBody;
+            this.expectedCode = expectedCode;
+        }
+
+        public HTTPResponse respond(HTTPRequest req) {
+            HttpResponse res = new HttpResponse();
+            String endpoint = req.getEndpoint();
+
+            if (req.getEndpoint() == this.customUrl) {
+                res.setStatusCode(this.expectedCode);
+                res.setBody(this.expectedResBody);
+            } else {
+                res.setStatusCode(500);
+                res.setBody('Internal Server Error');
+            }
+
+            return res;
+        }
+    }
 }

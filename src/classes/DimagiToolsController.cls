@@ -9,6 +9,7 @@ public without sharing class DimagiToolsController {
     public DimagiToolsController() {
         this.tokenIsValid = false;
         this.currentTab = 0;
+        this.callback = getSettings().Auth_Callback_URL__c;
     }
 
     public PageReference initSFToolsPage() {
@@ -41,8 +42,8 @@ public without sharing class DimagiToolsController {
                 googleResponse = new Cookie('googleResponse', null, null, 0, true);
                 projectState = new Cookie('projectState', null, null, 0, true);
                 ApexPages.currentPage().setCookies(new Cookie[] { googleResponse, projectState });
-                this.token = getFromJSON(getAuthorizedReqToken(code), 'access_token');
-                this.currentLoginEmail = callForUserInfo(this.token);
+                this.token = SFAuthUtils.getFromJSON(SFAuthUtils.getAuthorizedReqToken(getSettings(), this.callback, code), 'access_token');
+                this.currentLoginEmail = SFAuthUtils.callForUserInfo(this.token);
                 isTokenValid();
             }
         }
@@ -71,24 +72,14 @@ public without sharing class DimagiToolsController {
      * OAuth section
      */
 
-    private static final String AUTH_URL = 'https://accounts.google.com/o/oauth2/auth';
-    private static final String ACCESS_TOKEN_URL = 'https://accounts.google.com/o/oauth2/token';
-    private static final String USER_INFO_URL = 'https://www.googleapis.com/oauth2/v1/userinfo';
-
+    private String callback;
     private String token;
     private Boolean tokenIsValid; // we must use it because checking token with google in some cases cause Pending job exception.
 
     public String currentLoginEmail { get; set; }
 
     public PageReference signIn() {
-        PRO_OAuth_Settings__c settings = getSettings();
-        String body = 'client_id=' + settings.ClientID__c + '&redirect_uri=' + settings.Auth_Callback_URL__c + '&state=' + this.projId;
-        String retUrl = AUTH_URL + '?' + body + '&response_type=code&scope=profile+email';
-        if (settings.Domain_Name__c != 'gmail.com') {
-            retUrl = retUrl + '&hd=' + settings.Domain_Name__c;
-        }
-
-        PageReference authPage = new PageReference(retUrl);
+        PageReference authPage = new PageReference(SFAuthUtils.getSignInUrl(getSettings(), this.callback, this.projId));
         authPage.setRedirect(true);
         return authPage;
     }
@@ -101,6 +92,7 @@ public without sharing class DimagiToolsController {
         if (this.token != null && this.tokenIsValid) {
             return true;
         }
+        this.token = null;
         return false;
     }
 
@@ -109,25 +101,37 @@ public without sharing class DimagiToolsController {
             return true;
         }
 
-        String userEmail = callForUserInfo(this.token);
-        if (userEmail == this.currentLoginEmail) {
+        String domainName = getSettings().Domain_Name__c;
+        String userEmail = SFAuthUtils.callForUserInfo(this.token);
+        if (userEmail == this.currentLoginEmail && (domainName == 'gmail.com' || domainName == this.currentLoginEmail.split('@')[1])) {
              this.tokenIsValid = true;
         } else {
+            this.token = null;
             this.tokenIsValid = false;
         }
         return this.tokenIsValid;
     }
 
+
+/**
     private String getAuthorizedReqToken(String code) {
         PRO_OAuth_Settings__c settings = getSettings();
         String body = 'client_id=' + settings.ClientID__c + '&redirect_uri=' + settings.Auth_Callback_URL__c + '&client_secret=' +
                             settings.ClientSecret__c + '&code=' + code + '&grant_type=authorization_code';
-        String tokenResponse = basicAuthCallout(ACCESS_TOKEN_URL, '', body, 'POST');
+        String tokenResponse = basicAuthCallout(SFUtils.ACCESS_TOKEN_URL, '', body, 'POST');
+        return tokenResponse;
+    }
+    private String getAuthorizedReqToken(String code) {
+        PRO_OAuth_Settings__c settings = getSettings();
+        String body = 'client_id=' + settings.ClientID__c + '&redirect_uri=' + this.callback + '&client_secret=' +
+                            settings.ClientSecret__c + '&code=' + code + '&grant_type=authorization_code';
+        String tokenResponse = basicAuthCallout(SFUtils.ACCESS_TOKEN_URL, '', body, 'POST');
         return tokenResponse;
     }
 
+
     private String callForUserInfo(string token) {
-        String userInfoURL = USER_INFO_URL + '?access_token=' + token;
+        String userInfoURL = SFUtils.USER_INFO_URL + '?access_token=' + token;
         String responseJSON = basicAuthCallout(userInfoURL, '', '', 'GET');
         String response = getFromJSON(responseJSON, 'email');
 
@@ -164,7 +168,7 @@ public without sharing class DimagiToolsController {
         }
         return accessToken;
     }
-
+*/
     private PRO_OAuth_Settings__c getSettings() { // we don't want store settings in StateView
         List<PRO_OAuth_Settings__c> googleSettings = PRO_OAuth_Settings__c.getAll().values();
         if (googleSettings != null && googleSettings.size() > 0) {
