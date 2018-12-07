@@ -9,7 +9,8 @@ public without sharing class DimagiToolsController {
     public DimagiToolsController() {
         this.tokenIsValid = false;
         this.currentTab = 0;
-        this.callback = getSettings().Auth_Callback_URL__c;
+        PRO_OAuth_Settings__c settings = getSettings();
+        this.callback = settings != null ? settings.Auth_Callback_URL__c : '';
     }
 
     public PageReference initSFToolsPage() {
@@ -112,63 +113,6 @@ public without sharing class DimagiToolsController {
         return this.tokenIsValid;
     }
 
-
-/**
-    private String getAuthorizedReqToken(String code) {
-        PRO_OAuth_Settings__c settings = getSettings();
-        String body = 'client_id=' + settings.ClientID__c + '&redirect_uri=' + settings.Auth_Callback_URL__c + '&client_secret=' +
-                            settings.ClientSecret__c + '&code=' + code + '&grant_type=authorization_code';
-        String tokenResponse = basicAuthCallout(SFUtils.ACCESS_TOKEN_URL, '', body, 'POST');
-        return tokenResponse;
-    }
-    private String getAuthorizedReqToken(String code) {
-        PRO_OAuth_Settings__c settings = getSettings();
-        String body = 'client_id=' + settings.ClientID__c + '&redirect_uri=' + this.callback + '&client_secret=' +
-                            settings.ClientSecret__c + '&code=' + code + '&grant_type=authorization_code';
-        String tokenResponse = basicAuthCallout(SFUtils.ACCESS_TOKEN_URL, '', body, 'POST');
-        return tokenResponse;
-    }
-
-
-    private String callForUserInfo(string token) {
-        String userInfoURL = SFUtils.USER_INFO_URL + '?access_token=' + token;
-        String responseJSON = basicAuthCallout(userInfoURL, '', '', 'GET');
-        String response = getFromJSON(responseJSON, 'email');
-
-        return response;
-    }
-
-    private String basicAuthCallout(String endPoint, String header, String body, String method) {
-        HttpRequest req = new HttpRequest();
-
-        req.setEndpoint(endPoint);
-        req.setMethod(method);
-        if (method == 'POST') {
-            req.setBody(body);
-        }
-        Http http = new Http();
-
-        HTTPResponse res = http.send(req);
-        if (res.getStatusCode() != 200) {
-            throw new CalloutException('Incorrect data');
-        }
-        return res.getBody();
-    }
-
-    private string getFromJSON(String response, String fieldName){
-        JSONParser parser = JSON.createParser(response);
-        String accessToken='';
-
-        while (parser.nextToken() != null) {
-            if ((parser.getCurrentToken() == JSONToken.FIELD_NAME) &&
-                (parser.getText() == fieldName)) {
-                parser.nextToken();
-                accessToken = parser.getText();
-            }
-        }
-        return accessToken;
-    }
-*/
     private PRO_OAuth_Settings__c getSettings() { // we don't want store settings in StateView
         List<PRO_OAuth_Settings__c> googleSettings = PRO_OAuth_Settings__c.getAll().values();
         if (googleSettings != null && googleSettings.size() > 0) {
