@@ -21,7 +21,7 @@ public class HQSyncMaltGIRScheduler implements Schedulable {
         if (servers.size() > 0) {
             String serverCode = servers.get(0);
             servers.remove(0);
-            Database.executeBatch(new HQSyncMaltTablesBatch(executeDate, serverCode, servers, false), 1);
+            Database.executeBatch(new HQSyncMaltTablesBatch(executeDate, serverCode, servers, forErrors), 1);
         }
     }
 }
