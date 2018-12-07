@@ -644,6 +644,13 @@
                         </h2>
                     </div>
                 </div>
+                <div id="zendeskTickets" class="graph">
+                    <div class="graphTitle">
+                        <h2>
+                            <a href="https://dimagi.my.salesforce.com/00O0X000005wO8V" target="_blank"># of Tickets Created</a>
+                        </h2>
+                    </div>
+                </div>
             </div>
         </apex:pageBlockSection>
         <apex:pageBlockSection title="Global Services" collapsible="false" columns="1" >
@@ -682,17 +689,6 @@
                     <div class="graphTitle">
                         <h2>
                             <a href="https://dimagi.my.salesforce.com/00O0X000004mpWX" target="_blank">GS Revenue</a>
-                        </h2>
-                    </div>
-                </div>
-            </div>
-        </apex:pageBlockSection>
-        <apex:pageBlockSection title="Support" collapsible="false" columns="1" >
-            <div class="chartsData">
-                <div id="zendeskTickets" class="graph">
-                    <div class="graphTitle">
-                        <h2>
-                            <a href="https://dimagi.my.salesforce.com/00O0X000005wO8V" target="_blank"># of Tickets Created</a>
                         </h2>
                     </div>
                 </div>
