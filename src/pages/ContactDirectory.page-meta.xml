@@ -2,6 +2,6 @@
 <ApexPage xmlns="http://soap.sforce.com/2006/04/metadata">
     <apiVersion>38.0</apiVersion>
     <availableInTouch>false</availableInTouch>
-    <confirmationTokenRequired>false</confirmationTokenRequired>
+    <confirmationTokenRequired>true</confirmationTokenRequired>
     <label>ContactDirectory</label>
 </ApexPage>
