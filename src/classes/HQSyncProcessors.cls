@@ -307,7 +307,8 @@ public class HQSyncProcessors {
             }
 
             Map<String, Accounting_SoftwarePlanVersion__c> softwarePlanVersionMap = new Map<String, Accounting_SoftwarePlanVersion__c>();
-            for (Accounting_SoftwarePlanVersion__c spv : [SELECT Id,  id__c, Software_Product_Rate__r.monthly_fee__c FROM Accounting_SoftwarePlanVersion__c
+            for (Accounting_SoftwarePlanVersion__c spv : [SELECT Id,  id__c, Accounting_SoftwarePlan__r.edition__c,
+                                                            Software_Product_Rate__r.monthly_fee__c FROM Accounting_SoftwarePlanVersion__c
                                                             WHERE id__c IN: softwarePlanVersions AND Server_Name__c =: serverName]) {
                 softwarePlanVersionMap.put(spv.id__c, spv);
             }
@@ -331,22 +332,29 @@ public class HQSyncProcessors {
                     domainId = domainObj != null ? domainObj.Id : null;
                 }
 
-                Accounting_Invoice__c sobj = invoice.createDbObject(parentId, domainId, serverName);
-                if (externalIdMap.containsKey(sobj.id__c)) {
-                    sobj.Id = externalIdMap.get(sobj.id__c);
-                }
-
                 Decimal monthlyFee = 0;
+                String planName = '';
+                Decimal highestMonthlyFee = -1;
+                Id highestPlanId = null;
                 if (String.isNotBlank(invoice.plan_versions)) {
                     for (String planVersionId : invoice.plan_versions.split(',')) {
                         if (softwarePlanVersionMap.containsKey(planVersionId)) {
                             Accounting_SoftwarePlanVersion__c spv = softwarePlanVersionMap.get(planVersionId);
-                            monthlyFee += spv.Software_Product_Rate__r.monthly_fee__c != null ? spv.Software_Product_Rate__r.monthly_fee__c : 0;
+                            Decimal tmpMonthlyFee = spv.Software_Product_Rate__r.monthly_fee__c != null ? spv.Software_Product_Rate__r.monthly_fee__c : 0;
+                            monthlyFee += tmpMonthlyFee;
+                            if (tmpMonthlyFee > highestMonthlyFee) {
+                                highestMonthlyFee = tmpMonthlyFee;
+                                planName = spv.Accounting_SoftwarePlan__r.edition__c != null ? spv.Accounting_SoftwarePlan__r.edition__c : '';
+                                highestPlanId = spv.Id;
+                            }
                         }
                     }
                 }
 
-                sobj.Customer_Invoice_Monthly_fee__c = monthlyFee;
+                Accounting_Invoice__c sobj = invoice.createDbObject(parentId, domainId, monthlyFee, planName, highestPlanId, serverName);
+                if (externalIdMap.containsKey(sobj.id__c)) {
+                    sobj.Id = externalIdMap.get(sobj.id__c);
+                }
                 listSobject.add(sobj);
             }
 

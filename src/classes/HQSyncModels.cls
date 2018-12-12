@@ -69,11 +69,12 @@ public class HQSyncModels {
         public Double subtotal;
         public String plan_versions;
 
-        public Accounting_Invoice__c createDbObject(Id billingAccountId, Id domainId, String serverName) {
+        public Accounting_Invoice__c createDbObject(Id billingAccountId, Id domainId, Decimal calculatedMonthlyFee, String softPlanName, Id softPlanVersion, String serverName) {
             return new Accounting_Invoice__c(id__c = this.id, Accounting_Billing_Account__c = billingAccountId, tax_rate__c = this.tax_rate,
                             balance__c = this.balance, date_due__c = this.date_due, date_paid__c = this.date_paid, date_created__c = this.date_created,
                             date_start__c = this.date_start, date_end__c = this.date_end, is_hidden__c = this.is_hidden, Project_Space__c = domainId,
                             is_hidden_to_ops__c = this.is_hidden_to_ops, Total__c = this.subtotal, Total_Credits__c = this.applied_credit,
+                            Customer_Invoice_Monthly_fee__c = calculatedMonthlyFee, Softwareplan_Edition__c = softPlanName, Accounting_Customer_PlanVersion__c = softPlanVersion,
                             Software_Plan_Version__c = plan_versions, Server_Name__c = serverName, Invoice_Type__c = HQSyncUtils.CUSTOMER_INVOICE);
         }
     }

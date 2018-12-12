@@ -5,7 +5,6 @@ public class ScriptBatchJob implements Database.Batchable<SObject>, Database.All
 
     private Date helperDate;
     private Id parentContract;
-    private Decimal servicesSpendToDate;
     private Set<Id> contracts;
 
     public ScriptBatchJob() {
@@ -20,34 +19,46 @@ public class ScriptBatchJob implements Database.Batchable<SObject>, Database.All
     public ScriptBatchJob(Date helperDate, Id parentContract) {
         this.helperDate = helperDate;
         this.parentContract = parentContract;
-        this.servicesSpendToDate = 0;
     }
 
     public Database.QueryLocator start(Database.BatchableContext context) {
-        this.contracts = new Set<Id>();
-        this.contracts.add(this.parentContract);
-        for (DContract__c con : [SELECT Id, Parent_Contract__c FROM DContract__c WHERE Parent_Contract__c IN: this.contracts]) {
-            this.contracts.add(con.Id);
-        }
-        return Database.getQueryLocator('SELECT Id, Time_Card_Rate_Cost__c FROM Time_Card__c WHERE Date__c <=: helperDate AND Client__c IN: contracts');
+        return Database.getQueryLocator('SELECT Id, Software_Plan_Version__c, Softwareplan_Edition__c, Accounting_Customer_PlanVersion__c FROM Accounting_Invoice__c WHERE Invoice_Type__c = \'Customer\'');
     }
 
     public void execute(Database.BatchableContext context, List<SObject> scope) {
+        List<Accounting_Invoice__c> customerInvoicesToUpda = new List<Accounting_Invoice__c>();
         for (SObject otc : scope) {
-            Time_Card__c tc = (Time_Card__c) otc;
-            this.servicesSpendToDate += tc.Time_Card_Rate_Cost__c;
+            Accounting_Invoice__c customerInv = (Accounting_Invoice__c) otc;
+            if (String.isNotBlank(customerInv.Software_Plan_Version__c)) {
+                List<String> versionIds = customerInv.Software_Plan_Version__c.split(',');
+                String planName = '';
+                Decimal highestMonthlyFee = -1;
+                Id highestPlanId = null;
+
+                for (Accounting_SoftwarePlanVersion__c spv : [SELECT Id,  id__c, Accounting_SoftwarePlan__r.edition__c,
+                                                                     Software_Product_Rate__r.monthly_fee__c FROM Accounting_SoftwarePlanVersion__c]) {
+                    Decimal tmpMonthlyFee = spv.Software_Product_Rate__r.monthly_fee__c != null ? spv.Software_Product_Rate__r.monthly_fee__c : 0;
+                    if (tmpMonthlyFee > highestMonthlyFee) {
+                        highestMonthlyFee = tmpMonthlyFee;
+                        planName = spv.Accounting_SoftwarePlan__r.edition__c != null ? spv.Accounting_SoftwarePlan__r.edition__c : '';
+                        highestPlanId = spv.Id;
+                    }
+                }
+
+                if (highestPlanId != null) {
+                    customerInv.Softwareplan_Edition__c = planName;
+                    customerInv.Accounting_Customer_PlanVersion__c = highestPlanId;
+                    customerInvoicesToUpda.add(customerInv);
+                }
+            }
+        }
+
+        if (customerInvoicesToUpda.size() > 0) {
+            update customerInvoicesToUpda;
         }
     }
 
     public void finish(Database.BatchableContext context) {
-        List<Pipeline_Snapshot__c> toUpdate = [SELECT Id, Services_Spend__c, GS_Net_Income_to_Date_Handover__c, GS_Net_Income_to_Date__c, Total_Calculated_Costs__c FROM Pipeline_Snapshot__c WHERE Month_Date__c =: this.helperDate
-                                                                                                                                                                                    AND Contract__c =: this.parentContract];
-        for (Pipeline_Snapshot__c record : toUpdate) {
-            record.GS_Net_Income_to_Date_Handover__c = record.GS_Net_Income_to_Date_Handover__c + record.Services_Spend__c - this.servicesSpendToDate;
-            record.GS_Net_Income_to_Date__c = record.GS_Net_Income_to_Date__c + record.Services_Spend__c - this.servicesSpendToDate;
-            record.Total_Calculated_Costs__c = record.Total_Calculated_Costs__c - record.Services_Spend__c + this.servicesSpendToDate;
-            record.Services_Spend__c = this.servicesSpendToDate;
-            update record;
-        }
+
     }
 }
