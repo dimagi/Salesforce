@@ -22,7 +22,7 @@ public class ScriptBatchJob implements Database.Batchable<SObject>, Database.All
     }
 
     public Database.QueryLocator start(Database.BatchableContext context) {
-        return Database.getQueryLocator('SELECT Id, Software_Plan_Version__c, Softwareplan_Edition__c, Accounting_Customer_PlanVersion__c FROM Accounting_Invoice__c WHERE Invoice_Type__c = \'Customer\'');
+        return Database.getQueryLocator('SELECT Id, Server_Name__c, Software_Plan_Version__c, Softwareplan_Edition__c, Accounting_Customer_PlanVersion__c FROM Accounting_Invoice__c WHERE Invoice_Type__c = \'Customer\'');
     }
 
     public void execute(Database.BatchableContext context, List<SObject> scope) {
@@ -36,7 +36,8 @@ public class ScriptBatchJob implements Database.Batchable<SObject>, Database.All
                 Id highestPlanId = null;
 
                 for (Accounting_SoftwarePlanVersion__c spv : [SELECT Id,  id__c, Accounting_SoftwarePlan__r.edition__c,
-                                                                     Software_Product_Rate__r.monthly_fee__c FROM Accounting_SoftwarePlanVersion__c]) {
+                                                                     Software_Product_Rate__r.monthly_fee__c FROM Accounting_SoftwarePlanVersion__c
+                                                                     WHERE id__c IN: versionIds AND Server_Name__c =: customerInv.Server_Name__c]) {
                     Decimal tmpMonthlyFee = spv.Software_Product_Rate__r.monthly_fee__c != null ? spv.Software_Product_Rate__r.monthly_fee__c : 0;
                     if (tmpMonthlyFee > highestMonthlyFee) {
                         highestMonthlyFee = tmpMonthlyFee;
