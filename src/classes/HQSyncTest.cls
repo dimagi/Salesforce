@@ -760,13 +760,13 @@ public class HQSyncTest {
         Accounting_SoftwareProductRate__c productRate2 = new Accounting_SoftwareProductRate__c(id__c = '13', is_active__c = true,  monthly_fee__c = 75, Server_Name__c = 'CommCare HQ');
         Accounting_SoftwareProductRate__c productRate3 = new Accounting_SoftwareProductRate__c(id__c = '14', is_active__c = true,  monthly_fee__c = 25, Server_Name__c = 'CommCare HQ');
 
-        insert productRate1;
-        insert productRate2;
         insert productRate3;
+        insert productRate2;
+        insert productRate1;
 
-        Accounting_Softwareplan__c softwarePlan1 = new Accounting_Softwareplan__c(id__c = '12', Name = 'softwarePlan1', edition__c = 'Community', Server_Name__c = 'CommCare HQ');
-        Accounting_Softwareplan__c softwarePlan2 = new Accounting_Softwareplan__c(id__c = '13', Name = 'softwarePlan2', edition__c = 'Standard', Server_Name__c = 'CommCare HQ');
-        Accounting_Softwareplan__c softwarePlan3 = new Accounting_Softwareplan__c(id__c = '14', Name = 'softwarePlan3', edition__c = 'Pro', Server_Name__c = 'CommCare HQ');
+        Accounting_Softwareplan__c softwarePlan1 = new Accounting_Softwareplan__c(id__c = '12', Name = 'softwarePlan1', edition__c = 'Advanced', Server_Name__c = 'CommCare HQ');
+        Accounting_Softwareplan__c softwarePlan2 = new Accounting_Softwareplan__c(id__c = '13', Name = 'softwarePlan2', edition__c = 'Pro', Server_Name__c = 'CommCare HQ');
+        Accounting_Softwareplan__c softwarePlan3 = new Accounting_Softwareplan__c(id__c = '14', Name = 'softwarePlan3', edition__c = 'Standard', Server_Name__c = 'CommCare HQ');
 
         insert softwarePlan1;
         insert softwarePlan2;
@@ -797,32 +797,44 @@ public class HQSyncTest {
         List<Accounting_Invoice__c> invs = [SELECT id__c FROM Accounting_Invoice__c WHERE Invoice_Type__c =: HQSyncUtils.CUSTOMER_INVOICE];
         System.assertEquals(4, invs.size());
 
-        Accounting_Invoice__c invoice = [SELECT id__c, Accounting_Subscription__c, Project_Space__c, Accounting_Billing_Account__c, Customer_Invoice_Monthly_fee__c FROM Accounting_Invoice__c WHERE id__c = '1'];
+        Accounting_Invoice__c invoice = [SELECT id__c, Accounting_Subscription__c, Project_Space__c, Accounting_Billing_Account__c, Customer_Invoice_Monthly_fee__c,
+                                            Accounting_Customer_PlanVersion__c,Softwareplan_Edition__c FROM Accounting_Invoice__c WHERE id__c = '1'];
         System.assertEquals(null, invoice.Accounting_Subscription__c);
         System.assertNotEquals(null, invoice.Accounting_Billing_Account__c);
         System.assertEquals(bacc1.Id, invoice.Accounting_Billing_Account__c);
         System.assertEquals(domain1.Id, invoice.Project_Space__c);
         System.assertEquals(250, invoice.Customer_Invoice_Monthly_fee__c);
+        System.assertEquals('Advanced', invoice.Softwareplan_Edition__c);
+        System.assertEquals(planVersion1.Id, invoice.Accounting_Customer_PlanVersion__c);
 
-        invoice = [SELECT id__c, Accounting_Subscription__c, Project_Space__c, Accounting_Billing_Account__c, Customer_Invoice_Monthly_fee__c FROM Accounting_Invoice__c WHERE id__c = '2'];
+        invoice = [SELECT id__c, Accounting_Subscription__c, Project_Space__c, Accounting_Billing_Account__c, Customer_Invoice_Monthly_fee__c,
+                        Accounting_Customer_PlanVersion__c,Softwareplan_Edition__c FROM Accounting_Invoice__c WHERE id__c = '2'];
         System.assertEquals(null, invoice.Accounting_Subscription__c);
         System.assertNotEquals(null, invoice.Accounting_Billing_Account__c);
         System.assertEquals(bacc2.Id, invoice.Accounting_Billing_Account__c);
         System.assertEquals(domain2.Id, invoice.Project_Space__c);
         System.assertEquals(100, invoice.Customer_Invoice_Monthly_fee__c);
+        System.assertEquals('Pro', invoice.Softwareplan_Edition__c);
+        System.assertEquals(planVersion2.Id, invoice.Accounting_Customer_PlanVersion__c);
 
-        invoice = [SELECT id__c, Accounting_Subscription__c, Project_Space__c, Accounting_Billing_Account__c, Customer_Invoice_Monthly_fee__c FROM Accounting_Invoice__c WHERE id__c = '3'];
+        invoice = [SELECT id__c, Accounting_Subscription__c, Project_Space__c, Accounting_Billing_Account__c, Customer_Invoice_Monthly_fee__c,
+                        Accounting_Customer_PlanVersion__c,Softwareplan_Edition__c FROM Accounting_Invoice__c WHERE id__c = '3'];
         System.assertEquals(null, invoice.Accounting_Subscription__c);
         System.assertEquals(null, invoice.Accounting_Billing_Account__c);
         System.assertEquals(null, invoice.Project_Space__c);
         System.assertEquals(25, invoice.Customer_Invoice_Monthly_fee__c);
+        System.assertEquals('Standard', invoice.Softwareplan_Edition__c);
+        System.assertEquals(planVersion3.Id, invoice.Accounting_Customer_PlanVersion__c);
 
-        invoice = [SELECT id__c, Accounting_Subscription__c, Project_Space__c, Accounting_Billing_Account__c, Customer_Invoice_Monthly_fee__c FROM Accounting_Invoice__c WHERE id__c = '4'];
+        invoice = [SELECT id__c, Accounting_Subscription__c, Project_Space__c, Accounting_Billing_Account__c, Customer_Invoice_Monthly_fee__c,
+                        Accounting_Customer_PlanVersion__c,Softwareplan_Edition__c FROM Accounting_Invoice__c WHERE id__c = '4'];
         System.assertEquals(null, invoice.Accounting_Subscription__c);
         System.assertNotEquals(null, invoice.Accounting_Billing_Account__c);
         System.assertEquals(bacc3.Id, invoice.Accounting_Billing_Account__c);
         System.assertEquals(null, invoice.Project_Space__c);
         System.assertEquals(0, invoice.Customer_Invoice_Monthly_fee__c);
+        System.assertEquals(null, invoice.Softwareplan_Edition__c);
+        System.assertEquals(null, invoice.Accounting_Customer_PlanVersion__c);
     }
 
     @isTest
@@ -1439,7 +1451,7 @@ public class HQSyncTest {
         a.id = 'external_id_' + i;
         a.is_hidden = false;
         a.is_hidden_to_ops = false;
-        Accounting_Invoice__c aFromDB  = a.createDbObject(billingAccountId, domainId, 'CommCare HQ');
+        Accounting_Invoice__c aFromDB  = a.createDbObject(billingAccountId, domainId, 0, 'Pro', null, 'CommCare HQ');
         insert aFromDb;
         return aFromDb;
     }
