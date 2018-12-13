@@ -292,17 +292,36 @@
         }
 
         function loadGSData(graphData) {
-            var dlac = [], inc = [], dwa = [], dsi = [], dsa = [];
+            var result = [], dlac = [], inc = [], dwa = [], dsi = [], dsa = [], dlacSum = 0, incSum = 0, dwaSum = 0, dsiSum = 0, dsaSum = 0;
             for (i = 0; i < graphData.length; i++) {
                 inc.push({x: graphData[i].X_Text__c, y: graphData[i].Graph_Value_1__c});
+                incSum += graphData[i].Graph_Value_1__c;
                 dwa.push({x: graphData[i].X_Text__c, y: graphData[i].Graph_Value_2__c});
+                dwaSum += graphData[i].Graph_Value_2__c;
                 dsi.push({x: graphData[i].X_Text__c, y: graphData[i].Graph_Value_3__c});
+                dsiSum += graphData[i].Graph_Value_3__c;
                 dsa.push({x: graphData[i].X_Text__c, y: graphData[i].Graph_Value_4__c});
+                dsaSum += graphData[i].Graph_Value_4__c;
                 dlac.push({x: graphData[i].X_Text__c, y: graphData[i].Graph_Value_5__c});
+                dlacSum += graphData[i].Graph_Value_5__c;
             }
 
-            return [ {key: "Inc", values: inc}, {key: "DWA", values: dwa},
-                     {key: "DSI", values: dsi}, {key: "DSA", values: dsa}, {key: "DLAC", values: dlac} ];
+            if (incSum > 0) {
+                result.push({key: "Inc", values: inc});
+            }
+            if (dwaSum > 0) {
+                result.push({key: "DWA", values: dwa});
+            }
+            if (dsiSum > 0) {
+                result.push({key: "DSI", values: dsi});
+            }
+            if (dsaSum > 0) {
+                result.push({key: "DSA", values: dsa});
+            }
+            if (dlacSum > 0) {
+                result.push({key: "DLAC", values: dlac});
+            }
+            return result;
         }
 
         function buildDiscBatChart(yLabel) {
