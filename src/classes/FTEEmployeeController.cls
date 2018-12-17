@@ -39,7 +39,7 @@ public class FTEEmployeeController {
         if (yearString != null && yearString.isNumeric()) {
             this.fteYear = Integer.valueOf(yearString);
         } else {
-            this.fteYear = FTE_Tracker_Settings__c.getOrgDefaults().FTE_Year__c != null ? FTE_Tracker_Settings__c.getOrgDefaults().FTE_Year__c.intValue() : Date.today().year();
+            this.fteYear = Date.today().year();
         }
     }
 
@@ -73,6 +73,7 @@ public class FTEEmployeeController {
     public PageReference goToIndividualProjectView() {
         PageReference pageRef = Page.FTE_Individual_Project_View;
         pageref.getParameters().put('contractId', this.contractId);
+        pageref.getParameters().put('fteYear', String.valueOf(this.fteYear));
         return pageref;
     }
 
@@ -254,7 +255,7 @@ public class FTEEmployeeController {
         } else {
             this.totalAssignedDays.cssStyle[12] = 'topTotal';
         }
-        this.totalAssignedDays.cssStyle[13] = 'topTotal';
+
         this.totalDaysWorked.sumHoursAndCost(this.fteTimeManager.unassigned);
         this.totalDaysWorked.calculateDays();
         this.totalDaysWorked.nameCss = '';

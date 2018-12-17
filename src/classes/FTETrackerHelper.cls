@@ -94,4 +94,12 @@ public class FTETrackerHelper {
         }
         return EncodingUtil.urlDecode('%' + String.join(bytes, '%'), inCharset);
     }
+
+    public static List<SelectOption> getYearsData() {
+        List<SelectOption> tData = new List<SelectOption>();
+        tData.add(new SelectOption('2018', '2018'));
+        tData.add(new SelectOption('2017', '2017'));
+        tData.add(new SelectOption('2016', '2016'));
+        return tData;
+    }
 }

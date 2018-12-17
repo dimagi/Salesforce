@@ -8,14 +8,29 @@ public class FTEIndividualProjectController {
     public Id employeeId { get; set;}
     public List<FTEEmployeeTime> individualContractDataList { get; set;}
 
+    public Integer fteYear { get; set;}
+    public String currentMonthStr { get; set; }
+    public String lastMonthStr { get; set; }
+    public String twoMonthsAgoStr { get; set; }
+    public String threetMonthsAgoStr { get; set; }
+    public String fiscalYearStr { get; set; }
+
     public FTEIndividualProjectController() {
         String conId = ApexPages.currentPage().getParameters().get('contractId');
         if (conId != null && conId InstanceOf Id) {
             this.contractId = (Id) conId;
         }
+
+        String yearString = ApexPages.currentPage().getParameters().get('fteYear');
+        if (yearString != null && yearString.isNumeric()) {
+            this.fteYear = Integer.valueOf(yearString);
+        } else {
+            this.fteYear = Date.today().year();
+        }
     }
 
     public void initIndividualProject() {
+        generateColumnHeaders();
         this.individualContractDataList = new List<FTEEmployeeTime>();
         if (this.contractId == null) {
             ApexPages.addMessage(new ApexPages.message(ApexPages.severity.ERROR, 'Empty FTE Contract ID'));
@@ -32,6 +47,10 @@ public class FTEIndividualProjectController {
         Map<Id, FTEEmployeeTime> projectTimeMap = new Map<Id, FTEEmployeeTime>();
 
         Date currentDate = Date.today();
+        if (this.fteYear != Date.today().year()) {
+            currentDate = Date.newInstance(this.fteYear, 12, 31);
+        }
+
         Integer currentMonth = currentDate.month();
         Integer currentYear = currentDate.year();
         Integer oneMonthAgo = currentDate.addMonths(-1).month();
@@ -44,7 +63,7 @@ public class FTEIndividualProjectController {
         Decimal totalHours = 0;
         Decimal totalCost = 0;
 
-        List<Time_Card__c> contractTimeCards = [SELECT Id, Employee__c, Employee__r.Name, Date__c, Total__c, FTE_hours__c, FTE_Contract__c, Time_Card_Salary__c FROM Time_Card__c WHERE
+        List<Time_Card__c> contractTimeCards = [SELECT Id, Employee__c, Employee__r.Name, Date__c, Total__c, FTE_hours__c, FTE_Contract__c FROM Time_Card__c WHERE
                                                 (Client__c =: this.contractId OR FTE_Contract__c =: this.contractId) AND Date__c <=: Date.today()];
 
         FTEEmployeeTime totalProjectTime = new FTEEmployeeTime('Total', null);
@@ -78,13 +97,15 @@ public class FTEIndividualProjectController {
             } else {
                 tmpHelper.hoursArray[4] += realHours;
             }
+
+            if (entryDateYear == currentYear) {
+                tmpHelper.hoursArray[5] += realHours;
+            }
             tmpHelper.hoursArray[12] += realHours;
-            tmpHelper.daysArray[13] += (timeCard.Total__c != null ? timeCard.Total__c : 0) * (timeCard.Time_Card_Salary__c != null ? timeCard.Time_Card_Salary__c : 0);
             projectTimeMap.put(timeCard.Employee__c, tmpHelper);
         }
-        this.individualContractDataList = projectTimeMap.values();
-        Map<Id, SFDC_Employee__c> empMap = new Map<Id, SFDC_Employee__c>([SELECT Id, Name FROM SFDC_Employee__c WHERE Id IN: projectTimeMap.keySet()]);
 
+        this.individualContractDataList = projectTimeMap.values();
         for (FTEEmployeeTime empT : this.individualContractDataList) {
             empT.calculateDays();
             totalProjectTime.sumHoursAndCost(empT);
@@ -95,8 +116,8 @@ public class FTEIndividualProjectController {
         totalProjectTime.cssStyle[2] = 'topTotal';
         totalProjectTime.cssStyle[3] = 'topTotal';
         totalProjectTime.cssStyle[4] = 'topTotal';
+        totalProjectTime.cssStyle[5] = 'topTotal';
         totalProjectTime.cssStyle[12] = 'topTotal';
-        totalProjectTime.cssStyle[13] = 'topTotal';
         totalProjectTime.nameCss = 'topTotal';
         this.individualContractDataList.add(totalProjectTime);
     }
@@ -104,11 +125,32 @@ public class FTEIndividualProjectController {
     public PageReference goToEmployeeView() {
         PageReference pageRef = Page.FTE_Employee_View;
         pageref.getParameters().put('employeeId', this.employeeId);
+        pageref.getParameters().put('fteYear', String.valueOf(this.fteYear));
         return pageRef;
     }
 
     public PageReference goToProjectList() {
         PageReference pageRef = Page.FTE_Project_List_View;
         return pageRef;
+    }
+
+    public List<SelectOption> getYearsData() {
+        return FTETrackerHelper.getYearsData();
+    }
+
+    private void generateColumnHeaders() {
+        DateTime currentDate = DateTime.now();
+        if (this.fteYear != Date.today().year()) {
+            currentDate = DateTime.newInstance(this.fteYear, 12, 30);
+        }
+
+        this.currentMonthStr = currentDate.format('MMMMM YYYY');
+        currentDate = currentDate.addMonths(-1);
+        this.lastMonthStr = currentDate.format('MMMMM YYYY');
+        currentDate = currentDate.addMonths(-1);
+        this.twoMonthsAgoStr = currentDate.format('MMMMM YYYY');
+        currentDate = currentDate.addMonths(-1);
+        this.threetMonthsAgoStr = currentDate.format('MMMMM YYYY');
+        this.fiscalYearStr = currentDate.format('YYYY');
     }
 }

@@ -131,9 +131,6 @@ public class FTETrackerTest {
         timeCards.add(addTimeCard(unassignedContract2.Id, testEmployee3.Id, Date.newInstance(currentDate.year(), currentDate.month(), 21), 4));
 
         insert timeCards;
-        FTE_Tracker_Settings__c settings = FTE_Tracker_Settings__c.getOrgDefaults();
-        settings.FTE_Year__c = Date.today().year();
-        insert settings;
     }
 
     @isTest
@@ -305,12 +302,7 @@ public class FTETrackerTest {
         Id cont1 = [SELECT Id FROM DContract__c WHERE Name = 'FTE Contract 1' LIMIT 1].Id;
         Id cont2 = [SELECT Id FROM DContract__c WHERE Name = 'FTE Contract 2' LIMIT 1].Id;
         Id contUn1 = [SELECT Id FROM DContract__c WHERE Name = 'Unassigned Contract 1' LIMIT 1].Id;
-
         Date currentDate = Date.today();
-
-        FTE_Tracker_Settings__c settings = FTE_Tracker_Settings__c.getOrgDefaults();
-        settings.FTE_Trigger__c = true;
-        update settings;
 
         Test.startTest();
 
@@ -363,12 +355,7 @@ public class FTETrackerTest {
     public static void batchShouldMoveRemovedFTETags() {
         Id cont1 = [SELECT Id FROM DContract__c WHERE Name = 'FTE Contract 1' LIMIT 1].Id;
         Id cont4 = [SELECT Id FROM DContract__c WHERE Name = 'FTE Contract 4' LIMIT 1].Id;
-
         Date currentDate = Date.today();
-
-        FTE_Tracker_Settings__c settings = FTE_Tracker_Settings__c.getOrgDefaults();
-        settings.FTE_Trigger__c = true;
-        update settings;
 
         Test.startTest();
 
@@ -415,10 +402,6 @@ public class FTETrackerTest {
         Id cont4 = [SELECT Id FROM DContract__c WHERE Name = 'FTE Contract 4' LIMIT 1].Id;
         Id contUn1 = [SELECT Id FROM DContract__c WHERE Name = 'Unassigned Contract 1' LIMIT 1].Id;
         Id contUn2 = [SELECT Id FROM DContract__c WHERE Name = 'Unassigned Contract 2' LIMIT 1].Id;
-
-        FTE_Tracker_Settings__c settings = FTE_Tracker_Settings__c.getOrgDefaults();
-        settings.FTE_Trigger__c = true;
-        update settings;
 
         Test.startTest();
 
@@ -487,10 +470,6 @@ public class FTETrackerTest {
         Id cont4 = [SELECT Id FROM DContract__c WHERE Name = 'FTE Contract 4' LIMIT 1].Id;
         Id contUn1 = [SELECT Id FROM DContract__c WHERE Name = 'Unassigned Contract 1' LIMIT 1].Id;
         Id contUn2 = [SELECT Id FROM DContract__c WHERE Name = 'Unassigned Contract 2' LIMIT 1].Id;
-
-        FTE_Tracker_Settings__c settings = FTE_Tracker_Settings__c.getOrgDefaults();
-        settings.FTE_Trigger__c = true;
-        update settings;
 
         Test.startTest();
 
@@ -857,6 +836,80 @@ public class FTETrackerTest {
         System.assertEquals(25.1, timeManager.unassigned.hoursArray[fteMonth - 1]);
         timeManager.unassigned.calculateDays();
         System.assertEquals(3.25, timeManager.unassigned.daysArray[fteMonth - 1]);
+    }
+
+    /**
+     * Controller tests
+     */
+    @isTest
+    public static void testEmployeeListController() {
+        Integer currYear = Date.today().year();
+        List<FTE_Work_Card__c> workCards = new List<FTE_Work_Card__c>();
+        for (SFDC_Employee__c empl : [SELECT Id FROM SFDC_Employee__c]) {
+            workCards.add(new FTE_Work_Card__c(Employee__c = empl.Id, Month_1__c = 1, Month_2__c = 2, Month_3__c = 3, Month_4__c = 4, Month_5__c = 5, Month_6__c = 6, Month_7__c = 7, Month_8__c = 8,
+                                               Month_9__c = 9, Month_10__c = 10, Month_11__c = 11, Month_12__c = 12, Total__c = 78, Total_Hours__c = 78 * 8, Year__c = currYear));
+        }
+        insert workCards;
+
+        PageReference pageRef = Page.FTE_Employee_List_View;
+        pageRef.getParameters().put('fteYear', EncodingUtil.urlDecode('' + currYear, 'UTF-8'));
+        Test.setCurrentPage(pageRef);
+
+        Test.startTest();
+        FTETrackerController emplListCtrl = new FTETrackerController();
+        emplListCtrl.initEmployeeListView();
+        List<FTEEmployeeTime> workCardList = emplListCtrl.getEmployeesList();
+        System.assertEquals(3, workCardList.size());
+
+        emplListCtrl.employeeNameSearch = 'other';
+        emplListCtrl.searchEmplopyee();
+        workCardList = emplListCtrl.getEmployeesList();
+
+        System.assertEquals(1, workCardList.size());
+        System.assertNotEquals(null, emplListCtrl.goToProjectListView());
+        System.assertNotEquals(null, emplListCtrl.goToEmployeeView());
+        System.assertNotEquals(null, emplListCtrl.goToCSVUploadView());
+        Test.stopTest();
+    }
+
+    @isTest
+    public static void testProjectListController() {
+        Integer currYear = Date.today().year();
+        PageReference pageRef = Page.FTE_Project_List_View;
+        pageRef.getParameters().put('fteYear', EncodingUtil.urlDecode('' + currYear, 'UTF-8'));
+        Test.setCurrentPage(pageRef);
+
+        Test.startTest();
+        FTEProjectListController projListCtrl = new FTEProjectListController();
+        projListCtrl.initProjectList();
+        List<DContract__c> projList = projListCtrl.getListToSubmit();
+        System.assertEquals(4, projList.size());
+
+        projListCtrl.seachProjectName = 'ontract 2';
+        projListCtrl.searchProject();
+        projList = projListCtrl.getListToSubmit();
+
+        System.assertEquals(1, projList.size());
+        System.assertNotEquals(null, projListCtrl.goToEmployeeListView());
+        System.assertNotEquals(null, projListCtrl.goToIndividualProjectView());
+        Test.stopTest();
+    }
+
+    @isTest
+    public static void testIndividualProjectController() {
+        PageReference pageRef = Page.FTE_Individual_Project_View;
+        pageRef.getParameters().put('contractId', EncodingUtil.urlDecode([SELECT Id FROM DContract__c WHERE Name = 'FTE Contract 1' LIMIT 1].Id, 'UTF-8'));
+        Test.setCurrentPage(pageRef);
+
+        Test.startTest();
+        FTEIndividualProjectController projCtrl = new FTEIndividualProjectController();
+        projCtrl.initIndividualProject();
+        System.assertEquals(4, projCtrl.individualContractDataList.size()); // 3 employees and 1 total row
+        System.assertEquals('Total', projCtrl.individualContractDataList.get(3).name);
+
+        System.assertNotEquals(null, projCtrl.goToEmployeeView());
+        System.assertNotEquals(null, projCtrl.goToProjectList());
+        Test.stopTest();
     }
 
     private static void assertFTEDataRecord(String emplName, Integer fteYear, String contractName, Integer lineNum, Decimal m1, Decimal m2, Decimal m3, Decimal m4,

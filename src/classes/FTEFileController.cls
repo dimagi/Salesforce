@@ -26,7 +26,7 @@ public class FTEFileController {
         if (yearString != null && yearString.isNumeric()) {
             this.fteYear = Integer.valueOf(yearString);
         } else {
-            this.fteYear = FTE_Tracker_Settings__c.getOrgDefaults().FTE_Year__c != null ? FTE_Tracker_Settings__c.getOrgDefaults().FTE_Year__c.intValue() : Date.today().year();
+            this.fteYear = Date.today().year();
         }
 
         String monthString = ApexPages.currentPage().getParameters().get('month');

@@ -18,7 +18,7 @@
         }
     </style>
 
-    <apex:pageBlock title="FTE Project List" id="projectListViewIBlock">
+    <apex:pageBlock title="List of Projects" id="projectListViewIBlock">
         <apex:form >
 
             <apex:actionPoller action="{!loadWorkCardJobStatus}" enabled="{!workCardJobStatus.isRunning}"
@@ -44,53 +44,53 @@
                     <apex:pageMessages />
                 </apex:outputPanel>
 
-                <apex:actionFunction action="{!goToIndividualProjectView}" name="goToIndividualProjectView" reRender="projectList" >
-                    <apex:param name="contractId" assignTo="{!contractId}" value=""/>
-                </apex:actionFunction>
-
-                <apex:actionFunction action="{!searchProject}" name="searchProjectJs" status="loadingDiv" reRender="projectList" />
-
-                <apex:pageBlockSection columns="1">
-                    <apex:pageBlockTable id="fteContractList" value="{!listToSubmit}" var="fteProject" styleClass="projectTable">
-                        <apex:column headerValue="FTE Project Name" value="{!fteProject.name}" styleClass="fteProjectCell" onclick="goToIndividualProjectView('{!fteProject.Id}');" />
-                        <apex:column headerValue="Action" >
-                            <apex:commandLink status="loadingDiv" value=" Remove " action="{!removeProjectFromFteTracker}" reRender="projectList" >
-                                <apex:param name="contractToRemove" assignTo="{!contractId}" value="{!fteProject.Id}"/>
-                            </apex:commandLink>
-                        </apex:column>
-                    </apex:pageBlockTable>
-                </apex:pageBlockSection>
-                <apex:outputPanel styleClass="leftMargin">
-                    <apex:commandButton action="{!updateFteContracts}" value="Save changes" id="saveButton"
-                                            disabled="{!!projectListUpdated}" status="loadingDiv" reRender="projectListViewIBlock" />
-                    <apex:commandButton action="{!goToEmployeeListView}" value="Employee List" id="backButton" />
-                </apex:outputPanel>
-                <br /><br />
                 <apex:pageBlockSection columns="1" id="serachSection">
                 <apex:outputLabel value="Search Project    " />
                 <apex:outputPanel >
                     <apex:inputText value="{!seachProjectName}" id="searchProjectText" onkeydown="if(event.keyCode == 13) { this.blur(); searchProjectJs(); }"/>
                     <apex:commandButton value="Search" action="{!searchProject}" status="loadingDiv" id="searchProjects" reRender="projectList" />
-                    <apex:outputText rendered="{!searchError!=''}">
-                    <div class="errorMsg"><strong>Error:</strong>&nbsp;{!searchError}</div>
-                        </apex:outputText>
                 </apex:outputPanel>
                 </apex:pageBlockSection>
 
                 <apex:pageBlockSection columns="1">
-                <apex:outputLabel value="Search Results" />
-                <apex:outputPanel styleClass="requiredInput" layout="block">
-                    <apex:actionFunction action="{!addProjectToFteTracker}" name="addProjectToFteTracker" status="loadingDiv"
-                                reRender="projectList">
-                        <apex:param name="contractToAdd" assignTo="{!contractId}" value=""/>
-                    </apex:actionFunction>
-                    <apex:pageBlockTable value="{!fteContractSearchList}" var="obj" id="searchResultTable" styleClass="projectTable" >
-                        <apex:column onclick="addProjectToFteTracker('{!obj.Id}');" headerValue="Project Name" value="{!obj.Name}" 
-                            styleClass="fteProjectCell" />
-                        <apex:column headerValue="Status" value="{!obj.Status__c}" />
+                    <apex:pageBlockTable id="fteContractList" value="{!listToSubmit}" var="fteProject" styleClass="projectTable">
+                        <apex:column headerValue="FTE Project Name" value="{!fteProject.name}" styleClass="fteProjectCell" onclick="goToIndividualProjectView('{!fteProject.Id}');" />
                     </apex:pageBlockTable>
-                </apex:outputPanel>
                 </apex:pageBlockSection>
+
+                <!-- Pagination -->
+                <table style="width: 100%">
+                    <tr>
+                        <td>Page: <apex:outputText value=" {!projectsPagination.pageNumber} of {!CEILING(projectsPagination.resultSize / projectsPagination.pageSize)}"/></td>
+                        <td align="center">
+                            <apex:commandLink status="loadingDiv" action="{!projectsPagination.previousPage}" value="« Previous" rendered="{!projectsPagination.hasPrevious}" reRender="projectList" />
+                            <apex:outputText style="color: #ccc;" value="« Previous" rendered="{!NOT(projectsPagination.hasPrevious)}"/>
+                            &nbsp;&nbsp;
+                            <apex:commandLink status="loadingDiv" action="{!projectsPagination.nextPage}" value="Next »" rendered="{!projectsPagination.hasNext}" reRender="projectList" />
+                            <apex:outputText style="color: #ccc;" value="Next »" rendered="{!NOT(projectsPagination.hasNext) }"/>
+                        </td>
+                        <td align="right">
+                            Records per page:&nbsp;&nbsp;
+                            <apex:selectList value="{!projectsPagination.pageSize }" size="1" onchange="resetPageNum();" >
+                                <apex:selectOption itemValue="10" itemLabel="10"/>
+                                <apex:selectOption itemValue="20" itemLabel="20"/>
+                                <apex:selectOption itemValue="50" itemLabel="50"/>
+                                <apex:actionSupport event="onchange" reRender="projectList"/>
+                            </apex:selectList>
+                        </td>
+                    </tr>
+                </table>
+
+                <apex:actionFunction status="loadingDiv" action="{!projectsPagination.resetPageNumber}" name="resetPageNum" reRender="projectList" />
+                <apex:actionFunction action="{!goToIndividualProjectView}" name="goToIndividualProjectView" reRender="projectList" >
+                    <apex:param name="contractId" assignTo="{!contractId}" value=""/>
+                </apex:actionFunction>
+                <apex:actionFunction action="{!searchProject}" name="searchProjectJs" status="loadingDiv" reRender="projectList" />
+
+                <apex:outputPanel styleClass="leftMargin">
+                    <apex:commandButton action="{!goToEmployeeListView}" value="Employee List" id="backButton" />
+                </apex:outputPanel>
+
             </apex:outputPanel>
         </apex:form>
     </apex:pageBlock>

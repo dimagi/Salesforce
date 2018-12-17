@@ -25,7 +25,7 @@ public class FTETimeManager {
         List<Time_Card__c> timeCards = [SELECT Id, Client__c, Client__r.FTE_Tracker__c, Client__r.Name,
                                             Total__c, FTE_hours__c, FTE_Contract__c,
                                             FTE_Contract__r.FTE_Tracker__c, FTE_Contract__r.Name,
-                                            Time_Card_Salary__c, Date__c FROM Time_Card__c
+                                            Date__c FROM Time_Card__c
                                             WHERE Employee__c =: this.employee.Id AND Client__c != null
                                             AND CALENDAR_YEAR(Date__c) =: this.fteYear
                                             ORDER BY Client__r.Name];
@@ -255,16 +255,16 @@ public class FTETimeManager {
         Decimal movedTime = (timeCard.FTE_hours__c != null ? timeCard.FTE_hours__c : 0);
 
         // "Moved from" part this.contractsTime.add(this.unassigned);
-        sumLoggedTime(timeCard.Client__r.FTE_Tracker__c == 'Yes', timeCard.Client__c, timeCard.Client__r.Name, (loggedTime - movedTime), timeCard.Date__c.month(), timeCard.Time_Card_Salary__c);
+        sumLoggedTime(timeCard.Client__r.FTE_Tracker__c == 'Yes', timeCard.Client__c, timeCard.Client__r.Name, (loggedTime - movedTime), timeCard.Date__c.month());
         // If no FTE Tag values we don't need to process moved hours
         if (timeCard.FTE_Contract__c == null || movedTime == 0) {
             return;
         }
         // "Moved to" part
-        sumLoggedTime(timeCard.FTE_Contract__r.FTE_Tracker__c == 'Yes', timeCard.FTE_Contract__c, timeCard.FTE_Contract__r.Name, movedTime, timeCard.Date__c.month(), timeCard.Time_Card_Salary__c);
+        sumLoggedTime(timeCard.FTE_Contract__r.FTE_Tracker__c == 'Yes', timeCard.FTE_Contract__c, timeCard.FTE_Contract__r.Name, movedTime, timeCard.Date__c.month());
     }
 
-    private void sumLoggedTime(Boolean fteTracker, Id clientId, String clientName, Decimal loggedHours, Integer month, Decimal salary) {
+    private void sumLoggedTime(Boolean fteTracker, Id clientId, String clientName, Decimal loggedHours, Integer month) {
         FTEEmployeeTime tmpHelper = this.unassigned;
         if (fteTracker == true) {
             if (!this.assignedMap.containsKey(clientId)) {
@@ -273,18 +273,15 @@ public class FTETimeManager {
             tmpHelper = this.assignedMap.get(clientId);
             tmpHelper.hoursArray[month - 1] += loggedHours;
             tmpHelper.hoursArray[12] += loggedHours;
-            tmpHelper.daysArray[13] += (salary != null ? salary : 0) * loggedHours;
         } else {
             if (!this.unassignedMap.containsKey(clientId)) {
                 this.unassignedMap.put(clientId, new FTEEmployeeTime(clientName, clientId));
             }
             tmpHelper.hoursArray[month - 1] += loggedHours;
             tmpHelper.hoursArray[12] += loggedHours;
-            tmpHelper.daysArray[13] += (salary != null ? salary : 0) * loggedHours;
             tmpHelper = this.unassignedMap.get(clientId);
             tmpHelper.hoursArray[month - 1] += loggedHours;
             tmpHelper.hoursArray[12] += loggedHours;
-            tmpHelper.daysArray[13] += (salary != null ? salary : 0) * loggedHours;
         }
     }
 

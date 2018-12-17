@@ -36,6 +36,14 @@
         .boldText {
             font-weight: bold;
         }
+        .modalBase {
+            line-height: 1.5em;
+        }
+        .hoursModal {
+            line-height: 1.5em;
+            padding: 10px 5px 30px 5px !important;
+            min-width: 300px;
+        }
         .hoursModal label, input, span, h1, select {
             display:block;
             margin-bottom: 3px;
@@ -84,8 +92,8 @@
         }
 
         $j(document).ready(function() {
-            $j("#tcExport").dialog({ autoOpen: false, modal: true, closeOnEscape: true, width: 220, height: 110 });
-            $j("#unassignModal").dialog({ autoOpen: false, modal: true, closeOnEscape: true, width: 280, height: 230,
+            $j("#tcExport").dialog({ autoOpen: false, modal: true, closeOnEscape: true, dialogClass: 'modalBase', width: 240, height: 125 });
+            $j("#unassignModal").dialog({ autoOpen: false, modal: true, closeOnEscape: true, width: 'auto', height: 'auto', resizable: false,
                                             buttons: {
                                                 "Confirm": {
                                                     text: "Confirm",
@@ -98,7 +106,7 @@
                                                 }
                                             },
                                             close: function() { $j("#daysToUnassig").tooltip('disable'); }});
-            $j("#assignModal").dialog({ autoOpen: false, modal: true, closeOnEscape: true, width: 280, height: 250,
+            $j("#assignModal").dialog({ autoOpen: false, modal: true, closeOnEscape: true, width: 'auto', height: 'auto', resizable: false,
                                             buttons: {
                                                 "Confirm": {
                                                     text: "Confirm",
@@ -248,7 +256,7 @@
 
     </script>
 
-    <apex:pageBlock title="FTE Employee">
+    <apex:pageBlock title="Projects for Employee: {!employee.Name}">
         <apex:form >
             <apex:outputPanel >
                 <apex:outputPanel layout="block" id="messages">
@@ -263,7 +271,6 @@
                         </div>
                     </apex:facet>
                 </apex:actionstatus>
-                <apex:outputText id="employeeName" value="{!employee.Name}"/>
 
                 <!-- TODO in future we will implement changing FTE year, it was added only for test browser back button <br />
                 <apex:outputText id="fteYearName" value="Choose FTE year"/>
@@ -301,7 +308,6 @@
                     <apex:column onclick="if ('{!empTime.name}' !== 'Total Days Worked' && '{!empTime.name}' !== 'Total Assigned Days') {loadModalData(11, '{!empTime.objId}');}"
                                  headerValue="Dec {!fteYear}" value="{!empTime.daysArray[11]}" styleClass="{!empTime.cssStyle[11]}"/>
                     <apex:column headerValue="Total" value="{!empTime.daysArray[12]}" styleClass="{!empTime.cssStyle[12]}"/>
-                    <apex:column headerValue="Labor Cost Estimates" value="$ {!empTime.daysArray[13]}" styleClass="{!empTime.cssStyle[13]}"/>
                 </apex:pageBlockTable>
 
                 <apex:actionFunction action="{!loadEmployeeUnassMonth}" status="loadingDiv" name="loadEmployeeUnassMonth" oncomplete="showUnassignedModal();"
