@@ -7,18 +7,22 @@ public class FTEFileController {
     public Integer exportMonth {get; set;}
     public Integer monthDays {get; set;}
     public Integer fteYear {get; set;}
-    public List<FTEMonthTimeCard> employeeMonthProjects { get; set;}
-    public List<Integer> exportMonthDays {get; set;}
+
+    public Integer one { get; set ; }
+    public List<FTEMonthTimeCard> employeeMonthProjects { get; set; }
+    public List<FTEColumnWrapper> rowList { get; set; }
+
     public String monthYearText {get; set;}
     public SFDC_Employee__c employee { get; set;}
-    private Boolean downloadPage;
-
     public String fileName {get; set;}
     public String csvFile {get; set;}
 
+    private Boolean downloadPage;
+
     public FTEFileController() {
+        this.one = 1;
         this.downloadPage = false;
-        if (ApexPages.currentPage().getUrl().contains('FTE_Download_File')) {
+        if (ApexPages.currentPage().getUrl().toLowerCase().contains('fte_download_file')) {
             this.downloadPage = true;
         }
 
@@ -37,7 +41,7 @@ public class FTEFileController {
         }
 
         this.monthDays = Date.daysInMonth(fteYear, this.exportMonth);
-        this.exportMonthDays = new List<Integer>();
+        this.rowList = new List<FTEColumnWrapper>();
         this.monthYearText = DateTime.newInstance(fteYear, this.exportMonth, 1).format('MMMM yyyy');
 
         String emplId = ApexPages.currentPage().getParameters().get('employeeId');
@@ -68,13 +72,12 @@ public class FTEFileController {
             ApexPages.addMessage(new ApexPages.message(ApexPages.severity.ERROR, 'Empty Employee ID'));
             return;
         }
-
-        for (Integer i = 0; i < this.monthDays; i++) {
-            this.exportMonthDays.add(i); // We need something to iterate if we want add dynamic columns on UI
-        }
         if (exportMonth != null) {
             FTETimeCardGenerator generator = new FTETimeCardGenerator(this.fteYear, this.exportMonth, this.employeeId);
             this.employeeMonthProjects = generator.generateMonthTimeCards();
+        }
+        for (Integer i = 0; i < this.monthDays; i++) {
+            this.rowList.add(new FTEColumnWrapper(DateTime.newInstance(this.fteYear, this.exportMonth, i).format('EEEE'), i));
         }
     }
 
@@ -83,5 +86,18 @@ public class FTEFileController {
         pageref.getParameters().put('employeeId', this.employeeId);
         pageref.getParameters().put('fteYear', String.valueOf(this.fteYear));
         return pageRef;
+    }
+
+    public class FTEColumnWrapper {
+
+        public String columnName { get; set; }
+        public Integer dayNumber { get; set; }
+        public Integer index { get; set; }
+
+        public FTEColumnWrapper(String columnName, Integer index) {
+            this.columnName = columnName;
+            this.index = index;
+            this.dayNumber = index + 1;
+        }
     }
 }

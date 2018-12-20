@@ -13,9 +13,17 @@
             margin-top: 10px;
             margin-bottom: 10px;
         }
+        .verAlign {
+            vertical-align: middle;
+        }
+        #chooseYear {
+            width: 180px;
+            padding-left: 10px;
+            padding-bottom: 10px;
+        }
     </style>
 
-    <apex:pageBlock title="List of Allocated Employees" id="employeeListBlockId">
+    <apex:pageBlock title="Total Allocated Time by Employee" id="employeeListBlockId">
         <apex:form >
             <apex:actionPoller action="{!initEmployeeListView}" enabled="{!workCardJobStatus.isRunning}"
                                     reRender="employeeListBlockId" interval="5"/>
@@ -36,15 +44,15 @@
                     </apex:facet>
                 </apex:actionstatus>
 
-                <apex:pageBlockSection columns="1" id="yearSection">
-                    <apex:outputText id="fteYearName" value="Select year : "/>
+                <div id="chooseYear">
+                    <apex:outputText styleClass="verAlign" id="fteYearName" value="Select year : "/>
                     <apex:selectList id="fteYearSelect" value="{!fteYear}" size="1" onchange="searchEmployeeJs();">
                         <apex:selectOptions value="{!yearsData}"/>
                     </apex:selectList>
-                </apex:pageBlockSection>
+                </div>
 
                 <apex:pageBlockSection columns="1" id="serachSection">
-                    <apex:outputLabel value="Find Employee    " />
+                    <apex:outputLabel value="Find Employee :   " />
                     <apex:outputPanel >
                         <apex:inputText value="{!employeeNameSearch}" id="searchProjectText" onkeydown="if(event.keyCode == 13) { this.blur(); searchEmployeeJs(); }"/>
                         <apex:commandButton action="{!searchEmplopyee}" value="Search" status="loadingDiv" id="searchEmployee" reRender="emplsPanel" />

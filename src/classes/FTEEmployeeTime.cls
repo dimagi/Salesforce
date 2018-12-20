@@ -26,7 +26,7 @@ public class FTEEmployeeTime {
         }
     }
 
-    public void sumHoursAndCost(FTEEmployeeTime empTime) {
+    public void sumHours(FTEEmployeeTime empTime) {
         for (Integer i = 0 ; i < this.hoursArray.size(); i++) {
             this.hoursArray[i] += empTime.hoursArray[i];
         }

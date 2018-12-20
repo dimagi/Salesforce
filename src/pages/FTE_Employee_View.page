@@ -223,8 +223,8 @@
                         return;
                     }
                 }
-                if (daysNum < 0.25) {
-                    setTooltipMessage(tooltipElement, confirmButton, 'Minimum value is 0.25');
+                if (daysNum <= 0) {
+                    setTooltipMessage(tooltipElement, confirmButton, 'Value must be greather then 0');
                     return;
                 }
                 if (daysNum > fteDaysMax) {

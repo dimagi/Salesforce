@@ -234,8 +234,8 @@ public class FTEEmployeeController {
         // Calculate totals and labor cost
         for (FTEEmployeeTime empT : this.contractsTime) {
             empT.calculateDays();
-            this.totalAssignedDays.sumHoursAndCost(empT);
-            this.totalDaysWorked.sumHoursAndCost(empT);
+            this.totalAssignedDays.sumHours(empT);
+            this.totalDaysWorked.sumHours(empT);
         }
 
         this.fteTimeManager.unassigned.calculateDays();
@@ -256,7 +256,7 @@ public class FTEEmployeeController {
             this.totalAssignedDays.cssStyle[12] = 'topTotal';
         }
 
-        this.totalDaysWorked.sumHoursAndCost(this.fteTimeManager.unassigned);
+        this.totalDaysWorked.sumHours(this.fteTimeManager.unassigned);
         this.totalDaysWorked.calculateDays();
         this.totalDaysWorked.nameCss = '';
         this.totalAssignedDays.nameCss = 'topTotal';
@@ -277,21 +277,5 @@ public class FTEEmployeeController {
             workCard.put('Month_' + month + '__c', monthValue + daysValue);
             update workCard;
         }
-    }
-
-    private void clearAssignUnassignViewData() {
-        this.contractId = null;
-        this.fteHoursMax = 0;
-        this.employeeMonth = null;
-        this.fteContracts = null;
-        this.fteContractsOptions = null;
-        this.selectedFteContract = null;
-        this.fteDays = '';
-        this.contractName = null;
-        this.fteDaysMax = 0;
-        this.userAvailableDays = 0;
-        this.assignViewError = false;
-        this.notValidDays = false;
-        this.monthName = null;
     }
 }

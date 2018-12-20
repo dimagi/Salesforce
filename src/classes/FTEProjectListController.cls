@@ -4,14 +4,9 @@
 public class FTEProjectListController {
 
     public Id contractId { get; set;}
-    public String seachProjectName { get; set;}
     public JobWrapper workCardJobStatus {get; set;}
-    public Pagination projectsPagination { get; set;}
 
     public FTEProjectListController() {
-        this.seachProjectName = '';
-        this.projectsPagination = new Pagination();
-        this.projectsPagination.pageSize = 10;
     }
 
     public void initProjectList() {
@@ -19,20 +14,8 @@ public class FTEProjectListController {
     }
 
     public List<DContract__c> getListToSubmit() {
-        List<DContract__c> result = null;
-        if (this.seachProjectName != null && this.seachProjectName != '') {
-            result = [SELECT Id, Name, FTE_Tracker__c FROM DContract__c WHERE FTE_Tracker__c = 'Yes' AND Name LIKE: ('%' + String.escapeSingleQuotes(this.seachProjectName) + '%')
-                        ORDER BY Name LIMIT: this.projectsPagination.pageSize OFFSET: this.projectsPagination.getOffsetValue()];
-            this.projectsPagination.handleResulSize([SELECT count() FROM DContract__c WHERE FTE_Tracker__c = 'Yes' AND Name LIKE: ('%' + String.escapeSingleQuotes(this.seachProjectName) + '%')]);
-        } else {
-            result = [SELECT Id, Name, FTE_Tracker__c FROM DContract__c WHERE FTE_Tracker__c = 'Yes' ORDER BY Name LIMIT: this.projectsPagination.pageSize OFFSET: this.projectsPagination.getOffsetValue()];
-            this.projectsPagination.handleResulSize([SELECT count() FROM DContract__c WHERE FTE_Tracker__c = 'Yes']);
-        }
+        List<DContract__c> result = [SELECT Id, Name, Contract_End_Date__c, Project_Manager__c, FTE_Tracker__c FROM DContract__c WHERE FTE_Tracker__c = 'Yes' AND Status__c = 'Active' ORDER BY Name];
         return result;
-    }
-
-    public void searchProject() {
-        this.projectsPagination.pageNumber = 1;
     }
 
     public PageReference goToEmployeeListView() {

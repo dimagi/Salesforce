@@ -838,6 +838,89 @@ public class FTETrackerTest {
         System.assertEquals(3.25, timeManager.unassigned.daysArray[fteMonth - 1]);
     }
 
+    @isTest
+    public  static void shouldRetunrYearList() {
+        List<SelectOption> years = FTETrackerHelper.getYearsData();
+        System.assertEquals(3, years.size());
+        Integer currentYear = Date.today().year();
+        System.assertEquals(String.valueOf(currentYear), years.get(0).getValue());
+        System.assertEquals(String.valueOf(currentYear - 1), years.get(1).getValue());
+        System.assertEquals(String.valueOf(currentYear - 2), years.get(2).getValue());
+    }
+
+    @isTest
+    public static void testTimeManagerEmpl1() {
+        SFDC_Employee__c employee = [SELECT Id FROM SFDC_Employee__c WHERE Name = 'FTE Employee' LIMIT 1];
+        Id contract1Id = [SELECT Id FROM DContract__c WHERE Name = 'FTE Contract 1' LIMIT 1].Id;
+        Id contract2Id = [SELECT Id FROM DContract__c WHERE Name = 'FTE Contract 2' LIMIT 1].Id;
+        Id contract3Id = [SELECT Id FROM DContract__c WHERE Name = 'FTE Contract 3' LIMIT 1].Id;
+        Id contract4Id = [SELECT Id FROM DContract__c WHERE Name = 'FTE Contract 4' LIMIT 1].Id;
+
+        Test.startTest();
+        FTETimeManager timeManager = new FTETimeManager(employee, Date.today().year());
+        timeManager.loadEmployeeTime();
+        System.assertEquals(25.6, timeManager.assignedMap.get(contract1Id).hoursArray[12]);
+        System.assertEquals(25.6, timeManager.assignedMap.get(contract2Id).hoursArray[12]);
+        System.assertEquals(10.3, timeManager.assignedMap.get(contract3Id).hoursArray[12]);
+        System.assertEquals(30.6, timeManager.assignedMap.get(contract4Id).hoursArray[12]);
+        System.assertEquals(19.3 + 27.6, timeManager.unassigned.hoursArray[12]);
+
+        System.assertEquals(0, [SELECT Id FROM Time_Card__c WHERE Employee__c =: employee.Id AND FTE_Contract__r.FTE_Tracker__c = 'No'].size());
+        System.assertEquals(0, [SELECT Id FROM Time_Card__c WHERE Employee__c =: employee.Id AND FTE_Contract__r.FTE_Tracker__c = 'Yes'].size());
+
+        timeManager.moveTimeToUnassigned(24, Date.today().month(), contract1Id);
+        System.assertEquals(1, [SELECT Id FROM Time_Card__c WHERE Client__c =: contract1Id AND Employee__c =: employee.Id AND FTE_Contract__r.FTE_Tracker__c = 'No'].size());
+
+        timeManager.moveTimeToAssigned(8, Date.today().month(), contract3Id);
+        System.assertEquals(1, [SELECT Id FROM Time_Card__c WHERE FTE_Contract__c =: contract3Id AND Employee__c =: employee.Id AND FTE_Contract__r.FTE_Tracker__c = 'Yes'].size());
+        timeManager.moveTimeToAssigned(2, Date.today().month(), contract3Id);
+        System.assertEquals(1, [SELECT Id FROM Time_Card__c WHERE FTE_Contract__c =: contract3Id AND Employee__c =: employee.Id AND FTE_Contract__r.FTE_Tracker__c = 'Yes'].size());
+
+        timeManager.moveTimeToUnassigned(5, Date.today().month(), contract3Id);
+        System.assertEquals(1, [SELECT Id FROM Time_Card__c WHERE FTE_Contract__c =: contract3Id AND Employee__c =: employee.Id AND FTE_Contract__r.FTE_Tracker__c = 'Yes'].size());
+        System.assertEquals(1, [SELECT Id FROM Time_Card__c WHERE FTE_Contract__c =: contract3Id AND Employee__c =: employee.Id AND FTE_Contract__r.FTE_Tracker__c = 'Yes'
+                                                            AND FTE_Hours__c = 5].size());
+        Test.stopTest();
+    }
+
+    @isTest
+    public static void testTimeManagerEmpl2() {
+        SFDC_Employee__c employee = [SELECT Id FROM SFDC_Employee__c WHERE Name = 'Other Employee' LIMIT 1];
+        Id contract1Id = [SELECT Id FROM DContract__c WHERE Name = 'FTE Contract 1' LIMIT 1].Id;
+        Id contract2Id = [SELECT Id FROM DContract__c WHERE Name = 'FTE Contract 2' LIMIT 1].Id;
+        Id contract3Id = [SELECT Id FROM DContract__c WHERE Name = 'FTE Contract 3' LIMIT 1].Id;
+        Id contract4Id = [SELECT Id FROM DContract__c WHERE Name = 'FTE Contract 4' LIMIT 1].Id;
+
+        Test.startTest();
+        FTETimeManager timeManager = new FTETimeManager(employee, Date.today().year());
+        timeManager.loadEmployeeTime();
+        System.assertEquals(28.6 - 5, timeManager.assignedMap.get(contract1Id).hoursArray[12]);
+        System.assertEquals(null, timeManager.assignedMap.get(contract2Id));
+        System.assertEquals(null, timeManager.assignedMap.get(contract3Id));
+        System.assertEquals(5 - 2, timeManager.assignedMap.get(contract4Id).hoursArray[12]);
+        System.assertEquals(19.3 + 5 + 2, timeManager.unassigned.hoursArray[12]);
+        Test.stopTest();
+    }
+
+    @isTest
+    public static void testTimeManagerEmpl3() {
+        SFDC_Employee__c employee = [SELECT Id FROM SFDC_Employee__c WHERE Name = 'Yyy Employee' LIMIT 1];
+        Id contract1Id = [SELECT Id FROM DContract__c WHERE Name = 'FTE Contract 1' LIMIT 1].Id;
+        Id contract2Id = [SELECT Id FROM DContract__c WHERE Name = 'FTE Contract 2' LIMIT 1].Id;
+        Id contract3Id = [SELECT Id FROM DContract__c WHERE Name = 'FTE Contract 3' LIMIT 1].Id;
+        Id contract4Id = [SELECT Id FROM DContract__c WHERE Name = 'FTE Contract 4' LIMIT 1].Id;
+
+        Test.startTest();
+        FTETimeManager timeManager = new FTETimeManager(employee, Date.today().year());
+        timeManager.loadEmployeeTime();
+        System.assertEquals(19.1 - 8, timeManager.assignedMap.get(contract1Id).hoursArray[12]);
+        System.assertEquals(16 - 7 + 5, timeManager.assignedMap.get(contract2Id).hoursArray[12]);
+        System.assertEquals(7 - 5 + 3 + 16, timeManager.assignedMap.get(contract3Id).hoursArray[12]);
+        System.assertEquals(8 - 3 + 2, timeManager.assignedMap.get(contract4Id).hoursArray[12]);
+        System.assertEquals(3 + 22 + 8 + 7 - 16 - 2, timeManager.unassigned.hoursArray[12]);
+        Test.stopTest();
+    }
+
     /**
      * Controller tests
      */
@@ -884,12 +967,6 @@ public class FTETrackerTest {
         projListCtrl.initProjectList();
         List<DContract__c> projList = projListCtrl.getListToSubmit();
         System.assertEquals(4, projList.size());
-
-        projListCtrl.seachProjectName = 'ontract 2';
-        projListCtrl.searchProject();
-        projList = projListCtrl.getListToSubmit();
-
-        System.assertEquals(1, projList.size());
         System.assertNotEquals(null, projListCtrl.goToEmployeeListView());
         System.assertNotEquals(null, projListCtrl.goToIndividualProjectView());
         Test.stopTest();
@@ -909,6 +986,103 @@ public class FTETrackerTest {
 
         System.assertNotEquals(null, projCtrl.goToEmployeeView());
         System.assertNotEquals(null, projCtrl.goToProjectList());
+        Test.stopTest();
+    }
+
+    @isTest
+    public static void testFileCtrl() {
+        String empId = [SELECT Id FROM SFDC_Employee__c WHERE Name = 'FTE Employee' LIMIT 1].Id;
+        PageReference pageRef = Page.FTE_Time_Card_View;
+        pageRef.getParameters().put('employeeId', EncodingUtil.urlDecode(empId, 'UTF-8'));
+        pageRef.getParameters().put('fteYear', EncodingUtil.urlDecode(String.valueOf(Date.today().year()), 'UTF-8'));
+        pageRef.getParameters().put('month', EncodingUtil.urlDecode(String.valueOf(Date.today().month()), 'UTF-8'));
+        Test.setCurrentPage(pageRef);
+
+        Test.startTest();
+        FTEFileController fileCtrl = new FTEFileController();
+        fileCtrl.loadExportTimeCards();
+        System.assertEquals(Date.daysInMonth(Date.today().year(), Date.today().month()), fileCtrl.rowList.size());
+        System.assertEquals(5, fileCtrl.employeeMonthProjects.size()); // 4 FTE contracts and 1 overhead sum
+        System.assertEquals('FTE Contract 1', fileCtrl.employeeMonthProjects.get(0).name);
+        System.assertEquals(25.6, fileCtrl.employeeMonthProjects.get(0).totalHours);
+        System.assertEquals('FTE Contract 2', fileCtrl.employeeMonthProjects.get(1).name);
+        System.assertEquals(25.6, fileCtrl.employeeMonthProjects.get(1).totalHours);
+        System.assertEquals('FTE Contract 3', fileCtrl.employeeMonthProjects.get(2).name);
+        System.assertEquals(10.3, fileCtrl.employeeMonthProjects.get(2).totalHours);
+        System.assertEquals('FTE Contract 4', fileCtrl.employeeMonthProjects.get(3).name);
+        System.assertEquals(30.6, fileCtrl.employeeMonthProjects.get(3).totalHours);
+        System.assertEquals('Overhead', fileCtrl.employeeMonthProjects.get(4).name);
+        System.assertEquals(19.3 + 27.6, fileCtrl.employeeMonthProjects.get(4).totalHours);
+        Test.stopTest();
+    }
+
+    @isTest
+    public static void testFileCtrlWithDownloadAndWithTags() {
+        String empId = [SELECT Id FROM SFDC_Employee__c WHERE Name = 'Yyy Employee' LIMIT 1].Id;
+        PageReference pageRef = Page.FTE_Download_File;
+        pageRef.getParameters().put('employeeId', EncodingUtil.urlDecode(empId, 'UTF-8'));
+        pageRef.getParameters().put('fteYear', EncodingUtil.urlDecode(String.valueOf(Date.today().year()), 'UTF-8'));
+        pageRef.getParameters().put('month', EncodingUtil.urlDecode(String.valueOf(Date.today().month()), 'UTF-8'));
+        Test.setCurrentPage(pageRef);
+
+        Test.startTest();
+        FTEFileController fileCtrl = new FTEFileController();
+        System.assertNotEquals(null, fileCtrl.csvFile);
+        System.assert(String.isNotBlank(fileCtrl.csvFile));
+        System.assertEquals('Yyy_Employee_' + (DateTime.newInstance(Date.today().year(), Date.today().month(), 1).format('MMMM'))
+                                            + '_' + Date.today().year() + '.csv', fileCtrl.fileName);
+
+        fileCtrl.loadExportTimeCards();
+        System.assertEquals(Date.daysInMonth(Date.today().year(), Date.today().month()), fileCtrl.rowList.size());
+        System.assertEquals(5, fileCtrl.employeeMonthProjects.size()); // 4 FTE contracts and 1 overhead sum
+        System.assertEquals('FTE Contract 1', fileCtrl.employeeMonthProjects.get(0).name);
+        System.assertEquals(19.1 - 8, fileCtrl.employeeMonthProjects.get(0).totalHours);
+        System.assertEquals('FTE Contract 2', fileCtrl.employeeMonthProjects.get(1).name);
+        System.assertEquals(16 - 7 + 5, fileCtrl.employeeMonthProjects.get(1).totalHours);
+        System.assertEquals('FTE Contract 3', fileCtrl.employeeMonthProjects.get(2).name);
+        System.assertEquals(7 - 5 + 3 + 16, fileCtrl.employeeMonthProjects.get(2).totalHours);
+        System.assertEquals('FTE Contract 4', fileCtrl.employeeMonthProjects.get(3).name);
+        System.assertEquals(8 - 3 + 2 , fileCtrl.employeeMonthProjects.get(3).totalHours);
+        System.assertEquals('Overhead', fileCtrl.employeeMonthProjects.get(4).name);
+        System.assertEquals(3 + 22 + 8 + 7 - 16 - 2, fileCtrl.employeeMonthProjects.get(4).totalHours);
+        Test.stopTest();
+    }
+
+    @isTest
+    public static void testEmployeeCtrl() {
+        String empId = [SELECT Id FROM SFDC_Employee__c WHERE Name = 'FTE Employee' LIMIT 1].Id;
+        String contrId = [SELECT Id FROM DContract__c WHERE Name = 'FTE Contract 1' LIMIT 1].Id;
+        PageReference pageRef = Page.FTE_Employee_View;
+        pageRef.getParameters().put('employeeId', EncodingUtil.urlDecode(empId, 'UTF-8'));
+        pageRef.getParameters().put('fteYear', EncodingUtil.urlDecode(String.valueOf(Date.today().year()), 'UTF-8'));
+        Test.setCurrentPage(pageRef);
+
+        Test.startTest(); // other logic was tested before, we want only test moving to other FTE views
+        FTEEmployeeController emplCtrl = new FTEEmployeeController();
+
+        PageReference pageRefTest = emplCtrl.goToEmployeeListView();
+        System.assertNotEquals(null, pageRefTest);
+        System.assertEquals(String.valueOf(Date.today().year()), pageRefTest.getParameters().get('fteYear'));
+        System.debug('pageRefTest.getUrl() - ' + pageRefTest.getUrl());
+        System.assert(pageRefTest.getUrl().startsWith('/apex/fte_employee_list_view'));
+
+        pageRefTest = emplCtrl.goToProjectListView();
+        System.assertNotEquals(null, pageRefTest);
+        System.assert(pageRefTest.getUrl().startsWith('/apex/fte_project_list_view'));
+
+        emplCtrl.contractId = contrId;
+        pageRefTest = emplCtrl.goToIndividualProjectView();
+        System.assertNotEquals(null, pageRefTest);
+        System.assertEquals(String.valueOf(Date.today().year()), pageRefTest.getParameters().get('fteYear'));
+        System.assertEquals(contrId, pageRefTest.getParameters().get('contractId'));
+        System.assert(pageRefTest.getUrl().startsWith('/apex/fte_individual_project_view'));
+
+        emplCtrl.exportMonth = 2;
+        pageRefTest = emplCtrl.goToTimeCardView();
+        System.assertEquals(String.valueOf(Date.today().year()), pageRefTest.getParameters().get('fteYear'));
+        System.assertEquals(empId, pageRefTest.getParameters().get('employeeId'));
+        System.assertEquals('2', pageRefTest.getParameters().get('month'));
+        System.assert(pageRefTest.getUrl().startsWith('/apex/fte_time_card_view'));
         Test.stopTest();
     }
 

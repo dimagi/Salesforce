@@ -4,14 +4,34 @@
             border-top-width: 3px !important;
             border-top-color: black !important;
         }
-        .employeeTable {
+        .hoursTable {
             margin-top: 10px;
             margin-bottom: 10px;
+            border-collapse: collapse !important;
+            border-width: 1px 1px 1px 1px !important;
+        }
+        .hoursCellHeader {
+            background: #f2f3f3;
+            font-weight: bold;
+            font-size: .9em;
+        }
+        .dataCell {
+            border-collapse: collapse !important;
+            border-width: 1px 1px 1px 1px !important;
+        }
+        .rowHighlight:hover {
+            background-color: #e3f3ff !important;
+        }
+        .firstColumn {
+            width: 150px;
+        }
+        .secondColumn {
+            width: 100px;
         }
     </style>
 
-    <apex:pageBlock title="FTE Time Cards : {!employee.Name} {!monthYearText}">
-        <apex:form > <!--  Monthly Timecard by Employee| -->
+    <apex:pageBlock title="Monthly Timecard: {!employee.Name} {!monthYearText}">
+        <apex:form >
             <apex:outputPanel >
                 <apex:actionstatus id="loadingDiv">
                     <apex:facet name="start">
@@ -23,12 +43,45 @@
                     </apex:facet>
                 </apex:actionstatus>
 
-                <apex:pageBlockTable value="{!employeeMonthProjects}" var="record" styleClass="employeeTable">
-                    <apex:column headerValue="Projects" value="{!record.name}" styleClass="{!IF(record.name='Overhead',"topTotal", "")}"/>
-                    <apex:repeat value="{!exportMonthDays}" var="monthId">
-                        <apex:column headerValue="{!monthId + 1}" value="{!record.hours[monthId]}" styleClass="{!IF(record.name='Overhead',"topTotal", "")}"/>
+                <table class="list hoursTable">
+                    <!-- Headers section -->
+                    <tr class="headerRow">
+                        <td class="headerRow" colspan="2">Projects:</td>
+                        <apex:repeat value="{!employeeMonthProjects}" var="currentColumn">
+                            <td class="headerRow">{!currentColumn.name}</td>
+                        </apex:repeat>
+                    </tr>
+                    <tr class="dataRow rowHighlight">
+                        <td class="dataCell hoursCellHeader" colspan="2">Total Project Hours:</td>
+                        <apex:repeat value="{!employeeMonthProjects}" var="currentColumn">
+                            <td class="dataCell">{!currentColumn.totalHours}</td>
+                        </apex:repeat>
+                    </tr>
+                    <tr class="dataRow">
+                        <td class="dataCell" colspan="2">&nbsp;</td>
+                        <apex:repeat value="{!employeeMonthProjects}" var="currentColumn">
+                            <td class="dataCell">&nbsp;</td>
+                        </apex:repeat>
+                    </tr>
+                    <tr class="dataRow">
+                        <td class="dataCell hoursCellHeader firstColumn">Day of Week</td>
+                        <td class="dataCell hoursCellHeader secondColumn">Day of Month</td>
+                        <apex:repeat value="{!employeeMonthProjects}" var="currentColumn">
+                            <td class="dataCell">&nbsp;</td>
+                        </apex:repeat>
+                    </tr>
+
+                    <!-- Data section -->
+                    <apex:repeat value="{!rowList}" var="dayRecord">
+                        <tr class="dataRow rowHighlight">
+                            <td class="dataCell">{!dayRecord.columnName}</td>
+                            <td class="dataCell">{!dayRecord.dayNumber}</td>
+                            <apex:repeat value="{!employeeMonthProjects}" var="currentColumn">
+                                <td class="dataCell">{!currentColumn.hours[dayRecord.index]}</td>
+                            </apex:repeat>
+                        </tr>
                     </apex:repeat>
-                </apex:pageBlockTable>
+                </table>
 
                 <apex:commandButton action="{!goToEmployeeViewFromTimeCardView}" value="Employee View" id="backEButton" />
                 <a class="btn" style="text-decoration:none;" href="apex/FTE_Download_File?employeeId={!employeeId}&month={!exportMonth}" target="_blank">Download CSV</a>

@@ -1,7 +1,5 @@
 public class FTETimeCardGenerator {
 
-    public static final String CSV_LONG_EMPTY_ROW = '"","","","","","","","","","","","","","","","",""';
-    public static final String CSV_SHORT_EMPTY_ROW = '"","","","","","","","","","","","","","",""';
     public static final String NEW_LINE = '\n';
 
     private Integer fteYear;
@@ -64,6 +62,8 @@ public class FTETimeCardGenerator {
                     Decimal hoursToMove = unassignedHours.hours[i] < hoursHelper ? unassignedHours.hours[i] : hoursHelper;
                     monthCard.hours[i] += hoursToMove;
                     unassignedHours.hours[i] -= hoursToMove;
+                    monthCard.totalHours += hoursToMove;
+                    unassignedHours.totalHours -= hoursToMove;
                     hoursHelper -= hoursToMove;
                     this.totalUnassigned -= hoursToMove;
                     this.total += hoursToMove;
@@ -78,6 +78,8 @@ public class FTETimeCardGenerator {
                     Decimal hoursToMove = monthCard.hours[i] < hoursHelper ? monthCard.hours[i] : hoursHelper;
                     monthCard.hours[i] -= hoursToMove;
                     unassignedHours.hours[i] += hoursToMove;
+                    monthCard.totalHours -= hoursToMove;
+                    unassignedHours.totalHours += hoursToMove;
                     hoursHelper -= hoursToMove;
                     this.totalUnassigned += hoursToMove;
                     this.total -= hoursToMove;
@@ -97,6 +99,8 @@ public class FTETimeCardGenerator {
                     Decimal hoursToMove = monthCardFrom.hours[i] < hoursHelper ? monthCardFrom.hours[i] : hoursHelper;
                     monthCardFrom.hours[i] -= hoursToMove;
                     monthCardTo.hours[i] += hoursToMove;
+                    monthCardFrom.totalHours -= hoursToMove;
+                    monthCardTo.totalHours += hoursToMove;
                     hoursHelper -= hoursToMove;
                     if (hoursHelper <= 0) {
                         break;
@@ -105,6 +109,68 @@ public class FTETimeCardGenerator {
             } //From Unassigned to Unassigned is not important, we have sum as Overhead
         }
 
+        // Generate list for UI and csv file
+        return getResult();
+    }
+
+    public void generateCsv() {
+        if (this.fileName == null) {
+            return;
+        }
+
+        List<FTEMonthTimeCard> result = getResult();
+        String csvEmptyRowPart1 = '"",""';
+        String csvEmptyRowPart2 = '';
+        for (FTEMonthTimeCard monthData : result) { // build dynamic empty row based on columns
+           csvEmptyRowPart2 += ',""';
+        }
+
+        this.csvFile = '"Employee Name",';
+        this.csvFile += '"' + this.employeeName + '"';
+        this.csvFile += csvEmptyRowPart2 + NEW_LINE;
+        this.csvFile += '"Month-Year:",';
+        this.csvFile += '"' + this.monthYearText + '"';
+        this.csvFile += csvEmptyRowPart2 + NEW_LINE;
+        this.csvFile += '"Report Type:","Hours by Project",';
+        this.csvFile += csvEmptyRowPart2 + NEW_LINE;
+        this.csvFile += csvEmptyRowPart1 + csvEmptyRowPart2 + NEW_LINE;
+
+        this.csvFile += '"Projects:",""';
+        for (FTEMonthTimeCard monthData : result) {
+             this.csvFile += ',"' + monthData.name + '"';
+        }
+        this.csvFile += NEW_LINE;
+
+        this.csvFile += '"Total Project Hours:",""';
+        for (FTEMonthTimeCard monthData : result) {
+             this.csvFile += ',"' + monthData.totalHours + '"';
+        }
+        this.csvFile += NEW_LINE;
+        this.csvFile += csvEmptyRowPart1 + csvEmptyRowPart2 + NEW_LINE;
+
+        this.csvFile += '"Day of Week:",';
+        this.csvFile += '"Day of Month"';
+        this.csvFile += csvEmptyRowPart2 + NEW_LINE;
+
+        for (Integer day = 1; day <= this.monthDays; day++) {
+            this.csvFile += '"' + DateTime.newInstance(this.fteYear, this.monthDays, day).format('EEEE') + '","' + day + '"';
+            for (FTEMonthTimeCard monthData : result) {
+                this.csvFile += ',"' + monthData.hours[day - 1] + '"';
+            }
+            this.csvFile += NEW_LINE;
+        }
+        this.csvFile += csvEmptyRowPart2 + NEW_LINE;
+    }
+
+    private void addCsvCell(String val, Integer countValue,  Integer limitValue) {
+         if (countValue != limitValue) {
+            this.csvFile += '"' + val + '",';
+        } else {
+            this.csvFile += '"' + val + '"'+ NEW_LINE;
+        }
+    }
+
+    private List<FTEMonthTimeCard> getResult() {
         // Generate list for UI and csv file
         List<FTEMonthTimeCard> result = this.contractMap.values();
         for (FTEMonthTimeCard resRecord : result) {
@@ -131,6 +197,7 @@ public class FTETimeCardGenerator {
             } else {
                 monthCard.hours[day - 1] = tc.Total__c;
             }
+            monthCard.totalHours += tc.Total__c;
             this.total += tc.Total__c;
         } else {
             if (unassignedHours.hours[day - 1] != null) {
@@ -138,94 +205,8 @@ public class FTETimeCardGenerator {
             } else {
                 unassignedHours.hours[day - 1] = tc.Total__c;
             }
+            unassignedHours.totalHours += tc.Total__c;
             this.totalUnassigned += tc.Total__c;
-        }
-    }
-
-    private void calculateLoggedTime(Boolean fteTracker, Id clientId, String clientName, Decimal loggedHours, Integer day) {
-        if (fteTracker == true) {
-            if (!this.contractMap.containsKey(clientId)) {
-                this.contractMap.put(clientId, new FTEMonthTimeCard(clientName, this.monthDays));
-            }
-            FTEMonthTimeCard motnhCard = this.contractMap.get(clientId);
-            if (motnhCard.hours[day - 1] != null) {
-                motnhCard.hours[day - 1] += loggedHours;
-            } else {
-                motnhCard.hours[day - 1] = loggedHours;
-            }
-            this.total += loggedHours;
-        } else {
-            if (unassignedHours.hours[day - 1] != null) {
-                unassignedHours.hours[day - 1] += loggedHours;
-            } else {
-                unassignedHours.hours[day - 1] = loggedHours;
-            }
-            this.totalUnassigned += loggedHours;
-        }
-    }
-
-    public void generateCsv() {
-        if (this.fileName == null) {
-            return;
-        }
-        this.csvFile = CSV_LONG_EMPTY_ROW + NEW_LINE;
-        this.csvFile += '"Employee Name",';
-        this.csvFile += '"' + this.employeeName + '",';
-        this.csvFile += CSV_SHORT_EMPTY_ROW + NEW_LINE;
-        this.csvFile += '"Period of Time",';
-        this.csvFile += '"' + this.monthYearText + '",';
-        this.csvFile += CSV_SHORT_EMPTY_ROW + NEW_LINE;
-        this.csvFile += CSV_LONG_EMPTY_ROW + NEW_LINE;
-        this.csvFile += '"Projects",';
-        for (Integer i = 1; i <= 16; i++) {
-             addCsvCell(String.valueOf(i), i, 16);
-        }
-
-        for (Id contractId : contractMap.keySet()) {
-            FTEMonthTimeCard record = contractMap.get(contractId);
-            this.csvFile += '"' + record.name + '",';
-            for (Integer i = 0; i < 16; i++) {
-                addCsvCell(record.hours[i] != null ? String.valueOf(record.hours[i]).replaceFirst('/.', ',') : '0', i, 15);
-            }
-        }
-        this.csvFile += '"Overhead",';
-        for (Integer i = 0; i < 16; i++) {
-            addCsvCell(unassignedHours.hours[i] != null ? String.valueOf(unassignedHours.hours[i]).replaceFirst('/.', ',') : '0', i, 15);
-        }
-
-        this.csvFile += CSV_LONG_EMPTY_ROW + NEW_LINE;
-        this.csvFile += CSV_LONG_EMPTY_ROW + NEW_LINE;
-        this.csvFile += '"Projects",';
-        for (Integer i = 17; i <= monthDays; i++) {
-             addCsvCell(String.valueOf(i), i, monthDays);
-        }
-
-        for (Id contractId : contractMap.keySet()) {
-            FTEMonthTimeCard record = contractMap.get(contractId);
-            this.csvFile += '"' + record.name + '",';
-            for (Integer i = 16; i < monthDays; i++) {
-                addCsvCell(record.hours[i] != null ? String.valueOf(record.hours[i]).replaceFirst('/.', ',') : '0', i, monthDays - 1);
-            }
-        }
-        this.csvFile += '"Overhead",';
-        for (Integer i = 16; i < monthDays; i++) {
-            addCsvCell(unassignedHours.hours[i] != null ? String.valueOf(unassignedHours.hours[i]).replaceFirst('/.', ',') : '0', i, monthDays - 1);
-        }
-
-        this.csvFile += CSV_LONG_EMPTY_ROW + NEW_LINE;
-        this.csvFile += '"Total Project Hours",';
-        this.csvFile += '"' + total.setScale(2) + '",';
-        this.csvFile += CSV_SHORT_EMPTY_ROW + NEW_LINE;
-        this.csvFile += '"Total Overhead Hours",';
-        this.csvFile += '"' + totalUnassigned.setScale(2) + '",';
-        this.csvFile += CSV_SHORT_EMPTY_ROW + NEW_LINE;
-    }
-
-    private void addCsvCell(String val, Integer countValue,  Integer limitValue) {
-         if (countValue != limitValue) {
-            this.csvFile += '"' + val + '",';
-        } else {
-            this.csvFile += '"' + val + '"'+ NEW_LINE;
         }
     }
 }
