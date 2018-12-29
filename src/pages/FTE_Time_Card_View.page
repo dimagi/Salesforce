@@ -1,14 +1,11 @@
 <apex:page controller="FTEFileController" docType="html-5.0" action="{!loadExportTimeCards}">
     <style type="text/css">
-        .topTotal {
-            border-top-width: 3px !important;
-            border-top-color: black !important;
-        }
         .hoursTable {
+            width: auto !important;
             margin-top: 10px;
             margin-bottom: 10px;
             border-collapse: collapse !important;
-            border-width: 1px 1px 1px 1px !important;
+            border-width: 1px 1px 1px 1px;
         }
         .hoursCellHeader {
             background: #f2f3f3;
@@ -23,10 +20,15 @@
             background-color: #e3f3ff !important;
         }
         .firstColumn {
-            width: 150px;
+            vertical-align: middle !important;
+            padding: 4px 8px 4px 8px !important;
         }
-        .secondColumn {
-            width: 100px;
+        .dataColumn {
+            padding: 4px 15px 4px 15px !important;
+        }
+        .topTotal {
+            border-top-width: 3px !important;
+            border-top-color: black !important;
         }
     </style>
 
@@ -46,41 +48,33 @@
                 <table class="list hoursTable">
                     <!-- Headers section -->
                     <tr class="headerRow">
-                        <td class="headerRow" colspan="2">Projects:</td>
-                        <apex:repeat value="{!employeeMonthProjects}" var="currentColumn">
-                            <td class="headerRow">{!currentColumn.name}</td>
-                        </apex:repeat>
+                        <td class="headerRow firstColumn" rowspan="2">Day of Week</td>
+                        <td class="headerRow firstColumn" rowspan="2">Day of Month</td>
+                        <td class="headerRow" colspan="{!employeeMonthProjects.size}">Projects:</td>
                     </tr>
-                    <tr class="dataRow rowHighlight">
-                        <td class="dataCell hoursCellHeader" colspan="2">Total Project Hours:</td>
+                    <tr class="headerRow">
                         <apex:repeat value="{!employeeMonthProjects}" var="currentColumn">
-                            <td class="dataCell">{!currentColumn.totalHours}</td>
-                        </apex:repeat>
-                    </tr>
-                    <tr class="dataRow">
-                        <td class="dataCell" colspan="2">&nbsp;</td>
-                        <apex:repeat value="{!employeeMonthProjects}" var="currentColumn">
-                            <td class="dataCell">&nbsp;</td>
-                        </apex:repeat>
-                    </tr>
-                    <tr class="dataRow">
-                        <td class="dataCell hoursCellHeader firstColumn">Day of Week</td>
-                        <td class="dataCell hoursCellHeader secondColumn">Day of Month</td>
-                        <apex:repeat value="{!employeeMonthProjects}" var="currentColumn">
-                            <td class="dataCell">&nbsp;</td>
+                            <td class="headerRow dataColumn">{!currentColumn.name}</td>
                         </apex:repeat>
                     </tr>
 
                     <!-- Data section -->
                     <apex:repeat value="{!rowList}" var="dayRecord">
                         <tr class="dataRow rowHighlight">
-                            <td class="dataCell">{!dayRecord.columnName}</td>
-                            <td class="dataCell">{!dayRecord.dayNumber}</td>
+                            <td class="dataCell firstColumn">{!dayRecord.columnName}</td>
+                            <td class="dataCell firstColumn">{!dayRecord.dayNumber}</td>
                             <apex:repeat value="{!employeeMonthProjects}" var="currentColumn">
-                                <td class="dataCell">{!currentColumn.hours[dayRecord.index]}</td>
+                                <td class="dataCell dataColumn">{!currentColumn.hours[dayRecord.index]}</td>
                             </apex:repeat>
                         </tr>
                     </apex:repeat>
+
+                    <tr class="dataRow rowHighlight">
+                        <td class="topTotal dataCell hoursCellHeader" colspan="2">Total Project Hours:</td>
+                        <apex:repeat value="{!employeeMonthProjects}" var="currentColumn">
+                            <td class="topTotal dataCell dataColumn">{!currentColumn.totalHours}</td>
+                        </apex:repeat>
+                    </tr>
                 </table>
 
                 <apex:commandButton action="{!goToEmployeeViewFromTimeCardView}" value="Employee View" id="backEButton" />

@@ -29,7 +29,8 @@ public without sharing class FTEGenerateEmployeesWorkCardBatch implements Databa
         try {
 
             if (this.calculationYear == null) {
-                result = generateWrapperList([SELECT Id, Name FROM SFDC_Employee__c ORDER BY Name]);
+                result = generateWrapperList([SELECT Id, Name, Hire_Date__c, Termination_Date__c, Employee_Type__c, Employee_Status__c
+                                              FROM SFDC_Employee__c ORDER BY Name]);
                 List<FTE_Work_Card__c> oldCards = [SELECT Id FROM FTE_Work_Card__c];
                 if (oldCards.size() > 0) {
                     delete oldCards;
@@ -49,9 +50,11 @@ public without sharing class FTEGenerateEmployeesWorkCardBatch implements Databa
 
                 List<SFDC_Employee__c> emplList = null;
                 if (this.employeesId.size() > 0) {
-                    emplList = [SELECT Id, Name FROM SFDC_Employee__c WHERE Id IN: this.employeesId ORDER BY Name];
+                    emplList = [SELECT Id, Name, Hire_Date__c, Termination_Date__c, Employee_Type__c, Employee_Status__c
+                                FROM SFDC_Employee__c WHERE Id IN: this.employeesId AND (Employee_Type__c = 'Employee' OR Employee_Type__c = 'Contractor') ORDER BY Name];
                 } else {
-                    emplList = [SELECT Id, Name FROM SFDC_Employee__c ORDER BY Name];
+                    emplList = [SELECT Id, Name, Hire_Date__c, Termination_Date__c, Employee_Type__c, Employee_Status__c
+                                FROM SFDC_Employee__c WHERE (Employee_Type__c = 'Employee' OR Employee_Type__c = 'Contractor') ORDER BY Name];
                 }
 
                 for (SFDC_Employee__c emplRec : emplList) {
@@ -70,7 +73,6 @@ public without sharing class FTEGenerateEmployeesWorkCardBatch implements Databa
 
     public void execute(Database.BatchableContext BC, List<EmployeeWrapper> scope) {
         for (EmployeeWrapper employee : scope) {
-            Boolean isEmpty = true;
             List<FTE_Work_Card__c> employeeWorkCards = [SELECT Id FROM FTE_Work_Card__c WHERE Employee__c =: employee.employeeId AND Year__c =: employee.year];
             FTE_Work_Card__c employeeWorkCard = new FTE_Work_Card__c(Employee__c = employee.employeeId, Year__c = employee.year, Month_1__c = 0,
                                                         Month_2__c = 0, Month_3__c = 0, Month_4__c = 0, Month_5__c = 0, Month_6__c = 0,
@@ -91,10 +93,6 @@ public without sharing class FTEGenerateEmployeesWorkCardBatch implements Databa
                                                         WHERE Employee__c =: employee.employeeId AND CALENDAR_YEAR(Date__c) =: employee.year AND (Client__r.FTE_Tracker__c = 'Yes'
                                                         OR (Client__r.FTE_Tracker__c != 'Yes' AND FTE_Contract__r.FTE_Tracker__c = 'Yes'))
                                                         AND Total__c != null ORDER BY Date__c]; // we need only fetch timcards assigned and unassigned which are moving time to assigned
-            System.debug('TC List: ' + employeeYearTimeCards.size());
-            if (employeeYearTimeCards.size() > 0) {
-                isEmpty = false;
-            }
 
             for (Time_Card__c tc : employeeYearTimeCards) {
                 System.debug('TC Date: ' + tc.Date__c);
@@ -124,10 +122,7 @@ public without sharing class FTEGenerateEmployeesWorkCardBatch implements Databa
             employeeWorkCard.Total_Hours__c = totalHours;
             employeeWorkCard.Total__c = FTETrackerHelper.roundtoDays(totalHours);
 
-            System.debug('WC totalHours: ' + totalHours);
-            if (!isEmpty) {
-                upsert employeeWorkCard;
-            }
+            upsert employeeWorkCard;
         }
     }
 
@@ -138,13 +133,30 @@ public without sharing class FTEGenerateEmployeesWorkCardBatch implements Databa
     private List<EmployeeWrapper> generateWrapperList(List<SFDC_Employee__c> employees) {
         List<EmployeeWrapper> result = new List<EmployeeWrapper>();
         Integer currentYear = Date.today().year();
+        Integer nextYear = currentYear + 1;
         Integer oneYearAgo = currentYear - 1;
         Integer twoYearsAgo = currentYear - 2;
+        Integer threeYearsAgo = currentYear - 3;
 
         for (SFDC_Employee__c emplRec : employees) {
-            result.add(new EmployeeWrapper(emplRec.Id, currentYear));
-            result.add(new EmployeeWrapper(emplRec.Id, oneYearAgo));
-            result.add(new EmployeeWrapper(emplRec.Id, twoYearsAgo));
+            if (emplRec.Employee_Status__c == 'Active') {
+                result.add(new EmployeeWrapper(emplRec.Id, nextYear));
+            }
+
+            if ((emplRec.Employee_Status__c == 'Active' && (emplRec.Hire_Date__c != null && emplRec.Hire_Date__c.year() <= currentYear))
+                || (emplRec.Termination_Date__c != null && emplRec.Termination_Date__c.year() == currentYear)) {
+                result.add(new EmployeeWrapper(emplRec.Id, currentYear));
+            }
+
+            if ((emplRec.Hire_Date__c != null && emplRec.Hire_Date__c.year() <= oneYearAgo)
+                || (emplRec.Termination_Date__c != null && emplRec.Termination_Date__c.year() == oneYearAgo)) {
+                result.add(new EmployeeWrapper(emplRec.Id, oneYearAgo));
+            }
+
+            if ((emplRec.Hire_Date__c != null && emplRec.Hire_Date__c.year() <= twoYearsAgo)
+                || (emplRec.Termination_Date__c != null && emplRec.Termination_Date__c.year() == twoYearsAgo)) {
+                result.add(new EmployeeWrapper(emplRec.Id, twoYearsAgo));
+            }
         }
 
         return result;

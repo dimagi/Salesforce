@@ -37,14 +37,14 @@ public class FTETrackerController {
             workCards = [SELECT Id, Employee__c, Employee__r.Hire_Date__c, Employee__r.Name, Month_1__c, Month_2__c, Month_3__c,
                 Month_4__c, Month_5__c, Month_6__c, Month_7__c, Month_8__c, Month_9__c, Month_10__c, Month_11__c, Month_12__c,
                 Total__c, Total_Hours__c, Year__c FROM FTE_Work_Card__c WHERE Employee__r.Name LIKE: ('%' + String.escapeSingleQuotes(this.employeeNameSearch) + '%')
-                AND Year__c =: this.fteYear ORDER BY Employee__r.Name LIMIT: this.employeePagination.pageSize OFFSET: this.employeePagination.getOffsetValue()];
+                AND Year__c =: this.fteYear ORDER BY Total_Hours__c DESC LIMIT: this.employeePagination.pageSize OFFSET: this.employeePagination.getOffsetValue()];
             this.employeePagination.handleResulSize([SELECT count() FROM FTE_Work_Card__c WHERE Year__c =: this.fteYear
                                                      AND Employee__r.Name LIKE: ('%' + String.escapeSingleQuotes(this.employeeNameSearch) + '%')]);
         } else {
             workCards = [SELECT Id, Employee__c, Employee__r.Hire_Date__c, Employee__r.Name, Month_1__c, Month_2__c, Month_3__c,
                 Month_4__c, Month_5__c, Month_6__c, Month_7__c, Month_8__c, Month_9__c, Month_10__c, Month_11__c, Month_12__c,
                 Total__c, Total_Hours__c, Year__c FROM FTE_Work_Card__c WHERE Year__c =: this.fteYear
-                ORDER BY Employee__r.Name LIMIT: this.employeePagination.pageSize OFFSET: this.employeePagination.getOffsetValue()];
+                ORDER BY Total_Hours__c DESC LIMIT: this.employeePagination.pageSize OFFSET: this.employeePagination.getOffsetValue()];
             this.employeePagination.handleResulSize([SELECT count() FROM FTE_Work_Card__c WHERE Year__c =: this.fteYear]);
         }
 
