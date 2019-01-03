@@ -125,10 +125,10 @@ public class FTETrackerTest {
 
         timeCards.add(addTimeCard(unassignedContract2.Id, testEmployee3.Id, Date.newInstance(currentDate.year(), currentDate.month(), 21), 6, 16,
                                                                                                 fteContract3.Id));
-        timeCards.add(addTimeCard(unassignedContract2.Id, testEmployee3.Id, Date.newInstance(currentDate.year(), currentDate.month(), 21), 5));
-        timeCards.add(addTimeCard(unassignedContract2.Id, testEmployee3.Id, Date.newInstance(currentDate.year(), currentDate.month(), 21), 7, 2,
+        timeCards.add(addTimeCard(unassignedContract2.Id, testEmployee3.Id, Date.newInstance(currentDate.year(), currentDate.month(), 22), 5));
+        timeCards.add(addTimeCard(unassignedContract2.Id, testEmployee3.Id, Date.newInstance(currentDate.year(), currentDate.month(), 23), 7, 2,
                                                                                                 fteContract4.Id));
-        timeCards.add(addTimeCard(unassignedContract2.Id, testEmployee3.Id, Date.newInstance(currentDate.year(), currentDate.month(), 21), 4));
+        timeCards.add(addTimeCard(unassignedContract2.Id, testEmployee3.Id, Date.newInstance(currentDate.year(), currentDate.month(), 24), 4));
 
         insert timeCards;
     }
@@ -575,6 +575,7 @@ public class FTETrackerTest {
         System.assertEquals(9, employeeMonthProjects.get(4).hours[2]);
         System.assertEquals(4.3, employeeMonthProjects.get(4).hours[3]);
         System.assertEquals(3.3, employeeMonthProjects.get(4).hours[4]);
+        System.assertEquals(27.6 + 19.3, employeeMonthProjects.get(4).totalHours);
 
         // FTE Contract 1
         System.assertEquals(5, employeeMonthProjects.get(0).hours[0]);
@@ -582,6 +583,7 @@ public class FTETrackerTest {
         System.assertEquals(7, employeeMonthProjects.get(0).hours[2]);
         System.assertEquals(4.3, employeeMonthProjects.get(0).hours[3]);
         System.assertEquals(3.3, employeeMonthProjects.get(0).hours[4]);
+        System.assertEquals(25.6, employeeMonthProjects.get(0).totalHours);
 
         // FTE Contract 2
         System.assertEquals(5, employeeMonthProjects.get(1).hours[5]);
@@ -589,6 +591,7 @@ public class FTETrackerTest {
         System.assertEquals(7, employeeMonthProjects.get(1).hours[7]);
         System.assertEquals(4.3, employeeMonthProjects.get(1).hours[8]);
         System.assertEquals(3.3, employeeMonthProjects.get(1).hours[9]);
+        System.assertEquals(25.6, employeeMonthProjects.get(1).totalHours);
 
         // FTE Contract 3
         System.assertEquals(2, employeeMonthProjects.get(2).hours[10]);
@@ -596,6 +599,7 @@ public class FTETrackerTest {
         System.assertEquals(2, employeeMonthProjects.get(2).hours[12]);
         System.assertEquals(1, employeeMonthProjects.get(2).hours[13]);
         System.assertEquals(3.3, employeeMonthProjects.get(2).hours[14]);
+        System.assertEquals(10.3, employeeMonthProjects.get(2).totalHours);
 
         // FTE Contract 4
         System.assertEquals(5, employeeMonthProjects.get(3).hours[15]);
@@ -603,10 +607,11 @@ public class FTETrackerTest {
         System.assertEquals(9, employeeMonthProjects.get(3).hours[17]);
         System.assertEquals(4.3, employeeMonthProjects.get(3).hours[18]);
         System.assertEquals(3.3, employeeMonthProjects.get(3).hours[19]);
+        System.assertEquals(30.6, employeeMonthProjects.get(3).totalHours);
     }
 
     @isTest
-    public static void shouldGenerateCSVDataWithTags() {
+    public static void shouldGenerateCSVDataWithTagsV1() {
         SFDC_Employee__c employee = [SELECT Id FROM SFDC_Employee__c WHERE Name = 'FTE Employee'];
         Integer emplMonth = Date.today().month();
         Integer fteYear = Date.today().year();
@@ -640,8 +645,121 @@ public class FTETrackerTest {
 
         update tcToUpdate;
 
+        Test.setCreatedDate(cont1, DateTime.newInstance(Date.today().year() - 1, 1, 1));
+        Test.setCreatedDate(cont2, DateTime.newInstance(Date.today().year() - 1, 2, 1));
+        Test.setCreatedDate(cont3, DateTime.newInstance(Date.today().year() - 1, 3, 1));
+        Test.setCreatedDate(cont4, DateTime.newInstance(Date.today().year() - 1, 4, 1));
+        Test.setCreatedDate(contUn1, DateTime.newInstance(Date.today().year() - 1, 5, 1));
+        Test.setCreatedDate(contUn2, DateTime.newInstance(Date.today().year() - 1, 6, 1));
+
+        Test.startTest();
         List<FTEMonthTimeCard> employeeMonthProjects = generator.generateMonthTimeCards();
         System.assertEquals(5, employeeMonthProjects.size());
+        Test.stopTest();
+
+        // Overhead
+        System.assertEquals('Overhead', employeeMonthProjects.get(4).name);
+
+        // Overhead - Unassigned Contract 1
+        System.assertEquals(0, employeeMonthProjects.get(4).hours[20]);
+        System.assertEquals(0, employeeMonthProjects.get(4).hours[21]);
+        System.assertEquals(0, employeeMonthProjects.get(4).hours[22]);
+        System.assertEquals(2.5, employeeMonthProjects.get(4).hours[23]);
+        System.assertEquals(3.3, employeeMonthProjects.get(4).hours[24]);
+
+        // Overhead - Unassigned Contract 2
+        System.assertEquals(3, employeeMonthProjects.get(4).hours[0]);
+        System.assertEquals(11, employeeMonthProjects.get(4).hours[1]);
+        System.assertEquals(10, employeeMonthProjects.get(4).hours[2]);
+        System.assertEquals(4.3, employeeMonthProjects.get(4).hours[3]);
+        System.assertEquals(3.3, employeeMonthProjects.get(4).hours[4]);
+        System.assertEquals(5.8 + 31.6, employeeMonthProjects.get(4).totalHours);
+
+        // FTE Contract 1
+        System.assertEquals(0, employeeMonthProjects.get(0).hours[0]);
+        System.assertEquals(0, employeeMonthProjects.get(0).hours[1]);
+        System.assertEquals(6, employeeMonthProjects.get(0).hours[2]);
+        System.assertEquals(4.3, employeeMonthProjects.get(0).hours[3]);
+        System.assertEquals(3.3, employeeMonthProjects.get(0).hours[4]);
+        System.assertEquals(13.6, employeeMonthProjects.get(0).totalHours);
+
+        // FTE Contract 2
+        System.assertEquals(5, employeeMonthProjects.get(1).hours[0]);
+        System.assertEquals(3, employeeMonthProjects.get(1).hours[1]);
+        System.assertEquals(5, employeeMonthProjects.get(1).hours[5]);
+        System.assertEquals(6, employeeMonthProjects.get(1).hours[6]);
+        System.assertEquals(7, employeeMonthProjects.get(1).hours[7]);
+        System.assertEquals(4.3, employeeMonthProjects.get(1).hours[8]);
+        System.assertEquals(3.3, employeeMonthProjects.get(1).hours[9]);
+        System.assertEquals(33.6, employeeMonthProjects.get(1).totalHours);
+
+        // FTE Contract 3
+        System.assertEquals(2, employeeMonthProjects.get(2).hours[10]);
+        System.assertEquals(2, employeeMonthProjects.get(2).hours[11]);
+        System.assertEquals(2, employeeMonthProjects.get(2).hours[12]);
+        System.assertEquals(1, employeeMonthProjects.get(2).hours[13]);
+        System.assertEquals(3.3, employeeMonthProjects.get(2).hours[14]);
+        System.assertEquals(10.3, employeeMonthProjects.get(2).totalHours);
+
+        // FTE Contract 4
+        System.assertEquals(5, employeeMonthProjects.get(3).hours[15]);
+        System.assertEquals(9, employeeMonthProjects.get(3).hours[16]);
+        System.assertEquals(9, employeeMonthProjects.get(3).hours[17]);
+        System.assertEquals(4.3, employeeMonthProjects.get(3).hours[18]);
+        System.assertEquals(3.3, employeeMonthProjects.get(3).hours[19]);
+        System.assertEquals(5, employeeMonthProjects.get(3).hours[20]);
+        System.assertEquals(6, employeeMonthProjects.get(3).hours[21]);
+        System.assertEquals(1, employeeMonthProjects.get(3).hours[22]);
+        System.assertEquals(1.5, employeeMonthProjects.get(3).hours[23]);
+        System.assertEquals(44.1, employeeMonthProjects.get(3).totalHours);
+    }
+
+    @isTest
+    public static void shouldGenerateCSVDataWithTagsV2() {
+        SFDC_Employee__c employee = [SELECT Id FROM SFDC_Employee__c WHERE Name = 'FTE Employee'];
+        Integer emplMonth = Date.today().month();
+        Integer fteYear = Date.today().year();
+        FTETimeCardGenerator generator = new FTETimeCardGenerator(fteYear, emplMonth, employee.Id);
+
+        Id cont1 = [SELECT Id FROM DContract__c WHERE Name = 'FTE Contract 1' LIMIT 1].Id;
+        Id cont2 = [SELECT Id FROM DContract__c WHERE Name = 'FTE Contract 2' LIMIT 1].Id;
+        Id cont3 = [SELECT Id FROM DContract__c WHERE Name = 'FTE Contract 3' LIMIT 1].Id;
+        Id cont4 = [SELECT Id FROM DContract__c WHERE Name = 'FTE Contract 4' LIMIT 1].Id;
+        Id contUn1 = [SELECT Id FROM DContract__c WHERE Name = 'Unassigned Contract 1' LIMIT 1].Id;
+        Id contUn2 = [SELECT Id FROM DContract__c WHERE Name = 'Unassigned Contract 2' LIMIT 1].Id;
+
+        List<Time_Card__c> tcToUpdate = new List<Time_Card__c>();
+        Time_Card__c tc1 = [SELECT Id, FTE_Contract__c, FTE_Hours__c FROM Time_Card__c WHERE
+                            Client__c =: cont2 AND DAY_IN_MONTH(Date__c) = 6 LIMIT 1];
+        tc1.FTE_Hours__c = 30;
+        tc1.FTE_Contract__c = cont1;
+        tcToUpdate.add(tc1);
+
+        Time_Card__c tc2 = [SELECT Id, FTE_Contract__c, FTE_Hours__c FROM Time_Card__c WHERE
+                            Client__c =: cont3 AND DAY_IN_MONTH(Date__c) = 11 LIMIT 1];
+        tc2.FTE_Hours__c = 8;
+        tc2.FTE_Contract__c = cont2;
+        tcToUpdate.add(tc2);
+
+        Time_Card__c tc3 = [SELECT Id, FTE_Contract__c, FTE_Hours__c FROM Time_Card__c WHERE
+                            Client__c =: cont1 AND DAY_IN_MONTH(Date__c) = 1 LIMIT 1];
+        tc3.FTE_Hours__c = 12;
+        tc3.FTE_Contract__c = cont3;
+        tcToUpdate.add(tc3);
+
+        update tcToUpdate;
+
+        Test.setCreatedDate(cont1, DateTime.newInstance(Date.today().year() - 1, 1, 1));
+        Test.setCreatedDate(cont2, DateTime.newInstance(Date.today().year() - 1, 2, 1));
+        Test.setCreatedDate(cont3, DateTime.newInstance(Date.today().year() - 1, 3, 1));
+        Test.setCreatedDate(cont4, DateTime.newInstance(Date.today().year() - 1, 4, 1));
+        Test.setCreatedDate(contUn1, DateTime.newInstance(Date.today().year() - 1, 5, 1));
+        Test.setCreatedDate(contUn2, DateTime.newInstance(Date.today().year() - 1, 6, 1));
+
+        Test.startTest();
+        List<FTEMonthTimeCard> employeeMonthProjects = generator.generateMonthTimeCards();
+        System.assertEquals(5, employeeMonthProjects.size());
+        Test.stopTest();
 
         // Overhead
         System.assertEquals('Overhead', employeeMonthProjects.get(4).name);
@@ -654,11 +772,12 @@ public class FTETrackerTest {
         System.assertEquals(3.3, employeeMonthProjects.get(4).hours[24]);
 
         // Overhead - Unassigned Contract 2
-        System.assertEquals(0, employeeMonthProjects.get(4).hours[0]);
-        System.assertEquals(1.5, employeeMonthProjects.get(4).hours[1]);
+        System.assertEquals(3, employeeMonthProjects.get(4).hours[0]);
+        System.assertEquals(8, employeeMonthProjects.get(4).hours[1]);
         System.assertEquals(9, employeeMonthProjects.get(4).hours[2]);
         System.assertEquals(4.3, employeeMonthProjects.get(4).hours[3]);
         System.assertEquals(3.3, employeeMonthProjects.get(4).hours[4]);
+        System.assertEquals(19.3 + 27.6, employeeMonthProjects.get(4).totalHours);
 
         // FTE Contract 1
         System.assertEquals(0, employeeMonthProjects.get(0).hours[0]);
@@ -666,32 +785,200 @@ public class FTETrackerTest {
         System.assertEquals(6, employeeMonthProjects.get(0).hours[2]);
         System.assertEquals(4.3, employeeMonthProjects.get(0).hours[3]);
         System.assertEquals(3.3, employeeMonthProjects.get(0).hours[4]);
+        System.assertEquals(5, employeeMonthProjects.get(0).hours[5]);
+        System.assertEquals(6, employeeMonthProjects.get(0).hours[6]);
+        System.assertEquals(7, employeeMonthProjects.get(0).hours[7]);
+        System.assertEquals(4.3, employeeMonthProjects.get(0).hours[8]);
+        System.assertEquals(3.3, employeeMonthProjects.get(0).hours[9]);
+        System.assertEquals(2, employeeMonthProjects.get(0).hours[10]);
+        System.assertEquals(2, employeeMonthProjects.get(0).hours[11]);
+        System.assertEquals(0.4, employeeMonthProjects.get(0).hours[12]);
+        System.assertEquals(43.6, employeeMonthProjects.get(0).totalHours);
 
         // FTE Contract 2
-        System.assertEquals(1, employeeMonthProjects.get(1).hours[0]);
-        System.assertEquals(6, employeeMonthProjects.get(1).hours[1]);
-        System.assertEquals(1, employeeMonthProjects.get(1).hours[2]);
-        System.assertEquals(5, employeeMonthProjects.get(1).hours[5]);
-        System.assertEquals(6, employeeMonthProjects.get(1).hours[6]);
-        System.assertEquals(7, employeeMonthProjects.get(1).hours[7]);
-        System.assertEquals(4.3, employeeMonthProjects.get(1).hours[8]);
-        System.assertEquals(3.3, employeeMonthProjects.get(1).hours[9]);
+        System.assertEquals(0, employeeMonthProjects.get(1).hours[5]);
+        System.assertEquals(0, employeeMonthProjects.get(1).hours[6]);
+        System.assertEquals(0, employeeMonthProjects.get(1).hours[7]);
+        System.assertEquals(0, employeeMonthProjects.get(1).hours[8]);
+        System.assertEquals(0, employeeMonthProjects.get(1).hours[9]);
+        System.assertEquals(0, employeeMonthProjects.get(1).hours[10]);
+        System.assertEquals(0, employeeMonthProjects.get(1).hours[11]);
+        System.assertEquals(1.6, employeeMonthProjects.get(1).hours[12]);
+        System.assertEquals(1, employeeMonthProjects.get(1).hours[13]);
+        System.assertEquals(1, employeeMonthProjects.get(1).hours[14]);
+        System.assertEquals(3.6, employeeMonthProjects.get(1).totalHours);
 
         // FTE Contract 3
-        System.assertEquals(2, employeeMonthProjects.get(2).hours[10]);
-        System.assertEquals(2, employeeMonthProjects.get(2).hours[11]);
-        System.assertEquals(2, employeeMonthProjects.get(2).hours[12]);
-        System.assertEquals(1, employeeMonthProjects.get(2).hours[13]);
-        System.assertEquals(3.3, employeeMonthProjects.get(2).hours[14]);
+        System.assertEquals(5, employeeMonthProjects.get(2).hours[0]);
+        System.assertEquals(6, employeeMonthProjects.get(2).hours[1]);
+        System.assertEquals(1, employeeMonthProjects.get(2).hours[2]);
+        System.assertEquals(0, employeeMonthProjects.get(2).hours[10]);
+        System.assertEquals(0, employeeMonthProjects.get(2).hours[11]);
+        System.assertEquals(0, employeeMonthProjects.get(2).hours[12]);
+        System.assertEquals(0, employeeMonthProjects.get(2).hours[13]);
+        System.assertEquals(2.3, employeeMonthProjects.get(2).hours[14]);
+        System.assertEquals(14.3, employeeMonthProjects.get(2).totalHours);
 
         // FTE Contract 4
-        System.assertEquals(7, employeeMonthProjects.get(3).hours[0]);
-        System.assertEquals(6.5, employeeMonthProjects.get(3).hours[1]);
         System.assertEquals(5, employeeMonthProjects.get(3).hours[15]);
         System.assertEquals(9, employeeMonthProjects.get(3).hours[16]);
         System.assertEquals(9, employeeMonthProjects.get(3).hours[17]);
         System.assertEquals(4.3, employeeMonthProjects.get(3).hours[18]);
         System.assertEquals(3.3, employeeMonthProjects.get(3).hours[19]);
+        System.assertEquals(30.6, employeeMonthProjects.get(3).totalHours);
+    }
+
+    @isTest
+    public static void shouldGenerateCSVDataWithTagsV3() {
+        SFDC_Employee__c employee = [SELECT Id FROM SFDC_Employee__c WHERE Name = 'Other Employee'];
+        Integer emplMonth = Date.today().month();
+        Integer fteYear = Date.today().year();
+        FTETimeCardGenerator generator = new FTETimeCardGenerator(fteYear, emplMonth, employee.Id);
+
+        Id cont1 = [SELECT Id FROM DContract__c WHERE Name = 'FTE Contract 1' LIMIT 1].Id;
+        Id cont2 = [SELECT Id FROM DContract__c WHERE Name = 'FTE Contract 2' LIMIT 1].Id;
+        Id cont3 = [SELECT Id FROM DContract__c WHERE Name = 'FTE Contract 3' LIMIT 1].Id;
+        Id cont4 = [SELECT Id FROM DContract__c WHERE Name = 'FTE Contract 4' LIMIT 1].Id;
+        Id contUn1 = [SELECT Id FROM DContract__c WHERE Name = 'Unassigned Contract 1' LIMIT 1].Id;
+        Id contUn2 = [SELECT Id FROM DContract__c WHERE Name = 'Unassigned Contract 2' LIMIT 1].Id;
+
+        Test.setCreatedDate(cont1, DateTime.newInstance(Date.today().year() - 1, 1, 1));
+        Test.setCreatedDate(cont2, DateTime.newInstance(Date.today().year() - 1, 2, 1));
+        Test.setCreatedDate(cont3, DateTime.newInstance(Date.today().year() - 1, 3, 1));
+        Test.setCreatedDate(cont4, DateTime.newInstance(Date.today().year() - 1, 4, 1));
+        Test.setCreatedDate(contUn1, DateTime.newInstance(Date.today().year() - 1, 5, 1));
+        Test.setCreatedDate(contUn2, DateTime.newInstance(Date.today().year() - 1, 6, 1));
+
+        Test.startTest();
+        List<FTEMonthTimeCard> employeeMonthProjects = generator.generateMonthTimeCards();
+        System.assertEquals(3, employeeMonthProjects.size());
+        Test.stopTest();
+
+        // Overhead
+        System.assertEquals('Overhead', employeeMonthProjects.get(2).name);
+
+        // Overhead - Unassigned Contract 1
+        System.assertEquals(5, employeeMonthProjects.get(2).hours[20]);
+        System.assertEquals(6, employeeMonthProjects.get(2).hours[21]);
+        System.assertEquals(1, employeeMonthProjects.get(2).hours[22]);
+        System.assertEquals(4, employeeMonthProjects.get(2).hours[23]);
+        System.assertEquals(3.3, employeeMonthProjects.get(2).hours[24]);
+
+        // Overhead - Unassigned Contract 2
+        System.assertEquals(2, employeeMonthProjects.get(2).hours[15]);
+        System.assertEquals(24.3 + 2, employeeMonthProjects.get(2).totalHours);
+
+        // FTE Contract 1
+        System.assertEquals(3, employeeMonthProjects.get(0).hours[0]);
+        System.assertEquals(6, employeeMonthProjects.get(0).hours[1]);
+        System.assertEquals(7, employeeMonthProjects.get(0).hours[2]);
+        System.assertEquals(4.3, employeeMonthProjects.get(0).hours[3]);
+        System.assertEquals(3.3, employeeMonthProjects.get(0).hours[4]);
+        System.assertEquals(23.6, employeeMonthProjects.get(0).totalHours);
+
+        // FTE Contract 4
+        System.assertEquals(3, employeeMonthProjects.get(1).hours[15]);
+        System.assertEquals(3, employeeMonthProjects.get(1).totalHours);
+    }
+
+    @isTest
+    public static void shouldGenerateCSVDataWithTagsV4() {
+        SFDC_Employee__c employee = [SELECT Id FROM SFDC_Employee__c WHERE Name = 'Yyy Employee'];
+        Integer emplMonth = Date.today().month();
+        Integer fteYear = Date.today().year();
+        FTETimeCardGenerator generator = new FTETimeCardGenerator(fteYear, emplMonth, employee.Id);
+
+        Id cont1 = [SELECT Id FROM DContract__c WHERE Name = 'FTE Contract 1' LIMIT 1].Id;
+        Id cont2 = [SELECT Id FROM DContract__c WHERE Name = 'FTE Contract 2' LIMIT 1].Id;
+        Id cont3 = [SELECT Id FROM DContract__c WHERE Name = 'FTE Contract 3' LIMIT 1].Id;
+        Id cont4 = [SELECT Id FROM DContract__c WHERE Name = 'FTE Contract 4' LIMIT 1].Id;
+        Id contUn1 = [SELECT Id FROM DContract__c WHERE Name = 'Unassigned Contract 1' LIMIT 1].Id;
+        Id contUn2 = [SELECT Id FROM DContract__c WHERE Name = 'Unassigned Contract 2' LIMIT 1].Id;
+
+        List<Time_Card__c> tcToUpdate = new List<Time_Card__c>();
+        Time_Card__c tc1 = [SELECT Id, FTE_Contract__c, FTE_Hours__c FROM Time_Card__c WHERE
+                            Client__c =: cont2 AND DAY_IN_MONTH(Date__c) = 6 LIMIT 1];
+        tc1.FTE_Hours__c = 30;
+        tc1.FTE_Contract__c = cont1;
+        tcToUpdate.add(tc1);
+
+        Time_Card__c tc2 = [SELECT Id, FTE_Contract__c, FTE_Hours__c FROM Time_Card__c WHERE
+                            Client__c =: cont3 AND DAY_IN_MONTH(Date__c) = 11 LIMIT 1];
+        tc2.FTE_Hours__c = 8;
+        tc2.FTE_Contract__c = cont2;
+        tcToUpdate.add(tc2);
+
+        Time_Card__c tc3 = [SELECT Id, FTE_Contract__c, FTE_Hours__c FROM Time_Card__c WHERE
+                            Client__c =: cont1 AND DAY_IN_MONTH(Date__c) = 1 LIMIT 1];
+        tc3.FTE_Hours__c = 12;
+        tc3.FTE_Contract__c = cont3;
+        tcToUpdate.add(tc3);
+
+        update tcToUpdate;
+
+        Test.setCreatedDate(cont1, DateTime.newInstance(Date.today().year() - 1, 1, 1));
+        Test.setCreatedDate(cont2, DateTime.newInstance(Date.today().year() - 1, 2, 1));
+        Test.setCreatedDate(cont3, DateTime.newInstance(Date.today().year() - 1, 3, 1));
+        Test.setCreatedDate(cont4, DateTime.newInstance(Date.today().year() - 1, 4, 1));
+        Test.setCreatedDate(contUn1, DateTime.newInstance(Date.today().year() - 1, 5, 1));
+        Test.setCreatedDate(contUn2, DateTime.newInstance(Date.today().year() - 1, 6, 1));
+
+        Test.startTest();
+        List<FTEMonthTimeCard> employeeMonthProjects = generator.generateMonthTimeCards();
+        System.assertEquals(5, employeeMonthProjects.size());
+        Test.stopTest();
+
+        // Overhead
+        System.assertEquals('Overhead', employeeMonthProjects.get(4).name);
+
+        // Overhead - Unassigned Contract 1
+        System.assertEquals(3, employeeMonthProjects.get(4).hours[0]);
+        System.assertEquals(4, employeeMonthProjects.get(4).hours[1]);
+        System.assertEquals(1, employeeMonthProjects.get(4).hours[2]);
+        System.assertEquals(7, employeeMonthProjects.get(4).hours[5]);
+        System.assertEquals(3, employeeMonthProjects.get(4).hours[20]);
+
+        // Overhead - Unassigned Contract 2
+        System.assertEquals(0, employeeMonthProjects.get(4).hours[21]);
+        System.assertEquals(0, employeeMonthProjects.get(4).hours[22]);
+        System.assertEquals(4, employeeMonthProjects.get(4).hours[23]);
+        System.assertEquals(18 + 4, employeeMonthProjects.get(4).totalHours);
+
+        // FTE Contract 1
+        System.assertEquals(0, employeeMonthProjects.get(0).hours[0]);
+        System.assertEquals(0, employeeMonthProjects.get(0).hours[1]);
+        System.assertEquals(4, employeeMonthProjects.get(0).hours[2]);
+        System.assertEquals(4.6, employeeMonthProjects.get(0).hours[3]);
+        System.assertEquals(2.5, employeeMonthProjects.get(0).hours[4]);
+        System.assertEquals(11.1, employeeMonthProjects.get(0).totalHours);
+
+        // FTE Contract 2
+        System.assertEquals(2, employeeMonthProjects.get(1).hours[5]);
+        System.assertEquals(7, employeeMonthProjects.get(1).hours[7]);
+        System.assertEquals(4, employeeMonthProjects.get(1).hours[8]);
+        System.assertEquals(1, employeeMonthProjects.get(1).hours[9]);
+        System.assertEquals(14, employeeMonthProjects.get(1).totalHours);
+
+        // FTE Contract 3
+        System.assertEquals(0, employeeMonthProjects.get(2).hours[8]);
+        System.assertEquals(2, employeeMonthProjects.get(2).hours[9]);
+        System.assertEquals(0.5, employeeMonthProjects.get(2).hours[15]);
+        System.assertEquals(1.5, employeeMonthProjects.get(2).hours[16]);
+        System.assertEquals(1, employeeMonthProjects.get(2).hours[17]);
+        System.assertEquals(6, employeeMonthProjects.get(2).hours[20]);
+        System.assertEquals(5, employeeMonthProjects.get(2).hours[21]);
+        System.assertEquals(5, employeeMonthProjects.get(2).hours[22]);
+        System.assertEquals(21, employeeMonthProjects.get(2).totalHours);
+
+        // FTE Contract 4
+        System.assertEquals(0, employeeMonthProjects.get(3).hours[15]);
+        System.assertEquals(0, employeeMonthProjects.get(3).hours[16]);
+        System.assertEquals(1, employeeMonthProjects.get(3).hours[17]);
+        System.assertEquals(1, employeeMonthProjects.get(3).hours[18]);
+        System.assertEquals(2, employeeMonthProjects.get(3).hours[19]);
+        System.assertEquals(1, employeeMonthProjects.get(3).hours[20]);
+        System.assertEquals(2, employeeMonthProjects.get(3).hours[22]);
+        System.assertEquals(7, employeeMonthProjects.get(3).totalHours);
     }
 
     @isTest
@@ -841,11 +1128,12 @@ public class FTETrackerTest {
     @isTest
     public  static void shouldRetunrYearList() {
         List<SelectOption> years = FTETrackerHelper.getYearsData();
-        System.assertEquals(3, years.size());
+        System.assertEquals(4, years.size());
         Integer currentYear = Date.today().year();
-        System.assertEquals(String.valueOf(currentYear), years.get(0).getValue());
-        System.assertEquals(String.valueOf(currentYear - 1), years.get(1).getValue());
-        System.assertEquals(String.valueOf(currentYear - 2), years.get(2).getValue());
+        System.assertEquals(String.valueOf(currentYear + 1), years.get(0).getValue());
+        System.assertEquals(String.valueOf(currentYear), years.get(1).getValue());
+        System.assertEquals(String.valueOf(currentYear - 1), years.get(2).getValue());
+        System.assertEquals(String.valueOf(currentYear - 2), years.get(3).getValue());
     }
 
     @isTest
@@ -1140,7 +1428,9 @@ public class FTETrackerTest {
             Name = employeeName,
             Salary__c = 50000,
             Employee_Status__c = 'Active',
+            Employee_Type__c = 'Employee',
             Exchange_Rate__c = 1,
+            Hire_Date__c = Date.newInstance(Date.today().year(), 1, 1),
             Per_Week_Hours__c = 40
         );
         insert employeeObj;

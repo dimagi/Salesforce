@@ -40,7 +40,8 @@ public without sharing class FTEGenerateEmployeesWorkCardBatch implements Databa
                 if (this.contractsId.size() > 0) {
                     List<Time_Card__c> contractTimeCards = [SELECT Id, Employee__c FROM Time_Card__c WHERE
                                                        (Client__c IN: this.contractsId OR FTE_Contract__c IN: this.contractsId)
-                                                       AND CALENDAR_YEAR(Date__c) =: this.calculationYear];
+                                                       AND CALENDAR_YEAR(Date__c) =: this.calculationYear
+                                                       AND (Employee__r.Employee_Type__c = 'Employee' OR Employee__r.Employee_Type__c = 'Contractor')];
                     for (Time_Card__c tc : contractTimeCards) {
                         if (!this.employeesId.contains(tc.Employee__c)) {
                             this.employeesId.add(tc.Employee__c);
@@ -139,7 +140,7 @@ public without sharing class FTEGenerateEmployeesWorkCardBatch implements Databa
         Integer threeYearsAgo = currentYear - 3;
 
         for (SFDC_Employee__c emplRec : employees) {
-            if (emplRec.Employee_Status__c == 'Active') {
+            if (emplRec.Employee_Status__c == 'Active' && (emplRec.Hire_Date__c != null && emplRec.Hire_Date__c.year() <= nextYear) && emplRec.Termination_Date__c != null) {
                 result.add(new EmployeeWrapper(emplRec.Id, nextYear));
             }
 
