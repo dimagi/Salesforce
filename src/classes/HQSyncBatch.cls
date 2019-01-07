@@ -47,7 +47,6 @@ public virtual class HQSyncBatch implements Database.Batchable<Integer>, Databas
 
     public virtual Iterable<Integer> start(Database.BatchableContext BC) {
         if (this.offsets != null) {
-            System.debug('Offset elements : ' + this.offsets.get(0));
             return this.offsets;
         }
 
