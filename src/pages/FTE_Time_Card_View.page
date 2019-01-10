@@ -30,6 +30,9 @@
             border-top-width: 3px !important;
             border-top-color: black !important;
         }
+        a {
+            padding: 4px 3px !important;
+        }
     </style>
 
     <apex:pageBlock title="Monthly Timecard: {!employee.Name} {!monthYearText}">
@@ -77,8 +80,11 @@
                     </tr>
                 </table>
 
-                <apex:commandButton action="{!goToEmployeeViewFromTimeCardView}" value="Employee View" id="backEButton" />
-                <a class="btn" style="text-decoration:none;" href="apex/FTE_Download_File?employeeId={!employeeId}&month={!exportMonth}" target="_blank">Download CSV</a>
+                <apex:commandButton action="{!goToEmployeeViewFromTimeCardView}" value="Employee View" id="backButton" />
+                <apex:commandButton action="{!goToEmployeeListView}" value="Employee List" id="backEButton" />
+                <apex:commandButton action="{!goToProjectListView}" value="Project List" id="backPButton" />
+                <apex:commandButton action="{!goToCSVUploadView}" value="CSV File Upload" id="uploadButton" />
+                &nbsp;&nbsp;&nbsp;<a class="btn" style="text-decoration:none;" href="apex/FTE_Download_File?employeeId={!employeeId}&month={!exportMonth}" target="_blank">Download CSV</a>
             </apex:outputPanel>
         </apex:form>
     </apex:pageBlock>

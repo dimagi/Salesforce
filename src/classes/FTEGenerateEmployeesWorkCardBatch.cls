@@ -134,13 +134,18 @@ public without sharing class FTEGenerateEmployeesWorkCardBatch implements Databa
     private List<EmployeeWrapper> generateWrapperList(List<SFDC_Employee__c> employees) {
         List<EmployeeWrapper> result = new List<EmployeeWrapper>();
         Integer currentYear = Date.today().year();
+        Integer twoYearsAhead = currentYear + 2;
         Integer nextYear = currentYear + 1;
         Integer oneYearAgo = currentYear - 1;
-        Integer twoYearsAgo = currentYear - 2;
-        Integer threeYearsAgo = currentYear - 3;
 
         for (SFDC_Employee__c emplRec : employees) {
-            if (emplRec.Employee_Status__c == 'Active' && (emplRec.Hire_Date__c != null && emplRec.Hire_Date__c.year() <= nextYear) && emplRec.Termination_Date__c != null) {
+            if (emplRec.Employee_Status__c == 'Active' && (emplRec.Hire_Date__c != null && emplRec.Hire_Date__c.year() <= twoYearsAhead)
+                    && emplRec.Termination_Date__c == null) {
+                result.add(new EmployeeWrapper(emplRec.Id, twoYearsAhead));
+            }
+
+            if (emplRec.Employee_Status__c == 'Active' && (emplRec.Hire_Date__c != null && emplRec.Hire_Date__c.year() <= nextYear)
+                    && emplRec.Termination_Date__c == null) {
                 result.add(new EmployeeWrapper(emplRec.Id, nextYear));
             }
 
@@ -152,11 +157,6 @@ public without sharing class FTEGenerateEmployeesWorkCardBatch implements Databa
             if ((emplRec.Hire_Date__c != null && emplRec.Hire_Date__c.year() <= oneYearAgo)
                 || (emplRec.Termination_Date__c != null && emplRec.Termination_Date__c.year() == oneYearAgo)) {
                 result.add(new EmployeeWrapper(emplRec.Id, oneYearAgo));
-            }
-
-            if ((emplRec.Hire_Date__c != null && emplRec.Hire_Date__c.year() <= twoYearsAgo)
-                || (emplRec.Termination_Date__c != null && emplRec.Termination_Date__c.year() == twoYearsAgo)) {
-                result.add(new EmployeeWrapper(emplRec.Id, twoYearsAgo));
             }
         }
 

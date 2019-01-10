@@ -1,7 +1,7 @@
 /**
  * Controller used to generate FTE Time Cards as csv file body.
  */
-public class FTEFileController {
+public class FTEFileController extends FTEController {
 
     public Id employeeId { get; set;}
     public Integer exportMonth {get; set;}
@@ -84,7 +84,10 @@ public class FTEFileController {
     public PageReference goToEmployeeViewFromTimeCardView() {
         PageReference pageRef = Page.FTE_Employee_View;
         pageref.getParameters().put('employeeId', this.employeeId);
-        pageref.getParameters().put('fteYear', String.valueOf(this.fteYear));
+        if (Date.today().year() != this.fteYear) {
+            pageref.getParameters().put('fteYear', String.valueOf(this.fteYear));
+        }
+
         return pageRef;
     }
 

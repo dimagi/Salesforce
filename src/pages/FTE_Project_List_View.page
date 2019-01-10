@@ -1,4 +1,4 @@
-<apex:page controller="FTEProjectListController" docType="html-5.0" action="{!initProjectList}">
+<apex:page controller="FTEProjectListController" docType="html-5.0" action="{!loadWorkCardJobStatus}">
     <style type="text/css">
         .fteProjectCell {
             cursor: pointer;
@@ -54,6 +54,7 @@
 
                 <apex:outputPanel styleClass="leftMargin">
                     <apex:commandButton action="{!goToEmployeeListView}" value="Employee List" id="backButton" />
+                    <apex:commandButton action="{!goToCSVUploadView}" value="CSV File Upload" id="uploadButton" />
                 </apex:outputPanel>
 
             </apex:outputPanel>

@@ -211,46 +211,46 @@ public class FTETimeCardGenerator {
         }
 
         List<FTEMonthTimeCard> result = getResult();
-        String csvEmptyRowPart1 = '""\t""';
+        String csvEmptyRowPart1 = '"",""';
         String csvEmptyRowPart2 = '';
         for (FTEMonthTimeCard monthData : result) { // build dynamic empty row based on columns
-           csvEmptyRowPart2 += '\t""';
+           csvEmptyRowPart2 += ',""';
         }
 
-        this.csvFile = '"Employee Name"\t';
+        this.csvFile = '"Employee Name",';
         this.csvFile += '"' + this.employeeName + '"';
         this.csvFile += csvEmptyRowPart2 + NEW_LINE;
-        this.csvFile += '"Month-Year:"\t';
+        this.csvFile += '"Month-Year:",';
         this.csvFile += '"' + this.monthYearText + '"';
         this.csvFile += csvEmptyRowPart2 + NEW_LINE;
-        this.csvFile += '"Report Type:"\t"Hours by Project"\t';
+        this.csvFile += '"Report Type:","Hours by Project",';
         this.csvFile += csvEmptyRowPart2 + NEW_LINE;
         this.csvFile += csvEmptyRowPart1 + csvEmptyRowPart2 + NEW_LINE;
 
-        this.csvFile += '""\t""\t"Projects:"';
+        this.csvFile += '"","","Projects:"';
         for (Integer i = 0 ; i < result.size() - 1; i++) {
-             this.csvFile += '\t""';
+             this.csvFile += ',""';
         }
         this.csvFile += NEW_LINE;
 
-        this.csvFile += '"Day of Week:"\t';
+        this.csvFile += '"Day of Week:",';
         this.csvFile += '"Day of Month"';
         for (FTEMonthTimeCard monthData : result) {
-             this.csvFile += '\t"' + monthData.name + '"';
+             this.csvFile += ',"' + monthData.name + '"';
         }
         this.csvFile += NEW_LINE;
 
         for (Integer day = 1; day <= this.monthDays; day++) {
-            this.csvFile += '"' + DateTime.newInstance(this.fteYear, this.monthDays, day).format('EEEE') + '"\t"' + day + '"';
+            this.csvFile += '"' + DateTime.newInstance(this.fteYear, this.monthDays, day).format('EEEE') + '","' + day + '"';
             for (FTEMonthTimeCard monthData : result) {
-                this.csvFile += '\t"' + monthData.hours[day - 1] + '"';
+                this.csvFile += ',"' + monthData.hours[day - 1] + '"';
             }
             this.csvFile += NEW_LINE;
         }
 
-        this.csvFile += '"Total Project Hours:"\t""';
+        this.csvFile += '"Total Project Hours:",""';
         for (FTEMonthTimeCard monthData : result) {
-             this.csvFile += '\t"' + monthData.totalHours + '"';
+             this.csvFile += ',"' + monthData.totalHours + '"';
         }
 
         this.csvFile += csvEmptyRowPart2 + NEW_LINE;
@@ -258,7 +258,7 @@ public class FTETimeCardGenerator {
 
     private void addCsvCell(String val, Integer countValue,  Integer limitValue) {
          if (countValue != limitValue) {
-            this.csvFile += '"' + val + '"\t';
+            this.csvFile += '"' + val + '",';
         } else {
             this.csvFile += '"' + val + '"'+ NEW_LINE;
         }

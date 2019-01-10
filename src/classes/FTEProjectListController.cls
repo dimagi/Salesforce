@@ -1,16 +1,11 @@
 /**
  * Controller for FTE_Project_List_View, allows to manage FTE contracts.
  */
-public class FTEProjectListController {
+public class FTEProjectListController extends FTEController {
 
     public Id contractId { get; set;}
-    public JobWrapper workCardJobStatus {get; set;}
 
     public FTEProjectListController() {
-    }
-
-    public void initProjectList() {
-        loadWorkCardJobStatus();
     }
 
     public List<DContract__c> getListToSubmit() {
@@ -18,17 +13,9 @@ public class FTEProjectListController {
         return result;
     }
 
-    public PageReference goToEmployeeListView() {
-        return Page.FTE_Employee_List_View;
-    }
-
     public PageReference goToIndividualProjectView() {
         PageReference pageRef = Page.FTE_Individual_Project_View;
         pageref.getParameters().put('contractId', this.contractId);
         return pageref;
-    }
-
-   public void loadWorkCardJobStatus() {
-        this.workCardJobStatus = FTETrackerHelper.loadWorkCardJobStatus();
     }
 }

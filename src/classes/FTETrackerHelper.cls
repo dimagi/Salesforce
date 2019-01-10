@@ -55,10 +55,10 @@ public class FTETrackerHelper {
     public static List<SelectOption> getYearsData() {
         List<SelectOption> tData = new List<SelectOption>();
         Integer currentYear = Date.today().year();
+        tData.add(new SelectOption(String.valueOf(currentYear + 2), String.valueOf(currentYear + 2)));
         tData.add(new SelectOption(String.valueOf(currentYear + 1), String.valueOf(currentYear + 1)));
         tData.add(new SelectOption(String.valueOf(currentYear), String.valueOf(currentYear)));
         tData.add(new SelectOption(String.valueOf(currentYear - 1), String.valueOf(currentYear - 1)));
-        tData.add(new SelectOption(String.valueOf(currentYear - 2), String.valueOf(currentYear - 2)));
         return tData;
     }
 }

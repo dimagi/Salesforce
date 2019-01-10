@@ -1,11 +1,10 @@
 /**
  * Controller for FTE Employee List views.
  */
-public class FTETrackerController {
+public class FTETrackerController extends FTEController {
 
     public Integer fteYear { get; set;}
     public Id employeeId { get; set;}
-    public JobWrapper workCardJobStatus {get; set;}
     public List<FTEEmployeeTime> employees { get; set;}
     public String employeeNameSearch { get; set;}
     public Pagination employeePagination { get; set;}
@@ -19,14 +18,6 @@ public class FTETrackerController {
         }
         this.employeePagination = new Pagination();
         this.employeePagination.pageSize = 50;
-    }
-
-    public void initEmployeeListView() {
-        loadWorkCardJobStatus();
-
-        if (workCardJobStatus.isRunning) {
-            return;
-        }
     }
 
     public List<FTEEmployeeTime> getEmployeesList() {
@@ -82,26 +73,12 @@ public class FTETrackerController {
          this.employeePagination.pageNumber = 1;
      }
 
-    public PageReference goToProjectListView() {
-        return Page.FTE_Project_List_View;
-    }
-
-    public PageReference goToCSVUploadView() {
-        return Page.FTE_CSV_Upload;
-    }
-
     public PageReference goToEmployeeView() {
         PageReference pageRef = Page.FTE_Employee_View;
         pageref.getParameters().put('employeeId', this.employeeId);
-        pageref.getParameters().put('fteYear', String.valueOf(this.fteYear));
+        if (Date.today().year() != this.fteYear) {
+            pageref.getParameters().put('fteYear', String.valueOf(this.fteYear));
+        }
         return pageRef;
-    }
-
-    public List<SelectOption> getYearsData() {
-        return FTETrackerHelper.getYearsData();
-    }
-
-    public void loadWorkCardJobStatus() {
-        this.workCardJobStatus = FTETrackerHelper.loadWorkCardJobStatus();
     }
 }

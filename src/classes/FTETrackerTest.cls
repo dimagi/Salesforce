@@ -165,7 +165,7 @@ public class FTETrackerTest {
         System.assertEquals(3, employees.size());
         List<FTE_Work_Card__c> workCards = [SELECT Id, Employee__c, Employee__r.Name, Month_1__c, Month_2__c, Month_3__c,
                                    Month_4__c, Month_5__c, Month_6__c, Month_7__c, Month_8__c, Month_9__c, Month_10__c, Month_11__c, Month_12__c,
-                                   Total__c, Total_Hours__c, Year__c FROM FTE_Work_Card__c ORDER BY Employee__r.Name];
+                                   Total__c, Total_Hours__c, Year__c FROM FTE_Work_Card__c WHERE Year__c =: Date.today().year() ORDER BY Employee__r.Name];
         System.assertEquals(3, workCards.size());
         System.assertEquals(85.8, workCards.get(0).Total_Hours__c); // -25,6 + 19,3
         System.assertEquals(10.75, workCards.get(0).Total__c);
@@ -1130,10 +1130,10 @@ public class FTETrackerTest {
         List<SelectOption> years = FTETrackerHelper.getYearsData();
         System.assertEquals(4, years.size());
         Integer currentYear = Date.today().year();
-        System.assertEquals(String.valueOf(currentYear + 1), years.get(0).getValue());
-        System.assertEquals(String.valueOf(currentYear), years.get(1).getValue());
-        System.assertEquals(String.valueOf(currentYear - 1), years.get(2).getValue());
-        System.assertEquals(String.valueOf(currentYear - 2), years.get(3).getValue());
+        System.assertEquals(String.valueOf(currentYear + 2), years.get(0).getValue());
+        System.assertEquals(String.valueOf(currentYear + 1), years.get(1).getValue());
+        System.assertEquals(String.valueOf(currentYear), years.get(2).getValue());
+        System.assertEquals(String.valueOf(currentYear - 1), years.get(3).getValue());
     }
 
     @isTest
@@ -1228,7 +1228,6 @@ public class FTETrackerTest {
 
         Test.startTest();
         FTETrackerController emplListCtrl = new FTETrackerController();
-        emplListCtrl.initEmployeeListView();
         List<FTEEmployeeTime> workCardList = emplListCtrl.getEmployeesList();
         System.assertEquals(3, workCardList.size());
 
@@ -1252,7 +1251,6 @@ public class FTETrackerTest {
 
         Test.startTest();
         FTEProjectListController projListCtrl = new FTEProjectListController();
-        projListCtrl.initProjectList();
         List<DContract__c> projList = projListCtrl.getListToSubmit();
         System.assertEquals(4, projList.size());
         System.assertNotEquals(null, projListCtrl.goToEmployeeListView());
@@ -1273,7 +1271,7 @@ public class FTETrackerTest {
         System.assertEquals('Total', projCtrl.individualContractDataList.get(3).name);
 
         System.assertNotEquals(null, projCtrl.goToEmployeeView());
-        System.assertNotEquals(null, projCtrl.goToProjectList());
+        System.assertNotEquals(null, projCtrl.goToProjectListView());
         Test.stopTest();
     }
 
@@ -1350,7 +1348,7 @@ public class FTETrackerTest {
 
         PageReference pageRefTest = emplCtrl.goToEmployeeListView();
         System.assertNotEquals(null, pageRefTest);
-        System.assertEquals(String.valueOf(Date.today().year()), pageRefTest.getParameters().get('fteYear'));
+        System.assertEquals(null, pageRefTest.getParameters().get('fteYear')); //same year we don't need to pass year parameter
         System.debug('pageRefTest.getUrl() - ' + pageRefTest.getUrl());
         System.assert(pageRefTest.getUrl().startsWith('/apex/fte_employee_list_view'));
 

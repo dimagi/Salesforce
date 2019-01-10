@@ -272,14 +272,6 @@
                     </apex:facet>
                 </apex:actionstatus>
 
-                <!-- TODO in future we will implement changing FTE year, it was added only for test browser back button <br />
-                <apex:outputText id="fteYearName" value="Choose FTE year"/>
-                <apex:selectList id="fteYearSelect" value="{!fteYear}" size="1">
-                    <apex:selectOption itemValue="2017" itemLabel="2017"/>
-                    <apex:selectOption itemValue="2018" itemLabel="2018"/>
-                    <apex:selectOption itemValue="2019" itemLabel="2019"/>
-                </apex:selectList> -->
-
                 <apex:pageBlockTable id="employeeHours" value="{!contractsTime}" var="empTime" styleClass="employeeTable">
                     <apex:column onclick="if ('{!empTime.name}' !== 'Unassigned' && '{!empTime.name}' !== 'Total Days Worked' && '{!empTime.name}' !== 'Total Assigned Days') {goToIndividualProjectView('{!empTime.objId}');}"
                                  headerValue="Contract Name" value="{!empTime.name}" styleClass="{!empTime.nameCss}"/>
@@ -394,9 +386,10 @@
                     <apex:param name="contractId" assignTo="{!contractId}" value=""/>
                 </apex:actionFunction>
 
-                <apex:commandButton onclick="return showTcExportDialog();" value="Export Time Cards" styleClass="jqButton" />
                 <apex:commandButton action="{!goToEmployeeListView}" value="Employee List" id="backEButton" />
                 <apex:commandButton action="{!goToProjectListView}" value="Project List" id="backPButton" />
+                <apex:commandButton action="{!goToCSVUploadView}" value="CSV File Upload" id="uploadButton" />
+                &nbsp;&nbsp;&nbsp;<apex:commandButton onclick="return showTcExportDialog();" value="Export Time Cards" styleClass="jqButton" />
             </apex:outputPanel>
         </apex:form>
     </apex:pageBlock>

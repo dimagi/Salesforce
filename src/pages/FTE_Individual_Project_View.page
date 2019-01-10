@@ -76,7 +76,10 @@
                 <apex:actionFunction action="{!goToEmployeeView}" name="goToEmployeeView" reRender="contractName">
                     <apex:param name="employeeId" assignTo="{!employeeId}" value=""/>
                 </apex:actionFunction>
-                <apex:commandButton action="{!goToProjectList}" value="Project List" id="backButton" />
+
+                <apex:commandButton action="{!goToEmployeeListView}" value="Employee List" id="backEButton" />
+                <apex:commandButton action="{!goToProjectListView}" value="Project List" id="backPButton" />
+                <apex:commandButton action="{!goToCSVUploadView}" value="CSV File Upload" id="uploadButton" />
             </apex:outputPanel>
         </apex:form>
     </apex:pageBlock>

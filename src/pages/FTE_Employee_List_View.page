@@ -1,4 +1,4 @@
-<apex:page controller="FTETrackerController" docType="html-5.0" action="{!initEmployeeListView}">
+<apex:page controller="FTETrackerController" docType="html-5.0" action="{!loadWorkCardJobStatus}">
     <style type="text/css">
         .fteProjectCell {
             cursor: pointer;
@@ -25,7 +25,7 @@
 
     <apex:pageBlock title="Total Allocated Time by Employee" id="employeeListBlockId">
         <apex:form >
-            <apex:actionPoller action="{!initEmployeeListView}" enabled="{!workCardJobStatus.isRunning}"
+            <apex:actionPoller action="{!loadWorkCardJobStatus}" enabled="{!workCardJobStatus.isRunning}"
                                     reRender="employeeListBlockId" interval="5"/>
 
             <apex:outputPanel id="jobLoader" rendered="{!workCardJobStatus.isRunning}">

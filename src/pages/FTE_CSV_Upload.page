@@ -5,6 +5,9 @@
             margin-bottom: 10px;
             color: black;
         }
+        .leftMargin {
+            margin-left: 10px;
+        }
     </style>
 
     <apex:pageBlock title="FTE CSV Upload" id="scvMainBlock" >
@@ -31,20 +34,20 @@
                 </apex:facet>
             </apex:actionstatus>
 
-            <apex:actionPoller action="{!loadWorkCardJobStatus}" enabled="{!fteJobStatus.isRunning}"
+            <apex:actionPoller action="{!loadWorkCardJobStatus}" enabled="{!workCardJobStatus.isRunning}"
                                     reRender="tableDataForm" interval="5"/>
 
-            <apex:outputPanel id="jobLoader" rendered="{!fteJobStatus.isRunning}">
+            <apex:outputPanel id="jobLoader" rendered="{!workCardJobStatus.isRunning}">
                 <apex:image url="/img/loading32.gif" height="10px" />
-                FTE Tracker is currently calculating time, {!fteJobStatus.jobName} : {!fteJobStatus.jobItemsProcessed}/{!fteJobStatus.totalJobItems}
+                FTE Tracker is currently calculating time, {!workCardJobStatus.jobName} : {!workCardJobStatus.jobItemsProcessed}/{!workCardJobStatus.totalJobItems}
             </apex:outputPanel>
             <br />
 
-            <apex:outputPanel rendered="{!!fteJobStatus.isRunning}" >
+            <apex:outputPanel rendered="{!!workCardJobStatus.isRunning}" >
                 <apex:pageBlock title="CSV Data to process" id="tableSection">
                     <apex:commandButton value="Remove parsed data" id="removeButtonData" action="{!removeFTEDataRecords}" status="loadingDiv" reRender="tableDataForm" disabled="{!fteDataPagination.resultSize <= 0}" />
                     <apex:commandButton value="Run CSV data processing" id="processButton" action="{!processFTEDataRecords}" status="loadingDiv" reRender="tableDataForm" disabled="{!fteDataPagination.resultSize <= 0}" />
-                    <apex:commandButton action="{!goToEmployeeListView}" value="FTE Tracker" id="empButton" />
+
                     <br />
                     <apex:pageBlockTable id="fteDataTable" value="{!FTEDataRecords}" var="fteData" >
                         <apex:column headerValue="Client" >
@@ -151,6 +154,11 @@
                     </table>
                     <apex:actionFunction status="loadingDiv" action="{!fteStatusPagination.resetPageNumber}" name="resetPageNumStatus" reRender="tableDataForm" />
                 </apex:pageBlock>
+            </apex:outputPanel>
+
+            <apex:outputPanel styleClass="leftMargin"  rendered="{!!workCardJobStatus.isRunning}">
+                <apex:commandButton action="{!goToEmployeeListView}" value="Employee List" id="empButton" />
+                <apex:commandButton action="{!goToProjectListView}" value="Project List" id="projButton" />
             </apex:outputPanel>
         </apex:form>
     </apex:pageBlock>

@@ -1,7 +1,7 @@
 /**
  * Controler for Employee View in FTE Tracker.
  */
-public class FTEEmployeeController {
+public class FTEEmployeeController extends FTEController {
 
     private Id employeeId;
     private Integer employeeNetworkDays = 0;
@@ -60,14 +60,12 @@ public class FTEEmployeeController {
         buildUITableData();
     }
 
-    public PageReference goToEmployeeListView () {
+    public override PageReference goToEmployeeListView () {
         PageReference pageRef = Page.FTE_Employee_List_View;
-        pageref.getParameters().put('fteYear', String.valueOf(this.fteYear));
+        if (Date.today().year() != this.fteYear) {
+            pageref.getParameters().put('fteYear', String.valueOf(this.fteYear));
+        }
         return pageRef;
-    }
-
-    public PageReference goToProjectListView() {
-        return Page.FTE_Project_List_View;
     }
 
     public PageReference goToIndividualProjectView() {

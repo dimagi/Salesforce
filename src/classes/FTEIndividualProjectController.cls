@@ -1,7 +1,7 @@
 /**
  * Controller for FTE_Individual_Project_View.
  */
-public class FTEIndividualProjectController {
+public class FTEIndividualProjectController extends FTEController {
 
     public Id contractId { get; set;}
     public String contractName { get; set;}
@@ -87,12 +87,12 @@ public class FTEIndividualProjectController {
         return pageRef;
     }
 
-    public PageReference goToProjectList() {
-        PageReference pageRef = Page.FTE_Project_List_View;
-        return pageRef;
-    }
+    public override PageReference goToEmployeeListView() {
+        PageReference pageRef = Page.FTE_Employee_List_View;
+        if (Date.today().year() != this.fteYear) {
+            pageref.getParameters().put('fteYear', String.valueOf(this.fteYear));
+        }
 
-    public List<SelectOption> getYearsData() {
-        return FTETrackerHelper.getYearsData();
+        return pageRef;
     }
 }
