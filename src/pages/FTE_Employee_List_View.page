@@ -107,7 +107,8 @@
                     <apex:param name="employeeId" assignTo="{!employeeId}" value=""/>
                 </apex:actionFunction>
 
-                <apex:commandButton action="{!goToProjectListView}" value="Project List" id="backButton" />
+                <apex:commandButton action="{!goToEmployeeListView}" value="Employee List" id="EmplListButton" disabled="true"/>
+                <apex:commandButton action="{!goToProjectListView}" value="Project List" id="projListButton" />
                 <apex:commandButton action="{!goToCSVUploadView}" value="CSV File Upload" id="uploadButton" />
             </apex:outputPanel>
         </apex:form>

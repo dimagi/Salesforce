@@ -53,7 +53,8 @@
                 </apex:actionFunction>
 
                 <apex:outputPanel styleClass="leftMargin">
-                    <apex:commandButton action="{!goToEmployeeListView}" value="Employee List" id="backButton" />
+                    <apex:commandButton action="{!goToEmployeeListView}" value="Employee List" id="EmplListButton" />
+                    <apex:commandButton action="{!goToProjectListView}" value="Project List" id="projListButton" disabled="true" />
                     <apex:commandButton action="{!goToCSVUploadView}" value="CSV File Upload" id="uploadButton" />
                 </apex:outputPanel>
 

@@ -157,8 +157,9 @@
             </apex:outputPanel>
 
             <apex:outputPanel styleClass="leftMargin"  rendered="{!!workCardJobStatus.isRunning}">
-                <apex:commandButton action="{!goToEmployeeListView}" value="Employee List" id="empButton" />
-                <apex:commandButton action="{!goToProjectListView}" value="Project List" id="projButton" />
+                <apex:commandButton action="{!goToEmployeeListView}" value="Employee List" id="EmplListButton" />
+                <apex:commandButton action="{!goToProjectListView}" value="Project List" id="projListButton" />
+                <apex:commandButton action="{!goToCSVUploadView}" value="CSV File Upload" id="uploadButton" disabled="true" />
             </apex:outputPanel>
         </apex:form>
     </apex:pageBlock>

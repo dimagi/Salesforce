@@ -386,8 +386,8 @@
                     <apex:param name="contractId" assignTo="{!contractId}" value=""/>
                 </apex:actionFunction>
 
-                <apex:commandButton action="{!goToEmployeeListView}" value="Employee List" id="backEButton" />
-                <apex:commandButton action="{!goToProjectListView}" value="Project List" id="backPButton" />
+                <apex:commandButton action="{!goToEmployeeListView}" value="Employee List" id="EmplListButton" />
+                <apex:commandButton action="{!goToProjectListView}" value="Project List" id="projListButton" />
                 <apex:commandButton action="{!goToCSVUploadView}" value="CSV File Upload" id="uploadButton" />
                 &nbsp;&nbsp;&nbsp;<apex:commandButton onclick="return showTcExportDialog();" value="Export Time Cards" styleClass="jqButton" />
             </apex:outputPanel>
