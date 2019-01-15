@@ -1,7 +1,7 @@
 /**
  * Controler for Employee View in FTE Tracker.
  */
-public class FTEEmployeeController {
+public class FTEEmployeeController extends FTEController {
 
     private Id employeeId;
     private Integer employeeNetworkDays = 0;
@@ -39,7 +39,7 @@ public class FTEEmployeeController {
         if (yearString != null && yearString.isNumeric()) {
             this.fteYear = Integer.valueOf(yearString);
         } else {
-            this.fteYear = FTE_Tracker_Settings__c.getOrgDefaults().FTE_Year__c != null ? FTE_Tracker_Settings__c.getOrgDefaults().FTE_Year__c.intValue() : Date.today().year();
+            this.fteYear = Date.today().year();
         }
     }
 
@@ -60,19 +60,18 @@ public class FTEEmployeeController {
         buildUITableData();
     }
 
-    public PageReference goToEmployeeListView () {
+    public override PageReference goToEmployeeListView () {
         PageReference pageRef = Page.FTE_Employee_List_View;
-        pageref.getParameters().put('fteYear', String.valueOf(this.fteYear));
+        if (Date.today().year() != this.fteYear) {
+            pageref.getParameters().put('fteYear', String.valueOf(this.fteYear));
+        }
         return pageRef;
-    }
-
-    public PageReference goToProjectListView() {
-        return Page.FTE_Project_List_View;
     }
 
     public PageReference goToIndividualProjectView() {
         PageReference pageRef = Page.FTE_Individual_Project_View;
         pageref.getParameters().put('contractId', this.contractId);
+        pageref.getParameters().put('fteYear', String.valueOf(this.fteYear));
         return pageref;
     }
 
@@ -233,8 +232,8 @@ public class FTEEmployeeController {
         // Calculate totals and labor cost
         for (FTEEmployeeTime empT : this.contractsTime) {
             empT.calculateDays();
-            this.totalAssignedDays.sumHoursAndCost(empT);
-            this.totalDaysWorked.sumHoursAndCost(empT);
+            this.totalAssignedDays.sumHours(empT);
+            this.totalDaysWorked.sumHours(empT);
         }
 
         this.fteTimeManager.unassigned.calculateDays();
@@ -254,8 +253,8 @@ public class FTEEmployeeController {
         } else {
             this.totalAssignedDays.cssStyle[12] = 'topTotal';
         }
-        this.totalAssignedDays.cssStyle[13] = 'topTotal';
-        this.totalDaysWorked.sumHoursAndCost(this.fteTimeManager.unassigned);
+
+        this.totalDaysWorked.sumHours(this.fteTimeManager.unassigned);
         this.totalDaysWorked.calculateDays();
         this.totalDaysWorked.nameCss = '';
         this.totalAssignedDays.nameCss = 'topTotal';
@@ -276,21 +275,5 @@ public class FTEEmployeeController {
             workCard.put('Month_' + month + '__c', monthValue + daysValue);
             update workCard;
         }
-    }
-
-    private void clearAssignUnassignViewData() {
-        this.contractId = null;
-        this.fteHoursMax = 0;
-        this.employeeMonth = null;
-        this.fteContracts = null;
-        this.fteContractsOptions = null;
-        this.selectedFteContract = null;
-        this.fteDays = '';
-        this.contractName = null;
-        this.fteDaysMax = 0;
-        this.userAvailableDays = 0;
-        this.assignViewError = false;
-        this.notValidDays = false;
-        this.monthName = null;
     }
 }

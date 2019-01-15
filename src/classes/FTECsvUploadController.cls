@@ -1,7 +1,7 @@
 /**
  * CSV File Upload controller.
  */
-public class FTECsvUploadController {
+public class FTECsvUploadController extends FTEController {
 
     public static final String COLUMN_SEPARATOR = '\t';
 
@@ -10,8 +10,6 @@ public class FTECsvUploadController {
 
     public Pagination fteDataPagination { get; set;}
     public Pagination fteStatusPagination { get; set;}
-
-    public JobWrapper fteJobStatus { get; set;}
 
     private Set<String> employeeNameSet;
     private Map<String, SFDC_Employee__c> employeeMap;
@@ -53,13 +51,9 @@ public class FTECsvUploadController {
         }
     }
 
-    public void loadWorkCardJobStatus() {
-        this.fteJobStatus = FTETrackerHelper.loadWorkCardJobStatus();
-    }
-
     public void processFTEDataRecords() {
         loadWorkCardJobStatus();
-        if (this.fteJobStatus.isRunning == false && this.fteDataPagination.resultSize > 0) {
+        if (this.workCardJobStatus.isRunning == false && this.fteDataPagination.resultSize > 0) {
             removeFTEDataStatusRecords(); // Remove status of last batch upload
 
             if (!Test.isRunningTest()) {
@@ -73,13 +67,9 @@ public class FTECsvUploadController {
         }
     }
 
-    public PageReference goToEmployeeListView() {
-        return Page.FTE_Employee_List_View;
-    }
-
     public PageReference parseCsvFile() {
         loadWorkCardJobStatus();
-        if (this.fteJobStatus.isRunning == true) {
+        if (this.workCardJobStatus.isRunning == true) {
             ApexPages.addMessage(new ApexPages.message(ApexPages.severity.ERROR, 'Cannot upload csv file. FTE Tracker is calculating time.'));
             return null;
         }

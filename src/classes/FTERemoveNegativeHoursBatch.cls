@@ -1,5 +1,6 @@
 /**
  * Class for adjusting hours when we will have negative values in a month after moving hours.
+ * TODO : probably to delete
  */
 public without sharing class FTERemoveNegativeHoursBatch implements Database.Batchable<FTEEmployeeMonthUpdated>, Database.Stateful {
 
@@ -116,8 +117,7 @@ public without sharing class FTERemoveNegativeHoursBatch implements Database.Bat
                 delete tagsToRemove;
             }
             if (!Test.isRunningTest()) {
-                Integer fteYear = (FTE_Tracker_Settings__c.getOrgDefaults().FTE_Year__c != null ? FTE_Tracker_Settings__c.getOrgDefaults().FTE_Year__c.intValue() : Date.today().year());
-                Database.executeBatch(new FTEGenerateEmployeesWorkCardBatch(fteYear), 1);
+                Database.executeBatch(new FTEGenerateEmployeesWorkCardBatch(), 1);
             }
         } catch (Exception ex) {
             if (!Test.isRunningTest()) {

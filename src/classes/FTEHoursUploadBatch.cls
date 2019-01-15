@@ -81,10 +81,13 @@ public without sharing class FTEHoursUploadBatch implements Database.Batchable<F
             delete result;
         }
 
-        Integer yearValue = FTE_Tracker_Settings__c.getOrgDefaults().FTE_Year__c != null ? FTE_Tracker_Settings__c.getOrgDefaults().FTE_Year__c.intValue()
-                                : Date.today().year();
-        if (!Test.isRunningTest() && yearValue == this.batchYear) {
-            Database.executeBatch(new FTEGenerateEmployeesWorkCardBatch(this.employeesSet, this.contractSet, yearValue), 1);
+        if (!Test.isRunningTest()) {
+            if (this.contractSet.size() > 0) {
+                Database.executeBatch(new FTEGenerateEmployeesWorkCardBatch(), 1); // we want refresh all 2 years because we can exced transaction limit in SF
+                                                                                   // to get empl list : 3 years time cards for contract can be bigger then 50k records
+            } else if (this.batchYear >= Date.today().year() - 2) {
+                Database.executeBatch(new FTEGenerateEmployeesWorkCardBatch(this.employeesSet, new Set<Id>(), this.batchYear), 1); // refresh only employees and uploaded year
+            }
         }
     }
 }

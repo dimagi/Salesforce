@@ -1,4 +1,4 @@
-<apex:page controller="FTEProjectListController" docType="html-5.0" action="{!initProjectList}">
+<apex:page controller="FTEProjectListController" docType="html-5.0" action="{!loadWorkCardJobStatus}">
     <style type="text/css">
         .fteProjectCell {
             cursor: pointer;
@@ -18,7 +18,7 @@
         }
     </style>
 
-    <apex:pageBlock title="FTE Project List" id="projectListViewIBlock">
+    <apex:pageBlock title="List of Projects" id="projectListViewIBlock">
         <apex:form >
 
             <apex:actionPoller action="{!loadWorkCardJobStatus}" enabled="{!workCardJobStatus.isRunning}"
@@ -40,57 +40,24 @@
                     </apex:facet>
                 </apex:actionstatus>
 
-                <apex:outputPanel layout="block" id="messages">
-                    <apex:pageMessages />
-                </apex:outputPanel>
+                <apex:pageBlockSection columns="1">
+                    <apex:pageBlockTable id="fteContractList" value="{!listToSubmit}" var="fteProject" styleClass="projectTable">
+                        <apex:column headerValue="FTE Project Name" value="{!fteProject.name}" styleClass="fteProjectCell" onclick="goToIndividualProjectView('{!fteProject.Id}');" />
+                        <apex:column headerValue="Project Manager" value="{!fteProject.Project_Manager__c}" />
+                        <apex:column headerValue="End Date" value="{!fteProject.Contract_End_Date__c}" />
+                    </apex:pageBlockTable>
+                </apex:pageBlockSection>
 
                 <apex:actionFunction action="{!goToIndividualProjectView}" name="goToIndividualProjectView" reRender="projectList" >
                     <apex:param name="contractId" assignTo="{!contractId}" value=""/>
                 </apex:actionFunction>
 
-                <apex:actionFunction action="{!searchProject}" name="searchProjectJs" status="loadingDiv" reRender="projectList" />
-
-                <apex:pageBlockSection columns="1">
-                    <apex:pageBlockTable id="fteContractList" value="{!listToSubmit}" var="fteProject" styleClass="projectTable">
-                        <apex:column headerValue="FTE Project Name" value="{!fteProject.name}" styleClass="fteProjectCell" onclick="goToIndividualProjectView('{!fteProject.Id}');" />
-                        <apex:column headerValue="Action" >
-                            <apex:commandLink status="loadingDiv" value=" Remove " action="{!removeProjectFromFteTracker}" reRender="projectList" >
-                                <apex:param name="contractToRemove" assignTo="{!contractId}" value="{!fteProject.Id}"/>
-                            </apex:commandLink>
-                        </apex:column>
-                    </apex:pageBlockTable>
-                </apex:pageBlockSection>
                 <apex:outputPanel styleClass="leftMargin">
-                    <apex:commandButton action="{!updateFteContracts}" value="Save changes" id="saveButton"
-                                            disabled="{!!projectListUpdated}" status="loadingDiv" reRender="projectListViewIBlock" />
-                    <apex:commandButton action="{!goToEmployeeListView}" value="Employee List" id="backButton" />
+                    <apex:commandButton action="{!goToEmployeeListView}" value="Employee List" id="EmplListButton" />
+                    <apex:commandButton action="{!goToProjectListView}" value="Project List" id="projListButton" disabled="true" />
+                    <apex:commandButton action="{!goToCSVUploadView}" value="CSV File Upload" id="uploadButton" />
                 </apex:outputPanel>
-                <br /><br />
-                <apex:pageBlockSection columns="1" id="serachSection">
-                <apex:outputLabel value="Search Project    " />
-                <apex:outputPanel >
-                    <apex:inputText value="{!seachProjectName}" id="searchProjectText" onkeydown="if(event.keyCode == 13) { this.blur(); searchProjectJs(); }"/>
-                    <apex:commandButton value="Search" action="{!searchProject}" status="loadingDiv" id="searchProjects" reRender="projectList" />
-                    <apex:outputText rendered="{!searchError!=''}">
-                    <div class="errorMsg"><strong>Error:</strong>&nbsp;{!searchError}</div>
-                        </apex:outputText>
-                </apex:outputPanel>
-                </apex:pageBlockSection>
 
-                <apex:pageBlockSection columns="1">
-                <apex:outputLabel value="Search Results" />
-                <apex:outputPanel styleClass="requiredInput" layout="block">
-                    <apex:actionFunction action="{!addProjectToFteTracker}" name="addProjectToFteTracker" status="loadingDiv"
-                                reRender="projectList">
-                        <apex:param name="contractToAdd" assignTo="{!contractId}" value=""/>
-                    </apex:actionFunction>
-                    <apex:pageBlockTable value="{!fteContractSearchList}" var="obj" id="searchResultTable" styleClass="projectTable" >
-                        <apex:column onclick="addProjectToFteTracker('{!obj.Id}');" headerValue="Project Name" value="{!obj.Name}" 
-                            styleClass="fteProjectCell" />
-                        <apex:column headerValue="Status" value="{!obj.Status__c}" />
-                    </apex:pageBlockTable>
-                </apex:outputPanel>
-                </apex:pageBlockSection>
             </apex:outputPanel>
         </apex:form>
     </apex:pageBlock>
