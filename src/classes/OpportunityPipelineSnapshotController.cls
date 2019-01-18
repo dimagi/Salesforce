@@ -78,7 +78,7 @@ public class OpportunityPipelineSnapshotController {
                                             AND Status IN ('Aborted', 'Completed', 'Failed') ORDER BY createdDate DESC LIMIT 1];
                 if (batchClassJobList != null && batchClassJobList.size() > 0) {
                     AsyncApexJob lastJobInfo = batchClassJobList.get(0);
-                    if (lastJobInfo.Status == 'Completed') {
+                    if (lastJobInfo.Status == 'Completed' && (lastJobInfo.ExtendedStatus == null || lastJobInfo.ExtendedStatus == '')) {
                         ApexPages.addMessage(new ApexPages.message(ApexPages.severity.CONFIRM, 'Pipeline snapshots job complete.'));
                     } else {
                         ApexPages.addMessage(new ApexPages.message(ApexPages.severity.ERROR, 'Pipeline snapshots job complete with status ' + lastJobInfo.Status
