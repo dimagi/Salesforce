@@ -37,6 +37,7 @@ public class HQSyncDomainModel {
         public DateTime cp_first_form;
         public DateTime cp_last_form;
         public DateTime cp_300th_form;
+        public DateTime cp_last_update;
         public Integer cp_n_inactive_cases;
         public Integer cp_n_30_day_cases;
         public Integer cp_n_60_day_cases;
@@ -73,6 +74,10 @@ public class HQSyncDomainModel {
         public Integer cp_n_click_app_deploy;
         public Integer cp_n_saved_app_changes;
         public Integer cp_n_form_builder_entered;
+        public Integer cp_n_users_submitted_form;
+        public Integer cp_j2me_90_d_bool; // number in API (0 or 1), in HQ saved as Boolean
+        public Integer cp_sms_30_d; // number in API (0 or 1), in HQ saved as Boolean
+        public Integer cp_sms_ever; // number in API (0 or 1), in HQ saved as Boolean
     }
 
     /**
@@ -247,6 +252,7 @@ public class HQSyncDomainModel {
         public String currency_code;
         public Boolean is_sms_billable;
         public Boolean hipaa_compliant;
+        public Boolean use_sql_backend;
         public String domain_type;
         public String[] tags;
         public HQDeployment deployment;
@@ -283,6 +289,7 @@ public class HQSyncDomainModel {
             domainObj.supports_multiple_locations_per_user__c = this.supports_multiple_locations_per_user == null ? false : this.supports_multiple_locations_per_user;
             domainObj.use_cloudcare_releases__c = this.use_cloudcare_releases == null ? false : this.use_cloudcare_releases;
             domainObj.use_default_sms_response__c = this.use_default_sms_response == null ? false : this.use_default_sms_response;
+            domainObj.use_sql_backend__c = this.use_sql_backend == null ? false : this.use_sql_backend;
             domainObj.date_created__c = this.date_created;
             domainObj.launch_date__c = this.launch_date;
             domainObj.snapshot_time__c = this.snapshot_time;
@@ -428,6 +435,12 @@ public class HQSyncDomainModel {
                 domainObj.Domain_cp_n_click_app_deploy__c = calculatedProperties.cp_n_click_app_deploy;
                 domainObj.Domain_cp_n_saved_app_changes__c = calculatedProperties.cp_n_saved_app_changes;
                 domainObj.Domain_cp_n_form_builder_entered__c = calculatedProperties.cp_n_form_builder_entered;
+
+                domainObj.Cp_last_update__c = calculatedProperties.cp_last_update;
+                domainObj.Cp_n_users_submitted_form__c = calculatedProperties.cp_n_users_submitted_form;
+                domainObj.Has_J2ME_submission_in_past_90_days__c = calculatedProperties.cp_j2me_90_d_bool == null || calculatedProperties.cp_j2me_90_d_bool == 0 ? false : true;
+                domainObj.Domain_cp_sms_30_d__c = calculatedProperties.cp_sms_30_d == null || calculatedProperties.cp_sms_30_d == 0 ? false : true;
+                domainObj.Domain_cp_sms_ever__c = calculatedProperties.cp_sms_ever == null || calculatedProperties.cp_sms_ever == 0 ? false : true;
             }
             domainObj.Server_Name__c = serverName;
 
