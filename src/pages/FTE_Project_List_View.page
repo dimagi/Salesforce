@@ -43,6 +43,7 @@
                 <apex:pageBlockSection columns="1">
                     <apex:pageBlockTable id="fteContractList" value="{!listToSubmit}" var="fteProject" styleClass="projectTable">
                         <apex:column headerValue="FTE Project Name" value="{!fteProject.name}" styleClass="fteProjectCell" onclick="goToIndividualProjectView('{!fteProject.Id}');" />
+                        <apex:column headerValue="Contract"><apex:outputLink target="_blank" value="../{!fteProject.Id}">{!fteProject.name}</apex:outputLink></apex:column>
                         <apex:column headerValue="Project Manager" value="{!fteProject.Project_Manager__c}" />
                         <apex:column headerValue="End Date" value="{!fteProject.Contract_End_Date__c}" />
                     </apex:pageBlockTable>
