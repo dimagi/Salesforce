@@ -143,15 +143,15 @@ public class UtilsTest {
         QueryBuilder qBuilder = new QueryBuilder('Domain__c');
         qBuilder.addColumn('Id');
         qBuilder.addColumns(new List<String> { 'Name', 'Server_Name__c' });
-        qBuilder.addAnd('Server_Name__c', 'Test1', QueryBuilder.TEXT_TYPE);
+        qBuilder.addAnd('Server_Name__c', 'Test1', QueryBuilder.QB_TEXT_TYPE);
         System.assertEquals('SELECT Id,Name,Server_Name__c FROM Domain__c WHERE Server_Name__c = \'Test1\'', qBuilder.buildQuery());
 
         qBuilder = new QueryBuilder();
         qBuilder.selectFrom('Domain__c');
         qBuilder.addColumn('Id');
         qBuilder.addColumns(new List<String> { 'Name', 'Server_Name__c' });
-        qBuilder.addAnd('Server_Name__c', new List<String> { 'Test1', 'Test2'}, QueryBuilder.TEXT_TYPE);
-        qBuilder.addAnd('Name', 'Test3', QueryBuilder.TEXT_TYPE);
+        qBuilder.addAnd('Server_Name__c', new List<String> { 'Test1', 'Test2'}, QueryBuilder.QB_TEXT_TYPE);
+        qBuilder.addAnd('Name', 'Test3', QueryBuilder.QB_TEXT_TYPE);
         qBuilder.addLike('Simple__r.relation_string__c', 'my like');
         System.assertEquals('SELECT Id,Name,Server_Name__c FROM Domain__c WHERE Server_Name__c IN (\'Test1\',\'Test2\') AND Name = \'Test3\' AND Simple__r.relation_string__c LIKE \'%my like%\'', qBuilder.buildQuery());
     }
@@ -161,23 +161,23 @@ public class UtilsTest {
         QueryBuilder qBuilder = new QueryBuilder('Domain__c');
         qBuilder.addColumn('Id');
         qBuilder.addColumns(new List<String> { 'Name', 'Server_Name__c' });
-        qBuilder.addAnd('cpIsActive__c', 'false', QueryBuilder.CHECKBOX_TYPE);
+        qBuilder.addAnd('cpIsActive__c', 'false', QueryBuilder.QB_CHECKBOX_TYPE);
         System.assertEquals('SELECT Id,Name,Server_Name__c FROM Domain__c WHERE cpIsActive__c = false', qBuilder.buildQuery());
 
         qBuilder = new QueryBuilder();
         qBuilder.selectFrom('Domain__c');
         qBuilder.addColumn('Id');
         qBuilder.addColumns(new List<String> { 'Name', 'Server_Name__c' });
-        qBuilder.addAnd('Server_Name__c', new List<String> { 'Test1', 'Test2'}, QueryBuilder.TEXT_TYPE);
-        qBuilder.addAnd('cpIsActive__c', 'true', QueryBuilder.CHECKBOX_TYPE);
+        qBuilder.addAnd('Server_Name__c', new List<String> { 'Test1', 'Test2'}, QueryBuilder.QB_TEXT_TYPE);
+        qBuilder.addAnd('cpIsActive__c', 'true', QueryBuilder.QB_CHECKBOX_TYPE);
         System.assertEquals('SELECT Id,Name,Server_Name__c FROM Domain__c WHERE Server_Name__c IN (\'Test1\',\'Test2\') AND cpIsActive__c = true', qBuilder.buildQuery());
 
         qBuilder = new QueryBuilder();
         qBuilder.selectFrom('Domain__c');
         qBuilder.addColumn('Id');
         qBuilder.addColumns(new List<String> { 'Name', 'Server_Name__c' });
-        qBuilder.addAnd('cpIsActive__c', new List<String> { 'false', 'true'}, QueryBuilder.CHECKBOX_TYPE);
-        qBuilder.addAnd('Server_Name__c', 'value1', QueryBuilder.TEXT_TYPE);
+        qBuilder.addAnd('cpIsActive__c', new List<String> { 'false', 'true'}, QueryBuilder.QB_CHECKBOX_TYPE);
+        qBuilder.addAnd('Server_Name__c', 'value1', QueryBuilder.QB_TEXT_TYPE);
         System.assertEquals('SELECT Id,Name,Server_Name__c FROM Domain__c WHERE cpIsActive__c IN (false,true) AND Server_Name__c = \'value1\'', qBuilder.buildQuery());
     }
 
@@ -240,8 +240,8 @@ public class UtilsTest {
         qBuilder.orderBy('Name', QueryBuilder.QB_DESC);
         qBuilder.groupBy('Server_Name__c');
         qBuilder.groupBy('Name');
-        qBuilder.addAnd('Server_Name__c', new List<String> { 'Test1', 'Test2'}, QueryBuilder.TEXT_TYPE);
-        qBuilder.addAnd('Name', 'Test3', QueryBuilder.TEXT_TYPE);
+        qBuilder.addAnd('Server_Name__c', new List<String> { 'Test1', 'Test2'}, QueryBuilder.QB_TEXT_TYPE);
+        qBuilder.addAnd('Name', 'Test3', QueryBuilder.QB_TEXT_TYPE);
         qBuilder.addLike('Simple__r.relation_string__c', 'my like');
         System.assertEquals('SELECT Id,Name,Server_Name__c FROM Domain__c WHERE Server_Name__c IN (\'Test1\',\'Test2\') AND Name = \'Test3\' AND Simple__r.relation_string__c LIKE \'%my like%\' GROUP BY Server_Name__c,Name ORDER BY Server_Name__c ASC NULLS LAST,Name DESC LIMIT 50 OFFSET 1000', qBuilder.buildQuery());
     }

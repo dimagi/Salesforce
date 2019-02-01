@@ -134,6 +134,10 @@ public class FacetController {
         return JSON.serialize(this.facets);
     }
 
+    public List<FacetGroup> getFacets() {
+        return this.facets;
+    }
+
     /**
      * Classes for facets UI represntation.
      */
