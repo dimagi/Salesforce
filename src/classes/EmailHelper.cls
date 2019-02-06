@@ -4,10 +4,6 @@
 public class EmailHelper {
 
     public static void sendEmails(List<String> addressList, String subject, List<String> emailsBody) {
-        if (Test.isRunningTest()) {
-            return;
-        }
-
         OrgWideEmailAddress orgWideAddress = [SELECT Id FROM OrgWideEmailAddress WHERE Address = 'dimagi-salesforce@dimagi.com' LIMIT 1];
         Messaging.Email[] mails = new Messaging.Email[]{};
 
@@ -25,6 +21,9 @@ public class EmailHelper {
             mails.add(mail);
         }
 
+        if (Test.isRunningTest()) {
+            return;
+        }
         Messaging.sendEmail(mails);
     }
 
