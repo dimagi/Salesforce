@@ -3,7 +3,7 @@ public class PROHelper {
     /*
         Get List of Thursday of current month.
     */
-    public static List<Date> GetAllThursDayOfMonth(integer year,integer month){
+    public static List<Date> getAllThursdayOfMonth(Integer year, Integer month) {
         List<Date> thuDayDateList = new List<Date>();
 
         Date startDate = date.newInstance(year, month, 1);
@@ -15,12 +15,12 @@ public class PROHelper {
             if (dayofWeek == 'Thu') {
                 thuDayDateList.add(startDate);
             }
-            startDate=startDate.AddDays(1);
-        } while (startDate<endDate);
+            startDate = startDate.addDays(1);
+        } while (startDate <= endDate);
         return thuDayDateList;
     }
 
-    public static Boolean IsThursDay(Date currentDate) {
+    public static Boolean isThursday(Date currentDate) {
         Datetime myDateTime = DateTime.newInstance(currentDate, Time.newInstance(0, 0, 0, 0));
         String dayOfWeek = myDateTime.format('E');
         if (dayofWeek == 'Thu') {
