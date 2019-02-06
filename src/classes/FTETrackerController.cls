@@ -1,68 +1,46 @@
 /**
- * Controller for FTE Tracker views.
+ * Controller for FTE Employee List views.
  */
-public class FTETrackerController {
+public class FTETrackerController extends FTEController {
 
-    public Integer currentYear { get; set;}
+    public Integer fteYear { get; set;}
     public Id employeeId { get; set;}
-    public JobWrapper workCardJobStatus {get; set;}
     public List<FTEEmployeeTime> employees { get; set;}
-    public Integer resultSize { get; set;}
-    public Integer pageSize { get; set;}
-    public Integer pageNumber { get; set;}
-    public Boolean hasPrevious { get; set;}
-    public Boolean hasNext { get; set;}
     public String employeeNameSearch { get; set;}
+    public Pagination employeePagination { get; set;}
 
     public FTETrackerController () {
         String yearString = ApexPages.currentPage().getParameters().get('fteYear');
         if (yearString != null && yearString.isNumeric()) {
-            this.currentYear = Integer.valueOf(yearString);
+            this.fteYear = Integer.valueOf(yearString);
         } else {
-            this.currentYear = FTE_Tracker_Settings__c.getOrgDefaults().FTE_Year__c != null ? FTE_Tracker_Settings__c.getOrgDefaults().FTE_Year__c.intValue() : Date.today().year();
+            this.fteYear = Date.today().year();
         }
-    }
-
-    public void initEmployeeListView() {
-        loadWorkCardJobStatus();
-
-        if (workCardJobStatus.isRunning) {
-            return;
-        }
-
-        if (this.pageNumber == null) {
-            this.pageNumber = 1;
-            this.resultSize = 0;
-            this.pageSize = 10;
-            this.hasPrevious = true;
-            this.hasNext = true;
-        }
+        this.employeePagination = new Pagination();
+        this.employeePagination.pageSize = 50;
     }
 
     public List<FTEEmployeeTime> getEmployeesList() {
         this.employees = new List<FTEEmployeeTime>();
-        this.hasPrevious = true;
-        this.hasNext = true;
-        Integer offsetValue = ((this.pageNumber - 1) * this.pageSize);
 
-        String soqlQuery = 'SELECT Id, Employee__c, Employee__r.Hire_Date__c, Employee__r.Name, Month_1__c, Month_2__c, Month_3__c,'
-                                + ' Month_4__c, Month_5__c, Month_6__c, Month_7__c, Month_8__c, Month_9__c, Month_10__c, Month_11__c, Month_12__c,'
-                                + ' Total__c, Total_Hours__c, Year__c, Unloaded_Rate_Total_Cost__c'
-                                + ' FROM FTE_Work_Card__c'
-                                + (this.employeeNameSearch != null && this.employeeNameSearch != '' ? ' WHERE Employee__r.Name LIKE \'%' + String.escapeSingleQuotes(this.employeeNameSearch) + '%\'' : '')
-                                + ' ORDER BY Employee__r.Name LIMIT : pageSize OFFSET : offsetValue';
-        List<FTE_Work_Card__c> workCards = Database.query(soqlQuery);
-        this.resultSize = Database.countQuery('SELECT count() FROM FTE_Work_Card__c' + (this.employeeNameSearch != null && this.employeeNameSearch != '' ? ' WHERE Employee__r.Name LIKE \'%' + String.escapeSingleQuotes(this.employeeNameSearch) + '%\'' : ''));
-
-        if (pageNumber == 1) {
-            this.HasPrevious = false;
-        }
-        if (offsetValue + this.pageSize >= this.resultSize) {
-            this.HasNext = false;
+        List<FTE_Work_Card__c> workCards = null;
+        if (this.employeeNameSearch != null && this.employeeNameSearch != '') {
+            workCards = [SELECT Id, Employee__c, Employee__r.Hire_Date__c, Employee__r.Name, Month_1__c, Month_2__c, Month_3__c,
+                Month_4__c, Month_5__c, Month_6__c, Month_7__c, Month_8__c, Month_9__c, Month_10__c, Month_11__c, Month_12__c,
+                Total__c, Total_Hours__c, Year__c FROM FTE_Work_Card__c WHERE Employee__r.Name LIKE: ('%' + String.escapeSingleQuotes(this.employeeNameSearch) + '%')
+                AND Year__c =: this.fteYear ORDER BY Total_Hours__c DESC LIMIT: this.employeePagination.pageSize OFFSET: this.employeePagination.getOffsetValue()];
+            this.employeePagination.handleResulSize([SELECT count() FROM FTE_Work_Card__c WHERE Year__c =: this.fteYear
+                                                     AND Employee__r.Name LIKE: ('%' + String.escapeSingleQuotes(this.employeeNameSearch) + '%')]);
+        } else {
+            workCards = [SELECT Id, Employee__c, Employee__r.Hire_Date__c, Employee__r.Name, Month_1__c, Month_2__c, Month_3__c,
+                Month_4__c, Month_5__c, Month_6__c, Month_7__c, Month_8__c, Month_9__c, Month_10__c, Month_11__c, Month_12__c,
+                Total__c, Total_Hours__c, Year__c FROM FTE_Work_Card__c WHERE Year__c =: this.fteYear
+                ORDER BY Total_Hours__c DESC LIMIT: this.employeePagination.pageSize OFFSET: this.employeePagination.getOffsetValue()];
+            this.employeePagination.handleResulSize([SELECT count() FROM FTE_Work_Card__c WHERE Year__c =: this.fteYear]);
         }
 
         for (FTE_Work_Card__c workCard : workCards) {
-            Integer empNetworkDays = FTETrackerHelper.getNetworkDays(workCard.Employee__r.Hire_Date__c, this.currentYear);
+            Integer empNetworkDays = FTETrackerHelper.getNetworkDays(workCard.Employee__r.Hire_Date__c, this.fteYear);
             FTEEmployeeTime empTime = new FTEEmployeeTime(workCard.Employee__r.Name, workCard.Employee__c);
             empTime.daysArray[0] = workCard.Month_1__c;
             empTime.daysArray[1] = workCard.Month_2__c;
@@ -85,45 +63,22 @@ public class FTETrackerController {
                     empTime.cssStyle[i] = 'fteCell overbilled';
                 }
             }
-            empTime.daysArray[13] = (workCard.Unloaded_Rate_Total_Cost__c != null ? workCard.Unloaded_Rate_Total_Cost__c : 0.00).setScale(2);
             this.employees.add(empTime);
         }
 
         return this.employees;
     }
 
-    public void searchEmplopyee() {
-        this.pageNumber = 1;
-    }
-
-    public void previousPage() {
-        this.pageNumber--;
-    }
-
-    public void nextPage() {
-        this.pageNumber++;
-    }
-
-    public void updatePageNumber() {
-        this.pageNumber = 1;
-    }
-
-    public PageReference goToProjectListView() {
-        return Page.FTE_Project_List_View;
-    }
-
-    public PageReference goToCSVUploadView() {
-        return Page.FTE_CSV_Upload;
-    }
+     public void searchEmplopyee() {
+         this.employeePagination.pageNumber = 1;
+     }
 
     public PageReference goToEmployeeView() {
         PageReference pageRef = Page.FTE_Employee_View;
         pageref.getParameters().put('employeeId', this.employeeId);
-        pageref.getParameters().put('fteYear', String.valueOf(this.currentYear));
+        if (Date.today().year() != this.fteYear) {
+            pageref.getParameters().put('fteYear', String.valueOf(this.fteYear));
+        }
         return pageRef;
-    }
-
-    public void loadWorkCardJobStatus() {
-        this.workCardJobStatus = FTETrackerHelper.loadWorkCardJobStatus();
     }
 }

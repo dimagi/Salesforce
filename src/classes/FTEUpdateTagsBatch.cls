@@ -51,8 +51,7 @@ public without sharing class FTEUpdateTagsBatch implements Database.Batchable<FT
             }
 
             if (!Test.isRunningTest()) {
-                Integer fteYear = (FTE_Tracker_Settings__c.getOrgDefaults().FTE_Year__c != null ? FTE_Tracker_Settings__c.getOrgDefaults().FTE_Year__c.intValue() : Date.today().year());
-                Database.executeBatch(new FTEGenerateEmployeesWorkCardBatch(fteYear), 1);
+                Database.executeBatch(new FTEGenerateEmployeesWorkCardBatch(), 1);
             }
         } catch (Exception ex) {
             if (!Test.isRunningTest()) {

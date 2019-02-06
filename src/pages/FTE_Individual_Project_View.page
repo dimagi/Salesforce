@@ -20,9 +20,17 @@
             margin-top: 10px;
             margin-bottom: 10px;
         }
+        .verAlign {
+            vertical-align: middle;
+        }
+        #chooseYear {
+            width: 180px;
+            padding-left: 10px;
+            padding-bottom: 10px;
+        }
     </style>
 
-    <apex:pageBlock title="FTE Individual Project List">
+    <apex:pageBlock title="Employees Allocated to Project: {!contractName}">
         <apex:form >
             <apex:outputPanel id="projectList">
                 <apex:actionstatus id="loadingDiv">
@@ -39,27 +47,39 @@
                     <apex:pageMessages />
                 </apex:outputPanel>
 
-                <apex:outputText id="contractName" value="{!contractName}"/>
+                <div id="chooseYear">
+                    <apex:outputText id="fteYearName" value="Select year : " styleClass="verAlign" />
+                    <apex:selectList id="fteYearSelect" value="{!fteYear}" size="1" onchange="updateFteYear();">
+                        <apex:selectOptions value="{!yearsData}"/>
+                    </apex:selectList>
+                </div>
+
                 <apex:pageBlockTable id="employeeHours" value="{!individualContractDataList}" var="empTime" styleClass="employeeTable">
                     <apex:column onclick="if ('{!empTime.name}' !== 'Total') {goToEmployeeView('{!empTime.objId}');}"
                                 headerValue="Name" value="{!empTime.name}" styleClass="{!empTime.nameCss}"/>
-                    <apex:column headerValue="Current Month" value="{!empTime.daysArray[0]}" styleClass="{!empTime.cssStyle[12]}" />
-                    <apex:column headerValue="Last Month" value="{!empTime.daysArray[1]}" styleClass="{!empTime.cssStyle[12]}" />
-                    <apex:column headerValue="2 Months Ago" value="{!empTime.daysArray[2]}" styleClass="{!empTime.cssStyle[12]}" />
-                    <apex:column headerValue="3 Months Ago" value="{!empTime.daysArray[3]}" styleClass="{!empTime.cssStyle[12]}" />
-                    <apex:column headerValue="More Than 3 Ago" value="{!empTime.daysArray[4]}" styleClass="{!empTime.cssStyle[12]}" />
-                    <apex:column headerValue="Total Hours to Date" value="{!empTime.daysArray[12]}" styleClass="{!empTime.cssStyle[12]}" />
-                    <apex:column headerValue="Labor Cost Estimate (USD)" styleClass="{!empTime.cssStyle[13]}">
-                        <apex:outputText value="${0, number,###,###,###,###}">
-                            <apex:param value="{!empTime.daysArray[13]}" />
-                        </apex:outputText>
-                    </apex:column>
+                    <apex:column headerValue="January {!fteYear}" value="{!empTime.daysArray[0]}" styleClass="{!empTime.cssStyle[12]}" />
+                    <apex:column headerValue="February {!fteYear}" value="{!empTime.daysArray[1]}" styleClass="{!empTime.cssStyle[12]}" />
+                    <apex:column headerValue="March {!fteYear}" value="{!empTime.daysArray[2]}" styleClass="{!empTime.cssStyle[12]}" />
+                    <apex:column headerValue="April {!fteYear}" value="{!empTime.daysArray[3]}" styleClass="{!empTime.cssStyle[12]}" />
+                    <apex:column headerValue="May {!fteYear}" value="{!empTime.daysArray[4]}" styleClass="{!empTime.cssStyle[12]}" />
+                    <apex:column headerValue="June {!fteYear}" value="{!empTime.daysArray[5]}" styleClass="{!empTime.cssStyle[12]}" />
+                    <apex:column headerValue="July {!fteYear}" value="{!empTime.daysArray[6]}" styleClass="{!empTime.cssStyle[12]}" />
+                    <apex:column headerValue="August {!fteYear}" value="{!empTime.daysArray[7]}" styleClass="{!empTime.cssStyle[12]}" />
+                    <apex:column headerValue="September {!fteYear}" value="{!empTime.daysArray[8]}" styleClass="{!empTime.cssStyle[12]}" />
+                    <apex:column headerValue="October {!fteYear}" value="{!empTime.daysArray[9]}" styleClass="{!empTime.cssStyle[12]}" />
+                    <apex:column headerValue="November {!fteYear}" value="{!empTime.daysArray[10]}" styleClass="{!empTime.cssStyle[12]}" />
+                    <apex:column headerValue="December {!fteYear}" value="{!empTime.daysArray[11]}" styleClass="{!empTime.cssStyle[12]}" />
+                    <apex:column headerValue="Total Hours {!fteYear}" value="{!empTime.daysArray[12]}" styleClass="{!empTime.cssStyle[12]}" />
                 </apex:pageBlockTable>
 
+                <apex:actionFunction action="{!initIndividualProject}" name="updateFteYear" status="loadingDiv" reRender="employeeHours" />
                 <apex:actionFunction action="{!goToEmployeeView}" name="goToEmployeeView" reRender="contractName">
                     <apex:param name="employeeId" assignTo="{!employeeId}" value=""/>
                 </apex:actionFunction>
-                <apex:commandButton action="{!goToProjectList}" value="Project List" id="backButton" />
+
+                <apex:commandButton action="{!goToEmployeeListView}" value="Employee List" id="EmplListButton" />
+                <apex:commandButton action="{!goToProjectListView}" value="Project List" id="projListButton" />
+                <apex:commandButton action="{!goToCSVUploadView}" value="CSV File Upload" id="uploadButton" />
             </apex:outputPanel>
         </apex:form>
     </apex:pageBlock>

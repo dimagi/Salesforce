@@ -1,16 +1,41 @@
 <apex:page controller="FTEFileController" docType="html-5.0" action="{!loadExportTimeCards}">
     <style type="text/css">
+        .hoursTable {
+            width: auto !important;
+            margin-top: 10px;
+            margin-bottom: 10px;
+            border-collapse: collapse !important;
+            border-width: 1px 1px 1px 1px;
+        }
+        .hoursCellHeader {
+            background: #f2f3f3;
+            font-weight: bold;
+            font-size: .9em;
+        }
+        .dataCell {
+            border-collapse: collapse !important;
+            border-width: 1px 1px 1px 1px !important;
+        }
+        .rowHighlight:hover {
+            background-color: #e3f3ff !important;
+        }
+        .firstColumn {
+            vertical-align: middle !important;
+            padding: 4px 8px 4px 8px !important;
+        }
+        .dataColumn {
+            padding: 4px 15px 4px 15px !important;
+        }
         .topTotal {
             border-top-width: 3px !important;
             border-top-color: black !important;
         }
-        .employeeTable {
-            margin-top: 10px;
-            margin-bottom: 10px;
+        a {
+            padding: 4px 3px !important;
         }
     </style>
 
-    <apex:pageBlock title="FTE Time Cards : {!employee.Name} {!monthYearText}">
+    <apex:pageBlock title="Monthly Timecard: {!employee.Name} {!monthYearText}">
         <apex:form >
             <apex:outputPanel >
                 <apex:actionstatus id="loadingDiv">
@@ -23,15 +48,43 @@
                     </apex:facet>
                 </apex:actionstatus>
 
-                <apex:pageBlockTable value="{!employeeMonthProjects}" var="record" styleClass="employeeTable">
-                    <apex:column headerValue="Projects" value="{!record.name}" styleClass="{!IF(record.name='Overhead',"topTotal", "")}"/>
-                    <apex:repeat value="{!exportMonthDays}" var="monthId">
-                        <apex:column headerValue="{!monthId + 1}" value="{!record.hours[monthId]}" styleClass="{!IF(record.name='Overhead',"topTotal", "")}"/>
-                    </apex:repeat>
-                </apex:pageBlockTable>
+                <table class="list hoursTable">
+                    <!-- Headers section -->
+                    <tr class="headerRow">
+                        <td class="headerRow firstColumn" rowspan="2">Day of Week</td>
+                        <td class="headerRow firstColumn" rowspan="2">Day of Month</td>
+                        <td class="headerRow" colspan="{!employeeMonthProjects.size}">Projects:</td>
+                    </tr>
+                    <tr class="headerRow">
+                        <apex:repeat value="{!employeeMonthProjects}" var="currentColumn">
+                            <td class="headerRow dataColumn">{!currentColumn.name}</td>
+                        </apex:repeat>
+                    </tr>
 
-                <apex:commandButton action="{!goToEmployeeViewFromTimeCardView}" value="Employee View" id="backEButton" />
-                <a class="btn" style="text-decoration:none;" href="apex/FTE_Download_File?employeeId={!employeeId}&month={!exportMonth}" target="_blank">Download CSV</a>
+                    <!-- Data section -->
+                    <apex:repeat value="{!rowList}" var="dayRecord">
+                        <tr class="dataRow rowHighlight">
+                            <td class="dataCell firstColumn">{!dayRecord.columnName}</td>
+                            <td class="dataCell firstColumn">{!dayRecord.dayNumber}</td>
+                            <apex:repeat value="{!employeeMonthProjects}" var="currentColumn">
+                                <td class="dataCell dataColumn">{!currentColumn.hours[dayRecord.index]}</td>
+                            </apex:repeat>
+                        </tr>
+                    </apex:repeat>
+
+                    <tr class="dataRow rowHighlight">
+                        <td class="topTotal dataCell hoursCellHeader" colspan="2">Total Project Hours:</td>
+                        <apex:repeat value="{!employeeMonthProjects}" var="currentColumn">
+                            <td class="topTotal dataCell dataColumn">{!currentColumn.totalHours}</td>
+                        </apex:repeat>
+                    </tr>
+                </table>
+
+                <apex:commandButton action="{!goToEmployeeListView}" value="Employee List" id="EmplListButton" />
+                <apex:commandButton action="{!goToProjectListView}" value="Project List" id="projListButton" />
+                <apex:commandButton action="{!goToCSVUploadView}" value="CSV File Upload" id="uploadButton" />
+                <apex:commandButton action="{!goToEmployeeViewFromTimeCardView}" value="Employee View" id="backButton" />
+                &nbsp;&nbsp;&nbsp;<a class="btn" style="text-decoration:none;" href="apex/FTE_Download_File?employeeId={!employeeId}&month={!exportMonth}" target="_blank">Download CSV</a>
             </apex:outputPanel>
         </apex:form>
     </apex:pageBlock>

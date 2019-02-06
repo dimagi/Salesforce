@@ -102,6 +102,16 @@ public class UtilsTest {
     }
 
     @isTest
+    public static void shouldSendEmails() {
+        Test.startTest();
+        EmailHelper.sendEmail('super-test-test@test-org-test.com', 'sub_1', 'body_1');
+        EmailHelper.sendEmail(new List<String> { 'super-test-test@test-org-test.com' }, 'sub_2', 'body_2');
+        EmailHelper.sendEmails('super-test-test@test-org-test.com', 'sub_3', new List<String> { 'body_3' });
+        EmailHelper.sendEmailFromException(new List<String> { 'super-test-test@test-org-test.com' }, 'sub_3', 'head', new CalloutException());
+        Test.stopTest();
+    }
+
+    @isTest
     public static void shouldGetFieldValueFromJSON() {
         String testResult = SFAuthUtils.getFromJSON('{"menu": { "id": "1", "my_test_field": "67890", "test": { "array_val": [ {"val_1": "4", "val_2": "tt"}, {"val_1": "33", "val_2": "val"}, {"val_1": "2", "val_2": "1"}]}}}',
                                                     'my_test_field');

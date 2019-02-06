@@ -396,6 +396,108 @@ public class OpportunityPipelineSnapshotTest {
         System.assertEquals(Date.newInstance(2016, 3, 31) , snapShotsEVDiffAll.get(2).Month_Date__c);
     }
 
+    @isTest
+    public static void shouldCalculateIsSubmittedThisMonth() {
+        Opportunity opp1 = new Opportunity(Name = 'Test Opportunity 1', StageName = 'Stage 5 - Submitted',
+                                                 CloseDate = date.today().addMonths(5), Probability = 30);
+        Opportunity opp2 = new Opportunity(Name = 'Test Opportunity 2', StageName = 'Stage 5 - Submitted',
+                                                 CloseDate = date.today().addMonths(5), Probability = 30);
+        Opportunity opp3 = new Opportunity(Name = 'Test Opportunity 3', StageName = 'Stage 5 - Submitted',
+                                                 CloseDate = date.today().addMonths(5), Probability = 30);
+        insert new List<Opportunity> { opp1, opp2, opp3 };
+
+        Integer testYear = Date.today().year() - 1;
+        // Opp 1
+        Pipeline_Snapshot__c ps1 = new Pipeline_Snapshot__c(Stage__c = 'Stage 5 - Submitted', Opportunity__c = opp1.Id, Source_Type__c = 'Opportunity', Month_Date__c = Date.newInstance(testYear, 10, 31), Name = 'Test 1' + Date.newInstance(testYear, 10, 31));
+        Pipeline_Snapshot__c ps2 = new Pipeline_Snapshot__c(Stage__c = 'Stage 4 - Proposal Development', Opportunity__c = opp1.Id, Source_Type__c = 'Opportunity', Month_Date__c = Date.newInstance(testYear, 11, 30), Name = 'Test 2' + Date.newInstance(testYear, 11, 30));
+        Pipeline_Snapshot__c ps3 = new Pipeline_Snapshot__c(Stage__c = 'Stage 4 - Proposal Development', Opportunity__c = opp1.Id, Source_Type__c = 'Opportunity', Month_Date__c = Date.newInstance(testYear, 12, 31), Name = 'Test 3' + Date.newInstance(testYear, 12, 31));
+        Pipeline_Snapshot__c ps4 = new Pipeline_Snapshot__c(Stage__c = 'Stage 5 - Submitted', Opportunity__c = opp1.Id, Source_Type__c = 'Opportunity', Month_Date__c = Date.newInstance(testYear + 1, 1, 31), Name = 'Test 4' + Date.newInstance(testYear + 1, 1, 31));
+        // Opp 2
+        Pipeline_Snapshot__c ps5 = new Pipeline_Snapshot__c(Stage__c = 'Stage 1 - Connect', Opportunity__c = opp2.Id, Source_Type__c = 'Opportunity', Month_Date__c = Date.newInstance(testYear, 3, 31), Name = 'Test 5' + Date.newInstance(testYear, 3, 31));
+        Pipeline_Snapshot__c ps6 = new Pipeline_Snapshot__c(Stage__c = 'Stage 4 - Proposal Development', Opportunity__c = opp2.Id, Source_Type__c = 'Opportunity', Month_Date__c = Date.newInstance(testYear, 4, 30), Name = 'Test 6' + Date.newInstance(testYear, 4, 30));
+        Pipeline_Snapshot__c ps7 = new Pipeline_Snapshot__c(Stage__c = 'Stage 5 - Submitted', Opportunity__c = opp2.Id, Source_Type__c = 'Opportunity', Month_Date__c = Date.newInstance(testYear, 5, 31), Name = 'Test 7' + Date.newInstance(testYear, 5, 31));
+        Pipeline_Snapshot__c ps8 = new Pipeline_Snapshot__c(Stage__c = 'Stage 4 - Proposal Development', Opportunity__c = opp2.Id, Source_Type__c = 'Opportunity', Month_Date__c = Date.newInstance(testYear, 6, 30), Name = 'Test 8' + Date.newInstance(testYear, 6, 30));
+        Pipeline_Snapshot__c ps9 = new Pipeline_Snapshot__c(Stage__c = 'Stage 4 - Proposal Development', Opportunity__c = opp2.Id, Source_Type__c = 'Opportunity', Month_Date__c = Date.newInstance(testYear, 7, 31), Name = 'Test 9' + Date.newInstance(testYear, 7, 31));
+        // Opp 3
+        Pipeline_Snapshot__c ps10 = new Pipeline_Snapshot__c(Stage__c = 'Stage 3 - Prospect', Opportunity__c = opp3.Id, Source_Type__c = 'Opportunity', Month_Date__c = Date.newInstance(testYear, 4, 30), Name = 'Test 10' + Date.newInstance(testYear, 4, 30));
+        Pipeline_Snapshot__c ps11 = new Pipeline_Snapshot__c(Stage__c = 'Stage 4 - Proposal Development', Opportunity__c = opp3.Id, Source_Type__c = 'Opportunity', Month_Date__c = Date.newInstance(testYear, 5, 31), Name = 'Test 11' + Date.newInstance(testYear, 5, 31));
+        Pipeline_Snapshot__c ps12 = new Pipeline_Snapshot__c(Stage__c = 'Stage 5 - Submitted', Opportunity__c = opp3.Id, Source_Type__c = 'Opportunity', Month_Date__c = Date.newInstance(testYear, 6, 30), Name = 'Test 12' + Date.newInstance(testYear, 6, 30));
+        Pipeline_Snapshot__c ps13 = new Pipeline_Snapshot__c(Stage__c = 'Stage 4 - Proposal Development', Opportunity__c = opp3.Id, Source_Type__c = 'Opportunity', Month_Date__c = Date.newInstance(testYear, 7, 31), Name = 'Test 13' + Date.newInstance(testYear, 7, 31));
+        Pipeline_Snapshot__c ps14 = new Pipeline_Snapshot__c(Stage__c = 'Stage 4 - Proposal Development', Opportunity__c = opp3.Id, Source_Type__c = 'Opportunity', Month_Date__c = Date.newInstance(testYear, 8, 31), Name = 'Test 14' + Date.newInstance(testYear, 8, 31));
+        Pipeline_Snapshot__c ps15 = new Pipeline_Snapshot__c(Stage__c = 'Stage 5 - Submitted', Opportunity__c = opp3.Id, Source_Type__c = 'Opportunity', Month_Date__c = Date.newInstance(testYear, 9, 30), Name = 'Test 15' + Date.newInstance(testYear, 9, 30));
+        Pipeline_Snapshot__c ps16 = new Pipeline_Snapshot__c(Stage__c = 'Stage 4 - Proposal Development', Opportunity__c = opp3.Id, Source_Type__c = 'Opportunity', Month_Date__c = Date.newInstance(testYear, 10, 31), Name = 'Test 16' + Date.newInstance(testYear, 10, 31));
+
+        insert new List<Pipeline_Snapshot__c> { ps1, ps2, ps3, ps4, ps5, ps6, ps7, ps8, ps9, ps10, ps11, ps12, ps13, ps14, ps15, ps16 };
+
+        // Opp 1
+        System.assertEquals('Yes', OpportunityPipelineSnapshotBatch.isSubmittedThisMonth(ps1));
+        System.assertEquals('No', OpportunityPipelineSnapshotBatch.isSubmittedThisMonth(ps2));
+        System.assertEquals('No', OpportunityPipelineSnapshotBatch.isSubmittedThisMonth(ps3));
+        System.assertEquals('No', OpportunityPipelineSnapshotBatch.isSubmittedThisMonth(ps4));
+        // Opp 2
+        System.assertEquals('No', OpportunityPipelineSnapshotBatch.isSubmittedThisMonth(ps5));
+        System.assertEquals('No', OpportunityPipelineSnapshotBatch.isSubmittedThisMonth(ps6));
+        System.assertEquals('Yes', OpportunityPipelineSnapshotBatch.isSubmittedThisMonth(ps7));
+        System.assertEquals('No', OpportunityPipelineSnapshotBatch.isSubmittedThisMonth(ps8));
+        System.assertEquals('No', OpportunityPipelineSnapshotBatch.isSubmittedThisMonth(ps9));
+        // Opp 3
+        System.assertEquals('No', OpportunityPipelineSnapshotBatch.isSubmittedThisMonth(ps10));
+        System.assertEquals('No', OpportunityPipelineSnapshotBatch.isSubmittedThisMonth(ps11));
+        System.assertEquals('Yes', OpportunityPipelineSnapshotBatch.isSubmittedThisMonth(ps12));
+        System.assertEquals('No', OpportunityPipelineSnapshotBatch.isSubmittedThisMonth(ps13));
+        System.assertEquals('No', OpportunityPipelineSnapshotBatch.isSubmittedThisMonth(ps14));
+        System.assertEquals('No', OpportunityPipelineSnapshotBatch.isSubmittedThisMonth(ps15));
+        System.assertEquals('No', OpportunityPipelineSnapshotBatch.isSubmittedThisMonth(ps16));
+    }
+
+    @isTest
+    public static void shouldSetSubmittedThisMonth1() {
+        Opportunity opp1 = [SELECT Id FROM Opportunity WHERE Name = 'Test Opportunity 1' LIMIT 1];
+        Opportunity opp2 = [SELECT Id FROM Opportunity WHERE Name = 'Test Opportunity 2' LIMIT 1];
+
+        Integer testYear = Date.today().year() - 1;
+        insert new Pipeline_Snapshot__c(Stage__c = 'Stage 1 - Connect', Opportunity__c = opp2.Id, Source_Type__c = 'Opportunity', Month_Date__c = Date.newInstance(testYear, 3, 31), Name = 'Test 5' + Date.newInstance(testYear, 3, 31));
+        insert new Pipeline_Snapshot__c(Stage__c = 'Stage 4 - Proposal Development', Opportunity__c = opp2.Id, Source_Type__c = 'Opportunity', Month_Date__c = Date.newInstance(testYear, 4, 30), Name = 'Test 6' + Date.newInstance(testYear, 4, 30));
+        insert new Pipeline_Snapshot__c(Stage__c = 'Stage 5 - Submitted', Opportunity__c = opp2.Id, Source_Type__c = 'Opportunity', Month_Date__c = Date.newInstance(testYear, 5, 31), Name = 'Test 7' + Date.newInstance(testYear, 5, 31));
+        insert new Pipeline_Snapshot__c(Stage__c = 'Stage 4 - Proposal Development', Opportunity__c = opp2.Id, Source_Type__c = 'Opportunity', Month_Date__c = Date.newInstance(testYear, 6, 30), Name = 'Test 8' + Date.newInstance(testYear, 6, 30));
+        insert new Pipeline_Snapshot__c(Stage__c = 'Stage 4 - Proposal Development', Opportunity__c = opp2.Id, Source_Type__c = 'Opportunity', Month_Date__c = Date.newInstance(testYear, 7, 31), Name = 'Test 9' + Date.newInstance(testYear, 7, 31));
+
+        Test.startTest();
+        Database.executeBatch(new OpportunityPipelineSnapshotBatch(Date.newInstance(testYear, 8, 31)));
+        Test.stopTest();
+
+        System.assertEquals(7, [SELECT count() FROM Pipeline_Snapshot__c]);
+        System.assertEquals(1, [SELECT count() FROM Pipeline_Snapshot__c WHERE Opportunity__c =: opp1.Id]);
+        System.assertEquals('Yes', [SELECT Submitted_this_month__c FROM Pipeline_Snapshot__c WHERE Opportunity__c =: opp1.Id LIMIT 1].Submitted_this_month__c);
+        System.assertEquals(6, [SELECT count() FROM Pipeline_Snapshot__c WHERE Opportunity__c =: opp2.Id]);
+        System.assertEquals('No', [SELECT Submitted_this_month__c FROM Pipeline_Snapshot__c WHERE Opportunity__c =: opp2.Id AND Month_Date__c =: Date.newInstance(testYear, 8, 31) LIMIT 1].Submitted_this_month__c);
+    }
+
+    @isTest
+    public static void shouldSetSubmittedThisMonth2() {
+        Opportunity opp1 = [SELECT Id FROM Opportunity WHERE Name = 'Test Opportunity 1' LIMIT 1];
+        Opportunity opp2 = [SELECT Id FROM Opportunity WHERE Name = 'Test Opportunity 2' LIMIT 1];
+
+        Integer testYear = Date.today().year() - 1;
+        insert new Pipeline_Snapshot__c(Stage__c = 'Stage 5 - Submitted', Opportunity__c = opp1.Id, Source_Type__c = 'Opportunity', Month_Date__c = Date.newInstance(testYear, 6, 30), Name = 'Test 8' + Date.newInstance(testYear, 6, 30));
+        insert new Pipeline_Snapshot__c(Stage__c = 'Stage 4 - Proposal Development', Opportunity__c = opp1.Id, Source_Type__c = 'Opportunity', Month_Date__c = Date.newInstance(testYear, 7, 31), Name = 'Test 9' + Date.newInstance(testYear, 7, 31));
+
+        insert new Pipeline_Snapshot__c(Stage__c = 'Stage 4 - Proposal Development', Opportunity__c = opp2.Id, Source_Type__c = 'Opportunity', Month_Date__c = Date.newInstance(testYear, 4, 30), Name = 'Test 6' + Date.newInstance(testYear, 4, 30));
+        insert new Pipeline_Snapshot__c(Stage__c = 'Stage 4 - Proposal Development', Opportunity__c = opp2.Id, Source_Type__c = 'Opportunity', Month_Date__c = Date.newInstance(testYear, 5, 31), Name = 'Test 7' + Date.newInstance(testYear, 5, 31));
+        insert new Pipeline_Snapshot__c(Stage__c = 'Stage 4 - Proposal Development', Opportunity__c = opp2.Id, Source_Type__c = 'Opportunity', Month_Date__c = Date.newInstance(testYear, 6, 30), Name = 'Test 8' + Date.newInstance(testYear, 6, 30));
+        insert new Pipeline_Snapshot__c(Stage__c = 'Stage 4 - Proposal Development', Opportunity__c = opp2.Id, Source_Type__c = 'Opportunity', Month_Date__c = Date.newInstance(testYear, 7, 31), Name = 'Test 9' + Date.newInstance(testYear, 7, 31));
+
+        Test.startTest();
+        Database.executeBatch(new OpportunityPipelineSnapshotBatch(Date.newInstance(testYear, 8, 31)));
+        Test.stopTest();
+
+        System.assertEquals(8, [SELECT count() FROM Pipeline_Snapshot__c]);
+        System.assertEquals(3, [SELECT count() FROM Pipeline_Snapshot__c WHERE Opportunity__c =: opp1.Id]);
+        System.assertEquals('No', [SELECT Submitted_this_month__c FROM Pipeline_Snapshot__c WHERE Opportunity__c =: opp1.Id AND Month_Date__c =: Date.newInstance(testYear, 8, 31) LIMIT 1].Submitted_this_month__c);
+        System.assertEquals(5, [SELECT count() FROM Pipeline_Snapshot__c WHERE Opportunity__c =: opp2.Id]);
+        System.assertEquals('Yes', [SELECT Submitted_this_month__c FROM Pipeline_Snapshot__c WHERE Opportunity__c =: opp2.Id AND Month_Date__c =: Date.newInstance(testYear, 8, 31) LIMIT 1].Submitted_this_month__c);
+    }
+
     private static void assertPipelineSnapshotValues(Pipeline_Snapshot__c psToTest, String expectedName, Id expectedAccount, Decimal expectedAmount, Decimal expectedAmountMinus,
                                             String expectedCountry, Integer expectedDuration, Decimal expectedBuffer, Date expectedCloseDate, Decimal expectedExpense,
                                             Decimal expectedProbability, String expectedProduct, String expectedChannel) {

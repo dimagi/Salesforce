@@ -73,6 +73,7 @@ public class OpportunityPipelineSnapshotBatch implements Database.Batchable<Oppo
                     Stage__c = opp.StageName
                 );
 
+            newPs.Submitted_this_month__c = isSubmittedThisMonth(newPs);
             newPs.recalculateFormulas();
             newPs.Buffer_EV_for_Period__c = (newPs.Buffer_EV__c != null ? newPs.Buffer_EV__c : 0) - (lastMonthSnapshot.Buffer_EV__c != null ? lastMonthSnapshot.Buffer_EV__c : 0);
             newSnapshots.add(newPs);
@@ -93,11 +94,19 @@ public class OpportunityPipelineSnapshotBatch implements Database.Batchable<Oppo
         }
     }
 
+    public static String isSubmittedThisMonth(Pipeline_Snapshot__c snapshot) {
+        if (snapshot.Stage__c != 'Stage 5 - Submitted') {
+            return 'No';
+        }
+        Integer stage5Count = [SELECT count() FROM Pipeline_Snapshot__c WHERE Opportunity__c =: snapshot.Opportunity__c AND Source_Type__c = 'Opportunity' AND Month_Date__c <: snapshot.Month_Date__c AND Stage__c = 'Stage 5 - Submitted'];
+        return stage5Count == 0 ? 'Yes' : 'No';
+    }
+
     private Pipeline_Snapshot__c getOldSnapshots(Id oppId, Date monthDate) {
         List<Pipeline_Snapshot__c> oldSnapshots;
         oldSnapshots = [SELECT Id, Opportunity__c, Buffer_EV__c FROM Pipeline_Snapshot__c
                             WHERE Opportunity__c =: oppId AND Month_Date__c < :monthDate AND Month_Date__c > :monthDate.addMonths(-6)
-                            AND Stage__c != 'Total' ORDER BY Month_Date__c DESC];
+                            AND Stage__c != 'Total' AND Source_Type__c = 'Opportunity' ORDER BY Month_Date__c DESC];
 
         if (oldSnapshots.size() > 0) {
             return oldSnapshots.get(0);
