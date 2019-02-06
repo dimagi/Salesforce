@@ -1,0 +1,945 @@
+<apex:page controller="HQAdminReportsController" sidebar="false" docType="html-5.0">
+
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css"/>
+    <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+
+    <apex:includeScript value="{!URLFOR($Resource.d3, 'd3.min.js')}"/>
+    <apex:includeScript value="{!URLFOR($Resource.nvdlLib, 'nv.d3.min.js')}"/>
+    <apex:stylesheet value="{!URLFOR($Resource.nvdlLib, 'nv.d3.min.css')}"/>
+
+    <style type="text/css">
+        .main-block {
+            min-height:500px;
+        }
+        .tablePanel {
+            overflow: auto;
+            max-width: 92vw;
+        }
+        .footerHeader {
+            background: #cfeef8 !important;
+        }
+        #data-container {
+            width: 87%;
+            display: inline-block;
+            box-sizing: border-box;
+            vertical-align: top;
+        }
+
+        #menu-container {
+            width: 10%;
+            display: inline-block;
+            box-sizing: border-box;
+            vertical-align: top;
+        }
+        .menu-list {
+            list-style: none;
+            margin-left: 0px;
+            padding-left: 0px;
+            margin: 0px;
+        }
+        .facet-menu {
+            width: 90%;
+        }
+        .facet-group {
+            margin-left: 0px;
+        }
+        .msidebar {
+            margin: 0px 7px 10px 0px;
+        }
+        .msidebarHeader {
+            background: #1797c0;
+            color: #fff;
+            padding: 6px;
+            border-radius: 6px;
+            margin-bottom: 4px;
+        }
+        .msidebarContent {
+            background: #cfeef8;
+            padding: 6px;
+            border-radius: 6px;
+        }
+        .msidebarContent input {
+            max-width:90%;
+        }
+        .msidebarElement {
+            text-decoration: none;
+            background: #cfeef8;
+            padding: 6px;
+            cursor: pointer;
+            border-radius: 6px;
+            margin-bottom: 1px;
+            font-family: Arial,Helvetica,sans-serif;
+            display: block;
+        }
+        .msidebarRow {
+            margin-bottom: 6px !important;
+        }
+        .msidebarElement:hover {
+            background: #e3f3ff;
+            text-decoration: none;
+            color: black;
+        }
+        .domains-graph {
+            height: 700px;
+        }
+        .graph-menu {
+            vertical-align: middle;
+        }
+        .graph-menu select {
+            height: 24px;
+            margin-right: 10px;
+        }
+        .graph-menu input {
+            margin-right: 10px;
+        }
+        .graph-menu label {
+            height: 24px;
+            font: 13.3333px Arial;
+        }
+        .btn {
+            height: 24px;
+        }
+        .ui-state-active {
+            border: 0px !important;
+            background: #1797c0 !important;
+        }
+    </style>
+
+    <script type="text/javascript">
+        var choosenFilters = [], filters = [];
+        var monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
+
+        $j = jQuery.noConflict();
+
+        $j(document).ready(function() {
+            generateFilters();
+            choosenFilters = JSON.parse($j("[id$=loadedFilters]").val());
+            $j( "#tabs" ).tabs({
+                activate: function( event, ui ) {
+                    addGraph();
+                }
+            });
+            $j('.facet').hide();
+            $j('.facet-values').hide();
+            $j('.msidebarElement').click(function(eventObject) {
+                var elements = $j(eventObject.target);
+                if (elements.parent().hasClass('facet-group')) {
+                    elements.parent().find('.facet').slideToggle();
+                }
+            });
+            $j('.facet').click(function(eventObject) {
+                var elements = $j(eventObject.target);
+                if (elements.parent().hasClass('facet')) {
+                    elements.parent().find('.facet-values').slideToggle();
+                }
+            });
+
+            addGraph();
+        });
+
+        function addGraph() {
+            nv.addGraph(function() {
+                var chart, reduceTicks, divElement = $j("[id$=domains-graph"), domainsData = JSON.parse($j("[id$=domain-graph-data]").val());
+                reduceTicks = domainsData.graphData.length > 15;
+                chart =  nv.models.multiBarChart().height(600).reduceXTicks(reduceTicks);
+                chart.xAxis.axisLabel('Date');
+                chart.xAxis.tickFormat(function(d) {
+                        var result, dDate = new Date(d)
+                        if (domainsData.currentInterval === 'daily') {
+                            result = (monthNames[dDate.getMonth()] + ' ' + dDate.getDate() + ' ' + dDate.getFullYear());
+                        } else if (domainsData.currentInterval === 'monthly') {
+                            result = (monthNames[dDate.getMonth()] + ' ' + dDate.getFullYear());
+                        } else {
+                            result = (dDate.getFullYear());
+                        }
+                        return result;
+                    });
+                chart.yAxis.axisLabel('# domains created');
+
+                divElement.empty();
+                divElement.append("<svg></svg>");
+                d3.select('#domains-graph svg').datum([{ key: "Domains", values: domainsData.graphData }])
+                    .transition().duration(500).call(chart);
+                nv.utils.windowResize(chart.update);
+                return chart;
+            });
+            nv.addGraph(function() {
+                var chart, divElement = $j("[id$=domains-graph-cumulative"), domainsData = JSON.parse($j("[id$=domain-graph-data]").val()), cumulativeDomainData;
+                cumulativeDomainData = generateCumulativeData(domainsData);
+                chart = nv.models.lineChart();
+                chart.yAxis.axisLabel('# domains created');
+                chart.xAxis.axisLabel('Date');
+                chart.xAxis.tickFormat(function(d) {
+                        var result, dDate = new Date(d);
+                        if (domainsData.currentInterval === 'daily') {
+                            result = (monthNames[dDate.getMonth()] + ' ' + dDate.getDate() + ' ' + dDate.getFullYear());
+                        } else if (domainsData.currentInterval === 'monthly') {
+                            result = (monthNames[dDate.getMonth()] + ' ' + dDate.getFullYear());
+                        } else {
+                            result = (dDate.getFullYear());
+                        }
+                        return result;
+                    });
+                chart.xScale(d3.time.scale());
+                divElement.empty();
+                divElement.append("<svg></svg>");
+                d3.select('#domains-graph-cumulative svg').datum([{ key: "Domains", values: cumulativeDomainData.result }])
+                    .transition().duration(500).call(chart);
+                nv.utils.windowResize(chart.update);
+                return chart;
+            });
+        }
+
+        function generateCumulativeData(jsonData) {
+            var i, helper = jsonData.totalToFromDate, result = [];
+            for (i = 0; i < jsonData.graphData.length; i++) {
+                helper += jsonData.graphData[i].y;
+                result.push({ x: new Date(jsonData.graphData[i].x).getTime(), y: helper });
+            }
+            return { result: result };
+        }
+
+        function applyGraphData () {
+            reloadGraphDataJs();
+        }
+
+        function updatePageElements() {
+            $j( "#tabs" ).tabs();
+            addGraph();
+            updateFilters();
+        }
+
+        function applyFilters() {
+            $j("[id$=loadedFilters]").val(JSON.stringify(choosenFilters));
+            return searchDomainJs(JSON.stringify(choosenFilters));
+        }
+
+        function getCheckbox(facetGroupData, facetData, facetValueData) {
+            var chValue = false, checboxElement, elId = getCheckboxId(facetGroupData, facetData, facetValueData);
+             if (choosenFilters[filters[facetGroupData].facets[facetData].fieldName]
+                    && choosenFilters[filters[facetGroupData].facets[facetData].fieldName].indexOf(filters[facetGroupData].facets[facetData].values[facetValueData].value) != -1) {
+                chValue  = true;
+            }
+            checboxElement = $j('<input />', { type: 'checkbox', id: elId, name: elId, class: 'menu-chbx', checked: chValue});
+
+            checboxElement.data('group', facetGroupData);
+            checboxElement.data('facet', facetData)
+            checboxElement.data('fvalue', facetValueData);
+
+
+            checboxElement.change(function(onChange) {
+                var index = -1, newValue = false, facetGroupId = 0, facetId = 0, facetValueId = 0, element = $j(this);
+                facetGroupId = element.data('group');
+                facetId = element.data('facet');
+                facetValueId = element.data('fvalue');
+
+                if(this.checked) {
+                    newValue = true;
+                }
+                if (filters[facetGroupId] && filters[facetGroupId].facets[facetId] && filters[facetGroupId].facets[facetId].values[facetValueId]) {
+                    if (newValue === true) {
+                        if (choosenFilters[filters[facetGroupId].facets[facetId].fieldName]) {
+                            choosenFilters[filters[facetGroupId].facets[facetId].fieldName].push(filters[facetGroupId].facets[facetId].values[facetValueId].value);
+                        } else {
+                            choosenFilters[filters[facetGroupId].facets[facetId].fieldName] = [filters[facetGroupId].facets[facetId].values[facetValueId].value];
+                        }
+                    } else {
+                        if (choosenFilters[filters[facetGroupId].facets[facetId].fieldName]) {
+                            index = choosenFilters[filters[facetGroupId].facets[facetId].fieldName].indexOf(filters[facetGroupId].facets[facetId].values[facetValueId].value);
+                            if (index > -1) {
+                                choosenFilters[filters[facetGroupId].facets[facetId].fieldName].splice(index, 1);
+                            }
+                        }
+                    }
+                }
+            });
+            return checboxElement;
+        }
+
+        function getLabel(elId, labelText) {
+            return $j("<label for='" + elId + "'>" + labelText + "</label>");
+        }
+
+        function getCheckboxId(facetGroupId, facetId, facetValueId) {
+            return 'checkbox-' + facetGroupId + '-' + facetId + '-' + facetValueId;
+        }
+
+        function updateFilters() {
+            var facetGroupId = 0, facetId = 0, facetValueId = 0, facet, facetValues, fValue;
+            filters = JSON.parse($j("[id$=facetDataElement]").val());
+            facetContainer = $j("[id$=facet-container]");
+
+            for (facetGroupId = 0; facetGroupId < filters.length; facetGroupId++) { 
+                for (facetId = 0; facetId < filters[facetGroupId].facets.length; facetId++) { 
+                    facet = $j("[id$=" + "facet-" + facetGroupId + "-" + facetId + "]");
+                    facetValues = $j(facet[0].children[1]);
+                    facetValues.empty();
+                    for (facetValueId = 0; facetValueId < filters[facetGroupId].facets[facetId].values.length; facetValueId++) {
+                        fValue = $j("<div class='msidebarElement'></div>");
+                        fValue.append(getLabel(getCheckboxId(facetGroupId, facetId, facetValueId),
+                            filters[facetGroupId].facets[facetId].values[facetValueId].value + " (" + filters[facetGroupId].facets[facetId].values[facetValueId].valCount + ")"));
+                        fValue.append(getCheckbox(facetGroupId, facetId, facetValueId));
+                        facetValues.append($j("<li></li>").append(fValue));
+                    }
+                }
+            }
+        }
+
+        function generateFilters() {
+            var facetGroupId = 0, facetId = 0, facetValueId = 0, newMenu, facetContainer, facetGroup, facets, facet, facetValues, fValue;
+            filters = JSON.parse($j("[id$=facetDataElement]").val());
+            facetContainer = $j("[id$=facet-container]");
+            newMenu = $j("<ul id='filters-data' class='menu-list'></ul>");
+
+            for (facetGroupId = 0; facetGroupId < filters.length; facetGroupId++) { 
+                facetGroup = ($j("<li class='facet-group'><div class='msidebarElement'>" + filters[facetGroupId].name + "</div></li>"));
+                facets = ($j("<ul class='menu-list'></ul>"));
+
+                for (facetId = 0; facetId < filters[facetGroupId].facets.length; facetId++) {
+                    facet = $j("<li id='" + "facet-" + facetGroupId + "-" + facetId + "' class='facet'><div class='msidebarElement'>" + filters[facetGroupId].facets[facetId].name + "</div></li>");
+                    facetValues = ($j("<ul class='facet-values menu-list'></ul>"));
+
+                    for (facetValueId = 0; facetValueId < filters[facetGroupId].facets[facetId].values.length; facetValueId++) {
+                        fValue = $j("<div class='msidebarElement'></div>");
+                        fValue.append(getLabel(getCheckboxId(facetGroupId, facetId, facetValueId),
+                            filters[facetGroupId].facets[facetId].values[facetValueId].value + " (" + filters[facetGroupId].facets[facetId].values[facetValueId].valCount + ")"));
+                        fValue.append(getCheckbox(facetGroupId, facetId, facetValueId));
+                        facetValues.append($j("<li></li>").append(fValue));
+                    }
+                    facet.append(facetValues);
+                    facets.append(facet);
+                }
+                facetGroup.append(facets);
+                newMenu.append(facetGroup);
+            }
+
+            facetContainer.append(newMenu);
+        }
+    </script>
+
+    <apex:form >
+        <apex:actionstatus id="loadingDiv">
+            <apex:facet name="start">
+                <div class="waitingSearchDiv" id="el_loading" style="background-color: #fbfbfb; height:100%;opacity:0.65;width:100%;">
+                    <div class="waitingHolder" style="left : 50%; top : 50%; position: fixed; width: 91px;">
+                        <img class="waitingImage" src="{!$Resource.BrokenCircle}" title="Please Wait..." />
+                    </div>
+                </div>
+            </apex:facet>
+        </apex:actionstatus>
+        <apex:inputHidden id="facetDataElement" value="{!facetController.facetJSON}" />
+        <apex:inputHidden id="loadedFilters" value="{!facetController.currentFilteringJSON}" />
+
+        <apex:outputPanel >
+            <div id="menu-container">
+                <div class="msidebar">
+                    <div class="msidebarHeader">
+                        <h2>Reports : </h2>
+                    </div>
+                    <div class="msidebarContent">
+                        <a class="msidebarElement" href="HQAdminReports">Project Space List</a>
+                        <a class="msidebarElement" href="HQAdminReports">Report 2 </a>
+                        <a class="msidebarElement" href="HQAdminReports">Report 3</a>
+                        <a class="msidebarElement" href="HQAdminReports">Project Map</a>
+                    </div>
+                </div>
+                <div class="msidebar">
+                    <div class="msidebarHeader">
+                        <h2>Facets : </h2>
+                    </div>
+                    <div class="msidebarContent">
+                        <input type="button" class="btn msidebarRow" onclick="applyFilters();" value="Apply" /><br/>
+                        <apex:inputText styleClass="msidebarRow" value="{!facetController.domainNameSearch}" id="searchDomainText" onkeydown="if(event.keyCode == 13) { this.blur(); applyFilters(); }"/>
+                        <apex:actionFunction action="{!updateFacets}" name="searchDomainJs" status="loadingDiv"
+                                     reRender="apex-data-container,pagination-panel,facetDataElement,loadedFilters,domains-graph-navigation,domain-graph-data,test-panel-id"
+                                     oncomplete="updatePageElements();" >
+                        <apex:param name="currentFilteringJSON" value="" assignTo="{!facetController.currentFilteringJSON}" />
+                        </apex:actionFunction>
+                        <div id="facet-container"></div>
+                    </div>
+                </div>
+            </div>
+        </apex:outputPanel>
+        <apex:outputPanel >
+            <div id="data-container">
+                <apex:pageBlock title="Project Space List" id="projectSpaceList" >
+                    <apex:outputPanel id="apex-data-container" layout="block" styleClass="tablePanel">
+                        <apex:outputPanel id="test-panel-id">
+                        </apex:outputPanel>
+                        <apex:pageBlockTable id="projectSpaceDataTable" value="{!DomainTableData}" var="projectSpaceData" footerClass="footerHeader" >
+                            <apex:column >
+                                <apex:facet name="header">
+                                    <apex:outputPanel >
+                                        <apex:commandLink action="{!sortColumn}" reRender="projectSpaceDataTable" status="loadingDiv">
+                                            <apex:param name="sortField" value="Name" assignTo="{!sortField}" />
+                                            Project
+                                            <apex:image value="/img/s.gif" rendered="{!IF(sortField == 'Name', true, false)}" alt="{!IF(sortDir == false,'Sorted Ascending','Sorted Descending')}"
+                                                        styleClass="{!IF(sortDir == false,'sortAsc','sortDesc')}" title="{!IF(sortDir == false,'Sorted Ascending','Sorted Descending')}" />
+                                        </apex:commandLink>
+                                    </apex:outputPanel>
+                                </apex:facet>
+                                <apex:facet name="footer">Total</apex:facet>
+                                {!projectSpaceData.Name}
+                            </apex:column>
+                            <apex:column >
+                                <apex:facet name="header">
+                                    <apex:outputPanel >
+                                        <apex:commandLink action="{!sortColumn}" reRender="projectSpaceDataTable" status="loadingDiv">
+                                            <apex:param name="sortField" value="date_created__c" assignTo="{!sortField}" />
+                                            Date Created
+                                            <apex:image value="/img/s.gif" rendered="{!IF(sortField == 'date_created__c', true, false)}" alt="{!IF(sortDir == false,'Sorted Ascending','Sorted Descending')}"
+                                                        styleClass="{!IF(sortDir == false,'sortAsc','sortDesc')}" title="{!IF(sortDir == false,'Sorted Ascending','Sorted Descending')}" />
+                                        </apex:commandLink>
+                                    </apex:outputPanel>
+                                </apex:facet>
+                                <apex:facet name="footer">---</apex:facet>
+                                {!projectSpaceData.date_created__c}
+                            </apex:column>
+                            <apex:column >
+                                <apex:facet name="header">
+                                    <apex:outputPanel >
+                                        <apex:commandLink action="{!sortColumn}" reRender="projectSpaceDataTable" status="loadingDiv">
+                                            <apex:param name="sortField" value="InternalProp_organization_name__c" assignTo="{!sortField}" />
+                                            Organization
+                                            <apex:image value="/img/s.gif" rendered="{!IF(sortField == 'InternalProp_organization_name__c', true, false)}" alt="{!IF(sortDir == false,'Sorted Ascending','Sorted Descending')}"
+                                                        styleClass="{!IF(sortDir == false,'sortAsc','sortDesc')}" title="{!IF(sortDir == false,'Sorted Ascending','Sorted Descending')}" />
+                                        </apex:commandLink>
+                                    </apex:outputPanel>
+                                </apex:facet>
+                                <apex:facet name="footer">---</apex:facet>
+                                {!projectSpaceData.InternalProp_organization_name__c}
+                            </apex:column>
+                            <apex:column headerValue="Deployment Country">
+                                <apex:facet name="footer">---</apex:facet>
+                                {!projectSpaceData.Deployment_Countries__c}
+                            </apex:column>
+                            <apex:column >
+                                <apex:facet name="header">
+                                    <apex:outputPanel >
+                                        <apex:commandLink action="{!sortColumn}" reRender="projectSpaceDataTable" status="loadingDiv">
+                                            <apex:param name="sortField" value="cpActiveMobileUsers__c" assignTo="{!sortField}" />
+                                            Active Mobile Workers
+                                            <apex:image value="/img/s.gif" rendered="{!IF(sortField == 'cpActiveMobileUsers__c', true, false)}" alt="{!IF(sortDir == false,'Sorted Ascending','Sorted Descending')}"
+                                                        styleClass="{!IF(sortDir == false,'sortAsc','sortDesc')}" title="{!IF(sortDir == false,'Sorted Ascending','Sorted Descending')}" />
+                                        </apex:commandLink>
+                                    </apex:outputPanel>
+                                </apex:facet>
+                                <apex:facet name="footer">{!totalRow.cpActiveMobileUsers__c}</apex:facet>
+                                {!projectSpaceData.cpActiveMobileUsers__c}
+                            </apex:column>
+                            <apex:column >
+                                <apex:facet name="header">
+                                    <apex:outputPanel >
+                                        <apex:commandLink action="{!sortColumn}" reRender="projectSpaceDataTable" status="loadingDiv">
+                                            <apex:param name="sortField" value="cpAllMobileUsers__c" assignTo="{!sortField}" />
+                                            Mobile Workers
+                                            <apex:image value="/img/s.gif" rendered="{!IF(sortField == 'cpAllMobileUsers__c', true, false)}" alt="{!IF(sortDir == false,'Sorted Ascending','Sorted Descending')}"
+                                                        styleClass="{!IF(sortDir == false,'sortAsc','sortDesc')}" title="{!IF(sortDir == false,'Sorted Ascending','Sorted Descending')}" />
+                                        </apex:commandLink>
+                                    </apex:outputPanel>
+                                </apex:facet>
+                                <apex:facet name="footer">{!totalRow.cpAllMobileUsers__c}</apex:facet>
+                                {!projectSpaceData.cpAllMobileUsers__c}
+                            </apex:column>
+                            <apex:column >
+                                <apex:facet name="header">
+                                    <apex:outputPanel >
+                                        <apex:commandLink action="{!sortColumn}" reRender="projectSpaceDataTable" status="loadingDiv">
+                                            <apex:param name="sortField" value="Cp_n_users_submitted_form__c" assignTo="{!sortField}" />
+                                            # Mobile Workers (Submitted Form)
+                                            <apex:image value="/img/s.gif" rendered="{!IF(sortField == 'Cp_n_users_submitted_form__c', true, false)}" alt="{!IF(sortDir == false,'Sorted Ascending','Sorted Descending')}"
+                                                        styleClass="{!IF(sortDir == false,'sortAsc','sortDesc')}" title="{!IF(sortDir == false,'Sorted Ascending','Sorted Descending')}" />
+                                        </apex:commandLink>
+                                    </apex:outputPanel>
+                                </apex:facet>
+                                <apex:facet name="footer">{!totalRow.Cp_n_users_submitted_form__c}</apex:facet>
+                                {!projectSpaceData.Cp_n_users_submitted_form__c}
+                            </apex:column>
+                            <apex:column >
+                                <apex:facet name="header">
+                                    <apex:outputPanel >
+                                        <apex:commandLink action="{!sortColumn}" reRender="projectSpaceDataTable" status="loadingDiv">
+                                            <apex:param name="sortField" value="cpCasesIn60Days__c" assignTo="{!sortField}" />
+                                            Cases in last 60 days
+                                            <apex:image value="/img/s.gif" rendered="{!IF(sortField == 'cpCasesIn60Days__c', true, false)}" alt="{!IF(sortDir == false,'Sorted Ascending','Sorted Descending')}"
+                                                        styleClass="{!IF(sortDir == false,'sortAsc','sortDesc')}" title="{!IF(sortDir == false,'Sorted Ascending','Sorted Descending')}" />
+                                        </apex:commandLink>
+                                    </apex:outputPanel>
+                                </apex:facet>
+                                <apex:facet name="footer">{!totalRow.cpCasesIn60Days__c}</apex:facet>
+                                {!projectSpaceData.cpCasesIn60Days__c}
+                            </apex:column>
+                            <apex:column >
+                                <apex:facet name="header">
+                                    <apex:outputPanel >
+                                        <apex:commandLink action="{!sortColumn}" reRender="projectSpaceDataTable" status="loadingDiv">
+                                            <apex:param name="sortField" value="cpAllActiveCases__c" assignTo="{!sortField}" />
+                                            Active Cases
+                                            <apex:image value="/img/s.gif" rendered="{!IF(sortField == 'cpAllActiveCases__c', true, false)}" alt="{!IF(sortDir == false,'Sorted Ascending','Sorted Descending')}"
+                                                        styleClass="{!IF(sortDir == false,'sortAsc','sortDesc')}" title="{!IF(sortDir == false,'Sorted Ascending','Sorted Descending')}" />
+                                        </apex:commandLink>
+                                    </apex:outputPanel>
+                                </apex:facet>
+                                <apex:facet name="footer">{!totalRow.cpAllActiveCases__c}</apex:facet>
+                                {!projectSpaceData.cpAllActiveCases__c}
+                            </apex:column>
+                            <apex:column >
+                                <apex:facet name="header">
+                                    <apex:outputPanel >
+                                        <apex:commandLink action="{!sortColumn}" reRender="projectSpaceDataTable" status="loadingDiv">
+                                            <apex:param name="sortField" value="cpAllInactiveCases__c" assignTo="{!sortField}" />
+                                            Inactive Cases
+                                            <apex:image value="/img/s.gif" rendered="{!IF(sortField == 'cpAllInactiveCases__c', true, false)}" alt="{!IF(sortDir == false,'Sorted Ascending','Sorted Descending')}"
+                                                        styleClass="{!IF(sortDir == false,'sortAsc','sortDesc')}" title="{!IF(sortDir == false,'Sorted Ascending','Sorted Descending')}" />
+                                        </apex:commandLink>
+                                    </apex:outputPanel>
+                                </apex:facet>
+                                <apex:facet name="footer">{!totalRow.cpAllInactiveCases__c}</apex:facet>
+                                {!projectSpaceData.cpAllInactiveCases__c}
+                            </apex:column>
+                            <apex:column >
+                                <apex:facet name="header">
+                                    <apex:outputPanel >
+                                        <apex:commandLink action="{!sortColumn}" reRender="projectSpaceDataTable" status="loadingDiv">
+                                            <apex:param name="sortField" value="cpAllCases__c" assignTo="{!sortField}" />
+                                            Cases
+                                            <apex:image value="/img/s.gif" rendered="{!IF(sortField == 'cpAllCases__c', true, false)}" alt="{!IF(sortDir == false,'Sorted Ascending','Sorted Descending')}"
+                                                        styleClass="{!IF(sortDir == false,'sortAsc','sortDesc')}" title="{!IF(sortDir == false,'Sorted Ascending','Sorted Descending')}" />
+                                        </apex:commandLink>
+                                    </apex:outputPanel>
+                                </apex:facet>
+                                <apex:facet name="footer">{!totalRow.cpAllCases__c}</apex:facet>
+                                {!projectSpaceData.cpAllCases__c}
+                            </apex:column>
+                            <apex:column >
+                                <apex:facet name="header">
+                                    <apex:outputPanel >
+                                        <apex:commandLink action="{!sortColumn}" reRender="projectSpaceDataTable" status="loadingDiv">
+                                            <apex:param name="sortField" value="cpAllForms__c" assignTo="{!sortField}" />
+                                            Form Submissions
+                                            <apex:image value="/img/s.gif" rendered="{!IF(sortField == 'cpAllForms__c', true, false)}" alt="{!IF(sortDir == false,'Sorted Ascending','Sorted Descending')}"
+                                                        styleClass="{!IF(sortDir == false,'sortAsc','sortDesc')}" title="{!IF(sortDir == false,'Sorted Ascending','Sorted Descending')}" />
+                                        </apex:commandLink>
+                                    </apex:outputPanel>
+                                </apex:facet>
+                                <apex:facet name="footer">{!totalRow.cpAllForms__c}</apex:facet>
+                                {!projectSpaceData.cpAllForms__c}
+                            </apex:column>
+                            <apex:column >
+                                <apex:facet name="header">
+                                    <apex:outputPanel >
+                                        <apex:commandLink action="{!sortColumn}" reRender="projectSpaceDataTable" status="loadingDiv">
+                                            <apex:param name="sortField" value="cpFormsIn30Days__c" assignTo="{!sortField}" />
+                                            Form Submissions in last 30 days
+                                            <apex:image value="/img/s.gif" rendered="{!IF(sortField == 'cpFormsIn30Days__c', true, false)}" alt="{!IF(sortDir == false,'Sorted Ascending','Sorted Descending')}"
+                                                        styleClass="{!IF(sortDir == false,'sortAsc','sortDesc')}" title="{!IF(sortDir == false,'Sorted Ascending','Sorted Descending')}" />
+                                        </apex:commandLink>
+                                    </apex:outputPanel>
+                                </apex:facet>
+                                <apex:facet name="footer">{!totalRow.cpFormsIn30Days__c}</apex:facet>
+                                {!projectSpaceData.cpFormsIn30Days__c}
+                            </apex:column>
+                            <apex:column >
+                                <apex:facet name="header">
+                                    <apex:outputPanel >
+                                        <apex:commandLink action="{!sortColumn}" reRender="projectSpaceDataTable" status="loadingDiv">
+                                            <apex:param name="sortField" value="cpFirstFormSubmissionDate__c" assignTo="{!sortField}" />
+                                            First Form Submission
+                                            <apex:image value="/img/s.gif" rendered="{!IF(sortField == 'cpFirstFormSubmissionDate__c', true, false)}" alt="{!IF(sortDir == false,'Sorted Ascending','Sorted Descending')}"
+                                                        styleClass="{!IF(sortDir == false,'sortAsc','sortDesc')}" title="{!IF(sortDir == false,'Sorted Ascending','Sorted Descending')}" />
+                                        </apex:commandLink>
+                                    </apex:outputPanel>
+                                </apex:facet>
+                                <apex:facet name="footer">---</apex:facet>
+                                {!projectSpaceData.cpFirstFormSubmissionDate__c}
+                            </apex:column>
+                            <apex:column >
+                                <apex:facet name="header">
+                                    <apex:outputPanel >
+                                        <apex:commandLink action="{!sortColumn}" reRender="projectSpaceDataTable" status="loadingDiv">
+                                            <apex:param name="sortField" value="cp300thFormSubmission__c" assignTo="{!sortField}" />
+                                            300th Form Submission
+                                            <apex:image value="/img/s.gif" rendered="{!IF(sortField == 'cp300thFormSubmission__c', true, false)}" alt="{!IF(sortDir == false,'Sorted Ascending','Sorted Descending')}"
+                                                        styleClass="{!IF(sortDir == false,'sortAsc','sortDesc')}" title="{!IF(sortDir == false,'Sorted Ascending','Sorted Descending')}" />
+                                        </apex:commandLink>
+                                    </apex:outputPanel>
+                                </apex:facet>
+                                <apex:facet name="footer">---</apex:facet>
+                                {!projectSpaceData.cp300thFormSubmission__c}
+                            </apex:column>
+                            <apex:column >
+                                <apex:facet name="header">
+                                    <apex:outputPanel >
+                                        <apex:commandLink action="{!sortColumn}" reRender="projectSpaceDataTable" status="loadingDiv">
+                                            <apex:param name="sortField" value="cpLastFormSubmissionDate__c" assignTo="{!sortField}" />
+                                            Last Form Submission
+                                            <apex:image value="/img/s.gif" rendered="{!IF(sortField == 'cpLastFormSubmissionDate__c', true, false)}" alt="{!IF(sortDir == false,'Sorted Ascending','Sorted Descending')}"
+                                                        styleClass="{!IF(sortDir == false,'sortAsc','sortDesc')}" title="{!IF(sortDir == false,'Sorted Ascending','Sorted Descending')}" />
+                                        </apex:commandLink>
+                                    </apex:outputPanel>
+                                </apex:facet>
+                                <apex:facet name="footer">---</apex:facet>
+                                {!projectSpaceData.cpLastFormSubmissionDate__c}
+                            </apex:column>
+                            <apex:column >
+                                <apex:facet name="header">
+                                    <apex:outputPanel >
+                                        <apex:commandLink action="{!sortColumn}" reRender="projectSpaceDataTable" status="loadingDiv">
+                                            <apex:param name="sortField" value="cpAllWebUsers__c" assignTo="{!sortField}" />
+                                            # Web Users
+                                            <apex:image value="/img/s.gif" rendered="{!IF(sortField == 'cpAllWebUsers__c', true, false)}" alt="{!IF(sortDir == false,'Sorted Ascending','Sorted Descending')}"
+                                                        styleClass="{!IF(sortDir == false,'sortAsc','sortDesc')}" title="{!IF(sortDir == false,'Sorted Ascending','Sorted Descending')}" />
+                                        </apex:commandLink>
+                                    </apex:outputPanel>
+                                </apex:facet>
+                                <apex:facet name="footer">{!totalRow.cpAllWebUsers__c}</apex:facet>
+                                {!projectSpaceData.cpAllWebUsers__c}
+                            </apex:column>
+                            <apex:column headerValue="Notes">
+                            <apex:facet name="footer">---</apex:facet>
+                                {!projectSpaceData.Internal_Properties__r.notes__c}
+                            </apex:column>
+                            <apex:column >
+                                <apex:facet name="header">
+                                    <apex:outputPanel >
+                                        <apex:commandLink action="{!sortColumn}" reRender="projectSpaceDataTable" status="loadingDiv">
+                                            <apex:param name="sortField" value="InternalProp_project_state__c" assignTo="{!sortField}" />
+                                            Project State
+                                            <apex:image value="/img/s.gif" rendered="{!IF(sortField == 'InternalProp_project_state__c', true, false)}" alt="{!IF(sortDir == false,'Sorted Ascending','Sorted Descending')}"
+                                                        styleClass="{!IF(sortDir == false,'sortAsc','sortDesc')}" title="{!IF(sortDir == false,'Sorted Ascending','Sorted Descending')}" />
+                                        </apex:commandLink>
+                                    </apex:outputPanel>
+                                </apex:facet>
+                                <apex:facet name="footer">---</apex:facet>
+                                {!projectSpaceData.InternalProp_project_state__c}
+                            </apex:column>
+                            <apex:column headerValue="Using ADM?">
+                                <apex:facet name="header">
+                                    <apex:outputPanel >
+                                        <apex:commandLink action="{!sortColumn}" reRender="projectSpaceDataTable" status="loadingDiv">
+                                            <apex:param name="sortField" value="InternalProp_using_adm__c" assignTo="{!sortField}" />
+                                            Using ADM?
+                                            <apex:image value="/img/s.gif" rendered="{!IF(sortField == 'InternalProp_using_adm__c', true, false)}" alt="{!IF(sortDir == false,'Sorted Ascending','Sorted Descending')}"
+                                                        styleClass="{!IF(sortDir == false,'sortAsc','sortDesc')}" title="{!IF(sortDir == false,'Sorted Ascending','Sorted Descending')}" />
+                                        </apex:commandLink>
+                                    </apex:outputPanel>
+                                </apex:facet>
+                                <apex:facet name="footer">---</apex:facet>
+                                {!projectSpaceData.InternalProp_using_adm__c}
+                            </apex:column>
+                            <apex:column >
+                                <apex:facet name="header">
+                                    <apex:outputPanel >
+                                        <apex:commandLink action="{!sortColumn}" reRender="projectSpaceDataTable" status="loadingDiv">
+                                            <apex:param name="sortField" value="InternalProp_using_call_center__c" assignTo="{!sortField}" />
+                                            Using Call Center?
+                                            <apex:image value="/img/s.gif" rendered="{!IF(sortField == 'InternalProp_using_call_center__c', true, false)}" alt="{!IF(sortDir == false,'Sorted Ascending','Sorted Descending')}"
+                                                        styleClass="{!IF(sortDir == false,'sortAsc','sortDesc')}" title="{!IF(sortDir == false,'Sorted Ascending','Sorted Descending')}" />
+                                        </apex:commandLink>
+                                    </apex:outputPanel>
+                                </apex:facet>
+                                <apex:facet name="footer">---</apex:facet>
+                                {!projectSpaceData.InternalProp_using_call_center__c}
+                            </apex:column>
+                            <apex:column >
+                                <apex:facet name="header">
+                                    <apex:outputPanel >
+                                        <apex:commandLink action="{!sortColumn}" reRender="projectSpaceDataTable" status="loadingDiv">
+                                            <apex:param name="sortField" value="Cp_last_update__c" assignTo="{!sortField}" />
+                                            Date Last Updated
+                                            <apex:image value="/img/s.gif" rendered="{!IF(sortField == 'Cp_last_update__c', true, false)}" alt="{!IF(sortDir == false,'Sorted Ascending','Sorted Descending')}"
+                                                        styleClass="{!IF(sortDir == false,'sortAsc','sortDesc')}" title="{!IF(sortDir == false,'Sorted Ascending','Sorted Descending')}" />
+                                        </apex:commandLink>
+                                    </apex:outputPanel>
+                                </apex:facet>
+                                <apex:facet name="footer">---</apex:facet>
+                                {!projectSpaceData.Cp_last_update__c}
+                            </apex:column>
+                            <apex:column >
+                                <apex:facet name="header">
+                                    <apex:outputPanel >
+                                        <apex:commandLink action="{!sortColumn}" reRender="projectSpaceDataTable" status="loadingDiv">
+                                            <apex:param name="sortField" value="InternalProp_area__c" assignTo="{!sortField}" />
+                                            Sector
+                                            <apex:image value="/img/s.gif" rendered="{!IF(sortField == 'InternalProp_area__c', true, false)}" alt="{!IF(sortDir == false,'Sorted Ascending','Sorted Descending')}"
+                                                        styleClass="{!IF(sortDir == false,'sortAsc','sortDesc')}" title="{!IF(sortDir == false,'Sorted Ascending','Sorted Descending')}" />
+                                        </apex:commandLink>
+                                    </apex:outputPanel>
+                                </apex:facet>
+                                <apex:facet name="footer">---</apex:facet>
+                                {!projectSpaceData.InternalProp_area__c}
+                            </apex:column>
+                            <apex:column >
+                                <apex:facet name="header">
+                                    <apex:outputPanel >
+                                        <apex:commandLink action="{!sortColumn}" reRender="projectSpaceDataTable" status="loadingDiv">
+                                            <apex:param name="sortField" value="InternalProp_sub_area__c" assignTo="{!sortField}" />
+                                            Sub-Sector
+                                            <apex:image value="/img/s.gif" rendered="{!IF(sortField == 'InternalProp_sub_area__c', true, false)}" alt="{!IF(sortDir == false,'Sorted Ascending','Sorted Descending')}"
+                                                        styleClass="{!IF(sortDir == false,'sortAsc','sortDesc')}" title="{!IF(sortDir == false,'Sorted Ascending','Sorted Descending')}" />
+                                        </apex:commandLink>
+                                    </apex:outputPanel>
+                                </apex:facet>
+                                <apex:facet name="footer">---</apex:facet>
+                                {!projectSpaceData.InternalProp_sub_area__c}
+                            </apex:column>
+                            <apex:column >
+                                <apex:facet name="header">
+                                    <apex:outputPanel >
+                                        <apex:commandLink action="{!sortColumn}" reRender="projectSpaceDataTable" status="loadingDiv">
+                                            <apex:param name="sortField" value="InternalProp_Business_Unit__c" assignTo="{!sortField}" />
+                                            Business Unit
+                                            <apex:image value="/img/s.gif" rendered="{!IF(sortField == 'InternalProp_Business_Unit__c', true, false)}" alt="{!IF(sortDir == false,'Sorted Ascending','Sorted Descending')}"
+                                                        styleClass="{!IF(sortDir == false,'sortAsc','sortDesc')}" title="{!IF(sortDir == false,'Sorted Ascending','Sorted Descending')}" />
+                                        </apex:commandLink>
+                                    </apex:outputPanel>
+                                </apex:facet>
+                                <apex:facet name="footer">---</apex:facet>
+                                {!projectSpaceData.InternalProp_Business_Unit__c}
+                            </apex:column>
+                            <apex:column >
+                                <apex:facet name="header">
+                                    <apex:outputPanel >
+                                        <apex:commandLink action="{!sortColumn}" reRender="projectSpaceDataTable" status="loadingDiv">
+                                            <apex:param name="sortField" value="InternalProp_self_started__c" assignTo="{!sortField}" />
+                                            Self-Started?
+                                            <apex:image value="/img/s.gif" rendered="{!IF(sortField == 'InternalProp_self_started__c', true, false)}" alt="{!IF(sortDir == false,'Sorted Ascending','Sorted Descending')}"
+                                                        styleClass="{!IF(sortDir == false,'sortAsc','sortDesc')}" title="{!IF(sortDir == false,'Sorted Ascending','Sorted Descending')}" />
+                                        </apex:commandLink>
+                                    </apex:outputPanel>
+                                </apex:facet>
+                                <apex:facet name="footer">---</apex:facet>
+                                {!projectSpaceData.InternalProp_self_started__c}
+                            </apex:column>
+                            <apex:column >
+                                <apex:facet name="header">
+                                    <apex:outputPanel >
+                                        <apex:commandLink action="{!sortColumn}" reRender="projectSpaceDataTable" status="loadingDiv">
+                                            <apex:param name="sortField" value="is_test__c" assignTo="{!sortField}" />
+                                            Test Project?
+                                            <apex:image value="/img/s.gif" rendered="{!IF(sortField == 'is_test__c', true, false)}" alt="{!IF(sortDir == false,'Sorted Ascending','Sorted Descending')}"
+                                                        styleClass="{!IF(sortDir == false,'sortAsc','sortDesc')}" title="{!IF(sortDir == false,'Sorted Ascending','Sorted Descending')}" />
+                                        </apex:commandLink>
+                                    </apex:outputPanel>
+                                </apex:facet>
+                                <apex:facet name="footer">---</apex:facet>
+                                {!projectSpaceData.is_test__c}
+                            </apex:column>
+                            <apex:column >
+                                <apex:facet name="header">
+                                    <apex:outputPanel >
+                                        <apex:commandLink action="{!sortColumn}" reRender="projectSpaceDataTable" status="loadingDiv">
+                                            <apex:param name="sortField" value="cpIsActive__c" assignTo="{!sortField}" />
+                                            Active?
+                                            <apex:image value="/img/s.gif" rendered="{!IF(sortField == 'cpIsActive__c', true, false)}" alt="{!IF(sortDir == false,'Sorted Ascending','Sorted Descending')}"
+                                                        styleClass="{!IF(sortDir == false,'sortAsc','sortDesc')}" title="{!IF(sortDir == false,'Sorted Ascending','Sorted Descending')}" />
+                                        </apex:commandLink>
+                                    </apex:outputPanel>
+                                </apex:facet>
+                                <apex:facet name="footer">---</apex:facet>
+                                {!projectSpaceData.cpIsActive__c}
+                            </apex:column>
+                            <apex:column headerValue="CommCare Supply?">
+                                <apex:facet name="header">
+                                    <apex:outputPanel >
+                                        <apex:commandLink action="{!sortColumn}" reRender="projectSpaceDataTable" status="loadingDiv">
+                                            <apex:param name="sortField" value="InternalProp_commtrack_domain__c" assignTo="{!sortField}" />
+                                            CommCare Supply?
+                                            <apex:image value="/img/s.gif" rendered="{!IF(sortField == 'InternalProp_commtrack_domain__c', true, false)}" alt="{!IF(sortDir == false,'Sorted Ascending','Sorted Descending')}"
+                                                        styleClass="{!IF(sortDir == false,'sortAsc','sortDesc')}" title="{!IF(sortDir == false,'Sorted Ascending','Sorted Descending')}" />
+                                        </apex:commandLink>
+                                    </apex:outputPanel>
+                                </apex:facet>
+                                <apex:facet name="footer">---</apex:facet>
+                                {!projectSpaceData.InternalProp_commtrack_domain__c}
+                            </apex:column>
+                            <apex:column >
+                                <apex:facet name="header">
+                                    <apex:outputPanel >
+                                        <apex:commandLink action="{!sortColumn}" reRender="projectSpaceDataTable" status="loadingDiv">
+                                            <apex:param name="sortField" value="cpAllOutgoingSms__c" assignTo="{!sortField}" />
+                                            Outgoing SMS
+                                            <apex:image value="/img/s.gif" rendered="{!IF(sortField == 'cpAllOutgoingSms__c', true, false)}" alt="{!IF(sortDir == false,'Sorted Ascending','Sorted Descending')}"
+                                                        styleClass="{!IF(sortDir == false,'sortAsc','sortDesc')}" title="{!IF(sortDir == false,'Sorted Ascending','Sorted Descending')}" />
+                                        </apex:commandLink>
+                                    </apex:outputPanel>
+                                </apex:facet>
+                                <apex:facet name="footer">{!totalRow.cpAllOutgoingSms__c}</apex:facet>
+                                {!projectSpaceData.cpAllOutgoingSms__c}
+                            </apex:column>
+                            <apex:column >
+                                <apex:facet name="header">
+                                    <apex:outputPanel >
+                                        <apex:commandLink action="{!sortColumn}" reRender="projectSpaceDataTable" status="loadingDiv">
+                                            <apex:param name="sortField" value="cpAllIncomingSms__c" assignTo="{!sortField}" />
+                                            Incoming SMS
+                                            <apex:image value="/img/s.gif" rendered="{!IF(sortField == 'cpAllIncomingSms__c', true, false)}" alt="{!IF(sortDir == false,'Sorted Ascending','Sorted Descending')}"
+                                                        styleClass="{!IF(sortDir == false,'sortAsc','sortDesc')}" title="{!IF(sortDir == false,'Sorted Ascending','Sorted Descending')}" />
+                                        </apex:commandLink>
+                                    </apex:outputPanel>
+                                </apex:facet>
+                                <apex:facet name="footer">{!totalRow.cpAllIncomingSms__c}</apex:facet>
+                                {!projectSpaceData.cpAllIncomingSms__c}
+                            </apex:column>
+                            <apex:column >
+                                <apex:facet name="header">
+                                    <apex:outputPanel >
+                                        <apex:commandLink action="{!sortColumn}" reRender="projectSpaceDataTable" status="loadingDiv">
+                                            <apex:param name="sortField" value="cpAllSms__c" assignTo="{!sortField}" />
+                                            # SMS Ever
+                                            <apex:image value="/img/s.gif" rendered="{!IF(sortField == 'cpAllSms__c', true, false)}" alt="{!IF(sortDir == false,'Sorted Ascending','Sorted Descending')}"
+                                                        styleClass="{!IF(sortDir == false,'sortAsc','sortDesc')}" title="{!IF(sortDir == false,'Sorted Ascending','Sorted Descending')}" />
+                                        </apex:commandLink>
+                                    </apex:outputPanel>
+                                </apex:facet>
+                                <apex:facet name="footer">{!totalRow.cpAllSms__c}</apex:facet>
+                                {!projectSpaceData.cpAllSms__c}
+                            </apex:column>
+                            <apex:column >
+                                <apex:facet name="header">
+                                    <apex:outputPanel >
+                                        <apex:commandLink action="{!sortColumn}" reRender="projectSpaceDataTable" status="loadingDiv">
+                                            <apex:param name="sortField" value="cpIncomingSmsIn30Days__c" assignTo="{!sortField}" />
+                                            Incoming SMS in last 30 days
+                                            <apex:image value="/img/s.gif" rendered="{!IF(sortField == 'cpIncomingSmsIn30Days__c', true, false)}" alt="{!IF(sortDir == false,'Sorted Ascending','Sorted Descending')}"
+                                                        styleClass="{!IF(sortDir == false,'sortAsc','sortDesc')}" title="{!IF(sortDir == false,'Sorted Ascending','Sorted Descending')}" />
+                                        </apex:commandLink>
+                                    </apex:outputPanel>
+                                </apex:facet>
+                                <apex:facet name="footer">{!totalRow.cpIncomingSmsIn30Days__c}</apex:facet>
+                                {!projectSpaceData.cpIncomingSmsIn30Days__c}
+                            </apex:column>
+                            <apex:column >
+                                <apex:facet name="header">
+                                    <apex:outputPanel >
+                                        <apex:commandLink action="{!sortColumn}" reRender="projectSpaceDataTable" status="loadingDiv">
+                                            <apex:param name="sortField" value="cpOutgoingSmsIn30Days__c" assignTo="{!sortField}" />
+                                            Outgoing SMS in last 30 days
+                                            <apex:image value="/img/s.gif" rendered="{!IF(sortField == 'cpOutgoingSmsIn30Days__c', true, false)}" alt="{!IF(sortDir == false,'Sorted Ascending','Sorted Descending')}"
+                                                        styleClass="{!IF(sortDir == false,'sortAsc','sortDesc')}" title="{!IF(sortDir == false,'Sorted Ascending','Sorted Descending')}" />
+                                        </apex:commandLink>
+                                    </apex:outputPanel>
+                                </apex:facet>
+                                <apex:facet name="footer">{!totalRow.cpOutgoingSmsIn30Days__c}</apex:facet>
+                                {!projectSpaceData.cpOutgoingSmsIn30Days__c}
+                            </apex:column>
+                            <apex:column >
+                                <apex:facet name="header">
+                                    <apex:outputPanel >
+                                        <apex:commandLink action="{!sortColumn}" reRender="projectSpaceDataTable" status="loadingDiv">
+                                            <apex:param name="sortField" value="InternalProp_custom_eula__c" assignTo="{!sortField}" />
+                                            Custom EULA?
+                                            <apex:image value="/img/s.gif" rendered="{!IF(sortField == 'InternalProp_custom_eula__c', true, false)}" alt="{!IF(sortDir == false,'Sorted Ascending','Sorted Descending')}"
+                                                        styleClass="{!IF(sortDir == false,'sortAsc','sortDesc')}" title="{!IF(sortDir == false,'Sorted Ascending','Sorted Descending')}" />
+                                        </apex:commandLink>
+                                    </apex:outputPanel>
+                                </apex:facet>
+                                <apex:facet name="footer">---</apex:facet>
+                                {!projectSpaceData.InternalProp_custom_eula__c}
+                            </apex:column>
+                            <apex:column >
+                                <apex:facet name="header">
+                                    <apex:outputPanel >
+                                        <apex:commandLink action="{!sortColumn}" reRender="projectSpaceDataTable" status="loadingDiv">
+                                            <apex:param name="sortField" value="hipaa_compliant__c" assignTo="{!sortField}" />
+                                            HIPAA Compiliant
+                                            <apex:image value="/img/s.gif" rendered="{!IF(sortField == 'hipaa_compliant__c', true, false)}" alt="{!IF(sortDir == false,'Sorted Ascending','Sorted Descending')}"
+                                                        styleClass="{!IF(sortDir == false,'sortAsc','sortDesc')}" title="{!IF(sortDir == false,'Sorted Ascending','Sorted Descending')}" />
+                                        </apex:commandLink>
+                                    </apex:outputPanel>
+                                </apex:facet>
+                                <apex:facet name="footer">---</apex:facet>
+                                {!projectSpaceData.hipaa_compliant__c}
+                            </apex:column>
+                            <apex:column >
+                                <apex:facet name="header">
+                                    <apex:outputPanel >
+                                        <apex:commandLink action="{!sortColumn}" reRender="projectSpaceDataTable" status="loadingDiv">
+                                            <apex:param name="sortField" value="Has_J2ME_submission_in_past_90_days__c" assignTo="{!sortField}" />
+                                            Has J2ME submission in past 90 days
+                                            <apex:image value="/img/s.gif" rendered="{!IF(sortField == 'Has_J2ME_submission_in_past_90_days__c', true, false)}" alt="{!IF(sortDir == false,'Sorted Ascending','Sorted Descending')}"
+                                                        styleClass="{!IF(sortDir == false,'sortAsc','sortDesc')}" title="{!IF(sortDir == false,'Sorted Ascending','Sorted Descending')}" />
+                                        </apex:commandLink>
+                                    </apex:outputPanel>
+                                </apex:facet>
+                                <apex:facet name="footer">---</apex:facet>
+                                {!projectSpaceData.Has_J2ME_submission_in_past_90_days__c}
+                            </apex:column>
+                        </apex:pageBlockTable>
+                    </apex:outputPanel>
+                    <apex:outputPanel id="pagination-panel">
+                        <!-- Pagination -->
+                        <table style="width: 100%">
+                            <tr>
+                                <td>Page: <apex:outputText value=" {!tablePagination.pageNumber} of {!CEILING(tablePagination.resultSize / tablePagination.pageSize)}"/></td>
+                                <td align="center">
+                                    <apex:commandLink status="loadingDiv" action="{!tablePagination.previousPage}" value="« Previous" rendered="{!tablePagination.hasPrevious}" reRender="pagination-panel,projectSpaceDataTable" />
+                                    <apex:outputText style="color: #ccc;" value="« Previous" rendered="{!NOT(tablePagination.hasPrevious)}"/>
+                                    &nbsp;&nbsp;
+                                    <apex:commandLink status="loadingDiv" action="{!tablePagination.nextPage}" value="Next »" rendered="{!tablePagination.hasNext}" reRender="pagination-panel,projectSpaceDataTable" />
+                                    <apex:outputText style="color: #ccc;" value="Next »" rendered="{!NOT(tablePagination.hasNext) }"/>
+                                </td>
+                                <td align="right">
+                                    Records per page:&nbsp;&nbsp;
+                                    <apex:selectList value="{!tablePagination.pageSize }" size="1" onchange="resetPageNumStatus();" >
+                                        <apex:selectOption itemValue="10" itemLabel="10"/>
+                                        <apex:selectOption itemValue="20" itemLabel="20"/>
+                                        <apex:selectOption itemValue="50" itemLabel="50"/>
+                                        <apex:actionSupport event="onchange" reRender="pagination-panel,projectSpaceDataTable"/>
+                                    </apex:selectList>
+                                </td>
+                            </tr>
+                        </table>
+                        <apex:actionFunction status="loadingDiv" action="{!tablePagination.resetPageNumber}" name="resetPageNumStatus" reRender="pagination-panel,projectSpaceDataTable" />
+                    </apex:outputPanel>
+                 </apex:pageBlock>
+                 <br/>
+                 <apex:pageBlock title="Project Spaces" id="projectSpaces" >
+                    <apex:outputPanel id="graph-container">
+                        <div id="domains-graph-navigation" class="graph-menu">
+                            <apex:outputLabel value="From : " for="graph-from"/>
+                            <apex:input id="graph-from" value="{!graphFrom}" type="date" />
+
+                            <apex:outputLabel value="To : " for="graph-to"/>
+                            <apex:input id="graph-to" value="{!graphTo}" type="date" />
+
+                            <apex:outputLabel value="Interval : " for="graph-interval"/>
+                            <apex:selectList id="graph-interval" value="{!graphInterval}" size="1" multiselect="false">
+                                <apex:selectOption itemValue="daily" itemLabel="Daily"/>
+                                <apex:selectOption itemValue="monthly" itemLabel="Monthly"/>
+                                <apex:selectOption itemValue="yearly" itemLabel="Yearly"/>
+                            </apex:selectList>
+
+                            <apex:outputLabel value="Date field : " for="graph-field"/>
+                            <apex:selectList id="graph-field" value="{!graphField}" size="1" multiselect="false">
+                                <apex:selectOption itemValue="Domain_date_created_date_wrapper__c" itemLabel="Date Created"/>
+                                <apex:selectOption itemValue="Domain_first_form_sub_date_wrapper__c" itemLabel="First Form Submission"/>
+                                <apex:selectOption itemValue="Domain_last_form_sub_date_wrapper__c" itemLabel="Last Form Submission"/>
+                            </apex:selectList>
+
+                            <input type="button" class="btn" onclick="applyGraphData();" value="Apply" /><br/>
+                            <apex:actionFunction action="{!reloadGraphData}" name="reloadGraphDataJs" status="loadingDiv"
+                                         reRender="domains-graph-navigation,domain-graph-data,test-panel-id,graph-from,graph-to" oncomplete="updatePageElements();" />
+                        </div>
+                        <br/>
+                        <apex:inputHidden id="domain-graph-data" value="{!graphDataJSON}" />
+                        <br/>
+                        <div id="tabs">
+                            <ul>
+                                <li><a href="#tabs-1">Bar Chart</a></li>
+                                <li><a href="#tabs-2">Cumulative Chart</a></li>
+                            </ul>
+                            <div id="tabs-1">
+                                <div id="domains-graph" class="domains-graph"></div>
+                            </div>
+                            <div id="tabs-2">
+                                <div id="domains-graph-cumulative" class="domains-graph"></div>
+                            </div>
+                        </div>
+                    </apex:outputPanel>
+                </apex:pageBlock>
+            </div>
+        </apex:outputPanel>
+    </apex:form>
+</apex:page>

@@ -130,6 +130,132 @@ public class UtilsTest {
         System.assertEquals('Good Response', testResult);
     }
 
+    /**
+     * QueryBuilder tests.
+     */
+
+    @isTest
+    public static void queryBuilderShouldBuilidSimpleQuery() {
+        QueryBuilder qBuilder = new QueryBuilder('Domain__c');
+        qBuilder.addColumn('Id');
+        qBuilder.addColumns(new List<String> { 'Name', 'Server_Name__c' });
+        System.assertEquals('SELECT Id,Name,Server_Name__c FROM Domain__c', qBuilder.buildQuery());
+
+        qBuilder = new QueryBuilder();
+        qBuilder.selectFrom('Domain__c');
+        qBuilder.addColumn('Id');
+        qBuilder.addColumns(new List<String> { 'Name', 'Server_Name__c' });
+        System.assertEquals('SELECT Id,Name,Server_Name__c FROM Domain__c', qBuilder.buildQuery());
+    }
+
+    @isTest
+    public static void queryBuilderShouldBuilidAdvancedFilter1() {
+        QueryBuilder qBuilder = new QueryBuilder('Domain__c');
+        qBuilder.addColumn('Id');
+        qBuilder.addColumns(new List<String> { 'Name', 'Server_Name__c' });
+        qBuilder.addAnd('Server_Name__c', 'Test1', QueryBuilder.QB_TEXT_TYPE);
+        System.assertEquals('SELECT Id,Name,Server_Name__c FROM Domain__c WHERE Server_Name__c = \'Test1\'', qBuilder.buildQuery());
+
+        qBuilder = new QueryBuilder();
+        qBuilder.selectFrom('Domain__c');
+        qBuilder.addColumn('Id');
+        qBuilder.addColumns(new List<String> { 'Name', 'Server_Name__c' });
+        qBuilder.addAnd('Server_Name__c', new List<String> { 'Test1', 'Test2'}, QueryBuilder.QB_TEXT_TYPE);
+        qBuilder.addAnd('Name', 'Test3', QueryBuilder.QB_TEXT_TYPE);
+        qBuilder.addLike('Simple__r.relation_string__c', 'my like');
+        System.assertEquals('SELECT Id,Name,Server_Name__c FROM Domain__c WHERE Server_Name__c IN (\'Test1\',\'Test2\') AND Name = \'Test3\' AND Simple__r.relation_string__c LIKE \'%my like%\'', qBuilder.buildQuery());
+    }
+
+    @isTest
+    public static void queryBuilderShouldBuilidAdvancedFilter2() {
+        QueryBuilder qBuilder = new QueryBuilder('Domain__c');
+        qBuilder.addColumn('Id');
+        qBuilder.addColumns(new List<String> { 'Name', 'Server_Name__c' });
+        qBuilder.addAnd('cpIsActive__c', 'false', QueryBuilder.QB_CHECKBOX_TYPE);
+        System.assertEquals('SELECT Id,Name,Server_Name__c FROM Domain__c WHERE cpIsActive__c = false', qBuilder.buildQuery());
+
+        qBuilder = new QueryBuilder();
+        qBuilder.selectFrom('Domain__c');
+        qBuilder.addColumn('Id');
+        qBuilder.addColumns(new List<String> { 'Name', 'Server_Name__c' });
+        qBuilder.addAnd('Server_Name__c', new List<String> { 'Test1', 'Test2'}, QueryBuilder.QB_TEXT_TYPE);
+        qBuilder.addAnd('cpIsActive__c', 'true', QueryBuilder.QB_CHECKBOX_TYPE);
+        System.assertEquals('SELECT Id,Name,Server_Name__c FROM Domain__c WHERE Server_Name__c IN (\'Test1\',\'Test2\') AND cpIsActive__c = true', qBuilder.buildQuery());
+
+        qBuilder = new QueryBuilder();
+        qBuilder.selectFrom('Domain__c');
+        qBuilder.addColumn('Id');
+        qBuilder.addColumns(new List<String> { 'Name', 'Server_Name__c' });
+        qBuilder.addAnd('cpIsActive__c', new List<String> { 'false', 'true'}, QueryBuilder.QB_CHECKBOX_TYPE);
+        qBuilder.addAnd('Server_Name__c', 'value1', QueryBuilder.QB_TEXT_TYPE);
+        System.assertEquals('SELECT Id,Name,Server_Name__c FROM Domain__c WHERE cpIsActive__c IN (false,true) AND Server_Name__c = \'value1\'', qBuilder.buildQuery());
+    }
+
+    @isTest
+    public static void queryBuilderShouldBuildOrderBy() {
+        QueryBuilder qBuilder = new QueryBuilder('Domain__c');
+        qBuilder.addColumn('Id');
+        qBuilder.addColumns(new List<String> { 'Name', 'Server_Name__c' });
+        qBuilder.orderBy('Name', QueryBuilder.QB_DESC);
+        System.assertEquals('SELECT Id,Name,Server_Name__c FROM Domain__c ORDER BY Name DESC', qBuilder.buildQuery());
+
+        qBuilder = new QueryBuilder('Domain__c');
+        qBuilder.addColumn('Id');
+        qBuilder.addColumns(new List<String> { 'Name', 'Server_Name__c' });
+        qBuilder.orderBy('Server_Name__c', QueryBuilder.QB_ASC, true);
+        qBuilder.orderBy('Name', QueryBuilder.QB_DESC);
+        System.assertEquals('SELECT Id,Name,Server_Name__c FROM Domain__c ORDER BY Server_Name__c ASC NULLS LAST,Name DESC', qBuilder.buildQuery());
+    }
+
+    @isTest
+    public static void queryBuilderShouldBuildGroupBy() {
+        QueryBuilder qBuilder = new QueryBuilder('Domain__c');
+        qBuilder.addColumn('Id');
+        qBuilder.addColumns(new List<String> { 'Name', 'Server_Name__c' });
+        qBuilder.groupBy('Name');
+        System.assertEquals('SELECT Id,Name,Server_Name__c FROM Domain__c GROUP BY Name', qBuilder.buildQuery());
+
+        qBuilder = new QueryBuilder('Domain__c');
+        qBuilder.addColumn('Id');
+        qBuilder.addColumns(new List<String> { 'Name', 'Server_Name__c' });
+        qBuilder.groupBy('Server_Name__c');
+        qBuilder.groupBy('Name');
+        System.assertEquals('SELECT Id,Name,Server_Name__c FROM Domain__c GROUP BY Server_Name__c,Name', qBuilder.buildQuery());
+    }
+
+    @isTest
+    public static void queryBuilderShouldBuildLimitAndOffset() {
+        QueryBuilder qBuilder = new QueryBuilder('Domain__c');
+        qBuilder.addColumn('Id');
+        qBuilder.addColumns(new List<String> { 'Name', 'Server_Name__c' });
+        qBuilder.setLimit(500);
+        System.assertEquals('SELECT Id,Name,Server_Name__c FROM Domain__c LIMIT 500', qBuilder.buildQuery());
+
+        qBuilder = new QueryBuilder('Domain__c');
+        qBuilder.addColumn('Id');
+        qBuilder.addColumns(new List<String> { 'Name', 'Server_Name__c' });
+        qBuilder.setLimit(250);
+        qBuilder.setOffset(500);
+        System.assertEquals('SELECT Id,Name,Server_Name__c FROM Domain__c LIMIT 250 OFFSET 500', qBuilder.buildQuery());
+    }
+
+    @isTest
+    public static void queryBuilderAllInOne() {
+        QueryBuilder qBuilder = new QueryBuilder('Domain__c');
+        qBuilder.addColumn('Id');
+        qBuilder.addColumns(new List<String> { 'Name', 'Server_Name__c' });
+        qBuilder.setLimit(50);
+        qBuilder.setOffset(1000);
+        qBuilder.orderBy('Server_Name__c', QueryBuilder.QB_ASC, true);
+        qBuilder.orderBy('Name', QueryBuilder.QB_DESC);
+        qBuilder.groupBy('Server_Name__c');
+        qBuilder.groupBy('Name');
+        qBuilder.addAnd('Server_Name__c', new List<String> { 'Test1', 'Test2'}, QueryBuilder.QB_TEXT_TYPE);
+        qBuilder.addAnd('Name', 'Test3', QueryBuilder.QB_TEXT_TYPE);
+        qBuilder.addLike('Simple__r.relation_string__c', 'my like');
+        System.assertEquals('SELECT Id,Name,Server_Name__c FROM Domain__c WHERE Server_Name__c IN (\'Test1\',\'Test2\') AND Name = \'Test3\' AND Simple__r.relation_string__c LIKE \'%my like%\' GROUP BY Server_Name__c,Name ORDER BY Server_Name__c ASC NULLS LAST,Name DESC LIMIT 50 OFFSET 1000', qBuilder.buildQuery());
+    }
+
     public class CustomResponseMock implements HttpCalloutMock {
 
         private String customUrl;
