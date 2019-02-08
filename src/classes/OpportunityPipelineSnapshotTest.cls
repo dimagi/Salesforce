@@ -19,7 +19,7 @@ public class OpportunityPipelineSnapshotTest {
     public static void testPipelineSnapshotCtrl() {
         Opportunity opp1 = [SELECT Id FROM Opportunity WHERE Name = 'Test Opportunity 1'];
         Opportunity opp2 = [SELECT Id FROM Opportunity WHERE Name = 'Test Opportunity 2'];
-         Account snapShotAccount = [SELECT Id FROM Account WHERE Name = 'Test Account'];
+        Account snapShotAccount = [SELECT Id FROM Account WHERE Name = 'Test Account'];
         Opportunity opp3 = new Opportunity(Name = 'Test Opportunity 3', StageName = 'Stage 5 - Submitted', Channel_Response__c = 'Inside Sales', Amount = 50000,
                                                 Expense_Income__c = 15000, Expected_Buffer__c = 50, Duration_months__c = 18, Country_Text__c = 'Sample text 1 test',
                                                 Product_Text__c = 'Product test 1', CloseDate = date.today().addMonths(5), Probability = 30, AccountId = snapShotAccount.Id);
@@ -60,21 +60,21 @@ public class OpportunityPipelineSnapshotTest {
 
         Test.startTest();
         OpportunityPipelineSnapshotController ctrl = new OpportunityPipelineSnapshotController();
-        ctrl.initOpportunityPipelineSnapshot();
+        ctrl.initPipelineSnapshot();
         System.assertEquals(4, ctrl.currentPSCount);
         System.assertEquals(testDate, ctrl.lastMonthSnapshotDate);
 
         List<Pipeline_Snapshot__c> testResult = ctrl.getSnpList();
         System.assertEquals(4, testResult.size());
-        System.assertEquals(4, ctrl.resultSize);
-        System.assertEquals(10, ctrl.pageSize);
-        System.assertEquals(1, ctrl.pageNumber);
-        System.assertEquals(false, ctrl.hasNext);
-        System.assertEquals(false, ctrl.hasPrevious);
-        ctrl.runOpportunityPipelineSnapshotBatchJob();
+        System.assertEquals(4, ctrl.pagination.resultSize);
+        System.assertEquals(10, ctrl.pagination.pageSize);
+        System.assertEquals(1, ctrl.pagination.pageNumber);
+        System.assertEquals(false, ctrl.pagination.hasNext);
+        System.assertEquals(false, ctrl.pagination.hasPrevious);
+        ctrl.runPipelineSnapshotJob();
         Test.stopTest();
         ctrl = new OpportunityPipelineSnapshotController();
-        ctrl.initOpportunityPipelineSnapshot();
+        ctrl.initPipelineSnapshot();
         System.assertEquals(4, ctrl.currentPSCount);
     }
 
