@@ -89,17 +89,17 @@ public class ContractSnapshotTest {
         Test.startTest();
         Database.executeBatch(new ContractPipelineSnapshotBatch(), 50);
         Test.stopTest();
-        System.assertEquals(11, [SELECT Id FROM Pipeline_Snapshot__c].size()); // +3 total, +1 Clsoed
+        System.assertEquals(8, [SELECT Id FROM Pipeline_Snapshot__c].size()); // 1 Clsoed
         System.assertEquals(0, [SELECT Id FROM Pipeline_Snapshot__c WHERE Id IN: new List<Id> { ps1.Id, ps2.Id, ps3.Id }].size());
         System.assertEquals(4, [SELECT Id FROM Pipeline_Snapshot__c WHERE Id IN: new List<Id> { ps4.Id, ps5.Id, ps6.Id, ps7.Id }].size());
 
         System.assertEquals(1, [SELECT Id FROM Pipeline_Snapshot__c WHERE Stage__c = 'Closed' AND Month_Date__c =: Date.today()].size());
-        System.assertEquals(3, [SELECT Id FROM Pipeline_Snapshot__c WHERE Stage__c = 'Total' AND Month_Date__c =: Date.today()].size());
+        System.assertEquals(0, [SELECT Id FROM Pipeline_Snapshot__c WHERE Stage__c = 'Total' AND Month_Date__c =: Date.today()].size());
         System.assertEquals(3, [SELECT Id FROM Pipeline_Snapshot__c WHERE Stage__c = 'Outstanding Contracted' AND Month_Date__c =: Date.today()].size());
 
         Pipeline_Snapshot__c test = [SELECT Id, Invoiced__c, Billing_Deficit__c, Billing_efficiency__c, Duration_months__c, GS_Net_Income_to_Date__c, Total_Calculated_Costs__c,
                                      Work_Completed__c, Contract_Total_Non_Expense_Income_Rmg__c, GS_Services_Completed__c, GS_Execution_Budget__c
-                                     FROM Pipeline_Snapshot__c WHERE Month_Date__c =: Date.today() AND Contract__c =: dcontract1.Id AND Stage__c = 'Total'];
+                                     FROM Pipeline_Snapshot__c WHERE Month_Date__c =: Date.today() AND Contract__c =: dcontract1.Id AND Stage__c = 'Outstanding Contracted'];
         System.assertEquals(71.43, test.Invoiced__c);
         System.assertEquals(428.57, test.Billing_Deficit__c);
         System.assertEquals(89.29, test.Billing_efficiency__c);
@@ -140,15 +140,15 @@ public class ContractSnapshotTest {
         Test.startTest();
         Database.executeBatch(new ContractPipelineSnapshotBatch(), 50);
         Test.stopTest();
-        System.assertEquals(11, [SELECT Id FROM Pipeline_Snapshot__c].size()); // +3 total, +1 Clsoed
+        System.assertEquals(8, [SELECT Id FROM Pipeline_Snapshot__c].size()); // +1 Clsoed
         System.assertEquals(0, [SELECT Id FROM Pipeline_Snapshot__c WHERE Id IN: new List<Id> { ps1.Id, ps2.Id, ps3.Id }].size());
         System.assertEquals(4, [SELECT Id FROM Pipeline_Snapshot__c WHERE Id IN: new List<Id> { ps4.Id, ps5.Id, ps6.Id, ps7.Id }].size());
 
         System.assertEquals(1, [SELECT Id FROM Pipeline_Snapshot__c WHERE Stage__c = 'Closed' AND Month_Date__c =: Date.today()].size());
-        System.assertEquals(3, [SELECT Id FROM Pipeline_Snapshot__c WHERE Stage__c = 'Total' AND Month_Date__c =: Date.today()].size());
+        System.assertEquals(0, [SELECT Id FROM Pipeline_Snapshot__c WHERE Stage__c = 'Total' AND Month_Date__c =: Date.today()].size());
         System.assertEquals(3, [SELECT Id FROM Pipeline_Snapshot__c WHERE Stage__c = 'Outstanding Contracted' AND Month_Date__c =: Date.today()].size());
         Pipeline_Snapshot__c test = [SELECT Id, Services_Spend_for_Period__c, Work_Completed_for_Period__c
-                                     FROM Pipeline_Snapshot__c WHERE Month_Date__c =: Date.today() AND Contract__c =: dcontract1.Id AND Stage__c = 'Outstanding Contracte'];
+                                     FROM Pipeline_Snapshot__c WHERE Month_Date__c =: Date.today() AND Contract__c =: dcontract1.Id AND Stage__c = 'Outstanding Contracted'];
         System.assertEquals(1999, test.Services_Spend_for_Period__c);
         System.assertEquals(30, test.Work_Completed_for_Period__c);
     }
@@ -191,7 +191,7 @@ public class ContractSnapshotTest {
         Test.stopTest();
         ctrl = new ContractPipelineSnapshotController();
         ctrl.initPipelineSnapshot();
-        System.assertEquals(7, ctrl.currentPSCount); // 3 + 3 total + 1 closed
+        System.assertEquals(4, ctrl.currentPSCount); // 3 + 1 closed
     }
 
     @isTest

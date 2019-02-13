@@ -2,6 +2,10 @@ public class ContractPipelineSnapshotBatch implements Database.Batchable<DContra
 
     private Date runDate;
     private Date monthStart;
+    private Integer addedClosed;
+    private Integer addedOutstanding;
+    private Integer errorsCounter;
+    private List<String> errorMessages = new List<String>();
 
     public ContractPipelineSnapshotBatch() {
         this(Date.today());
@@ -10,6 +14,10 @@ public class ContractPipelineSnapshotBatch implements Database.Batchable<DContra
     public ContractPipelineSnapshotBatch(Date runDate) {
         this.runDate = runDate;
         this.monthStart = this.runDate.toStartOfMonth();
+        this.addedClosed = 0;
+        this.addedOutstanding = 0;
+        this.errorsCounter = 0;
+        this.errorMessages = new List<String>();
     }
 
     public List<DContract__c> start(Database.BatchableContext BC) {
@@ -30,45 +38,29 @@ public class ContractPipelineSnapshotBatch implements Database.Batchable<DContra
 
     public void execute(Database.BatchableContext BC, List<DContract__c> scope) {
         List<Pipeline_Snapshot__c> newSnapshots = new List<Pipeline_Snapshot__c>();
+        List<Pipeline_Snapshot__c> newClosedSnapshots = new List<Pipeline_Snapshot__c>();
         for (DContract__c dContract : scope) {
             String nameSuffix = ' - ' + this.runDate.month() + '/' + this.runDate.year();
-            String nameSuffixTotal = nameSuffix + ' - Total';
             String namePrefix = dContract.Name;
-            String namePrefixTotal = dContract.Name;
 
             if (namePrefix != null && namePrefix.length() + nameSuffix.length() > 80) {
                 Integer charsToCut = namePrefix.length() - (namePrefix.length() + nameSuffix.length() - 80);
                 namePrefix = namePrefix.subString(0, charsToCut);
             }
 
-            if (namePrefixTotal != null && namePrefixTotal.length() + nameSuffixTotal.length() > 80) {
-                Integer charsToCut = namePrefixTotal.length() - (namePrefixTotal.length() + nameSuffixTotal.length() - 80);
-                namePrefixTotal = namePrefix.subString(0, charsToCut);
-            }
-
             if (dContract.Status__c == 'Active') {
                 Pipeline_Snapshot__c newPs = buildSnapshot(dContract, namePrefix + nameSuffix, this.runDate, 'Outstanding Contracted');
-                Pipeline_Snapshot__c newPsTotal = buildSnapshot(dContract, namePrefixTotal + nameSuffixTotal, this.runDate, 'Total');
 
                 // set custom outstanding fields
                 newPs.Invoiced__c = dContract.Invoiced__c;
                 newPs.Billing_efficiency__c = dContract.Billing_efficiency__c;
+                newPs.Contract_Expense_Income__c = dContract.Total_Direct_Costs_Expenses__c;
                 newPs.Amount__c = dContract.Total_Amount_REMAINING__c;
                 newPs.Amount_Minus_Expense_Income__c = dContract.Total_Non_Expense_Income_Remaining__c;
-                // set custom total fields
-                newPsTotal.Invoiced__c = dContract.Invoiced__c;
-                newPsTotal.Billing_efficiency__c = dContract.Billing_efficiency__c;
-                newPsTotal.Contract_Expense_Income__c = dContract.Total_Direct_Costs_Expenses__c;
-                newPsTotal.Amount__c = dContract.Total_Amount_REMAINING__c;
-                newPsTotal.Amount_Minus_Expense_Income__c = dContract.Total_Non_Expense_Income_Remaining__c;
-
 
                 newPs.recalculateFormulas();
-                newPsTotal.recalculateFormulas();
                 newPs = SnapshotHelper.calculateForPeriod(newPs, SnapshotHelper.getOldSnapshots(newPs, false));
-                newPsTotal = SnapshotHelper.calculateForPeriod(newPsTotal, SnapshotHelper.getOldSnapshots(newPsTotal, true));
                 newSnapshots.add(newPs);
-                newSnapshots.add(newPsTotal);
             }
 
             if (dContract.Date_of_Contract_Execution__c >= this.monthStart && dContract.Date_of_Contract_Execution__c <= this.runDate) {
@@ -83,20 +75,61 @@ public class ContractPipelineSnapshotBatch implements Database.Batchable<DContra
 
                 newPs.recalculateFormulas();
                 newPs = SnapshotHelper.calculateForPeriod(newPs, SnapshotHelper.getOldSnapshots(newPs, false));
-                newSnapshots.add(newPs);
+                newClosedSnapshots.add(newPs);
             }
         }
 
         if (newSnapshots.size() > 0) {
-            insert newSnapshots;
+            Database.SaveResult[] srList = Database.insert(newSnapshots, false);
+            handleErrorMessages(srList, true);
+        }
+        if (newClosedSnapshots.size() > 0) {
+            Database.SaveResult[] srList = Database.insert(newClosedSnapshots, false);
+            handleErrorMessages(srList, false);
         }
     }
 
     public void finish(Database.BatchableContext BC) {
         if (!Test.isRunningTest()) {
-            // TODO : email notification to users wit emails from settings !!!
-            EmailHelper.sendEmail(BatchDefaultSettings__c.getOrgDefaults().Error_Emails__c.split(','), 'Contract Pipeline Snapshots', 'Job finished : ' + Date.today() + ' created for : ' + this.runDate);
+            Pipeline_Snapshot_Settings__c psSettings = Pipeline_Snapshot_Settings__c.getOrgDefaults();
+            if (psSettings != null && String.isNotBlank(psSettings.Contract_PS_emails__c)) {
+                String emailBody = 'Monthly Contract Snapshot<br/><br/>';
+                emailBody += (this.addedOutstanding + ' records were inserted into the target object with status "Outstanding Contracted"<br/><br/>');
+                emailBody += (this.addedClosed + ' records were inserted into the target object with status "Closed"<br/><br/>');
+                emailBody += (this.errorsCounter + ' records failed to load into the target object<br/><br/>');
+                emailBody += ('The status of the reporting snapshot is: ' + (this.errorsCounter > 0 ? 'Failed' : 'Success') + '<br/><br/>');
+                emailBody += (this.errorMessages.size() > 0 ? 'Error Messages : <br/><br/>' : '');
+                for (String mess : this.errorMessages) {
+                    emailBody += (mess + '<br/>');
+                }
+                EmailHelper.sendEmail(psSettings.Contract_PS_emails__c.split(','),
+                                        'Reporting Snapshot: Monthly Contract Pipeline Snapshot Status : ' + (this.errorsCounter > 0 ? 'Failed' : 'Success'),
+                                        emailBody);
+            }
         }
+    }
+
+    private void handleErrorMessages(Database.SaveResult[] srList, Boolean forOutstanding) {
+        Integer createdRecords = 0;
+        Integer errorsInRecords = 0;
+
+        for (Database.SaveResult sr : srList) {
+            if (sr.isSuccess()) {
+                createdRecords++;
+            } else {
+                errorsInRecords++;
+                for(Database.Error err : sr.getErrors()) {
+                    this.errorMessages.add('Message: ' + err.getMessage());
+                }
+            }
+        }
+
+        if (forOutstanding == true) {
+            this.addedOutstanding += createdRecords;
+        } else {
+            this.addedClosed += createdRecords;
+        }
+        this.errorsCounter += errorsInRecords;
     }
 
     private Pipeline_Snapshot__c buildSnapshot(DContract__c dContract, String name, Date monthDate, String stageName) {
