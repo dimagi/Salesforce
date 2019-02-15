@@ -28,7 +28,7 @@ public class PROEmailContractFilterHelper {
         List<DContract__c> filteredContract = new List<DContract__c>();
 
         if (filterType == PROEmailContractFilterType.FirstNag) {
-            Date latestPRODueDate = GetLatestPRODueDate();
+            Date latestPRODueDate = getLatestPRODueDate();
             Date lastAllowedDate = latestPRODueDate.addDays(FirstNagDays);
 
             for (DContract__c contract: contracts) {
@@ -67,53 +67,31 @@ public class PROEmailContractFilterHelper {
      * Get latest PRO Due Date.
      * PRO is due every Second and fourth Thursday.
      */
-    public Date GetLatestPRODueDate() {
+    public Date getLatestPRODueDate() {
         Date latestPRODueDate = null;
         Date currentDate = Date.today();
 
         Integer currentMonth = currentDate.month();
         Integer currentYear = currentDate.year();
 
-        List<Date> currentMonthThursDayList=GetAllThursDayOfMonth(currentYear,currentMonth);
+        List<Date> currentMonthThursDayList = PROHelper.getAllThursDayOfMonth(currentYear, currentMonth);
 
         //Current Date is less then second Thursday of month, 
         //then used fourth Thursday of previous month.
-        if (currentDate<currentMonthThursDayList[1]) {
-             Date previousMonthDate=currentDate.addMonths(-1);
-             integer previousMonth=previousMonthDate.month();
-             integer previousYear=previousMonthDate.year();
+        if (currentDate < currentMonthThursDayList[1]) {
+             Date previousMonthDate = currentDate.addMonths(-1);
+             Integer previousMonth = previousMonthDate.month();
+             Integer previousYear = previousMonthDate.year();
              //Get previous Month Thursday.
-             List<Date> previousMonthThursDayList=GetAllThursDayOfMonth(previousYear,previousMonth);
-             
+             List<Date> previousMonthThursDayList = PROHelper.getAllThursDayOfMonth(previousYear, previousMonth);
              return previousMonthThursDayList[3];
         } else {
-            if (currentDate<currentMonthThursDayList[3]) {
-                latestPRODueDate=currentMonthThursDayList[1];
+            if (currentDate < currentMonthThursDayList[3]) {
+                latestPRODueDate = currentMonthThursDayList[1];
             } else {
-                latestPRODueDate=currentMonthThursDayList[3];
+                latestPRODueDate = currentMonthThursDayList[3];
             }
         }
         return latestPRODueDate;
-    }
-
-    /*
-        Get List of Thursday of current month.
-    */
-    private List<Date> GetAllThursDayOfMonth(integer year,integer month){
-        List<Date> thuDayDateList=new List<Date>();
-
-        Date startDate=date.newInstance(year,month, 1);
-        Date endDate=startDate.addMonths(1).addDays(-1);
-
-        do{
-            Datetime myDateTime = DateTime.newInstance(startDate, Time.newInstance(0, 0, 0, 0));
-            String dayOfWeek = myDateTime.format('E');
-            if(dayofWeek=='Thu'){
-                thuDayDateList.add(startDate);
-            }
-            startDate=startDate.AddDays(1);
-        } while (startDate<endDate);
-
-        return thuDayDateList;
     }
 }
