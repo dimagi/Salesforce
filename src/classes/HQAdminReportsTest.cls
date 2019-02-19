@@ -72,7 +72,8 @@ public class HQAdminReportsTest {
 
     @isTest
     public static void shouldLoadFacetList() {
-        FacetController fCtrl = new FacetController();
+        FacetController fCtrl = FacetController.buildFacetController('');
+        fCtrl.loadFacetValues();
 
         System.assertNotEquals(null, fCtrl.dataTypeMapping);
         System.assertEquals(2, fCtrl.getFacets().get(0).facets.get(0).values.size());
@@ -87,10 +88,8 @@ public class HQAdminReportsTest {
         System.assertEquals(2, fCtrl.getFacets().get(6).facets.get(1).values.size());
 
         System.assert(String.isNotBlank(fCtrl.getFacetJSON()));
-        fCtrl.setFacetJSON(null);
-        System.assert(String.isNotBlank(fCtrl.getFacetJSON()));
 
-        fCtrl.updateFacets();
+        fCtrl.loadFacetValues();
         System.assert(String.isNotBlank(fCtrl.getFacetJSON()));
 
         QueryBuilder qb = fCtrl.getQueryBuilder();
@@ -99,7 +98,8 @@ public class HQAdminReportsTest {
 
     @isTest
     public static void shouldSaveNewFilters() {
-        FacetController fCtrl = new FacetController();
+        FacetController fCtrl = FacetController.buildFacetController('');
+        fCtrl.loadFacetValues();
 
         System.assertNotEquals(null, fCtrl.dataTypeMapping);
         System.assert(String.isNotBlank(fCtrl.getCurrentFilteringJSON()));
@@ -121,10 +121,10 @@ public class HQAdminReportsTest {
 
     @isTest
     public static void shouldFilterFacets() {
-        FacetController fCtrl = new FacetController();
+        FacetController fCtrl = FacetController.buildFacetController('');
         fCtrl.setCurrentFilteringJSON('{"cpIsActive__c":["false"]}');
         System.assert(String.isNotBlank(fCtrl.getCurrentFilteringJSON()));
-        fCtrl.updateFacets();
+        fCtrl.loadFacetValues();
         List<FacetController.FacetGroup> facets = fCtrl.getFacets();
         System.assertEquals(1, fCtrl.getFacets().get(0).facets.get(0).values.size());
         System.assertEquals(1, fCtrl.getFacets().get(0).facets.get(1).values.size());
@@ -145,12 +145,86 @@ public class HQAdminReportsTest {
         List<Domain__c> ctrlResult = reportCtrl.getDomainTableData();
         System.assertEquals(10, ctrlResult.size());
 
-        reportCtrl.facetController.setCurrentFilteringJSON('{"cpIsActive__c":["false"]}');
+        reportCtrl.facetCtrl.setCurrentFilteringJSON('{"cpIsActive__c":["false"]}');
         reportCtrl.updateFacets();
-        reportCtrl.reloadGraphData();
         ctrlResult = reportCtrl.getDomainTableData();
         System.assertEquals(5, ctrlResult.size());
         validateTotalRow(reportCtrl, 25);
+    }
+
+    @isTest
+    public static void testPredefindedFiltersAllProjectSpaces() {
+        PageReference pageRef = Page.HQAdminReports;
+        pageRef.getParameters().put('report', 'allprojectSpaces');
+        Test.setCurrentPage(pageRef);
+
+        Test.startTest();
+        HQAdminReportsController reportCtrl = new HQAdminReportsController();
+        System.assertEquals('{"is_test__c":["false"]}', reportCtrl.facetCtrl.getCurrentFilteringJSON());
+        Test.stopTest();
+    }
+
+    @isTest
+    public static void testPredefindedFiltersUsingMessaging() {
+        PageReference pageRef = Page.HQAdminReports;
+        pageRef.getParameters().put('report', 'usingMessaging');
+        Test.setCurrentPage(pageRef);
+
+        Test.startTest();
+        HQAdminReportsController reportCtrl = new HQAdminReportsController();
+        System.assertEquals('{"Domain_cp_sms_ever__c":["true"],"is_test__c":["false"]}', reportCtrl.facetCtrl.getCurrentFilteringJSON());
+        Test.stopTest();
+    }
+
+    @isTest
+    public static void testPredefindedFiltersCommcareSupply() {
+        PageReference pageRef = Page.HQAdminReports;
+        pageRef.getParameters().put('report', 'commcareSupply');
+        Test.setCurrentPage(pageRef);
+
+        Test.startTest();
+        HQAdminReportsController reportCtrl = new HQAdminReportsController();
+        System.assertEquals('{"Internal_Properties__r.commtrack_domain__c":["true"],"is_test__c":["false"]}', reportCtrl.facetCtrl.getCurrentFilteringJSON());
+        Test.stopTest();
+    }
+
+    @isTest
+    public static void testFacetActionFunction() {
+        List<FacetController.FacetGroup> facetGroups = HQAdminReportsController.loadReportFacets('default', '{"cpIsActive__c":["false"]}', null);
+        System.assertEquals(7, facetGroups.size());
+        System.assertEquals(1, facetGroups.get(0).facets.get(0).values.size());
+        System.assertEquals(1, facetGroups.get(0).facets.get(1).values.size());
+        System.assertEquals(5, facetGroups.get(0).facets.get(2).values.size());
+    }
+
+    @isTest
+    public static void testGraphActionFunction() {
+        HQAdminReportsGraphHelper.HQAdminReportGraphContainer graphData = HQAdminReportsController.loadGraphData(1, null, null, 'daily', 'Domain_date_created_date_wrapper__c',
+                                                                                        '{"cpIsActive__c":["false"]}', null);
+        System.assertNotEquals(null, graphData);
+        System.assertEquals('daily', graphData.currentInterval);
+        System.assertEquals(0, graphData.totalToFromDate);
+        System.assertEquals(1, graphData.graphData.size());
+        System.assertEquals(5, graphData.graphData.get(0).y);
+        System.assertEquals(Date.today(), graphData.graphData.get(0).x);
+
+        graphData = HQAdminReportsController.loadGraphData(1, null, null, 'monthly', 'Domain_date_created_date_wrapper__c',
+                                                                                        '{"cpIsActive__c":["false"]}', null);
+        System.assertNotEquals(null, graphData);
+        System.assertEquals('monthly', graphData.currentInterval);
+        System.assertEquals(0, graphData.totalToFromDate);
+        System.assertEquals(1, graphData.graphData.size());
+        System.assertEquals(5, graphData.graphData.get(0).y);
+        System.assertEquals(Date.newInstance(Date.today().year(), Date.today().month(), 1), graphData.graphData.get(0).x);
+
+        graphData = HQAdminReportsController.loadGraphData(3, null, null, 'yearly', 'Domain_date_created_date_wrapper__c',
+                                                                                        '', null);
+        System.assertNotEquals(null, graphData);
+        System.assertEquals('yearly', graphData.currentInterval);
+        System.assertEquals(0, graphData.totalToFromDate);
+        System.assertEquals(1, graphData.graphData.size());
+        System.assertEquals(5, graphData.graphData.get(0).y);
+        System.assertEquals(Date.newInstance(Date.today().year(), 1, 1), graphData.graphData.get(0).x);
     }
 
     private static void validateTotalRow(HQAdminReportsController reportCtrl, Integer expValue) {
