@@ -5,61 +5,6 @@ public class FacetController {
     public Map<String, String> dataTypeMapping { get; set;}
     public String domainNameSearch { get; set; }
 
-    public FacetController() {
-        this.facets = new List<FacetGroup>(); // we generate filters for page, we hardcoded them to spped it up, we don't want fetch everything from database we have a lot things to calculate
-        this.currentFilters = new Map<String, List<String>>();
-        this.dataTypeMapping = new Map<String, String>();
-        // Activity
-        FacetGroup facetGroup = new FacetGroup('Activity');
-        facetGroup.addFacet(createFacet('Test Project', 'Text', 'is_test__c'));
-        facetGroup.addFacet(createFacet('Active', 'Checkbox', 'cpIsActive__c'));
-        facetGroup.addFacet(createFacet('Scale', 'Text', 'Internal_Properties__r.project_state__c'));
-        this.facets.add(facetGroup);
-        // Location
-        facetGroup = new FacetGroup('Location');
-        //facetGroup.addFacet(createFacet('Country', 'Text', 'Deployment_Countries__c'));
-        facetGroup.addFacet(createFacet('Region', 'Text', 'Deployment_region__c'));
-        facetGroup.addFacet(createFacet('City', 'Text', 'Deployment_city__c'));
-        facetGroup.addFacet(createFacet('Workshop Region', 'Text', 'Internal_Properties__r.workshop_region__c'));
-        this.facets.add(facetGroup);
-        // Type
-        facetGroup = new FacetGroup('Type');
-        facetGroup.addFacet(createFacet('Sector', 'Text', 'Internal_Properties__r.area__c'));
-        facetGroup.addFacet(createFacet('Sub-Sector', 'Text', 'Internal_Properties__r.sub_area__c'));
-        facetGroup.addFacet(createFacet('Phone Model', 'Text', 'Internal_Properties__r.phone_model__c'));
-        facetGroup.addFacet(createFacet('Project Manager', 'Text', 'Internal_Properties__r.project_manager__c'));
-        this.facets.add(facetGroup);
-        // Self Starters
-        facetGroup = new FacetGroup('Self Starters');
-        facetGroup.addFacet(createFacet('Self Started', 'Checkbox', 'Internal_Properties__r.self_started__c'));
-        facetGroup.addFacet(createFacet('Has App', 'Checkbox', 'cpHasApp__c'));
-        this.facets.add(facetGroup);
-        // Advanced Features
-        facetGroup = new FacetGroup('Advanced Features');
-        facetGroup.addFacet(createFacet('Case Sharing', 'Checkbox', 'case_sharing__c'));
-        facetGroup.addFacet(createFacet('ADM', 'Checkbox', 'Internal_Properties__r.using_adm__c'));
-        facetGroup.addFacet(createFacet('Call Center', 'Checkbox', 'Internal_Properties__r.using_call_center__c'));
-        facetGroup.addFacet(createFacet('CommCare Supply', 'Checkbox', 'Internal_Properties__r.commtrack_domain__c'));
-        facetGroup.addFacet(createFacet('Survey Management', 'Checkbox', 'survey_management_enabled__c'));
-        facetGroup.addFacet(createFacet('Used Messaging Ever', 'Checkbox', 'Domain_cp_sms_ever__c'));
-        facetGroup.addFacet(createFacet('Used Messaging Last 30 days', 'Checkbox', 'Domain_cp_sms_30_d__c'));
-        facetGroup.addFacet(createFacet('User \'scale\' backend', 'Checkbox', 'use_sql_backend__c'));
-        this.facets.add(facetGroup);
-        // Self Starters
-        facetGroup = new FacetGroup('Plans');
-        facetGroup.addFacet(createFacet('Project Type', 'Text', 'project_type__c'));
-        facetGroup.addFacet(createFacet('Customer Type', 'Text', 'customer_type__c'));
-        facetGroup.addFacet(createFacet('Initiative', 'Text', 'Internal_Properties__r.initiative__c'));
-        facetGroup.addFacet(createFacet('SMS Billable', 'Checkbox', 'is_sms_billable__c'));
-        this.facets.add(facetGroup);
-        // Self Starters
-        facetGroup = new FacetGroup('Eula');
-        facetGroup.addFacet(createFacet('Public Data', 'Checkbox', 'Internal_Properties__r.can_use_data__c'));
-        facetGroup.addFacet(createFacet('Custom Eula', 'Checkbox', 'Internal_Properties__r.custom_eula__c'));
-        this.facets.add(facetGroup);
-        loadFacetValues();
-    }
-
     public QueryBuilder getQueryBuilder() {
         QueryBuilder qb = new QueryBuilder('Domain__c');
         if (String.isNotBlank(this.domainNameSearch)) {
@@ -83,9 +28,38 @@ public class FacetController {
         }
     }
 
-    public PageREference updateFacets() {
-        loadFacetValues();
-        return null;
+    public void addCurrentFilters(String fieldName, List<String> values) {
+        for (String value : values) {
+            addCurrentFilter(fieldName, value);
+        }
+    }
+
+    public void addCurrentFilter(String fieldName, String value) {
+        if (this.currentFilters.containsKey(fieldName)) {
+            List<String> currentValues = this.currentFilters.get(fieldName);
+            if (!currentValues.contains(value)) {
+                currentValues.add(value);
+                this.currentFilters.put(fieldName, currentValues);
+            }
+        } else {
+            this.currentFilters.put(fieldName, new List<String> { value });
+        }
+    }
+
+    public void setCurrentFilteringJSON(String jsonData) {
+        this.currentFilters = (Map<String, List<String>>) JSON.deserialize(jsonData, Map<String, List<String>>.class);
+    }
+
+    public String getCurrentFilteringJSON() {
+        return JSON.serialize(this.currentFilters);
+    }
+
+    public String getFacetJSON() {
+        return JSON.serialize(this.facets);
+    }
+
+    public List<FacetGroup> getFacets() {
+        return this.facets;
     }
 
     private void reloadFacetValues(Facet facet, String dbQuery) {
@@ -112,30 +86,82 @@ public class FacetController {
         facet.values = result;
     }
 
-    private Facet createFacet(String name, String dataType, String fieldName) {
+    private static Facet createFacet(String name, String dataType, String fieldName, FacetController facetCtrl) {
         Facet facet = new Facet(name, dataType, fieldName);
-        this.dataTypeMapping.put(fieldName, dataType);
+        facetCtrl.dataTypeMapping.put(fieldName, dataType);
         return facet;
     }
 
-    public void setCurrentFilteringJSON(String jsonData) {
-        this.currentFilters = (Map<String, List<String>>) JSON.deserialize(jsonData, Map<String, List<String>>.class);
+    /**
+     * Factory methods.
+     */
+    private FacetController() {
+        this.facets = new List<FacetGroup>(); // we generate filters for page, we hardcoded them to spped it up, we don't want fetch everything from database we have a lot things to calculate
+        this.dataTypeMapping = new Map<String, String>();
+        this.currentFilters = new Map<String, List<String>>();
     }
 
-    public String getCurrentFilteringJSON() {
-        return JSON.serialize(this.currentFilters);
+    public static FacetController buildFacetControllerForMapView(String jsonFilters) {
+        // TODO end this factory method
+        return null;
     }
 
-    public void setFacetJSON(String jsonData) {
-        // we don't want update facets from UI
-    }
+    public static FacetController buildFacetController(String jsonFilters) {
+        FacetController fController = new FacetController();
+        if (String.isNotBlank(jsonFilters)) {
+            fController.setCurrentFilteringJSON(jsonFilters);
+        }
 
-    public String getFacetJSON() {
-        return JSON.serialize(this.facets);
-    }
+        // Activity
+        FacetGroup facetGroup = new FacetGroup('Activity');
+        facetGroup.addFacet(createFacet('Test Project', 'Text', 'is_test__c', fController));
+        facetGroup.addFacet(createFacet('Active', 'Checkbox', 'cpIsActive__c', fController));
+        facetGroup.addFacet(createFacet('Scale', 'Text', 'Internal_Properties__r.project_state__c', fController));
+        fController.getFacets().add(facetGroup);
+        // Location
+        facetGroup = new FacetGroup('Location');
+        //facetGroup.addFacet(createFacet('Country', 'Text', 'Deployment_Countries__c'));
+        facetGroup.addFacet(createFacet('Region', 'Text', 'Deployment_region__c', fController));
+        facetGroup.addFacet(createFacet('City', 'Text', 'Deployment_city__c', fController));
+        facetGroup.addFacet(createFacet('Workshop Region', 'Text', 'Internal_Properties__r.workshop_region__c', fController));
+        fController.getFacets().add(facetGroup);
+        // Type
+        facetGroup = new FacetGroup('Type');
+        facetGroup.addFacet(createFacet('Sector', 'Text', 'Internal_Properties__r.area__c', fController));
+        facetGroup.addFacet(createFacet('Sub-Sector', 'Text', 'Internal_Properties__r.sub_area__c', fController));
+        facetGroup.addFacet(createFacet('Phone Model', 'Text', 'Internal_Properties__r.phone_model__c', fController));
+        facetGroup.addFacet(createFacet('Project Manager', 'Text', 'Internal_Properties__r.project_manager__c', fController));
+        fController.getFacets().add(facetGroup);
+        // Self Starters
+        facetGroup = new FacetGroup('Self Starters');
+        facetGroup.addFacet(createFacet('Self Started', 'Checkbox', 'Internal_Properties__r.self_started__c', fController));
+        facetGroup.addFacet(createFacet('Has App', 'Checkbox', 'cpHasApp__c', fController));
+        fController.getFacets().add(facetGroup);
+        // Advanced Features
+        facetGroup = new FacetGroup('Advanced Features');
+        facetGroup.addFacet(createFacet('Case Sharing', 'Checkbox', 'case_sharing__c', fController));
+        facetGroup.addFacet(createFacet('ADM', 'Checkbox', 'Internal_Properties__r.using_adm__c', fController));
+        facetGroup.addFacet(createFacet('Call Center', 'Checkbox', 'Internal_Properties__r.using_call_center__c', fController));
+        facetGroup.addFacet(createFacet('CommCare Supply', 'Checkbox', 'Internal_Properties__r.commtrack_domain__c', fController));
+        facetGroup.addFacet(createFacet('Survey Management', 'Checkbox', 'survey_management_enabled__c', fController));
+        facetGroup.addFacet(createFacet('Used Messaging Ever', 'Checkbox', 'Domain_cp_sms_ever__c', fController));
+        facetGroup.addFacet(createFacet('Used Messaging Last 30 days', 'Checkbox', 'Domain_cp_sms_30_d__c', fController));
+        facetGroup.addFacet(createFacet('User \'scale\' backend', 'Checkbox', 'use_sql_backend__c', fController));
+        fController.getFacets().add(facetGroup);
+        // Self Starters
+        facetGroup = new FacetGroup('Plans');
+        facetGroup.addFacet(createFacet('Project Type', 'Text', 'project_type__c', fController));
+        facetGroup.addFacet(createFacet('Customer Type', 'Text', 'customer_type__c', fController));
+        facetGroup.addFacet(createFacet('Initiative', 'Text', 'Internal_Properties__r.initiative__c', fController));
+        facetGroup.addFacet(createFacet('SMS Billable', 'Checkbox', 'is_sms_billable__c', fController));
+        fController.getFacets().add(facetGroup);
+        // Self Starters
+        facetGroup = new FacetGroup('Eula');
+        facetGroup.addFacet(createFacet('Public Data', 'Checkbox', 'Internal_Properties__r.can_use_data__c', fController));
+        facetGroup.addFacet(createFacet('Custom Eula', 'Checkbox', 'Internal_Properties__r.custom_eula__c', fController));
+        fController.getFacets().add(facetGroup);
 
-    public List<FacetGroup> getFacets() {
-        return this.facets;
+        return fController;
     }
 
     /**
