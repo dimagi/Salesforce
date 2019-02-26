@@ -53,7 +53,7 @@ public class HQAdminReportsGraphHelper {
     public static HQAdminReportGraphDataContainer loadDomainGraph(FacetController facetCtrl, Date fromDate, Date toDate, String interval, String groupField) {
         HQAdminReportGraphDataContainer gData = new HQAdminReportGraphDataContainer(interval, 0);
         List<DateRange> dateRanges = new List<DateRange>();
-        if (interval == 'daily' && fromDate.monthsBetween(toDate) > 48) { // Aggregate result max 2000 records so we want take it in batches
+        if ((interval == 'daily' || interval == 'weekly') && fromDate.monthsBetween(toDate) > 48) { // Aggregate result max 2000 records so we want take it in batches
             Date tmpStart = fromDate;
             do {
                 dateRanges.add(new DateRange(tmpStart, tmpStart.addMonths(48)));
@@ -66,7 +66,7 @@ public class HQAdminReportsGraphHelper {
 
         List<HQAdminReportGraphPoint> values = new List<HQAdminReportGraphPoint>();
         for (DateRange dr : dateRanges) {
-            values.addAll(executeDomainQuery(facetCtrl.getQueryBuilder(), fromDate, toDate, interval, groupField));
+            values.addAll(executeDomainQuery(facetCtrl.getQueryBuilder(), dr.fromDate, dr.toDate, interval, groupField));
         }
 
         List<HQAdminReportGraphPoint> effectiveValues = values;
@@ -136,7 +136,7 @@ public class HQAdminReportsGraphHelper {
     }
 
     public static HQAdminReportGraphDataContainer loadSubscriptionData(QueryBuilder qb, Date fromDate, Date toDate, String interval) {
-        List<Id> selecteDomains = new List<Id>();
+        Set<Id> selecteDomains = new Set<Id>();
         qb.addColumn('Id');
         for (Domain__c domain : Database.query(qb.buildQuery())) {
             selecteDomains.add(domain.Id); // domains set for subscriptions
