@@ -29,39 +29,20 @@ public class HQAdminReportsController {
     private Boolean facetsWasUpadated;
 
     public HQAdminReportsController() {
-        this.supportedReportsList = new List<String> {'spaceList', 'allprojectSpaces', 'usingMessaging', 'commcareSupply'};
-        this.supportedReports = new Map<String, String> {'spaceList' => 'Project Space List',
-                                 'allprojectSpaces' => 'All Project Spaces',
-                                 'usingMessaging' => 'Project Spaces Using Messaging',
-                                 'commcareSupply' => 'CommCare Supply Project Spaces'};
+        this.supportedReportsList = HQAdminReportFactory.getSupportedReportsParamters();
+        this.supportedReports = HQAdminReportFactory.getSupportedReportsMap();
 
         Map<String, String> pageParams = ApexPages.currentPage().getParameters();
         this.reportName = pageParams.get('report');
         if (String.isBlank(this.reportName) || !supportedReports.containsKey(this.reportName)) {
             this.reportName = 'spaceList';
         }
-
-        this.graphMetaDataList = new List<HQAdminReportsGraphHelper.HQAdminGraphMetaData>();
-        this.facetCtrl = FacetController.buildFacetController('');
-        if (this.reportName  == 'allprojectSpaces') {
-            this.graphMetaDataList.add(HQAdminReportsGraphHelper.getGraphMetadata(2));
-            this.graphMetaDataList.add(HQAdminReportsGraphHelper.getGraphMetadata(3));
-            this.facetCtrl.addCurrentFilter('is_test__c', 'false');
-        } else if (this.reportName  == 'usingMessaging') {
-            this.graphMetaDataList.add(HQAdminReportsGraphHelper.getGraphMetadata(4));
-            this.facetCtrl.addCurrentFilter('is_test__c', 'false');
-            this.facetCtrl.addCurrentFilter('Domain_cp_sms_ever__c', 'true');
-        } else if (this.reportName  == 'commcareSupply') {
-            this.graphMetaDataList.add(HQAdminReportsGraphHelper.getGraphMetadata(5));
-            this.facetCtrl.addCurrentFilter('is_test__c', 'false');
-            this.facetCtrl.addCurrentFilter('Internal_Properties__r.commtrack_domain__c', 'true');
-        } else {
-            this.graphMetaDataList.add(HQAdminReportsGraphHelper.getGraphMetadata(1));
-        }
+        this.graphMetaDataList = HQAdminReportFactory.getGraphsMetadata(this.reportName);
+        this.facetCtrl = HQAdminReportFactory.getFacetController(this.reportName);
 
         this.tablePagination = new Pagination();
         this.sortDir = false;
-        this.sortField = 'Name';
+        this.sortField = null;
         this.totalRow = new Domain__c(Name = 'Total');
         this.facetsWasUpadated = true; // For first time opening we want calculate totals
         this.totalRowCount = 0;
@@ -70,7 +51,9 @@ public class HQAdminReportsController {
     public List<Domain__c> getDomainTableData() {
         QueryBuilder qb = this.facetCtrl.getQueryBuilder();
         qb.selectFrom('Domain__c').addColumns(HQAdminReportsController.reportColumns).setLimit(this.tablePagination.pageSize).setOffset(this.tablePagination.getOffsetValue());
-        qb.orderBy(this.sortField, (this.sortDir == false ? QueryBuilder.QB_ASC : QueryBuilder.QB_DESC), this.sortDir);
+        if (String.isNotBlank(this.sortField)) {
+            qb.orderBy(this.sortField, (this.sortDir == false ? QueryBuilder.QB_ASC : QueryBuilder.QB_DESC), this.sortDir);
+        }
         List<Domain__c> result = Database.query(qb.buildQuery());
 
         if (this.facetsWasUpadated) {
@@ -107,7 +90,7 @@ public class HQAdminReportsController {
     }
 
     @RemoteAction
-    public static HQAdminReportsGraphHelper.HQAdminReportGraphContainer loadGraphData(Integer graphId, String fromDate, String toDate, String interval,
+    public static HQAdminReportsGraphHelper.HQAdminReportGraphDataContainer loadGraphData(Integer graphId, String fromDate, String toDate, String interval,
                                                                                         String groupField, String currentFilters, String domainName) {
         Date parsedFrom = String.isNotBlank(fromDate) ? Date.parse(fromDate) : null;
         Date parsedTo = String.isNotBlank(toDate) ? Date.parse(toDate) : null;

@@ -208,6 +208,8 @@
                 tmpGraph = graphsMetadata[i];
                 if (initial === true) {
                     $j('#group-field-' + tmpGraph.graphId).val(tmpGraph.fieldMapping[0].fieldName);
+                    $j('#interval-' + tmpGraph.graphId).val(tmpGraph.defaultInterval);
+
                     if (tmpGraph.fieldMapping.length > 1) {
                         $j('#group-field-' + tmpGraph.graphId).show();
                         $j('#group-field-label-' + tmpGraph.graphId).show();
@@ -233,7 +235,7 @@
         }
 
         function loadGraph(graphMetadata) {
-            var fromDate, tmp, toDate, interval = 'daily', additionalField;
+            var fromDate, tmp, toDate, interval = 'weekly', additionalField;
             showLoader('#graph-loader-' + graphMetadata.graphId);
             fromDate = $j('#datepicker-from-' + graphMetadata.graphId).val();
             toDate = $j('#datepicker-to-' + graphMetadata.graphId).val();
@@ -258,13 +260,15 @@
         function addGraph(domainsData, graphMetadata) {
             nv.addGraph(function() {
                 var currentLabel, chart, reduceTicks, divElement = $j("[id$=domains-graph-" + graphMetadata.graphId);
-                reduceTicks = domainsData.graphData.length > 15;
+                reduceTicks = domainsData.graphData[0].values.length > 15;
                 chart =  nv.models.multiBarChart().height(350).reduceXTicks(reduceTicks);
                 chart.xAxis.axisLabel(graphMetadata.xLabel);
                 chart.xAxis.tickFormat(function(d) {
                         var result, dDate = new Date(d)
                         if (domainsData.currentInterval === 'daily') {
                             result = (monthNames[dDate.getMonth()] + ' ' + dDate.getDate() + ' ' + dDate.getFullYear());
+                        } else if (domainsData.currentInterval === 'weekly') {
+                            result = (monthNames[dDate.getMonth()] + ' ' + dDate.getDate() + ' -- ' + dDate.getFullYear());
                         } else if (domainsData.currentInterval === 'monthly') {
                             result = (monthNames[dDate.getMonth()] + ' ' + dDate.getFullYear());
                         } else {
@@ -279,14 +283,14 @@
 
                 divElement.empty();
                 divElement.append("<svg></svg>");
-                d3.select('#domains-graph-' + graphMetadata.graphId + ' svg').datum([{ key: "Domains", values: domainsData.graphData }])
+                d3.select('#domains-graph-' + graphMetadata.graphId + ' svg').datum(domainsData.graphData)
                     .transition().duration(500).call(chart);
                 nv.utils.windowResize(chart.update);
                 return chart;
             });
             nv.addGraph(function() {
                 var chart, divElement = $j("[id$=domains-graph-cumulative-" + graphMetadata.graphId), cumulativeDomainData;
-                cumulativeDomainData = generateCumulativeData(domainsData);
+                cumulativeDomainData = graphMetadata.cumulative === true ? generateCumulativeData(domainsData) : domainsData.graphData;
                 chart = nv.models.lineChart();
                 chart.xAxis.axisLabel(graphMetadata.xLabel);
                 chart.xAxis.tickFormat(function(d) {
@@ -308,7 +312,7 @@
 
                 divElement.empty();
                 divElement.append("<svg></svg>");
-                d3.select('#domains-graph-cumulative-' + graphMetadata.graphId + ' svg').datum([{ key: "Domains", values: cumulativeDomainData.result }])
+                d3.select('#domains-graph-cumulative-' + graphMetadata.graphId + ' svg').datum(cumulativeDomainData)
                     .transition().duration(500).call(chart);
                 nv.utils.windowResize(chart.update);
                 return chart;
@@ -316,12 +320,18 @@
         }
 
         function generateCumulativeData(jsonData) {
-            var i, helper = jsonData.totalToFromDate, result = [];
-            for (i = 0; i < jsonData.graphData.length; i++) {
-                helper += jsonData.graphData[i].y;
-                result.push({ x: new Date(jsonData.graphData[i].x).getTime(), y: helper });
+            var j, i, helper = 0, result = [], listHelper = [];
+            for (i = 0; i < jsonData.graphData.length; i++) { // keys
+                listHelper = [];
+                helper = 0;
+                for (j = 0; j < jsonData.graphData[i].values.length; j++) { // values
+                    helper += jsonData.graphData[i].values[j].y;
+                    listHelper.push({ x: new Date(jsonData.graphData[i].values[j].x).getTime(), y: helper });
+                }
+                result.push({ key: jsonData.graphData[i].key, values: listHelper});
             }
-            return { result: result };
+
+            return result;
         }
 
         function applyFilters() {
@@ -1080,7 +1090,8 @@
 
                                 <label for="interval-{!graphMeta.graphId}">Interval : </label>
                                 <select name="interval-{!graphMeta.graphId}" id="interval-{!graphMeta.graphId}">
-                                    <option value="daily" selected="selected">Daily</option>
+                                    <option value="daily">Daily</option>
+                                    <option value="weekly">Weekly</option>
                                     <option value="monthly" >Monthly</option>
                                     <option value="yearly" >Yearly</option>
                                 </select>
@@ -1101,7 +1112,7 @@
 
                                 <ul>
                                     <li><a href="#tabs-bar-{!graphMeta.graphId}">Bar Chart</a></li>
-                                    <li><a href="#tabs-line-{!graphMeta.graphId}">Cumulative Chart</a></li>
+                                    <li><a href="#tabs-line-{!graphMeta.graphId}">{!IF(graphMeta.cumulative == true, 'Cumulative Chart', 'Line Chart')}</a></li>
                                 </ul>
                                 <div id="tabs-bar-{!graphMeta.graphId}">
                                     <div id="domains-graph-{!graphMeta.graphId}" class="domains-graph">
