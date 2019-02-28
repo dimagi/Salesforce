@@ -985,12 +985,12 @@ public class FTETrackerTest {
     public static void csvParseControllerTest() {
         Integer fteYear = Date.today().year();
         integer fteMonth = Date.today().month();
-        String correctData = '\t\t\t\t\t\t\n\r '
-                           + 'FTE Contract 1 \t01/' + fteYear + '\t 02/' + fteYear + '\t 03/' + fteYear + '\t 04/' + fteYear + '\t 05/' + fteYear + '\t 06/' + fteYear + '\t 07/' + fteYear
-                           + '\t 08/' + fteYear + '\t 09/' + fteYear + '\t 10/' + fteYear + '\t 11/' + fteYear + '\t 12/' + fteYear + '\n\r'
-                           + 'Other Employee\t1\t2\t3\t4\t5\t6\t7\t8\t9\t10\t11\t12\n\r'
-                           + 'FTE Employee\t3\t4\t5\t6\t7\t8\t9\t10\t11\t12\t13\t14\n\r'
-                           + 'Yyy Employee\t12\t11\t10\t9\t8\t7\t6\t5\t4\t3\t2\t1\n\r';
+        String correctData = ',,,,,,\n\r '
+                           + 'FTE Contract 1 ,01/' + fteYear + ', 02/' + fteYear + ', 03/' + fteYear + ', 04/' + fteYear + ', 05/' + fteYear + ', 06/' + fteYear + ', 07/' + fteYear
+                           + ', 08/' + fteYear + ', 09/' + fteYear + ', 10/' + fteYear + ', 11/' + fteYear + ', 12/' + fteYear + '\n\r'
+                           + 'Other Employee,1,2,3,4,5,6,7,8,9,10,11,12\n\r'
+                           + 'FTE Employee,3,4,5,6,7,8,9,10,11,12,13,14\n\r'
+                           + 'Yyy Employee,12,11,10,9,8,7,6,5,4,3,2,1\n\r';
         FTECsvUploadController csvUpload = new FTECsvUploadController();
 
         Test.startTest();
@@ -1010,9 +1010,9 @@ public class FTETrackerTest {
     public static void shouldUploadAndMoveCSVDataSample1() {
         Integer fteYear = Date.today().year();
         integer fteMonth = Date.today().month();
-        String correctData = '\t\t\t\t\t\t\n\r '
-                           + 'FTE Contract 1 \t01/' + fteYear + '\t 02/' + fteYear + '\t 03/' + fteYear + '\t 04/' + fteYear + '\t 05/' + fteYear + '\t 06/' + fteYear + '\t 07/' + fteYear
-                           + '\t 08/' + fteYear + '\t 09/' + fteYear + '\t 10/' + fteYear + '\t 11/' + fteYear + '\t 12/' + fteYear + '\n\r'
+        String correctData = ',,,,,,\n\r '
+                           + 'FTE Contract 1 ,01/' + fteYear + ', 02/' + fteYear + ', 03/' + fteYear + ', 04/' + fteYear + ', 05/' + fteYear + ', 06/' + fteYear + ', 07/' + fteYear
+                           + ', 08/' + fteYear + ', 09/' + fteYear + ', 10/' + fteYear + ', 11/' + fteYear + ', 12/' + fteYear + '\n\r'
                            + buildDataRow('Other Employee', fteMonth, 5.0)
                            + buildDataRow('FTE Employee', fteMonth, 7.0)
                            + buildDataRow('Yyy Employee', fteMonth, 4.0);
@@ -1065,9 +1065,9 @@ public class FTETrackerTest {
     public static void shouldUploadAndMoveCSVDataSample2() {
         Integer fteYear = Date.today().year();
         integer fteMonth = Date.today().month();
-        String correctData = '\t\t\t\t\t\t\n\r '
-                           + 'FTE Contract 1 \t01/' + fteYear + '\t 02/' + fteYear + '\t 03/' + fteYear + '\t 04/' + fteYear + '\t 05/' + fteYear + '\t 06/' + fteYear + '\t 07/' + fteYear
-                           + '\t 08/' + fteYear + '\t 09/' + fteYear + '\t 10/' + fteYear + '\t 11/' + fteYear + '\t 12/' + fteYear + '\n\r'
+        String correctData = ',,,,,,\n\r '
+                           + 'FTE Contract 1 ,01/' + fteYear + ', 02/' + fteYear + ', 03/' + fteYear + ', 04/' + fteYear + ', 05/' + fteYear + ', 06/' + fteYear + ', 07/' + fteYear
+                           + ', 08/' + fteYear + ', 09/' + fteYear + ', 10/' + fteYear + ', 11/' + fteYear + ', 12/' + fteYear + '\n\r'
                            + buildDataRow('Other Employee', fteMonth, 1.0)
                            + buildDataRow('FTE Employee', fteMonth, 1.0)
                            + buildDataRow('Yyy Employee', fteMonth, 1.0);
@@ -1399,9 +1399,9 @@ public class FTETrackerTest {
         String hoursRow = '';
         for (Integer i = 1; i <= 12; i++) {
             if (i != month) {
-                hoursRow += '\t' + ' 0 ';
+                hoursRow += ',' + ' 0 ';
             } else {
-                hoursRow += '\t' + value;
+                hoursRow += ',' + value;
             }
         }
 
