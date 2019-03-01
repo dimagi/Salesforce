@@ -68,11 +68,48 @@ public class HQAdminReportsTest {
                             ));
         }
         insert newDomains;
+
+        Accounting_SoftwareProductRate__c productRate1 = new Accounting_SoftwareProductRate__c(is_active__c = true,  monthly_fee__c = 150, Server_Name__c = 'CommCare HQ');
+        Accounting_SoftwareProductRate__c productRate2 = new Accounting_SoftwareProductRate__c(is_active__c = true,  monthly_fee__c = 75, Server_Name__c = 'CommCare HQ');
+        Accounting_SoftwareProductRate__c productRate3 = new Accounting_SoftwareProductRate__c(is_active__c = true,  monthly_fee__c = 25, Server_Name__c = 'CommCare HQ');
+        insert new List<Accounting_SoftwareProductRate__c> { productRate1, productRate2, productRate3 };
+
+        Accounting_Softwareplan__c softwarePlan1 = new Accounting_Softwareplan__c(Name = 'softwarePlan1', edition__c = 'Community', Server_Name__c = 'CommCare HQ');
+        Accounting_Softwareplan__c softwarePlan2 = new Accounting_Softwareplan__c(Name = 'softwarePlan2', edition__c = 'Standard', Server_Name__c = 'CommCare HQ');
+        Accounting_Softwareplan__c softwarePlan3 = new Accounting_Softwareplan__c(Name = 'softwarePlan3', edition__c = 'Pro', Server_Name__c = 'CommCare HQ');
+        insert new List<Accounting_Softwareplan__c> { softwarePlan1, softwarePlan2, softwarePlan3 };
+
+        Accounting_SoftwarePlanVersion__c planVersion1 = new Accounting_SoftwarePlanVersion__c(is_active__c = true, Software_Product_Rate__c = productRate1.Id,
+                                                                                               Accounting_SoftwarePlan__c = softwarePlan1.Id, Server_Name__c = 'CommCare HQ');
+        Accounting_SoftwarePlanVersion__c planVersion2 = new Accounting_SoftwarePlanVersion__c(is_active__c = true, Software_Product_Rate__c = productRate2.Id,
+                                                                                               Accounting_SoftwarePlan__c = softwarePlan2.Id, Server_Name__c = 'CommCare HQ');
+        Accounting_SoftwarePlanVersion__c planVersion3 = new Accounting_SoftwarePlanVersion__c(is_active__c = true, Software_Product_Rate__c = productRate3.Id,
+                                                                                               Accounting_SoftwarePlan__c = softwarePlan3.Id, Server_Name__c = 'CommCare HQ');
+        insert new List<Accounting_SoftwarePlanVersion__c> { planVersion1, planVersion2, planVersion3 };
+
+        Integer currentYear = Date.today().year();
+        Accounting_Subscription__c subscription1 = new Accounting_Subscription__c(Created_By__c = 'Sample 1', date_start__c = Date.newInstance(currentYear, 1, 1), date_end__c = Date.newInstance(currentYear, 3 ,15), is_active__c = true,
+                                                          Accounting_subscriber_domain__c = newDomains.get(0).Id, plan_version__c = planVersion1.Id, Server_Name__c = 'CommCare HQ',
+                                                          is_trial__c = false, service_type__c = 'Self_service', is_hidden_to_ops__c = false);
+        Accounting_Subscription__c subscription2 = new Accounting_Subscription__c(Created_By__c = 'Sample 2', date_start__c = Date.newInstance(currentYear, 1, 15), date_end__c = Date.newInstance(currentYear, 2 ,15), is_active__c = true,
+                                                          Accounting_subscriber_domain__c = newDomains.get(1).Id, plan_version__c = planVersion2.Id, Server_Name__c = 'CommCare HQ',
+                                                          is_trial__c = false, service_type__c = 'Product', is_hidden_to_ops__c = false);
+        Accounting_Subscription__c subscription3 = new Accounting_Subscription__c(Created_By__c = 'Sample 3', date_start__c = Date.newInstance(currentYear, 1, 1), date_end__c = Date.newInstance(currentYear, 1 ,31), is_active__c = true,
+                                                          Accounting_subscriber_domain__c = newDomains.get(2).Id, plan_version__c = planVersion3.Id, Server_Name__c = 'CommCare HQ',
+                                                          is_trial__c = false, service_type__c = 'Self_service', is_hidden_to_ops__c = false);
+        Accounting_Subscription__c subscription4 = new Accounting_Subscription__c(Created_By__c = 'Sample 4', date_start__c = Date.newInstance(currentYear, 2, 1), date_end__c = Date.newInstance(currentYear, 2 ,25), is_active__c = true,
+                                                          Accounting_subscriber_domain__c = newDomains.get(3).Id, plan_version__c = planVersion1.Id, Server_Name__c = 'CommCare HQ',
+                                                          is_trial__c = false, service_type__c = 'Self_service', is_hidden_to_ops__c = false);
+        Accounting_Subscription__c subscription5 = new Accounting_Subscription__c(Created_By__c = 'Sample 5', date_start__c = Date.newInstance(currentYear, 2, 1), date_end__c = Date.newInstance(currentYear, 3 ,31), is_active__c = true,
+                                                          Accounting_subscriber_domain__c = newDomains.get(4).Id, plan_version__c = planVersion2.Id, Server_Name__c = 'CommCare HQ',
+                                                          is_trial__c = false, service_type__c = 'Product', is_hidden_to_ops__c = false);
+        insert new List<Accounting_Subscription__c> { subscription1, subscription2, subscription3, subscription4, subscription5 };
     }
 
     @isTest
     public static void shouldLoadFacetList() {
-        FacetController fCtrl = new FacetController();
+        FacetController fCtrl = FacetController.buildFacetController('');
+        fCtrl.loadFacetValues();
 
         System.assertNotEquals(null, fCtrl.dataTypeMapping);
         System.assertEquals(2, fCtrl.getFacets().get(0).facets.get(0).values.size());
@@ -87,10 +124,8 @@ public class HQAdminReportsTest {
         System.assertEquals(2, fCtrl.getFacets().get(6).facets.get(1).values.size());
 
         System.assert(String.isNotBlank(fCtrl.getFacetJSON()));
-        fCtrl.setFacetJSON(null);
-        System.assert(String.isNotBlank(fCtrl.getFacetJSON()));
 
-        fCtrl.updateFacets();
+        fCtrl.loadFacetValues();
         System.assert(String.isNotBlank(fCtrl.getFacetJSON()));
 
         QueryBuilder qb = fCtrl.getQueryBuilder();
@@ -99,7 +134,8 @@ public class HQAdminReportsTest {
 
     @isTest
     public static void shouldSaveNewFilters() {
-        FacetController fCtrl = new FacetController();
+        FacetController fCtrl = FacetController.buildFacetController('');
+        fCtrl.loadFacetValues();
 
         System.assertNotEquals(null, fCtrl.dataTypeMapping);
         System.assert(String.isNotBlank(fCtrl.getCurrentFilteringJSON()));
@@ -121,10 +157,10 @@ public class HQAdminReportsTest {
 
     @isTest
     public static void shouldFilterFacets() {
-        FacetController fCtrl = new FacetController();
+        FacetController fCtrl = FacetController.buildFacetController('');
         fCtrl.setCurrentFilteringJSON('{"cpIsActive__c":["false"]}');
         System.assert(String.isNotBlank(fCtrl.getCurrentFilteringJSON()));
-        fCtrl.updateFacets();
+        fCtrl.loadFacetValues();
         List<FacetController.FacetGroup> facets = fCtrl.getFacets();
         System.assertEquals(1, fCtrl.getFacets().get(0).facets.get(0).values.size());
         System.assertEquals(1, fCtrl.getFacets().get(0).facets.get(1).values.size());
@@ -145,12 +181,119 @@ public class HQAdminReportsTest {
         List<Domain__c> ctrlResult = reportCtrl.getDomainTableData();
         System.assertEquals(10, ctrlResult.size());
 
-        reportCtrl.facetController.setCurrentFilteringJSON('{"cpIsActive__c":["false"]}');
+        reportCtrl.facetCtrl.setCurrentFilteringJSON('{"cpIsActive__c":["false"]}');
         reportCtrl.updateFacets();
-        reportCtrl.reloadGraphData();
         ctrlResult = reportCtrl.getDomainTableData();
         System.assertEquals(5, ctrlResult.size());
         validateTotalRow(reportCtrl, 25);
+    }
+
+    @isTest
+    public static void testPredefindedFiltersAllProjectSpaces() {
+        PageReference pageRef = Page.HQAdminReports;
+        pageRef.getParameters().put('report', 'allprojectSpaces');
+        Test.setCurrentPage(pageRef);
+
+        Test.startTest();
+        HQAdminReportsController reportCtrl = new HQAdminReportsController();
+        System.assertEquals('{"is_test__c":["false"]}', reportCtrl.facetCtrl.getCurrentFilteringJSON());
+        Test.stopTest();
+    }
+
+    @isTest
+    public static void testPredefindedFiltersUsingMessaging() {
+        PageReference pageRef = Page.HQAdminReports;
+        pageRef.getParameters().put('report', 'usingMessaging');
+        Test.setCurrentPage(pageRef);
+
+        Test.startTest();
+        HQAdminReportsController reportCtrl = new HQAdminReportsController();
+        System.assertEquals('{"Domain_cp_sms_ever__c":["true"],"is_test__c":["false"]}', reportCtrl.facetCtrl.getCurrentFilteringJSON());
+        Test.stopTest();
+    }
+
+    @isTest
+    public static void testPredefindedFiltersCommcareSupply() {
+        PageReference pageRef = Page.HQAdminReports;
+        pageRef.getParameters().put('report', 'commcareSupply');
+        Test.setCurrentPage(pageRef);
+
+        Test.startTest();
+        HQAdminReportsController reportCtrl = new HQAdminReportsController();
+        System.assertEquals('{"Internal_Properties__r.commtrack_domain__c":["true"],"is_test__c":["false"]}', reportCtrl.facetCtrl.getCurrentFilteringJSON());
+        Test.stopTest();
+    }
+
+    @isTest
+    public static void testFacetActionFunction() {
+        List<FacetController.FacetGroup> facetGroups = HQAdminReportsController.loadReportFacets('default', '{"cpIsActive__c":["false"]}', null);
+        System.assertEquals(7, facetGroups.size());
+        System.assertEquals(1, facetGroups.get(0).facets.get(0).values.size());
+        System.assertEquals(1, facetGroups.get(0).facets.get(1).values.size());
+        System.assertEquals(5, facetGroups.get(0).facets.get(2).values.size());
+    }
+
+    @isTest
+    public static void testGraphActionFunction() {
+        HQAdminReportsGraphHelper.HQAdminReportGraphDataContainer graphData = HQAdminReportsController.loadGraphData(1, null, null, 'daily', 'Domain_date_created_date_wrapper__c',
+                                                                                        '{"cpIsActive__c":["false"]}', null);
+        System.assertNotEquals(null, graphData);
+        System.assertEquals('daily', graphData.currentInterval);
+        System.assertEquals(0, graphData.totalToFromDate);
+        System.assertEquals(1, graphData.graphData.get(0).values.size());
+        System.assertEquals(5, graphData.graphData.get(0).values.get(0).y);
+        System.assertEquals(Date.today(), graphData.graphData.get(0).values.get(0).x);
+
+        graphData = HQAdminReportsController.loadGraphData(1, null, null, 'monthly', 'Domain_date_created_date_wrapper__c',
+                                                                                        '{"cpIsActive__c":["false"]}', null);
+        System.assertNotEquals(null, graphData);
+        System.assertEquals('monthly', graphData.currentInterval);
+        System.assertEquals(0, graphData.totalToFromDate);
+        System.assertEquals(1, graphData.graphData.get(0).values.size());
+        System.assertEquals(5, graphData.graphData.get(0).values.get(0).y);
+        System.assertEquals(Date.newInstance(Date.today().year(), Date.today().month(), 1), graphData.graphData.get(0).values.get(0).x);
+
+        graphData = HQAdminReportsController.loadGraphData(3, null, null, 'yearly', 'Domain_date_created_date_wrapper__c',
+                                                                                        '', null);
+        System.assertNotEquals(null, graphData);
+        System.assertEquals('yearly', graphData.currentInterval);
+        System.assertEquals(0, graphData.totalToFromDate);
+        System.assertEquals(1, graphData.graphData.get(0).values.size());
+        System.assertEquals(5, graphData.graphData.get(0).values.get(0).y);
+        System.assertEquals(Date.newInstance(Date.today().year(), 1, 1), graphData.graphData.get(0).values.get(0).x);
+    }
+
+    @isTest
+    public static void testGraphActionFunctionForSubscriptions() {
+        Integer currentYear = Date.today().year();
+        HQAdminReportsGraphHelper.HQAdminReportGraphDataContainer graphData = HQAdminReportsController.loadGraphData(6,
+                                            '01/01/' + currentYear, '03/31/' + currentYear, 'monthly', '', '', null);
+        System.assertNotEquals(null, graphData);
+        System.assertEquals('monthly', graphData.currentInterval);
+        System.assertEquals(3, graphData.graphData.get(0).values.size());
+        System.assertEquals(1, graphData.graphData.get(0).values.get(0).y);
+        System.assertEquals(1, graphData.graphData.get(1).values.get(0).y);
+        System.assertEquals(1, graphData.graphData.get(2).values.get(0).y);
+        System.assertEquals(Date.newInstance(currentYear, 1, 1), graphData.graphData.get(0).values.get(0).x);
+        System.assertEquals(Date.newInstance(currentYear, 2, 1), graphData.graphData.get(1).values.get(1).x);
+        System.assertEquals(Date.newInstance(currentYear, 3, 1), graphData.graphData.get(2).values.get(2).x);
+
+        graphData = HQAdminReportsController.loadGraphData(6,'01/01/' + currentYear, '03/31/' + currentYear, 'yearly', '', '', null);
+        System.assertNotEquals(null, graphData);
+        System.assertEquals('yearly', graphData.currentInterval);
+        System.assertEquals(1, graphData.graphData.get(0).values.size());
+        Map<String, Integer> expectedResultMap = new Map<String, Integer> { 'Community' => 2, 'Pro' => 1,'Standard' => 2};
+        System.assertEquals(expectedResultMap.get(graphData.graphData.get(0).key), graphData.graphData.get(0).values.get(0).y);
+        System.assertEquals(expectedResultMap.get(graphData.graphData.get(1).key), graphData.graphData.get(1).values.get(0).y);
+        System.assertEquals(expectedResultMap.get(graphData.graphData.get(2).key), graphData.graphData.get(2).values.get(0).y);
+        System.assertEquals(Date.newInstance(currentYear, 1, 1), graphData.graphData.get(0).values.get(0).x);
+        System.assertEquals(Date.newInstance(currentYear, 1, 1), graphData.graphData.get(1).values.get(0).x);
+        System.assertEquals(Date.newInstance(currentYear, 1, 1), graphData.graphData.get(2).values.get(0).x);
+
+        graphData = HQAdminReportsController.loadGraphData(6, '01/01/' + currentYear, '03/31/' + currentYear, 'daily', '', '', null);
+        System.assertNotEquals(null, graphData);
+        System.assertEquals('daily', graphData.currentInterval);
+        System.assertEquals(Date.isLeapYear(currentYear) ? 91 : 90, graphData.graphData.get(0).values.size());
     }
 
     private static void validateTotalRow(HQAdminReportsController reportCtrl, Integer expValue) {

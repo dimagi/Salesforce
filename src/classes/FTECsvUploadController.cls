@@ -3,7 +3,7 @@
  */
 public class FTECsvUploadController extends FTEController {
 
-    public static final String COLUMN_SEPARATOR = '\t';
+    public static final String COLUMN_SEPARATOR = ',';
 
     public Blob fileContent { get; set;}
     public String fileName { get; set;}
@@ -95,11 +95,7 @@ public class FTECsvUploadController extends FTEController {
         // Remove empty rows to load contract name, 
         lineNum += removeEmptyRows(fileRows);
 
-        if (fileRows.size() == 0) {
-            ApexPages.addMessage(new ApexPages.message(ApexPages.severity.ERROR, 'File is empty.'));
-            return null;
-        } else if (fileRows.size() == 1) {
-            ApexPages.addMessage(new ApexPages.message(ApexPages.severity.ERROR, 'File contains only one row, no data.'));
+        if (!validateFileData(fileRows)) {
             return null;
         }
 
@@ -110,13 +106,15 @@ public class FTECsvUploadController extends FTEController {
         // Validate headers
         String headers = fileRows.get(0);
         fileRows.remove(0);
-        Integer month = 1;
         Integer year = -1;
+
         Boolean contractNameLoaded = false;
-        List<String> columnHeders = headers.split(COLUMN_SEPARATOR);
+        List<String> columnHeders = splitLine(headers);
         Pattern csvPattern = Pattern.compile('([1-9]{1}|[0]{1}[1-9]{1}|[1]{1}[0-2]{1})/[2-9]{1}[0-9]{3}');
+        List<Integer> monthMapping = new List<Integer>();
+
         for (String cellValue : columnHeders) {
-            String strHelper = cellValue.replaceAll('"','').trim();
+            String strHelper = parseCell(cellValue);
             if (String.isBlank(strHelper)) {
                 columnsToSkip++;
             } else {
@@ -129,11 +127,11 @@ public class FTECsvUploadController extends FTEController {
                             year = csvYear;
                         }
 
-                        if (year != csvYear || month != csvMonth || month > 12) {
-                            ApexPages.addMessage(new ApexPages.message(ApexPages.severity.ERROR, 'Line ' + lineNum + ' : ' + 'wrong date order - ' + strHelper));
+                        if (!validateColumnHeaderData(year, csvYear, csvMonth, lineNum, strHelper, monthMapping)) {
                             return null;
                         }
-                        month++;
+                        monthMapping.add(csvMonth);
+
                     } else {
                         ApexPages.addMessage(new ApexPages.message(ApexPages.severity.ERROR, 'Line ' + lineNum + ' : ' + 'wrong date month/year format - ' + strHelper));
                         return null;
@@ -145,11 +143,8 @@ public class FTECsvUploadController extends FTEController {
             }
         }
 
-        List<DContract__c> contracts = [SELECT Id, Name FROM DContract__c WHERE Name =: contractName];
-        if (contracts.size() > 0) {
-            fteContract = contracts.get(0);
-        } else {
-            ApexPages.addMessage(new ApexPages.message(ApexPages.severity.ERROR, 'Cannot find contract with name - ' + contractName));
+        fteContract = getContract(contractName);
+        if (fteContract == null) {
             return null;
         }
 
@@ -157,52 +152,108 @@ public class FTECsvUploadController extends FTEController {
         List<FTE_Data_Record__c> records = new List<FTE_Data_Record__c>();
         loadEmployeeMap();
 
+        Boolean wasData = false;
         for (String line : fileRows) {
             lineNum++;
-            List<String> dataCell = line.replaceAll('"', '').split(COLUMN_SEPARATOR);
+            List<String> dataCell = splitLine(line);
 
-            String employeeName = dataCell.get(columnsToSkip).replaceAll('"','').trim();
-            if (!this.employeeMap.containsKey(employeeName)) {
-                ApexPages.addMessage(new ApexPages.message(ApexPages.severity.ERROR, 'Line ' + lineNum + ' : ' + 'cannot find employee with name - ' + employeeName));
+            String employeeName =  parseCell(dataCell.get(columnsToSkip));
+            if (!validateEmployee(employeeName, lineNum)) {
                 return null;
             }
-            if (this.employeeNameSet.contains(employeeName)) {
-                ApexPages.addMessage(new ApexPages.message(ApexPages.severity.ERROR, 'Line ' + lineNum + ' : ' + 'duplicated employee name - ' + employeeName));
-                return null;
-            }
-            this.employeeNameSet.add(employeeName);
 
-            SObject sObj = new FTE_Data_Record__c();
-            for (Integer i = 1 + columnsToSkip; i < 13 + columnsToSkip; i++) {
+            SObject sObj = new FTE_Data_Record__c(Month_1__c = -1, Month_2__c = -1, Month_3__c = -1, Month_4__c = -1, Month_5__c = -1, Month_6__c = -1,
+                                                  Month_7__c = -1,Month_8__c = -1, Month_9__c = -1, Month_10__c = -1, Month_11__c = -1, Month_12__c = -1,
+                                                  Year__c = year, Contract__c = fteContract.Id, Employee__c = this.employeeMap.get(employeeName).Id, Line_Number__c = lineNum,
+                                                  Message__c = contractName + ' ' + employeeName + ' : ' + lineNum);
+
+            for (Integer i = (1 + columnsToSkip); i < monthMapping.size() + 1 + columnsToSkip; i++) {
                 String strHelper = '';
                 if (dataCell.size() > i) {
-                    strHelper = dataCell.get(i).trim();
+                    strHelper = parseCell(dataCell.get(i));
                 }
 
+                Integer index = monthMapping.get(i - 1 - columnsToSkip);
                 if (strHelper.isNumeric() || csvPattern.matcher(strHelper).matches()) {
-                    sObj.put('Month_' + (i - columnsToSkip) + '__c', Decimal.valueOf(strHelper));
+                    sObj.put('Month_' + index + '__c', Decimal.valueOf(strHelper));
+                    wasData = true;
                 } else if (String.isBlank(strHelper)) {
-                    sObj.put('Month_' + (i - columnsToSkip) + '__c',-1);
+                    sObj.put('Month_' + index + '__c',-1);
                 } else {
                     ApexPages.addMessage(new ApexPages.message(ApexPages.severity.ERROR, 'Line ' + lineNum + ' : ' + 'bad number format - ' + strHelper));
                     return null;
                 }
             }
-            FTE_Data_Record__c rec = (FTE_Data_Record__c) sObj;
-            rec.Year__c = year;
-            rec.Contract__c = fteContract.Id;
-            rec.Employee__c = this.employeeMap.get(employeeName).Id;
-            rec.Line_Number__c = lineNum; // we want order data in same way as it is in csv file
-            rec.Message__c = contractName + ' ' + employeeName + ' : ' + lineNum;
-            records.add(rec);
+            records.add((FTE_Data_Record__c) sObj);
         }
 
-        if (records.size() > 0) {
+        if (wasData == true && records.size() > 0) {
             insert records;
+        } else {
+            ApexPages.addMessage(new ApexPages.message(ApexPages.severity.ERROR, 'Uploaded file does not contain data'));
+            return null;
         }
 
         ApexPages.addMessage(new ApexPages.message(ApexPages.severity.INFO, 'CSV file ' + fileName + ' was parsed.'));
         return null;
+    }
+
+    private String parseCell(String cellValue) {
+        String tmpCellValue = cellValue.trim();
+        return tmpCellValue.startsWith('"') && tmpCellValue.endsWith('"') ? tmpCellValue.substring(1, tmpCellValue.length() - 1).trim() : tmpCellValue;
+    }
+
+    private DContract__c getContract(String contractName) {
+        List<DContract__c> contracts = [SELECT Id, Name FROM DContract__c WHERE Name =: contractName];
+        if (contracts.size() > 0) {
+            return contracts.get(0);
+        }
+        ApexPages.addMessage(new ApexPages.message(ApexPages.severity.ERROR, 'Cannot find contract with name - ' + contractName));
+        return null;
+    }
+
+    private List<String> splitLine(String fileRow) {
+        return fileRow.split(COLUMN_SEPARATOR);
+    }
+
+    private Boolean validateFileData(List<String> fileRows) {
+        if (fileRows.size() == 0) {
+            ApexPages.addMessage(new ApexPages.message(ApexPages.severity.ERROR, 'File is empty.'));
+            return false;
+        } else if (fileRows.size() == 1) {
+            ApexPages.addMessage(new ApexPages.message(ApexPages.severity.ERROR, 'File contains only one row, no data.'));
+            return false;
+        }
+        return true;
+    }
+
+    private Boolean validateEmployee(String employeeName, Integer lineNum) {
+        if (!this.employeeMap.containsKey(employeeName)) {
+            ApexPages.addMessage(new ApexPages.message(ApexPages.severity.ERROR, 'Line ' + lineNum + ' : ' + 'cannot find employee with name - ' + employeeName));
+            return false;
+        }
+        if (this.employeeNameSet.contains(employeeName)) {
+            ApexPages.addMessage(new ApexPages.message(ApexPages.severity.ERROR, 'Line ' + lineNum + ' : ' + 'duplicated employee name - ' + employeeName));
+            return false;
+        }
+        this.employeeNameSet.add(employeeName);
+        return true;
+    }
+
+    private Boolean validateColumnHeaderData(Integer year, Integer csvYear, Integer csvMonth, Integer lineNum, String strHelper, List<Integer> loadedMonths) {
+        if (year != csvYear) {
+            ApexPages.addMessage(new ApexPages.message(ApexPages.severity.ERROR, 'Line ' + lineNum + ' : ' + 'csv file can contain data only for one year - ' + strHelper));
+            return false;
+        }
+        if (csvMonth > 12) {
+            ApexPages.addMessage(new ApexPages.message(ApexPages.severity.ERROR, 'Line ' + lineNum + ' : ' + 'month can not be more than 12  - ' + csvMonth));
+            return false;
+        }
+        if (loadedMonths.contains(csvMonth)) {
+            ApexPages.addMessage(new ApexPages.message(ApexPages.severity.ERROR, 'Line ' + lineNum + ' : ' + 'duplicated month - ' + strHelper));
+            return false;
+        }
+        return true;
     }
 
     private void loadEmployeeMap() {

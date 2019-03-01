@@ -1,0 +1,487 @@
+<apex:page controller="HQAdminReportsProjectMapController" sidebar="false" docType="html-5.0">
+
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css"/>
+    <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.4.0/dist/leaflet.css"
+          integrity="sha512-puBpdR0798OZvTTbP4A8Ix/l+A4dHDD0DGqYW6RQ+9jxkRFclaxxQb/SJAWZfWAkuyeQUytO7+7N4QKrDh+drA=="
+          crossorigin="anonymous"/>
+    <script src="https://unpkg.com/leaflet@1.4.0/dist/leaflet.js"
+            integrity="sha512-QVftwZFqvtRNi0ZyCtsznlKSWOStnDORoefr1enyq5mVL4tmKB3S/EnC3rRJcxCPavG10IcrVGSmPh6Qw5lwrg=="
+            crossorigin="anonymous"></script>
+
+    <style type="text/css">
+        .main-block {
+            min-height:500px;
+        }
+        .tablePanel {
+            overflow: auto;
+            max-width: 92vw;
+        }
+        .footerHeader {
+            background: #cfeef8 !important;
+        }
+        #data-container {
+            width: 87%;
+            display: inline-block;
+            box-sizing: border-box;
+            vertical-align: top;
+            position:relative;
+        }
+        #menu-container {
+            width: 10%;
+            display: inline-block;
+            box-sizing: border-box;
+            vertical-align: top;
+        }
+        .menu-list {
+            list-style: none;
+            margin-left: 0px;
+            padding-left: 0px;
+            margin: 0px;
+        }
+        .facet-menu {
+            width: 90%;
+        }
+        .facet-group {
+            margin-left: 0px;
+        }
+        .msidebar {
+            margin: 0px 7px 10px 0px;
+        }
+        .msidebarHeader {
+            background: #1797c0;
+            color: #fff;
+            padding: 6px;
+            border-radius: 6px;
+            margin-bottom: 4px;
+        }
+        .msidebarContent {
+            background: #cfeef8;
+            padding: 6px;
+            border-radius: 6px;
+        }
+        .msidebarContent input {
+            max-width:90%;
+        }
+        .msidebarElement {
+            text-decoration: none;
+            background: #cfeef8;
+            padding: 6px;
+            cursor: pointer;
+            border-radius: 6px;
+            margin-bottom: 1px;
+            font-family: Arial,Helvetica,sans-serif;
+            display: block;
+        }
+        .msidebarRow {
+            margin-bottom: 6px !important;
+        }
+        .msidebarElementOpened {
+            background: #e3f3ff;
+        }
+        .msidebarElement:hover {
+            background: #e3f3ff;
+            text-decoration: none;
+            color: black;
+        }
+        .domains-graph {
+            height: 400px;
+        }
+        .graph-menu {
+            vertical-align: middle;
+        }
+        .graph-menu select {
+            height: 28px;
+            margin-right: 10px;
+        }
+        .graph-menu input {
+            height: 24px;
+            margin-right: 10px;
+        }
+        .graph-menu label {
+            height: 24px;
+            font: 13.3333px Arial;
+        }
+        .btn {
+            height: 28px !important;
+            vertical-align: bottom !important;
+        }
+        .ui-state-active {
+            border: 0px !important;
+            background: #1797c0 !important;
+        }
+        .dynamic-wrapper {
+            position: relative;
+            display: block;
+        }
+        .dynamic-loader {
+            position: absolute;
+            background-color: #fbfbfb;
+            opacity: 0.65;
+            z-index: 80;
+            top:0;
+            left:0;
+            width:100%;
+            height:100%;
+            color:black;
+            text-align: center;
+        }
+        .dynamic-loader img {
+            position: absolute;
+            top:40%;
+            left:40%;
+        }
+        .map-info {
+            padding: 6px 8px;
+            background: white;
+            background: rgba(255,255,255,0.8);
+            border-radius: 5px;
+                }
+        .info {
+            padding: 6px 8px;
+            font: 14px/16px Arial, Helvetica, sans-serif;
+            background: white;
+            background: rgba(255,255,255,0.8);
+            box-shadow: 0 0 15px rgba(0,0,0,0.2);
+            border-radius: 5px;
+            text-align: left;
+        }
+        .info h4 {
+            margin: 0 0 5px;
+            color: #777;
+        }
+        .legend {
+            line-height: 18px;
+            color: #555;
+            min-width: 100px;
+        }
+        .legend i {
+            width: 18px;
+            height: 18px;
+            float: left;
+            margin-right: 8px;
+            opacity: 0.7;
+        }
+        .legend p {
+            margin-bottom: 0px;
+            margin-top: 0px;
+        }
+    </style>
+
+    <script type="text/javascript">
+        $j = jQuery.noConflict();
+
+        $j(document).ready(function() {
+            // set calculated height for map : 
+            $j("#map").height($j("#map").width() * 0.6);
+
+            // courtesy of http://colorbrewer2.org/
+            var COUNTRY_COLORS = ['#fef0d9','#fdd49e','#fdbb84','#fc8d59','#e34a33','#b30000'];
+            var PROJECT_COUNTS_THRESHOLD = [10, 20, 30, 40, 50];
+            var USER_COUNTS_THRESHOLD = [10, 100, 500, 1000, 4000];
+            var mapboxAccessToken = "{!mapAccessToken}";
+
+            function colorAll() {
+                if (countriesGeo !== undefined) {
+                    countriesGeo.setStyle(style);
+                    map.removeControl(legend);
+                    legend.addTo(map);
+                }
+            }
+
+            var dataController = function () {
+                var that = {};
+                var maxNumProjects = 0;
+                var maxNumUsers = 0;
+                var totalNumUsers = 0;
+                var totalNumProjects = 0;
+                var projects_per_country = {};
+                var users_per_country = {};
+                var is_project_count_map = true;
+
+                that.refreshProjectData = function (filter, callback) {
+                    projects_per_country = 3;//data.country_projs_count;
+                    users_per_country = 12; //data.users_per_country;
+                    totalNumProjects = 43000; //data.total_num_projects;
+                    maxNumProjects = 233;
+                    colorAll();
+                    callback();
+                };
+
+                that.getCount = function (countryName) {
+                    countryName = countryName.toUpperCase();
+                    if (is_project_count_map) {
+                        return projects_per_country[countryName] || 0;
+                    } else {
+                        return users_per_country[countryName] || 15;
+                    }
+                };
+
+                that.toggleMap = function () {
+                    is_project_count_map = !is_project_count_map;
+                };
+
+                that.getUnit = function (count) {
+                    if (is_project_count_map) {
+                        return count > 1 ? 'active projects' : 'active project';
+                    } else {
+                        return count > 1 ? 'active users' : 'active user';
+                    }
+                };
+
+                that.getNumActiveCountries = function () {
+                    return Object.keys(projects_per_country).length;
+                };
+
+                that.getMax = function () {
+                    if (is_project_count_map) {
+                        return maxNumProjects;
+                    } else {
+                        return maxNumUsers;
+                    }
+                };
+
+                that.getNumProjects = function () {
+                    return totalNumProjects;
+                };
+
+                that.getNumUsers = function () {
+                    return totalNumUsers;
+                };
+
+                that.isProjectCountMap = function () {
+                    return is_project_count_map;
+                };
+
+                that.isProjectCountMap = function () {
+                    return is_project_count_map;
+                };
+
+               return that;
+           }();
+
+            var countriesGeo;
+            // A lot of the styling work here is modeled after http://leafletjs.com/examples/choropleth.html
+            var map = L.map('map').setView([0, 0], 3);
+            var mapId = 'dimagi/cirqobc2w0000g4ksj9dochrm';
+
+            var southWest = L.latLng(-80.0, -180.0),
+                northEast = L.latLng(85.0, 180.0),
+                bounds = L.latLngBounds(southWest, northEast);
+
+            map.setMaxBounds(bounds);
+            map.on('drag', function () {
+                map.panInsideBounds(bounds, {animate: false});
+            });
+
+            map.createPane('labels');
+            // This pane is above markers but below popups
+            map.getPane('labels').style.zIndex = -1;
+
+            // copied from dimagisphere
+            L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/256/{z}/{x}/{y}?access_token={accessToken}', {
+                maxZoom: 6,
+                minZoom: 2,
+                id: mapId,
+                accessToken: mapboxAccessToken,
+                bounds: bounds,
+                noWrap: true,
+            }).addTo(map);
+
+            function getColor(featureId) {
+                var thresholdScales;
+                var count = dataController.getCount(featureId);
+                var isProjectCountMap = dataController.isProjectCountMap();
+                if (isProjectCountMap) {
+                    thresholdScales = PROJECT_COUNTS_THRESHOLD;
+                } else {
+                    thresholdScales = USER_COUNTS_THRESHOLD;
+                }
+                var index = getColorScaleIndex(count, thresholdScales);
+                return COUNTRY_COLORS[index];
+            }
+
+            function getColorScaleIndex(count, scales) {
+                for (var i = 0; i < scales.length; i++) {
+                    if (count < scales[i]) {
+                        return i;
+                    }
+                }
+                return scales.length;
+            }
+
+            function getOpacity(featureId) {
+                if (dataController.getCount(featureId)) {
+                    return 0.7;
+                } else {
+                    return 0;
+                }
+            }
+
+            function style(feature) {
+                return {
+                    fillColor: getColor(feature.properties.name),
+                    weight: 2,
+                    opacity: 1,
+                    color: 'white',
+                    dashArray: '3',
+                    fillOpacity: getOpacity(feature.properties.name),
+                };
+            }
+
+            // highlights
+            function highlightFeature(e) {
+                var layer = e.target;
+                layer.setStyle({
+                    weight: 4,
+                    color: '#002c5f',
+                    dashArray: '',
+                });
+                if (!L.Browser.ie && !L.Browser.opera) {
+                    layer.bringToFront();
+                }
+                info.update(layer.feature.properties);
+            }
+
+            function resetHighlight(e) {
+                countriesGeo.resetStyle(e.target);
+                info.update();
+            }
+
+            function formatCountryNames(countries) {
+                return countries.map(function (country) {
+                    var formattedCountryName = country.charAt(0).toUpperCase();
+                    if (country.indexOf(",") > -1) {
+                        formattedCountryName += country.substring(1, country.indexOf(",")).toLowerCase();
+                    } else {
+                        formattedCountryName += country.substring(1).toLowerCase();
+                    }
+                    return formattedCountryName;
+                });
+            }
+
+            function onEachFeature(feature, layer) {
+                layer.on({
+                    mouseover: highlightFeature,
+                    mouseout: resetHighlight
+                });
+            }
+
+            // info control
+            var info = L.control();
+            info.onAdd = function () {
+                this._div = L.DomUtil.create('div', 'map-info');
+                this.update();
+                return this._div;
+            };
+
+            // method that we will use to update the control based on feature properties passed in
+            info.update = function (props) {
+                function _getInfoContent(countryName) {
+                    var count = dataController.getCount(countryName);
+                    var unit = dataController.getUnit(count);
+                    var message = count ? count + ' ' + unit : 'no ' + unit + 's';
+                    return '<b>' + countryName + '</b>: ' + message;
+                }
+                this._div.innerHTML = (props ? _getInfoContent(props.name) : 'Hover over a country');
+            };
+            info.addTo(map);
+
+            // add a legend
+            var legend = L.control({position: 'bottomleft'});
+
+            legend.onAdd = function () {
+                var div = L.DomUtil.create('div', 'info legend');
+                var thresholds;
+                div.innerHTML += '<i style="background:' + 'black' + '"></i> ' + '0' + '<br>';
+                var is_project_count_map = dataController.isProjectCountMap();
+                if (is_project_count_map) {
+                    thresholds = PROJECT_COUNTS_THRESHOLD;
+                } else {
+                    thresholds = USER_COUNTS_THRESHOLD;
+                }
+                for (var i = 0; i < thresholds.length; i++) {
+                    div.innerHTML += '<i style="background:' + COUNTRY_COLORS[i] + '"></i> ';
+                    if (thresholds[i - 1] !==  undefined) {
+                        if (thresholds[i - 1] + 1 < thresholds[i]) {
+                            div.innerHTML += (thresholds[i - 1] + 1) + '&ndash;';
+                        }
+                    } else if (thresholds[i] > 1) {
+                        div.innerHTML += '1&ndash;';
+                    }
+                    div.innerHTML += thresholds[i] + '<br>';
+                }
+                div.innerHTML += '<i style="background:' + COUNTRY_COLORS[thresholds.length] + '"></i> '
+                                 + (thresholds[thresholds.length - 1] + 1) + '+';
+                return div;
+            };
+        
+            legend.addTo(map);
+
+            var stats = L.control({position: 'bottomright'});
+
+            stats.onAdd = function () {
+                var div = L.DomUtil.create('div', 'info legend');
+                div.innerHTML += '<p><b>Statistics</b></p>';
+                div.innerHTML += '<p>Number of Active Countries: ' + dataController.getNumActiveCountries() +  '</p>';
+                div.innerHTML += '<p>Number of Active Mobile Users: ' + dataController.getNumUsers() +  '</p>';
+                div.innerHTML += '<p>Number of Active Projects: ' + dataController.getNumProjects() +  '</p>';
+                div.innerHTML += '<br><p><em> Active: A project or user submitted a form in past 30 days.</em></p>';
+                return div;
+            };
+
+            $j.get("https://raw.githubusercontent.com/dimagi/world.geo.json/master/countries.geo.json", function (data) {
+                countriesGeo = L.geoJson(JSON.parse(data), {style: style, onEachFeature: onEachFeature}).addTo(map);
+                dataController.refreshProjectData({}, function () {
+                    stats.addTo(map);
+                });
+            });
+        });
+    </script>
+
+    <apex:form >
+        <apex:outputPanel >
+            <div id="menu-container">
+                <div class="msidebar">
+                    <div class="msidebarHeader">
+                        <h2>Reports : </h2>
+                    </div>
+                    <div class="msidebarContent">
+                        <!-- <apex:repeat value="{!supportedReportsList}" var="reportKey">
+                            <a class="msidebarElement {!IF(reportKey == reportName,'msidebarElementOpened', '')}" href="HQAdminReports?report={!reportKey}">
+                                {!supportedReports[reportKey]}
+                            </a>
+                        </apex:repeat>-->
+                        <a class="msidebarElement" href="HQAdminReportsProjectMap">Active Project Map</a>
+                    </div>
+                </div>
+                <div class="msidebar">
+                    <div class="msidebarHeader">
+                        <h2>Facets : </h2>
+                    </div>
+                    <div class="msidebarContent dynamic-wrapper">
+                        <div class="dynamic-loader" id="facets-loader">
+                            <img src="{!$Resource.BrokenCircle}" title="Please Wait..."/>
+                        </div>
+                        <input type="button" class="btn msidebarRow" onclick="applyFilters();" value="Apply" /><br/>
+                        <!--<apex:inputText styleClass="msidebarRow" value="{!facetCtrl.domainNameSearch}" id="searchDomainText" onkeydown="if(event.keyCode == 13) { this.blur(); applyFilters(); }"/>
+                        <apex:actionFunction action="{!updateFacets}" name="searchDomainJs" status="loadingDiv"
+                                     reRender="apex-data-container,pagination-panel,facetDataElement,loadedFilters,domains-graph-navigation,domain-graph-data,test-panel-id">
+                        <apex:param name="currentFilteringJSON" value="" assignTo="{!facetCtrl.currentFilteringJSON}" />
+                        </apex:actionFunction>-->
+                        <div id="facet-container"></div>
+                    </div>
+                </div>
+            </div>
+        </apex:outputPanel>
+        <apex:outputPanel >
+            <div id="data-container">
+                <apex:pageBlock title="Active Project Map" id="projectMap" >
+                    <div id="map"></div>
+                </apex:pageBlock>
+            </div>
+        </apex:outputPanel>
+    </apex:form>
+</apex:page>
