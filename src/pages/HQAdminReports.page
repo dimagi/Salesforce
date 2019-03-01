@@ -562,6 +562,20 @@
                                     <apex:facet name="header">
                                         <apex:outputPanel >
                                             <apex:commandLink action="{!sortColumn}" reRender="projectSpaceDataTable" status="loadingDiv">
+                                                <apex:param name="sortField" value="Server_Name__c" assignTo="{!sortField}" />
+                                                Server Name
+                                                <apex:image value="/img/s.gif" rendered="{!IF(sortField == 'Server_Name__c', true, false)}" alt="{!IF(sortDir == false,'Sorted Ascending','Sorted Descending')}"
+                                                            styleClass="{!IF(sortDir == false,'sortAsc','sortDesc')}" title="{!IF(sortDir == false,'Sorted Ascending','Sorted Descending')}" />
+                                            </apex:commandLink>
+                                        </apex:outputPanel>
+                                    </apex:facet>
+                                    <apex:facet name="footer">---</apex:facet>
+                                    {!projectSpaceData.Server_Name__c}
+                                </apex:column>
+                                <apex:column >
+                                    <apex:facet name="header">
+                                        <apex:outputPanel >
+                                            <apex:commandLink action="{!sortColumn}" reRender="projectSpaceDataTable" status="loadingDiv">
                                                 <apex:param name="sortField" value="date_created__c" assignTo="{!sortField}" />
                                                 Date Created
                                                 <apex:image value="/img/s.gif" rendered="{!IF(sortField == 'date_created__c', true, false)}" alt="{!IF(sortDir == false,'Sorted Ascending','Sorted Descending')}"
