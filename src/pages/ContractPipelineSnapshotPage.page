@@ -1,4 +1,4 @@
-<apex:page controller="OpportunityPipelineSnapshotController" docType="html-5.0" action="{!initPipelineSnapshot}">
+<apex:page controller="ContractPipelineSnapshotController" docType="html-5.0" action="{!initPipelineSnapshot}">
     <style type="text/css">
         .snpTable {
             margin-top: 10px;
@@ -6,7 +6,7 @@
         }
     </style>
 
-    <apex:pageBlock title="Opportunity Pipeline Snapshot" id="mainBlockId">
+    <apex:pageBlock title="Contract Pipeline Snapshot" id="mainBlockId">
         <apex:form >
             <apex:outputPanel >
                 <apex:outputPanel layout="block" id="messages">
@@ -30,24 +30,24 @@
             <apex:pageBlockSection >
                 <apex:outputPanel id="jobLoader" rendered="{!jobWrapper.isRunning}">
                     <apex:image url="/img/loading32.gif" height="10px" />
-                    Opportunity Pipeline Snapshot is currently working : {!jobWrapper.jobItemsProcessed}/{!jobWrapper.totalJobItems}
+                    Contract Pipeline Snapshot is currently working : {!jobWrapper.jobItemsProcessed}/{!jobWrapper.totalJobItems}
                 </apex:outputPanel>
             </apex:pageBlockSection>
 
             <apex:pageBlockSection columns="1" >
                 <apex:pageBlockSectionItem rendered="{!!jobWrapper.isRunning}">
-                    <apex:outputText value="Opportunity Pipeline Snapshots Count : {!currentPSCount} for date : {!lastMonthSnapshotDate}" />
+                    <apex:outputText value="Contract Pipeline Snapshots Count : {!currentPSCount} for date : {!lastMonthSnapshotDate}" />
                 </apex:pageBlockSectionItem>
                 <apex:pageBlockSectionItem >
-                    <apex:commandButton onclick="return confirm('Are you sure you want to run this process? It will wipe all {!currentPSCount} opportunities snapshots for {!lastMonthSnapshotDate} and create new snapshots.');"
-                                action="{!runPipelineSnapshotJob}" value="Run Opportunity Pipeline Snapshot" id="runButton"
+                    <apex:commandButton onclick="return confirm('Are you sure you want to run this process? It will wipe all {!currentPSCount} contract snapshots for {!lastMonthSnapshotDate} and create new snapshots.');"
+                                action="{!runPipelineSnapshotJob}" value="Run Contract Pipeline Snapshot" id="runButton"
                                 disabled="{!jobWrapper.isRunning}" />
                 </apex:pageBlockSectionItem>
             </apex:pageBlockSection>
 
             <apex:pageBlockSection columns="1" id="tableSection">
                 <apex:pageBlockTable id="oppPipelineSnpTab" value="{!snpList}" var="snp" styleClass="snpTable">
-                    <apex:column headerValue="Opportunity Pipeline Snapshot Name">
+                    <apex:column headerValue="Contract Pipeline Snapshot Name">
                         <apex:outputLink value="/{!snp.Id}" target="_blank" disabled="{!jobWrapper.isRunning}">{!snp.Name}</apex:outputLink>
                     </apex:column>
                     <apex:column headerValue="Month" value="{!snp.Month_Date__c}" />
@@ -58,10 +58,10 @@
                     <apex:column headerValue="18 Month Cash (EV)" value="{!snp.X18_Month_Cash_EV__c}" />
                     <apex:column headerValue="24 Month Cash (EV)" value="{!snp.X24_Month_Cash_EV__c}" />
                     <apex:column headerValue="Probability (%)" value="{!snp.Probability__c}" />
-                    <apex:column headerValue="Opportunity Close Date" value="{!snp.CloseDate__c}" />
+                    <apex:column headerValue="Contract Close Date" value="{!snp.CloseDate__c}" />
                     <apex:column headerValue="Expected Value" value="{!snp.Expected_Value__c}" />
                     <apex:column headerValue="Duration (months)" value="{!snp.Duration_months__c}" />
-                    <apex:column headerValue="Opportunity" value="{!snp.Opportunity__c}" />
+                    <apex:column headerValue="Contract" value="{!snp.Contract__c}" />
                 </apex:pageBlockTable>
             </apex:pageBlockSection>
 

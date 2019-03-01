@@ -72,36 +72,25 @@ public class SnapshotHelper {
             return proContractSnapshot;
     }
 
-    public static Map<Id, Pipeline_Snapshot__c> getOldSnapshots(List<Pipeline_Snapshot__c> snapshots, Boolean forTotal) {
-        Set<Id> contracts = new Set<Id>();
-        for (Pipeline_Snapshot__c sn : snapshots) {
-            if (sn.Contract__c != null) {
-                contracts.add(sn.Contract__c);
-            }
-        }
-
-        Date monthDate = snapshots.get(0).Month_Date__c;
+    public static Pipeline_Snapshot__c getOldSnapshots(Pipeline_Snapshot__c snapshot, Boolean forTotal) {
+        Date monthDate = snapshot.Month_Date__c;
         List<Pipeline_Snapshot__c> oldSnapshots;
         if (forTotal) {
             oldSnapshots = [SELECT Id, Contract__c, Work_Completed__c, Services_Spend__c, Expense_Travel_Spend__c, Product_Spend__c, Total_Calculated_Costs__c, GS_Services_Completed__c,
                             GS_Services_Completed_Handover__c, GS_Net_Income_to_Date__c, GS_Net_Income_to_Date_Handover__c FROM Pipeline_Snapshot__c
-                            WHERE Contract__c IN: contracts AND Month_Date__c < :monthDate AND Month_Date__c > :monthDate.addMonths(-6)
+                            WHERE Contract__c =: snapshot.Contract__c AND Month_Date__c < :monthDate AND Month_Date__c > :monthDate.addMonths(-6)
                             AND Stage__c = 'Total' ORDER BY Month_Date__c DESC];
         } else {
             oldSnapshots = [SELECT Id, Contract__c, Work_Completed__c, Services_Spend__c, Expense_Travel_Spend__c, Product_Spend__c, Total_Calculated_Costs__c, GS_Services_Completed__c,
                             GS_Services_Completed_Handover__c, GS_Net_Income_to_Date__c, GS_Net_Income_to_Date_Handover__c FROM Pipeline_Snapshot__c
-                            WHERE Contract__c IN: contracts AND Month_Date__c < :monthDate AND Month_Date__c > :monthDate.addMonths(-6)
+                            WHERE Contract__c =: snapshot.Contract__c AND Month_Date__c < :monthDate AND Month_Date__c > :monthDate.addMonths(-6)
                             AND Stage__c != 'Total' ORDER BY Month_Date__c DESC];
         }
-
-        Map<Id, Pipeline_Snapshot__c> oldSnapShotsMap = new Map<Id, Pipeline_Snapshot__c>();
-        for(Pipeline_Snapshot__c snapshotObject : oldSnapshots) {
-            if (!oldSnapShotsMap.containsKey(snapshotObject.Contract__c)) {
-                oldSnapShotsMap.put(snapshotObject.Contract__c, snapshotObject);
-            }
+        if (oldSnapshots.size() > 0) {
+            return oldSnapshots.get(0);
         }
 
-        return oldSnapShotsMap;
+        return new Pipeline_Snapshot__c();
     }
 
     public static Pipeline_Snapshot__c calculateForPeriod(Pipeline_Snapshot__c sn, Pipeline_Snapshot__c oldSn) {

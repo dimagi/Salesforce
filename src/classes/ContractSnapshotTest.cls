@@ -62,40 +62,136 @@ public class ContractSnapshotTest {
     }
 
     @isTest
-    public static void shouldCalculateForPeriodInPipelineSnapshot() {
-        DContract__c dcontract1 = new DContract__c(Name = 'Sample Test 1', Services_Spend__c = 100, Total_Amount_of_Contract__c = 1000);
-        DContract__c dcontract2 = new DContract__c(Name = 'Sample Test 2', Services_Spend__c = 155, Total_Amount_of_Contract__c = 5500);
-        DContract__c dcontract3 = new DContract__c(Name = 'Sample Test 3', Services_Spend__c = 23, Total_Amount_of_Contract__c = 222);
-        insert dcontract1;
-        insert dcontract2;
-        insert dcontract3;
+    public static void shouldCreatePipelineSnapshots() {
+        Account acc1 = new Account(Name = 'Test');
+        insert acc1;
+        DContract__c dcontract1 = new DContract__c(
+            Name = 'Sample Test 1', Status__c = 'Active', ALL_TIME_Income__c = 10000, Total_Amount_of_Contract__c = 14000, Percent_through_SOW_deliverables__c = 80,
+            Account__c = acc1.Id, Total_Amount_REMAINING__c = 4000, Contract_Expense_BUDGET__c = 2000, Total_Direct_Costs_Expenses__c = 1000,
+            Contract_End_Date__c = Date.today().addMonths(4), Date_of_Contract_Execution__c = Date.today().addMonths(4), Contract_Start_Date__c = Date.today().addMonths(-2),
+            Country_Text__c = 'Country sample text', Expected_Buffer__c = 50, Direct_Costs_Total_Expenses__c = 1000, Funder_Account__c = acc1.Id, of_Services_budget_for_GS__c = 50,
+            Intracompany_Sub_contract__c = 'No', Product_Text__c = 'Simple product text', Services_Spend__c = 2000);
+        DContract__c dcontract2 = new DContract__c(Status__c = 'Active', Name = 'Sample Test 2', Services_Spend__c = 155, Total_Amount_of_Contract__c = 5500);
+        DContract__c dcontract3 = new DContract__c(Status__c = 'Active', Name = 'Sample Test 3', Services_Spend__c = 23, Total_Amount_of_Contract__c = 222);
+        DContract__c dcontract4 = new DContract__c(Date_of_Contract_Execution__c = Date.today(), Status__c = 'Complete', Name = 'Sample Test 4', Services_Spend__c = 23, Total_Amount_of_Contract__c = 222);
+        insert new List<DContract__c> { dcontract1, dcontract2, dcontract3, dcontract4 };
 
-        Pipeline_Snapshot__c ps1 = new Pipeline_Snapshot__c(Source_Type__c = 'Contract', Month_Date__c = Date.today().addDays(-10), Contract__c = dcontract1.Id, Services_Spend__c = 10);
-        Pipeline_Snapshot__c ps2 = new Pipeline_Snapshot__c(Source_Type__c = 'Contract', Month_Date__c = Date.today(), Contract__c = dcontract1.Id, Services_Spend__c = 76);
+        Pipeline_Snapshot__c ps1 = new Pipeline_Snapshot__c(Source_Type__c = 'Contract', Month_Date__c = Date.today(), Contract__c = dcontract1.Id, Services_Spend__c = 10);
+        Pipeline_Snapshot__c ps2 = new Pipeline_Snapshot__c(Source_Type__c = 'Contract', Month_Date__c = Date.today(), Contract__c = dcontract2.Id, Services_Spend__c = 76);
         Pipeline_Snapshot__c ps3 = new Pipeline_Snapshot__c(Source_Type__c = 'Contract', Month_Date__c = Date.today(), Contract__c = dcontract3.Id, Services_Spend__c = 100);
-        Pipeline_Snapshot__c ps4 = new Pipeline_Snapshot__c(Source_Type__c = 'Contract', Month_Date__c = Date.today().addDays(-50), Contract__c = dcontract2.Id, Services_Spend__c = 1);
-        Pipeline_Snapshot__c ps5 = new Pipeline_Snapshot__c(Source_Type__c = 'Contract', Month_Date__c = Date.today().addDays(-30), Contract__c = dcontract2.Id, Services_Spend__c = 8);
-        Pipeline_Snapshot__c ps6 = new Pipeline_Snapshot__c(Source_Type__c = 'Contract', Month_Date__c = Date.today(), Contract__c = dcontract2.Id, Services_Spend__c = 11);
-        insert ps1;
-        insert ps2;
-        insert ps3;
-        insert ps4;
-        insert ps5;
-        insert ps6;
-        Test.setCreatedDate(ps1.Id, DateTime.now().addDays(-6));
-        Test.setCreatedDate(ps4.Id, DateTime.now().addDays(-6));
-        Test.setCreatedDate(ps5.Id, DateTime.now().addDays(-6));
+        Pipeline_Snapshot__c ps4 = new Pipeline_Snapshot__c(Source_Type__c = 'Contract', Month_Date__c = Date.today().addMonths(-1), Contract__c = dcontract1.Id, Services_Spend__c = 1);
+        Pipeline_Snapshot__c ps5 = new Pipeline_Snapshot__c(Source_Type__c = 'Contract', Month_Date__c = Date.today().addMonths(-1), Contract__c = dcontract2.Id, Services_Spend__c = 8);
+        Pipeline_Snapshot__c ps6 = new Pipeline_Snapshot__c(Source_Type__c = 'Contract', Month_Date__c = Date.today().addMonths(-1), Contract__c = dcontract3.Id, Services_Spend__c = 11);
+        Pipeline_Snapshot__c ps7 = new Pipeline_Snapshot__c(Source_Type__c = 'Opportunity', Month_Date__c = Date.today(), Contract__c = dcontract3.Id, Services_Spend__c = 100);
+        insert new List<Pipeline_Snapshot__c> { ps1, ps2, ps3, ps4, ps5, ps6, ps7 };
+
+        System.assertEquals(7, [SELECT Id FROM Pipeline_Snapshot__c].size());
+        Test.startTest();
+        Database.executeBatch(new ContractPipelineSnapshotBatch(), 50);
+        Test.stopTest();
+        System.assertEquals(8, [SELECT Id FROM Pipeline_Snapshot__c].size()); // 1 Clsoed
+        System.assertEquals(0, [SELECT Id FROM Pipeline_Snapshot__c WHERE Id IN: new List<Id> { ps1.Id, ps2.Id, ps3.Id }].size());
+        System.assertEquals(4, [SELECT Id FROM Pipeline_Snapshot__c WHERE Id IN: new List<Id> { ps4.Id, ps5.Id, ps6.Id, ps7.Id }].size());
+
+        System.assertEquals(1, [SELECT Id FROM Pipeline_Snapshot__c WHERE Stage__c = 'Closed' AND Month_Date__c =: Date.today()].size());
+        System.assertEquals(0, [SELECT Id FROM Pipeline_Snapshot__c WHERE Stage__c = 'Total' AND Month_Date__c =: Date.today()].size());
+        System.assertEquals(3, [SELECT Id FROM Pipeline_Snapshot__c WHERE Stage__c = 'Outstanding Contracted' AND Month_Date__c =: Date.today()].size());
+
+        Pipeline_Snapshot__c test = [SELECT Id, Invoiced__c, Billing_Deficit__c, Billing_efficiency__c, Duration_months__c, GS_Net_Income_to_Date__c, Total_Calculated_Costs__c,
+                                     Work_Completed__c, Contract_Total_Non_Expense_Income_Rmg__c, GS_Services_Completed__c, GS_Execution_Budget__c
+                                     FROM Pipeline_Snapshot__c WHERE Month_Date__c =: Date.today() AND Contract__c =: dcontract1.Id AND Stage__c = 'Outstanding Contracted'];
+        System.assertEquals(71.43, test.Invoiced__c);
+        System.assertEquals(428.57, test.Billing_Deficit__c);
+        System.assertEquals(89.29, test.Billing_efficiency__c);
+        System.assertEquals(6, test.Duration_months__c);
+        System.assertEquals(80, test.Work_Completed__c);
+        System.assertEquals(3000, test.Contract_Total_Non_Expense_Income_Rmg__c);
+        System.assertEquals(3000, test.GS_Execution_Budget__c);
+        System.assertEquals(400, test.GS_Net_Income_to_Date__c);
+        System.assertEquals(2400, test.GS_Services_Completed__c);
+        System.assertEquals(2000, test.Total_Calculated_Costs__c);
+    }
+
+    @isTest
+    public static void shouldCalculateForPeriodInPipelineSnapshot() {
+        Account acc1 = new Account(Name = 'Test');
+        insert acc1;
+        DContract__c dcontract1 = new DContract__c(
+            Name = 'Sample Test 1', Status__c = 'Active', ALL_TIME_Income__c = 10000, Total_Amount_of_Contract__c = 14000, Percent_through_SOW_deliverables__c = 80,
+            Account__c = acc1.Id, Total_Amount_REMAINING__c = 4000, Contract_Expense_BUDGET__c = 2000, Total_Direct_Costs_Expenses__c = 1000,
+            Contract_End_Date__c = Date.today().addMonths(4), Date_of_Contract_Execution__c = Date.today().addMonths(4), Contract_Start_Date__c = Date.today().addMonths(-2),
+            Country_Text__c = 'Country sample text', Expected_Buffer__c = 50, Direct_Costs_Total_Expenses__c = 1000, Funder_Account__c = acc1.Id, of_Services_budget_for_GS__c = 50,
+            Intracompany_Sub_contract__c = 'No', Product_Text__c = 'Simple product text', Services_Spend__c = 2000);
+        DContract__c dcontract2 = new DContract__c(Status__c = 'Active', Name = 'Sample Test 2', Services_Spend__c = 155, Total_Amount_of_Contract__c = 5500);
+        DContract__c dcontract3 = new DContract__c(Status__c = 'Active', Name = 'Sample Test 3', Services_Spend__c = 23, Total_Amount_of_Contract__c = 222);
+        DContract__c dcontract4 = new DContract__c(Date_of_Contract_Execution__c = Date.today(), Status__c = 'Complete', Name = 'Sample Test 4', Services_Spend__c = 23, Total_Amount_of_Contract__c = 222);
+        insert new List<DContract__c> { dcontract1, dcontract2, dcontract3, dcontract4 };
+
+        Pipeline_Snapshot__c ps1 = new Pipeline_Snapshot__c(Source_Type__c = 'Contract', Month_Date__c = Date.today(), Contract__c = dcontract1.Id, Services_Spend__c = 10);
+        Pipeline_Snapshot__c ps2 = new Pipeline_Snapshot__c(Source_Type__c = 'Contract', Month_Date__c = Date.today(), Contract__c = dcontract2.Id, Services_Spend__c = 76);
+        Pipeline_Snapshot__c ps3 = new Pipeline_Snapshot__c(Source_Type__c = 'Contract', Month_Date__c = Date.today(), Contract__c = dcontract3.Id, Services_Spend__c = 100);
+        Pipeline_Snapshot__c ps4 = new Pipeline_Snapshot__c(Source_Type__c = 'Contract', Month_Date__c = Date.today().addMonths(-1), Contract__c = dcontract1.Id, Services_Spend__c = 1, Work_Completed__c = 50);
+        Pipeline_Snapshot__c ps5 = new Pipeline_Snapshot__c(Source_Type__c = 'Contract', Month_Date__c = Date.today().addMonths(-1), Contract__c = dcontract2.Id, Services_Spend__c = 8);
+        Pipeline_Snapshot__c ps6 = new Pipeline_Snapshot__c(Source_Type__c = 'Contract', Month_Date__c = Date.today().addMonths(-1), Contract__c = dcontract3.Id, Services_Spend__c = 11);
+        Pipeline_Snapshot__c ps7 = new Pipeline_Snapshot__c(Source_Type__c = 'Opportunity', Month_Date__c = Date.today(), Contract__c = dcontract3.Id, Services_Spend__c = 100);
+        insert new List<Pipeline_Snapshot__c> { ps1, ps2, ps3, ps4, ps5, ps6, ps7 };
+
+        System.assertEquals(7, [SELECT Id FROM Pipeline_Snapshot__c].size());
+        Test.startTest();
+        Database.executeBatch(new ContractPipelineSnapshotBatch(), 50);
+        Test.stopTest();
+        System.assertEquals(8, [SELECT Id FROM Pipeline_Snapshot__c].size()); // +1 Clsoed
+        System.assertEquals(0, [SELECT Id FROM Pipeline_Snapshot__c WHERE Id IN: new List<Id> { ps1.Id, ps2.Id, ps3.Id }].size());
+        System.assertEquals(4, [SELECT Id FROM Pipeline_Snapshot__c WHERE Id IN: new List<Id> { ps4.Id, ps5.Id, ps6.Id, ps7.Id }].size());
+
+        System.assertEquals(1, [SELECT Id FROM Pipeline_Snapshot__c WHERE Stage__c = 'Closed' AND Month_Date__c =: Date.today()].size());
+        System.assertEquals(0, [SELECT Id FROM Pipeline_Snapshot__c WHERE Stage__c = 'Total' AND Month_Date__c =: Date.today()].size());
+        System.assertEquals(3, [SELECT Id FROM Pipeline_Snapshot__c WHERE Stage__c = 'Outstanding Contracted' AND Month_Date__c =: Date.today()].size());
+        Pipeline_Snapshot__c test = [SELECT Id, Services_Spend_for_Period__c, Work_Completed_for_Period__c
+                                     FROM Pipeline_Snapshot__c WHERE Month_Date__c =: Date.today() AND Contract__c =: dcontract1.Id AND Stage__c = 'Outstanding Contracted'];
+        System.assertEquals(1999, test.Services_Spend_for_Period__c);
+        System.assertEquals(30, test.Work_Completed_for_Period__c);
+    }
+
+    @isTest
+    public static void testContractPipelineSnapshotsController() {
+        Date currentDate = Date.today().addMonths(-1);
+        Integer numberOfDays = Date.daysInMonth(currentDate.year(), currentDate.month());
+        Date testDate = Date.newInstance(currentDate.year(), currentDate.month(), numberOfDays);
+
+        DContract__c dcontract1 = new DContract__c(Status__c = 'Active', Name = 'Sample Test 1', Services_Spend__c = 100, Total_Amount_of_Contract__c = 1000);
+        DContract__c dcontract2 = new DContract__c(Status__c = 'Active', Name = 'Sample Test 2', Services_Spend__c = 155, Total_Amount_of_Contract__c = 5500);
+        DContract__c dcontract3 = new DContract__c(Status__c = 'Active', Name = 'Sample Test 3', Services_Spend__c = 23, Total_Amount_of_Contract__c = 222);
+        DContract__c dcontract4 = new DContract__c(Date_of_Contract_Execution__c = testDate, Status__c = 'Complete', Name = 'Sample Test 4', Services_Spend__c = 23, Total_Amount_of_Contract__c = 222);
+        insert new List<DContract__c> { dcontract1, dcontract2, dcontract3, dcontract4 };
+
+        Pipeline_Snapshot__c ps1 = new Pipeline_Snapshot__c(Source_Type__c = 'Contract', Month_Date__c = testDate, Contract__c = dcontract1.Id, Services_Spend__c = 10);
+        Pipeline_Snapshot__c ps2 = new Pipeline_Snapshot__c(Source_Type__c = 'Contract', Month_Date__c = testDate, Contract__c = dcontract2.Id, Services_Spend__c = 76);
+        Pipeline_Snapshot__c ps3 = new Pipeline_Snapshot__c(Source_Type__c = 'Contract', Month_Date__c = testDate, Contract__c = dcontract3.Id, Services_Spend__c = 100);
+        Pipeline_Snapshot__c ps4 = new Pipeline_Snapshot__c(Source_Type__c = 'Contract', Month_Date__c = testDate.addMonths(-1), Contract__c = dcontract1.Id, Services_Spend__c = 1);
+        Pipeline_Snapshot__c ps5 = new Pipeline_Snapshot__c(Source_Type__c = 'Contract', Month_Date__c = testDate.addMonths(-1), Contract__c = dcontract2.Id, Services_Spend__c = 8);
+        Pipeline_Snapshot__c ps6 = new Pipeline_Snapshot__c(Source_Type__c = 'Contract', Month_Date__c = testDate.addMonths(-1), Contract__c = dcontract3.Id, Services_Spend__c = 11);
+        Pipeline_Snapshot__c ps7 = new Pipeline_Snapshot__c(Source_Type__c = 'Opportunity', Month_Date__c = testDate, Contract__c = dcontract3.Id, Services_Spend__c = 100);
+        insert new List<Pipeline_Snapshot__c> { ps1, ps2, ps3, ps4, ps5, ps6, ps7 };
 
         Test.startTest();
-        Database.executeBatch(new ForPeriodCalcSnapshotBatch(false), 50);
-        Test.stopTest();
+        ContractPipelineSnapshotController ctrl = new ContractPipelineSnapshotController();
+        ctrl.initPipelineSnapshot();
+        System.assertEquals(testDate, ctrl.lastMonthSnapshotDate);
+        System.assertEquals(3, ctrl.currentPSCount);
 
-        Pipeline_Snapshot__c psFromDB = [SELECT Id, Services_Spend_for_Period__c FROM Pipeline_Snapshot__c WHERE Id =: ps2.Id];
-        System.assertEquals(66, psFromDB.Services_Spend_for_Period__c);
-        psFromDB = [SELECT Id, Services_Spend_for_Period__c FROM Pipeline_Snapshot__c WHERE Id =: ps4.Id];
-        System.assertEquals(null, psFromDB.Services_Spend_for_Period__c);
-        psFromDB = [SELECT Id, Services_Spend_for_Period__c FROM Pipeline_Snapshot__c WHERE Id =: ps6.Id];
-        System.assertEquals(3, psFromDB.Services_Spend_for_Period__c);
+        List<Pipeline_Snapshot__c> testResult = ctrl.getSnpList();
+        System.assertEquals(3, testResult.size());
+        System.assertEquals(3, ctrl.pagination.resultSize);
+        System.assertEquals(10, ctrl.pagination.pageSize);
+        System.assertEquals(1, ctrl.pagination.pageNumber);
+        System.assertEquals(false, ctrl.pagination.hasNext);
+        System.assertEquals(false, ctrl.pagination.hasPrevious);
+        ctrl.runPipelineSnapshotJob();
+        Test.stopTest();
+        ctrl = new ContractPipelineSnapshotController();
+        ctrl.initPipelineSnapshot();
+        System.assertEquals(4, ctrl.currentPSCount); // 3 + 1 closed
     }
 
     @isTest
