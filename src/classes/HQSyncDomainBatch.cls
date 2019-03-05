@@ -25,6 +25,7 @@ public class HQSyncDomainBatch extends HQSyncBatch {
                 HQSyncDomainModel.DomanProjectSpaceWrapper projectSpaceMetadata = (HQSyncDomainModel.DomanProjectSpaceWrapper) parser.readValueAs(HQSyncDomainModel.DomanProjectSpaceWrapper.class);
 
                 Domain__c domainRec = projectSpaceMetadata.domain_properties.createDbObject(serverName, projectSpaceMetadata.calculated_properties);
+                domainRec.offset__c = this.currentOffset; //for debugging API purpose
                 domainRecMap.put(domainRec.id__c, domainRec);
 
                 Internal_Properties__c InternalPropRec = projectSpaceMetadata.domain_properties.internal.createDbObject(serverName);

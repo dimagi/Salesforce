@@ -15,8 +15,8 @@ public class HQSyncAccountingBatch extends HQSyncBatch {
         settings.Job_Helper_Field__c = customObject;
         update settings;
 
-        String lastRunDate = this.serverSettings.Last_Run_Date__c != null ?  this.serverSettings.Last_Run_Date__c.year() + '-' + this.serverSettings.Last_Run_Date__c.month() + '-'
-                                                    + this.serverSettings.Last_Run_Date__c.day() : '1990-1-1';
+        Date settingsDate = this.serverSettings.Last_Run_Date__c != null ? this.serverSettings.Last_Run_Date__c.addDays(-1) : Date.newInstance(1900, 1, 1);
+        String lastRunDate = settingsDate.year() + '-' + settingsDate.month() + '-' + settingsDate.day();
         this.parameters.put('last_modified__gte', lastRunDate);
     }
 
