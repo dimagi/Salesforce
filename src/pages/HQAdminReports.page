@@ -786,7 +786,7 @@
                                     <apex:facet name="footer">{!totalRow.cpAllWebUsers__c}</apex:facet>
                                     {!projectSpaceData.cpAllWebUsers__c}
                                 </apex:column>
-                                <apex:column headerValue="Notes">
+                                <apex:column headerValue="Notes" style="white-space: nowrap;">
                                 <apex:facet name="footer">---</apex:facet>
                                     {!projectSpaceData.Internal_Properties__r.notes__c}
                                 </apex:column>
