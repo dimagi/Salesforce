@@ -10,12 +10,14 @@ public class QueryBuilder {
     public static final String QB_LIMIT = 'LIMIT';
     public static final String QB_OFFSET = 'OFFSET';
     public static final String QB_LIKE = 'LIKE';
+    public static final String QB_INCLUDES = 'includes';
     public static final String QB_AND = 'AND';
     public static final String QB_OR = 'OR';
     public static final String QB_NULLS_LAST = 'NULLS LAST';
     public static final String QB_TEXT_TYPE = 'Text';
     public static final String QB_CHECKBOX_TYPE = 'Checkbox';
     public static final String QB_DATE_TYPE = 'Date';
+    public static final String QB_MULTISELECT_TYPE = 'Multiselect';
     public static final String QB_EQUAL = '=';
     public static final String QB_NOT_EQUAL = '!=';
     public static final String QB_GTE = '>=';
@@ -144,12 +146,16 @@ public class QueryBuilder {
             return this;
         }
 
-        if (values.size() == 1) {
-            return addAnd(fieldName,values.get(0), dataType);
-        }
-
         if (this.currentGroup == null) {
             this.currentGroup = new FilterGroup();
+        }
+
+        if (dataType == QB_MULTISELECT_TYPE) {
+            this.currentGroup.addFilter(new MultiselectFieldFilter(fieldName, values, !this.currentGroup.isEmpty() ? QB_AND : ''));
+            return this;
+        }
+        if (values.size() == 1) {
+            return addAnd(fieldName,values.get(0), dataType);
         }
         this.currentGroup.addFilter(new InListFieldFilter(fieldName, values, dataType, !this.currentGroup.isEmpty() ? QB_AND : ''));
         return this;
@@ -237,6 +243,30 @@ public class QueryBuilder {
 
         public String getFilter() {
             return String.format(stringToFormat, new List<String> {this.connector, this.fieldName, QB_LIKE, this.value});
+        }
+    }
+
+    public class MultiselectFieldFilter implements FieldFilter {
+
+        private final String stringToFormat = ' {0} {1} {2} ({3})';
+        private String fieldName;
+        private List<String> values;
+        private String connector;
+
+        public MultiselectFieldFilter(String fieldName, List<String> qValues, String connector) {
+            this.fieldName = fieldName;
+            this.values = new List<String>();
+            for (String value : qValues) {
+                if (value == null) {
+                    value = '';
+                }
+                this.values.add('\'\'' + value + '\'\'');
+            }
+            this.connector = connector;
+        }
+
+        public String getFilter() {
+            return String.format(stringToFormat, new List<String> {this.connector, this.fieldName, QB_INCLUDES, String.join(this.values, ',')});
         }
     }
 

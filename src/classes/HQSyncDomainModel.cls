@@ -337,7 +337,8 @@ public class HQSyncDomainModel {
             domainObj.billing_number__c = this.billing_number;
 
             if (this.deployment != null && this.deployment.countries != null) {
-                domainObj.Deployment_Countries__c = String.join(this.deployment.countries,',');
+                domainObj.Countries_Picklist__c = String.join(this.deployment.countries, ';');
+                domainObj.Deployment_Countries__c = String.join(this.deployment.countries, ',');
                 domainObj.Deployment_city__c = this.deployment.city;
                 domainObj.Deployment_date__c = this.deployment.x_date;
                 domainObj.Deployment_description__c = this.deployment.description;
