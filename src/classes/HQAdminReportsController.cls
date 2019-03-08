@@ -50,6 +50,9 @@ public class HQAdminReportsController {
 
     public List<Domain__c> getDomainTableData() {
         QueryBuilder qb = this.facetCtrl.getQueryBuilder();
+        if (this.facetsWasUpadated) {
+            this.tablePagination.resetPageNumber();
+        }
         qb.selectFrom('Domain__c').addColumns(HQAdminReportsController.reportColumns).setLimit(this.tablePagination.pageSize).setOffset(this.tablePagination.getOffsetValue());
         if (String.isNotBlank(this.sortField)) {
             qb.orderBy(this.sortField, (this.sortDir == false ? QueryBuilder.QB_ASC : QueryBuilder.QB_DESC), this.sortDir);

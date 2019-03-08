@@ -113,6 +113,7 @@ public class FacetController {
             }
 
             for (String val : nameValues) {
+                val = val != null ? val.replaceAll(';', ', ') : val;
                 Integer oldValue = mappingHelper.containsKey(val) ? mappingHelper.get(val) : 0;
                 Integer countVal = ((Decimal) (agRes.get('expr0'))).intValue();
                 mappingHelper.put(val, oldValue + countVal);
