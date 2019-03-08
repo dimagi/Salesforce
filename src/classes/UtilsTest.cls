@@ -240,6 +240,19 @@ public class UtilsTest {
     }
 
     @isTest
+    public static void queryBuilderShouldBuildMultiselectFilter() {
+        QueryBuilder qBuilder = new QueryBuilder('Domain__c');
+        qBuilder.addColumn('Id');
+        qBuilder.addColumns(new List<String> { 'Name', 'Server_Name__c' });
+        qBuilder.addAnd('custom_multiselect_1__c', new List<String> { 'Test1', 'Test2'}, QueryBuilder.QB_MULTISELECT_TYPE);
+        qBuilder.addAnd('custom_multiselect_2__c', new List<String> { 'Test2'}, QueryBuilder.QB_MULTISELECT_TYPE);
+        qBuilder.setLimit(250);
+        qBuilder.setOffset(500);
+        System.assertEquals('SELECT Id,Name,Server_Name__c FROM Domain__c WHERE custom_multiselect_1__c includes (\'Test1\',\'Test2\') AND custom_multiselect_2__c includes (\'Test2\') LIMIT 250 OFFSET 500',
+                                qBuilder.buildQuery());
+    }
+
+    @isTest
     public static void queryBuilderAllInOne() {
         QueryBuilder qBuilder = new QueryBuilder('Domain__c');
         qBuilder.addColumn('Id');
@@ -253,7 +266,8 @@ public class UtilsTest {
         qBuilder.addAnd('Server_Name__c', new List<String> { 'Test1', 'Test2'}, QueryBuilder.QB_TEXT_TYPE);
         qBuilder.addAnd('Name', 'Test3', QueryBuilder.QB_TEXT_TYPE);
         qBuilder.addLike('Simple__r.relation_string__c', 'my like');
-        System.assertEquals('SELECT Id,Name,Server_Name__c FROM Domain__c WHERE Server_Name__c IN (\'Test1\',\'Test2\') AND Name = \'Test3\' AND Simple__r.relation_string__c LIKE \'%my like%\' GROUP BY Server_Name__c,Name ORDER BY Server_Name__c ASC NULLS LAST,Name DESC LIMIT 50 OFFSET 1000', qBuilder.buildQuery());
+        System.assertEquals('SELECT Id,Name,Server_Name__c FROM Domain__c WHERE Server_Name__c IN (\'Test1\',\'Test2\') AND Name = \'Test3\' AND Simple__r.relation_string__c LIKE \'%my like%\' GROUP BY Server_Name__c,Name ORDER BY Server_Name__c ASC NULLS LAST,Name DESC LIMIT 50 OFFSET 1000',
+                                qBuilder.buildQuery());
     }
 
     public class CustomResponseMock implements HttpCalloutMock {

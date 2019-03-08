@@ -6,7 +6,10 @@ public class FacetController {
     public String domainNameSearch { get; set; }
 
     public QueryBuilder getQueryBuilder() {
-        QueryBuilder qb = new QueryBuilder('Domain__c');
+        return getQueryBuilder(new QueryBuilder('Domain__c'));
+    }
+
+    public QueryBuilder getQueryBuilder(QueryBuilder qb) {
         if (String.isNotBlank(this.domainNameSearch)) {
             qb.addLike('Name', this.domainNameSearch);
         }
@@ -63,13 +66,24 @@ public class FacetController {
     }
 
     private void reloadFacetValues(Facet facet, String dbQuery) {
-        List<FacetValue> result = new List<FacetValue>();
-        String effectiveName = facet.getFieldName();
+        List<FacetValue> result;
+        String effectiveName = facet.getFacetQueryField();
         if (effectiveName.contains('.')) {
             effectiveName = effectiveName.split('\\.')[1];
         }
 
-        for (AggregateResult agRes : Database.query(String.format(dbQuery, new List<String> {facet.getFieldName()}))) {
+        if (facet.getDataType() != 'Multiselect') {
+            result = getFacetValues(facet, String.format(dbQuery, new List<String> {facet.getFacetQueryField()}), facet.getFacetQueryField(), effectiveName);
+        } else {
+            result = getFacetValuesForMultiselect(String.format(dbQuery, new List<String> {facet.getFacetQueryField()}), facet.getFacetQueryField(), effectiveName);
+        }
+
+        facet.values = result;
+    }
+
+    private List<FacetValue> getFacetValues(Facet facet, String query, String fieldName, String effectiveName) {
+        List<FacetValue> result = new List<FacetValue>();
+        for (AggregateResult agRes : Database.query(query)) {
             String name;
 
             if (facet.getDataType() == 'Text') {
@@ -82,12 +96,43 @@ public class FacetController {
             Integer countVal = ((Decimal) (agRes.get('expr0'))).intValue();
             result.add(new FacetValue(name, countVal));
         }
- 
-        facet.values = result;
+        return result;
+    }
+
+    private List<FacetValue> getFacetValuesForMultiselect(String query, String fieldName, String effectiveName) {
+        List<FacetValue> result = new List<FacetValue>();
+        Map<String, Integer> mappingHelper = new Map<String, Integer>();
+        for (AggregateResult agRes : Database.query(query)) {
+            List<String> nameValues;
+            String name = (String) agRes.get(effectiveName);
+            if (!String.isBlank(name) && name.contains(',')) {
+                name = name.replaceAll(', ', ';');
+                nameValues = name.split(',');
+            } else {
+                nameValues = new List<String> { name };
+            }
+
+            for (String val : nameValues) {
+                val = val != null ? val.replaceAll(';', ', ') : val;
+                Integer oldValue = mappingHelper.containsKey(val) ? mappingHelper.get(val) : 0;
+                Integer countVal = ((Decimal) (agRes.get('expr0'))).intValue();
+                mappingHelper.put(val, oldValue + countVal);
+            }
+        }
+
+        for (String key : mappingHelper.keySet()) {
+             result.add(new FacetValue(key, mappingHelper.get(key)));
+        }
+
+        return result;
     }
 
     private static Facet createFacet(String name, String dataType, String fieldName, FacetController facetCtrl) {
-        Facet facet = new Facet(name, dataType, fieldName);
+        return createFacet(name, dataType, fieldName, fieldName, facetCtrl);
+    }
+
+    private static Facet createFacet(String name, String dataType, String fieldName, String queryFieldName, FacetController facetCtrl) {
+        Facet facet = new Facet(name, dataType, fieldName, queryFieldName);
         facetCtrl.dataTypeMapping.put(fieldName, dataType);
         return facet;
     }
@@ -120,7 +165,7 @@ public class FacetController {
         fController.getFacets().add(facetGroup);
         // Location
         facetGroup = new FacetGroup('Location');
-        //facetGroup.addFacet(createFacet('Country', 'Text', 'Deployment_Countries__c'));
+        facetGroup.addFacet(createFacet('Country', 'Multiselect', 'Countries_Picklist__c', 'Countries_Wrapper__c', fController));
         facetGroup.addFacet(createFacet('Region', 'Text', 'Deployment_region__c', fController));
         facetGroup.addFacet(createFacet('City', 'Text', 'Deployment_city__c', fController));
         facetGroup.addFacet(createFacet('Workshop Region', 'Text', 'Internal_Properties__r.workshop_region__c', fController));
@@ -187,11 +232,21 @@ public class FacetController {
 
         private final String dataType;
         private final String fieldName;
+        private final String facetQueryField;
 
         public Facet(String name, String dataType, String fieldName) {
+            this(name, dataType, fieldName, fieldName);
+        }
+
+        public Facet(String name, String dataType, String fieldName, String facetQueryField) {
             this.name = name;
             this.dataType = dataType;
             this.fieldName = fieldName;
+            this.facetQueryField = facetQueryField;
+        }
+
+        public String getFacetQueryField() {
+            return this.facetQueryField;
         }
 
         public String getFieldName() {
