@@ -14,13 +14,22 @@
         <apex:form >
             <apex:inputFile contentType="csv" value="{!fileContent}" filename="{!fileName}" /><br/>
             <br />
-            <apex:commandButton value="Parse CSV file" id="parseButton" action="{!parseCsvFile}" status="loadingDiv" />
-        </apex:form>
-
-        <apex:form id="tableDataForm">
+            <apex:commandButton value="Parse and Upload CSV file" id="parseButton" action="{!parseCsvFile}" status="loadingDiv" />
+            <br />
             <br />
             <apex:outputPanel layout="block" id="messages">
                 <apex:pageMessages />
+            </apex:outputPanel>
+            <br />
+        </apex:form>
+
+        <apex:form id="tableDataForm">
+            <apex:actionPoller action="{!loadWorkCardJobStatus}" enabled="{!workCardJobStatus.isRunning}"
+                                    reRender="tableDataForm" interval="5"/>
+
+            <apex:outputPanel id="jobLoader" rendered="{!workCardJobStatus.isRunning}">
+                <apex:image url="/img/loading32.gif" height="10px" />
+                FTE Tracker is currently calculating time, {!workCardJobStatus.jobName} : {!workCardJobStatus.jobItemsProcessed}/{!workCardJobStatus.totalJobItems}
             </apex:outputPanel>
             <br />
 
@@ -34,98 +43,11 @@
                 </apex:facet>
             </apex:actionstatus>
 
-            <apex:actionPoller action="{!loadWorkCardJobStatus}" enabled="{!workCardJobStatus.isRunning}"
-                                    reRender="tableDataForm" interval="5"/>
-
-            <apex:outputPanel id="jobLoader" rendered="{!workCardJobStatus.isRunning}">
-                <apex:image url="/img/loading32.gif" height="10px" />
-                FTE Tracker is currently calculating time, {!workCardJobStatus.jobName} : {!workCardJobStatus.jobItemsProcessed}/{!workCardJobStatus.totalJobItems}
-            </apex:outputPanel>
-            <br />
-
             <apex:outputPanel rendered="{!!workCardJobStatus.isRunning}" >
-                <apex:pageBlock title="CSV Data to process" id="tableSection">
-                    <apex:commandButton value="Remove parsed data" id="removeButtonData" action="{!removeFTEDataRecords}" status="loadingDiv" reRender="tableDataForm" disabled="{!fteDataPagination.resultSize <= 0}" />
-                    <apex:commandButton value="Run CSV data processing" id="processButton" action="{!processFTEDataRecords}" status="loadingDiv" reRender="tableDataForm" disabled="{!fteDataPagination.resultSize <= 0}" />
-
-                    <br />
-                    <apex:pageBlockTable id="fteDataTable" value="{!FTEDataRecords}" var="fteData" >
-                        <apex:column headerValue="Client" >
-                            <apex:outputLink value="/{!fteData.Contract__c}" target="_blank" >{!fteData.Contract__r.Name}</apex:outputLink>
-                        </apex:column>
-                        <apex:column headerValue="Employee" >
-                            <apex:outputLink value="/{!fteData.Employee__c}" target="_blank" >{!fteData.Employee__r.Name}</apex:outputLink>
-                        </apex:column>
-                        <apex:column headerValue="CSV Line Number" value="{!fteData.Line_Number__c}" />
-                        <apex:column headerValue="Year" value="{!fteData.Year_Text__c}" />
-                        <apex:column headerValue="Jan">
-                            {!IF(fteData.Month_1__c >= 0, fteData.Month_1__c,'')}
-                        </apex:column>
-                        <apex:column headerValue="Feb">
-                            {!IF(fteData.Month_2__c >= 0, fteData.Month_2__c,'')}
-                        </apex:column>
-                        <apex:column headerValue="Mar">
-                            {!IF(fteData.Month_3__c >= 0, fteData.Month_3__c,'')}
-                        </apex:column>
-                        <apex:column headerValue="Apr">
-                            {!IF(fteData.Month_4__c >= 0, fteData.Month_4__c,'')}
-                        </apex:column>
-                        <apex:column headerValue="May">
-                            {!IF(fteData.Month_5__c >= 0, fteData.Month_5__c,'')}
-                        </apex:column>
-                        <apex:column headerValue="Jun">
-                            {!IF(fteData.Month_6__c >= 0, fteData.Month_6__c,'')}
-                        </apex:column>
-                        <apex:column headerValue="Jul">
-                            {!IF(fteData.Month_7__c >= 0, fteData.Month_7__c,'')}
-                        </apex:column>
-                        <apex:column headerValue="Aug">
-                            {!IF(fteData.Month_8__c >= 0, fteData.Month_8__c,'')}
-                        </apex:column>
-                        <apex:column headerValue="Sep">
-                            {!IF(fteData.Month_9__c >= 0, fteData.Month_9__c,'')}
-                        </apex:column>
-                        <apex:column headerValue="Ocb">
-                            {!IF(fteData.Month_10__c >= 0, fteData.Month_10__c,'')}
-                        </apex:column>
-                        <apex:column headerValue="Nov">
-                            {!IF(fteData.Month_11__c >= 0, fteData.Month_11__c,'')}
-                        </apex:column>
-                        <apex:column headerValue="Dec">
-                            {!IF(fteData.Month_12__c >= 0, fteData.Month_12__c,'')}
-                        </apex:column>
-                    </apex:pageBlockTable>
-
-                     <!-- Pagination -->
-                    <table style="width: 100%">
-                        <tr>
-                            <td>Page: <apex:outputText value=" {!fteDataPagination.pageNumber} of {!CEILING(fteDataPagination.resultSize / fteDataPagination.pageSize)}"/></td>
-                            <td align="center">
-                                <apex:commandLink status="loadingDiv" action="{!fteDataPagination.previousPage}" value="« Previous" rendered="{!fteDataPagination.hasPrevious}" reRender="tableDataForm" />
-                                <apex:outputText style="color: #ccc;" value="« Previous" rendered="{!NOT(fteDataPagination.hasPrevious)}"/>
-                                &nbsp;&nbsp;
-                                <apex:commandLink status="loadingDiv" action="{!fteDataPagination.nextPage}" value="Next »" rendered="{!fteDataPagination.hasNext}" reRender="tableDataForm" />
-                                <apex:outputText style="color: #ccc;" value="Next »" rendered="{!NOT(fteDataPagination.hasNext) }"/>
-                            </td>
-                            <td align="right">
-                                Records per page:&nbsp;&nbsp;
-                                <apex:selectList value="{!fteDataPagination.pageSize }" size="1" onchange="resetPageNum();" >
-                                    <apex:selectOption itemValue="10" itemLabel="10"/>
-                                    <apex:selectOption itemValue="20" itemLabel="20"/>
-                                    <apex:selectOption itemValue="50" itemLabel="50"/>
-                                    <apex:actionSupport event="onchange" reRender="tableDataForm"/>
-                                </apex:selectList>
-                            </td>
-                        </tr>
-                    </table>
-                    <apex:actionFunction status="loadingDiv" action="{!fteDataPagination.resetPageNumber}" name="resetPageNum" reRender="tableDataForm" />
-                </apex:pageBlock>
-
                 <apex:pageBlock title="Last CSV Data process errors" id="tableStatusSection">
                     <apex:commandButton value="Remove process errors" id="removeButtonStatus" action="{!removeFTEDataStatusRecords}" status="loadingDiv" reRender="tableStatusSection" disabled="{!fteStatusPagination.resultSize <= 0}"/>
                     <br />
                     <apex:pageBlockTable id="fteDataStatusTable" value="{!FTEStatusRecords}" var="fteStatusData" styleClass="fteErrorTableClass" >
-                        <apex:column headerValue="CSV File Line" value="{!fteStatusData.Line_Number_Text__c}" />
                         <apex:column headerValue="Status" value="{!fteStatusData.Status__c}" />
                         <apex:column headerValue="Message" value="{!fteStatusData.Status_Message__c}" />
                     </apex:pageBlockTable>

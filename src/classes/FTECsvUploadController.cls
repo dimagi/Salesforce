@@ -5,27 +5,16 @@ public class FTECsvUploadController extends FTEController {
 
     public static final String COLUMN_SEPARATOR = ',';
 
-    public Blob fileContent { get; set;}
-    public String fileName { get; set;}
+    public Blob fileContent { get; set; }
+    public String fileName { get; set; }
+    public Pagination fteStatusPagination { get; set; }
+    public Map<Id, FTEUploadData> records { get; set; }
 
-    public Pagination fteDataPagination { get; set;}
-    public Pagination fteStatusPagination { get; set;}
-
-    private Set<String> employeeNameSet;
     private Map<String, SFDC_Employee__c> employeeMap;
 
     public FTECsvUploadController() {
-        this.fteDataPagination = new Pagination();
         this.fteStatusPagination = new Pagination();
         loadWorkCardJobStatus();
-    }
-
-    public List<FTE_Data_Record__c> getFTEDataRecords() {
-        List<FTE_Data_Record__c> result = [SELECT Year__c, Year_Text__c, Month_1__c, Month_2__c, Month_3__c, Month_4__c, Month_5__c, Month_6__c, Month_7__c, Month_8__c, Month_9__c,
-                                            Month_10__c, Month_11__c, Month_12__c, Message__c, Employee__c, Employee__r.Name, Processed__c, Contract__c, Contract__r.Name, Line_Number__c
-                                            FROM FTE_Data_Record__c ORDER BY Line_Number__c LIMIT : this.fteDataPagination.pageSize OFFSET : this.fteDataPagination.getOffsetValue()];
-        this.fteDataPagination.handleResulSize([SELECT count() FROM FTE_Data_Record__c]);
-        return result;
     }
 
     public List<FTE_Data_Record_Status__c> getFTEStatusRecords() {
@@ -33,14 +22,6 @@ public class FTECsvUploadController extends FTEController {
                                                     ORDER BY Line_Number__c LIMIT : this.fteStatusPagination.pageSize OFFSET : this.fteStatusPagination.getOffsetValue()];
         this.fteStatusPagination.handleResulSize([SELECT count() FROM FTE_Data_Record_Status__c]);
         return result;
-    }
-
-    public void removeFTEDataRecords() {
-        List<FTE_Data_Record__c> toRemove = [SELECT Id FROM FTE_Data_Record__c];
-        if (toRemove.size() > 0) {
-            delete toRemove;
-            ApexPages.getMessages().clear();
-        }
     }
 
     public void removeFTEDataStatusRecords() {
@@ -51,20 +32,22 @@ public class FTECsvUploadController extends FTEController {
         }
     }
 
-    public void processFTEDataRecords() {
+    public Boolean processFTEDataRecords() {
         loadWorkCardJobStatus();
-        if (this.workCardJobStatus.isRunning == false && this.fteDataPagination.resultSize > 0) {
+        if (this.workCardJobStatus.isRunning == false) {
             removeFTEDataStatusRecords(); // Remove status of last batch upload
 
             if (!Test.isRunningTest()) {
-                Database.executeBatch(new FTEHoursUploadBatch(), 1);
+                Database.executeBatch(new FTEHoursUploadBatch(this.records.values()), 1);
             } else {
-                Database.executeBatch(new FTEHoursUploadBatch()); // no more then one batch execute can be invoked from test
+                Database.executeBatch(new FTEHoursUploadBatch(this.records.values())); // no more then one batch execute can be invoked from test
             }
 
             loadWorkCardJobStatus();
             ApexPages.getMessages().clear();
+            return true;
         }
+        return false;
     }
 
     public PageReference parseCsvFile() {
@@ -78,9 +61,6 @@ public class FTECsvUploadController extends FTEController {
             ApexPages.addMessage(new ApexPages.message(ApexPages.severity.ERROR, 'Choose file from your computer to upload.'));
             return null;
         }
-
-        removeFTEDataRecords();
-        this.employeeNameSet = new Set<String>();
 
         List<FTE_Data_Record__c> fteData = new List<FTE_Data_Record__c>();
         List<String> fileRows;
@@ -149,7 +129,7 @@ public class FTECsvUploadController extends FTEController {
         }
 
         csvPattern = Pattern.compile('(\\d*\\.\\d+)|(\\d+\\.\\d*)');
-        List<FTE_Data_Record__c> records = new List<FTE_Data_Record__c>();
+        this.records = new Map<Id, FTEUploadData>();
         loadEmployeeMap();
 
         Boolean wasData = false;
@@ -162,10 +142,13 @@ public class FTECsvUploadController extends FTEController {
                 return null;
             }
 
-            SObject sObj = new FTE_Data_Record__c(Month_1__c = -1, Month_2__c = -1, Month_3__c = -1, Month_4__c = -1, Month_5__c = -1, Month_6__c = -1,
-                                                  Month_7__c = -1,Month_8__c = -1, Month_9__c = -1, Month_10__c = -1, Month_11__c = -1, Month_12__c = -1,
-                                                  Year__c = year, Contract__c = fteContract.Id, Employee__c = this.employeeMap.get(employeeName).Id, Line_Number__c = lineNum,
-                                                  Message__c = contractName + ' ' + employeeName + ' : ' + lineNum);
+            FTEUploadData emplDataRec = null;
+            Id emplId = this.employeeMap.get(employeeName).Id;
+            if (this.records.containsKey(emplId)) {
+                emplDataRec = this.records.get(emplId);
+            } else {
+                emplDataRec = new FTEUploadData(emplId, fteContract.Id, employeeName, contractName, year);
+            }
 
             for (Integer i = (1 + columnsToSkip); i < monthMapping.size() + 1 + columnsToSkip; i++) {
                 String strHelper = '';
@@ -175,26 +158,28 @@ public class FTECsvUploadController extends FTEController {
 
                 Integer index = monthMapping.get(i - 1 - columnsToSkip);
                 if (strHelper.isNumeric() || csvPattern.matcher(strHelper).matches()) {
-                    sObj.put('Month_' + index + '__c', Decimal.valueOf(strHelper));
+                    emplDataRec.addMonthTime(index, Decimal.valueOf(strHelper));
                     wasData = true;
-                } else if (String.isBlank(strHelper)) {
-                    sObj.put('Month_' + index + '__c',-1);
-                } else {
+                } else if (!String.isBlank(strHelper)) {
                     ApexPages.addMessage(new ApexPages.message(ApexPages.severity.ERROR, 'Line ' + lineNum + ' : ' + 'bad number format - ' + strHelper));
                     return null;
                 }
             }
-            records.add((FTE_Data_Record__c) sObj);
+            this.records.put(emplId, emplDataRec);
         }
 
-        if (wasData == true && records.size() > 0) {
-            insert records;
-        } else {
+        if (wasData == false || this.records.size() == 0) {
             ApexPages.addMessage(new ApexPages.message(ApexPages.severity.ERROR, 'Uploaded file does not contain data'));
             return null;
         }
 
-        ApexPages.addMessage(new ApexPages.message(ApexPages.severity.INFO, 'CSV file ' + fileName + ' was parsed.'));
+        Boolean success = processFTEDataRecords();
+        if (success) {
+            ApexPages.addMessage(new ApexPages.message(ApexPages.severity.INFO, 'CSV file ' + fileName + ' was parsed. Upload job was scheduled, please wait for results.'));
+        } else {
+            ApexPages.addMessage(new ApexPages.message(ApexPages.severity.ERROR, 'Cannot upload csv file. FTE Tracker is calculating time.'));
+        }
+
         return null;
     }
 
@@ -232,11 +217,6 @@ public class FTECsvUploadController extends FTEController {
             ApexPages.addMessage(new ApexPages.message(ApexPages.severity.ERROR, 'Line ' + lineNum + ' : ' + 'cannot find employee with name - ' + employeeName));
             return false;
         }
-        if (this.employeeNameSet.contains(employeeName)) {
-            ApexPages.addMessage(new ApexPages.message(ApexPages.severity.ERROR, 'Line ' + lineNum + ' : ' + 'duplicated employee name - ' + employeeName));
-            return false;
-        }
-        this.employeeNameSet.add(employeeName);
         return true;
     }
 

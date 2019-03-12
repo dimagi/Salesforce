@@ -1000,10 +1000,10 @@ public class FTETrackerTest {
         csvUpload.parseCsvFile();
         Test.stopTest();
 
-        System.assertEquals(3, [SELECT count() FROM FTE_Data_Record__c]);
-        assertFTEDataRecord('Other Employee', fteYear, 'FTE Contract 1', 3, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12);
-        assertFTEDataRecord('FTE Employee', fteYear, 'FTE Contract 1', 4, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14);
-        assertFTEDataRecord('Yyy Employee', fteYear, 'FTE Contract 1', 5, 12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1);
+        System.assertEquals(3, csvUpload.records.size());
+        assertFTEDataRecord(csvUpload.records.values(), 'Other Employee', fteYear, 'FTE Contract 1', 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12);
+        assertFTEDataRecord(csvUpload.records.values(), 'FTE Employee', fteYear, 'FTE Contract 1', 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14);
+        assertFTEDataRecord(csvUpload.records.values(), 'Yyy Employee', fteYear, 'FTE Contract 1', 12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1);
     }
 
     @isTest
@@ -1024,10 +1024,7 @@ public class FTETrackerTest {
         csvUpload.fileName = 'Test file name';
 
         csvUpload.parseCsvFile();
-        System.assertEquals(3, [SELECT count() FROM FTE_Data_Record__c]);
 
-        csvUpload.getFTEDataRecords();
-        csvUpload.processFTEDataRecords();
         Test.stopTest();
 
         for (FTE_Data_Record_Status__c rec : [SELECT Status__c, Status_Message__c, Line_Number__c, Line_Number_Text__c FROM FTE_Data_Record_Status__c]) {
@@ -1079,10 +1076,6 @@ public class FTETrackerTest {
         csvUpload.fileName = 'Test file name';
 
         csvUpload.parseCsvFile();
-        System.assertEquals(3, [SELECT count() FROM FTE_Data_Record__c]);
-
-        csvUpload.getFTEDataRecords();
-        csvUpload.processFTEDataRecords();
         Test.stopTest();
 
         for (FTE_Data_Record_Status__c rec : [SELECT Status__c, Status_Message__c, Line_Number__c, Line_Number_Text__c FROM FTE_Data_Record_Status__c]) {
@@ -1372,27 +1365,34 @@ public class FTETrackerTest {
         Test.stopTest();
     }
 
-    private static void assertFTEDataRecord(String emplName, Integer fteYear, String contractName, Integer lineNum, Decimal m1, Decimal m2, Decimal m3, Decimal m4,
-                                                Decimal m5, Decimal m6, Decimal m7, Decimal m8, Decimal m9, Decimal m10, Decimal m11, Decimal m12) {
-        FTE_Data_Record__c rec = [SELECT Year__c, Year_Text__c, Month_1__c, Month_2__c, Month_3__c, Month_4__c, Month_5__c, Month_6__c, Month_7__c, Month_8__c, Month_9__c,
-                                Month_10__c, Month_11__c, Month_12__c, Message__c, Employee__c, Employee__r.Name, Processed__c, Contract__c, Contract__r.Name, Line_Number__c
-                                FROM FTE_Data_Record__c WHERE Employee__r.Name =: emplName LIMIT 1];
-        System.assertEquals(fteYear, rec.Year__c);
-        System.assertEquals(emplName, rec.Employee__r.Name);
-        System.assertEquals(contractName,  rec.Contract__r.Name);
-        System.assertEquals(lineNum, rec.Line_Number__c);
-        System.assertEquals(m1, rec.Month_1__c);
-        System.assertEquals(m2, rec.Month_2__c);
-        System.assertEquals(m3, rec.Month_3__c);
-        System.assertEquals(m4, rec.Month_4__c);
-        System.assertEquals(m5, rec.Month_5__c);
-        System.assertEquals(m6, rec.Month_6__c);
-        System.assertEquals(m7, rec.Month_7__c);
-        System.assertEquals(m8, rec.Month_8__c);
-        System.assertEquals(m9, rec.Month_9__c);
-        System.assertEquals(m10, rec.Month_10__c);
-        System.assertEquals(m11, rec.Month_11__c);
-        System.assertEquals(m12, rec.Month_12__c);
+    private static void assertFTEDataRecord(List<FTEUploadData> elements, String emplName, Integer fteYear, String contractName,
+                                                Decimal m1, Decimal m2, Decimal m3, Decimal m4, Decimal m5, Decimal m6,
+                                                Decimal m7, Decimal m8, Decimal m9, Decimal m10, Decimal m11, Decimal m12) {
+        FTEUploadData rec;
+        for (FTEUploadData el : elements) {
+            if (el.getEmployeeName() == emplName) {
+                if (rec != null) {
+                    System.assert(false);
+                }
+                rec = el;
+            }
+        }
+
+        System.assertEquals(fteYear, rec.getFTEYear());
+        System.assertEquals(emplName, rec.getEmployeeName());
+        System.assertEquals(contractName,  rec.getContractName());
+        System.assertEquals(m1, rec.getMonthTime(1));
+        System.assertEquals(m2, rec.getMonthTime(2));
+        System.assertEquals(m3, rec.getMonthTime(3));
+        System.assertEquals(m4, rec.getMonthTime(4));
+        System.assertEquals(m5, rec.getMonthTime(5));
+        System.assertEquals(m6, rec.getMonthTime(6));
+        System.assertEquals(m7, rec.getMonthTime(7));
+        System.assertEquals(m8, rec.getMonthTime(8));
+        System.assertEquals(m9, rec.getMonthTime(9));
+        System.assertEquals(m10, rec.getMonthTime(10));
+        System.assertEquals(m11, rec.getMonthTime(11));
+        System.assertEquals(m12, rec.getMonthTime(12));
     }
 
     private static String buildDataRow(String employeeName, Integer month, Decimal value) {
