@@ -4,6 +4,8 @@ public class FacetController {
     private Map<String, List<String>> currentFilters;
     public Map<String, String> dataTypeMapping { get; set;}
     public String domainNameSearch { get; set; }
+    public Map<String, String> predefindedNotEqualFilters { get; set; }
+
 
     public QueryBuilder getQueryBuilder() {
         return getQueryBuilder(new QueryBuilder('Domain__c'));
@@ -16,6 +18,9 @@ public class FacetController {
         for (String fieldName : this.currentFilters.keySet()) {
             List<String> qValues = this.currentFilters.get(fieldName);
             qb.addAnd(fieldName, qValues, this.dataTypeMapping.get(fieldName));
+        }
+        for (String field : predefindedNotEqualFilters.keySet()) {
+            qb.addAnd(field, predefindedNotEqualFilters.get(field), QueryBuilder.QB_TEXT_TYPE, QueryBuilder.QB_NOT_EQUAL);
         }
         return qb;
     }
@@ -144,11 +149,7 @@ public class FacetController {
         this.facets = new List<FacetGroup>(); // we generate filters for page, we hardcoded them to spped it up, we don't want fetch everything from database we have a lot things to calculate
         this.dataTypeMapping = new Map<String, String>();
         this.currentFilters = new Map<String, List<String>>();
-    }
-
-    public static FacetController buildFacetControllerForMapView(String jsonFilters) {
-        // TODO end this factory method
-        return null;
+        this.predefindedNotEqualFilters = new  Map<String, String>();
     }
 
     public static FacetController buildFacetController(String jsonFilters) {
@@ -205,6 +206,30 @@ public class FacetController {
         facetGroup.addFacet(createFacet('Public Data', 'Checkbox', 'Internal_Properties__r.can_use_data__c', fController));
         facetGroup.addFacet(createFacet('Custom Eula', 'Checkbox', 'Internal_Properties__r.custom_eula__c', fController));
         fController.getFacets().add(facetGroup);
+
+        return fController;
+    }
+
+    public static FacetController buildMapFacetController(String jsonFilters) {
+        FacetController fController = new FacetController();
+        if (String.isNotBlank(jsonFilters)) {
+            fController.setCurrentFilteringJSON(jsonFilters);
+        }
+        fController.predefindedNotEqualFilters.put('Countries_Picklist__c', null);
+
+        // Location
+        FacetGroup facetGroup = new FacetGroup('Location');
+        facetGroup.addFacet(createFacet('Country', 'Multiselect', 'Countries_Picklist__c', 'Countries_Wrapper__c', fController));
+        fController.getFacets().add(facetGroup);
+
+        // Type
+        facetGroup = new FacetGroup('Type');
+        facetGroup.addFacet(createFacet('Sector', 'Text', 'Internal_Properties__r.area__c', fController));
+        facetGroup.addFacet(createFacet('Sub-Sector', 'Text', 'Internal_Properties__r.sub_area__c', fController));
+        fController.getFacets().add(facetGroup);
+
+        fController.dataTypeMapping.put('is_test__c', 'Text');
+        fController.dataTypeMapping.put('cpIsActive__c', 'Checkbox');
 
         return fController;
     }

@@ -10,6 +10,7 @@
     <script src="https://unpkg.com/leaflet@1.4.0/dist/leaflet.js"
             integrity="sha512-QVftwZFqvtRNi0ZyCtsznlKSWOStnDORoefr1enyq5mVL4tmKB3S/EnC3rRJcxCPavG10IcrVGSmPh6Qw5lwrg=="
             crossorigin="anonymous"></script>
+    <apex:includeScript value="{!$Resource.hqAdminReports}"/>
 
     <style type="text/css">
         .main-block {
@@ -168,14 +169,37 @@
             margin-bottom: 0px;
             margin-top: 0px;
         }
+        .leaflet-right {
+            right: 25px;
+        }
+        .leaflet-left {
+            left: 25px;
+        }
     </style>
 
     <script type="text/javascript">
         $j = jQuery.noConflict();
 
+        var dataController, addStats;
+
         $j(document).ready(function() {
-            // set calculated height for map : 
-            $j("#map").height($j("#map").width() * 0.6);
+            choosenFilters = {};
+            lastChoosenFilters = choosenFilters;
+            showLoader('#facets-loader');
+            HQAdminReportsProjectMapController.loadReportMapFacets(JSON.stringify(lastChoosenFilters), function(result, event){
+                if(event.status) {
+                    filters = result;
+                    generateFilters();
+                    hideLoader('#facets-loader');
+                }
+            });
+
+            loadMap();
+        });
+
+        function loadMap() {
+            // set calculated height for map :
+            $j("#map").height($j("#map").width() * 0.45);
 
             // courtesy of http://colorbrewer2.org/
             var COUNTRY_COLORS = ['#fef0d9','#fdd49e','#fdbb84','#fc8d59','#e34a33','#b30000'];
@@ -191,7 +215,7 @@
                 }
             }
 
-            var dataController = function () {
+            dataController = function () {
                 var that = {};
                 var maxNumProjects = 0;
                 var maxNumUsers = 0;
@@ -202,12 +226,22 @@
                 var is_project_count_map = true;
 
                 that.refreshProjectData = function (filter, callback) {
-                    projects_per_country = 3;//data.country_projs_count;
-                    users_per_country = 12; //data.users_per_country;
-                    totalNumProjects = 43000; //data.total_num_projects;
-                    maxNumProjects = 233;
-                    colorAll();
-                    callback();
+                    HQAdminReportsProjectMapController.loadMapData(JSON.stringify(lastChoosenFilters), function(result, event){
+                        if(event.status) {
+                            maxNumUsers = result.activeMobileUsers;
+                            totalNumProjects = result.activeProjects;
+
+                            projects_per_country = result.countryMap;
+                            maxNumProjects = 0;
+
+                            users_per_country = {};
+                            maxNumUsers = 0;
+                            colorAll();
+                            if (callback) {
+                                callback();
+                            }
+                        }
+                    });
                 };
 
                 that.getCount = function (countryName) {
@@ -265,7 +299,7 @@
             var countriesGeo;
             // A lot of the styling work here is modeled after http://leafletjs.com/examples/choropleth.html
             var map = L.map('map').setView([0, 0], 3);
-            var mapId = 'dimagi/cirqobc2w0000g4ksj9dochrm';
+            var mapId = 'dimagi/cirqobc2w0000g4ksj9dochrm'; //TODO move to settings
 
             var southWest = L.latLng(-80.0, -180.0),
                 northEast = L.latLng(85.0, 180.0),
@@ -391,7 +425,6 @@
 
             // add a legend
             var legend = L.control({position: 'bottomleft'});
-
             legend.onAdd = function () {
                 var div = L.DomUtil.create('div', 'info legend');
                 var thresholds;
@@ -417,28 +450,40 @@
                                  + (thresholds[thresholds.length - 1] + 1) + '+';
                 return div;
             };
-        
             legend.addTo(map);
 
-            var stats = L.control({position: 'bottomright'});
-
-            stats.onAdd = function () {
-                var div = L.DomUtil.create('div', 'info legend');
-                div.innerHTML += '<p><b>Statistics</b></p>';
-                div.innerHTML += '<p>Number of Active Countries: ' + dataController.getNumActiveCountries() +  '</p>';
-                div.innerHTML += '<p>Number of Active Mobile Users: ' + dataController.getNumUsers() +  '</p>';
-                div.innerHTML += '<p>Number of Active Projects: ' + dataController.getNumProjects() +  '</p>';
-                div.innerHTML += '<br><p><em> Active: A project or user submitted a form in past 30 days.</em></p>';
-                return div;
-            };
+            addStats = function addStats() {
+                var stats = L.control({position: 'bottomright'});
+                stats.onAdd = function () {
+                    var div = L.DomUtil.create('div', 'info legend');
+                    div.innerHTML += '<p><b>Statistics</b></p>';
+                    div.innerHTML += '<p>Number of Active Countries: ' + dataController.getNumActiveCountries() +  '</p>';
+                    div.innerHTML += '<p>Number of Active Mobile Users: ' + dataController.getNumUsers() +  '</p>';
+                    div.innerHTML += '<p>Number of Active Projects: ' + dataController.getNumProjects() +  '</p>';
+                    div.innerHTML += '<br><p><em> Active: A project or user submitted a form in past 30 days.</em></p>';
+                    return div;
+                };
+                stats.addTo(map);
+            }
 
             $j.get("https://raw.githubusercontent.com/dimagi/world.geo.json/master/countries.geo.json", function (data) {
                 countriesGeo = L.geoJson(JSON.parse(data), {style: style, onEachFeature: onEachFeature}).addTo(map);
-                dataController.refreshProjectData({}, function () {
-                    stats.addTo(map);
-                });
+                dataController.refreshProjectData({}, addStats);
             });
-        });
+        }
+
+        function applyFilters() {
+            lastChoosenFilters = choosenFilters;
+            showLoader('#facets-loader');
+            dataController.refreshProjectData({});
+            HQAdminReportsProjectMapController.loadReportMapFacets(JSON.stringify(lastChoosenFilters), function(result, event) {
+                if(event.status) {
+                    filters = result;
+                    rebuildFilters();
+                    hideLoader('#facets-loader');
+                }
+            });
+        }
     </script>
 
     <apex:form >
@@ -449,12 +494,12 @@
                         <h2>Reports : </h2>
                     </div>
                     <div class="msidebarContent">
-                        <!-- <apex:repeat value="{!supportedReportsList}" var="reportKey">
-                            <a class="msidebarElement {!IF(reportKey == reportName,'msidebarElementOpened', '')}" href="HQAdminReports?report={!reportKey}">
+                        <apex:repeat value="{!supportedReportsList}" var="reportKey">
+                            <a class="msidebarElement" href="HQAdminReports?report={!reportKey}">
                                 {!supportedReports[reportKey]}
                             </a>
-                        </apex:repeat>-->
-                        <a class="msidebarElement" href="HQAdminReportsProjectMap">Active Project Map</a>
+                        </apex:repeat>
+                        <a class="msidebarElement msidebarElementOpened" href="HQAdminReportsProjectMap">Active Project Map</a>
                     </div>
                 </div>
                 <div class="msidebar">
@@ -466,11 +511,6 @@
                             <img src="{!$Resource.BrokenCircle}" title="Please Wait..."/>
                         </div>
                         <input type="button" class="btn msidebarRow" onclick="applyFilters();" value="Apply" /><br/>
-                        <!--<apex:inputText styleClass="msidebarRow" value="{!facetCtrl.domainNameSearch}" id="searchDomainText" onkeydown="if(event.keyCode == 13) { this.blur(); applyFilters(); }"/>
-                        <apex:actionFunction action="{!updateFacets}" name="searchDomainJs" status="loadingDiv"
-                                     reRender="apex-data-container,pagination-panel,facetDataElement,loadedFilters,domains-graph-navigation,domain-graph-data,test-panel-id">
-                        <apex:param name="currentFilteringJSON" value="" assignTo="{!facetCtrl.currentFilteringJSON}" />
-                        </apex:actionFunction>-->
                         <div id="facet-container"></div>
                     </div>
                 </div>

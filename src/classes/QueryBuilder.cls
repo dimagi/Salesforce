@@ -137,7 +137,7 @@ public class QueryBuilder {
         if (this.currentGroup == null) {
             this.currentGroup = new FilterGroup();
         }
-        this.currentGroup.addFilter(new EqualFieldFilter(fieldName, value, dataType, !this.currentGroup.isEmpty() ? QB_AND : '', operator));
+        this.currentGroup.addFilter(new EqualFieldFilter(fieldName, value, (dataType != null ? dataType : QB_TEXT_TYPE), !this.currentGroup.isEmpty() ? QB_AND : '', operator));
         return this;
     }
 
