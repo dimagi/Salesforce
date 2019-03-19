@@ -1,6 +1,7 @@
 public class HQAdminReportsProjectMapController {
 
     public String mapAccessToken { get; set; }
+    public String mapId { get; set; }
     public List<String> supportedReportsList { get; set; } // we want keep order
     public Map<String, String> supportedReports { get; set; }
     public String reportName { get; set; }
@@ -10,6 +11,7 @@ public class HQAdminReportsProjectMapController {
         this.supportedReports = HQAdminReportFactory.getSupportedReportsMap();
         this.reportName = 'projectReportMap';
         this.mapAccessToken = Admin_Reports_Settings__c.getOrgDefaults().DM_Map_Token__c;
+        this.mapId = Admin_Reports_Settings__c.getOrgDefaults().DM_Map_Id__c;
     }
 
     @RemoteAction
