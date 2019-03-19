@@ -15,6 +15,8 @@ public class HQAdminReportsProjectMapController {
     @RemoteAction
     public static List<FacetController.FacetGroup> loadReportMapFacets(String jsonFilters) {
         FacetController facetCtrl = FacetController.buildMapFacetController(jsonFilters);
+        facetCtrl.addCurrentFilter('cpIsActive__c', 'true');
+        facetCtrl.addCurrentFilter('is_test__c', 'false');
         facetCtrl.loadFacetValues();
         return facetCtrl.getFacets();
     }
@@ -54,17 +56,23 @@ public class HQAdminReportsProjectMapController {
                 userMap.put(val, oldValue + countVal);
             }
         }
-        return new HQAdminMapData(countryMap, userMap);
+        qb = facetCtrl.getQueryBuilder().addColumn('Count()');
+        Integer activeCount = (Integer) Database.countQuery(qb.buildQuery());
+        return new HQAdminMapData(countryMap, userMap, activeCount, qb.buildQuery());
     }
 
     public class HQAdminMapData {
 
         public Map<String, Integer> countryMap { get; set; }
         public Map<String, Integer> userMap { get; set; }
+        public Integer totalActiveProjects { get; set; }
+        public String testResponse { get; set; }
 
-        public HQAdminMapData(Map<String, Integer> countryMap, Map<String, Integer> userMap) {
+        public HQAdminMapData(Map<String, Integer> countryMap, Map<String, Integer> userMap, Integer totalActiveProjects, String testResponse) {
             this.countryMap = countryMap;
             this.userMap = userMap;
+            this.totalActiveProjects = totalActiveProjects;
+            this.testResponse = testResponse;
         }
     }
 }

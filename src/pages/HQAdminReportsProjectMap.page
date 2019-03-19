@@ -62,6 +62,7 @@
             background: #cfeef8;
             padding: 6px;
             border-radius: 6px;
+            min-height: 34px;
         }
         .msidebarContent input {
             max-width:90%;
@@ -78,6 +79,9 @@
         }
         .msidebarRow {
             margin-bottom: 6px !important;
+        }
+        #map-type-button {
+            width: -webkit-fill-available !important;
         }
         .msidebarElementOpened {
             background: #e3f3ff;
@@ -110,6 +114,10 @@
             vertical-align: bottom !important;
         }
         .ui-state-active {
+            border: 0px !important;
+            background: #1797c0 !important;
+        }
+        .ui-button:active {
             border: 0px !important;
             background: #1797c0 !important;
         }
@@ -180,7 +188,7 @@
     <script type="text/javascript">
         $j = jQuery.noConflict();
 
-        var dataController, addStats;
+        var dataController, mapController, addStats;
 
         $j(document).ready(function() {
             choosenFilters = {};
@@ -200,22 +208,15 @@
         function loadMap() {
             // set calculated height for map :
             $j("#map").height($j("#map").width() * 0.45);
-
-            // courtesy of http://colorbrewer2.org/
-            var COUNTRY_COLORS = ['#fef0d9','#fdd49e','#fdbb84','#fc8d59','#e34a33','#b30000'];
-            var PROJECT_COUNTS_THRESHOLD = [10, 20, 30, 40, 50];
-            var USER_COUNTS_THRESHOLD = [10, 100, 500, 1000, 4000];
-            var mapboxAccessToken = "{!mapAccessToken}";
-
-            function colorAll() {
-                if (countriesGeo !== undefined) {
-                    countriesGeo.setStyle(style);
-                    map.removeControl(legend);
-                    legend.addTo(map);
+            $j( "#map-type" ).selectmenu({
+                width: false,
+                change: function( event, ui ) {
+                    dataController.toggleMap();
+                    mapController.colorAll();
                 }
-            }
+            });
 
-            dataController = function () {
+            dataController = function() {
                 var that = {};
                 var maxNumProjects = 0;
                 var maxNumUsers = 0;
@@ -225,18 +226,30 @@
                 var users_per_country = {};
                 var is_project_count_map = true;
 
-                that.refreshProjectData = function (filter, callback) {
+                that.refreshProjectData = function (callback) {
                     HQAdminReportsProjectMapController.loadMapData(JSON.stringify(lastChoosenFilters), function(result, event){
                         if(event.status) {
-                            maxNumUsers = result.activeMobileUsers;
-                            totalNumProjects = result.activeProjects;
-
+                            totalNumProjects = result.totalActiveProjects;
                             projects_per_country = result.countryMap;
-                            maxNumProjects = 0;
+                            users_per_country = result.userMap;
 
-                            users_per_country = {};
+                            maxNumProjects = 0;
+                            Object.keys(projects_per_country).map(function (country) {
+                                if (projects_per_country[country] > maxNumProjects) {
+                                    maxNumProjects = projects_per_country[country];
+                                }
+                            });
+
                             maxNumUsers = 0;
-                            colorAll();
+                            totalNumUsers = 0;
+                            Object.keys(users_per_country).map(function (country) {
+                                if (users_per_country[country] > maxNumUsers) {
+                                    maxNumUsers = users_per_country[country];
+                                }
+                                totalNumUsers += users_per_country[country];
+                            });
+
+                            mapController.colorAll();
                             if (callback) {
                                 callback();
                             }
@@ -249,7 +262,7 @@
                     if (is_project_count_map) {
                         return projects_per_country[countryName] || 0;
                     } else {
-                        return users_per_country[countryName] || 15;
+                        return users_per_country[countryName] || 0;
                     }
                 };
 
@@ -296,186 +309,207 @@
                return that;
            }();
 
-            var countriesGeo;
-            // A lot of the styling work here is modeled after http://leafletjs.com/examples/choropleth.html
-            var map = L.map('map').setView([0, 0], 3);
-            var mapId = 'dimagi/cirqobc2w0000g4ksj9dochrm'; //TODO move to settings
+            mapController = function() {
+                // courtesy of http://colorbrewer2.org/
+                var COUNTRY_COLORS = ['#fef0d9','#fdd49e','#fdbb84','#fc8d59','#e34a33','#b30000'];
+                var PROJECT_COUNTS_THRESHOLD = [10, 20, 30, 40, 50];
+                var USER_COUNTS_THRESHOLD = [10, 100, 500, 1000, 4000];
+                var mapboxAccessToken = "{!mapAccessToken}";
 
-            var southWest = L.latLng(-80.0, -180.0),
-                northEast = L.latLng(85.0, 180.0),
-                bounds = L.latLngBounds(southWest, northEast);
+                var that = {}, countriesGeo;
+                // A lot of the styling work here is modeled after http://leafletjs.com/examples/choropleth.html
+                var map = L.map('map').setView([0, 0], 3), mapId = 'dimagi/cirqobc2w0000g4ksj9dochrm';
+                var southWest = L.latLng(-80.0, -180.0),
+                    northEast = L.latLng(85.0, 180.0),
+                    bounds = L.latLngBounds(southWest, northEast);
 
-            map.setMaxBounds(bounds);
-            map.on('drag', function () {
-                map.panInsideBounds(bounds, {animate: false});
-            });
+                map.setMaxBounds(bounds);
+                map.on('drag', function () {
+                    map.panInsideBounds(bounds, {animate: false});
+                });
+                map.createPane('labels');
+                // This pane is above markers but below popups
+                map.getPane('labels').style.zIndex = -1;
+                // copied from dimagisphere
+                L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/256/{z}/{x}/{y}?access_token={accessToken}', {
+                    maxZoom: 6,
+                    minZoom: 2,
+                    id: mapId,
+                    accessToken: mapboxAccessToken,
+                    bounds: bounds,
+                    noWrap: true,
+                }).addTo(map);
 
-            map.createPane('labels');
-            // This pane is above markers but below popups
-            map.getPane('labels').style.zIndex = -1;
-
-            // copied from dimagisphere
-            L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/256/{z}/{x}/{y}?access_token={accessToken}', {
-                maxZoom: 6,
-                minZoom: 2,
-                id: mapId,
-                accessToken: mapboxAccessToken,
-                bounds: bounds,
-                noWrap: true,
-            }).addTo(map);
-
-            function getColor(featureId) {
-                var thresholdScales;
-                var count = dataController.getCount(featureId);
-                var isProjectCountMap = dataController.isProjectCountMap();
-                if (isProjectCountMap) {
-                    thresholdScales = PROJECT_COUNTS_THRESHOLD;
-                } else {
-                    thresholdScales = USER_COUNTS_THRESHOLD;
-                }
-                var index = getColorScaleIndex(count, thresholdScales);
-                return COUNTRY_COLORS[index];
-            }
-
-            function getColorScaleIndex(count, scales) {
-                for (var i = 0; i < scales.length; i++) {
-                    if (count < scales[i]) {
-                        return i;
+                that.colorAll = function() {
+                    if (countriesGeo !== undefined) {
+                        countriesGeo.setStyle(style);
+                        map.removeControl(legend);
+                        legend.addTo(map);
                     }
                 }
-                return scales.length;
-            }
 
-            function getOpacity(featureId) {
-                if (dataController.getCount(featureId)) {
-                    return 0.7;
-                } else {
-                    return 0;
-                }
-            }
-
-            function style(feature) {
-                return {
-                    fillColor: getColor(feature.properties.name),
-                    weight: 2,
-                    opacity: 1,
-                    color: 'white',
-                    dashArray: '3',
-                    fillOpacity: getOpacity(feature.properties.name),
-                };
-            }
-
-            // highlights
-            function highlightFeature(e) {
-                var layer = e.target;
-                layer.setStyle({
-                    weight: 4,
-                    color: '#002c5f',
-                    dashArray: '',
-                });
-                if (!L.Browser.ie && !L.Browser.opera) {
-                    layer.bringToFront();
-                }
-                info.update(layer.feature.properties);
-            }
-
-            function resetHighlight(e) {
-                countriesGeo.resetStyle(e.target);
-                info.update();
-            }
-
-            function formatCountryNames(countries) {
-                return countries.map(function (country) {
-                    var formattedCountryName = country.charAt(0).toUpperCase();
-                    if (country.indexOf(",") > -1) {
-                        formattedCountryName += country.substring(1, country.indexOf(",")).toLowerCase();
+                function getColor(featureId) {
+                    var thresholdScales;
+                    var count = dataController.getCount(featureId);
+                    var isProjectCountMap = dataController.isProjectCountMap();
+                    if (isProjectCountMap) {
+                        thresholdScales = PROJECT_COUNTS_THRESHOLD;
                     } else {
-                        formattedCountryName += country.substring(1).toLowerCase();
+                        thresholdScales = USER_COUNTS_THRESHOLD;
                     }
-                    return formattedCountryName;
-                });
-            }
-
-            function onEachFeature(feature, layer) {
-                layer.on({
-                    mouseover: highlightFeature,
-                    mouseout: resetHighlight
-                });
-            }
-
-            // info control
-            var info = L.control();
-            info.onAdd = function () {
-                this._div = L.DomUtil.create('div', 'map-info');
-                this.update();
-                return this._div;
-            };
-
-            // method that we will use to update the control based on feature properties passed in
-            info.update = function (props) {
-                function _getInfoContent(countryName) {
-                    var count = dataController.getCount(countryName);
-                    var unit = dataController.getUnit(count);
-                    var message = count ? count + ' ' + unit : 'no ' + unit + 's';
-                    return '<b>' + countryName + '</b>: ' + message;
+                    var index = getColorScaleIndex(count, thresholdScales);
+                    return COUNTRY_COLORS[index];
                 }
-                this._div.innerHTML = (props ? _getInfoContent(props.name) : 'Hover over a country');
-            };
-            info.addTo(map);
 
-            // add a legend
-            var legend = L.control({position: 'bottomleft'});
-            legend.onAdd = function () {
-                var div = L.DomUtil.create('div', 'info legend');
-                var thresholds;
-                div.innerHTML += '<i style="background:' + 'black' + '"></i> ' + '0' + '<br>';
-                var is_project_count_map = dataController.isProjectCountMap();
-                if (is_project_count_map) {
-                    thresholds = PROJECT_COUNTS_THRESHOLD;
-                } else {
-                    thresholds = USER_COUNTS_THRESHOLD;
-                }
-                for (var i = 0; i < thresholds.length; i++) {
-                    div.innerHTML += '<i style="background:' + COUNTRY_COLORS[i] + '"></i> ';
-                    if (thresholds[i - 1] !==  undefined) {
-                        if (thresholds[i - 1] + 1 < thresholds[i]) {
-                            div.innerHTML += (thresholds[i - 1] + 1) + '&ndash;';
+                function getColorScaleIndex(count, scales) {
+                    for (var i = 0; i < scales.length; i++) {
+                        if (count < scales[i]) {
+                            return i;
                         }
-                    } else if (thresholds[i] > 1) {
-                        div.innerHTML += '1&ndash;';
                     }
-                    div.innerHTML += thresholds[i] + '<br>';
+                    return scales.length;
                 }
-                div.innerHTML += '<i style="background:' + COUNTRY_COLORS[thresholds.length] + '"></i> '
-                                 + (thresholds[thresholds.length - 1] + 1) + '+';
-                return div;
-            };
-            legend.addTo(map);
 
-            addStats = function addStats() {
-                var stats = L.control({position: 'bottomright'});
-                stats.onAdd = function () {
+                function getOpacity(featureId) {
+                    if (dataController.getCount(featureId)) {
+                        return 0.7;
+                    } else {
+                        return 0;
+                    }
+                }
+
+                function style(feature) {
+                    return {
+                        fillColor: getColor(feature.properties.name),
+                        weight: 2,
+                        opacity: 1,
+                        color: 'white',
+                        dashArray: '3',
+                        fillOpacity: getOpacity(feature.properties.name),
+                    };
+                }
+
+                // highlights
+                function highlightFeature(e) {
+                    var layer = e.target;
+                    layer.setStyle({
+                        weight: 4,
+                        color: '#002c5f',
+                        dashArray: '',
+                    });
+                    if (!L.Browser.ie && !L.Browser.opera) {
+                        layer.bringToFront();
+                    }
+                    info.update(layer.feature.properties);
+                }
+
+                function resetHighlight(e) {
+                    countriesGeo.resetStyle(e.target);
+                    info.update();
+                }
+
+                function formatCountryNames(countries) {
+                    return countries.map(function (country) {
+                        var formattedCountryName = country.charAt(0).toUpperCase();
+                        if (country.indexOf(",") > -1) {
+                            formattedCountryName += country.substring(1, country.indexOf(",")).toLowerCase();
+                        } else {
+                            formattedCountryName += country.substring(1).toLowerCase();
+                        }
+                        return formattedCountryName;
+                    });
+                }
+
+                function onEachFeature(feature, layer) {
+                    layer.on({
+                        mouseover: highlightFeature,
+                        mouseout: resetHighlight
+                    });
+                }
+
+                // info control
+                var info = L.control();
+                info.onAdd = function () {
+                    this._div = L.DomUtil.create('div', 'map-info');
+                    this.update();
+                    return this._div;
+                };
+
+                // method that we will use to update the control based on feature properties passed in
+                info.update = function (props) {
+                    function _getInfoContent(countryName) {
+                        var count = dataController.getCount(countryName);
+                        var unit = dataController.getUnit(count);
+                        var message = count ? count + ' ' + unit : 'no ' + unit + 's';
+                        return '<b>' + countryName + '</b>: ' + message;
+                    }
+                    this._div.innerHTML = (props ? _getInfoContent(props.name) : 'Hover over a country');
+                };
+                info.addTo(map);
+
+                // add a legend
+                var legend = L.control({position: 'bottomleft'});
+                legend.onAdd = function () {
                     var div = L.DomUtil.create('div', 'info legend');
-                    div.innerHTML += '<p><b>Statistics</b></p>';
-                    div.innerHTML += '<p>Number of Active Countries: ' + dataController.getNumActiveCountries() +  '</p>';
-                    div.innerHTML += '<p>Number of Active Mobile Users: ' + dataController.getNumUsers() +  '</p>';
-                    div.innerHTML += '<p>Number of Active Projects: ' + dataController.getNumProjects() +  '</p>';
-                    div.innerHTML += '<br><p><em> Active: A project or user submitted a form in past 30 days.</em></p>';
+                    var thresholds;
+                    div.innerHTML += '<i style="background:' + 'black' + '"></i> ' + '0' + '<br>';
+                    var is_project_count_map = dataController.isProjectCountMap();
+                    if (is_project_count_map) {
+                        thresholds = PROJECT_COUNTS_THRESHOLD;
+                    } else {
+                        thresholds = USER_COUNTS_THRESHOLD;
+                    }
+                    for (var i = 0; i < thresholds.length; i++) {
+                        div.innerHTML += '<i style="background:' + COUNTRY_COLORS[i] + '"></i> ';
+                        if (thresholds[i - 1] !==  undefined) {
+                            if (thresholds[i - 1] + 1 < thresholds[i]) {
+                                div.innerHTML += (thresholds[i - 1] + 1) + '&ndash;';
+                            }
+                        } else if (thresholds[i] > 1) {
+                            div.innerHTML += '1&ndash;';
+                        }
+                        div.innerHTML += thresholds[i] + '<br>';
+                    }
+                    div.innerHTML += '<i style="background:' + COUNTRY_COLORS[thresholds.length] + '"></i> '
+                                     + (thresholds[thresholds.length - 1] + 1) + '+';
                     return div;
                 };
-                stats.addTo(map);
-            }
+                legend.addTo(map);
 
-            $j.get("https://raw.githubusercontent.com/dimagi/world.geo.json/master/countries.geo.json", function (data) {
-                countriesGeo = L.geoJson(JSON.parse(data), {style: style, onEachFeature: onEachFeature}).addTo(map);
-                dataController.refreshProjectData({}, addStats);
-            });
+                var stats = L.control({position: 'bottomright'});
+                stats.onAdd = function () {
+                    this._div = L.DomUtil.create('div', 'info legend');
+                    this.update();
+                    return this._div;
+                };
+                stats.update = function(props) {
+                    var textBody = "";
+                    textBody += '<p><b>Statistics</b></p>';
+                    textBody += '<p>Number of Active Countries: ' + dataController.getNumActiveCountries() +  '</p>';
+                    textBody += '<p>Number of Active Mobile Users: ' + dataController.getNumUsers() +  '</p>';
+                    textBody += '<p>Number of Active Projects: ' + dataController.getNumProjects() +  '</p>';
+                    textBody += '<br><p><em> Active: A project or user submitted a form in past 30 days.</em></p>';
+                    this._div.innerHTML = textBody;
+                };
+                stats.addTo(map);
+
+                that.updateStats = function() {
+                    stats.update();
+                };
+
+                $j.get("https://raw.githubusercontent.com/dimagi/world.geo.json/master/countries.geo.json", function (data) {
+                    countriesGeo = L.geoJson(JSON.parse(data), {style: style, onEachFeature: onEachFeature}).addTo(map);
+                    dataController.refreshProjectData(that.updateStats);
+                });
+
+                return that;
+            }();
         }
 
         function applyFilters() {
             lastChoosenFilters = choosenFilters;
             showLoader('#facets-loader');
-            dataController.refreshProjectData({});
+            dataController.refreshProjectData(mapController.updateStats);
             HQAdminReportsProjectMapController.loadReportMapFacets(JSON.stringify(lastChoosenFilters), function(result, event) {
                 if(event.status) {
                     filters = result;
@@ -500,6 +534,19 @@
                             </a>
                         </apex:repeat>
                         <a class="msidebarElement msidebarElementOpened" href="HQAdminReportsProjectMap">Active Project Map</a>
+                    </div>
+                </div>
+                <div class="msidebar">
+                    <div class="msidebarHeader">
+                        <h2>Map : </h2>
+                    </div>
+                    <div class="msidebarContent">
+                        <div class="msidebarRow">
+                            <select name="map-type" id="map-type">
+                                <option selected="selected">Projects</option>
+                                <option>Users</option>
+                            </select>
+                        </div>
                     </div>
                 </div>
                 <div class="msidebar">
