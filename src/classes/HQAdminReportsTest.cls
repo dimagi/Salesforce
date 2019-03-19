@@ -31,6 +31,8 @@ public class HQAdminReportsTest {
                                 Name = 'test_domain_' + index,
                                 date_created__c = DateTime.now(),
                                 Deployment_Countries__c = 'country_names_' + index,
+                                Countries_Wrapper__c = 'country_names_' + index,
+                                Countries_Picklist__c = 'country_names_' + index,
                                 Deployment_region__c = 'region_names_' + index,
                                 Deployment_city__c = 'city_names_' + index,
                                 project_type__c = 'proj_names_' + index,
@@ -261,6 +263,27 @@ public class HQAdminReportsTest {
         System.assertEquals(1, graphData.graphData.get(0).values.size());
         System.assertEquals(5, graphData.graphData.get(0).values.get(0).y);
         System.assertEquals(Date.newInstance(Date.today().year(), 1, 1), graphData.graphData.get(0).values.get(0).x);
+
+        graphData = HQAdminReportsController.loadGraphData(3, null, null, 'weekly', 'Domain_date_created_date_wrapper__c',
+                                                                                        '', null);
+        System.assertNotEquals(null, graphData);
+        System.assertEquals('weekly', graphData.currentInterval);
+        System.assertEquals(0, graphData.totalToFromDate);
+        System.assertEquals(1, graphData.graphData.get(0).values.size());
+        System.assertEquals(5, graphData.graphData.get(0).values.get(0).y);
+        System.assertEquals(Date.today(), graphData.graphData.get(0).values.get(0).x);
+    }
+
+    @isTest
+    public static void testEndOfTheWeekMethod() {
+        System.assertEquals(false, HQAdminReportsGraphHelper.isEndOfWeek(Date.newInstance(2019, 3, 18)));
+        System.assertEquals(false, HQAdminReportsGraphHelper.isEndOfWeek(Date.newInstance(2019, 3, 19)));
+        System.assertEquals(false, HQAdminReportsGraphHelper.isEndOfWeek(Date.newInstance(2019, 3, 20)));
+        System.assertEquals(false, HQAdminReportsGraphHelper.isEndOfWeek(Date.newInstance(2019, 3, 21)));
+        System.assertEquals(false, HQAdminReportsGraphHelper.isEndOfWeek(Date.newInstance(2019, 3, 22)));
+        System.assertEquals(false, HQAdminReportsGraphHelper.isEndOfWeek(Date.newInstance(2019, 3, 23)));
+        System.assertEquals(true, HQAdminReportsGraphHelper.isEndOfWeek(Date.newInstance(2019, 3, 24)));
+        System.assertEquals(false, HQAdminReportsGraphHelper.isEndOfWeek(Date.newInstance(2019, 3, 25)));
     }
 
     @isTest
@@ -294,6 +317,39 @@ public class HQAdminReportsTest {
         System.assertNotEquals(null, graphData);
         System.assertEquals('daily', graphData.currentInterval);
         System.assertEquals(Date.isLeapYear(currentYear) ? 91 : 90, graphData.graphData.get(0).values.size());
+    }
+
+    @isTest
+    public static void testMapController() {
+        Test.startTest();
+        List<Domain__c> toUpdate = new List<Domain__c>();
+        for (Domain__c domain : [SELECT Name, cpIsActive__c, is_test__c, Countries_Picklist__c, Countries_Wrapper__c FROM Domain__c]) {
+            domain.cpIsActive__c = true;
+            domain.is_test__c = 'false';
+            toUpdate.add(domain);
+        }
+        update toUpdate;
+        HQAdminReportsProjectMapController mapCtrl = new HQAdminReportsProjectMapController();
+        Test.stopTest();
+
+        List<FacetController.FacetGroup> mapFacets = HQAdminReportsProjectMapController.loadReportMapFacets('');
+        System.assertEquals(2, mapFacets.size());
+        System.assertEquals(1, mapFacets.get(0).facets.size());
+        System.assertEquals(2, mapFacets.get(1).facets.size());
+        System.assertEquals(10, mapFacets.get(0).facets.get(0).values.size());
+
+        HQAdminReportsProjectMapController.HQAdminMapData mapData =  HQAdminReportsProjectMapController.loadMapData('');
+        System.assertEquals(10, mapData.countryMap.size());
+        System.assertEquals(10, mapData.userMap.size());
+
+        for (String country : mapData.countryMap.keySet()) {
+            System.assertEquals(1, mapData.countryMap.get(country), 'Wrong count for country : ' + country);
+        }
+        Integer sum = 0;
+        for (String country : mapData.userMap.keySet()) {
+            sum += mapData.userMap.get(country);
+        }
+        System.assertEquals(55, sum);
     }
 
     private static void validateTotalRow(HQAdminReportsController reportCtrl, Integer expValue) {

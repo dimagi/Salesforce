@@ -8,140 +8,26 @@
     <apex:includeScript value="{!URLFOR($Resource.nvdlLib, 'nv.d3.min.js')}"/>
     <apex:stylesheet value="{!URLFOR($Resource.nvdlLib, 'nv.d3.min.css')}"/>
 
-    <style type="text/css">
-        .main-block {
-            min-height:500px;
-        }
-        .tablePanel {
-            overflow: auto;
-            max-width: 92vw;
-        }
-        .footerHeader {
-            background: #cfeef8 !important;
-        }
-        #data-container {
-            width: 87%;
-            display: inline-block;
-            box-sizing: border-box;
-            vertical-align: top;
-            position:relative;
-        }
-        #menu-container {
-            width: 10%;
-            display: inline-block;
-            box-sizing: border-box;
-            vertical-align: top;
-        }
-        .menu-list {
-            list-style: none;
-            margin-left: 0px;
-            padding-left: 0px;
-            margin: 0px;
-        }
-        .facet-menu {
-            width: 90%;
-        }
-        .facet-group {
-            margin-left: 0px;
-        }
-        .msidebar {
-            margin: 0px 7px 10px 0px;
-        }
-        .msidebarHeader {
-            background: #1797c0;
-            color: #fff;
-            padding: 6px;
-            border-radius: 6px;
-            margin-bottom: 4px;
-        }
-        .msidebarContent {
-            background: #cfeef8;
-            padding: 6px;
-            border-radius: 6px;
-        }
-        .msidebarContent input {
-            max-width:90%;
-        }
-        .msidebarElement {
-            text-decoration: none;
-            background: #cfeef8;
-            padding: 6px;
-            cursor: pointer;
-            border-radius: 6px;
-            margin-bottom: 1px;
-            font-family: Arial,Helvetica,sans-serif;
-            display: block;
-        }
-        .msidebarRow {
-            margin-bottom: 6px !important;
-        }
-        .msidebarElementOpened {
-            background: #e3f3ff;
-        }
-        .msidebarElement:hover {
-            background: #e3f3ff;
-            text-decoration: none;
-            color: black;
-        }
-        .domains-graph {
-            height: 400px;
-        }
-        .graph-menu {
-            vertical-align: middle;
-        }
-        .graph-menu select {
-            height: 28px;
-            margin-right: 10px;
-        }
-        .graph-menu input {
-            height: 24px;
-            margin-right: 10px;
-        }
-        .graph-menu label {
-            height: 24px;
-            font: 13.3333px Arial;
-        }
-        .btn {
-            height: 28px !important;
-            vertical-align: bottom !important;
-        }
-        .ui-state-active {
-            border: 0px !important;
-            background: #1797c0 !important;
-        }
-        .dynamic-wrapper {
-            position: relative;
-            display: block;
-        }
-        .dynamic-loader {
-            position: absolute;
-            background-color: #fbfbfb;
-            opacity: 0.65;
-            z-index: 80;
-            top:0;
-            left:0;
-            width:100%;
-            height:100%;
-            color:black;
-            text-align: center;
-        }
-        .dynamic-loader img {
-            position: absolute;
-            top:40%;
-            left:40%;
-        }
-    </style>
+    <apex:stylesheet value="{!URLFOR($Resource.hqAdminReports, 'hqAdminReports.css')}"/>
+    <apex:includeScript value="{!URLFOR($Resource.hqAdminReports, 'hqAdminReports.js')}"/>
 
     <script type="text/javascript">
-        var choosenFilters = [], graphsMetadata = [], filters = [], lastDomainName = '', lastChoosenFilters = [], graphCallbacks = {};
-        var monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-
         $j = jQuery.noConflict();
+
+        var graphsMetadata = [], graphCallbacks = {};
+        var monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 
         $j(document).ready(function() {
             choosenFilters = JSON.parse($j("[id$=loadedFilters]").val());
             lastChoosenFilters = choosenFilters;
-            generateFilters();
+            showLoader('#facets-loader');
+            HQAdminReportsController.loadReportFacets('default-facets',JSON.stringify(lastChoosenFilters), lastDomainName, function(result, event){
+                if(event.status) {
+                    filters = result;
+                    generateFilters();
+                    hideLoader('#facets-loader');
+                }
+            });
 
             $j( ".graph-tabs" ).tabs({
                 activate: function( event, ui ) {
@@ -154,26 +40,6 @@
             graphsMetadata = JSON.parse($j("[id$=graphMeta]").val());
             addGraphs(true);
         });
-
-        function fireResize() { // https://stackoverflow.com/questions/8712036/dom-event-fired-by-window-resize
-            if (document.createEvent) { // W3C
-                var ev = document.createEvent('Event');
-                ev.initEvent('resize', true, true);
-                window.dispatchEvent(ev);
-            } else { // IE
-                element = document.documentElement;
-                var event = document.createEventObject();
-                element.fireEvent("onresize",event);
-            }
-        };
-
-        function hideLoader(loaderId) {
-            $j(loaderId).hide();
-        }
-
-        function showLoader(loaderId) {
-            $j(loaderId).show();
-        }
 
         function applyGraphData(graphId) {
             var graphMeta = graphsMetadata.find(function (element, index, array) { return element.graphId == graphId});
@@ -344,65 +210,6 @@
             $j("[id$=loadedFilters]").val(JSON.stringify(choosenFilters));
             lastChoosenFilters = choosenFilters;
             lastDomainName = $j("[id$=searchDomainText]").val();
-            updateFilters();
-            return searchDomainJs(JSON.stringify(choosenFilters));
-        }
-
-        function getCheckbox(facetGroupData, facetData, facetValueData) {
-            var chClass = 'menu-chbx', chValue = false, checboxElement, elId = getCheckboxId(facetGroupData, facetData, facetValueData);
-             if (choosenFilters[filters[facetGroupData].facets[facetData].fieldName]
-                    && choosenFilters[filters[facetGroupData].facets[facetData].fieldName].indexOf(filters[facetGroupData].facets[facetData].values[facetValueData].value) != -1) {
-                chValue  = true;
-            }
-
-            if (chValue) {
-                chClass += ' predefined';
-            }
-            checboxElement = $j('<input />', { type: 'checkbox', id: elId, name: elId, class: chClass, checked: chValue});
-
-            checboxElement.data('group', facetGroupData);
-            checboxElement.data('facet', facetData)
-            checboxElement.data('fvalue', facetValueData);
-
-
-            checboxElement.change(function(onChange) {
-                var index = -1, newValue = false, facetGroupId = 0, facetId = 0, facetValueId = 0, element = $j(this);
-                facetGroupId = element.data('group');
-                facetId = element.data('facet');
-                facetValueId = element.data('fvalue');
-
-                if(this.checked) {
-                    newValue = true;
-                }
-                if (filters[facetGroupId] && filters[facetGroupId].facets[facetId] && filters[facetGroupId].facets[facetId].values[facetValueId]) {
-                    if (newValue === true) {
-                        if (choosenFilters[filters[facetGroupId].facets[facetId].fieldName]) {
-                            choosenFilters[filters[facetGroupId].facets[facetId].fieldName].push(filters[facetGroupId].facets[facetId].values[facetValueId].value);
-                        } else {
-                            choosenFilters[filters[facetGroupId].facets[facetId].fieldName] = [filters[facetGroupId].facets[facetId].values[facetValueId].value];
-                        }
-                    } else {
-                        if (choosenFilters[filters[facetGroupId].facets[facetId].fieldName]) {
-                            index = choosenFilters[filters[facetGroupId].facets[facetId].fieldName].indexOf(filters[facetGroupId].facets[facetId].values[facetValueId].value);
-                            if (index > -1) {
-                                choosenFilters[filters[facetGroupId].facets[facetId].fieldName].splice(index, 1);
-                            }
-                        }
-                    }
-                }
-            });
-            return checboxElement;
-        }
-
-        function getLabel(elId, labelText) {
-            return $j("<label for='" + elId + "'>" + labelText + "</label>");
-        }
-
-        function getCheckboxId(facetGroupId, facetId, facetValueId) {
-            return 'checkbox-' + facetGroupId + '-' + facetId + '-' + facetValueId;
-        }
-
-        function updateFilters() {
             showLoader('#facets-loader');
             HQAdminReportsController.loadReportFacets('default-facets', JSON.stringify(lastChoosenFilters), lastDomainName, function(result, event) {
                 if(event.status) {
@@ -412,83 +219,7 @@
                 }
             });
             addGraphs(false);
-        }
-
-        function rebuildFilters() {
-            var facetGroupId = 0, facetId = 0, facetValueId = 0, facet, facetValues, fValue;
-            facetContainer = $j("[id$=facet-container]");
-
-            for (facetGroupId = 0; facetGroupId < filters.length; facetGroupId++) { 
-                for (facetId = 0; facetId < filters[facetGroupId].facets.length; facetId++) { 
-                    facet = $j("[id$=" + "facet-" + facetGroupId + "-" + facetId + "]");
-                    facetValues = $j(facet[0].children[1]);
-                    facetValues.empty();
-                    for (facetValueId = 0; facetValueId < filters[facetGroupId].facets[facetId].values.length; facetValueId++) {
-                        fValue = $j("<div class='msidebarElement'></div>");
-                        fValue.append(getLabel(getCheckboxId(facetGroupId, facetId, facetValueId),
-                            filters[facetGroupId].facets[facetId].values[facetValueId].value + " (" + filters[facetGroupId].facets[facetId].values[facetValueId].valCount + ")"));
-                        fValue.append(getCheckbox(facetGroupId, facetId, facetValueId));
-                        facetValues.append($j("<li></li>").append(fValue));
-                    }
-                }
-            }
-        }
-
-        function generateFilters() {
-            showLoader('#facets-loader');
-            HQAdminReportsController.loadReportFacets('default-facets',JSON.stringify(lastChoosenFilters), lastDomainName, function(result, event){
-                if(event.status) {
-                    filters = result;
-                    buildFacets();
-                    $j('.facet').hide();
-                    $j('.facet-values').hide();
-                    $j('.predefined').parents('.facet').show();
-                    $j('.predefined').parents('.facet').siblings('.facet').show();
-                    $j('.predefined').parents('.facet-values').show();
-                    $j('.msidebarElement').click(function(eventObject) {
-                        var elements = $j(eventObject.target);
-                        if (elements.parent().hasClass('facet-group')) {
-                            elements.parent().find('.facet').slideToggle();
-                        }
-                    });
-                    $j('.facet').click(function(eventObject) {
-                        var elements = $j(eventObject.target);
-                        if (elements.parent().hasClass('facet')) {
-                            elements.parent().find('.facet-values').slideToggle();
-                        }
-                    });
-                    hideLoader('#facets-loader');
-                }
-            });
-        }
-
-        function buildFacets() {
-            var facetGroupId = 0, facetId = 0, facetValueId = 0, newMenu, facetContainer, facetGroup, facets, facet, facetValues, fValue;
-            facetContainer = $j("[id$=facet-container]");
-            newMenu = $j("<ul id='filters-data' class='menu-list'></ul>");
-
-            for (facetGroupId = 0; facetGroupId < filters.length; facetGroupId++) { 
-                facetGroup = ($j("<li class='facet-group'><div class='msidebarElement'>" + filters[facetGroupId].name + "</div></li>"));
-                facets = ($j("<ul class='menu-list'></ul>"));
-
-                for (facetId = 0; facetId < filters[facetGroupId].facets.length; facetId++) {
-                    facet = $j("<li id='" + "facet-" + facetGroupId + "-" + facetId + "' class='facet'><div class='msidebarElement'>" + filters[facetGroupId].facets[facetId].name + "</div></li>");
-                    facetValues = ($j("<ul class='facet-values menu-list'></ul>"));
-
-                    for (facetValueId = 0; facetValueId < filters[facetGroupId].facets[facetId].values.length; facetValueId++) {
-                        fValue = $j("<div class='msidebarElement'></div>");
-                        fValue.append(getLabel(getCheckboxId(facetGroupId, facetId, facetValueId),
-                            filters[facetGroupId].facets[facetId].values[facetValueId].value + " (" + filters[facetGroupId].facets[facetId].values[facetValueId].valCount + ")"));
-                        fValue.append(getCheckbox(facetGroupId, facetId, facetValueId));
-                        facetValues.append($j("<li></li>").append(fValue));
-                    }
-                    facet.append(facetValues);
-                    facets.append(facet);
-                }
-                facetGroup.append(facets);
-                newMenu.append(facetGroup);
-            }
-            facetContainer.append(newMenu);
+            return searchDomainJs(JSON.stringify(choosenFilters));
         }
     </script>
 
