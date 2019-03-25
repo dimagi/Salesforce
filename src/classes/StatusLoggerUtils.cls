@@ -13,6 +13,7 @@ public class StatusLoggerUtils {
      * Predefined loggers used in apex code. Use it to find logger usage.
      */
     public static final String HQ_SYNC_LOGGER = 'HQ_LOGGER';
+    public static final String HQ_SYNC_DUPLICATES_LOGGER = 'HQ_DUPLICATES_LOGGER';
     public static final String MALT_SYNC_LOGGER = 'MALT_LOGGER';
     public static final String GIR_SYNC_LOGGER = 'GIR_LOGGER';
     public static final String RENEWAL_LOGGER = 'RENEWAL_LOGGER';

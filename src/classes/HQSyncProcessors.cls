@@ -314,7 +314,7 @@ public class HQSyncProcessors {
             }
 
             Map<String, Domain__c> mapDomains = new Map<String, Domain__c>();
-            for (Domain__c domain : [SELECT Id, Name, id__c FROM Domain__c WHERE Server_Name__c =: serverName AND Name IN: domainNames]) {
+            for (Domain__c domain : [SELECT Id, Name, id__c FROM Domain__c WHERE Server_Name__c =: serverName AND Name IN: domainNames AND Domain_Deleted__c = false]) {
                 mapDomains.put(domain.Name, domain);
             }
 
@@ -528,7 +528,7 @@ public class HQSyncProcessors {
                 externalIdMap.put(af.id__c, af.Id);
             }
 
-            for (Domain__c parentObj : [SELECT Id, Name FROM Domain__c WHERE Name in :parentObjectIdSet AND Server_Name__c =: serverName]) {
+            for (Domain__c parentObj : [SELECT Id, Name FROM Domain__c WHERE Name in :parentObjectIdSet AND Server_Name__c =: serverName AND Domain_Deleted__c = false]) {
                 mapJsonIdToSfId.put(parentObj.Name, parentObj.Id);
             }
 

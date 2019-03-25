@@ -1,4 +1,4 @@
-public class HQSyncUpdateDomainFieldsBatch implements Database.Batchable<Domain__c>, Database.Stateful{
+public class HQSyncUpdateDomainFieldsBatch implements Database.Batchable<SObject>, Database.Stateful{
 
     private Boolean upsertDomainSnapshot;
     private Map<String, Decimal> wamMap;
@@ -8,16 +8,17 @@ public class HQSyncUpdateDomainFieldsBatch implements Database.Batchable<Domain_
         this.upsertDomainSnapshot = upsertDomainSnapshot;
     }
 
-    public List<Domain__c> start(Database.BatchableContext BC) {
+    public Database.QueryLocator start(Database.BatchableContext BC) {
         this.wamMap = new Map<String, Decimal> { 'Advanced' => 0, 'Community' => 0, 'Enterprise' => 0, 'Standard' => 0, 'Pro' => 0};
         this.formsForPeriodMap = new Map<String, Decimal> { 'Advanced' => 0, 'Community' => 0, 'Enterprise' => 0, 'Standard' => 0, 'Pro' => 0};
-        return [SELECT Id, Name, Wam__c, Wam_TMP__c, Forms_for_Period__c, Forms_for_Period_TMP__c,
-                    is_active__c, cpIsActive__c FROM Domain__c];
+        return Database.getQueryLocator('SELECT Id, Name, Wam__c, Wam_TMP__c, Forms_for_Period__c, Forms_for_Period_TMP__c,'
+                    + 'is_active__c, cpIsActive__c FROM Domain__c');
     }
 
-    public void execute(Database.BatchableContext info, List<Domain__c> scope) {
+    public void execute(Database.BatchableContext info, List<SObject> scope) {
         Map<Id, Domain__c> wamAndFormsDomains = new Map<Id, Domain__c>();
-        for (Domain__c domain : scope) {
+        for (SObject domainObj : scope) {
+            Domain__c domain = (Domain__c) domainObj;
             domain.Wam__c = domain.Wam_TMP__c != null ? domain.Wam_TMP__c : 0;
             domain.Wam_TMP__c = 0;
             domain.Forms_for_Period__c = domain.Forms_for_Period_TMP__c != null ? domain.Forms_for_Period_TMP__c : 0;

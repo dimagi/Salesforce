@@ -258,7 +258,7 @@ public class HQSyncUtils {
 
         if (domainNames.size() > 0) {
             Map <String, Id> mapDomainNameId = new Map<String, Id>();
-            for(Domain__c domain : [SELECT Id, Name FROM Domain__c WHERE Name in: domainNames AND Server_Name__c =: serverName]) {
+            for(Domain__c domain : [SELECT Id, Name FROM Domain__c WHERE Name in: domainNames AND Server_Name__c =: serverName AND Domain_Deleted__c = false]) {
                 mapDomainNameId.put(domain.Name, domain.Id);
             }
 
@@ -296,7 +296,7 @@ public class HQSyncUtils {
 
         if (domainNames.size() > 0) {
             Map <String, Id> mapDomainNameId = new Map<String, Id>();
-            for(Domain__c domain : [SELECT Id, Name FROM Domain__c WHERE Name in: domainNames AND Server_Name__c =: serverName]) {
+            for(Domain__c domain : [SELECT Id, Name FROM Domain__c WHERE Name in: domainNames AND Server_Name__c =: serverName AND Domain_Deleted__c = false]) {
                 mapDomainNameId.put(domain.Name, domain.Id);
             }
 
@@ -329,7 +329,7 @@ public class HQSyncUtils {
             }
 
             Map <String, Id> mapDomainNameId = new Map<String, Id>();
-            for(Domain__c domain : [SELECT Id, Name FROM Domain__c WHERE Name in: domainNames AND Server_Name__c =: serverName]) {
+            for(Domain__c domain : [SELECT Id, Name FROM Domain__c WHERE Name in: domainNames AND Server_Name__c =: serverName AND Domain_Deleted__c = false]) {
                 mapDomainNameId.put(domain.Name, domain.Id);
             }
 
@@ -364,7 +364,7 @@ public class HQSyncUtils {
             }
 
             Map <String, Id> mapDomainNameId = new Map<String, Id>();
-            for(Domain__c domain : [SELECT Id, Name FROM Domain__c WHERE Name in: domainNames AND Server_Name__c =: serverName]) {
+            for(Domain__c domain : [SELECT Id, Name FROM Domain__c WHERE Name in: domainNames AND Server_Name__c =: serverName AND Domain_Deleted__c = false]) {
                 mapDomainNameId.put(domain.Name, domain.Id);
             }
 
