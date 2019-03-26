@@ -32,7 +32,6 @@
                     <br /><br />
                     <apex:pageMessages />
                     <apex:PageBlock title="Batch Errors" id="batch-tab-panel">
-                        Page size : {!icdsPagination.pageSize}
                         <apex:pageBlockTable id="batch-table" value="{!batchData}" var="batch" >
                             <apex:column headerValue="Apex Class" value="{!batch.ApexClassID}" />
                             <apex:column headerValue="Job Type" value="{!batch.JobType}" />
