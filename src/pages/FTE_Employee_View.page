@@ -22,7 +22,7 @@
         .totalNames {
             border-top-width: 3px !important;
         }
-        .employeeTable {
+        .fteTable {
             margin-top: 10px;
             margin-bottom: 10px;
         }
@@ -272,7 +272,7 @@
                     </apex:facet>
                 </apex:actionstatus>
 
-                <apex:pageBlockTable id="employeeHours" value="{!contractsTime}" var="empTime" styleClass="employeeTable">
+                <apex:pageBlockTable id="employeeHours" value="{!contractsTime}" var="empTime" styleClass="fteTable">
                     <apex:column onclick="if ('{!empTime.name}' !== 'Unassigned' && '{!empTime.name}' !== 'Total Days Worked' && '{!empTime.name}' !== 'Total Assigned Days') {goToIndividualProjectView('{!empTime.objId}');}"
                                  headerValue="Contract Name" value="{!empTime.name}" styleClass="{!empTime.nameCss}"/>
                     <apex:column onclick="if ('{!empTime.name}' !== 'Total Days Worked' && '{!empTime.name}' !== 'Total Assigned Days') {loadModalData(0, '{!empTime.objId}');}"

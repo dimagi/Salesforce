@@ -16,17 +16,18 @@
             border-top-width: 3px !important;
             border-top-color: black !important;
         }
-        .employeeTable {
+        .fteTable {
             margin-top: 10px;
             margin-bottom: 10px;
         }
-        .verAlign {
+        .fteFilters {
+            padding-left: 10px;
             vertical-align: middle;
         }
-        #chooseYear {
-            width: 180px;
-            padding-left: 10px;
-            padding-bottom: 10px;
+        .fteFilters input, .fteFilters label, .fteFilters select {
+            padding-left: 0px;
+            margin-right: 10px;
+            height: 22px !important;
         }
     </style>
 
@@ -47,14 +48,15 @@
                     <apex:pageMessages />
                 </apex:outputPanel>
 
-                <div id="chooseYear">
-                    <apex:outputText id="fteYearName" value="Select year : " styleClass="verAlign" />
+                <div class="fteFilters">
+                    <apex:outputLabel value="Select year :" for="fteYearSelect" />
                     <apex:selectList id="fteYearSelect" value="{!fteYear}" size="1" onchange="updateFteYear();">
                         <apex:selectOptions value="{!yearsData}"/>
                     </apex:selectList>
                 </div>
+                <hr />
 
-                <apex:pageBlockTable id="employeeHours" value="{!individualContractDataList}" var="empTime" styleClass="employeeTable">
+                <apex:pageBlockTable id="employeeHours" value="{!individualContractDataList}" var="empTime" styleClass="fteTable">
                     <apex:column onclick="if ('{!empTime.name}' !== 'Total') {goToEmployeeView('{!empTime.objId}');}"
                                 headerValue="Name" value="{!empTime.name}" styleClass="{!empTime.nameCss}"/>
                     <apex:column headerValue="January {!fteYear}" value="{!empTime.daysArray[0]}" styleClass="{!empTime.cssStyle[12]}" />
