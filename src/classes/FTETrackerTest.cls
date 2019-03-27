@@ -1224,11 +1224,26 @@ public class FTETrackerTest {
         List<FTEEmployeeTime> workCardList = emplListCtrl.getEmployeesList();
         System.assertEquals(3, workCardList.size());
 
+        emplListCtrl.emplDepartment = emplListCtrl.departmentList.get(1).getValue();
+        emplListCtrl.emplBusinessUnit = emplListCtrl.buList.get(1).getValue();
+        System.assertEquals(3, emplListCtrl.getEmployeesList().size()); // secdond option must be empty, we have all departmenst and BU empty so expected result is 3
+
         emplListCtrl.employeeNameSearch = 'other';
         emplListCtrl.searchEmplopyee();
         workCardList = emplListCtrl.getEmployeesList();
-
         System.assertEquals(1, workCardList.size());
+
+        SFDC_Employee__c emp  = [SELECT Id, Sub_Unit__c FROM SFDC_Employee__c WHERE Name = 'FTE Employee'];
+        emp.Sub_Unit__c = 'Global Services';
+        update emp;
+
+        emplListCtrl.employeeNameSearch = '';
+        emplListCtrl.emplDepartment = 'Global Services';
+        emplListCtrl.searchEmplopyee();
+        workCardList = emplListCtrl.getEmployeesList();
+        System.assertEquals(1, workCardList.size());
+        System.assertEquals('FTE Employee', workCardList.get(0).name);
+
         System.assertNotEquals(null, emplListCtrl.goToProjectListView());
         System.assertNotEquals(null, emplListCtrl.goToEmployeeView());
         System.assertNotEquals(null, emplListCtrl.goToCSVUploadView());
