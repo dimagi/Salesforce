@@ -13,7 +13,7 @@ public class FTETrackerController extends FTEController {
         get {
             List<SelectOption> result = SFUtils.getPicklistValues(new SFDC_Employee__c(), 'Sub_Unit__c', false);
             result.add(0, new SelectOption('-', 'Empty'));
-            result.add(0, new SelectOption('---', 'Not Specified'));
+            result.add(0, new SelectOption('---', 'All'));
             return result;
         }
         set;
@@ -21,7 +21,7 @@ public class FTETrackerController extends FTEController {
     public String emplBusinessUnit { get; set; }
     public List<SelectOption> buList {
         get {
-            List<SelectOption> result = new List<SelectOption> { new SelectOption('---', 'Not Specified'), new SelectOption('-', 'Empty') }; // empty, any
+            List<SelectOption> result = new List<SelectOption> { new SelectOption('---', 'All'), new SelectOption('-', 'Empty') }; // empty, any
             for (Business_Unit__c bu : [SELECT Id, Name FROM Business_Unit__c]) {
                 result.add(new SelectOption(bu.Id, bu.Name));
             }
