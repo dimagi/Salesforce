@@ -26,12 +26,8 @@ public class SFUtils {
     /**
      * Get a list of picklist values from an existing object field.
      */
-    public static List<SelectOption> getPicklistValues(SObject obj, String fieldName) {
-        return getPicklistValues(obj, fieldName, true);
-    }
-
-    public static List<SelectOption> getPicklistValues(SObject obj, String fieldName, Boolean addNA) {
-        List<SelectOption> options = new list<SelectOption>();
+    public static List<SelectOption> getPicklistValuesWithLabel(SObject obj, String fieldName) {
+        List<SelectOption> options = new List<SelectOption>();
         Schema.sObjectType objType = obj.getSObjectType();
         Schema.DescribeSObjectResult objDescribe = objType.getDescribe();
 
@@ -42,9 +38,22 @@ public class SFUtils {
            options.add(new SelectOption(a.getValue(), a.getLabel()));
         }
 
-        if (addNA == true) {
-            options.add(new SelectOption('N/A', ''));
+        return options;
+    }
+
+    public static List<SelectOption> getPicklistValues(SObject obj, String fieldName) {
+        List<SelectOption> options = new list<SelectOption>();
+        Schema.sObjectType objType = obj.getSObjectType();
+        Schema.DescribeSObjectResult objDescribe = objType.getDescribe();
+
+        Map<String, Schema.SObjectField> fieldMap = objDescribe.fields.getMap();
+        List<Schema.PicklistEntry> values = fieldMap.get(fieldName).getDescribe().getPickListValues();
+
+        for (Schema.PicklistEntry a : values) {
+           options.add(new SelectOption(a.getValue(), ''));
         }
+
+            options.add(new SelectOption('N/A', ''));
 
         return options;
     }
