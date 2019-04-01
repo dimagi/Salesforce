@@ -11,7 +11,7 @@ public class FTETrackerController extends FTEController {
     public String emplDepartment { get; set; }
     public List<SelectOption> departmentList {
         get {
-            List<SelectOption> result = SFUtils.getPicklistValues(new SFDC_Employee__c(), 'Sub_Unit__c', false);
+            List<SelectOption> result = SFUtils.getPicklistValuesWithLabel(new SFDC_Employee__c(), 'Sub_Unit__c');
             result.add(0, new SelectOption('-', 'Empty'));
             result.add(0, new SelectOption('---', 'All'));
             return result;
