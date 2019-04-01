@@ -16,6 +16,7 @@ public class QueryBuilder {
     public static final String QB_NULLS_LAST = 'NULLS LAST';
     public static final String QB_TEXT_TYPE = 'Text';
     public static final String QB_CHECKBOX_TYPE = 'Checkbox';
+    public static final String QB_DECIMAL_TYPE = 'Decimal';
     public static final String QB_DATE_TYPE = 'Date';
     public static final String QB_MULTISELECT_TYPE = 'Multiselect';
     public static final String QB_EQUAL = '=';
