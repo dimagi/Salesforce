@@ -1,10 +1,12 @@
 public class AdminPageMainController {
 
-
     public AdminPageMainController() {
         this.icdsPagination = new Pagination();
+
         this.batchPagination = new Pagination();
         this.batchPagination.pageSize = 50;
+
+        this.upsertMode = false;
     }
 
     /**
@@ -32,11 +34,10 @@ public class AdminPageMainController {
 
     public Pagination batchPagination { get; set; }
 
-
     public List<AsyncApexJob> getBatchData() {
         List<AsyncApexJob> result = [SELECT Id, ApexClassID, JobType, MethodName, JobItemsProcessed, TotalJobItems, Status, ExtendedStatus, NumberOfErrors, CompletedDate, CreatedDate FROM AsyncApexJob
                                    WHERE (Status IN ('Aborted', 'Failed') OR (Status = 'Completed' AND ExtendedStatus != null AND ExtendedStatus != ''))
-                                   ORDER BY CompletedDate DESC LIMIT : this.batchPagination.pageSize OFFSET : this.batchPagination.getOffsetValue()];
+                                   ORDER BY CreatedDate DESC LIMIT : this.batchPagination.pageSize OFFSET : this.batchPagination.getOffsetValue()];
         this.batchPagination.handleResulSize([SELECT Count() FROM AsyncApexJob WHERE (Status IN ('Aborted', 'Failed') OR (Status = 'Completed' AND ExtendedStatus != null AND ExtendedStatus != ''))]);
         return result;
     }
@@ -58,19 +59,38 @@ public class AdminPageMainController {
     }
 
     public void switchToAddRecord() {
-        
+        this.upsertMode = true;
+        Date helperDate = Date.today().addMonths(-1);
+        Date snapshotDate = Date.newInstance(helperDate.year(), helperDate.month(), Date.daysInMonth(helperDate.year(), helperDate.month()));
+        this.icdsRecord = new ICDS_Domain_Snapshot__c(Date__c = snapshotDate);
+        this.helperId = null;
     }
 
     public void switchToUpdateRecord() {
-        
+        this.upsertMode = true;
+        this.icdsRecord = [SELECT Id, Date__c, Active_Users__c, Forms__c, WAMs__c FROM ICDS_Domain_Snapshot__c WHERE Id =: this.helperId];
+        this.helperId = null;
     }
 
     public void saveIcdsRecord() {
-        
+        if (this.icdsRecord.Id != null) {
+            update this.icdsRecord;
+        } else {
+            insert this.icdsRecord;
+        }
+        openICDSList();
     }
 
     public void deleteIcdsRecord() {
-        
+        if (this.icdsRecord.Id != null) {
+            delete [SELECT Id FROM ICDS_Domain_Snapshot__c WHERE Id =: this.icdsRecord.Id];
+        }
+        openICDSList();
+    }
+
+    public void openICDSList() {
+        this.helperId = null;
+        this.upsertMode = false;
     }
 
     /**
