@@ -62,4 +62,41 @@ public class AdminPageTest {
         System.assertEquals(10, record.WAMs__c);
         Test.stopTest();
     }
+
+    @isTest
+    public static void testIcdsCRUD() {
+        AdminPageMainController pageCtrl = new AdminPageMainController();
+
+        Test.startTest();
+        System.assertEquals(false, pageCtrl.upsertMode);
+        pageCtrl.switchToAddRecord();
+        System.assertEquals(true, pageCtrl.upsertMode);
+        pageCtrl.icdsRecord.Active_Users__c = 1;
+        pageCtrl.icdsRecord.Forms__c = 2;
+        pageCtrl.icdsRecord.WAMs__c = 3;
+        pageCtrl.saveIcdsRecord();
+        System.assertEquals(false, pageCtrl.upsertMode);
+        List<ICDS_Domain_Snapshot__c> dataList = [SELECT Id, Active_Users__c, WAMs__c, Forms__c FROM ICDS_Domain_Snapshot__c];
+        System.assertEquals(13, dataList.size());
+
+        pageCtrl.helperId = dataList.get(0).Id;
+        pageCtrl.switchToUpdateRecord();
+        pageCtrl.icdsRecord.Active_Users__c = 1;
+        pageCtrl.icdsRecord.Forms__c = 2;
+        pageCtrl.icdsRecord.WAMs__c = 3;
+        pageCtrl.saveIcdsRecord();
+
+        ICDS_Domain_Snapshot__c assertRecords = [SELECT Id, Active_Users__c, WAMs__c, Forms__c FROM ICDS_Domain_Snapshot__c WHERE Id =: dataList.get(0).Id];
+        System.assertEquals(1, assertRecords.Active_Users__c);
+        System.assertEquals(2, assertRecords.Forms__c);
+        System.assertEquals(3, assertRecords.WAMs__c);
+
+        pageCtrl.helperId = dataList.get(0).Id;
+        pageCtrl.switchToUpdateRecord();
+        pageCtrl.deleteIcdsRecord();
+
+        dataList = [SELECT Id, Active_Users__c, WAMs__c, Forms__c FROM ICDS_Domain_Snapshot__c WHERE Id =: dataList.get(0).Id];
+        System.assertEquals(0, dataList.size());
+        Test.stopTest();
+    }
 }
