@@ -38,8 +38,8 @@ public class DomainDeactivationBatch  implements Database.Batchable<DuplicateDom
             String hqId = domainWrapper.realDomainId;
 
             if (hqId == null || hqId == '') {
-                System.debug('Empty domain id : ' + domainName + ' - ' + serverName);
-                StatusLoggerUtils.logError(StatusLoggerUtils.HQ_SYNC_DUPLICATES_LOGGER, 'Cannot fetch duplicated domain data form HQ', 0, 'API error ' + domainName + ' - ' + serverName);
+                System.debug('Empty domain id : ' + domainWrapper.domainName + ' - ' + domainWrapper.serverName);
+                StatusLoggerUtils.logError(StatusLoggerUtils.HQ_SYNC_DUPLICATES_LOGGER, 'Cannot fetch duplicated domain data form HQ', 0, 'API error ' + domainWrapper.domainName + ' - ' + domainWrapper.serverName);
                 continue;
             }
 
