@@ -12,7 +12,7 @@ public class HQSyncDomainBatch extends HQSyncBatch {
             Database.executeBatch(new HQSyncDomainBatch(nextServer, this.offsets, this.servers), 1);
         } else {
             HQSyncUtils.endDomainJob();
-            Database.executeBatch(new DomainDeactivationBatch()); // Tag duplicated domains as deleted
+            Database.executeBatch(new DomainDeactivationBatch(), 1); // Tag duplicated domains as deleted
         }
     }
 

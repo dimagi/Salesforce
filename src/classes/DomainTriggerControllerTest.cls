@@ -3,42 +3,47 @@ public class DomainTriggerControllerTest {
 
     @testSetup
     public static void setupCustomSetting() {
+        Commcare_Job_Settings__c settings = Commcare_Job_Settings__c.getOrgDefaults();
+        insert settings;
+
+        CommcareToSalesforceSettings__c testCustomSetting = new CommcareToSalesforceSettings__c();
+        testCustomSetting.CommCare_User_Name__c = 'CommCareUserName@gmail.com';
+        testCustomSetting.CommCare_Password__c = 'CommCarePassword';
+        testCustomSetting.Server_URL__c = 'https://www.test.org/hq/admin/api/global/';
+        testCustomSetting.Single_Domain_Endpoint__c = 'https://www.test.org/a/{0}/api/v0.5/project_space_metadata/';
+        testCustomSetting.Skip_in_batch_job__c = false;
+        testCustomSetting.API_Limit_Parameter__c = 10;
+        testCustomSetting.Name = 'CommCare HQ';
+        insert testCustomSetting;
+
         Business_Unit__c bunit = new Business_Unit__c();
         bunit.Name = 'Test';
         insert bunit; 
 
         Account acc1 = new Account(Name = 'Acc 1', Status__c = 'Active');
-        insert acc1;
         Account acc2 = new Account(Name = 'Acc 2 Test', Status__c = 'Active');
-        insert acc2;
         Account acc3 = new Account(Name = 'Acc 3 NY', Status__c = 'Active');
-        insert acc3;
-        Opportunity opp1 = new Opportunity(Name = 'opp1', StageName = 'Stage 1 - Connect', CloseDate = Date.today().addDays(50),
-                                          Implementing_Business_Unit__c = bunit.Id, AccountId = acc1.Id);
-        insert opp1;
-        Opportunity opp2 = new Opportunity(Name = 'opp2', StageName = 'Stage 1 - Connect', CloseDate = Date.today().addDays(50),
-                                          Implementing_Business_Unit__c = bunit.Id);
-        insert opp2;
-        Opportunity opp3 = new Opportunity(Name = 'opp3', StageName = 'Stage 1 - Connect', CloseDate = Date.today().addDays(50),
-                                          Implementing_Business_Unit__c = bunit.Id);
-        insert opp3;
-        Opportunity opp4 = new Opportunity(Name = 'opp4', StageName = 'Stage 1 - Connect', CloseDate = Date.today().addDays(50),
-                                          Implementing_Business_Unit__c = bunit.Id, AccountId = acc3.Id);
-        insert opp4;
-        Opportunity opp5 = new Opportunity(Name = 'opp5', StageName = 'Stage 1 - Connect', CloseDate = Date.today().addDays(50),
-                                          Implementing_Business_Unit__c = bunit.Id, AccountId = acc1.Id);
-        insert opp5;
+        insert new List<Account> { acc1, acc2, acc3 };
 
+        Opportunity opp1 = new Opportunity(Name = 'opp1', StageName = 'Stage 1 - Connect', CloseDate = Date.today().addDays(50), Fogbugz_Probability__c = 0,
+                                          Implementing_Business_Unit__c = bunit.Id, AccountId = acc1.Id, Fogbugz_Ticket_Number__c = '111');
+        Opportunity opp2 = new Opportunity(Name = 'opp2', StageName = 'Stage 1 - Connect', CloseDate = Date.today().addDays(50), Fogbugz_Probability__c = 0,
+                                          Implementing_Business_Unit__c = bunit.Id, Fogbugz_Ticket_Number__c = '222');
+        Opportunity opp3 = new Opportunity(Name = 'opp3', StageName = 'Stage 1 - Connect', CloseDate = Date.today().addDays(50), Fogbugz_Probability__c = 0,
+                                          Implementing_Business_Unit__c = bunit.Id, Fogbugz_Ticket_Number__c = '333');
+        Opportunity opp4 = new Opportunity(Name = 'opp4', StageName = 'Stage 1 - Connect', CloseDate = Date.today().addDays(50), Fogbugz_Probability__c = 0,
+                                          Implementing_Business_Unit__c = bunit.Id, AccountId = acc3.Id, Fogbugz_Ticket_Number__c = '444');
+        Opportunity opp5 = new Opportunity(Name = 'opp5', StageName = 'Stage 1 - Connect', CloseDate = Date.today().addDays(50), Fogbugz_Probability__c = 0,
+                                          Implementing_Business_Unit__c = bunit.Id, AccountId = acc1.Id, Fogbugz_Ticket_Number__c = '555');
+        insert new List<Opportunity> { opp1, opp2, opp3, opp4, opp5 };
 
         Contact c1 = new Contact(Title = 'Test Contact 1', Department = 'Account', Email = 'test2@test.com', FirstName = 'Test 1', LastName = 'Contact');
         Contact c2 = new Contact(Title = 'Test Contact 2', Department = 'Account', Email = 'test1@test.com', FirstName = 'Test 2', LastName = 'Contact');
-        insert c1;
-        insert c2;
+        insert new List<Contact> { c1, c2 };
 
         OpportunityContactRole ocr1 = new OpportunityContactRole(ContactId = c1.Id, OpportunityId = opp1.Id, IsPrimary = true);
         OpportunityContactRole ocr2 = new OpportunityContactRole(ContactId = c2.Id, OpportunityId = opp2.Id, IsPrimary = true);
-        insert ocr1;
-        insert ocr2;
+        insert new List<OpportunityContactRole> { ocr1, ocr2 };
 
         HQSyncDomainModel.DomainModel d1 = new HQSyncDomainModel.DomainModel();
         d1.x_id = 'sample_external_id_1';
@@ -136,8 +141,16 @@ public class DomainTriggerControllerTest {
         insertDomain('d3', 'sample_external_id_3_dd', DateTime.now().addDays(-2));
         insertDomain('d3', 'sample_external_id_3_ddd', DateTime.now().addDays(-3));
 
+        Map<String, String> mockMap = new Map<String, String> {
+            'https://www.test.org/a/d1/api/v0.5/project_space_metadata/' => '{"meta": {"limit": 20, "next": null, "offset": 0, "previous": null, "total_count": 1}, "objects": [{"billing_properties": {"date_end": "2019-11-10", "date_start": "2016-11-17", "plan_version": "cc"}, "calculated_properties": { "cp_has_app": true, "cp_has_project_icon": true, "cp_is_active": true }, "domain_properties": { "name": "d1", "_id": "sample_external_id_1_d", "_rev": "", "commtrack_enabled": true, "copy_history": [], "deployment": {"city": null, "countries": ["GH"], "date": "2015-10-30T00:00:00.000000Z", "description": null, "doc_type": "Deployment", "public": false, "region": null}, "description": null, "doc_type": "Domain", "hipaa_compliant": false, "hr_name": "", "yt_id": null }, "resource_uri": "/hq/admin/api/global/project_space_metadata/d1/" }]}',
+            'https://www.test.org/a/d2/api/v0.5/project_space_metadata/' => '{"meta": {"limit": 20, "next": null, "offset": 0, "previous": null, "total_count": 1}, "objects": [{"billing_properties": {"date_end": "2019-11-10", "date_start": "2016-11-17", "plan_version": "cc"}, "calculated_properties": { "cp_has_app": true, "cp_has_project_icon": true, "cp_is_active": true }, "domain_properties": { "name": "d2", "_id": "sample_external_id_2", "_rev": "", "commtrack_enabled": true, "copy_history": [], "deployment": {"city": null, "countries": ["GH"], "date": "2015-10-30T00:00:00.000000Z", "description": null, "doc_type": "Deployment", "public": false, "region": null}, "description": null, "doc_type": "Domain", "hipaa_compliant": false, "hr_name": "", "yt_id": null }, "resource_uri": "/hq/admin/api/global/project_space_metadata/d1/" }]}',
+            'https://www.test.org/a/d3/api/v0.5/project_space_metadata/' => '{"meta": {"limit": 20, "next": null, "offset": 0, "previous": null, "total_count": 1}, "objects": [{"billing_properties": {"date_end": "2019-11-10", "date_start": "2016-11-17", "plan_version": "cc"}, "calculated_properties": { "cp_has_app": true, "cp_has_project_icon": true, "cp_is_active": true }, "domain_properties": { "name": "d3", "_id": "sample_external_id_3_d", "_rev": "", "commtrack_enabled": true, "copy_history": [], "deployment": {"city": null, "countries": ["GH"], "date": "2015-10-30T00:00:00.000000Z", "description": null, "doc_type": "Deployment", "public": false, "region": null}, "description": null, "doc_type": "Domain", "hipaa_compliant": false, "hr_name": "", "yt_id": null }, "resource_uri": "/hq/admin/api/global/project_space_metadata/d1/" }]}'
+        };
+
+        Test.setMock(HttpCalloutMock.class, new SingleDomainAPIMock(mockMap));
         Test.startTest();
-        Database.executeBatch(new DomainDeactivationBatch());
+        DomainDeactivationBatch batchObj = new DomainDeactivationBatch();
+        batchObj.execute(null, batchObj.start(null));
         Test.stopTest();
 
         System.assertEquals(5, [SELECT Id FROM Domain__c WHERE Domain_Deleted__c = true].size());
@@ -165,7 +178,7 @@ public class DomainTriggerControllerTest {
     }
 
     @isTest
-    public static void should() {
+    public static void shouldMoveRelations() {
         Domain__c d1 = [SELECT Id FROM Domain__c WHERE Name = 'd1'];
         Domain__c d2 = [SELECT Id FROM Domain__c WHERE Name = 'd2'];
         Domain__c d3 = [SELECT Id FROM Domain__c WHERE Name = 'd3'];
@@ -239,8 +252,18 @@ public class DomainTriggerControllerTest {
         d2.Country_of_deployment_salesforce__c = c1.Id;
         update d2;
 
+        Map<String, String> mockMap = new Map<String, String> {
+            'https://www.test.org/a/d1/api/v0.5/project_space_metadata/' => '{"meta": {"limit": 20, "next": null, "offset": 0, "previous": null, "total_count": 1}, "objects": [{"billing_properties": {"date_end": "2019-11-10", "date_start": "2016-11-17", "plan_version": "cc"}, "calculated_properties": { "cp_has_app": true, "cp_has_project_icon": true, "cp_is_active": true }, "domain_properties": { "name": "d1", "_id": "sample_external_id_1_ddd", "_rev": "", "commtrack_enabled": true, "copy_history": [], "deployment": {"city": null, "countries": ["GH"], "date": "2015-10-30T00:00:00.000000Z", "description": null, "doc_type": "Deployment", "public": false, "region": null}, "description": null, "doc_type": "Domain", "hipaa_compliant": false, "hr_name": "", "yt_id": null }, "resource_uri": "/hq/admin/api/global/project_space_metadata/d1/" }]}',
+            'https://www.test.org/a/d2/api/v0.5/project_space_metadata/' => '{"meta": {"limit": 20, "next": null, "offset": 0, "previous": null, "total_count": 1}, "objects": [{"billing_properties": {"date_end": "2019-11-10", "date_start": "2016-11-17", "plan_version": "cc"}, "calculated_properties": { "cp_has_app": true, "cp_has_project_icon": true, "cp_is_active": true }, "domain_properties": { "name": "d2", "_id": "sample_external_id_2_d", "_rev": "", "commtrack_enabled": true, "copy_history": [], "deployment": {"city": null, "countries": ["GH"], "date": "2015-10-30T00:00:00.000000Z", "description": null, "doc_type": "Deployment", "public": false, "region": null}, "description": null, "doc_type": "Domain", "hipaa_compliant": false, "hr_name": "", "yt_id": null }, "resource_uri": "/hq/admin/api/global/project_space_metadata/d1/" }]}',
+            'https://www.test.org/a/d3/api/v0.5/project_space_metadata/' => '{"meta": {"limit": 20, "next": null, "offset": 0, "previous": null, "total_count": 1}, "objects": [{"billing_properties": {"date_end": "2019-11-10", "date_start": "2016-11-17", "plan_version": "cc"}, "calculated_properties": { "cp_has_app": true, "cp_has_project_icon": true, "cp_is_active": true }, "domain_properties": { "name": "d3", "_id": "sample_external_id_3_d", "_rev": "", "commtrack_enabled": true, "copy_history": [], "deployment": {"city": null, "countries": ["GH"], "date": "2015-10-30T00:00:00.000000Z", "description": null, "doc_type": "Deployment", "public": false, "region": null}, "description": null, "doc_type": "Domain", "hipaa_compliant": false, "hr_name": "", "yt_id": null }, "resource_uri": "/hq/admin/api/global/project_space_metadata/d1/" }]}',
+            'https://www.test.org/a/d4/api/v0.5/project_space_metadata/' => '{"meta": {"limit": 20, "next": null, "offset": 0, "previous": null, "total_count": 1}, "objects": [{"billing_properties": {"date_end": "2019-11-10", "date_start": "2016-11-17", "plan_version": "cc"}, "calculated_properties": { "cp_has_app": true, "cp_has_project_icon": true, "cp_is_active": true }, "domain_properties": { "name": "d3", "_id": "sample_external_id_4_d", "_rev": "", "commtrack_enabled": true, "copy_history": [], "deployment": {"city": null, "countries": ["GH"], "date": "2015-10-30T00:00:00.000000Z", "description": null, "doc_type": "Deployment", "public": false, "region": null}, "description": null, "doc_type": "Domain", "hipaa_compliant": false, "hr_name": "", "yt_id": null }, "resource_uri": "/hq/admin/api/global/project_space_metadata/d1/" }]}',
+            'https://www.test.org/a/d5/api/v0.5/project_space_metadata/' => '{"meta": {"limit": 20, "next": null, "offset": 0, "previous": null, "total_count": 1}, "objects": [{"billing_properties": {"date_end": "2019-11-10", "date_start": "2016-11-17", "plan_version": "cc"}, "calculated_properties": { "cp_has_app": true, "cp_has_project_icon": true, "cp_is_active": true }, "domain_properties": { "name": "d3", "_id": "sample_external_id_5_d", "_rev": "", "commtrack_enabled": true, "copy_history": [], "deployment": {"city": null, "countries": ["GH"], "date": "2015-10-30T00:00:00.000000Z", "description": null, "doc_type": "Deployment", "public": false, "region": null}, "description": null, "doc_type": "Domain", "hipaa_compliant": false, "hr_name": "", "yt_id": null }, "resource_uri": "/hq/admin/api/global/project_space_metadata/d1/" }]}'
+        };
+
+        Test.setMock(HttpCalloutMock.class, new SingleDomainAPIMock(mockMap));
         Test.startTest();
-        Database.executeBatch(new DomainDeactivationBatch());
+        DomainDeactivationBatch batchObj = new DomainDeactivationBatch();
+        batchObj.execute(null, batchObj.start(null));
         Test.stopTest();
 
         System.assertEquals(5, [SELECT Id FROM Domain__c WHERE Domain_Deleted__c = false].size());
@@ -282,6 +305,24 @@ public class DomainTriggerControllerTest {
         // domain 5
         assertDomain = [SELECT Id, id__c, Account__r.Name, Opportunity__r.Name, Lead__c, Primary_Contact__r.Name, Country_of_deployment_salesforce__c FROM Domain__c WHERE Domain_Deleted__c = false AND Name = 'd5'];
         System.assertEquals('sample_external_id_5_d', assertDomain.id__c);
+    }
+
+    public class SingleDomainAPIMock implements HttpCalloutMock {
+
+        private Map<String, String> resultMap;
+
+        public SingleDomainAPIMock(Map<String, String> resultMap) {
+            this.resultMap = resultMap;
+        }
+
+        public HTTPResponse respond(HTTPRequest req) {
+            String endpoint = req.getEndpoint();
+            HTTPResponse res = new HTTPResponse();
+            res.setBody(this.resultMap.get(endpoint));
+            res.setStatusCode(200);
+            System.debug('Test endpoint : ' + endpoint);
+            return res;
+        }
     }
 
     public static Domain__c insertDomain(String name, String hqId, DateTime dc) {

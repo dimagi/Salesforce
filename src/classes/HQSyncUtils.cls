@@ -16,6 +16,45 @@ public class HQSyncUtils {
     public static final String SUBSCRIPTION_INVOICE = 'Subscription';
 
     /**
+     * Returns real domain ID, We can have duplicated domains, we want move all relations to one object.
+     */
+    public static String getRealDomainId(String domainName, String serverName) {
+        CommcareToSalesforceSettings__c serverSettings = CommcareToSalesforceSettings__c.getInstance(serverName);
+
+        HttpRequest req = new HttpRequest();
+        req.setEndpoint(String.format(serverSettings.Single_Domain_Endpoint__c, new List<String> { domainName }));
+        req.setMethod('GET');
+
+        String username = serverSettings.CommCare_User_Name__c;
+        String password = serverSettings.CommCare_Password__c;
+
+        Blob headerValue = Blob.valueOf(username + ':' + password);
+        String authorizationHeader = 'BASIC ' + EncodingUtil.base64Encode(headerValue);
+        req.setHeader('Authorization', authorizationHeader);
+        req.setTimeout(120000);
+
+        Http http = new Http();
+        HttpResponse res = http.send(req);
+
+        if(res.getStatusCode() != 200) {
+            Exception e = new CalloutException();
+            e.setMessage('HQ Sync Error, cannot fetch HQ objects data. Http status : ' + res.getStatusCode() + ' Body : ' + res.getBody());
+            throw e;
+        }
+
+        System.debug('Domain and server : ' + domainName + ' - ' + serverName);
+        JSONParser parser = createParser(HQSyncUtils.replaceReservedWords(res.getBody()));
+        HQSyncDomainModel.DomanProjectSpaceWrapper projectSpaceMetadata = null;
+        while (parser.nextToken() != null) {
+            if (parser.getCurrentToken() == JSONToken.START_OBJECT) {
+                projectSpaceMetadata = (HQSyncDomainModel.DomanProjectSpaceWrapper) parser.readValueAs(HQSyncDomainModel.DomanProjectSpaceWrapper.class);
+                break;
+           }
+        }
+        return projectSpaceMetadata.domain_properties.x_id;
+    }
+
+    /**
      * Replace reserved Apex words from given JSON file.
      */
     public static String replaceReservedWords(String myString) {

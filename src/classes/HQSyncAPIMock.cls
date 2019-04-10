@@ -63,45 +63,45 @@ public class HQSyncAPIMock implements HttpCalloutMock {
 
         if (this.customBody != null) {
             body = this.customBody;
-        } else if (req.getEndpoint().startswith('https://www.commcarehq.org/hq/admin/api/global/accounting_features')) {
+        } else if (req.getEndpoint().startswith('https://www.test.org/hq/admin/api/global/accounting_features')) {
             body = ACC_FEATURE;
-        } else if (req.getEndpoint().startswith('https://www.commcarehq.org/hq/admin/api/global/accounting_feature_rates')) {
+        } else if (req.getEndpoint().startswith('https://www.test.org/hq/admin/api/global/accounting_feature_rates')) {
             body = ACC_FEATURE_RATE;
-        } else if (req.getEndpoint().startswith('https://www.commcarehq.org/hq/admin/api/global/project_space_metadata')) {
+        } else if (req.getEndpoint().startswith('https://www.test.org/hq/admin/api/global/project_space_metadata')) {
             body = PROJECT_SPACE;
-        } else if (req.getEndpoint().startswith('https://www.commcarehq.org/hq/admin/api/global/software_plan_versions')) {
+        } else if (req.getEndpoint().startswith('https://www.test.org/hq/admin/api/global/software_plan_versions')) {
             body = SOFT_PLAN_VER;
-        } else if (req.getEndpoint().startswith('https://www.commcarehq.org/hq/admin/api/global/software_plan')) {
+        } else if (req.getEndpoint().startswith('https://www.test.org/hq/admin/api/global/software_plan')) {
             body = SOFT_PLAN;
-        } else if (req.getEndpoint().startswith('https://www.commcarehq.org/hq/admin/api/global/subscriber')) {
+        } else if (req.getEndpoint().startswith('https://www.test.org/hq/admin/api/global/subscriber')) {
             body = SUBSCRIBER;
-        } else if (req.getEndpoint().startswith('https://www.commcarehq.org/hq/admin/api/global/invoice')) {
+        } else if (req.getEndpoint().startswith('https://www.test.org/hq/admin/api/global/invoice')) {
             body = INVOICE;
-        } else if (req.getEndpoint().startswith('https://www.commcarehq.org/hq/admin/api/global/customer_invoice')) {
+        } else if (req.getEndpoint().startswith('https://www.test.org/hq/admin/api/global/customer_invoice')) {
             body = CUSTOMER_INVOICE;
-        } else if (req.getEndpoint().startswith('https://www.commcarehq.org/hq/admin/api/global/billing_account')) {
+        } else if (req.getEndpoint().startswith('https://www.test.org/hq/admin/api/global/billing_account')) {
             body = BILLING_ACC;
-        } else if (req.getEndpoint().startswith('https://www.commcarehq.org/hq/admin/api/global/software_product_rate')) {
+        } else if (req.getEndpoint().startswith('https://www.test.org/hq/admin/api/global/software_product_rate')) {
             body = SOFT_PROD_RATE;
-        } else if (req.getEndpoint().startswith('https://www.commcarehq.org/hq/admin/api/global/billing_contact_info')) {
+        } else if (req.getEndpoint().startswith('https://www.test.org/hq/admin/api/global/billing_contact_info')) {
             body = BILLING_CONT_INFO;
-        } else if (req.getEndpoint().startswith('https://www.commcarehq.org/hq/admin/api/global/accounting_payment_method')) {
+        } else if (req.getEndpoint().startswith('https://www.test.org/hq/admin/api/global/accounting_payment_method')) {
             body = ACC_PAY_METHOD;
-        } else if (req.getEndpoint().startswith('https://www.commcarehq.org/hq/admin/api/global/payment_record')) {
+        } else if (req.getEndpoint().startswith('https://www.test.org/hq/admin/api/global/payment_record')) {
             body = PAY_REC;
-        } else if (req.getEndpoint().startswith('https://www.commcarehq.org/hq/admin/api/global/accounting_line_items')) {
+        } else if (req.getEndpoint().startswith('https://www.test.org/hq/admin/api/global/accounting_line_items')) {
             body = LINE_ITEM;
-        } else if (req.getEndpoint().startswith('https://www.commcarehq.org/hq/admin/api/global/subscription_and_adjustment')) {
+        } else if (req.getEndpoint().startswith('https://www.test.org/hq/admin/api/global/subscription_and_adjustment')) {
             body = SUBSCRIPTION_ADJ;
-        } else if(req.getEndpoint().startswith('https://www.commcarehq.org/hq/admin/api/global/subscription')) {
+        } else if(req.getEndpoint().startswith('https://www.test.org/hq/admin/api/global/subscription')) {
             body = SUBSCRIPTION;
-        } else if (req.getEndpoint().startswith('https://www.commcarehq.org/hq/admin/api/global/credit_line')) {
+        } else if (req.getEndpoint().startswith('https://www.test.org/hq/admin/api/global/credit_line')) {
             body = CREDIT_LINE;
-        } else if (req.getEndpoint().startswith('https://www.commcarehq.org/hq/admin/api/global/credit_adjustment')) {
+        } else if (req.getEndpoint().startswith('https://www.test.org/hq/admin/api/global/credit_adjustment')) {
             body = CREDIT_ADJ;
-        } else if (req.getEndpoint().startswith('https://www.commcarehq.org/hq/admin/api/global/malt_tables')) {
+        } else if (req.getEndpoint().startswith('https://www.test.org/hq/admin/api/global/malt_tables')) {
             body = MALT_TABLE;
-        } else if (req.getEndpoint().startswith('https://www.commcarehq.org/hq/admin/api/global/gir_tables')) {
+        } else if (req.getEndpoint().startswith('https://www.test.org/hq/admin/api/global/gir_tables')) {
             body = GIR;
         }
 

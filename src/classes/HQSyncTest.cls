@@ -9,7 +9,7 @@ public class HQSyncTest {
         CommcareToSalesforceSettings__c testCustomSetting = new CommcareToSalesforceSettings__c();
         testCustomSetting.CommCare_User_Name__c = 'CommCareUserName@gmail.com';
         testCustomSetting.CommCare_Password__c = 'CommCarePassword';
-        testCustomSetting.Server_URL__c = 'https://www.commcarehq.org/hq/admin/api/global/';
+        testCustomSetting.Server_URL__c = 'https://www.test.org/hq/admin/api/global/';
         testCustomSetting.Skip_in_batch_job__c = false;
         testCustomSetting.API_Limit_Parameter__c = 10;
         testCustomSetting.Name = 'CommCare HQ';

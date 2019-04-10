@@ -1,4 +1,4 @@
-public class DomainDeactivationBatch  implements Database.Batchable<DuplicateDomainWrapper> {
+public class DomainDeactivationBatch  implements Database.Batchable<DuplicateDomainWrapper>, Database.AllowsCallouts {
 
     public DomainDeactivationBatch() {}
 
@@ -8,16 +8,46 @@ public class DomainDeactivationBatch  implements Database.Batchable<DuplicateDom
             String domainName = (String) aggRes.get('Name');
             String serverName = (String) aggRes.get('Server_Name__c');
 
+            System.debug('Duplicate data : ' + domainName + ' - ' + serverName);
             result.add(new DuplicateDomainWrapper(domainName, serverName));
         }
         return result;
     }
 
     public void execute(Database.BatchableContext context, List<DuplicateDomainWrapper> scope) {
+        List<Exception> errors = new List<Exception>();
+        for (DuplicateDomainWrapper domainWrapper : scope) { // Additional loop to avoid "Uncomitted work pending"
+            try {
+                domainWrapper.realDomainId = HQSyncUtils.getRealDomainId(domainWrapper.domainName, domainWrapper.serverName);
+            } catch (Exception e) {
+                errors.add(e);
+                System.debug('API Error : ' + e.getMessage());
+                System.debug('API Error : ' + e.getCause());
+                System.debug('API Error : ' + e.getLineNumber());
+                System.debug('API Error : ' + e.getStackTraceString());
+                System.debug('API Error : ' + e.getTypeName());
+                continue;
+            }
+        }
+
+        for (Exception e : errors) { // Additional loop to avoid "Uncomitted work pending"
+            StatusLoggerUtils.logError(StatusLoggerUtils.HQ_SYNC_DUPLICATES_LOGGER, 'Cannot fetch duplicated domain data form HQ', 0, e.getMessage());
+        }
+
         for (DuplicateDomainWrapper domainWrapper : scope) {
-            List<Domain__c> duplicates = [SELECT Id, Name, Domain_Deleted__c, date_created__c, Opportunity__c, Account__c, Lead__c, Primary_Contact__c, Country_of_deployment_salesforce__c FROM Domain__c
-                                          WHERE Server_Name__c =: domainWrapper.serverName AND Name =: domainWrapper.domainName AND Domain_Deleted__c = false ORDER BY date_created__c];
-            if (duplicates.size() < 2) {
+            String hqId = domainWrapper.realDomainId;
+
+            if (hqId == null || hqId == '') {
+                System.debug('Empty domain id : ' + domainName + ' - ' + serverName);
+                StatusLoggerUtils.logError(StatusLoggerUtils.HQ_SYNC_DUPLICATES_LOGGER, 'Cannot fetch duplicated domain data form HQ', 0, 'API error ' + domainName + ' - ' + serverName);
+                continue;
+            }
+
+            List<Domain__c> duplicates = [SELECT Id, id__c, Name, Domain_Deleted__c, date_created__c, Opportunity__c, Account__c, Lead__c, Primary_Contact__c, Country_of_deployment_salesforce__c FROM Domain__c
+                                          WHERE Server_Name__c =: domainWrapper.serverName AND Name =: domainWrapper.domainName AND Domain_Deleted__c = false
+                                          ORDER BY date_created__c];
+            if (duplicates.size() < 1) { // no duplicates
+                System.debug('No duplicated domains');
                 continue;
             }
 
@@ -29,6 +59,22 @@ public class DomainDeactivationBatch  implements Database.Batchable<DuplicateDom
 
             Set<Id> opportunityMapping = new Set<Id>();
             Domain__c realDomain;
+            for (Domain__c duplicate : duplicates) {
+                if (duplicate.id__c == hqId) {
+                    realDomain = duplicate;
+                }
+            }
+
+            if (realDomain == null) {
+                StatusLoggerUtils.logError(StatusLoggerUtils.HQ_SYNC_DUPLICATES_LOGGER, 'Cannot find real domain in DB', 0, 'Cannot find record');
+                continue;
+            }
+            oppId = realDomain.Opportunity__c;
+            leadId = realDomain.Lead__c;
+            accountId = realDomain.Account__c;
+            deployId = realDomain.Country_of_deployment_salesforce__c;
+            contactId = realDomain.Primary_Contact__c;
+
             for (Domain__c duplicate : duplicates) {
                 duplicate.Domain_Deleted__c = true;
 
@@ -47,9 +93,6 @@ public class DomainDeactivationBatch  implements Database.Batchable<DuplicateDom
                 }
                 if (deployId == null && duplicate.Country_of_deployment_salesforce__c != null) {
                     deployId = duplicate.Country_of_deployment_salesforce__c;
-                }
-                if (realDomain == null || realDomain.date_created__c < duplicate.date_created__c) { // the newest domain should be real and active
-                    realDomain = duplicate;
                 }
             }
 
@@ -120,6 +163,7 @@ public class DomainDeactivationBatch  implements Database.Batchable<DuplicateDom
 
         public String domainName { get; set; }
         public String serverName { get; set; }
+        public String realDomainId { get; set; }
 
         public DuplicateDomainWrapper(String domainName, String serverName) {
             this.domainName = domainName;
