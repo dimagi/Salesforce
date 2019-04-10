@@ -113,7 +113,6 @@ public without sharing class RenewalSubscriptionsBatch implements Database.Batch
                 String oppNameFirstPart = subscription.Accounting_subscriber_domain__r.Account__r.Name != null && subscription.Accounting_subscriber_domain__r.Account__r.Name != '' ?
                                             subscription.Accounting_subscriber_domain__r.Account__r.Name : subscription.Accounting_subscriber_domain__r.Name;
 
-
                 String oppNamesecondPart = '-' + subscription.Software_Plan_Edition__c + (subscription.service_type__c == 'IMPLEMENTATION' ? '-Implementation' : '') + ' Renewal ' + dateString;
 
                 if (oppNameFirstPart.length() + oppNamesecondPart.length() > 120) {

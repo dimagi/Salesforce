@@ -1,13 +1,13 @@
 /**
  * Updates Life Time MRR in the Domain custom objects, data taken from Subscriptions formula field.
  */
-public class CalculateDomainsLifeTimeMRRBatch implements Database.Batchable<Domain__c> {
+public class CalculateDomainsLifeTimeMRRBatch implements Database.Batchable<SObject> {
 
-    public List<Domain__c> start(Database.BatchableContext context) {
-       return [SELECT Id, Lifetime_MRR__c FROM Domain__c];
+    public Database.QueryLocator start(Database.BatchableContext context) {
+       return Database.getQueryLocator('SELECT Id, Lifetime_MRR__c FROM Domain__c');
     }
 
-    public void execute(Database.BatchableContext context, List<Domain__c> domains) {
+    public void execute(Database.BatchableContext context, List<SObject> domains) {
         Map<Id, Decimal> domainsLifetimeMRRs = new Map<Id, Decimal>();
 
         // Calculation Lifetime MRR for domain
@@ -24,15 +24,18 @@ public class CalculateDomainsLifeTimeMRRBatch implements Database.Batchable<Doma
         }
 
         // Set Lifetime MRR for domain
-        for (Domain__c d : domains) {
+        List<Domain__c> toUpdate = new LIst<Domain__c>();
+        for (SObject sObjDomain : domains) {
+            Domain__c d = (Domain__c) sObjDomain;
             Decimal lifetimeMRR = domainsLifetimeMRRs.get(d.Id);
             if (lifetimeMRR == null) {
                 lifetimeMRR = 0;
             }
             d.Lifetime_MRR__c = lifetimeMRR;
+            toUpdate.add(d);
         }
 
-        update domains;
+        update toUpdate;
     }
 
     public void finish(Database.BatchableContext context) {

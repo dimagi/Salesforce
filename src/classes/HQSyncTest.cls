@@ -9,7 +9,7 @@ public class HQSyncTest {
         CommcareToSalesforceSettings__c testCustomSetting = new CommcareToSalesforceSettings__c();
         testCustomSetting.CommCare_User_Name__c = 'CommCareUserName@gmail.com';
         testCustomSetting.CommCare_Password__c = 'CommCarePassword';
-        testCustomSetting.Server_URL__c = 'https://www.commcarehq.org/hq/admin/api/global/';
+        testCustomSetting.Server_URL__c = 'https://www.test.org/hq/admin/api/global/';
         testCustomSetting.Skip_in_batch_job__c = false;
         testCustomSetting.API_Limit_Parameter__c = 10;
         testCustomSetting.Name = 'CommCare HQ';
@@ -1279,115 +1279,6 @@ public class HQSyncTest {
         System.assertEquals(0, tmpDomain.Wam_TMP__c);
         System.assertEquals(9999, tmpDomain.Forms_for_Period__c);
         System.assertEquals(0, tmpDomain.Forms_for_Period_TMP__c);
-    }
-
-    @isTest
-    public  static void shouldSetPrimaryContactAndAccountOnDomain() {
-        Business_Unit__c bunit = new Business_Unit__c();
-        bunit.Name = 'Test';
-        insert bunit; 
-
-        Account acc1 = new Account(Name = 'Acc 1', Status__c = 'Active');
-        insert acc1;
-        Account acc2 = new Account(Name = 'Acc 2 Test', Status__c = 'Active');
-        insert acc2;
-        Account acc3 = new Account(Name = 'Acc 3 NY', Status__c = 'Active');
-        insert acc3;
-        Opportunity opp1 = new Opportunity(Name = 'opp1', StageName = 'Stage 1 - Connect', CloseDate = Date.today().addDays(50),
-                                          Implementing_Business_Unit__c = bunit.Id, AccountId = acc1.Id);
-        insert opp1;
-        Opportunity opp2 = new Opportunity(Name = 'opp2', StageName = 'Stage 1 - Connect', CloseDate = Date.today().addDays(50),
-                                          Implementing_Business_Unit__c = bunit.Id);
-        insert opp2;
-        Opportunity opp3 = new Opportunity(Name = 'opp3', StageName = 'Stage 1 - Connect', CloseDate = Date.today().addDays(50),
-                                          Implementing_Business_Unit__c = bunit.Id);
-        insert opp3;
-        Opportunity opp4 = new Opportunity(Name = 'opp4', StageName = 'Stage 1 - Connect', CloseDate = Date.today().addDays(50),
-                                          Implementing_Business_Unit__c = bunit.Id, AccountId = acc3.Id);
-        insert opp4;
-        Opportunity opp5 = new Opportunity(Name = 'opp5', StageName = 'Stage 1 - Connect', CloseDate = Date.today().addDays(50),
-                                          Implementing_Business_Unit__c = bunit.Id, AccountId = acc1.Id);
-        insert opp5;
-
-
-        Contact c1 = new Contact(Title = 'Test Contact 1', Department = 'Account', Email = 'test2@test.com', FirstName = 'Test 1', LastName = 'Contact');
-        Contact c2 = new Contact(Title = 'Test Contact 2', Department = 'Account', Email = 'test1@test.com', FirstName = 'Test 2', LastName = 'Contact');
-        insert c1;
-        insert c2;
-
-        OpportunityContactRole ocr1 = new OpportunityContactRole(ContactId = c1.Id, OpportunityId = opp1.Id, IsPrimary = true);
-        OpportunityContactRole ocr2 = new OpportunityContactRole(ContactId = c2.Id, OpportunityId = opp2.Id, IsPrimary = true);
-        insert ocr1;
-        insert ocr2;
-
-        HQSyncDomainModel.DomainModel d1 = new HQSyncDomainModel.DomainModel();
-        d1.x_id = 'sample_external_id_1';
-        d1.Name = 'd1';
-        d1.tags = new List<String> { ' ' };
-        Domain__c domainFromDb1 = d1.createDbObject('CommCare HQ', null);
-        domainFromDb1.Opportunity__c = opp3.Id;
-        insert domainFromDb1;
-        HQSyncDomainModel.DomainModel d2 = new HQSyncDomainModel.DomainModel();
-        d2.x_id = 'sample_external_id_2';
-        d2.Name = 'd2';
-        d2.tags = new List<String> { ' ' };
-        Domain__c domainFromDb2 = d2.createDbObject('CommCare HQ', null);
-        domainFromDb2.Account__c = acc2.Id;
-        insert domainFromDb2;
-        HQSyncDomainModel.DomainModel d3 = new HQSyncDomainModel.DomainModel();
-        d3.x_id = 'sample_external_id_3';
-        d3.Name = 'd3';
-        d3.tags = new List<String> { ' ' };
-        Domain__c domainFromDb3 = d3.createDbObject('CommCare HQ', null);
-        domainFromDb3.Opportunity__c = opp1.Id;
-        insert domainFromDb3;
-        HQSyncDomainModel.DomainModel d4 = new HQSyncDomainModel.DomainModel();
-        d4.x_id = 'sample_external_id_4';
-        d4.Name = 'd4';
-        d4.tags = new List<String> { ' ' };
-        Domain__c domainFromDb4 = d4.createDbObject('CommCare HQ', null);
-        domainFromDb4.Opportunity__c = opp4.Id;
-        domainFromDb4.Account__c = acc3.Id;
-        insert domainFromDb4;
-        HQSyncDomainModel.DomainModel d5 = new HQSyncDomainModel.DomainModel();
-        d5.x_id = 'sample_external_id_5';
-        d5.Name = 'd4';
-        d5.tags = new List<String> { ' ' };
-        Domain__c domainFromDb5 = d5.createDbObject('CommCare HQ', null);
-        domainFromDb5.Opportunity__c = opp1.Id;
-        domainFromDb5.Account__c = acc3.Id;
-        insert domainFromDb5;
-
-        Test.startTest();
-        domainFromDb1.Opportunity__c = opp1.Id;
-        domainFromDb2.Opportunity__c = opp2.Id;
-        domainFromDb3.Opportunity__c = opp3.Id;
-        domainFromDb4.Opportunity__c = null;
-        domainFromDb5.Opportunity__c = opp5.Id;
-        List<Domain__c> toUpdate = new List<Domain__c>();
-        toUpdate.add(domainFromDb1);
-        toUpdate.add(domainFromDb2);
-        toUpdate.add(domainFromDb3);
-        toUpdate.add(domainFromDb4);
-        toUpdate.add(domainFromDb5);
-        update toUpdate;
-        Test.stopTest();
-
-        Domain__c assertDomain = [SELECT Id, Primary_Contact__c, Account__c FROM Domain__c WHERE Id =: domainFromDb1.Id];
-        System.assertEquals(c1.Id, assertDomain.Primary_Contact__c);
-        System.assertEquals(acc1.Id, assertDomain.Account__c);
-        assertDomain = [SELECT Id, Primary_Contact__c, Account__c FROM Domain__c WHERE Id =: domainFromDb2.Id];
-        System.assertEquals(c2.Id, assertDomain.Primary_Contact__c);
-        System.assertEquals(acc2.Id, assertDomain.Account__c);
-        assertDomain = [SELECT Id, Primary_Contact__c, Account__c FROM Domain__c WHERE Id =: domainFromDb3.Id];
-        System.assertEquals(null, assertDomain.Primary_Contact__c);
-        System.assertEquals(null, assertDomain.Account__c);
-        assertDomain = [SELECT Id, Primary_Contact__c, Account__c FROM Domain__c WHERE Id =: domainFromDb4.Id];
-        System.assertEquals(null, assertDomain.Primary_Contact__c);
-        System.assertEquals(acc3.Id, assertDomain.Account__c);
-        assertDomain = [SELECT Id, Primary_Contact__c, Account__c FROM Domain__c WHERE Id =: domainFromDb5.Id];
-        System.assertEquals(null, assertDomain.Primary_Contact__c);
-        System.assertEquals(acc1.Id, assertDomain.Account__c);
     }
 
     @isTest
