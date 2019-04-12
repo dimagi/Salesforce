@@ -81,7 +81,7 @@
 
                 <apex:pageBlockSectionItem >
                     <apex:outputLabel >Update Resource Planning<br/>
-                        In &nbsp;<apex:outputLink target="_blank" value="https://docs.google.com/a/dimagi.com/spreadsheets/d/1Sn3S8O9qG0WPkoMkmCcEUnuy7ihWbErSWvu4QShebD4/edit#gid=1470786190">Global Capacity Planner</apex:outputLink>
+                        In &nbsp;<apex:outputLink target="_blank" value="https://docs.google.com/spreadsheets/d/1PSJCEOYE45QuUF1CNKCyBFbwpRDCga4RoxsZHlHJ1aM/edit?usp=sharing">Global Capacity Planner</apex:outputLink>
                     </apex:outputLabel>
                     <apex:inputfield value="{!pro.Resource_Planning__c}"/>
                 </apex:pageBlockSectionItem>
