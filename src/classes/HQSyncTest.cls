@@ -1127,7 +1127,24 @@ public class HQSyncTest {
                                                 Active_Mobile_Users__c = 50, Forms__c = 355, Scale_of_Programs__c = 1, Wam__c = 0, Forms_for_Period__c = 0);
 
         Test.startTest();
-        Database.executeBatch(new HQSyncUpdateDomainFieldsBatch(true));
+        HQSyncUpdateDomainFieldsBatch batchJobWam = new HQSyncUpdateDomainFieldsBatch(true, new HQSyncWamUpdate());
+        HQSyncUpdateDomainFieldsBatch batchJobForms = new HQSyncUpdateDomainFieldsBatch(true, new HQSyncFormsForPeriodUpdate());
+
+        Database.QueryLocatorIterator iter = batchJobWam.start(null).iterator();
+        List<sObject> testData = new List<sObject>();
+        while (iter.hasNext()) {
+            testData.add(iter.next());
+        }
+        batchJobWam.execute(null, testData);
+        batchJobWam.finish(null);
+
+        iter = batchJobForms.start(null).iterator();
+        testData = new List<sObject>();
+        while (iter.hasNext()) {
+            testData.add(iter.next());
+        }
+        batchJobForms.execute(null, testData);
+        batchJobForms.finish(null);
         Test.stopTest();
 
         System.assertEquals(5, [SELECT Id FROM Domain_Monthly_Snapshot__c].size());
@@ -1261,7 +1278,24 @@ public class HQSyncTest {
         update new Domain__c(Id = domainFromDb3.Id, Wam_TMP__c = 9, Forms_for_Period_TMP__c = 9999);
 
         Test.startTest();
-        Database.executeBatch(new HQSyncUpdateDomainFieldsBatch(false));
+        HQSyncUpdateDomainFieldsBatch batchJobWam = new HQSyncUpdateDomainFieldsBatch(false, new HQSyncWamUpdate());
+        HQSyncUpdateDomainFieldsBatch batchJobForms = new HQSyncUpdateDomainFieldsBatch(false, new HQSyncFormsForPeriodUpdate());
+
+        Database.QueryLocatorIterator iter = batchJobWam.start(null).iterator();
+        List<sObject> testData = new List<sObject>();
+        while (iter.hasNext()) {
+            testData.add(iter.next());
+        }
+        batchJobWam.execute(null, testData);
+        batchJobWam.finish(null);
+
+        iter = batchJobForms.start(null).iterator();
+        testData = new List<sObject>();
+        while (iter.hasNext()) {
+            testData.add(iter.next());
+        }
+        batchJobForms.execute(null, testData);
+        batchJobForms.finish(null);
         Test.stopTest();
 
         Domain__c tmpDomain = [SELECT Name, Wam__c, Wam_TMP__c, Forms_for_Period__c, Forms_for_Period_TMP__c FROM Domain__c WHERE Name = 'domain_name_1'];

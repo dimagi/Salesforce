@@ -59,6 +59,9 @@ public virtual class HQSyncBatch implements Database.Batchable<Integer>, Databas
         this.parameters.put(HQSyncUtils.LIMIT_PARAM, String.valueOf(this.size));
 
         if (this.currentTotalSize == 0) {
+            if (this.jobName == HQSyncUtils.GIR || this.jobName == HQSyncUtils.MALT_TABLES) {
+                handleError(new CalloutException(this.jobName + ' data in HQ is empty, we need wait until it will be generated'), 'Cannot fetch total count.', -1);
+            }
             return new List<Integer>();
         }
 

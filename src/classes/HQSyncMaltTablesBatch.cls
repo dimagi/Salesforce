@@ -4,7 +4,7 @@ public class HQSyncMaltTablesBatch extends HQSyncBatch {
     private Boolean forErrors;
 
     public HQSyncMaltTablesBatch(Date monthDate, String serverCode, List<String> nextServers, Boolean forErrors) {
-        super(serverCode, null, nextServers, HQSyncUtils.MALT_SUFFIX, StatusLoggerUtils.MALT_SYNC_LOGGER, 'Malt Tables');
+        super(serverCode, null, nextServers, HQSyncUtils.MALT_SUFFIX, StatusLoggerUtils.MALT_SYNC_LOGGER, HQSyncUtils.MALT_TABLES);
         this.monthDate = monthDate;
         this.forErrors = forErrors;
         this.size = 60;
@@ -33,11 +33,8 @@ public class HQSyncMaltTablesBatch extends HQSyncBatch {
         } else {
             if (!Test.isRunningTest()) {
                 StatusLoggerUtils.sendLog(StatusLoggerUtils.MALT_SYNC_LOGGER, BatchDefaultSettings__c.getOrgDefaults().Error_Emails__c.split(','));
-                List<String> serversTmp = HQSyncUtils.getCommcareServers(false);
-                if (serversTmp.size() > 0) {
-                    String serverCode = serversTmp.get(0);
-                    serversTmp.remove(0);
-                    Database.executeBatch(new HQSyncGIRBatch(this.monthDate, serverCode, serversTmp, this.forErrors), 1);
+                if ([SELECT Count() FROM HQ_Sync_Error__c WHERE Object_Type__c = 'Malt Tables' AND Date__c =: this.monthDate] == 0) {
+                    Database.executeBatch(new HQSyncUpdateDomainFieldsBatch(true, new HQSyncFormsForPeriodUpdate()));
                 }
             }
         }
