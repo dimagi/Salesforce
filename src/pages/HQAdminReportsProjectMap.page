@@ -17,6 +17,7 @@
     <style type="text/css">
         .ui-dialog {
             z-index: 1001 !important;
+            max-width: 60% !important;
         }
         .ui-dialog-titlebar {
             background-color: #1797c0;
