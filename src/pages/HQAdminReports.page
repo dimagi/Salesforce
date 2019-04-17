@@ -247,7 +247,7 @@
                         <h2>Facets : </h2>
                     </div>
                     <div class="msidebarContent dynamic-wrapper">
-                        <div class="dynamic-loader" id="facets-loader">
+                        <div class="dynamic-loader dynamic-loader-small" id="facets-loader">
                             <img src="{!$Resource.BrokenCircle}" title="Please Wait..."/>
                         </div>
                         <input type="button" class="btn msidebarRow" onclick="applyFilters();" value="Apply" /><br/>

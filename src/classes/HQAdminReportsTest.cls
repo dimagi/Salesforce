@@ -227,6 +227,21 @@ public class HQAdminReportsTest {
     }
 
     @isTest
+    public static void testTopFiveProjects() {
+        Domain__c domain = [SELECT Id, cpIsActive__c FROM Domain__c WHERE name = 'test_domain_5' LIMIT 1];
+        domain.cpIsActive__c = true;
+        update domain;
+
+        Test.startTest();
+        List<HQAdminReportsProjectMapController.HQAdminProjectData> result = HQAdminReportsProjectMapController.loadTopFiveProjects('country_names_5');
+        System.assertEquals(1, result.size());
+        System.assertEquals(5, result.get(0).users);
+        System.assertEquals('test_domain_5', result.get(0).projectName);
+        System.assertNotEquals(null, result.get(0).sfId);
+        Test.stopTest();
+    }
+
+    @isTest
     public static void testFacetActionFunction() {
         List<FacetController.FacetGroup> facetGroups = HQAdminReportsController.loadReportFacets('default', '{"cpIsActive__c":["false"]}', null);
         System.assertEquals(7, facetGroups.size());

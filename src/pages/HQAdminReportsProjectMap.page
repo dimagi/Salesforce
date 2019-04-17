@@ -15,7 +15,39 @@
     <apex:includeScript value="{!URLFOR($Resource.hqAdminReports, 'hqAdminReports.js')}"/>
 
     <style type="text/css">
+        .ui-dialog {
+            z-index: 1001 !important;
+            max-width: 60% !important;
+        }
+        .ui-dialog-titlebar {
+            background-color: #1797c0;
+            color: #fff;
+        }
+        #dataModal {
+            min-height: 150px !important;
+            max-height: 800px !important;
+            font-size: 1.2em;
+        }
+        #dataModal a {
+            color: #015ba7;
+        }
+        #dataModal tr {
+            border-bottom: 1px solid #e3deb8;
+        }
+        #dataModal table {
 
+            border-collapse: collapse;
+        }
+        #dataModal table th {
+
+            background-color: #cfeef8;
+            padding: 5px 10px 5px 10px;
+        }
+        #dataModal table td {
+
+            background-color:  #e3f3ff;
+            padding: 5px 10px 5px 10px;
+        }
     </style>
 
     <script type="text/javascript">
@@ -23,7 +55,27 @@
 
         var dataController, mapController, addStats;
 
+        function openCountryModal(result, country) {
+            var table, modalElement = $j('#dataModal');
+            modalElement.empty();
+            modalElement.append($j("<h4><span>Projects in " + country + " with the Most Users</span></h4><hr />"));
+
+            table = $j("<table></table>");
+            table.append($j("<tr><th>Project</th><th>Organization</th><th>Description</th><th>Sector</th><th>Sub Sector</th><th>Active Users</th><th>Countries</th><th>Server Name</th></tr>"))
+            Object.keys(result).map(function (index) {
+                table.append($j('<tr><td><a target="_blank" href="../' + result[index].sfId + '">' + result[index].projectName + '</td><td>' + result[index].organization + '</td>'
+                                  + '<td>' + result[index].description + '</td><td>' + result[index].sector + '</td>'
+                                  + '<td>' + result[index].subSector + '</td><td>' + result[index].users + '</td>'
+                                  + '<td>' + result[index].countries + '</td><td>' + result[index].serverName + '</td></tr>'));
+            });
+            modalElement.append(table);
+
+            modalElement.dialog('open');
+            modalElement.dialog('option' , 'title' , 'Country top 5 project');
+        }
+
         $j(document).ready(function() {
+            $j('#dataModal').dialog({ autoOpen: false, modal: true, closeOnEscape: true, dialogClass: 'modalBase', width: 'auto', height: 'auto' });
             choosenFilters = {};
             lastChoosenFilters = choosenFilters;
             showLoader('#facets-loader');
@@ -60,6 +112,7 @@
                 var is_project_count_map = true;
 
                 that.refreshProjectData = function (callback) {
+                    showLoader('#map-loader');
                     HQAdminReportsProjectMapController.loadMapData(JSON.stringify(lastChoosenFilters), function(result, event){
                         if(event.status) {
                             totalNumProjects = result.totalActiveProjects;
@@ -86,6 +139,7 @@
                             if (callback) {
                                 callback();
                             }
+                            hideLoader('#map-loader');
                         }
                     });
                 };
@@ -256,7 +310,18 @@
                 function onEachFeature(feature, layer) {
                     layer.on({
                         mouseover: highlightFeature,
-                        mouseout: resetHighlight
+                        mouseout: resetHighlight,
+                        click: function() {
+                            if (dataController.getCount(feature.properties.name)) {
+                                showLoader('#map-loader');
+                                HQAdminReportsProjectMapController.loadTopFiveProjects(feature.properties.name, function(result, event) {
+                                    if(event.status) {
+                                        openCountryModal(result, feature.properties.name);
+                                        hideLoader('#map-loader');
+                                    }
+                                });
+                            }
+                        }
                     });
                 }
 
@@ -370,6 +435,9 @@
                     </div>
                 </div>
                 <div class="msidebar">
+                    <div class="dynamic-loader" id="map-loader">
+                        <img src="{!$Resource.BrokenCircle}" title="Please Wait..."/>
+                    </div>
                     <div class="msidebarHeader">
                         <h2>Map : </h2>
                     </div>
@@ -387,7 +455,7 @@
                         <h2>Facets : </h2>
                     </div>
                     <div class="msidebarContent dynamic-wrapper">
-                        <div class="dynamic-loader" id="facets-loader">
+                        <div class="dynamic-loader dynamic-loader-small" id="facets-loader">
                             <img src="{!$Resource.BrokenCircle}" title="Please Wait..."/>
                         </div>
                         <input type="button" class="btn msidebarRow" onclick="applyFilters();" value="Apply" /><br/>
@@ -403,5 +471,8 @@
                 </apex:pageBlock>
             </div>
         </apex:outputPanel>
+        <!-- Country top 5 projects modal -->
+        <div id="dataModal" class="dataModal">
+        </div>
     </apex:form>
 </apex:page>
