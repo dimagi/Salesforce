@@ -7,6 +7,10 @@ public class HQSyncFormsForPeriodUpdate implements HQSyncDomainFieldUpdater {
         domain.Forms_for_Period_TMP__c = 0;
     }
 
+    public void updateSyncField(Domain__c domain, Domain_Monthly_Snapshot__c snapshot) {
+        snapshot.Forms_for_Period__c = domain.Forms_for_Period__c;
+    }
+
     public Integer getSyncFieldValue(Domain__c domain) {
         return Integer.valueOf(domain.Forms_for_Period__c);
     }

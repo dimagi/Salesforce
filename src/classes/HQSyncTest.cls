@@ -1077,54 +1077,9 @@ public class HQSyncTest {
     /**
      * Other Logic tests.
      */
-
-    @isTest
-    public static void shouldCreateDomainMonthlySnapshot() {
-        generateDataForDomainSnapshot();
-
-        Test.startTest();
-        Date current = Date.newInstance(2017, 3, 1);
-        Database.executeBatch(new DomainMonthlySnapshotBatch(current));
-        Test.stopTest();
-
-        // Community => subscription1 AND subscription4 => Wam = 15 + 60 = 75, Mobile Users = 20 + 65 = 85, Forms = 325 + 370 = 695 - last (250) = 445
-        // Standard => subscription1 AND subscription4 => Wam = 30 + 75 = 105, Mobile Users = 35 + 80 = 115, Forms = 340 + 385 = 725 - last (25) = 700
-        // Pro => subscription1 AND subscription4 => Wam = 45, Mobile Users = 50, Forms = 355
-        Domain_Monthly_Snapshot__c domainSn = [SELECT Active_Mobile_Users__c, Forms__c, Wam__c, Scale_of_Programs__c, Forms_for_Period__c
-                                               FROM Domain_Monthly_Snapshot__c WHERE Software_Plan_Edition__c = 'Community' ORDER BY Snapshot_Date__c DESC LIMIT 1];
-        System.assertEquals(0, domainSn.Wam__c);
-        System.assertEquals(85, domainSn.Active_Mobile_Users__c);
-        System.assertEquals(0, domainSn.Forms_for_Period__c);
-        System.assertEquals(695, domainSn.Forms__c);
-        System.assertEquals(2, domainSn.Scale_of_Programs__c);
-
-        domainSn = [SELECT Active_Mobile_Users__c, Forms__c, Wam__c, Scale_of_Programs__c, Forms_for_Period__c
-                                               FROM Domain_Monthly_Snapshot__c WHERE Software_Plan_Edition__c = 'Standard' ORDER BY Snapshot_Date__c DESC LIMIT 1];
-        System.assertEquals(0, domainSn.Wam__c);
-        System.assertEquals(115, domainSn.Active_Mobile_Users__c);
-        System.assertEquals(0, domainSn.Forms_for_Period__c);
-        System.assertEquals(725, domainSn.Forms__c);
-        System.assertEquals(2, domainSn.Scale_of_Programs__c);
-
-        domainSn = [SELECT Active_Mobile_Users__c, Forms__c, Wam__c, Scale_of_Programs__c, Forms_for_Period__c
-                                               FROM Domain_Monthly_Snapshot__c WHERE Software_Plan_Edition__c = 'Pro' ORDER BY Snapshot_Date__c DESC LIMIT 1];
-        System.assertEquals(0, domainSn.Wam__c);
-        System.assertEquals(50, domainSn.Active_Mobile_Users__c);
-        System.assertEquals(0, domainSn.Forms_for_Period__c);
-        System.assertEquals(355, domainSn.Forms__c);
-        System.assertEquals(1, domainSn.Scale_of_Programs__c);
-    }
-
     @isTest
     public static void shouldUpdateWamAndFormsDomainMonthlySnapshot() {
         generateDataForDomainSnapshot();
-
-        insert new Domain_Monthly_Snapshot__c(Snapshot_Date__c = Date.today().toStartOfMonth().addDays(-1), Software_Plan_Edition__c = 'Community',
-                                                Active_Mobile_Users__c = 85, Forms__c = 695, Scale_of_Programs__c = 2, Wam__c = 0, Forms_for_Period__c = 0);
-        insert new Domain_Monthly_Snapshot__c(Snapshot_Date__c = Date.today().toStartOfMonth().addDays(-1), Software_Plan_Edition__c = 'Standard',
-                                                Active_Mobile_Users__c = 115, Forms__c = 725, Scale_of_Programs__c = 2, Wam__c = 0, Forms_for_Period__c = 0);
-        insert new Domain_Monthly_Snapshot__c(Snapshot_Date__c = Date.today().toStartOfMonth().addDays(-1), Software_Plan_Edition__c = 'Pro',
-                                                Active_Mobile_Users__c = 50, Forms__c = 355, Scale_of_Programs__c = 1, Wam__c = 0, Forms_for_Period__c = 0);
 
         Test.startTest();
         HQSyncUpdateDomainFieldsBatch batchJobWam = new HQSyncUpdateDomainFieldsBatch(true, new HQSyncWamUpdate());
@@ -1148,29 +1103,30 @@ public class HQSyncTest {
         Test.stopTest();
 
         System.assertEquals(5, [SELECT Id FROM Domain_Monthly_Snapshot__c].size());
-        Domain_Monthly_Snapshot__c domainSn = [SELECT Active_Mobile_Users__c, Forms__c, Wam__c, Scale_of_Programs__c, Forms_for_Period__c
-                                               FROM Domain_Monthly_Snapshot__c WHERE Software_Plan_Edition__c = 'Community' ORDER BY Snapshot_Date__c DESC LIMIT 1];
-        System.assertEquals(75, domainSn.Wam__c);
-        System.assertEquals(85, domainSn.Active_Mobile_Users__c);
-        System.assertEquals(1300, domainSn.Forms_for_Period__c);
-        System.assertEquals(695, domainSn.Forms__c);
-        System.assertEquals(2, domainSn.Scale_of_Programs__c);
+        assertDomainSnapshot('Community', 75, 695, 1300, 2, 85);
+        assertDomainSnapshot('Standard', 105, 725, 1500, 2, 115);
+        assertDomainSnapshot('Pro', 45, 355, 700, 1, 50);
+    }
 
-        domainSn = [SELECT Active_Mobile_Users__c, Forms__c, Wam__c, Scale_of_Programs__c, Forms_for_Period__c
-                                               FROM Domain_Monthly_Snapshot__c WHERE Software_Plan_Edition__c = 'Standard' ORDER BY Snapshot_Date__c DESC LIMIT 1];
-        System.assertEquals(105, domainSn.Wam__c);
-        System.assertEquals(115, domainSn.Active_Mobile_Users__c);
-        System.assertEquals(1500, domainSn.Forms_for_Period__c);
-        System.assertEquals(725, domainSn.Forms__c);
-        System.assertEquals(2, domainSn.Scale_of_Programs__c);
-
-        domainSn = [SELECT Active_Mobile_Users__c, Forms__c, Wam__c, Scale_of_Programs__c, Forms_for_Period__c
-                                               FROM Domain_Monthly_Snapshot__c WHERE Software_Plan_Edition__c = 'Pro' ORDER BY Snapshot_Date__c DESC LIMIT 1];
-        System.assertEquals(45, domainSn.Wam__c);
-        System.assertEquals(50, domainSn.Active_Mobile_Users__c);
-        System.assertEquals(700, domainSn.Forms_for_Period__c);
-        System.assertEquals(355, domainSn.Forms__c);
-        System.assertEquals(1, domainSn.Scale_of_Programs__c);
+    public static void assertDomainSnapshot(String softwarePlan, Decimal expectedWam, Decimal expectedForms, Decimal expecteFormsPeriod, Decimal expectedPrograms, Decimal expectedUsers) {
+        Decimal wam = 0;
+        Decimal forms = 0;
+        Decimal formsPeriod = 0;
+        Decimal programs = 0;
+        Decimal users = 0;
+        for (Domain_Monthly_Snapshot__c snp : [SELECT Active_Mobile_Users__c, Forms__c, Wam__c, Scale_of_Programs__c, Forms_for_Period__c
+                                               FROM Domain_Monthly_Snapshot__c WHERE Software_Edition__c =: softwarePlan ORDER BY Snapshot_Date__c DESC]) {
+            wam += snp.Wam__c;
+            forms += snp.Forms__c;
+            formsPeriod += snp.Forms_for_Period__c;
+            programs += snp.Scale_of_Programs__c;
+            users += snp.Active_Mobile_Users__c;
+        }
+        System.assertEquals(expectedWam, wam);
+        System.assertEquals(expectedUsers, users);
+        System.assertEquals(expecteFormsPeriod, formsPeriod);
+        System.assertEquals(expectedForms, forms);
+        System.assertEquals(expectedPrograms, programs);
     }
 
     @isTest
@@ -1192,6 +1148,42 @@ public class HQSyncTest {
         tmpDomain = [SELECT Name, Wam__c, Wam_TMP__c, Forms_for_Period__c, Forms_for_Period_TMP__c FROM Domain__c WHERE Name = 'domain_name_2'];
         System.assertEquals(null, tmpDomain.Forms_for_Period__c);
         System.assertEquals(28, tmpDomain.Forms_for_Period_TMP__c);
+    }
+
+    @isTest
+    public static void shouldHandleTotalCountZeroForGIR() {
+        Domain__c domainFromDb1 = buildDomain(1);
+        Domain__c domainFromDb2 = buildDomain(2);
+        Domain__c domainFromDb3 = buildDomain(3);
+
+        Test.startTest();
+        Test.setMock(HttpCalloutMock.class, new HQSyncAPIMock('{"meta": {"limit": 100, "next": null, "offset": 2000, "previous": "", "total_count": 0}, "objects": []}', 200));
+        Database.executeBatch(new HQSyncGIRBatch(Date.today().addDays(-13), 'CommCare HQ', HQSyncUtils.getCommcareServers(false), false), 1);
+        Test.stopTest();
+
+        List<HQ_Sync_Error__c> compressedData = [SELECT Id, Offset__c, Server_Name__c, Object_Type__c FROM HQ_Sync_Error__c];
+        System.assertEquals(1, compressedData.size());
+        System.assertEquals(-1, compressedData.get(0).Offset__c);
+        System.assertEquals('CommCare HQ', compressedData.get(0).Server_Name__c);
+        System.assertEquals('GIR', compressedData.get(0).Object_Type__c);
+    }
+
+    @isTest
+    public static void shouldHandleTotalCountZeroForMalt() {
+        Domain__c domainFromDb1 = buildDomain(1);
+        Domain__c domainFromDb2 = buildDomain(2);
+        Domain__c domainFromDb3 = buildDomain(3);
+
+        Test.startTest();
+        Test.setMock(HttpCalloutMock.class, new HQSyncAPIMock('{"meta": {"limit": 100, "next": null, "offset": 2000, "previous": "", "total_count": 0}, "objects": []}', 200));
+        Database.executeBatch(new HQSyncMaltTablesBatch(Date.today().addDays(-13), 'CommCare HQ', HQSyncUtils.getCommcareServers(false), false), 1);
+        Test.stopTest();
+
+        List<HQ_Sync_Error__c> compressedData = [SELECT Id, Offset__c, Server_Name__c, Object_Type__c FROM HQ_Sync_Error__c];
+        System.assertEquals(1, compressedData.size());
+        System.assertEquals(-1, compressedData.get(0).Offset__c);
+        System.assertEquals('CommCare HQ', compressedData.get(0).Server_Name__c);
+        System.assertEquals('Malt Tables', compressedData.get(0).Object_Type__c);
     }
 
     @isTest
@@ -1490,5 +1482,16 @@ public class HQSyncTest {
                                                           Accounting_subscriber_domain__c = domain5.Id, plan_version__c = planVersion2.Id, Server_Name__c = 'CommCare HQ',
                                                           is_trial__c = false, service_type__c = 'Product');
         insert subscription5;
+
+        insert new Domain_Monthly_Snapshot__c(Snapshot_Date__c = Date.today().toStartOfMonth().addDays(-1), Software_Edition__c = 'Community', Domain__c = domain1.Id,
+                                                Active_Mobile_Users__c = 20, Forms__c = 325, Wam__c = 0, Forms_for_Period__c = 0);
+        insert new Domain_Monthly_Snapshot__c(Snapshot_Date__c = Date.today().toStartOfMonth().addDays(-1), Software_Edition__c = 'Standard', Domain__c = domain2.Id,
+                                                Active_Mobile_Users__c = 35, Forms__c = 340, Wam__c = 0, Forms_for_Period__c = 0);
+        insert new Domain_Monthly_Snapshot__c(Snapshot_Date__c = Date.today().toStartOfMonth().addDays(-1), Software_Edition__c = 'Pro', Domain__c = domain3.Id,
+                                                Active_Mobile_Users__c = 50, Forms__c = 355, Wam__c = 0, Forms_for_Period__c = 0);
+        insert new Domain_Monthly_Snapshot__c(Snapshot_Date__c = Date.today().toStartOfMonth().addDays(-1), Software_Edition__c = 'Community', Domain__c = domain4.Id,
+                                                Active_Mobile_Users__c = 65, Forms__c = 370, Wam__c = 0, Forms_for_Period__c = 0);
+        insert new Domain_Monthly_Snapshot__c(Snapshot_Date__c = Date.today().toStartOfMonth().addDays(-1), Software_Edition__c = 'Standard', Domain__c = domain5.Id,
+                                                Active_Mobile_Users__c = 80, Forms__c = 385, Wam__c = 0, Forms_for_Period__c = 0);
     }
 }

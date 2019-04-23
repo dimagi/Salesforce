@@ -8,6 +8,10 @@ public class HQSyncWamUpdate implements HQSyncDomainFieldUpdater {
         domain.Wam_TMP__c = 0;
     }
 
+    public void updateSyncField(Domain__c domain, Domain_Monthly_Snapshot__c snapshot) {
+        snapshot.Wam__c = domain.Wam__c;
+    }
+
     public Integer getSyncFieldValue(Domain__c domain) {
         return Integer.valueOf(domain.Wam__c);
     }

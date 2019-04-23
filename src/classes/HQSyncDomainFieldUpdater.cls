@@ -6,6 +6,11 @@ public interface HQSyncDomainFieldUpdater {
     void updateSyncField(Domain__c domain);
 
     /**
+     * Update snapshot field with data from HQ server.
+     */
+    void updateSyncField(Domain__c domain, Domain_Monthly_Snapshot__c snapshot);
+
+    /**
      * Fetch correct value from domain object.
      */
     Integer getSyncFieldValue(Domain__c domain);
