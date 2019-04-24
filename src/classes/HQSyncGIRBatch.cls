@@ -4,7 +4,7 @@ public class HQSyncGIRBatch extends HQSyncBatch {
     private Boolean forErrors;
 
     public HQSyncGIRBatch(Date monthDate, String serverCode, List<String> nextServers, Boolean forErrors) {
-        super(serverCode, null, nextServers, HQSyncUtils.GIR_SUFFIX, StatusLoggerUtils.GIR_SYNC_LOGGER, 'GIR');
+        super(serverCode, null, nextServers, HQSyncUtils.GIR_SUFFIX, StatusLoggerUtils.GIR_SYNC_LOGGER, HQSyncUtils.GIR);
         this.monthDate = monthDate;
         this.forErrors = forErrors;
         this.size = 60;
@@ -33,8 +33,8 @@ public class HQSyncGIRBatch extends HQSyncBatch {
         } else {
             if (!Test.isRunningTest()) {
                 StatusLoggerUtils.sendLog(StatusLoggerUtils.GIR_SYNC_LOGGER, BatchDefaultSettings__c.getOrgDefaults().Error_Emails__c.split(','));
-                if ([SELECT Count() FROM HQ_Sync_Error__c WHERE (Object_Type__c = 'Malt Tables' OR Object_Type__c = 'GIR') AND Date__c =: this.monthDate] == 0) {
-                   Database.executeBatch(new HQSyncUpdateDomainFieldsBatch(true));
+                if ([SELECT Count() FROM HQ_Sync_Error__c WHERE Object_Type__c = 'GIR' AND Date__c =: this.monthDate] == 0) {
+                   Database.executeBatch(new HQSyncUpdateDomainFieldsBatch(true, new HQSyncWamUpdate()));
                 }
             }
         }

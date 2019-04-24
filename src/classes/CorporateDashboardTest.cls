@@ -109,26 +109,39 @@ public class CorporateDashboardTest {
         CorporateDashboardHelper.refreshAllGraphs();
         Test.stopTest();
 
-        List<Global_Metric_Graph__c> userGraph = [SELECT X_Text__c, Graph_Value_1__c, Graph_Value_2__c, Graph_Value_3__c, Graph_Value_4__c, Graph_Value_5__c
+        List<Global_Metric_Graph__c> userGraph = [SELECT Helper_Date__c, X_Text__c, Graph_Value_1__c, Graph_Value_2__c, Graph_Value_3__c, Graph_Value_4__c, Graph_Value_5__c
                                                   FROM Global_Metric_Graph__c WHERE Name =: CorporateDashboardHelper.USER_GRAPH ORDER BY Helper_Date__c];
-        List<Global_Metric_Graph__c> formGraph = [SELECT X_Text__c, Graph_Value_1__c, Graph_Value_2__c, Graph_Value_3__c, Graph_Value_4__c, Graph_Value_5__c
+        List<Global_Metric_Graph__c> formGraph = [SELECT Helper_Date__c, X_Text__c, Graph_Value_1__c, Graph_Value_2__c, Graph_Value_3__c, Graph_Value_4__c, Graph_Value_5__c
                                                   FROM Global_Metric_Graph__c WHERE Name =: CorporateDashboardHelper.FORM_GRAPH ORDER BY Helper_Date__c];
-        List<Global_Metric_Graph__c> wamGraph = [SELECT X_Text__c, Graph_Value_1__c, Graph_Value_2__c, Graph_Value_3__c, Graph_Value_4__c, Graph_Value_5__c
+        List<Global_Metric_Graph__c> wamGraph = [SELECT Helper_Date__c, X_Text__c, Graph_Value_1__c, Graph_Value_2__c, Graph_Value_3__c, Graph_Value_4__c, Graph_Value_5__c
                                                   FROM Global_Metric_Graph__c WHERE Name =: CorporateDashboardHelper.WAM_GRAPH ORDER BY Helper_Date__c];
-        List<Global_Metric_Graph__c> programsGraph = [SELECT X_Text__c, Graph_Value_1__c, Graph_Value_2__c, Graph_Value_3__c, Graph_Value_4__c, Graph_Value_5__c
+        List<Global_Metric_Graph__c> programsGraph = [SELECT Helper_Date__c, X_Text__c, Graph_Value_1__c, Graph_Value_2__c, Graph_Value_3__c, Graph_Value_4__c, Graph_Value_5__c
                                                   FROM Global_Metric_Graph__c WHERE Name =: CorporateDashboardHelper.PROGRAMS_GRAPH ORDER BY Helper_Date__c];
+
+        for (Global_Metric_Graph__c graph : userGraph) {
+            System.debug('Users : ' + graph.Helper_Date__c + ' : ' + graph.X_Text__c + ' 1: ' + graph.Graph_Value_1__c + ' 2: ' + graph.Graph_Value_2__c + ' 3: ' + graph.Graph_Value_3__c + ' 4: ' + graph.Graph_Value_4__c + ' 5: ' + graph.Graph_Value_5__c);
+        }
+        for (Global_Metric_Graph__c graph : formGraph) {
+            System.debug('Forms : ' + graph.Helper_Date__c + ' : ' +  + graph.X_Text__c + ' 1: ' + graph.Graph_Value_1__c + ' 2: ' + graph.Graph_Value_2__c + ' 3: ' + graph.Graph_Value_3__c + ' 4: ' + graph.Graph_Value_4__c + ' 5: ' + graph.Graph_Value_5__c);
+        }
+        for (Global_Metric_Graph__c graph : wamGraph) {
+            System.debug('Wam : ' + graph.Helper_Date__c + ' : ' +  + graph.X_Text__c + ' 1: ' + graph.Graph_Value_1__c + ' 2: ' + graph.Graph_Value_2__c + ' 3: ' + graph.Graph_Value_3__c + ' 4: ' + graph.Graph_Value_4__c + ' 5: ' + graph.Graph_Value_5__c);
+        }
+        for (Global_Metric_Graph__c graph : programsGraph) {
+            System.debug('Scale : ' + graph.Helper_Date__c + ' : ' +  + graph.X_Text__c + ' 1: ' + graph.Graph_Value_1__c + ' 2: ' + graph.Graph_Value_2__c + ' 3: ' + graph.Graph_Value_3__c + ' 4: ' + graph.Graph_Value_4__c + ' 5: ' + graph.Graph_Value_5__c);
+        }
 
         System.assertEquals(3, userGraph.size());
         System.assertEquals(3, formGraph.size());
         System.assertEquals(3, wamGraph.size());
         System.assertEquals(3, programsGraph.size());
 
-        System.assertEquals(17, userGraph.get(0).Graph_Value_5__c);
+        System.assertEquals(17 * 3, userGraph.get(0).Graph_Value_5__c);
         System.assertEquals(13, userGraph.get(0).Graph_Value_4__c);
         System.assertEquals(12, wamGraph.get(0).Graph_Value_3__c);
         System.assertEquals(11, wamGraph.get(0).Graph_Value_2__c);
-        System.assertEquals(66, formGraph.get(0).Graph_Value_1__c);
-        System.assertEquals(33, programsGraph.get(0).Graph_Value_1__c);
+        System.assertEquals(66 * 3, formGraph.get(0).Graph_Value_1__c);
+        System.assertEquals(33 * 3, programsGraph.get(0).Graph_Value_1__c);
     }
 
     @isTest
@@ -500,51 +513,45 @@ public class CorporateDashboardTest {
         Date currentDay = Date.today();
         Integer currentYear = currentDay.year();
         Integer currentMonth = currentDay.month();
-        Domain_Monthly_Snapshot__c sn1 = new Domain_Monthly_Snapshot__c(Software_Plan_Edition__c = 'Standard', Wam__c = 1000, Forms_for_Period__c = 50000, Active_Mobile_Users__c = 1300,
-                                                                        Scale_of_Programs__c = 11, Snapshot_Date__c = currentDay.addMonths(-1));
-        Domain_Monthly_Snapshot__c sn2 = new Domain_Monthly_Snapshot__c(Software_Plan_Edition__c = 'Standard', Wam__c = 1000, Forms_for_Period__c = 50000, Active_Mobile_Users__c = 1300,
-                                                                        Scale_of_Programs__c = 22, Snapshot_Date__c = currentDay.addMonths(-2));
-        Domain_Monthly_Snapshot__c sn3 = new Domain_Monthly_Snapshot__c(Software_Plan_Edition__c = 'Standard', Wam__c = 1000, Forms_for_Period__c = 50000, Active_Mobile_Users__c = 17000,
-                                                                        Scale_of_Programs__c = 33, Snapshot_Date__c = currentDay.addMonths(-3));
-        Domain_Monthly_Snapshot__c sn4 = new Domain_Monthly_Snapshot__c(Software_Plan_Edition__c = 'Pro', Wam__c = 1000, Forms_for_Period__c = 50000, Active_Mobile_Users__c = 1300,
-                                                                        Scale_of_Programs__c = 44, Snapshot_Date__c = currentDay.addMonths(-1));
-        Domain_Monthly_Snapshot__c sn5 = new Domain_Monthly_Snapshot__c(Software_Plan_Edition__c = 'Pro', Wam__c = 1000, Forms_for_Period__c = 50000, Active_Mobile_Users__c = 1300,
-                                                                        Scale_of_Programs__c = 55, Snapshot_Date__c = currentDay.addMonths(-2));
-        Domain_Monthly_Snapshot__c sn6 = new Domain_Monthly_Snapshot__c(Software_Plan_Edition__c = 'Pro', Wam__c = 1000, Forms_for_Period__c = 50000, Active_Mobile_Users__c = 13000,
-                                                                        Scale_of_Programs__c = 66, Snapshot_Date__c = currentDay.addMonths(-3));
-        Domain_Monthly_Snapshot__c sn7 = new Domain_Monthly_Snapshot__c(Software_Plan_Edition__c = 'Enterprise', Wam__c = 1000, Forms_for_Period__c = 50000, Active_Mobile_Users__c = 1300,
-                                                                        Scale_of_Programs__c = 77, Snapshot_Date__c = currentDay.addMonths(-1));
-        Domain_Monthly_Snapshot__c sn8 = new Domain_Monthly_Snapshot__c(Software_Plan_Edition__c = 'Enterprise', Wam__c = 1000, Forms_for_Period__c = 50000, Active_Mobile_Users__c = 1300,
-                                                                        Scale_of_Programs__c = 88, Snapshot_Date__c = currentDay.addMonths(-2));
-        Domain_Monthly_Snapshot__c sn9 = new Domain_Monthly_Snapshot__c(Software_Plan_Edition__c = 'Enterprise', Wam__c = 12000, Forms_for_Period__c = 50000, Active_Mobile_Users__c = 1300,
-                                                                        Scale_of_Programs__c = 99, Snapshot_Date__c = currentDay.addMonths(-3));
-        Domain_Monthly_Snapshot__c sn10 = new Domain_Monthly_Snapshot__c(Software_Plan_Edition__c = 'Community', Wam__c = 1000, Forms_for_Period__c = 50000, Active_Mobile_Users__c = 1300,
-                                                                        Scale_of_Programs__c = 88, Snapshot_Date__c = currentDay.addMonths(-1));
-        Domain_Monthly_Snapshot__c sn11 = new Domain_Monthly_Snapshot__c(Software_Plan_Edition__c = 'Community', Wam__c = 1000, Forms_for_Period__c = 50000, Active_Mobile_Users__c = 1300,
-                                                                        Scale_of_Programs__c = 77, Snapshot_Date__c = currentDay.addMonths(-2));
-        Domain_Monthly_Snapshot__c sn12 = new Domain_Monthly_Snapshot__c(Software_Plan_Edition__c = 'Community', Wam__c = 11000, Forms_for_Period__c = 50000, Active_Mobile_Users__c = 1300,
-                                                                        Scale_of_Programs__c = 66, Snapshot_Date__c = currentDay.addMonths(-3));
-        Domain_Monthly_Snapshot__c sn13 = new Domain_Monthly_Snapshot__c(Software_Plan_Edition__c = 'Advanced', Wam__c = 1000, Forms_for_Period__c = 50000, Active_Mobile_Users__c = 1300,
-                                                                        Scale_of_Programs__c = 55, Snapshot_Date__c = currentDay.addMonths(-1));
-        Domain_Monthly_Snapshot__c sn14 = new Domain_Monthly_Snapshot__c(Software_Plan_Edition__c = 'Advanced', Wam__c = 1000, Forms_for_Period__c = 50000, Active_Mobile_Users__c = 1300,
-                                                                        Scale_of_Programs__c = 44, Snapshot_Date__c = currentDay.addMonths(-2));
-        Domain_Monthly_Snapshot__c sn15 = new Domain_Monthly_Snapshot__c(Software_Plan_Edition__c = 'Advanced', Wam__c = 1000, Forms_for_Period__c = 66000, Active_Mobile_Users__c = 1300,
-                                                                        Scale_of_Programs__c = 33, Snapshot_Date__c = currentDay.addMonths(-3));
-        insert sn1;
-        insert sn2;
-        insert sn3;
-        insert sn4;
-        insert sn5;
-        insert sn6;
-        insert sn7;
-        insert sn8;
-        insert sn9;
-        insert sn10;
-        insert sn11;
-        insert sn12;
-        insert sn13;
-        insert sn14;
-        insert sn15;
+        Domain_Monthly_Snapshot__c sn1 = new Domain_Monthly_Snapshot__c(Software_Edition__c = 'Standard', Wam__c = 1000, Forms_for_Period__c = 50000, Active_Mobile_Users__c = 1300,
+                                                                        Scale_of_Programs__c = 11, Snapshot_Date__c = currentDay.addMonths(-1), Is_Test__c = 'false', Likely_Real__c = true, Subscription_Is_Trial__c = false);
+        Domain_Monthly_Snapshot__c sn2 = new Domain_Monthly_Snapshot__c(Software_Edition__c = 'Standard', Wam__c = 1000, Forms_for_Period__c = 50000, Active_Mobile_Users__c = 1300,
+                                                                        Scale_of_Programs__c = 22, Snapshot_Date__c = currentDay.addMonths(-2), Is_Test__c = 'false', Likely_Real__c = true, Subscription_Is_Trial__c = false);
+        Domain_Monthly_Snapshot__c sn3_1 = new Domain_Monthly_Snapshot__c(Software_Edition__c = 'Standard', Wam__c = 1000, Forms_for_Period__c = 50000, Active_Mobile_Users__c = 17000,
+                                                                        Scale_of_Programs__c = 33, Snapshot_Date__c = currentDay.addMonths(-3), Is_Test__c = 'false', Likely_Real__c = true, Subscription_Is_Trial__c = false);
+        Domain_Monthly_Snapshot__c sn3_2 = new Domain_Monthly_Snapshot__c(Software_Edition__c = 'Standard', Wam__c = 1000, Forms_for_Period__c = 50000, Active_Mobile_Users__c = 17000,
+                                                                        Scale_of_Programs__c = 33, Snapshot_Date__c = currentDay.addMonths(-3), Is_Test__c = 'false', Likely_Real__c = true, Subscription_Is_Trial__c = false);
+        Domain_Monthly_Snapshot__c sn3_3 = new Domain_Monthly_Snapshot__c(Software_Edition__c = 'Standard', Wam__c = 1000, Forms_for_Period__c = 50000, Active_Mobile_Users__c = 17000,
+                                                                        Scale_of_Programs__c = 33, Snapshot_Date__c = currentDay.addMonths(-3), Is_Test__c = 'false', Likely_Real__c = true, Subscription_Is_Trial__c = false);
+        Domain_Monthly_Snapshot__c sn4 = new Domain_Monthly_Snapshot__c(Software_Edition__c = 'Pro', Wam__c = 1000, Forms_for_Period__c = 50000, Active_Mobile_Users__c = 1300,
+                                                                        Scale_of_Programs__c = 44, Snapshot_Date__c = currentDay.addMonths(-1), Is_Test__c = 'false', Likely_Real__c = true, Subscription_Is_Trial__c = false);
+        Domain_Monthly_Snapshot__c sn5 = new Domain_Monthly_Snapshot__c(Software_Edition__c = 'Pro', Wam__c = 1000, Forms_for_Period__c = 50000, Active_Mobile_Users__c = 1300,
+                                                                        Scale_of_Programs__c = 55, Snapshot_Date__c = currentDay.addMonths(-2), Is_Test__c = 'false', Likely_Real__c = true, Subscription_Is_Trial__c = false);
+        Domain_Monthly_Snapshot__c sn6 = new Domain_Monthly_Snapshot__c(Software_Edition__c = 'Pro', Wam__c = 1000, Forms_for_Period__c = 50000, Active_Mobile_Users__c = 13000,
+                                                                        Scale_of_Programs__c = 66, Snapshot_Date__c = currentDay.addMonths(-3), Is_Test__c = 'false', Likely_Real__c = true, Subscription_Is_Trial__c = false);
+        Domain_Monthly_Snapshot__c sn7 = new Domain_Monthly_Snapshot__c(Software_Edition__c = 'Enterprise', Wam__c = 1000, Forms_for_Period__c = 50000, Active_Mobile_Users__c = 1300,
+                                                                        Scale_of_Programs__c = 77, Snapshot_Date__c = currentDay.addMonths(-1), Is_Test__c = 'false', Likely_Real__c = true, Subscription_Is_Trial__c = false);
+        Domain_Monthly_Snapshot__c sn8 = new Domain_Monthly_Snapshot__c(Software_Edition__c = 'Enterprise', Wam__c = 1000, Forms_for_Period__c = 50000, Active_Mobile_Users__c = 1300,
+                                                                        Scale_of_Programs__c = 88, Snapshot_Date__c = currentDay.addMonths(-2), Is_Test__c = 'false', Likely_Real__c = true, Subscription_Is_Trial__c = false);
+        Domain_Monthly_Snapshot__c sn9 = new Domain_Monthly_Snapshot__c(Software_Edition__c = 'Enterprise', Wam__c = 12000, Forms_for_Period__c = 50000, Active_Mobile_Users__c = 1300,
+                                                                        Scale_of_Programs__c = 99, Snapshot_Date__c = currentDay.addMonths(-3), Is_Test__c = 'false', Likely_Real__c = true, Subscription_Is_Trial__c = false);
+        Domain_Monthly_Snapshot__c sn10 = new Domain_Monthly_Snapshot__c(Software_Edition__c = 'Community', Wam__c = 1000, Forms_for_Period__c = 50000, Active_Mobile_Users__c = 1300,
+                                                                        Scale_of_Programs__c = 88, Snapshot_Date__c = currentDay.addMonths(-1), Is_Test__c = 'false', Likely_Real__c = true, Subscription_Is_Trial__c = false);
+        Domain_Monthly_Snapshot__c sn11 = new Domain_Monthly_Snapshot__c(Software_Edition__c = 'Community', Wam__c = 1000, Forms_for_Period__c = 50000, Active_Mobile_Users__c = 1300,
+                                                                        Scale_of_Programs__c = 77, Snapshot_Date__c = currentDay.addMonths(-2), Is_Test__c = 'false', Likely_Real__c = true, Subscription_Is_Trial__c = false);
+        Domain_Monthly_Snapshot__c sn12 = new Domain_Monthly_Snapshot__c(Software_Edition__c = 'Community', Wam__c = 11000, Forms_for_Period__c = 50000, Active_Mobile_Users__c = 1300,
+                                                                        Scale_of_Programs__c = 66, Snapshot_Date__c = currentDay.addMonths(-3), Is_Test__c = 'false', Likely_Real__c = true, Subscription_Is_Trial__c = false);
+        Domain_Monthly_Snapshot__c sn13 = new Domain_Monthly_Snapshot__c(Software_Edition__c = 'Advanced', Wam__c = 1000, Forms_for_Period__c = 50000, Active_Mobile_Users__c = 1300,
+                                                                        Scale_of_Programs__c = 55, Snapshot_Date__c = currentDay.addMonths(-1), Is_Test__c = 'false', Likely_Real__c = true, Subscription_Is_Trial__c = false);
+        Domain_Monthly_Snapshot__c sn14 = new Domain_Monthly_Snapshot__c(Software_Edition__c = 'Advanced', Wam__c = 1000, Forms_for_Period__c = 50000, Active_Mobile_Users__c = 1300,
+                                                                        Scale_of_Programs__c = 44, Snapshot_Date__c = currentDay.addMonths(-2), Is_Test__c = 'false', Likely_Real__c = true, Subscription_Is_Trial__c = false);
+        Domain_Monthly_Snapshot__c sn15_1 = new Domain_Monthly_Snapshot__c(Software_Edition__c = 'Advanced', Wam__c = 1000, Forms_for_Period__c = 66000, Active_Mobile_Users__c = 1300,
+                                                                        Scale_of_Programs__c = 33, Snapshot_Date__c = currentDay.addMonths(-3), Is_Test__c = 'false', Likely_Real__c = true, Subscription_Is_Trial__c = false);
+        Domain_Monthly_Snapshot__c sn15_2 = new Domain_Monthly_Snapshot__c(Software_Edition__c = 'Advanced', Wam__c = 1000, Forms_for_Period__c = 66000, Active_Mobile_Users__c = 1300,
+                                                                        Scale_of_Programs__c = 33, Snapshot_Date__c = currentDay.addMonths(-3), Is_Test__c = 'false', Likely_Real__c = true, Subscription_Is_Trial__c = false);
+        Domain_Monthly_Snapshot__c sn15_3 = new Domain_Monthly_Snapshot__c(Software_Edition__c = 'Advanced', Wam__c = 1000, Forms_for_Period__c = 66000, Active_Mobile_Users__c = 1300,
+                                                                        Scale_of_Programs__c = 33, Snapshot_Date__c = currentDay.addMonths(-3), Is_Test__c = 'false', Likely_Real__c = true, Subscription_Is_Trial__c = false);
+        insert new List<Domain_Monthly_Snapshot__c> { sn1, sn2, sn3_1, sn3_2, sn3_3, sn4, sn5, sn6, sn7, sn8, sn9, sn10, sn11, sn12, sn13, sn14, sn15_1, sn15_2, sn15_3 };
     }
 
     public class DashboardCalloutMock implements HttpCalloutMock {

@@ -387,12 +387,11 @@ public class CorporateDashboardHelper {
 
         Set<String> planNames = new Set<String> { 'Advanced', 'Community', 'Enterprise', 'Pro', 'Standard' };
         Decimal months = corporateDashboardSettings.Scale_graphs_number_of_months__c != null ? Corporate_Dashboard_Settings__c.getOrgDefaults().Scale_graphs_number_of_months__c : 3;
-        List<Domain_Monthly_Snapshot__c> snapshots = [SELECT Id, Snapshot_Date__c, Software_Plan_Edition__c, Wam__c, Forms_for_Period__c,
+        List<Domain_Monthly_Snapshot__c> snapshots = [SELECT Id, Snapshot_Date__c, Software_Edition__c, Wam__c, Forms_for_Period__c,
                                                       Forms__c, Active_Mobile_Users__c, Scale_of_Programs__c FROM Domain_Monthly_Snapshot__c
                                                       WHERE Snapshot_Date__c >=: Date.today().addMonths(((-1) * months).intValue()).toStartOfMonth()
-                                                      AND Software_Plan_Edition__c IN: planNames
+                                                      AND Likely_Real__c = true AND Subscription_Is_Trial__c = false AND Is_Test__c != 'true' AND Software_Edition__c IN: planNames
                                                       ORDER BY Snapshot_Date__c ASC];
-
         Integer startIdx = 0;
         Integer endIdx = 5; // we have 5 editions
         Global_Metric_Graph__c tmpWamData = new Global_Metric_Graph__c(Name = WAM_GRAPH, Graph_Value_1__c = 0, Graph_Value_2__c = 0, Graph_Value_3__c = 0,
@@ -403,63 +402,65 @@ public class CorporateDashboardHelper {
                                                                          Graph_Value_4__c = 0, Graph_Value_5__c = 0, Graph_Value_6__c = 0, Graph_Value_7__c = 0);
         Global_Metric_Graph__c tmpProgramsData = new Global_Metric_Graph__c(Name = PROGRAMS_GRAPH, Graph_Value_1__c = 0, Graph_Value_2__c = 0, Graph_Value_3__c = 0,
                                                                             Graph_Value_4__c = 0, Graph_Value_5__c = 0, Graph_Value_6__c = 0, Graph_Value_7__c = 0);
-        while (endIdx <= snapshots.size()) {
-            Domain_Monthly_Snapshot__c sn = snapshots.get(startIdx);
 
-            if (sn.Software_Plan_Edition__c == 'Advanced') {
-                tmpWamData.Graph_Value_1__c = sn.Wam__c != null ? sn.Wam__c / 1000.00 : 0;
-                tmpFormData.Graph_Value_1__c = sn.Forms_for_Period__c != null ? sn.Forms_for_Period__c / 1000.00 : 0;
-                tmpUsersData.Graph_Value_1__c = sn.Active_Mobile_Users__c != null ? sn.Active_Mobile_Users__c / 1000.00 : 0;
-                tmpProgramsData.Graph_Value_1__c = sn.Scale_of_Programs__c;
-            } else if (sn.Software_Plan_Edition__c == 'Community') {
-                tmpWamData.Graph_Value_2__c = sn.Wam__c != null ? sn.Wam__c / 1000.00 : 0;
-                tmpFormData.Graph_Value_2__c = sn.Forms_for_Period__c != null ? sn.Forms_for_Period__c / 1000.00 : 0;
-                tmpUsersData.Graph_Value_2__c = sn.Active_Mobile_Users__c != null ? sn.Active_Mobile_Users__c / 1000.00 : 0;
-                tmpProgramsData.Graph_Value_2__c = sn.Scale_of_Programs__c;
-            } else if (sn.Software_Plan_Edition__c == 'Enterprise') {
-                tmpWamData.Graph_Value_3__c = sn.Wam__c != null ? sn.Wam__c / 1000.00 : 0;
-                tmpFormData.Graph_Value_3__c = sn.Forms_for_Period__c != null ? sn.Forms_for_Period__c / 1000.00 : 0;
-                tmpUsersData.Graph_Value_3__c = sn.Active_Mobile_Users__c != null ? sn.Active_Mobile_Users__c / 1000.00 : 0;
-                tmpProgramsData.Graph_Value_3__c = sn.Scale_of_Programs__c;
-            } else if (sn.Software_Plan_Edition__c == 'Pro') {
-                tmpWamData.Graph_Value_4__c = sn.Wam__c != null ? sn.Wam__c / 1000.00 : 0;
-                tmpFormData.Graph_Value_4__c = sn.Forms_for_Period__c != null ? sn.Forms_for_Period__c / 1000.00 : 0;
-                tmpUsersData.Graph_Value_4__c = sn.Active_Mobile_Users__c != null ? sn.Active_Mobile_Users__c / 1000.00 : 0;
-                tmpProgramsData.Graph_Value_4__c = sn.Scale_of_Programs__c;
-            } else if (sn.Software_Plan_Edition__c == 'Standard') {
-                tmpWamData.Graph_Value_5__c = sn.Wam__c != null ? sn.Wam__c / 1000.00 : 0;
-                tmpFormData.Graph_Value_5__c = sn.Forms_for_Period__c != null ? sn.Forms_for_Period__c / 1000.00 : 0;
-                tmpUsersData.Graph_Value_5__c = sn.Active_Mobile_Users__c != null ? sn.Active_Mobile_Users__c / 1000.00 : 0;
-                tmpProgramsData.Graph_Value_5__c = sn.Scale_of_Programs__c;
-            }
+        if (snapshots.size() > 0) {
+            Date lastDate = snapshots.get(0).Snapshot_Date__c;
+            for (Domain_Monthly_Snapshot__c sn : snapshots) {
+                if (sn.Snapshot_Date__c.year() != lastDate.year() || sn.Snapshot_Date__c.month() != lastDate.month()) {
+                    saveValuesForDomainSnapshot(lastDate, tmpWamData, tmpFormData, tmpUsersData, tmpProgramsData);
 
-            startIdx++;
-            if (startIdx == endIdx) {
-                tmpWamData.X_Text__c = getDateText(sn.Snapshot_Date__c);
-                tmpFormData.X_Text__c = getDateText(sn.Snapshot_Date__c);
-                tmpUsersData.X_Text__c = getDateText(sn.Snapshot_Date__c);
-                tmpProgramsData.X_Text__c = getDateText(sn.Snapshot_Date__c);
-                tmpWamData.Helper_Date__c = sn.Snapshot_Date__c;
-                tmpFormData.Helper_Date__c = sn.Snapshot_Date__c;
-                tmpUsersData.Helper_Date__c = sn.Snapshot_Date__c;
-                tmpProgramsData.Helper_Date__c = sn.Snapshot_Date__c;
+                    wamData.add(tmpWamData);
+                    formData.add(tmpFormData);
+                    userData.add(tmpUsersData);
+                    programData.add(tmpProgramsData);
 
-                wamData.add(tmpWamData);
-                formData.add(tmpFormData);
-                userData.add(tmpUsersData);
-                programData.add(tmpProgramsData);
-
-                tmpWamData = new Global_Metric_Graph__c(Name = WAM_GRAPH, Graph_Value_1__c = 0, Graph_Value_2__c = 0, Graph_Value_3__c = 0,
+                    tmpWamData = new Global_Metric_Graph__c(Name = WAM_GRAPH, Graph_Value_1__c = 0, Graph_Value_2__c = 0, Graph_Value_3__c = 0,
                                                         Graph_Value_4__c = 0, Graph_Value_5__c = 0, Graph_Value_6__c = 0, Graph_Value_7__c = 0);
-                tmpFormData = new Global_Metric_Graph__c(Name = FORM_GRAPH, Graph_Value_1__c = 0, Graph_Value_2__c = 0, Graph_Value_3__c = 0,
+                    tmpFormData = new Global_Metric_Graph__c(Name = FORM_GRAPH, Graph_Value_1__c = 0, Graph_Value_2__c = 0, Graph_Value_3__c = 0,
                                                          Graph_Value_4__c = 0, Graph_Value_5__c = 0, Graph_Value_6__c = 0, Graph_Value_7__c = 0);
-                tmpUsersData = new Global_Metric_Graph__c(Name = USER_GRAPH, Graph_Value_1__c = 0, Graph_Value_2__c = 0, Graph_Value_3__c = 0,
+                    tmpUsersData = new Global_Metric_Graph__c(Name = USER_GRAPH, Graph_Value_1__c = 0, Graph_Value_2__c = 0, Graph_Value_3__c = 0,
                                                           Graph_Value_4__c = 0, Graph_Value_5__c = 0, Graph_Value_6__c = 0, Graph_Value_7__c = 0);
-                tmpProgramsData = new Global_Metric_Graph__c(Name = PROGRAMS_GRAPH, Graph_Value_1__c = 0, Graph_Value_2__c = 0, Graph_Value_3__c = 0,
+                    tmpProgramsData = new Global_Metric_Graph__c(Name = PROGRAMS_GRAPH, Graph_Value_1__c = 0, Graph_Value_2__c = 0, Graph_Value_3__c = 0,
                                                              Graph_Value_4__c = 0, Graph_Value_5__c = 0, Graph_Value_6__c = 0, Graph_Value_7__c = 0);
-                endIdx += 5;
+                }
+
+                if (sn.Software_Edition__c == 'Advanced') {
+                    tmpWamData.Graph_Value_1__c += sn.Wam__c != null ? sn.Wam__c / 1000.00 : 0;
+                    tmpFormData.Graph_Value_1__c += sn.Forms_for_Period__c != null ? sn.Forms_for_Period__c / 1000.00 : 0;
+                    tmpUsersData.Graph_Value_1__c += sn.Active_Mobile_Users__c != null ? sn.Active_Mobile_Users__c / 1000.00 : 0;
+                    tmpProgramsData.Graph_Value_1__c += sn.Scale_of_Programs__c;
+                } else if (sn.Software_Edition__c == 'Community') {
+                    tmpWamData.Graph_Value_2__c += sn.Wam__c != null ? sn.Wam__c / 1000.00 : 0;
+                    tmpFormData.Graph_Value_2__c += sn.Forms_for_Period__c != null ? sn.Forms_for_Period__c / 1000.00 : 0;
+                    tmpUsersData.Graph_Value_2__c += sn.Active_Mobile_Users__c != null ? sn.Active_Mobile_Users__c / 1000.00 : 0;
+                    tmpProgramsData.Graph_Value_2__c += sn.Scale_of_Programs__c;
+                } else if (sn.Software_Edition__c == 'Enterprise') {
+                    tmpWamData.Graph_Value_3__c += sn.Wam__c != null ? sn.Wam__c / 1000.00 : 0;
+                    tmpFormData.Graph_Value_3__c += sn.Forms_for_Period__c != null ? sn.Forms_for_Period__c / 1000.00 : 0;
+                    tmpUsersData.Graph_Value_3__c += sn.Active_Mobile_Users__c != null ? sn.Active_Mobile_Users__c / 1000.00 : 0;
+                    tmpProgramsData.Graph_Value_3__c += sn.Scale_of_Programs__c;
+                } else if (sn.Software_Edition__c == 'Pro') {
+                    tmpWamData.Graph_Value_4__c += sn.Wam__c != null ? sn.Wam__c / 1000.00 : 0;
+                    tmpFormData.Graph_Value_4__c += sn.Forms_for_Period__c != null ? sn.Forms_for_Period__c / 1000.00 : 0;
+                    tmpUsersData.Graph_Value_4__c += sn.Active_Mobile_Users__c != null ? sn.Active_Mobile_Users__c / 1000.00 : 0;
+                    tmpProgramsData.Graph_Value_4__c += sn.Scale_of_Programs__c;
+                } else if (sn.Software_Edition__c == 'Standard') {
+                    tmpWamData.Graph_Value_5__c += sn.Wam__c != null ? sn.Wam__c / 1000.00 : 0;
+                    tmpFormData.Graph_Value_5__c += sn.Forms_for_Period__c != null ? sn.Forms_for_Period__c / 1000.00 : 0;
+                    tmpUsersData.Graph_Value_5__c += sn.Active_Mobile_Users__c != null ? sn.Active_Mobile_Users__c / 1000.00 : 0;
+                    tmpProgramsData.Graph_Value_5__c += sn.Scale_of_Programs__c;
+                }
+                lastDate = sn.Snapshot_Date__c;
             }
+
+            saveValuesForDomainSnapshot(lastDate, tmpWamData, tmpFormData, tmpUsersData, tmpProgramsData);
+
+            wamData.add(tmpWamData);
+            formData.add(tmpFormData);
+            userData.add(tmpUsersData);
+            programData.add(tmpProgramsData);
         }
+
         deleteAndAddMetrics(wamData, WAM_GRAPH);
         deleteAndAddMetrics(formData, FORM_GRAPH);
         deleteAndAddMetrics(userData, USER_GRAPH);
@@ -530,6 +531,19 @@ public class CorporateDashboardHelper {
 
     public static String getDateText(Date snDate) {
         return DateTime.newInstance(snDate.year(), snDate.month(), snDate.day()).format('MMMM yyyy');
+    }
+
+    private static void saveValuesForDomainSnapshot(Date snpDate, Global_Metric_Graph__c tmpWamData, Global_Metric_Graph__c tmpFormData,
+                                                    Global_Metric_Graph__c tmpUsersData, Global_Metric_Graph__c tmpProgramsData) {
+        String textDate = getDateText(snpDate);
+        tmpWamData.X_Text__c = textDate;
+        tmpFormData.X_Text__c = textDate;
+        tmpUsersData.X_Text__c = textDate;
+        tmpProgramsData.X_Text__c = textDate;
+        tmpWamData.Helper_Date__c = snpDate;
+        tmpFormData.Helper_Date__c = snpDate;
+        tmpUsersData.Helper_Date__c = snpDate;
+        tmpProgramsData.Helper_Date__c = snpDate;
     }
 
     private static void deleteAndAddMetrics(List<Global_Metric_Graph__c> newMetrics, String metricName) {

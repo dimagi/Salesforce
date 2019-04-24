@@ -12,6 +12,9 @@ public class HQSyncUtils {
     public static final String MALT_SUFFIX = 'malt_tables';
     public static final String GIR_SUFFIX = 'gir_tables';
 
+    public static final String MALT_TABLES = 'Malt Tables';
+    public static final String GIR = 'GIR';
+
     public static final String CUSTOMER_INVOICE = 'Customer';
     public static final String SUBSCRIPTION_INVOICE = 'Subscription';
 

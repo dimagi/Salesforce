@@ -14,19 +14,17 @@ public class ScriptBatchJob implements Database.Batchable<SObject>, Database.All
     }
 
     public Database.QueryLocator start(Database.BatchableContext context) {
-        return Database.getQueryLocator('SELECT Id, Stage__c, Month_Date__c, Opportunity__c, Submitted_this_month__c FROM Pipeline_Snapshot__c WHERE Source_Type__c = \'Opportunity\' AND Month_Date__c =: helperDate');
+        return Database.getQueryLocator('SELECT Id, Software_Edition__c, Software_Plan_Edition__c FROM Domain_Monthly_Snapshot__c');
     }
 
     public void execute(Database.BatchableContext context, List<SObject> scope) {
-        List<Pipeline_Snapshot__c> toUpdate = new List<Pipeline_Snapshot__c>();
         for (SObject objRec : scope) {
-            Pipeline_Snapshot__c ps = (Pipeline_Snapshot__c) objRec;
-            ps.Submitted_this_month__c = OpportunityPipelineSnapshotBatch.isSubmittedThisMonth(ps);
-            toUpdate.add(ps);
+            Domain_Monthly_Snapshot__c domain = (Domain_Monthly_Snapshot__c) objRec;
+            domain.Software_Edition__c = domain.Software_Plan_Edition__c;
         }
 
-        if (toUpdate.size() > 0) {
-            update toUpdate;
+        if (scope.size() > 0) {
+            update scope;
         }
     }
 
