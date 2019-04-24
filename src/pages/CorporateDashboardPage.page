@@ -57,22 +57,22 @@
                     <div class="chartsDataContainer">
                         <div class="graphContainer">
                             <a href="/00Ob00000048BiR">
-                                <img class="graph" src="/servlet/servlet.ChartServer?rsid=0FLb00000019Fp6&ruid=005b0000001SrLL&did=01Zb0000000gCws&s=8&fs=12&tfg=12&tfs=-16777216&explode=0&c=column&cs=2&title=Active+Users&eh=no&compo=yes&fg=-16777216&bg1=-1&bg2=-1&bgdir=2&dl1=Snapshot+Date&dl2=Software+Plan+Edition&l=2&sax=yes&Yman=no&nc=0&actUrl=%2F00Ob00000048BiR&sd=1&scv=no&sct=no&spt=no&bd=yes&cu=USD&ab=X&u=0&vt=0&ab2=Y&u2=0&vt2=0&vl0=Sum+of+Active+Mobile+Users&spoc=no&topn=no&gc0=-1&gc1=-1&gc2=-1&sona=0&cacheParam={!randomParam}" />
+                                <img class="graph" src="/servlet/servlet.ChartServer?rsid=0FL0X000002RDSZ&ruid=005b0000001SrLL&did=01Zb0000000gCws&s=8&fs=12&tfg=12&tfs=-16777216&explode=0&c=column&cs=2&title=Active+Users&eh=no&compo=yes&fg=-16777216&bg1=-1&bg2=-1&bgdir=2&dl1=Snapshot+Date&dl2=Software+Edition&l=2&sax=yes&Yman=no&nc=0&actUrl=%2F00Ob00000048BiR&sd=1&scv=no&sct=no&spt=no&bd=yes&cu=USD&ab=X&u=0&vt=0&ab2=Y&u2=0&vt2=0&vl0=Sum+of+Active+Mobile+Users&spoc=no&topn=no&gc0=-1&gc1=-1&gc2=-1&sona=0&rco=DASHBOARD_VIEW&rid=00Ob00000048BiR&cacheParam={!randomParam}" />
                             </a>
                         </div>
                         <div class="graphContainer">
                             <a href="/00Ob00000048BiR">
-                                <img class="graph" src="/servlet/servlet.ChartServer?rsid=0FLb00000019FpV&ruid=005b0000001SrLL&did=01Zb0000000gCws&s=8&fs=12&tfg=12&tfs=-16777216&explode=0&c=column&cs=2&title=WAMs&eh=no&compo=yes&fg=-16777216&bg1=-1&bg2=-1&bgdir=2&dl1=Snapshot+Date&dl2=Software+Plan+Edition&l=2&sax=yes&Yman=no&nc=0&actUrl=%2F00Ob00000048BiR&sd=1&scv=no&sct=no&spt=no&bd=yes&cu=USD&ab=X&u=0&vt=0&ab2=Y&u2=0&vt2=0&vl0=Sum+of+Wam&spoc=no&topn=no&gc0=-1&gc1=-1&gc2=-1&sona=0&cacheParam={!randomParam}" />
+                                <img class="graph" src="/servlet/servlet.ChartServer?rsid=0FL0X000002RDSe&ruid=005b0000001SrLL&did=01Zb0000000gCws&s=8&fs=12&tfg=12&tfs=-16777216&explode=0&c=column&cs=2&title=WAMs&eh=no&compo=yes&fg=-16777216&bg1=-1&bg2=-1&bgdir=2&dl1=Snapshot+Date&dl2=Software+Edition&l=2&sax=yes&Yman=no&nc=0&actUrl=%2F00Ob00000048BiR&sd=1&scv=no&sct=no&spt=no&bd=yes&cu=USD&ab=X&u=0&vt=0&ab2=Y&u2=0&vt2=0&vl0=Sum+of+Wam&spoc=no&topn=no&gc0=-1&gc1=-1&gc2=-1&sona=0&rco=DASHBOARD_VIEW&rid=00Ob00000048BiR&cacheParam={!randomParam}" />
                             </a>
                         </div>
                         <div class="graphContainer">
                             <a href="/00Ob00000048BiR">
-                                <img class="graph" src="/servlet/servlet.ChartServer?rsid=0FLb0000001pTB9&ruid=005b0000001SrLL&did=01Zb0000000gCws&s=8&fs=12&tfg=12&tfs=-16777216&explode=0&c=column&cs=2&title=Forms&eh=no&compo=yes&fg=-16777216&bg1=-1&bg2=-1&bgdir=2&dl1=Snapshot+Date&dl2=Software+Plan+Edition&l=2&sax=yes&Yman=no&nc=0&actUrl=%2F00Ob00000048BiR&sd=1&scv=no&sct=no&spt=no&bd=yes&cu=USD&ab=X&u=0&vt=0&ab2=Y&u2=0&vt2=0&vl0=Sum+of+Forms+for+Period&spoc=no&topn=no&gc0=-1&gc1=-1&gc2=-1&sona=0&cacheParam={!randomParam}" />
+                                <img class="graph" src="/servlet/servlet.ChartServer?rsid=0FL0X000002RDSo&ruid=005b0000001SrLL&did=01Zb0000000gCws&s=8&fs=12&tfg=12&tfs=-16777216&explode=0&c=column&cs=2&title=Forms&eh=no&compo=yes&fg=-16777216&bg1=-1&bg2=-1&bgdir=2&dl1=Snapshot+Date&dl2=Software+Edition&l=2&sax=yes&Yman=no&nc=0&actUrl=%2F00Ob00000048BiR&sd=1&scv=no&sct=no&spt=no&bd=yes&cu=USD&ab=X&u=0&vt=0&ab2=Y&u2=0&vt2=0&vl0=Sum+of+Forms+for+Period&spoc=no&topn=no&gc0=-1&gc1=-1&gc2=-1&sona=0&rco=DASHBOARD_VIEW&rid=00Ob00000048BiR&cacheParam={!randomParam}" />
                             </a>
                         </div>
                         <div class="graphContainer">
                             <a href="/00Ob00000048BiR">
-                                <img class="graph" src="/servlet/servlet.ChartServer?rsid=0FLb00000019FqJ&ruid=005b0000001SrLL&did=01Zb0000000gCws&s=8&fs=12&tfg=12&tfs=-16777216&explode=0&c=column&cs=2&title=Active+Project+Spaces&eh=no&compo=yes&fg=-16777216&bg1=-1&bg2=-1&bgdir=2&dl1=Snapshot+Date&dl2=Software+Plan+Edition&l=2&sax=yes&Yman=no&nc=0&actUrl=%2F00Ob00000048BiR&sd=1&scv=no&sct=no&spt=no&bd=yes&cu=USD&ab=X&u=0&vt=0&ab2=Y&u2=0&vt2=0&vl0=Sum+of+Scale+of+Programs&spoc=no&topn=no&gc0=-1&gc1=-1&gc2=-1&sona=0&cacheParam={!randomParam}" />
+                                <img class="graph" src="/servlet/servlet.ChartServer?rsid=0FL0X000002RDSy&ruid=005b0000001SrLL&did=01Zb0000000gCws&s=8&fs=12&tfg=12&tfs=-16777216&explode=0&c=column&cs=2&title=Active+Project+Spaces&eh=no&compo=yes&fg=-16777216&bg1=-1&bg2=-1&bgdir=2&dl1=Snapshot+Date&dl2=Software+Edition&l=2&sax=yes&Yman=no&nc=0&actUrl=%2F00Ob00000048BiR&sd=1&scv=no&sct=no&spt=no&bd=yes&cu=USD&ab=X&u=0&vt=0&ab2=Y&u2=0&vt2=0&vl0=Sum+of+Scale+of+Programs&spoc=no&topn=no&gc0=-1&gc1=-1&gc2=-1&sona=0&rco=DASHBOARD_VIEW&rid=00Ob00000048BiR&&cacheParam={!randomParam}" />
                             </a>
                         </div>
                     </div>
