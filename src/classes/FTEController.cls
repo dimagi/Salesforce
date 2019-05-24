@@ -3,7 +3,6 @@ public virtual class FTEController {
     public JobWrapper workCardJobStatus {get; set;}
 
     public FTEController() {
-        
     }
 
     public virtual PageReference goToEmployeeListView() {

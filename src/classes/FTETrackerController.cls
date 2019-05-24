@@ -52,9 +52,14 @@ public class FTETrackerController extends FTEController {
 
         QueryBuilder qb = new QueryBuilder('FTE_Work_Card__c');
         QueryBuilder qbCount = new QueryBuilder('FTE_Work_Card__c');
-        qb.addColumns(new List<String> { 'Id', 'Employee__c', 'Employee__r.Hire_Date__c', 'Employee__r.Name', 'Month_1__c', 'Month_2__c', 'Month_3__c',
-                                         'Month_4__c', 'Month_5__c', 'Month_6__c', 'Month_7__c', 'Month_8__c', 'Month_9__c', 'Month_10__c', 'Month_11__c',
-                                         'Month_12__c', 'Total__c', 'Total_Hours__c', 'Year__c'});
+        qb.addColumns(new List<String> { 'Id', 'Employee__c', 'Employee__r.Hire_Date__c', 'Employee__r.Name', 'Total__c', 'Total_Hours__c',
+                                         'Year__c', 'Month_1__c', 'Month_2__c', 'Month_3__c', 'Month_4__c', 'Month_5__c', 'Month_6__c',
+                                         'Month_7__c', 'Month_8__c', 'Month_9__c', 'Month_10__c', 'Month_11__c', 'Month_12__c',
+                                         'Month_Future_1__c', 'Month_Future_2__c', 'Month_Future_3__c', 'Month_Future_4__c', 'Month_Future_5__c', 'Month_Future_6__c',
+                                         'Month_Future_7__c', 'Month_Future_8__c', 'Month_Future_9__c', 'Month_Future_10__c', 'Month_Future_11__c', 'Month_Future_12__c',
+                                         'Month_Blocked_1__c', 'Month_Blocked_2__c', 'Month_Blocked_3__c', 'Month_Blocked_4__c', 'Month_Blocked_5__c', 'Month_Blocked_6__c',
+                                         'Month_Blocked_7__c', 'Month_Blocked_8__c', 'Month_Blocked_9__c', 'Month_Blocked_10__c', 'Month_Blocked_11__c', 'Month_Blocked_12__c'
+                                         });
         qbCount.addColumn('count()');
 
         if (this.employeeNameSearch != null && this.employeeNameSearch != '') {
@@ -87,27 +92,38 @@ public class FTETrackerController extends FTEController {
         for (FTE_Work_Card__c workCard : workCards) {
             Integer empNetworkDays = FTETrackerHelper.getNetworkDays(workCard.Employee__r.Hire_Date__c, this.fteYear);
             FTEEmployeeTime empTime = new FTEEmployeeTime(workCard.Employee__r.Name, workCard.Employee__c);
-            empTime.daysArray[0] = workCard.Month_1__c;
-            empTime.daysArray[1] = workCard.Month_2__c;
-            empTime.daysArray[2] = workCard.Month_3__c;
-            empTime.daysArray[3] = workCard.Month_4__c;
-            empTime.daysArray[4] = workCard.Month_5__c;
-            empTime.daysArray[5] = workCard.Month_6__c;
-            empTime.daysArray[6] = workCard.Month_7__c;
-            empTime.daysArray[7] = workCard.Month_8__c;
-            empTime.daysArray[8] = workCard.Month_9__c;
-            empTime.daysArray[9] = workCard.Month_10__c;
-            empTime.daysArray[10] = workCard.Month_11__c;
-            empTime.daysArray[11] = workCard.Month_12__c;
+            SObject sObj = (SObject) workCard;
+
+            Boolean wasFuture = false;
+            Boolean wasBlocked = false;
+
+            for (Integer month = 1; month <= 12; month++) {
+                Boolean futureValue = (Boolean) sObj.get(FTETrackerHelper.getFieldTemplateFutureName(month));
+                Boolean blockedValue = (Boolean) sObj.get(FTETrackerHelper.getFieldTemplateBlockedName(month));
+                Decimal realValue = (Decimal) sObj.get(FTETrackerHelper.getFieldName(month));
+                empTime.daysArray[month - 1] = realValue;
+                if (empTime.daysArray[month - 1] > 21) {
+                    empTime.cssStyle[month - 1] = empTime.cssStyle[month - 1] + ' overbilled';
+                }
+                if (futureValue == true) {
+                    wasFuture = true;
+                    empTime.cssStyle[month - 1] = empTime.cssStyle[month - 1] + ' future';
+                } else if (blockedValue == true) {
+                    wasBlocked = true;
+                    empTime.cssStyle[month - 1] = empTime.cssStyle[month - 1] + ' blocked';
+                }
+            }
+
             empTime.daysArray[12] = workCard.Total__c;
             if (workCard.Total__c > empNetworkDays) {
                 empTime.cssStyle[12] = 'fteCell overbilled';
             }
-            for (Integer i = 0; i < 12; i++) {
-                if (empTime.daysArray[i] > 21) {
-                    empTime.cssStyle[i] = 'fteCell overbilled';
-                }
+            if (wasFuture == true) {
+                empTime.cssStyle[12] = empTime.cssStyle[12] + ' future';
+            } else if (wasBlocked == true) {
+                empTime.cssStyle[12] = empTime.cssStyle[12] + ' blocked';
             }
+
             this.employees.add(empTime);
         }
 

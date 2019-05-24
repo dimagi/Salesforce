@@ -46,35 +46,6 @@
             <apex:outputPanel rendered="{!!workCardJobStatus.isRunning}" >
                 <apex:pageBlock title="Last CSV Data process errors" id="tableStatusSection">
                     <apex:commandButton value="Remove process errors" id="removeButtonStatus" action="{!removeFTEDataStatusRecords}" status="loadingDiv" reRender="tableStatusSection" disabled="{!fteStatusPagination.resultSize <= 0}"/>
-                    <br />
-                    <apex:pageBlockTable id="fteDataStatusTable" value="{!FTEStatusRecords}" var="fteStatusData" styleClass="fteErrorTableClass" >
-                        <apex:column headerValue="Status" value="{!fteStatusData.Status__c}" />
-                        <apex:column headerValue="Message" value="{!fteStatusData.Status_Message__c}" />
-                    </apex:pageBlockTable>
-
-                    <!-- Pagination Status -->
-                    <table style="width: 100%">
-                        <tr>
-                            <td>Page: <apex:outputText value=" {!fteStatusPagination.pageNumber} of {!CEILING(fteStatusPagination.resultSize / fteStatusPagination.pageSize)}"/></td>
-                            <td align="center">
-                                <apex:commandLink status="loadingDiv" action="{!fteStatusPagination.previousPage}" value="« Previous" rendered="{!fteStatusPagination.hasPrevious}" reRender="tableDataForm" />
-                                <apex:outputText style="color: #ccc;" value="« Previous" rendered="{!NOT(fteStatusPagination.hasPrevious)}"/>
-                                &nbsp;&nbsp;
-                                <apex:commandLink status="loadingDiv" action="{!fteStatusPagination.nextPage}" value="Next »" rendered="{!fteStatusPagination.hasNext}" reRender="tableDataForm" />
-                                <apex:outputText style="color: #ccc;" value="Next »" rendered="{!NOT(fteStatusPagination.hasNext) }"/>
-                            </td>
-                            <td align="right">
-                                Records per page:&nbsp;&nbsp;
-                                <apex:selectList value="{!fteStatusPagination.pageSize }" size="1" onchange="resetPageNumStatus();" >
-                                    <apex:selectOption itemValue="10" itemLabel="10"/>
-                                    <apex:selectOption itemValue="20" itemLabel="20"/>
-                                    <apex:selectOption itemValue="50" itemLabel="50"/>
-                                    <apex:actionSupport event="onchange" reRender="tableDataForm"/>
-                                </apex:selectList>
-                            </td>
-                        </tr>
-                    </table>
-                    <apex:actionFunction status="loadingDiv" action="{!fteStatusPagination.resetPageNumber}" name="resetPageNumStatus" reRender="tableDataForm" />
                 </apex:pageBlock>
             </apex:outputPanel>
 

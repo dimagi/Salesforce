@@ -28,6 +28,8 @@ public class TimeCardTriggerController {
         if (tcToUpdate.size() > 0) {
             update tcToUpdate;
         }
+
+        FTETriggerHelper.processTemplates(newTimeCards);
     }
 
     public static void handleAfterUpdate(List<Time_Card__c> updatedTimeCards, Map<Id, Time_Card__c> beforeUpdateTimeCards) {
@@ -37,6 +39,7 @@ public class TimeCardTriggerController {
 
         List<FTE_Tag__c> tags = new List<FTE_Tag__c>();
         List<Time_Card__c> timeCardsToUpdate = new List<Time_Card__c>();
+        List<Time_Card__c> fteTimeCards = new List<Time_Card__c>();
         Set<Id> contractsIds = new Set<Id>();
 
         for (Time_Card__c tc : updatedTimeCards) {
@@ -46,6 +49,8 @@ public class TimeCardTriggerController {
 
                     contractsIds.add(oldTC.Client__c);
                     contractsIds.add(tc.Client__c);
+                    fteTimeCards.add(tc);
+
                     Time_Card__c tcToUpdate = null;
 
                     if (tc.FTE_Contract__c != null) {
@@ -67,7 +72,7 @@ public class TimeCardTriggerController {
         if (tags.size() > 0) {
             insert tags;
         }
-        if (timeCardsToUpdate.size() > 0) {
+        if (timeCardsToUpdate.size() > 0) { // new contract we must recalculate time card billing rate
             Map<Id, String> billingRateMap = new Map<Id, String>();
             TimeCardCalculatorHelper timeCardHelper = new TimeCardCalculatorHelper();
             for (DContract__c client : [SELECT Id, Project_Billing_Rate__c FROM DContract__c WHERE Id IN: contractsIds]) {
@@ -84,6 +89,10 @@ public class TimeCardTriggerController {
         }
         if (contractsIds.size() > 0) {
             TimeCardCalculatorUtils.markContractsToRefresh(contractsIds);
+        }
+
+        if (fteTimeCards.size() > 0) {
+            FTETriggerHelper.processTemplates(fteTimeCards);
         }
     }
 
@@ -105,5 +114,7 @@ public class TimeCardTriggerController {
             insert tags;
         }
         TimeCardCalculatorUtils.markContractsToRefresh(contractsIds);
+
+        FTETriggerHelper.processTemplates(deletedTimeCards);
     }
 }

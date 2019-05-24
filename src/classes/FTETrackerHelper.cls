@@ -11,14 +11,13 @@ public class FTETrackerHelper {
 
     public static JobWrapper loadWorkCardJobStatus() { // We want block FTE Tracker until all Work Cards will be generated from time cards
         JobWrapper workCardJobStatus = new JobWrapper(false);
-        ApexClass[] batchClassArray = [SELECT Id, Name FROM ApexClass WHERE Name='FTEGenerateEmployeesWorkCardBatch' OR Name = 'FTEHoursUploadBatch'];
+        ApexClass[] batchClassArray = [SELECT Id, Name FROM ApexClass WHERE Name = 'FTEGenerateEmployeesWorkCardBatch' OR Name = 'FTETimeAllocator' OR Name = 'FTEUpdateTagsBatch'];
         AsyncApexJob[] batchClassJobList = [SELECT Id, ApexClassID, JobItemsProcessed, TotalJobItems, CreatedDate FROM AsyncApexJob WHERE ApexClassID IN: batchClassArray
                                             AND Status IN ('Holding', 'Queued', 'Preparing', 'Processing') ORDER BY createdDate DESC LIMIT 1];
 
         if(batchClassJobList != null && batchClassJobList.size() > 0) {
             workCardJobStatus.isRunning = true;
-            workCardJobStatus.jobName = batchClassArray[0].Id == batchClassJobList[0].ApexClassID ? (batchClassArray[0].Name == 'FTEHoursUploadBatch' ? 'CSV Upload Batch' : 'FTE Working Card Batch' )
-                                            : (batchClassArray[1].Name == 'FTEHoursUploadBatch' ? 'CSV Upload Batch' : 'FTE Working Card Batch' );
+            workCardJobStatus.jobName = 'FTE Time Allocator';
             workCardJobStatus.jobItemsProcessed = batchClassJobList[0].JobItemsProcessed;
             workCardJobStatus.totalJobItems = batchClassJobList[0].TotalJobItems;
         } else {
@@ -60,5 +59,44 @@ public class FTETrackerHelper {
         tData.add(new SelectOption(String.valueOf(currentYear), String.valueOf(currentYear)));
         tData.add(new SelectOption(String.valueOf(currentYear - 1), String.valueOf(currentYear - 1)));
         return tData;
+    }
+
+    public static String getFieldName(Integer month) {
+        return 'Month_' + month + '__c';
+    }
+
+    public static String getFieldTemplateFutureName(Integer month) {
+        return 'Month_Future_' + month + '__c';
+    }
+
+    public static String getFieldTemplateBlockedName(Integer month) {
+        return 'Month_Blocked_' + month + '__c';
+    }
+
+    public static String getFieldUpdatedName(Integer month) {
+        return 'Month_Updated_' + month + '__c';
+    }
+
+    public static void markTemplates(List<DContract__c> contracts) {
+        List<FTE_Data_Record__c> templates = [SELECT Id, Month_Updated_1__c, Month_Updated_2__c, Month_Updated_3__c, Month_Updated_4__c, Month_Updated_5__c,
+                                              Month_Updated_6__c, Month_Updated_7__c, Month_Updated_8__c, Month_Updated_9__c, Month_Updated_10__c, Month_Updated_11__c, Month_Updated_12__c
+                                              FROM FTE_Data_Record__c WHERE Contract__c IN: contracts];
+        if (templates.size() > 0) {
+            for (FTE_Data_Record__c template : templates) {
+                template.Month_Updated_1__c = true;
+                template.Month_Updated_2__c = true;
+                template.Month_Updated_3__c = true;
+                template.Month_Updated_4__c = true;
+                template.Month_Updated_5__c = true;
+                template.Month_Updated_6__c = true;
+                template.Month_Updated_7__c = true;
+                template.Month_Updated_8__c = true;
+                template.Month_Updated_9__c = true;
+                template.Month_Updated_10__c = true;
+                template.Month_Updated_11__c = true;
+                template.Month_Updated_12__c = true;
+            }
+            update templates;
+        }
     }
 }

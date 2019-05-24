@@ -59,16 +59,15 @@ public class FTEIndividualProjectController extends FTEController {
 
             Integer monthIndex = timeCard.Date__c.month() - 1;
             tmpHelper.hoursArray[monthIndex] += realHours;
-            tmpHelper.hoursArray[12] += realHours;
             projectTimeMap.put(timeCard.Employee__c, tmpHelper);
         }
 
         this.individualContractDataList = projectTimeMap.values();
         for (FTEEmployeeTime empT : this.individualContractDataList) {
-            empT.calculateDays();
-            totalProjectTime.sumHours(empT);
+            empT.calculateDaysAndTotal();
+            totalProjectTime.mergeEmployeeTime(empT);
         }
-        totalProjectTime.calculateDays();
+        totalProjectTime.calculateDaysAndTotal();
         totalProjectTime.cssStyle[0] = 'topTotal';
         totalProjectTime.cssStyle[1] = 'topTotal';
         totalProjectTime.cssStyle[2] = 'topTotal';

@@ -1,65 +1,33 @@
 /**
  * Batch job for createing FTE Work Cards for FTE Employee List View.
  */
-public without sharing class FTEGenerateEmployeesWorkCardBatch implements Database.Batchable<EmployeeWrapper>, Database.Stateful {
+public without sharing class FTEGenerateEmployeesWorkCardBatch implements Database.Batchable<FTEEmployeeWrapper>, Database.Stateful {
 
     private Map<Integer, List<FTE_Work_Card__c>> workCardsMap;
-    private Integer calculationYear;
-    private Set<Id> contractsId;
-    private Set<Id> employeesId;
+    private Set<Id> dataSet;
 
     public FTEGenerateEmployeesWorkCardBatch() {
         this(null);
     }
 
-    public FTEGenerateEmployeesWorkCardBatch(Integer year) {
-        this(new Set<Id>(), new Set<Id>(), year);
+    public FTEGenerateEmployeesWorkCardBatch(Set<Id> dataSet) {
+        this.dataSet = dataSet;
     }
 
-    public FTEGenerateEmployeesWorkCardBatch(Set<Id> emplSet, Set<Id> contractSet, Integer year) {
-        this.employeesId = emplSet;
-        this.contractsId = contractSet;
-        this.calculationYear = year;
-        this.workCardsMap = new Map<Integer, List<FTE_Work_Card__c>>();
-    }
-
-    public List<EmployeeWrapper> start(Database.BatchableContext BC) {
-        List<EmployeeWrapper> result = new List<EmployeeWrapper>();
+    public List<FTEEmployeeWrapper> start(Database.BatchableContext BC) {
+        List<FTEEmployeeWrapper> result = new List<FTEEmployeeWrapper>();
 
         try {
-
-            if (this.calculationYear == null) {
+            if (this.dataSet == null || this.dataSet.size() == 0) {
                 result = generateWrapperList([SELECT Id, Name, Hire_Date__c, Termination_Date__c, Employee_Type__c, Employee_Status__c
                                               FROM SFDC_Employee__c ORDER BY Name]);
                 List<FTE_Work_Card__c> oldCards = [SELECT Id FROM FTE_Work_Card__c];
                 if (oldCards.size() > 0) {
                     delete oldCards;
                 }
-            } else if (this.calculationYear != null) {
-                Integer currentYear = Date.today().year();
-                if (this.contractsId.size() > 0) {
-                    List<Time_Card__c> contractTimeCards = [SELECT Id, Employee__c FROM Time_Card__c WHERE
-                                                       (Client__c IN: this.contractsId OR FTE_Contract__c IN: this.contractsId)
-                                                       AND CALENDAR_YEAR(Date__c) =: this.calculationYear
-                                                       AND (Employee__r.Employee_Type__c = 'Employee' OR Employee__r.Employee_Type__c = 'Contractor')];
-                    for (Time_Card__c tc : contractTimeCards) {
-                        if (!this.employeesId.contains(tc.Employee__c)) {
-                            this.employeesId.add(tc.Employee__c);
-                        }
-                    }
-                }
-
-                List<SFDC_Employee__c> emplList = null;
-                if (this.employeesId.size() > 0) {
-                    emplList = [SELECT Id, Name, Hire_Date__c, Termination_Date__c, Employee_Type__c, Employee_Status__c
-                                FROM SFDC_Employee__c WHERE Id IN: this.employeesId AND (Employee_Type__c = 'Employee' OR Employee_Type__c = 'Contractor') ORDER BY Name];
-                } else {
-                    emplList = [SELECT Id, Name, Hire_Date__c, Termination_Date__c, Employee_Type__c, Employee_Status__c
-                                FROM SFDC_Employee__c WHERE (Employee_Type__c = 'Employee' OR Employee_Type__c = 'Contractor') ORDER BY Name];
-                }
-
-                for (SFDC_Employee__c emplRec : emplList) {
-                    result.add(new EmployeeWrapper(emplRec.Id, currentYear));
+            } else if (this.dataSet != null && this.dataSet.size() > 0) {
+                for (FTE_Work_Card__c emplWorkCard : [SELECT Employee__c, Year__c FROM FTE_Work_Card__c WHERE Id IN: this.dataSet]) {
+                    result.add(new FTEEmployeeWrapper(emplWorkCard.Employee__c, Integer.valueOf(emplWorkCard.Year__c)));
                 }
             }
 
@@ -72,8 +40,8 @@ public without sharing class FTEGenerateEmployeesWorkCardBatch implements Databa
         return result;
     }
 
-    public void execute(Database.BatchableContext BC, List<EmployeeWrapper> scope) {
-        for (EmployeeWrapper employee : scope) {
+    public void execute(Database.BatchableContext BC, List<FTEEmployeeWrapper> scope) {
+        for (FTEEmployeeWrapper employee : scope) {
             List<FTE_Work_Card__c> employeeWorkCards = [SELECT Id FROM FTE_Work_Card__c WHERE Employee__c =: employee.employeeId AND Year__c =: employee.year];
             FTE_Work_Card__c employeeWorkCard = new FTE_Work_Card__c(Employee__c = employee.employeeId, Year__c = employee.year, Month_1__c = 0,
                                                         Month_2__c = 0, Month_3__c = 0, Month_4__c = 0, Month_5__c = 0, Month_6__c = 0,
@@ -82,57 +50,57 @@ public without sharing class FTEGenerateEmployeesWorkCardBatch implements Databa
             if (employeeWorkCards.size() > 0) {
                 employeeWorkCard.Id = employeeWorkCards.get(0).Id;
             }
-
             SObject sObj = (SObject) employeeWorkCard;
 
-            Decimal totalHours = 0;
-            Decimal monthHours = 0;
-            Decimal monthDays = 0;
-            Integer month = 1;
-            List<Time_Card__c> employeeYearTimeCards = [SELECT Id, Total__c, Date__c, Client__r.FTE_Tracker__c, FTE_hours__c, FTE_Contract__c,
-                                                        FTE_Contract__r.FTE_Tracker__c FROM Time_Card__c
-                                                        WHERE Employee__c =: employee.employeeId AND CALENDAR_YEAR(Date__c) =: employee.year AND (Client__r.FTE_Tracker__c = 'Yes'
-                                                        OR (Client__r.FTE_Tracker__c != 'Yes' AND FTE_Contract__r.FTE_Tracker__c = 'Yes'))
-                                                        AND Total__c != null ORDER BY Date__c]; // we need only fetch timcards assigned and unassigned which are moving time to assigned
-
-            for (Time_Card__c tc : employeeYearTimeCards) {
-                System.debug('TC Date: ' + tc.Date__c);
-                System.debug('TC Time: ' + tc.Date__c);
-                if (tc.Date__c.month() != month) {
-                    monthDays = FTETrackerHelper.roundtoDays(monthHours);
-                    sObj.put('Month_' + month + '__c', monthDays);
-                    month = tc.Date__c.month();
-                    monthHours = 0;
-                }
-                Decimal realHours = tc.Total__c;
-
-                if (tc.Client__r.FTE_Tracker__c == 'Yes' && tc.FTE_Contract__c != null && tc.FTE_Contract__r.FTE_Tracker__c != 'Yes') { // We must substract hours if moved to unassigned
-                    realHours = realHours - tc.FTE_hours__c;
-                } else if (tc.Client__r.FTE_Tracker__c != 'Yes' && tc.FTE_Contract__c != null && tc.FTE_Contract__r.FTE_Tracker__c == 'Yes') { // we must move hours from unassigned
-                    realHours = tc.FTE_hours__c;
-                }
-
-                monthHours += realHours;
-                totalHours += realHours;
+            Map<Id, FTE_Data_Record__c> contractAllocationMapping = new Map<Id, FTE_Data_Record__c>();
+            for (FTE_Data_Record__c futureTemplate : [SELECT Contract__c, Employee__c, Month_1__c, Month_2__c, Month_3__c, Month_4__c, Month_5__c, Month_6__c,
+                                                       Month_7__c, Month_8__c, Month_9__c, Month_10__c, Month_11__c, Month_12__c
+                                                       FROM FTE_Data_Record__c
+                                                       WHERE Employee__c =: employee.employeeId AND Year__c =: employee.year AND Contract__r.FTE_Tracker__c = 'Yes']) {
+                contractAllocationMapping.put(futureTemplate.Contract__c, futureTemplate);
             }
 
-            monthDays = FTETrackerHelper.roundtoDays(monthHours);
-            sObj.put('Month_' + month + '__c', monthDays);
+            FTEDataManager dataManager = new FTEDataManager(employee.year, employee.employeeId, true);
+            dataManager.loadEmployeeTime();
+            dataManager.loadTemplateTime();
 
-            employeeWorkCard = (FTE_Work_Card__c) sObj;
-            employeeWorkCard.Total_Hours__c = totalHours;
-            employeeWorkCard.Total__c = FTETrackerHelper.roundtoDays(totalHours);
+            Decimal totalValue = 0;
+            Decimal[] timeArray = new Decimal [] {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+            for (Id contractId : dataManager.assignedMap.keySet()) {
+                FTEEmployeeTime emplTime = dataManager.assignedMap.get(contractId);
+                for (Integer month = 1; month <= 12; month++) {
+                    Decimal templateTime = (emplTime.templateArray[month - 1] != -1 ? emplTime.templateArray[month - 1] * 8 : -1);
+                    Decimal loggedTime = emplTime.hoursArray[month - 1];
+                    Decimal finalResult = 0;
 
+                    if (templateTime != -1 && templateTime > loggedTime) {
+                        finalResult = templateTime;
+                        sObj.put(FTETrackerHelper.getFieldTemplateFutureName(month), true); // UI metadata, increase performance
+                    } else if (templateTime != -1 && templateTime == loggedTime) {
+                        finalResult = loggedTime;
+                        sObj.put(FTETrackerHelper.getFieldTemplateBlockedName(month), true); // UI metadata increase performance
+                    } else {
+                        finalResult = loggedTime;
+                    }
+                    timeArray[month - 1] += finalResult;
+                    totalValue += finalResult;
+                }
+            }
+            employeeWorkCard.Total_Hours__c = totalValue;
+            employeeWorkCard.Total__c = FTETrackerHelper.roundtoDays(totalValue);
+            // Merge temlate data and real data
+            for (Integer month = 1; month <= 12; month++) {
+                sObj.put(FTETrackerHelper.getFieldName(month), FTETrackerHelper.roundtoDays(timeArray[month - 1]));
+            }
             upsert employeeWorkCard;
         }
     }
 
     public void finish(Database.BatchableContext BC) {
-
     }
 
-    private List<EmployeeWrapper> generateWrapperList(List<SFDC_Employee__c> employees) {
-        List<EmployeeWrapper> result = new List<EmployeeWrapper>();
+    private List<FTEEmployeeWrapper> generateWrapperList(List<SFDC_Employee__c> employees) {
+        List<FTEEmployeeWrapper> result = new List<FTEEmployeeWrapper>();
         Integer currentYear = Date.today().year();
         Integer twoYearsAhead = currentYear + 2;
         Integer nextYear = currentYear + 1;
@@ -141,36 +109,25 @@ public without sharing class FTEGenerateEmployeesWorkCardBatch implements Databa
         for (SFDC_Employee__c emplRec : employees) {
             if (emplRec.Employee_Status__c == 'Active' && (emplRec.Hire_Date__c != null && emplRec.Hire_Date__c.year() <= twoYearsAhead)
                     && emplRec.Termination_Date__c == null) {
-                result.add(new EmployeeWrapper(emplRec.Id, twoYearsAhead));
+                result.add(new FTEEmployeeWrapper(emplRec.Id, twoYearsAhead));
             }
 
             if (emplRec.Employee_Status__c == 'Active' && (emplRec.Hire_Date__c != null && emplRec.Hire_Date__c.year() <= nextYear)
                     && emplRec.Termination_Date__c == null) {
-                result.add(new EmployeeWrapper(emplRec.Id, nextYear));
+                result.add(new FTEEmployeeWrapper(emplRec.Id, nextYear));
             }
 
             if ((emplRec.Employee_Status__c == 'Active' && (emplRec.Hire_Date__c != null && emplRec.Hire_Date__c.year() <= currentYear))
                 || (emplRec.Termination_Date__c != null && emplRec.Termination_Date__c.year() == currentYear)) {
-                result.add(new EmployeeWrapper(emplRec.Id, currentYear));
+                result.add(new FTEEmployeeWrapper(emplRec.Id, currentYear));
             }
 
             if ((emplRec.Hire_Date__c != null && emplRec.Hire_Date__c.year() <= oneYearAgo)
                 || (emplRec.Termination_Date__c != null && emplRec.Termination_Date__c.year() == oneYearAgo)) {
-                result.add(new EmployeeWrapper(emplRec.Id, oneYearAgo));
+                result.add(new FTEEmployeeWrapper(emplRec.Id, oneYearAgo));
             }
         }
 
         return result;
-    }
-
-    public class EmployeeWrapper {
-
-        public Id employeeId { get; set; }
-        public Integer year { get; set; }
-
-        public EmployeeWrapper(Id employeeId, Integer year) {
-            this.employeeId = employeeId;
-            this.year = year;
-        }
     }
 }
