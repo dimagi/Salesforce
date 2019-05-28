@@ -79,6 +79,7 @@ public class FTEEmployeeController extends FTEController {
         } else {
             resetThreshold(this.contractId, this.employeeMonth);
         }
+        initFteEmployeeView();
     }
 
     public void resetThreshold(Id resetContract, Integer resetMonth) {
@@ -102,6 +103,7 @@ public class FTEEmployeeController extends FTEController {
                 if (emplTime == null || emplTime.templateArray[this.employeeMonth - 1] == -1) { // we want use this method only when no template was added
                     manager.addTime(this.selectedFteContract, value * 8);
                 }
+                initFteEmployeeView();
             }
         }
     }
@@ -122,6 +124,7 @@ public class FTEEmployeeController extends FTEController {
                 if (emplTime == null || emplTime.templateArray[this.employeeMonth - 1] == -1) { // we want use this method only when no template was added
                     manager.removeTime(this.contractId, value * 8);
                 }
+                initFteEmployeeView();
             }
         }
     }

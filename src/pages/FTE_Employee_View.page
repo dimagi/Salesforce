@@ -114,6 +114,11 @@
             moveTimeToAssigned(month + 1, $j("#daysToAssig").val(), $j("[id*=fteContractAssign]")[0].selectedOptions[0].value);
         }
 
+        function resetTemplate() {
+            $j("#templateModal").dialog( "close" );
+            setThreshold(month + 1, '', contractId);
+        }
+
         function updateTemplate() {
             $j("#templateModal").dialog( "close" );
             setThreshold(month + 1, $j("#templateThresholdId").val(), contractId);
@@ -123,8 +128,13 @@
             $j("#tcExport").dialog({ autoOpen: false, modal: true, closeOnEscape: true, dialogClass: 'modalBase', width: 240, height: 125 });
             $j("#templateModal").dialog({ autoOpen: false, modal: true, closeOnEscape: true, width: 'auto', height: 'auto', resizable: false,
                                             buttons: {
-                                                "Confirm": {
-                                                    text: "Confirm",
+                                                "Remove Template": {
+                                                    text: "Remove Template",
+                                                    id: "assignConfirm",
+                                                    click: resetTemplate,
+                                                },
+                                                "Save Template": {
+                                                    text: "Save Template",
                                                     id: "assignConfirm",
                                                     click: updateTemplate,
                                                 },
@@ -136,7 +146,7 @@
                                             close: function() { $j("#templateThresholdId").tooltip('disable'); }});
             $j("#unassignModal").dialog({ autoOpen: false, modal: true, closeOnEscape: true, width: 'auto', height: 'auto', resizable: false,
                                             buttons: {
-                                                "Add Hours Template": {
+                                                "Add Time Template": {
                                                     text: "Manage time template",
                                                     id: "manageTemplate",
                                                     click: function () {
@@ -145,8 +155,8 @@
                                                         showTemplateModal();
                                                     },
                                                 },
-                                                "Unassign Hours": {
-                                                    text: "Unassign Hours",
+                                                "Unassign Time": {
+                                                    text: "Unassign Time",
                                                     id: "unassignConfirm",
                                                     click: unassignHours,
                                                 },
@@ -158,8 +168,8 @@
                                             close: function() { $j("#daysToUnassig").tooltip('disable'); }});
             $j("#assignModal").dialog({ autoOpen: false, modal: true, closeOnEscape: true, width: 'auto', height: 'auto', resizable: false,
                                             buttons: {
-                                                "Confirm": {
-                                                    text: "Confirm",
+                                                "Assign Time": {
+                                                    text: "Assign Time",
                                                     id: "assignConfirm",
                                                     click: assignHours,
                                                 },
@@ -312,8 +322,6 @@
             } else if (modalType === "assigned") { // assign modal, opened after opening unassigned row
                 fteDaysMax = unassignedValue;
                 empAvailableDays = totalAssignedValue > 21 ? 0 : 21 - totalAssignedValue;
-            } else { // template modal
-                empAvailableDays = totalAssignedValue > 21 ? 0 : 21 - totalAssignedValue;
             }
 
             try {
@@ -335,6 +343,12 @@
                     }
                 }
                 if (modalType == 'template' && daysValue != '') {
+                    if (templateValue !== '' && templateValue >= 0) {
+                        empAvailableDays = 21 - (totalAssignedValue - templateValue) > 0 ? 21 - (totalAssignedValue - templateValue) : 0;
+                    } else {
+                        empAvailableDays = totalAssignedValue - currentValue > 0 ? 21 - (totalAssignedValue - currentValue) : 0;
+                    }
+
                     if (daysNum > empAvailableDays) {
                         setTooltipMessage(tooltipElement, confirmButton, 'Days overbilled!');
                         return;

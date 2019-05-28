@@ -31,8 +31,8 @@ public class FTETimeCardGenerator {
         this.monthYearText = DateTime.newInstance(this.fteYear, this.employeeMonth, 1).format('MMMM yyyy');
         this.fileName = employee.Name.replaceAll(' ', '_') + '_' + this.monthYearText.replaceAll(' ', '_') + '.csv';
 
-        List<Time_Card__c> timeCards = [SELECT Id, Client__c, Client__r.FTE_Tracker__c, Client__r.Name, Total__c, FTE_hours__c,
-                                        FTE_Contract__c, FTE_Contract__r.Name, FTE_Contract__r.FTE_Tracker__c, Date__c
+        List<Time_Card__c> timeCards = [SELECT Id, Client__c, Client__r.FTE_Tracker__c, Client__r.Name, Total__c,
+                                        FTE_Contract__c, Date__c
                                         FROM Time_Card__c WHERE Employee__c =: this.employeeId AND Client__c != null
                                         AND CALENDAR_YEAR(Date__c) =: this.fteYear AND CALENDAR_MONTH(Date__c) =: this.employeeMonth
                                         ORDER BY Client__r.Name];
@@ -51,6 +51,9 @@ public class FTETimeCardGenerator {
             }
         }
 
+        // Loads time templates, we need generate missing hours in th csv and UI table
+        loadTemplateTime(employee);
+
         fteCards = [SELECT Id, Client__c, Client__r.FTE_Tracker__c, Client__r.Name, Total__c, FTE_hours__c, FTE_Contract__r.CreatedDate, Client__r.CreatedDate,
                                         FTE_Contract__c, FTE_Contract__r.Name, FTE_Contract__r.FTE_Tracker__c, Date__c
                                         FROM Time_Card__c WHERE Id IN: fteCards ORDER BY Client__r.FTE_Tracker__c ASC, FTE_Contract__r.CreatedDate, Client__r.CreatedDate];
@@ -65,6 +68,27 @@ public class FTETimeCardGenerator {
 
         // Generate list for UI and csv file
         return getResult();
+    }
+
+    public void loadTemplateTime(SFDC_Employee__c employee) {
+        for (FTE_Data_Record__c futureTemplate : [SELECT Contract__c, Contract__r.Name, Employee__c, Month_1__c, Month_2__c, Month_3__c, Month_4__c,
+                                                  Month_5__c, Month_6__c, Month_7__c, Month_8__c, Month_9__c, Month_10__c, Month_11__c, Month_12__c
+                                                  FROM FTE_Data_Record__c
+                                                  WHERE Employee__c =: employee.Id AND Year__c =: this.fteYear AND Contract__r.FTE_Tracker__c = 'Yes']) {
+            SObject templateSObj = (SObject) futureTemplate;
+
+            Decimal monthValue = (Decimal) templateSObj.get(FTETrackerHelper.getFieldName(this.employeeMonth));
+            if (monthValue == -1) {
+                continue;
+            }
+
+            if (!this.fteContractMap.containsKey(futureTemplate.Contract__c)) {
+                this.fteContractMap.put(futureTemplate.Contract__c, new FTEMonthTimeCard(employee.Name, monthDays));
+            }
+
+            FTEMonthTimeCard tmpHelper = this.fteContractMap.get(futureTemplate.Contract__c);
+            tmpHelper.templateExpectedTime = monthValue;
+        }
     }
 
     public List<Time_Card__c> moveTimeCardTime(List<Time_Card__c> fteCards) {
@@ -280,6 +304,10 @@ public class FTETimeCardGenerator {
     }
 
     private void addLoggedTime(Time_Card__c tc) {
+        if (tc.Total__c == null || tc.Total__c == 0) { // we skip tc only for now
+            return;
+        }
+
         Integer day = tc.Date__c.day();
         if (tc.Client__r.FTE_Tracker__c == 'Yes') {
             if (!this.fteContractMap.containsKey(tc.Client__c)) {

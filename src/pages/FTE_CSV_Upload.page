@@ -5,22 +5,21 @@
             margin-bottom: 10px;
             color: black;
         }
-        .leftMargin {
-            margin-left: 10px;
-        }
     </style>
 
     <apex:pageBlock title="FTE CSV Upload" id="scvMainBlock" >
         <apex:form >
+            <apex:outputPanel id="infoBlock" rendered="{!!workCardJobStatus.isRunning}">
+                <i>Choose file from your computer and use "Parse and Upload CSV file" to process your data.</i>
+            </apex:outputPanel>
+            <br /><br />
             <apex:inputFile contentType="csv" value="{!fileContent}" filename="{!fileName}" /><br/>
             <br />
             <apex:commandButton value="Parse and Upload CSV file" id="parseButton" action="{!parseCsvFile}" status="loadingDiv" />
-            <br />
-            <br />
+            <br /><br />
             <apex:outputPanel layout="block" id="messages">
                 <apex:pageMessages />
             </apex:outputPanel>
-            <br />
         </apex:form>
 
         <apex:form id="tableDataForm">
@@ -31,7 +30,6 @@
                 <apex:image url="/img/loading32.gif" height="10px" />
                 FTE Tracker is currently calculating time, {!workCardJobStatus.jobName} : {!workCardJobStatus.jobItemsProcessed}/{!workCardJobStatus.totalJobItems}
             </apex:outputPanel>
-            <br />
 
             <apex:actionstatus id="loadingDiv">
                 <apex:facet name="start">
@@ -43,13 +41,8 @@
                 </apex:facet>
             </apex:actionstatus>
 
-            <apex:outputPanel rendered="{!!workCardJobStatus.isRunning}" >
-                <apex:pageBlock title="Last CSV Data process errors" id="tableStatusSection">
-                    <apex:commandButton value="Remove process errors" id="removeButtonStatus" action="{!removeFTEDataStatusRecords}" status="loadingDiv" reRender="tableStatusSection" disabled="{!fteStatusPagination.resultSize <= 0}"/>
-                </apex:pageBlock>
-            </apex:outputPanel>
-
-            <apex:outputPanel styleClass="leftMargin"  rendered="{!!workCardJobStatus.isRunning}">
+            <hr />
+            <apex:outputPanel >
                 <apex:commandButton action="{!goToEmployeeListView}" value="Employee List" id="EmplListButton" />
                 <apex:commandButton action="{!goToProjectListView}" value="Project List" id="projListButton" />
                 <apex:commandButton action="{!goToCSVUploadView}" value="CSV File Upload" id="uploadButton" disabled="true" />

@@ -61,7 +61,7 @@
                 FTE Tracker is currently calculating Empolyee Work Cards {!workCardJobStatus.jobItemsProcessed}/{!workCardJobStatus.totalJobItems}
             </apex:outputPanel>
 
-            <apex:outputPanel id="emplsPanel" >
+            <apex:outputPanel id="emplsPanel" rendered="{!!workCardJobStatus.isRunning}">
                 <apex:actionstatus id="loadingDiv">
                     <apex:facet name="start">
                         <div class="waitingSearchDiv" id="el_loading" style="background-color: #fbfbfb; height:100%;opacity:0.65;width:100%;">
