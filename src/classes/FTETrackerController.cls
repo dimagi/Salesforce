@@ -52,7 +52,7 @@ public class FTETrackerController extends FTEController {
 
         QueryBuilder qb = new QueryBuilder('FTE_Work_Card__c');
         QueryBuilder qbCount = new QueryBuilder('FTE_Work_Card__c');
-        qb.addColumns(new List<String> { 'Id', 'Employee__c', 'Employee__r.Hire_Date__c', 'Employee__r.Name', 'Total__c', 'Total_Hours__c',
+        qb.addColumns(new List<String> { 'Id', 'Employee__c', 'Employee__r.Hire_Date__c', 'Employee__r.Name', 'Total__c',
                                          'Year__c', 'Month_1__c', 'Month_2__c', 'Month_3__c', 'Month_4__c', 'Month_5__c', 'Month_6__c',
                                          'Month_7__c', 'Month_8__c', 'Month_9__c', 'Month_10__c', 'Month_11__c', 'Month_12__c',
                                          'Month_Future_1__c', 'Month_Future_2__c', 'Month_Future_3__c', 'Month_Future_4__c', 'Month_Future_5__c', 'Month_Future_6__c',
@@ -80,7 +80,7 @@ public class FTETrackerController extends FTEController {
         qb.addAnd('Year__c', '' + this.fteYear, QueryBuilder.QB_DECIMAL_TYPE);
         qbCount.addAnd('Year__c', '' + this.fteYear, QueryBuilder.QB_DECIMAL_TYPE);
 
-        qb.orderBy('Total_Hours__c', QueryBuilder.QB_DESC);
+        qb.orderBy('Total__c', QueryBuilder.QB_DESC);
         qb.setLimit(this.employeePagination.pageSize);
         qb.setOffset(this.employeePagination.getOffsetValue());
 

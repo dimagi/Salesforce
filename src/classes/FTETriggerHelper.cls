@@ -49,6 +49,8 @@ public class FTETriggerHelper {
                             templateTmp = template;
                         }
                     }
+                } else {
+                    templateTmp = templates.get(0);
                 }
 
                 if (updated == false && templateTmp != null) { // we want mark month when unassigned time was logged, we want trigger template for allocator

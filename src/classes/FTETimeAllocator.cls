@@ -68,8 +68,23 @@ public without sharing class FTETimeAllocator implements Database.Batchable<FTEE
             fteManager.loadEmployeeTime();
             fteManager.removeNegativeTime();
 
+            List<FTE_Data_Record__c> toAssignTemplates = new List<FTE_Data_Record__c>(); // Helper list for sorting, first we must unassign time to be sure all time will be allocated if possible
+            List<FTE_Data_Record__c> templatesInOrder = new List<FTE_Data_Record__c>();
+            for (FTE_Data_Record__c templateRecord : this.cacheRecords) {
+                SObject sObjTemplate = (SObject) templateRecord;
+                Decimal monthValue = (Decimal) sObjTemplate.get(FTETrackerHelper.getFieldName(month)); // get month threshold
+                if (fteManager.shouldUnassign(templateRecord.Contract__c, monthValue, month)) {
+                    templatesInOrder.add(templateRecord);
+                } else {
+                    toAssignTemplates.add(templateRecord);
+                }
+            }
+            if (toAssignTemplates.size() > 0) {
+                templatesInOrder.addAll(toAssignTemplates);
+            }
+
             // Template time allocation loop
-            for (FTE_Data_Record__c template : this.cacheRecords) {
+            for (FTE_Data_Record__c template : templatesInOrder) {
                 SObject sObjTemplate = (SObject) template;
                 Decimal monthValue = (Decimal) sObjTemplate.get(FTETrackerHelper.getFieldName(month)); // get month threshold
 

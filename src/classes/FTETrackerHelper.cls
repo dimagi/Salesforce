@@ -99,4 +99,12 @@ public class FTETrackerHelper {
             update templates;
         }
     }
+
+    public static Boolean isContractFTE(Id contractId) {
+        List<DContract__c> contracts = [SELECT Id, FTE_Tracker__c FROM DContract__c WHERE Id =: contractId];
+        if (contracts.size() > 0) {
+            return contracts.get(0).FTE_Tracker__c == 'Yes';
+        }
+        return false;
+    }
 }

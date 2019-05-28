@@ -47,6 +47,29 @@ public class FTEDataManager {
     }
 
     /**
+     * Checks if time will moved to unassigned. Return true if time should be used to unassigned (removeTime should be used).
+     */
+    public Boolean shouldUnassign(Id contractId, Decimal thresholdHours) {
+        return shouldUnassign(contractId, thresholdHours, this.fteMonth);
+    }
+
+    public Boolean shouldUnassign(Id contractId, Decimal thresholdHours, Integer month) {
+        if (thresholdHours < 0) {
+            return false;
+        }
+        Decimal availableTime = this.unassigned.hoursArray[month - 1];
+        Decimal missingTime = thresholdHours;
+        if (this.assignedMap.containsKey(contractId)) {
+            missingTime = thresholdHours - this.assignedMap.get(contractId).hoursArray[month - 1];
+        }
+
+        if (missingTime > 0) {
+            return false;
+        }
+        return true;
+    }
+
+    /**
      * Sets threshold time and moves hours if possible. Threshold is loaded from the uploaded CSV template
      */
     public void setTime(Id contractId, Decimal thresholdHours) {
@@ -73,7 +96,7 @@ public class FTEDataManager {
     /**
      * Set given threshold in month and upserst template for blocking hours and future time allocation.
      */
-    public void upsertTimeTemplate(Id contractId,  Decimal threshold, Integer month) {
+    public void upsertTimeTemplate(Id contractId,  Decimal threshold, Integer month, Boolean reloadWorkCard) {
         List<FTE_Data_Record__c> templates = [SELECT Id, Month_1__c, Month_2__c, Month_3__c, Month_4__c, Month_5__c, Month_6__c,
                                               Month_7__c, Month_8__c, Month_9__c, Month_10__c, Month_11__c, Month_12__c
                                               FROM FTE_Data_Record__c
@@ -90,7 +113,13 @@ public class FTEDataManager {
         templateSObj.put(FTETrackerHelper.getFieldName(month), threshold);
         upsert template;
 
-        setTime(contractId, threshold, month);
+        if (this.assignedMap.containsKey(contractId)) {
+            this.assignedMap.get(contractId).templateArray[month - 1] = threshold;
+        }
+
+        if (reloadWorkCard == true && this.skipWorkCard == false) {
+            recalculateWorkCardMonth(month);
+        }
     }
 
     /**
@@ -106,6 +135,14 @@ public class FTEDataManager {
             SObject templateSObj = (SObject) template;
             templateSObj.put(FTETrackerHelper.getFieldName(month), -1);
             upsert template;
+
+            if (this.assignedMap.containsKey(contractId)) {
+                this.assignedMap.get(contractId).templateArray[month - 1] = -1;
+            }
+
+            if (this.skipWorkCard == false) {
+                recalculateWorkCardMonth(month);
+            }
         }
     }
 
@@ -637,27 +674,47 @@ public class FTEDataManager {
      * Recalculates Employee Work Month. Work Card object is used by the Employee List View for better performance.
      */
     public void recalculateWorkCardMonth(Integer month) {
-        // TODO
-    }
+        List<FTE_Work_Card__c> employeeWorkCards = [SELECT Id, Total__c, Month_1__c, Month_2__c, Month_3__c, Month_4__c, Month_5__c, Month_6__c,
+                                                    Month_7__c, Month_8__c, Month_9__c, Month_10__c, Month_11__c, Month_12__c,
+                                                    Month_Future_1__c, Month_Future_2__c, Month_Future_3__c, Month_Future_4__c, Month_Future_5__c, Month_Future_6__c,
+                                                    Month_Future_7__c, Month_Future_8__c, Month_Future_9__c, Month_Future_10__c, Month_Future_11__c, Month_Future_12__c,
+                                                    Month_Blocked_1__c, Month_Blocked_2__c, Month_Blocked_3__c, Month_Blocked_4__c, Month_Blocked_5__c, Month_Blocked_6__c,
+                                                    Month_Blocked_7__c, Month_Blocked_8__c, Month_Blocked_9__c, Month_Blocked_10__c, Month_Blocked_11__c, Month_Blocked_12__c
+                                                    FROM FTE_Work_Card__c WHERE Employee__c =: this.employee.Id AND Year__c =: this.fteYear];
+        if (employeeWorkCards.size() > 0) {
+            FTE_Work_Card__c cardToUpdate = employeeWorkCards.get(0);
+            SObject workCardSObj = (SObject) cardToUpdate;
 
-    private void moveHoursInFTEWorkCard(Decimal daysValue, Integer month, Id EmployeeId) {
-        /*
-        List<FTE_Work_Card__c> workCards = [SELECT Id, Month_1__c, Month_2__c, Month_3__c, Month_4__c, Month_5__c, Month_6__c, Month_7__c, Month_8__c, Month_9__c, Month_10__c, Month_11__c,
-                            Month_12__c, Total__c, Total_Hours__c FROM FTE_Work_Card__c WHERE Employee__c =: EmployeeId];
-        if (workCards.size() > 0) {
-            Decimal totalValue = workCards.get(0).Total__c;
-            Decimal totalHoursValue = workCards.get(0).Total_Hours__c;
-            SObject workCard = workCards.get(0);
-            Decimal monthValue = (Decimal) workCard.get('Month_' + month + '__c');
+            Decimal oldValue = (Decimal) workCardSObj.get(FTETrackerHelper.getFieldName(month));
+            Decimal oldTotal = (Decimal) workCardSObj.get('Total__c');
+            workCardSObj.put(FTETrackerHelper.getFieldTemplateFutureName(month), false);
+            workCardSObj.put(FTETrackerHelper.getFieldTemplateBlockedName(month), false);
 
-            workCard.put('Total__c', TotalValue + daysValue);
-            workCard.put('Total_Hours__c', totalHoursValue + (daysValue * 8));
-            workCard.put('Month_' + month + '__c', monthValue + daysValue);
-            update workCard;
+            Decimal newValue = 0;
+
+            for (Id contractId : this.assignedMap.keySet()) {
+                FTEEmployeeTime emplTime = this.assignedMap.get(contractId);
+                Decimal templateTime = (emplTime.templateArray[month - 1] != -1 ? emplTime.templateArray[month - 1] * 8 : -1);
+                Decimal loggedTime = emplTime.hoursArray[month - 1];
+                Decimal finalResult = 0;
+
+                if (templateTime != -1 && templateTime > loggedTime) {
+                    newValue += templateTime;
+                    workCardSObj.put(FTETrackerHelper.getFieldTemplateFutureName(month), true); // UI metadata, increase performance
+                } else if (templateTime != -1 && templateTime == loggedTime) {
+                    newValue += loggedTime;
+                    workCardSObj.put(FTETrackerHelper.getFieldTemplateBlockedName(month), true); // UI metadata increase performance
+                } else {
+                    newValue += loggedTime;
+                }
+            }
+
+            newValue = FTETrackerHelper.roundtoDays(newValue);
+            workCardSObj.put(FTETrackerHelper.getFieldName(month), newValue);
+            workCardSObj.put('Total__c', (oldTotal - oldValue + newValue));
+            update cardToUpdate;
         }
-        */
     }
-
 
     private void calculateLoggedTime(Time_Card__c timeCard) {
         Decimal loggedTime = (timeCard.Total__c != null ? timeCard.Total__c : 0);

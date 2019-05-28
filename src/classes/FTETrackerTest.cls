@@ -386,7 +386,7 @@ public class FTETrackerTest {
         SFDC_Employee__c empl2 = addEmployee('FTE test2');
         DContract__c dContract1 = addContract('Trigger contract 1', 'Yes');
         DContract__c dContract2 = addContract('Trigger contract 2', 'Yes');
-        DContract__c  dContract3 = addContract('Trigger contract 2', 'Yes');
+        DContract__c  dContract3 = addContract('Trigger contract 3', 'Yes');
         Integer currentYear = Date.today().year();
         insert new List<FTE_Data_Record__c> {
                         new FTE_Data_Record__c(Year__c = currentYear, Contract__c = dContract1.Id, Employee__c = empl1.Id),
@@ -424,7 +424,6 @@ public class FTETrackerTest {
                         new Time_Card__c(Total__c = 2, Date__c = Date.newInstance(currentYear, 8, 7), Employee__c = empl2.Id, Client__c = dContract1.Id)
                     };
         insert testTimeCards;
-        FTETriggerHelper.processTemplates(testTimeCards);
         Test.stopTest();
 
         List<FTE_Data_Record__c> tamplates = [SELECT Id, Month_Updated_1__c, Month_Updated_2__c, Month_Updated_3__c, Month_Updated_4__c, Month_Updated_5__c,
@@ -432,25 +431,54 @@ public class FTETrackerTest {
                                               FROM FTE_Data_Record__c];
         System.assertEquals(4, tamplates.size());
 
-        FTE_Data_Record__c testTEmplate = [SELECT Id, Month_Updated_1__c, Month_Updated_2__c, Month_Updated_3__c, Month_Updated_4__c, Month_Updated_5__c,
+        FTE_Data_Record__c testTemplate = [SELECT Id, Month_Updated_1__c, Month_Updated_2__c, Month_Updated_3__c, Month_Updated_4__c, Month_Updated_5__c,
                                            Month_Updated_6__c, Month_Updated_7__c, Month_Updated_8__c, Month_Updated_9__c, Month_Updated_10__c, Month_Updated_11__c, Month_Updated_12__c
                                            FROM FTE_Data_Record__c WHERE Contract__c =: dContract1.Id AND Employee__c =: empl1.Id LIMIT 1];
-        assertTemplateUpdated(testTEmplate, true, false, true, false, false, false, false, false, true, false, false, false);
+        assertTemplateUpdated(testTemplate, true, false, true, false, false, false, false, false, true, false, false, false);
 
-        testTEmplate = [SELECT Id, Month_Updated_1__c, Month_Updated_2__c, Month_Updated_3__c, Month_Updated_4__c, Month_Updated_5__c,
+        testTemplate = [SELECT Id, Month_Updated_1__c, Month_Updated_2__c, Month_Updated_3__c, Month_Updated_4__c, Month_Updated_5__c,
                                            Month_Updated_6__c, Month_Updated_7__c, Month_Updated_8__c, Month_Updated_9__c, Month_Updated_10__c, Month_Updated_11__c, Month_Updated_12__c
                                            FROM FTE_Data_Record__c WHERE Contract__c =: dContract2.Id AND Employee__c =: empl1.Id LIMIT 1];
-        assertTemplateUpdated(testTEmplate, false, false, false, false, false, false, false, false, true, true, true, true);
+        assertTemplateUpdated(testTemplate, false, false, false, false, false, false, false, false, true, true, true, true);
 
-        testTEmplate = [SELECT Id, Month_Updated_1__c, Month_Updated_2__c, Month_Updated_3__c, Month_Updated_4__c, Month_Updated_5__c,
+        testTemplate = [SELECT Id, Month_Updated_1__c, Month_Updated_2__c, Month_Updated_3__c, Month_Updated_4__c, Month_Updated_5__c,
                                            Month_Updated_6__c, Month_Updated_7__c, Month_Updated_8__c, Month_Updated_9__c, Month_Updated_10__c, Month_Updated_11__c, Month_Updated_12__c
                                            FROM FTE_Data_Record__c WHERE Contract__c =: dContract3.Id AND Employee__c =: empl1.Id LIMIT 1];
-        assertTemplateUpdated(testTEmplate, false, false, true, true, true, true, true, false, false, true, false, false);
+        assertTemplateUpdated(testTemplate, false, false, true, true, true, true, true, false, false, true, false, false);
 
-        testTEmplate = [SELECT Id, Month_Updated_1__c, Month_Updated_2__c, Month_Updated_3__c, Month_Updated_4__c, Month_Updated_5__c,
+        testTemplate = [SELECT Id, Month_Updated_1__c, Month_Updated_2__c, Month_Updated_3__c, Month_Updated_4__c, Month_Updated_5__c,
                                            Month_Updated_6__c, Month_Updated_7__c, Month_Updated_8__c, Month_Updated_9__c, Month_Updated_10__c, Month_Updated_11__c, Month_Updated_12__c
                                            FROM FTE_Data_Record__c WHERE Contract__c =: dContract1.Id AND Employee__c =: empl2.Id LIMIT 1];
-        assertTemplateUpdated(testTEmplate, false, false, false, false, false, false, false, true, false, false, false, false);
+        assertTemplateUpdated(testTemplate, false, false, false, false, false, false, false, true, false, false, false, false);
+    }
+
+    @isTest
+    public static void testTriggerWhenUnassignedWasLogged() {
+        SFDC_Employee__c empl1 = addEmployee('FTE test1');
+        DContract__c dContract1 = addContract('Trigger contract 1', 'Yes');
+        DContract__c dContract2 = addContract('Trigger contract 2', 'Yes');
+        DContract__c  dContract3 = addContract('Trigger contract 3', 'No');
+        DContract__c  dContract4 = addContract('Trigger contract 4', 'No');
+        Integer currentYear = Date.today().year();
+        insert new List<FTE_Data_Record__c> {
+                        new FTE_Data_Record__c(Year__c = currentYear, Contract__c = dContract1.Id, Employee__c = empl1.Id)
+                    };
+
+        Test.startTest();
+        List<Time_Card__c> testTimeCards = new List<Time_Card__c> {
+                        new Time_Card__c(Total__c = 2, Date__c = Date.newInstance(currentYear, 3, 1), Employee__c = empl1.Id, Client__c = dContract3.Id),
+                        new Time_Card__c(Total__c = 2, Date__c = Date.newInstance(currentYear, 3, 21), Employee__c = empl1.Id, Client__c = dContract3.Id),
+                        new Time_Card__c(Total__c = 2, Date__c = Date.newInstance(currentYear, 3, 3), Employee__c = empl1.Id, Client__c = dContract3.Id),
+                        new Time_Card__c(Total__c = 2, Date__c = Date.newInstance(currentYear, 1, 1), Employee__c = empl1.Id, Client__c = dContract3.Id)
+                    };
+        insert testTimeCards;
+        Test.stopTest();
+
+        List<FTE_Data_Record__c> tamplates = [SELECT Id, Month_Updated_1__c, Month_Updated_2__c, Month_Updated_3__c, Month_Updated_4__c, Month_Updated_5__c,
+                                              Month_Updated_6__c, Month_Updated_7__c, Month_Updated_8__c, Month_Updated_9__c, Month_Updated_10__c, Month_Updated_11__c, Month_Updated_12__c
+                                              FROM FTE_Data_Record__c];
+        System.assertEquals(1, tamplates.size());
+        assertTemplateUpdated(tamplates.get(0), true, false, true, false, false, false, false, false, false, false, false, false);
     }
 
 
@@ -544,6 +572,187 @@ public class FTETrackerTest {
     /**
      * Time Allocation tests
      */
+    @isTest
+    public static void shouldSetDefaultValuesForTemplate() {
+        Id employeeId = [SELECT Id FROM SFDC_Employee__c LIMIT 1].Id;
+        Id contractId = [SELECT Id FROM DContract__c WHERE FTE_Tracker__c = 'Yes' LIMIT 1].Id;
+
+        FTE_Data_Record__c newRecord = new FTE_Data_Record__c(Employee__c = employeeId, Year__c = Date.today().year(), Contract__c = contractId);
+        insert newRecord;
+
+        FTE_Data_Record__c dataFromDB = [SELECT Id, Month_1__c, Month_2__c, Month_3__c, Month_4__c, Month_5__c, Month_6__c,
+                                         Month_7__c, Month_8__c, Month_9__c, Month_10__c, Month_11__c, Month_12__c,
+                                         Month_Updated_1__c, Month_Updated_2__c, Month_Updated_3__c, Month_Updated_4__c,
+                                         Month_Updated_5__c, Month_Updated_6__c, Month_Updated_7__c, Month_Updated_8__c,
+                                         Month_Updated_9__c, Month_Updated_10__c, Month_Updated_11__c, Month_Updated_12__c
+                                         FROM FTE_Data_Record__c WHERE Id =: newRecord.Id LIMIT 1];
+        SObject sObj = (SObject) dataFromDB;
+        for (Integer month = 1; month <= 12; month++) {
+            System.assertEquals(-1, sObj.get(FTETrackerHelper.getFieldName(month)));
+            System.assertEquals(false, sObj.get(FTETrackerHelper.getFieldUpdatedName(month)));
+        }
+    }
+
+    @isTest
+    public static void shouldGenerateCorrectEmployeeMonths() {
+        FTETimeAllocator allocator = new FTETimeAllocator(true);
+        List<FTEEmployeeMonthWrapper> employeeMonths = allocator.start(null);
+        System.assertEquals(0, employeeMonths.size());
+
+        List<SFDC_Employee__c> emplList = [SELECT Id FROM SFDC_Employee__c];
+        Id employee1Id = emplList.get(0).Id;
+        Id employee2Id = emplList.get(1).Id;
+        List<DContract__c> contractList = [SELECT Id FROM DContract__c WHERE FTE_Tracker__c = 'Yes'];
+        Id contract1Id = contractList.get(0).Id;
+        Id contract2Id = contractList.get(1).Id;
+
+        FTE_Data_Record__c newRecord = new FTE_Data_Record__c(Employee__c = employee1Id, Year__c = Date.today().year(), Contract__c = contract1Id);
+        insert newRecord;
+        employeeMonths = allocator.start(null);
+        System.assertEquals(0, employeeMonths.size());
+
+        update new FTE_Data_Record__c(Id = newRecord.Id, Month_Updated_2__c = true);
+        employeeMonths = allocator.start(null);
+        System.assertEquals(1, employeeMonths.size());
+
+        update new FTE_Data_Record__c(Id = newRecord.Id, Month_Updated_3__c = true);
+        employeeMonths = allocator.start(null);
+        System.assertEquals(2, employeeMonths.size());
+
+        update new FTE_Data_Record__c(Id = newRecord.Id, Month_Updated_5__c = true);
+        employeeMonths = allocator.start(null);
+        System.assertEquals(3, employeeMonths.size());
+
+        insert new FTE_Data_Record__c(Employee__c = employee1Id, Year__c = Date.today().year(), Contract__c = contract2Id, Month_Updated_5__c = true);
+        employeeMonths = allocator.start(null);
+        System.assertEquals(3, employeeMonths.size());
+
+        insert new FTE_Data_Record__c(Employee__c = employee1Id, Year__c = Date.today().year() - 1, Contract__c = contract2Id, Month_Updated_5__c = true);
+        employeeMonths = allocator.start(null);
+        System.assertEquals(4, employeeMonths.size());
+
+        insert new FTE_Data_Record__c(Employee__c = employee2Id, Year__c = Date.today().year(), Contract__c = contract2Id, Month_Updated_4__c = true, Month_Updated_5__c = true);
+        employeeMonths = allocator.start(null);
+        System.assertEquals(6, employeeMonths.size());
+    }
+
+    @isTest
+    public static void shouldAllocateTimeForEmployees() {
+        Id employee1 = [SELECT Id FROM SFDC_Employee__c WHERE Name = 'FTE Employee' LIMIT 1].Id;
+        Id employee2 = [SELECT Id FROM SFDC_Employee__c WHERE Name = 'Other Employee' LIMIT 1].Id;
+        Id employee3 = [SELECT Id FROM SFDC_Employee__c WHERE Name = 'Yyy Employee' LIMIT 1].Id;
+        Id contract1 = [SELECT Id FROM DContract__c WHERE Name = 'FTE Contract 1' LIMIT 1].Id;
+        Id contract2 = [SELECT Id FROM DContract__c WHERE Name = 'FTE Contract 2' LIMIT 1].Id;
+        Id contract3 = [SELECT Id FROM DContract__c WHERE Name = 'FTE Contract 3' LIMIT 1].Id;
+        Id contract4 = [SELECT Id FROM DContract__c WHERE Name = 'FTE Contract 4' LIMIT 1].Id;
+        Integer month = Date.today().month();
+        Integer year = Date.today().year();
+
+        // Templates
+        insert new List<FTE_Data_Record__c> {
+                                                buildContractTEmplate(employee1, contract1, 3.0),
+                                                buildContractTEmplate(employee1, contract2, 3.0),
+                                                buildContractTEmplate(employee1, contract3, 1.0),
+                                                buildContractTEmplate(employee2, contract1, 4.0),
+                                                buildContractTEmplate(employee2, contract2, 3.0),
+                                                buildContractTEmplate(employee2, contract3, 0.0),
+                                                buildContractTEmplate(employee2, contract4, 0.0),
+                                                buildContractTEmplate(employee3, contract1, 2.5),
+                                                buildContractTEmplate(employee3, contract2, 1.0),
+                                                buildContractTEmplate(employee3, contract4, 1.0)
+                                            };
+
+        Test.startTest();
+        Database.executeBatch(new FTETimeAllocator(false));
+        Test.stopTest();
+
+        // Assert Employee 1 : FTE Employee
+        FTEDataManager timeManager = new FTEDataManager(year, month, employee1, true);
+        timeManager.loadEmployeeTime();
+        timeManager.loadTemplateTime();
+
+        timeManager.assignedMap.get(contract1).calculateDaysAndTotal();
+        System.assertEquals(24, timeManager.assignedMap.get(contract1).hoursArray[month - 1]);
+        System.assertEquals(3, timeManager.assignedMap.get(contract1).templateArray[month - 1]);
+        System.assertEquals(3, timeManager.assignedMap.get(contract1).daysArray[month - 1]);
+
+        timeManager.assignedMap.get(contract2).calculateDaysAndTotal();
+        System.assertEquals(24, timeManager.assignedMap.get(contract2).hoursArray[month - 1]);
+        System.assertEquals(3, timeManager.assignedMap.get(contract2).templateArray[month - 1]);
+        System.assertEquals(3, timeManager.assignedMap.get(contract2).daysArray[month - 1]);
+
+        timeManager.assignedMap.get(contract3).calculateDaysAndTotal();
+        System.assertEquals(8, timeManager.assignedMap.get(contract3).hoursArray[month - 1]);
+        System.assertEquals(1, timeManager.assignedMap.get(contract3).templateArray[month - 1]);
+        System.assertEquals(1, timeManager.assignedMap.get(contract3).daysArray[month - 1]);
+
+        timeManager.assignedMap.get(contract4).calculateDaysAndTotal();
+        System.assertEquals(30.6, timeManager.assignedMap.get(contract4).hoursArray[month - 1]);
+        System.assertEquals(-1, timeManager.assignedMap.get(contract4).templateArray[month - 1]);
+        System.assertEquals(3.75, timeManager.assignedMap.get(contract4).daysArray[month - 1]);
+
+        timeManager.unassigned.calculateDaysAndTotal();
+        System.assertEquals(52.4, timeManager.unassigned.hoursArray[month - 1]);
+        System.assertEquals(6.5, timeManager.unassigned.daysArray[month - 1]);
+
+        // Assert Employee 2 : Other Employe
+        timeManager = new FTEDataManager(year, month, employee2, true);
+        timeManager.loadEmployeeTime();
+        timeManager.loadTemplateTime();
+
+        timeManager.assignedMap.get(contract1).calculateDaysAndTotal();
+        System.assertEquals(32, timeManager.assignedMap.get(contract1).hoursArray[month - 1]);
+        System.assertEquals(4, timeManager.assignedMap.get(contract1).templateArray[month - 1]);
+        System.assertEquals(4, timeManager.assignedMap.get(contract1).daysArray[month - 1]);
+
+        timeManager.assignedMap.get(contract2).calculateDaysAndTotal();
+        System.assertEquals(20.9, timeManager.assignedMap.get(contract2).hoursArray[month - 1]);
+        System.assertEquals(3, timeManager.assignedMap.get(contract2).templateArray[month - 1]);
+        System.assertEquals(3, timeManager.assignedMap.get(contract2).daysArray[month - 1]);
+
+        timeManager.assignedMap.get(contract3).calculateDaysAndTotal();
+        System.assertEquals(0, timeManager.assignedMap.get(contract3).hoursArray[month - 1]);
+        System.assertEquals(0, timeManager.assignedMap.get(contract3).templateArray[month - 1]);
+        System.assertEquals(0, timeManager.assignedMap.get(contract3).daysArray[month - 1]);
+
+        timeManager.assignedMap.get(contract4).calculateDaysAndTotal();
+        System.assertEquals(0, timeManager.assignedMap.get(contract4).hoursArray[month - 1]);
+        System.assertEquals(0, timeManager.assignedMap.get(contract4).templateArray[month - 1]);
+        System.assertEquals(0, timeManager.assignedMap.get(contract4).daysArray[month - 1]);
+
+        timeManager.unassigned.calculateDaysAndTotal();
+        System.assertEquals(0, timeManager.unassigned.hoursArray[month - 1]);
+        System.assertEquals(0, timeManager.unassigned.daysArray[month - 1]);
+
+        // Assert Employee 3 : Yyy Employe
+        timeManager = new FTEDataManager(year, month, employee3, true);
+        timeManager.loadEmployeeTime();
+        timeManager.loadTemplateTime();
+
+        timeManager.assignedMap.get(contract1).calculateDaysAndTotal();
+        System.assertEquals(20, timeManager.assignedMap.get(contract1).hoursArray[month - 1]);
+        System.assertEquals(2.5, timeManager.assignedMap.get(contract1).templateArray[month - 1]);
+        System.assertEquals(2.5, timeManager.assignedMap.get(contract1).daysArray[month - 1]);
+
+        timeManager.assignedMap.get(contract2).calculateDaysAndTotal();
+        System.assertEquals(8, timeManager.assignedMap.get(contract2).hoursArray[month - 1]);
+        System.assertEquals(1, timeManager.assignedMap.get(contract2).templateArray[month - 1]);
+        System.assertEquals(1, timeManager.assignedMap.get(contract2).daysArray[month - 1]);
+
+        timeManager.assignedMap.get(contract3).calculateDaysAndTotal();
+        System.assertEquals(21, timeManager.assignedMap.get(contract3).hoursArray[month - 1]);
+        System.assertEquals(-1, timeManager.assignedMap.get(contract3).templateArray[month - 1]);
+        System.assertEquals(2.75, timeManager.assignedMap.get(contract3).daysArray[month - 1]);
+
+        timeManager.assignedMap.get(contract4).calculateDaysAndTotal();
+        System.assertEquals(8, timeManager.assignedMap.get(contract4).hoursArray[month - 1]);
+        System.assertEquals(1, timeManager.assignedMap.get(contract4).templateArray[month - 1]);
+        System.assertEquals(1, timeManager.assignedMap.get(contract4).daysArray[month - 1]);
+
+        timeManager.unassigned.calculateDaysAndTotal();
+        System.assertEquals(18.1, timeManager.unassigned.hoursArray[month - 1]);
+        System.assertEquals(2.25, timeManager.unassigned.daysArray[month - 1]);
+    }
 
 
 
@@ -957,6 +1166,12 @@ public class FTETrackerTest {
                     [SELECT Id FROM SFDC_Employee__c WHERE Name = 'Other Employee'].Id,
                     Date.newInstance(currentDate.year(), currentDate.month(), 5), 3.3);
         SFDC_Employee__c employee = [SELECT Id FROM SFDC_Employee__c WHERE Name = 'FTE Employee'];
+
+        insert new FTE_Work_Card__c(Employee__c = employee.Id, Year__c = Date.today().year(), Month_1__c = 0,
+                                    Month_2__c = 0, Month_3__c = 0, Month_4__c = 0, Month_5__c = 0, Month_6__c = 0,
+                                    Month_7__c = 0, Month_8__c = 0, Month_9__c = 0, Month_10__c = 0, Month_11__c = 0,
+                                    Month_12__c = 0, Total__c = 0, Total_Hours__c = 0); // should be updated
+
         PageReference pageRef = Page.FTE_Employee_View;
         pageRef.getParameters().put('employeeId', String.valueOf(employee.Id));
         Test.setCurrentPage(pageRef);
@@ -976,12 +1191,19 @@ public class FTETrackerTest {
         System.assertEquals(8.75, controller.fteTimeManager.unassigned.daysArray[currentDate.month() - 1]);
         System.assertEquals(68.1, controller.totalAssignedDays.hoursArray[currentDate.month() - 1]);
         System.assertEquals(8.5, controller.totalAssignedDays.daysArray[currentDate.month() - 1]);
+        assertWorkCardMonthAndTotal(currentDate.month(), employee.Id, 8.5, 8.5, false, false);
     }
 
     @isTest
     public static void shouldMoveHoursFromUnassignedEmplCtrl() {
         Date currentDate = Date.today();
         SFDC_Employee__c employee = [SELECT Id FROM SFDC_Employee__c WHERE Name = 'FTE Employee'];
+
+        insert new FTE_Work_Card__c(Employee__c = employee.Id, Year__c = Date.today().year(), Month_1__c = 0,
+                                    Month_2__c = 0, Month_3__c = 0, Month_4__c = 0, Month_5__c = 0, Month_6__c = 0,
+                                    Month_7__c = 0, Month_8__c = 0, Month_9__c = 0, Month_10__c = 0, Month_11__c = 0,
+                                    Month_12__c = 0, Total__c = 0, Total_Hours__c = 0); // should be updated
+
         PageReference pageRef = Page.FTE_Employee_View;
         pageRef.getParameters().put('employeeId', String.valueOf(employee.Id));
         Test.setCurrentPage(pageRef);
@@ -1001,12 +1223,19 @@ public class FTETrackerTest {
         System.assertEquals(3.25, controller.fteTimeManager.unassigned.daysArray[currentDate.month() - 1]);
         System.assertEquals(112.1, controller.totalAssignedDays.hoursArray[currentDate.month() - 1]);
         System.assertEquals(14, controller.totalAssignedDays.daysArray[currentDate.month() - 1]);
+        assertWorkCardMonthAndTotal(currentDate.month(), employee.Id, 14, 14, false, false);
     }
 
     @isTest
     public static void shouldSetBlockedTemplateEmplCtrl() {
         Date currentDate = Date.today();
         SFDC_Employee__c employee = [SELECT Id FROM SFDC_Employee__c WHERE Name = 'FTE Employee'];
+
+        insert new FTE_Work_Card__c(Employee__c = employee.Id, Year__c = Date.today().year(), Month_1__c = 0,
+                                    Month_2__c = 0, Month_3__c = 0, Month_4__c = 0, Month_5__c = 0, Month_6__c = 0,
+                                    Month_7__c = 0, Month_8__c = 0, Month_9__c = 0, Month_10__c = 0, Month_11__c = 0,
+                                    Month_12__c = 0, Total__c = 0, Total_Hours__c = 0); // should be updated
+
         PageReference pageRef = Page.FTE_Employee_View;
         pageRef.getParameters().put('employeeId', String.valueOf(employee.Id));
         Test.setCurrentPage(pageRef);
@@ -1034,12 +1263,19 @@ public class FTETrackerTest {
                                                   Month_5__c, Month_6__c, Month_7__c, Month_8__c, Month_9__c, Month_10__c, Month_11__c, Month_12__c
                                                   FROM FTE_Data_Record__c];
         System.assertEquals(1, futureTemplates.size());
+        assertWorkCardMonthAndTotal(currentDate.month(), employee.Id, 14.25, 14.25, false, true);
     }
 
     @isTest
     public static void shouldSetFutureTemplateEmplCtrl() {
         Date currentDate = Date.today();
         SFDC_Employee__c employee = [SELECT Id FROM SFDC_Employee__c WHERE Name = 'FTE Employee'];
+
+        insert new FTE_Work_Card__c(Employee__c = employee.Id, Year__c = Date.today().year(), Month_1__c = 0,
+                                    Month_2__c = 0, Month_3__c = 0, Month_4__c = 0, Month_5__c = 0, Month_6__c = 0,
+                                    Month_7__c = 0, Month_8__c = 0, Month_9__c = 0, Month_10__c = 0, Month_11__c = 0,
+                                    Month_12__c = 0, Total__c = 0, Total_Hours__c = 0); // should be updated
+
         PageReference pageRef = Page.FTE_Employee_View;
         pageRef.getParameters().put('employeeId', String.valueOf(employee.Id));
         Test.setCurrentPage(pageRef);
@@ -1070,12 +1306,19 @@ public class FTETrackerTest {
                                                   Month_5__c, Month_6__c, Month_7__c, Month_8__c, Month_9__c, Month_10__c, Month_11__c, Month_12__c
                                                   FROM FTE_Data_Record__c];
         System.assertEquals(1, futureTemplates.size());
+        assertWorkCardMonthAndTotal(currentDate.month(), employee.Id, 20.25, 20.25, true, false);
     }
 
     @isTest
     public static void shouldUpdateTemplateEmplCtrl() {
         Date currentDate = Date.today();
         SFDC_Employee__c employee = [SELECT Id FROM SFDC_Employee__c WHERE Name = 'FTE Employee'];
+
+        insert new FTE_Work_Card__c(Employee__c = employee.Id, Year__c = Date.today().year(), Month_1__c = 0,
+                                    Month_2__c = 0, Month_3__c = 0, Month_4__c = 0, Month_5__c = 0, Month_6__c = 0,
+                                    Month_7__c = 0, Month_8__c = 0, Month_9__c = 0, Month_10__c = 0, Month_11__c = 0,
+                                    Month_12__c = 0, Total__c = 0, Total_Hours__c = 0); // should be updated
+
         Id testContract = [SELECT Id FROM DContract__c WHERE Name = 'FTE Contract 1' LIMIT 1].Id;
         FTE_Data_Record__c newRecord = new FTE_Data_Record__c(Employee__c = employee.Id, Year__c = currentDate.year(), Contract__c = testContract);
         SObject sObjRec = (SObject) newRecord;
@@ -1113,12 +1356,19 @@ public class FTETrackerTest {
                                                   FROM FTE_Data_Record__c];
         System.assertEquals(1, futureTemplates.size());
         System.assertEquals(newRecord.Id, futureTemplates.get(0).Id);
+        assertWorkCardMonthAndTotal(currentDate.month(), employee.Id, 20.25, 20.25, true, false);
     }
 
     @isTest
     public static void shouldSetZeroInTemplateEmplCtrl() {
         Date currentDate = Date.today();
         SFDC_Employee__c employee = [SELECT Id FROM SFDC_Employee__c WHERE Name = 'FTE Employee'];
+
+        insert new FTE_Work_Card__c(Employee__c = employee.Id, Year__c = Date.today().year(), Month_1__c = 0,
+                                    Month_2__c = 0, Month_3__c = 0, Month_4__c = 0, Month_5__c = 0, Month_6__c = 0,
+                                    Month_7__c = 0, Month_8__c = 0, Month_9__c = 0, Month_10__c = 0, Month_11__c = 0,
+                                    Month_12__c = 0, Total__c = 0, Total_Hours__c = 0); // should be updated
+
         PageReference pageRef = Page.FTE_Employee_View;
         pageRef.getParameters().put('employeeId', String.valueOf(employee.Id));
         Test.setCurrentPage(pageRef);
@@ -1146,12 +1396,19 @@ public class FTETrackerTest {
                                                   Month_5__c, Month_6__c, Month_7__c, Month_8__c, Month_9__c, Month_10__c, Month_11__c, Month_12__c
                                                   FROM FTE_Data_Record__c];
         System.assertEquals(1, futureTemplates.size());
+        assertWorkCardMonthAndTotal(currentDate.month(), employee.Id, 8.25, 8.25, false, true);
     }
 
     @isTest
     public static void shouldResetTemplateEmplCtrl() {
         Date currentDate = Date.today();
         SFDC_Employee__c employee = [SELECT Id FROM SFDC_Employee__c WHERE Name = 'FTE Employee'];
+
+        insert new FTE_Work_Card__c(Employee__c = employee.Id, Year__c = Date.today().year(), Month_1__c = 0,
+                                    Month_2__c = 0, Month_3__c = 0, Month_4__c = 0, Month_5__c = 0, Month_6__c = 0,
+                                    Month_7__c = 0, Month_8__c = 0, Month_9__c = 0, Month_10__c = 0, Month_11__c = 0,
+                                    Month_12__c = 0, Total__c = 0, Total_Hours__c = 0); // should be updated
+
         Id testContract = [SELECT Id FROM DContract__c WHERE Name = 'FTE Contract 1' LIMIT 1].Id;
         FTE_Data_Record__c newRecord = new FTE_Data_Record__c(Employee__c = employee.Id, Year__c = currentDate.year(), Contract__c = testContract);
         SObject sObjRec = (SObject) newRecord;
@@ -1179,6 +1436,7 @@ public class FTETrackerTest {
         System.assertEquals(1, futureTemplates.size());
         System.assertEquals(newRecord.Id, futureTemplates.get(0).Id);
         System.assertEquals(-1, (Decimal) ((SObject) futureTemplates.get(0)).get(FTETrackerHelper.getFieldName(currentDate.month())));
+        assertWorkCardMonthAndTotal(currentDate.month(), employee.Id, 11.5, 11.5, false, false);
     }
 
 
@@ -1187,6 +1445,18 @@ public class FTETrackerTest {
     /**
      * Utils tests
      */
+    @isTest
+    public static void testIsContractFTE() {
+        Id fte1 = [SELECT Id FROM DContract__c WHERE Name = 'FTE Contract 1' LIMIT 1].Id;
+        Id fte2 = [SELECT Id FROM DContract__c WHERE Name = 'FTE Contract 4' LIMIT 1].Id;
+        Id noFte1 = [SELECT Id FROM DContract__c WHERE Name = 'Unassigned Contract 1' LIMIT 1].Id;
+        Id noFte2 = [SELECT Id FROM DContract__c WHERE Name = 'Unassigned Contract 2' LIMIT 1].Id;
+        System.assertEquals(true, FTETrackerHelper.isContractFTE(fte1));
+        System.assertEquals(true, FTETrackerHelper.isContractFTE(fte2));
+        System.assertEquals(false, FTETrackerHelper.isContractFTE(noFte1));
+        System.assertEquals(false, FTETrackerHelper.isContractFTE(noFte2));
+    }
+
     @isTest
     public  static void shouldRetunrYearList() {
         List<SelectOption> years = FTETrackerHelper.getYearsData();
@@ -1366,6 +1636,28 @@ public class FTETrackerTest {
     /**
      * Tests helper methods
      */
+    private static void assertWorkCardMonthAndTotal(Integer month, Id employeeId, Decimal value, Decimal totalValue, Boolean futureFlag, Boolean blockedFlag) {
+        List<FTE_Work_Card__c> employeeWorkCards = [SELECT Id, Total__c, Month_1__c, Month_2__c, Month_3__c, Month_4__c, Month_5__c, Month_6__c,
+                                                    Month_7__c, Month_8__c, Month_9__c, Month_10__c, Month_11__c, Month_12__c,
+                                                    Month_Future_1__c, Month_Future_2__c, Month_Future_3__c, Month_Future_4__c, Month_Future_5__c, Month_Future_6__c,
+                                                    Month_Future_7__c, Month_Future_8__c, Month_Future_9__c, Month_Future_10__c, Month_Future_11__c, Month_Future_12__c,
+                                                    Month_Blocked_1__c, Month_Blocked_2__c, Month_Blocked_3__c, Month_Blocked_4__c, Month_Blocked_5__c, Month_Blocked_6__c,
+                                                    Month_Blocked_7__c, Month_Blocked_8__c, Month_Blocked_9__c, Month_Blocked_10__c, Month_Blocked_11__c, Month_Blocked_12__c
+                                                    FROM FTE_Work_Card__c WHERE Employee__c =: employeeId AND Year__c =: Date.today().year()];
+        System.assertEquals(1, employeeWorkCards.size());
+        FTE_Work_Card__c worcCard = employeeWorkCards.get(0);
+        SObject workCardSObj = (SObject) worcCard;
+        Decimal cardValue = (Decimal) workCardSObj.get(FTETrackerHelper.getFieldName(month));
+        Decimal totalCardValue = (Decimal) workCardSObj.get('Total__c');
+        Boolean futureFlagCard = (Boolean) workCardSObj.get(FTETrackerHelper.getFieldTemplateFutureName(month));
+        Boolean blockedFlagCard = (Boolean)workCardSObj.get(FTETrackerHelper.getFieldTemplateBlockedName(month));
+
+        System.assertEquals(value, cardValue);
+        System.assertEquals(totalValue, totalCardValue);
+        System.assertEquals(futureFlag, futureFlagCard);
+        System.assertEquals(blockedFlag, blockedFlagCard);
+    }
+
     private static void assertTemplateUpdated(FTE_Data_Record__c template) {
         assertTemplateUpdated(template, true, true, true, true, true, true, true, true, true, true, true, true);
     }
@@ -1514,5 +1806,13 @@ public class FTETrackerTest {
             FTE_Contract__c = fteId
         );
         return timeCardObj;
+    }
+
+    private static FTE_Data_Record__c buildContractTemplate(Id emplId, Id contractId, Decimal value) {
+        FTE_Data_Record__c template = new FTE_Data_Record__c(Year__c = Date.today().year(), Contract__c = contractId, Employee__c = emplId);
+        SObject sObj = (SObject) template;
+        sObj.put(FTETrackerHelper.getFieldName(Date.today().month()), value);
+        sObj.put(FTETrackerHelper.getFieldUpdatedName(Date.today().month()), true);
+        return template;
     }
 }

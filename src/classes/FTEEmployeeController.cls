@@ -61,11 +61,15 @@ public class FTEEmployeeController extends FTEController {
     }
 
     public void setThreshold() {
+        if (!FTETrackerHelper.isContractFTE(this.contractId)) {
+            ApexPages.addMessage(new ApexPages.message(ApexPages.severity.ERROR, 'Contract is not in FTE Tracker, try refresh page.'));
+            return;
+        }
         if (this.fteDays != null && this.fteDays != '') {
             Decimal value = Decimal.valueOf(this.fteDays);
             if (value >= 0) {
                 FTEDataManager manager = new FTEDataManager(this.fteYear, this.employeeMonth, this.employee.Id, false);
-                manager.upsertTimeTemplate(this.contractId, value, this.employeeMonth);
+                manager.upsertTimeTemplate(this.contractId, value, this.employeeMonth, false); //set time will refresh work card
                 manager.loadEmployeeTime();
                 manager.loadTemplateTime();
                 manager.setTime(this.contractId, value * 8);
@@ -82,25 +86,42 @@ public class FTEEmployeeController extends FTEController {
     }
 
     public void assignTime() {
+        if (!FTETrackerHelper.isContractFTE(this.selectedFteContract)) {
+            ApexPages.addMessage(new ApexPages.message(ApexPages.severity.ERROR, 'Contract is not in FTE Tracker, try refresh page.'));
+            return;
+        }
+
         if (this.fteDays != null && this.fteDays != '') {
             Decimal value = Decimal.valueOf(this.fteDays);
             if (value > 0) {
                 FTEDataManager manager = new FTEDataManager(this.fteYear, this.employeeMonth, this.employee.Id, false);
                 manager.loadEmployeeTime();
                 manager.loadTemplateTime();
-                manager.addTime(this.selectedFteContract, value * 8);
+
+                FTEEmployeeTime emplTime = manager.assignedMap.get(this.selectedFteContract);
+                if (emplTime == null || emplTime.templateArray[this.employeeMonth - 1] == -1) { // we want use this method only when no template was added
+                    manager.addTime(this.selectedFteContract, value * 8);
+                }
             }
         }
     }
 
     public void unassignTime() {
+        if (!FTETrackerHelper.isContractFTE(this.contractId)) {
+            ApexPages.addMessage(new ApexPages.message(ApexPages.severity.ERROR, 'Contract is not in FTE Tracker, try refresh page.'));
+            return;
+        }
         if (this.fteDays != null && this.fteDays != '') {
             Decimal value = Decimal.valueOf(this.fteDays);
             if (value > 0) {
                 FTEDataManager manager = new FTEDataManager(this.fteYear, this.employeeMonth, this.employee.Id, false);
                 manager.loadEmployeeTime();
                 manager.loadTemplateTime();
-                manager.removeTime(this.contractId, value * 8);
+
+                FTEEmployeeTime emplTime = manager.assignedMap.get(this.selectedFteContract);
+                if (emplTime == null || emplTime.templateArray[this.employeeMonth - 1] == -1) { // we want use this method only when no template was added
+                    manager.removeTime(this.contractId, value * 8);
+                }
             }
         }
     }
