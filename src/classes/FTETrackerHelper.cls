@@ -77,7 +77,7 @@ public class FTETrackerHelper {
         return 'Month_Updated_' + month + '__c';
     }
 
-    public static void markTemplates(List<DContract__c> contracts) {
+    public static void markTemplates(Set<Id> contracts) {
         List<FTE_Data_Record__c> templates = [SELECT Id, Month_Updated_1__c, Month_Updated_2__c, Month_Updated_3__c, Month_Updated_4__c, Month_Updated_5__c,
                                               Month_Updated_6__c, Month_Updated_7__c, Month_Updated_8__c, Month_Updated_9__c, Month_Updated_10__c, Month_Updated_11__c, Month_Updated_12__c
                                               FROM FTE_Data_Record__c WHERE Contract__c IN: contracts];
@@ -104,6 +104,14 @@ public class FTETrackerHelper {
         List<DContract__c> contracts = [SELECT Id, FTE_Tracker__c FROM DContract__c WHERE Id =: contractId];
         if (contracts.size() > 0) {
             return contracts.get(0).FTE_Tracker__c == 'Yes';
+        }
+        return false;
+    }
+
+    public static Boolean isWorkingDay(Integer year, Integer month, Integer day) {
+        String dayName = DateTime.newInstance(year, month, day).format('E');
+        if (dayName != 'Sat' && dayName != 'Sun') {
+            return true;
         }
         return false;
     }

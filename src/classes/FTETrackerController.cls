@@ -47,6 +47,7 @@ public class FTETrackerController extends FTEController {
     public String testQueryCount { get; set; }
 
     public List<FTEEmployeeTime> getEmployeesList() {
+        loadWorkCardJobStatus();
         this.employees = new List<FTEEmployeeTime>();
         List<FTE_Work_Card__c> workCards = null;
 

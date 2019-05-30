@@ -27,7 +27,7 @@ public class DContractTriggerController {
             update contractsToUpdate;
         }
 
-        FTETrackerHelper.markTemplates(contractsToUpdate);
+        FTETrackerHelper.markTemplates(contracts);
 
         if (contracts.size() > 0) {
             if (!Test.isRunningTest()) {

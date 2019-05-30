@@ -92,8 +92,8 @@
                     <apex:selectList value="{!emplBusinessUnit}" multiselect="false" size="1" id="empl-bu">
                         <apex:selectOptions value="{!buList}"/>
                     </apex:selectList>
-                    <apex:commandButton action="{!searchEmplopyee}" value="Search" status="loadingDiv" id="searchEmployee" reRender="emplsPanel" />
-                    <apex:actionFunction action="{!searchEmplopyee}" name="searchEmployeeJs" status="loadingDiv" reRender="emplsPanel" />
+                    <apex:commandButton action="{!searchEmplopyee}" value="Search" status="loadingDiv" id="searchEmployee" reRender="employeeListBlockId" />
+                    <apex:actionFunction action="{!searchEmplopyee}" name="searchEmployeeJs" status="loadingDiv" reRender="employeeListBlockId" />
                 </div>
                 <hr />
 
@@ -121,10 +121,10 @@
                     <tr>
                         <td>Page: <apex:outputText value=" {!employeePagination.pageNumber} of {!CEILING(employeePagination.resultSize / employeePagination.pageSize)}"/></td>
                         <td align="center">
-                            <apex:commandLink status="loadingDiv" action="{!employeePagination.previousPage}" value="« Previous" rendered="{!employeePagination.hasPrevious}" reRender="emplsPanel" />
+                            <apex:commandLink status="loadingDiv" action="{!employeePagination.previousPage}" value="« Previous" rendered="{!employeePagination.hasPrevious}" reRender="employeeListBlockId" />
                             <apex:outputText style="color: #ccc;" value="« Previous" rendered="{!NOT(employeePagination.hasPrevious)}"/>
                             &nbsp;&nbsp;
-                            <apex:commandLink status="loadingDiv" action="{!employeePagination.nextPage}" value="Next »" rendered="{!employeePagination.hasNext}" reRender="emplsPanel" />
+                            <apex:commandLink status="loadingDiv" action="{!employeePagination.nextPage}" value="Next »" rendered="{!employeePagination.hasNext}" reRender="employeeListBlockId" />
                             <apex:outputText style="color: #ccc;" value="Next »" rendered="{!NOT(employeePagination.hasNext) }"/>
                         </td>
                         <td align="right">
@@ -133,14 +133,14 @@
                                 <apex:selectOption itemValue="10" itemLabel="10"/>
                                 <apex:selectOption itemValue="20" itemLabel="20"/>
                                 <apex:selectOption itemValue="50" itemLabel="50"/>
-                                <apex:actionSupport event="onchange" reRender="emplsPanel"/>
+                                <apex:actionSupport event="onchange" reRender="employeeListBlockId"/>
                             </apex:selectList>
                         </td>
                     </tr>
                 </table>
 
-                <apex:actionFunction status="loadingDiv" action="{!employeePagination.resetPageNumber}" name="resetPageNum" reRender="emplsPanel" />
-                <apex:actionFunction action="{!goToEmployeeView}" name="goToEmployeeView" reRender="emplsPanel">
+                <apex:actionFunction status="loadingDiv" action="{!employeePagination.resetPageNumber}" name="resetPageNum" reRender="employeeListBlockId" />
+                <apex:actionFunction action="{!goToEmployeeView}" name="goToEmployeeView" reRender="employeeListBlockId">
                     <apex:param name="employeeId" assignTo="{!employeeId}" value=""/>
                 </apex:actionFunction>
 

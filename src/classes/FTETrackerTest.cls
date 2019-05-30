@@ -367,7 +367,7 @@ public class FTETrackerTest {
         dContract1.FTE_Tracker__c = 'Yes';
         dContract2.FTE_Tracker__c = 'Yes';
         dContract3.FTE_Tracker__c = 'Yes';
-        FTETrackerHelper.markTemplates(new List<DContract__c> { dContract1, dContract2, dContract3 });
+        update new List<DContract__c> { dContract1, dContract2, dContract3 };
         Test.stopTest();
 
         List<FTE_Data_Record__c> tamplates = [SELECT Id, Month_Updated_1__c, Month_Updated_2__c, Month_Updated_3__c, Month_Updated_4__c, Month_Updated_5__c,
@@ -1190,6 +1190,195 @@ public class FTETrackerTest {
         System.assertEquals(2, employeeMonthProjects.get(3).hours[22]);
         System.assertEquals(7, employeeMonthProjects.get(3).totalHours);
     }
+
+    @isTest
+    public static void shouldGenerateTimeCardsForFuture() {
+        SFDC_Employee__c employee = [SELECT Id FROM SFDC_Employee__c WHERE Name = 'FTE Employee' LIMIT 1];
+        DContract__c dContract1 = [SELECT Id FROM DContract__c WHERE Name = 'FTE Contract 1' LIMIT 1];
+        DContract__c dContract2 = [SELECT Id FROM DContract__c WHERE Name = 'FTE Contract 2' LIMIT 1];
+
+        Integer fteMonth = 4; // we want know when is weekend
+        Integer fteYear = 2019;
+
+        insert buildContractTemplate(employee.Id, dContract1.Id, 8, fteYear, fteMonth);
+        insert buildContractTemplate(employee.Id, dContract2.Id, 6, fteYear, fteMonth);
+
+        Test.startTest();
+        FTETimeCardGenerator generator = new FTETimeCardGenerator(fteYear, fteMonth, employee.Id);
+        List<FTEMonthTimeCard> employeeMonthProjects = generator.generateMonthTimeCards();
+        Test.stopTest();
+
+        System.assertEquals(3, employeeMonthProjects.size()); // FTE 1, FTE 2, Overhead
+
+        // Overhead
+        System.assertEquals(0, employeeMonthProjects.get(2).hours[0]);
+        System.assertEquals(0, employeeMonthProjects.get(2).hours[1]);
+        System.assertEquals(0, employeeMonthProjects.get(2).totalHours);
+        System.assertEquals(-1, employeeMonthProjects.get(2).templateExpectedTime);
+
+        // FTE Contract 1
+        System.assertEquals(8, employeeMonthProjects.get(0).hours[0]);
+        System.assertEquals(8, employeeMonthProjects.get(0).hours[1]);
+        System.assertEquals(8, employeeMonthProjects.get(0).hours[2]);
+        System.assertEquals(8, employeeMonthProjects.get(0).hours[3]);
+        System.assertEquals(8, employeeMonthProjects.get(0).hours[4]);
+        System.assertEquals(8, employeeMonthProjects.get(0).hours[7]);
+        System.assertEquals(8, employeeMonthProjects.get(0).hours[8]);
+        System.assertEquals(8, employeeMonthProjects.get(0).hours[9]);
+        System.assertEquals(8 * 8, employeeMonthProjects.get(0).totalHours);
+        System.assertEquals(8, employeeMonthProjects.get(0).templateExpectedTime);
+
+        // FTE Contract 2
+        System.assertEquals(8, employeeMonthProjects.get(1).hours[10]);
+        System.assertEquals(8, employeeMonthProjects.get(1).hours[11]);
+        System.assertEquals(8, employeeMonthProjects.get(1).hours[14]);
+        System.assertEquals(8, employeeMonthProjects.get(1).hours[15]);
+        System.assertEquals(8, employeeMonthProjects.get(1).hours[16]);
+        System.assertEquals(8, employeeMonthProjects.get(1).hours[17]);
+        System.assertEquals(8 * 6, employeeMonthProjects.get(1).totalHours);
+        System.assertEquals(6, employeeMonthProjects.get(1).templateExpectedTime);
+    }
+
+    @isTest
+    public static void shouldGenerateTimeCardsForFutureOverEigthHours() {
+        SFDC_Employee__c employee = [SELECT Id FROM SFDC_Employee__c WHERE Name = 'FTE Employee' LIMIT 1];
+        DContract__c dContract1 = [SELECT Id FROM DContract__c WHERE Name = 'FTE Contract 1' LIMIT 1];
+        DContract__c dContract2 = [SELECT Id FROM DContract__c WHERE Name = 'FTE Contract 2' LIMIT 1];
+
+        Integer fteMonth = 4; // we want know when is weekend, 22 possible working days
+        Integer fteYear = 2019;
+
+        insert buildContractTemplate(employee.Id, dContract1.Id, 20, fteYear, fteMonth);
+        insert buildContractTemplate(employee.Id, dContract2.Id, 2.5, fteYear, fteMonth);
+
+        Test.startTest();
+        FTETimeCardGenerator generator = new FTETimeCardGenerator(fteYear, fteMonth, employee.Id);
+        List<FTEMonthTimeCard> employeeMonthProjects = generator.generateMonthTimeCards();
+        Test.stopTest();
+
+        System.assertEquals(3, employeeMonthProjects.size()); // FTE 1, FTE 2, Overhead
+
+        // FTE Contract 1
+        System.assertEquals(8, employeeMonthProjects.get(0).hours[0]);
+        System.assertEquals(8, employeeMonthProjects.get(0).hours[1]);
+        System.assertEquals(8, employeeMonthProjects.get(0).hours[2]);
+        System.assertEquals(8, employeeMonthProjects.get(0).hours[3]);
+
+        // FTE Contract 2
+        System.assertEquals(8, employeeMonthProjects.get(1).hours[29]);
+        System.assertEquals(1, employeeMonthProjects.get(1).hours[0]);
+        System.assertEquals(1, employeeMonthProjects.get(1).hours[1]);
+        System.assertEquals(1, employeeMonthProjects.get(1).hours[2]);
+        System.assertEquals(1, employeeMonthProjects.get(1).hours[3]);
+        System.assertEquals(0, employeeMonthProjects.get(1).hours[4]);
+
+        System.assertEquals(2.5 * 8, employeeMonthProjects.get(1).totalHours);
+        System.assertEquals(2.5, employeeMonthProjects.get(1).templateExpectedTime);
+    }
+
+    @isTest
+    public static void shouldFillFutureTimeForContractDays() {
+        SFDC_Employee__c employee = [SELECT Id FROM SFDC_Employee__c WHERE Name = 'FTE Employee' LIMIT 1];
+        DContract__c dContract1 = [SELECT Id FROM DContract__c WHERE Name = 'FTE Contract 1' LIMIT 1];
+        DContract__c dContract2 = [SELECT Id FROM DContract__c WHERE Name = 'FTE Contract 2' LIMIT 1];
+        DContract__c unassigned1 = [SELECT Id FROM DContract__c WHERE Name = 'Unassigned Contract 1' LIMIT 1];
+
+        Integer fteMonth = 4; // we want know when is weekend, 22 possible working days
+        Integer fteYear = 2019;
+
+        insert buildContractTemplate(employee.Id, dContract1.Id, 8, fteYear, fteMonth);
+
+        List<Time_Card__c> testTimeCards = new List<Time_Card__c> { // Assigned time by days 1 -> 7, 2 -> 7, 5 -> 7, 9 -> 8, 10 -> 7, 11 -> 8, 22 -> 8, 23 -> 7, 24 -> 7, 25 -> 6, 26 -> 9
+                        new Time_Card__c(Total__c = 6, Date__c = Date.newInstance(fteYear, fteMonth, 1), Employee__c = employee.Id, Client__c = dContract1.Id),
+                        new Time_Card__c(Total__c = 4, Date__c = Date.newInstance(fteYear, fteMonth, 2), Employee__c = employee.Id, Client__c = dContract1.Id),
+                        new Time_Card__c(Total__c = 4, Date__c = Date.newInstance(fteYear, fteMonth, 5), Employee__c = employee.Id, Client__c = dContract1.Id),
+                        new Time_Card__c(Total__c = 6, Date__c = Date.newInstance(fteYear, fteMonth, 9), Employee__c = employee.Id, Client__c = dContract1.Id),
+                        new Time_Card__c(Total__c = 2, Date__c = Date.newInstance(fteYear, fteMonth, 10), Employee__c = employee.Id, Client__c = dContract1.Id),
+                        new Time_Card__c(Total__c = 1, Date__c = Date.newInstance(fteYear, fteMonth, 11), Employee__c = employee.Id, Client__c = dContract1.Id),
+                        new Time_Card__c(Total__c = 1, Date__c = Date.newInstance(fteYear, fteMonth, 22), Employee__c = employee.Id, Client__c = dContract1.Id),
+                        new Time_Card__c(Total__c = 5, Date__c = Date.newInstance(fteYear, fteMonth, 23), Employee__c = employee.Id, Client__c = dContract1.Id),
+                        new Time_Card__c(Total__c = 5, Date__c = Date.newInstance(fteYear, fteMonth, 24), Employee__c = employee.Id, Client__c = dContract1.Id),
+                        new Time_Card__c(Total__c = 5, Date__c = Date.newInstance(fteYear, fteMonth, 25), Employee__c = employee.Id, Client__c = dContract1.Id),
+                        new Time_Card__c(Total__c = 5, Date__c = Date.newInstance(fteYear, fteMonth, 26), Employee__c = employee.Id, Client__c = dContract1.Id),
+
+                        new Time_Card__c(Total__c = 1, Date__c = Date.newInstance(fteYear, fteMonth, 1), Employee__c = employee.Id, Client__c = dContract2.Id),
+                        new Time_Card__c(Total__c = 3, Date__c = Date.newInstance(fteYear, fteMonth, 2), Employee__c = employee.Id, Client__c = dContract2.Id),
+                        new Time_Card__c(Total__c = 5, Date__c = Date.newInstance(fteYear, fteMonth, 3), Employee__c = employee.Id, Client__c = dContract2.Id),
+                        new Time_Card__c(Total__c = 5, Date__c = Date.newInstance(fteYear, fteMonth, 4), Employee__c = employee.Id, Client__c = dContract2.Id),
+                        new Time_Card__c(Total__c = 3, Date__c = Date.newInstance(fteYear, fteMonth, 5), Employee__c = employee.Id, Client__c = dContract2.Id),
+                        new Time_Card__c(Total__c = 2, Date__c = Date.newInstance(fteYear, fteMonth, 9), Employee__c = employee.Id, Client__c = dContract2.Id),
+                        new Time_Card__c(Total__c = 5, Date__c = Date.newInstance(fteYear, fteMonth, 10), Employee__c = employee.Id, Client__c = dContract2.Id),
+                        new Time_Card__c(Total__c = 7, Date__c = Date.newInstance(fteYear, fteMonth, 11), Employee__c = employee.Id, Client__c = dContract2.Id),
+                        new Time_Card__c(Total__c = 7, Date__c = Date.newInstance(fteYear, fteMonth, 22), Employee__c = employee.Id, Client__c = dContract2.Id),
+                        new Time_Card__c(Total__c = 2, Date__c = Date.newInstance(fteYear, fteMonth, 23), Employee__c = employee.Id, Client__c = dContract2.Id),
+                        new Time_Card__c(Total__c = 2, Date__c = Date.newInstance(fteYear, fteMonth, 24), Employee__c = employee.Id, Client__c = dContract2.Id),
+                        new Time_Card__c(Total__c = 1, Date__c = Date.newInstance(fteYear, fteMonth, 25), Employee__c = employee.Id, Client__c = dContract2.Id),
+                        new Time_Card__c(Total__c = 4, Date__c = Date.newInstance(fteYear, fteMonth, 26), Employee__c = employee.Id, Client__c = dContract2.Id)
+                    };
+        insert testTimeCards;
+
+        Test.startTest();
+        FTETimeCardGenerator generator = new FTETimeCardGenerator(fteYear, fteMonth, employee.Id);
+        List<FTEMonthTimeCard> employeeMonthProjects = generator.generateMonthTimeCards();
+        Test.stopTest();
+
+        System.assertEquals(3, employeeMonthProjects.size()); // FTE 1, FTE 2, Overhead
+
+        // FTE Contract 1
+        System.assertEquals(7, employeeMonthProjects.get(0).hours[0]);
+        System.assertEquals(5, employeeMonthProjects.get(0).hours[1]);
+        System.assertEquals(3, employeeMonthProjects.get(0).hours[2]); // generated
+        System.assertEquals(3, employeeMonthProjects.get(0).hours[3]); // generated
+        System.assertEquals(5, employeeMonthProjects.get(0).hours[4]);
+        System.assertEquals(0, employeeMonthProjects.get(0).hours[5]);
+        System.assertEquals(0, employeeMonthProjects.get(0).hours[6]);
+        System.assertEquals(6, employeeMonthProjects.get(0).hours[7]); // generated
+        System.assertEquals(6, employeeMonthProjects.get(0).hours[8]);
+        System.assertEquals(3, employeeMonthProjects.get(0).hours[9]);
+        System.assertEquals(1, employeeMonthProjects.get(0).hours[10]);
+        System.assertEquals(0, employeeMonthProjects.get(0).hours[11]);
+        System.assertEquals(0, employeeMonthProjects.get(0).hours[12]);
+        System.assertEquals(0, employeeMonthProjects.get(0).hours[13]);
+        System.assertEquals(0, employeeMonthProjects.get(0).hours[14]);
+        System.assertEquals(0, employeeMonthProjects.get(0).hours[15]);
+        System.assertEquals(0, employeeMonthProjects.get(0).hours[16]);
+        System.assertEquals(0, employeeMonthProjects.get(0).hours[17]);
+        System.assertEquals(0, employeeMonthProjects.get(0).hours[18]);
+        System.assertEquals(0, employeeMonthProjects.get(0).hours[19]);
+        System.assertEquals(0, employeeMonthProjects.get(0).hours[20]);
+        System.assertEquals(1, employeeMonthProjects.get(0).hours[21]);
+        System.assertEquals(6, employeeMonthProjects.get(0).hours[22]);
+        System.assertEquals(6, employeeMonthProjects.get(0).hours[23]);
+        System.assertEquals(7, employeeMonthProjects.get(0).hours[24]);
+        System.assertEquals(5, employeeMonthProjects.get(0).hours[25]);
+        System.assertEquals(0, employeeMonthProjects.get(0).hours[26]);
+        System.assertEquals(0, employeeMonthProjects.get(0).hours[27]);
+        System.assertEquals(0, employeeMonthProjects.get(0).hours[28]);
+        System.assertEquals(0, employeeMonthProjects.get(0).hours[29]);
+
+        System.assertEquals(8 * 8, employeeMonthProjects.get(0).totalHours);
+        System.assertEquals(8, employeeMonthProjects.get(0).templateExpectedTime);
+
+        // FTE Contract 2
+        System.assertEquals(1, employeeMonthProjects.get(1).hours[0]);
+        System.assertEquals(3, employeeMonthProjects.get(1).hours[1]);
+        System.assertEquals(5, employeeMonthProjects.get(1).hours[2]); // generated
+        System.assertEquals(5, employeeMonthProjects.get(1).hours[3]); // generated
+        System.assertEquals(3, employeeMonthProjects.get(1).hours[4]);
+        System.assertEquals(2, employeeMonthProjects.get(1).hours[8]);
+        System.assertEquals(5, employeeMonthProjects.get(1).hours[9]);
+        System.assertEquals(7, employeeMonthProjects.get(1).hours[10]);
+        System.assertEquals(7, employeeMonthProjects.get(1).hours[21]);
+        System.assertEquals(2, employeeMonthProjects.get(1).hours[22]);
+        System.assertEquals(2, employeeMonthProjects.get(1).hours[23]);
+        System.assertEquals(1, employeeMonthProjects.get(1).hours[24]);
+        System.assertEquals(4, employeeMonthProjects.get(1).hours[25]);
+        System.assertEquals(0, employeeMonthProjects.get(1).hours[26]);
+
+        System.assertEquals(47, employeeMonthProjects.get(1).totalHours);
+        System.assertEquals(-1, employeeMonthProjects.get(1).templateExpectedTime);
+    }
+
 
 
 
@@ -2118,6 +2307,19 @@ public class FTETrackerTest {
         System.assertEquals(6, mergedData.daysArray[4]);
     }
 
+    @isTest
+    public static void testIsWorkingDay() {
+        System.assertEquals(false, FTETrackerHelper.isWorkingDay(2019, 5, 26));
+        System.assertEquals(true, FTETrackerHelper.isWorkingDay(2019, 5, 27));
+        System.assertEquals(true, FTETrackerHelper.isWorkingDay(2019, 5, 28));
+        System.assertEquals(true, FTETrackerHelper.isWorkingDay(2019, 5, 29));
+        System.assertEquals(true, FTETrackerHelper.isWorkingDay(2019, 5, 30));
+        System.assertEquals(true, FTETrackerHelper.isWorkingDay(2019, 5, 31));
+        System.assertEquals(false, FTETrackerHelper.isWorkingDay(2019, 6, 1));
+        System.assertEquals(false, FTETrackerHelper.isWorkingDay(2019, 6, 2));
+        System.assertEquals(true, FTETrackerHelper.isWorkingDay(2019, 6, 3));
+    }
+
 
 
 
@@ -2297,10 +2499,14 @@ public class FTETrackerTest {
     }
 
     private static FTE_Data_Record__c buildContractTemplate(Id emplId, Id contractId, Decimal value) {
-        FTE_Data_Record__c template = new FTE_Data_Record__c(Year__c = Date.today().year(), Contract__c = contractId, Employee__c = emplId);
+        return buildContractTemplate(emplId, contractId, value, Date.today().year(), Date.today().month());
+    }
+
+    private static FTE_Data_Record__c buildContractTemplate(Id emplId, Id contractId, Decimal value, Integer year, Integer month) {
+        FTE_Data_Record__c template = new FTE_Data_Record__c(Year__c = year, Contract__c = contractId, Employee__c = emplId);
         SObject sObj = (SObject) template;
-        sObj.put(FTETrackerHelper.getFieldName(Date.today().month()), value);
-        sObj.put(FTETrackerHelper.getFieldUpdatedName(Date.today().month()), true);
+        sObj.put(FTETrackerHelper.getFieldName(month), value);
+        sObj.put(FTETrackerHelper.getFieldUpdatedName(month), true);
         return template;
     }
 }

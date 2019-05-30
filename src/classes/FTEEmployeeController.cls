@@ -54,13 +54,22 @@ public class FTEEmployeeController extends FTEController {
             return;
         }
 
-        this.fteTimeManager = new FTEDataManager(this.fteYear, this.employee.Id, false);
-        this.fteTimeManager.loadEmployeeTime(); // loads employee time cards with tags
-        this.fteTimeManager.loadTemplateTime(); // loads uploaded csv templates to allocate future time
-        buildUITableData();
+        loadWorkCardJobStatus();
+
+        if (workCardJobStatus.isRunning == false) {
+            this.fteTimeManager = new FTEDataManager(this.fteYear, this.employee.Id, false);
+            this.fteTimeManager.loadEmployeeTime(); // loads employee time cards with tags
+            this.fteTimeManager.loadTemplateTime(); // loads uploaded csv templates to allocate future time
+            buildUITableData();
+        }
     }
 
     public void setThreshold() {
+        loadWorkCardJobStatus();
+        if (workCardJobStatus.isRunning == true) {
+            ApexPages.addMessage(new ApexPages.message(ApexPages.severity.ERROR, 'Cannot manage time template, FTE Tracker is currently busy.'));
+            return;
+        }
         if (!FTETrackerHelper.isContractFTE(this.contractId)) {
             ApexPages.addMessage(new ApexPages.message(ApexPages.severity.ERROR, 'Contract is not in FTE Tracker, try refresh page.'));
             return;
@@ -87,6 +96,11 @@ public class FTEEmployeeController extends FTEController {
     }
 
     public void assignTime() {
+        loadWorkCardJobStatus();
+        if (workCardJobStatus.isRunning == true) {
+            ApexPages.addMessage(new ApexPages.message(ApexPages.severity.ERROR, 'Cannot assign time, FTE Tracker is currently busy.'));
+            return;
+        }
         if (!FTETrackerHelper.isContractFTE(this.selectedFteContract)) {
             ApexPages.addMessage(new ApexPages.message(ApexPages.severity.ERROR, 'Contract is not in FTE Tracker, try refresh page.'));
             return;
@@ -109,6 +123,11 @@ public class FTEEmployeeController extends FTEController {
     }
 
     public void unassignTime() {
+        loadWorkCardJobStatus();
+        if (workCardJobStatus.isRunning == true) {
+            ApexPages.addMessage(new ApexPages.message(ApexPages.severity.ERROR, 'Cannot unassign time, FTE Tracker is currently busy.'));
+            return;
+        }
         if (!FTETrackerHelper.isContractFTE(this.contractId)) {
             ApexPages.addMessage(new ApexPages.message(ApexPages.severity.ERROR, 'Contract is not in FTE Tracker, try refresh page.'));
             return;
@@ -156,6 +175,7 @@ public class FTEEmployeeController extends FTEController {
     private void buildUITableData() {
         this.contractsTime = new List<FTEEmployeeTime>();
         this.contractsTime = this.fteTimeManager.assignedMap.values();
+        this.contractsTime.sort();
         this.totalAssignedDays = new FTEEmployeeTime('Total Assigned Days', null);
         this.totalDaysWorked = new FTEEmployeeTime('Total Days Worked', null);
 

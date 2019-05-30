@@ -1,7 +1,7 @@
 /**
  * Helper class, used to help create correct tables in FTE UI.
  */
-public class FTEEmployeeTime {
+public class FTEEmployeeTime implements Comparable {
 
     public String name { get; set; }
     public Boolean merged { get; set; }
@@ -105,5 +105,10 @@ public class FTEEmployeeTime {
                 }
             }
         }
+    }
+
+    public Integer compareTo(Object objToCompare) {
+        FTEEmployeeTime emplTime = ((FTEEmployeeTime) objToCompare);
+        return name.compareTo(emplTime.name);
     }
 }

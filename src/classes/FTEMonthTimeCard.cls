@@ -5,8 +5,6 @@ public class FTEMonthTimeCard {
     public Decimal totalHours { get; set; }
     public Decimal templateExpectedTime { get; set; }
 
-    public FTEMonthTimeCard() {}
-
     public FTEMonthTimeCard(String name, Integer monthDays) {
         this.name = name;
         this.totalHours = 0.00;
