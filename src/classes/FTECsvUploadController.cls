@@ -187,7 +187,7 @@ public class FTECsvUploadController extends FTEController {
         Boolean success = processFTEDataRecords();
         if (success) {
             ApexPages.addMessage(new ApexPages.message(ApexPages.severity.INFO, 'CSV file ' + fileName + ' was parsed. '
-                                        + this.records.values().size() + 'records was added for ' + this.records.keySet().size() + ' employees.'));
+                                        + this.records.values().size() + ' records was added for ' + this.records.keySet().size() + ' employees.'));
         } else {
             ApexPages.addMessage(new ApexPages.message(ApexPages.severity.ERROR, 'Cannot upload csv file. FTE Tracker is currently calculating time.'));
         }

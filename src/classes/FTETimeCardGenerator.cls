@@ -393,10 +393,12 @@ public class FTETimeCardGenerator {
             for (Integer i = 0; i < this.monthDays; i++) {
                 resRecord.hours[i] = resRecord.hours[i].setScale(2);
             }
+            resRecord.totalHours = resRecord.totalHours.setScale(2);
         }
         for (Integer i = 0; i < this.monthDays; i++) {
             unassignedHours.hours[i] = unassignedHours.hours[i].setScale(2);
         }
+        unassignedHours.totalHours = unassignedHours.totalHours.setScale(2);
         result.add(unassignedHours);
         return result;
     }

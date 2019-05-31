@@ -112,10 +112,12 @@ public class FTEEmployeeController extends FTEController {
                 FTEDataManager manager = new FTEDataManager(this.fteYear, this.employeeMonth, this.employee.Id, false);
                 manager.loadEmployeeTime();
                 manager.loadTemplateTime();
-
                 FTEEmployeeTime emplTime = manager.assignedMap.get(this.selectedFteContract);
                 if (emplTime == null || emplTime.templateArray[this.employeeMonth - 1] == -1) { // we want use this method only when no template was added
                     manager.addTime(this.selectedFteContract, value * 8);
+                } else {
+                    manager.upsertTimeTemplate(this.selectedFteContract, emplTime.templateArray[this.employeeMonth - 1] + value, this.employeeMonth, false);
+                    manager.setTime(this.selectedFteContract, (emplTime.templateArray[this.employeeMonth - 1]) * 8);
                 }
                 initFteEmployeeView();
             }

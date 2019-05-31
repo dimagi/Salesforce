@@ -77,7 +77,7 @@ public class FTEDataManager {
     }
 
     public void setTime(Id contractId, Decimal thresholdHours, Integer month) {
-        if (thresholdHours  < 0) {
+        if (thresholdHours < 0) {
             return;
         }
         Decimal availableTime = this.unassigned.hoursArray[month - 1];
