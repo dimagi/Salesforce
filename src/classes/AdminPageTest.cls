@@ -1,6 +1,20 @@
 @isTest
 public class AdminPageTest {
 
+    @testSetup
+    public static void setupCustomSetting() {
+        Commcare_Job_Settings__c settings = Commcare_Job_Settings__c.getOrgDefaults();
+        insert settings;
+
+        CommcareToSalesforceSettings__c testCustomSetting = new CommcareToSalesforceSettings__c();
+        testCustomSetting.CommCare_User_Name__c = 'CommCareUserName@gmail.com';
+        testCustomSetting.CommCare_Password__c = 'CommCarePassword';
+        testCustomSetting.Server_URL__c = 'https://www.test.org/hq/admin/api/global/';
+        testCustomSetting.Skip_in_batch_job__c = false;
+        testCustomSetting.API_Limit_Parameter__c = 10;
+        testCustomSetting.Name = 'CommCare HQ';
+        insert testCustomSetting;
+    }
 
     @testSetup
     static void setup() {
@@ -102,18 +116,6 @@ public class AdminPageTest {
 
     @isTest
     public static void testGIRAndMaltTabs() {
-        Commcare_Job_Settings__c settings = Commcare_Job_Settings__c.getOrgDefaults();
-        insert settings;
-
-        CommcareToSalesforceSettings__c testCustomSetting = new CommcareToSalesforceSettings__c();
-        testCustomSetting.CommCare_User_Name__c = 'CommCareUserName@gmail.com';
-        testCustomSetting.CommCare_Password__c = 'CommCarePassword';
-        testCustomSetting.Server_URL__c = 'https://www.test.org/hq/admin/api/global/';
-        testCustomSetting.Skip_in_batch_job__c = false;
-        testCustomSetting.API_Limit_Parameter__c = 10;
-        testCustomSetting.Name = 'CommCare HQ';
-        insert testCustomSetting;
-
         AdminPageMainController pageCtrl = new AdminPageMainController();
         System.assertEquals(false, pageCtrl.isMaltOrGIRJobScheduled());
         System.assertEquals(false, pageCtrl.isSyncDateValid(2019, 3));
