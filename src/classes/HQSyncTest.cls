@@ -1082,8 +1082,8 @@ public class HQSyncTest {
         generateDataForDomainSnapshot();
 
         Test.startTest();
-        HQSyncUpdateDomainFieldsBatch batchJobWam = new HQSyncUpdateDomainFieldsBatch(true, new HQSyncWamUpdate());
-        HQSyncUpdateDomainFieldsBatch batchJobForms = new HQSyncUpdateDomainFieldsBatch(true, new HQSyncFormsForPeriodUpdate());
+        HQSyncUpdateDomainFieldsBatch batchJobWam = new HQSyncUpdateDomainFieldsBatch(new HQSyncWamUpdate());
+        HQSyncUpdateDomainFieldsBatch batchJobForms = new HQSyncUpdateDomainFieldsBatch(new HQSyncFormsForPeriodUpdate());
 
         Database.QueryLocatorIterator iter = batchJobWam.start(null).iterator();
         List<sObject> testData = new List<sObject>();
@@ -1106,27 +1106,6 @@ public class HQSyncTest {
         assertDomainSnapshot('Community', 75, 695, 1300, 2, 85);
         assertDomainSnapshot('Standard', 105, 725, 1500, 2, 115);
         assertDomainSnapshot('Pro', 45, 355, 700, 1, 50);
-    }
-
-    public static void assertDomainSnapshot(String softwarePlan, Decimal expectedWam, Decimal expectedForms, Decimal expecteFormsPeriod, Decimal expectedPrograms, Decimal expectedUsers) {
-        Decimal wam = 0;
-        Decimal forms = 0;
-        Decimal formsPeriod = 0;
-        Decimal programs = 0;
-        Decimal users = 0;
-        for (Domain_Monthly_Snapshot__c snp : [SELECT Active_Mobile_Users__c, Forms__c, Wam__c, Scale_of_Programs__c, Forms_for_Period__c
-                                               FROM Domain_Monthly_Snapshot__c WHERE Software_Edition__c =: softwarePlan ORDER BY Snapshot_Date__c DESC]) {
-            wam += snp.Wam__c;
-            forms += snp.Forms__c;
-            formsPeriod += snp.Forms_for_Period__c;
-            programs += snp.Scale_of_Programs__c;
-            users += snp.Active_Mobile_Users__c;
-        }
-        System.assertEquals(expectedWam, wam);
-        System.assertEquals(expectedUsers, users);
-        System.assertEquals(expecteFormsPeriod, formsPeriod);
-        System.assertEquals(expectedForms, forms);
-        System.assertEquals(expectedPrograms, programs);
     }
 
     @isTest
@@ -1270,8 +1249,8 @@ public class HQSyncTest {
         update new Domain__c(Id = domainFromDb3.Id, Wam_TMP__c = 9, Forms_for_Period_TMP__c = 9999);
 
         Test.startTest();
-        HQSyncUpdateDomainFieldsBatch batchJobWam = new HQSyncUpdateDomainFieldsBatch(false, new HQSyncWamUpdate());
-        HQSyncUpdateDomainFieldsBatch batchJobForms = new HQSyncUpdateDomainFieldsBatch(false, new HQSyncFormsForPeriodUpdate());
+        HQSyncUpdateDomainFieldsBatch batchJobWam = new HQSyncUpdateDomainFieldsBatch(new HQSyncWamUpdate());
+        HQSyncUpdateDomainFieldsBatch batchJobForms = new HQSyncUpdateDomainFieldsBatch(new HQSyncFormsForPeriodUpdate());
 
         Database.QueryLocatorIterator iter = batchJobWam.start(null).iterator();
         List<sObject> testData = new List<sObject>();
@@ -1308,6 +1287,105 @@ public class HQSyncTest {
     }
 
     @isTest
+    public static void shouldUpdateSnapshotsWamAfterManualRun() {
+        generateDataForDomainSnapshot();
+        Domain_Monthly_Snapshot__c snpDomain = [SELECT Id, Wam__c, Forms_for_Period__c FROM Domain_Monthly_Snapshot__c WHERE Domain__r.Name = 'domain_name_5' LIMIT 1];
+        snpDomain.Wam__c = 1234;
+        snpDomain.Forms_for_Period__c = 333;
+        update snpDomain;
+
+        Test.startTest();
+        Database.executeBatch(new HQSyncUpdateDomainFieldsBatch(new HQSyncWamUpdate(), Date.today().addMonths(-1), 'CommCare HQ',
+                                        new Map<String, Decimal> {
+                                            'domain_name_1' => 3,
+                                            'domain_name_2' => 70,
+                                            'domain_name_3' => 6,
+                                            'domain_name_4' => 66
+                                        }));
+        Test.stopTest();
+
+        System.assertEquals(5, [SELECT Id FROM Domain_Monthly_Snapshot__c].size());
+        assertDomainSnapshot('Community', 3 + 66, 695, 0, 2, 85);
+        assertDomainSnapshot('Standard', 70, 725, 333, 2, 115);
+        assertDomainSnapshot('Pro', 6, 355, 0, 1, 50);
+    }
+
+    @isTest
+    public static void shouldUpdateSnapshotsMaltAfterManualRun() {
+        generateDataForDomainSnapshot();
+        Domain_Monthly_Snapshot__c snpDomain = [SELECT Id, Wam__c, Forms_for_Period__c FROM Domain_Monthly_Snapshot__c WHERE Domain__r.Name = 'domain_name_2' LIMIT 1];
+        snpDomain.Forms_for_Period__c = 9876;
+        snpDomain.Wam__c = 100;
+        update snpDomain;
+
+        Test.startTest();
+        Database.executeBatch(new HQSyncUpdateDomainFieldsBatch(new HQSyncFormsForPeriodUpdate(), Date.today().addMonths(-1), 'CommCare HQ',
+                                        new Map<String, Decimal> {
+                                            'domain_name_1' => 38,
+                                            'domain_name_5' => 780,
+                                            'domain_name_3' => 68,
+                                            'domain_name_4' => 686
+                                        }));
+        Test.stopTest();
+
+        System.assertEquals(5, [SELECT Id FROM Domain_Monthly_Snapshot__c].size());
+        assertDomainSnapshot('Community', 0, 695, 38 + 686, 2, 85);
+        assertDomainSnapshot('Standard', 100, 725, 780, 2, 115);
+        assertDomainSnapshot('Pro', 0, 355, 68, 1, 50);
+    }
+
+    @isTest
+    public static void shouldFetchGIRDataManualRun() {
+        generateDataForDomainSnapshot();
+        Test.startTest();
+        Test.setMock(HttpCalloutMock.class, new HQSyncAPIMock());
+
+        HQSyncGIRBatch batchJobWam = new HQSyncGIRBatch(Date.today().addMonths(-1).toStartOfMonth(), 'CommCare HQ', new List<String>(), false, true, '');
+        Iterator<Integer> iter = batchJobWam.start(null).iterator();
+        List<Integer> testData = new List<Integer>();
+
+        while (iter.hasNext()) {
+            testData.add(iter.next());
+        }
+        batchJobWam.execute(null, testData);
+        batchJobWam.finish(null);
+
+        Test.stopTest();
+
+        System.assertEquals(5, [SELECT Id FROM Domain_Monthly_Snapshot__c].size());
+        assertDomainSnapshot('Community', 39, 695, 0, 2, 85);
+        assertDomainSnapshot('Standard', 340, 725, 0, 2, 115);
+        assertDomainSnapshot('Pro', 9, 355, 0, 1, 50);
+    }
+
+    @isTest
+    public static void shouldFetchMaltTablesManualRun() {
+        generateDataForDomainSnapshot();
+        Test.startTest();
+        Test.setMock(HttpCalloutMock.class, new HQSyncAPIMock());
+
+        HQSyncMaltTablesBatch batchJobWam = new HQSyncMaltTablesBatch(Date.today().addMonths(-1).toStartOfMonth(), 'CommCare HQ', new List<String>(), false, true, '');
+        Iterator<Integer> iter = batchJobWam.start(null).iterator();
+        List<Integer> testData = new List<Integer>();
+
+        while (iter.hasNext()) {
+            testData.add(iter.next());
+        }
+        batchJobWam.execute(null, testData);
+        batchJobWam.finish(null);
+
+        Test.stopTest();
+
+        System.assertEquals(5, [SELECT Id FROM Domain_Monthly_Snapshot__c].size());
+        assertDomainSnapshot('Community', 0, 695, 52, 2, 85);
+        assertDomainSnapshot('Standard', 0, 725, 28, 2, 115);
+        assertDomainSnapshot('Pro', 0, 355, 0, 1, 50);
+
+        List<HQ_Sync_Error__c> compressedData = [SELECT Id FROM HQ_Sync_Error__c];
+        System.assertEquals(0, compressedData.size());
+    }
+
+    @isTest
     public static void testManualSyncController() {
         Test.setMock(HttpCalloutMock.class, new HQSyncAPIMock());
         Test.startTest();
@@ -1324,6 +1402,27 @@ public class HQSyncTest {
         System.assertEquals(true, hqCtrl.domainIsRunning);
         System.assertEquals(true, hqCtrl.accountingIsRunning);
         Test.stopTest();
+    }
+
+    public static void assertDomainSnapshot(String softwarePlan, Decimal expectedWam, Decimal expectedForms, Decimal expecteFormsPeriod, Decimal expectedPrograms, Decimal expectedUsers) {
+        Decimal wam = 0;
+        Decimal forms = 0;
+        Decimal formsPeriod = 0;
+        Decimal programs = 0;
+        Decimal users = 0;
+        for (Domain_Monthly_Snapshot__c snp : [SELECT Active_Mobile_Users__c, Forms__c, Wam__c, Scale_of_Programs__c, Forms_for_Period__c
+                                               FROM Domain_Monthly_Snapshot__c WHERE Software_Edition__c =: softwarePlan ORDER BY Snapshot_Date__c DESC]) {
+            wam += snp.Wam__c;
+            forms += snp.Forms__c;
+            formsPeriod += snp.Forms_for_Period__c;
+            programs += snp.Scale_of_Programs__c;
+            users += snp.Active_Mobile_Users__c;
+        }
+        System.assertEquals(expectedWam, wam);
+        System.assertEquals(expectedUsers, users);
+        System.assertEquals(expecteFormsPeriod, formsPeriod);
+        System.assertEquals(expectedForms, forms);
+        System.assertEquals(expectedPrograms, programs);
     }
 
     static private Decimal calculateMRRForDomain(Id domainId, Integer expectedSize) {
@@ -1445,15 +1544,15 @@ public class HQSyncTest {
         insert InternalPropRec4;
         insert InternalPropRec5;
 
-        Domain__c domain1 = new Domain__c(Name = 'domain_1', Server_Name__c = 'CommCare HQ', is_test__c = 'false', cpIsActive__c = true, Forms_for_Period_TMP__c = 500,
+        Domain__c domain1 = new Domain__c(id__c = 'domain_1', Name = 'domain_name_1', Server_Name__c = 'CommCare HQ', is_test__c = 'false', cpIsActive__c = true, Forms_for_Period_TMP__c = 500,
                                           Wam_TMP__c = 15, cpActiveMobileUsers__c = 20, cpAllForms__c = 325, Internal_Properties__c = InternalPropRec1.Id, is_active__c = true);
-        Domain__c domain2 = new Domain__c(Name = 'domain_2', Server_Name__c = 'CommCare HQ', is_test__c = 'false', cpIsActive__c = true, Forms_for_Period_TMP__c = 600,
+        Domain__c domain2 = new Domain__c(id__c = 'domain_2', Name = 'domain_name_2', Server_Name__c = 'CommCare HQ', is_test__c = 'false', cpIsActive__c = true, Forms_for_Period_TMP__c = 600,
                                           Wam_TMP__c = 30, cpActiveMobileUsers__c = 35, cpAllForms__c = 340, Internal_Properties__c = InternalPropRec2.Id, is_active__c = true);
-        Domain__c domain3 = new Domain__c(Name = 'domain_3', Server_Name__c = 'CommCare HQ', is_test__c = 'false', cpIsActive__c = true, Forms_for_Period_TMP__c = 700,
+        Domain__c domain3 = new Domain__c(id__c = 'domain_3', Name = 'domain_name_3', Server_Name__c = 'CommCare HQ', is_test__c = 'false', cpIsActive__c = true, Forms_for_Period_TMP__c = 700,
                                           Wam_TMP__c = 45, cpActiveMobileUsers__c = 50, cpAllForms__c = 355, Internal_Properties__c = InternalPropRec3.Id, is_active__c = true);
-        Domain__c domain4 = new Domain__c(Name = 'domain_4', Server_Name__c = 'CommCare HQ', is_test__c = 'false', cpIsActive__c = true, Forms_for_Period_TMP__c = 800,
+        Domain__c domain4 = new Domain__c(id__c = 'domain_4', Name = 'domain_name_4', Server_Name__c = 'CommCare HQ', is_test__c = 'false', cpIsActive__c = true, Forms_for_Period_TMP__c = 800,
                                           Wam_TMP__c = 60, cpActiveMobileUsers__c = 65, cpAllForms__c = 370, Internal_Properties__c = InternalPropRec4.Id, is_active__c = true);
-        Domain__c domain5 = new Domain__c(Name = 'domain_5', Server_Name__c = 'CommCare HQ', is_test__c = 'false', cpIsActive__c = true, Forms_for_Period_TMP__c = 900,
+        Domain__c domain5 = new Domain__c(id__c = 'domain_5', Name = 'domain_name_5', Server_Name__c = 'CommCare HQ', is_test__c = 'false', cpIsActive__c = true, Forms_for_Period_TMP__c = 900,
                                           Wam_TMP__c = 75, cpActiveMobileUsers__c = 80, cpAllForms__c = 385, Internal_Properties__c = InternalPropRec5.Id, is_active__c = true);
 
         insert domain1;
@@ -1484,14 +1583,14 @@ public class HQSyncTest {
         insert subscription5;
 
         insert new Domain_Monthly_Snapshot__c(Snapshot_Date__c = Date.today().toStartOfMonth().addDays(-1), Software_Edition__c = 'Community', Domain__c = domain1.Id,
-                                                Active_Mobile_Users__c = 20, Forms__c = 325, Wam__c = 0, Forms_for_Period__c = 0);
+                                                Active_Mobile_Users__c = 20, Forms__c = 325, Wam__c = 0, Forms_for_Period__c = 0, Server_Name__c = 'CommCare HQ');
         insert new Domain_Monthly_Snapshot__c(Snapshot_Date__c = Date.today().toStartOfMonth().addDays(-1), Software_Edition__c = 'Standard', Domain__c = domain2.Id,
-                                                Active_Mobile_Users__c = 35, Forms__c = 340, Wam__c = 0, Forms_for_Period__c = 0);
+                                                Active_Mobile_Users__c = 35, Forms__c = 340, Wam__c = 0, Forms_for_Period__c = 0, Server_Name__c = 'CommCare HQ');
         insert new Domain_Monthly_Snapshot__c(Snapshot_Date__c = Date.today().toStartOfMonth().addDays(-1), Software_Edition__c = 'Pro', Domain__c = domain3.Id,
-                                                Active_Mobile_Users__c = 50, Forms__c = 355, Wam__c = 0, Forms_for_Period__c = 0);
+                                                Active_Mobile_Users__c = 50, Forms__c = 355, Wam__c = 0, Forms_for_Period__c = 0, Server_Name__c = 'CommCare HQ');
         insert new Domain_Monthly_Snapshot__c(Snapshot_Date__c = Date.today().toStartOfMonth().addDays(-1), Software_Edition__c = 'Community', Domain__c = domain4.Id,
-                                                Active_Mobile_Users__c = 65, Forms__c = 370, Wam__c = 0, Forms_for_Period__c = 0);
+                                                Active_Mobile_Users__c = 65, Forms__c = 370, Wam__c = 0, Forms_for_Period__c = 0, Server_Name__c = 'CommCare HQ');
         insert new Domain_Monthly_Snapshot__c(Snapshot_Date__c = Date.today().toStartOfMonth().addDays(-1), Software_Edition__c = 'Standard', Domain__c = domain5.Id,
-                                                Active_Mobile_Users__c = 80, Forms__c = 385, Wam__c = 0, Forms_for_Period__c = 0);
+                                                Active_Mobile_Users__c = 80, Forms__c = 385, Wam__c = 0, Forms_for_Period__c = 0, Server_Name__c = 'CommCare HQ');
     }
 }

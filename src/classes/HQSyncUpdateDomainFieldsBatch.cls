@@ -1,24 +1,42 @@
 public class HQSyncUpdateDomainFieldsBatch implements Database.Batchable<SObject>, Database.Stateful {
 
-    private Boolean upsertDomainSnapshot;
+    private Boolean forManualRun;
     private Map<String, Decimal> dataMap;
     private HQSyncDomainFieldUpdater fieldHelper;
     private Date snpDate;
+    private String serverCode;
 
-    public HQSyncUpdateDomainFieldsBatch(Boolean upsertDomainSnapshot, HQSyncDomainFieldUpdater fieldHelper) {
-        this.upsertDomainSnapshot = upsertDomainSnapshot;
+    public HQSyncUpdateDomainFieldsBatch(HQSyncDomainFieldUpdater fieldHelper, Date monthDate, String serverCode, Map<String, Decimal> dataMap) {
+        this(fieldHelper);
+        this.dataMap = dataMap;
+        this.forManualRun = true;
+        this.serverCode = serverCode;
+        this.snpDate = Date.newInstance(monthDate.year(), monthDate.month(), Date.daysInMonth(monthDate.year(), monthDate.month()));
+    }
+
+    public HQSyncUpdateDomainFieldsBatch(HQSyncDomainFieldUpdater fieldHelper) {
         this.fieldHelper = fieldHelper;
         this.snpDate = Date.today().toStartOfMonth().addDays(-1);
     }
 
 
     public Database.QueryLocator start(Database.BatchableContext BC) {
-        this.dataMap = new Map<String, Decimal> { 'Advanced' => 0, 'Community' => 0, 'Enterprise' => 0, 'Standard' => 0, 'Pro' => 0};
+        if (this.forManualRun == true) {
+            return Database.getQueryLocator('SELECT Id, Domain__c, Domain__r.Name, Wam__c, Forms_for_Period__c FROM Domain_Monthly_Snapshot__c WHERE Snapshot_Date__c =: snpDate AND Server_Name__c =: serverCode');
+        }
         return Database.getQueryLocator('SELECT Id, Name, Wam__c, Wam_TMP__c, Forms_for_Period__c, Forms_for_Period_TMP__c,'
                     + 'is_active__c, cpIsActive__c FROM Domain__c');
     }
 
     public void execute(Database.BatchableContext info, List<SObject> scope) {
+        if (this.forManualRun == true) {
+            executeManualRun(scope);
+        } else {
+            executeMonthlyRun(scope);
+        }
+    }
+
+    public void executeMonthlyRun(List<SObject> scope) {
         Map<Id, Domain_Monthly_Snapshot__c> snpMap = new Map<Id, Domain_Monthly_Snapshot__c>();
         for (Domain_Monthly_Snapshot__c snp : [SELECT Id, Wam__c, Forms_for_Period__c, Domain__c FROM Domain_Monthly_Snapshot__c
                                                WHERE Snapshot_Date__c =: snpDate AND Domain__c IN: scope]) {
@@ -38,6 +56,24 @@ public class HQSyncUpdateDomainFieldsBatch implements Database.Batchable<SObject
 
         update scope;
         update updateList;
+    }
+
+    public void executeManualRun(List<SObject> scope) {
+        List<Domain_Monthly_Snapshot__c> updateList = new List<Domain_Monthly_Snapshot__c>();
+        for (SObject domainSnpObj : scope) {
+            Domain_Monthly_Snapshot__c snapshotObj = (Domain_Monthly_Snapshot__c) domainSnpObj;
+
+            if (this.dataMap.containsKey(snapshotObj.Domain__r.Name)) {
+                this.fieldHelper.updateSyncField(this.dataMap.get(snapshotObj.Domain__r.Name), snapshotObj);
+            } else {
+                this.fieldHelper.updateSyncField(0, snapshotObj);
+            }
+            updateList.add(snapshotObj);
+        }
+
+        if (updateList.size() > 0) {
+            update updateList;
+        }
     }
 
     public void finish(Database.BatchableContext info) {
