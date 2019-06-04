@@ -99,4 +99,33 @@ public class AdminPageTest {
         System.assertEquals(0, dataList.size());
         Test.stopTest();
     }
+
+    @isTest
+    public static void testGIRAndMaltTabs() {
+        Commcare_Job_Settings__c settings = Commcare_Job_Settings__c.getOrgDefaults();
+        insert settings;
+
+        CommcareToSalesforceSettings__c testCustomSetting = new CommcareToSalesforceSettings__c();
+        testCustomSetting.CommCare_User_Name__c = 'CommCareUserName@gmail.com';
+        testCustomSetting.CommCare_Password__c = 'CommCarePassword';
+        testCustomSetting.Server_URL__c = 'https://www.test.org/hq/admin/api/global/';
+        testCustomSetting.Skip_in_batch_job__c = false;
+        testCustomSetting.API_Limit_Parameter__c = 10;
+        testCustomSetting.Name = 'CommCare HQ';
+        insert testCustomSetting;
+
+        AdminPageMainController pageCtrl = new AdminPageMainController();
+        System.assertEquals(false, pageCtrl.isMaltOrGIRJobScheduled());
+        System.assertEquals(false, pageCtrl.isSyncDateValid(2019, 3));
+        System.assertEquals(false, pageCtrl.isSyncDateValid(2017, 1));
+        System.assertEquals(false, pageCtrl.isSyncDateValid(Date.today().year(), Date.today().month()));
+        System.assertEquals(true, pageCtrl.isSyncDateValid(2019, 5));
+        System.assertEquals(true, pageCtrl.isSyncDateValid(Date.today().addMonths(-1).year(), Date.today().addMonths(-1).month()));
+
+        Test.startTest();
+        pageCtrl.scheduleMaltSync();
+        pageCtrl.scheduleWamSync();
+        System.assertEquals(true, pageCtrl.isMaltOrGIRJobScheduled());
+        Test.stopTest();
+    }
 }

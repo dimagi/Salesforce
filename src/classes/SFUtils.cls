@@ -4,6 +4,26 @@
 public class SFUtils {
 
     /**
+     * Checks if batch job was scheduled for class with given name.
+     */
+    public static Boolean isJobScheduled(String apexClassName) {
+        ApexClass batchClass;
+        try {
+            batchClass = [SELECT Id FROM ApexClass WHERE Name =: apexClassName LIMIT 1];
+        } catch(exception e) {
+            ApexPages.addMessage(new ApexPages.message(ApexPages.severity.ERROR, 'Class not found'));
+        }
+
+        AsyncApexJob[] batchClassJobList = [SELECT Id, JobItemsProcessed, TotalJobItems, createdDate FROM AsyncApexJob WHERE ApexClassID = :batchClass.Id
+                                                AND Status IN ('Holding', 'Queued', 'Preparing', 'Processing') ORDER BY createdDate DESC LIMIT 1];
+
+        if(batchClassJobList != null && batchClassJobList.size() > 0) {
+            return true;
+        }
+        return false;
+    }
+
+    /**
      * Replace count word from given JSON file.
      */
     public static String replaceCountWords(String myString) {

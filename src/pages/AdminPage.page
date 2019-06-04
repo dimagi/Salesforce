@@ -25,6 +25,9 @@
         .icdsUpdate {
             margin-left: 30%;
         }
+        .syncSelect {
+            height: 24px !important;
+        }
     </style>
 
     <script type="text/javascript">
@@ -88,55 +91,55 @@
                             <br /><br />
                             <apex:pageMessages />
 
-	                        <apex:pageBlockTable id="batchTable" value="{!batchData}" var="batch" >
-	                            <apex:column headerValue="Apex Class" value="{!batch.ApexClassID}" />
-	                            <apex:column headerValue="Job Type" value="{!batch.JobType}" />
-	                            <apex:column headerValue="Method Name" value="{!batch.MethodName}" />
-	                            <apex:column headerValue="Job Items Processed" value="{!batch.JobItemsProcessed}" />
-	                            <apex:column headerValue="Total Job Items" value="{!batch.TotalJobItems}" />
-	                            <apex:column headerValue="Status" value="{!batch.Status}" />
-	                            <apex:column headerValue="Extended Status" value="{!batch.ExtendedStatus}" />
-	                            <apex:column headerValue="Number Of Errors" value="{!batch.NumberOfErrors}" />
-	                            <apex:column headerValue="Completed Date" value="{!batch.CompletedDate}" />
-	                            <apex:column headerValue="Created Date" value="{!batch.CreatedDate}" />
-	                        </apex:pageBlockTable>
+                            <apex:pageBlockTable id="batchTable" value="{!batchData}" var="batch" >
+                                <apex:column headerValue="Apex Class" value="{!batch.ApexClassID}" />
+                                <apex:column headerValue="Job Type" value="{!batch.JobType}" />
+                                <apex:column headerValue="Method Name" value="{!batch.MethodName}" />
+                                <apex:column headerValue="Job Items Processed" value="{!batch.JobItemsProcessed}" />
+                                <apex:column headerValue="Total Job Items" value="{!batch.TotalJobItems}" />
+                                <apex:column headerValue="Status" value="{!batch.Status}" />
+                                <apex:column headerValue="Extended Status" value="{!batch.ExtendedStatus}" />
+                                <apex:column headerValue="Number Of Errors" value="{!batch.NumberOfErrors}" />
+                                <apex:column headerValue="Completed Date" value="{!batch.CompletedDate}" />
+                                <apex:column headerValue="Created Date" value="{!batch.CreatedDate}" />
+                            </apex:pageBlockTable>
 
-	                        <!-- Pagination ICDS -->
-	                        <table style="width: 100%">
-	                            <tr>
-	                                <td>Page: <apex:outputText value=" {!batchPagination.pageNumber} of {!CEILING(batchPagination.resultSize / batchPagination.pageSize)}"/></td>
-	                                <td align="center">
-	                                    <apex:commandLink status="loadingDiv" action="{!batchPagination.previousPage}" value="« Previous" rendered="{!batchPagination.hasPrevious}" reRender="batchTabPanel" />
-	                                    <apex:outputText style="color: #ccc;" value="« Previous" rendered="{!NOT(batchPagination.hasPrevious)}"/>
-	                                    &nbsp;&nbsp;
-	                                    <apex:commandLink status="loadingDiv" action="{!batchPagination.nextPage}" value="Next »" rendered="{!batchPagination.hasNext}" reRender="batchTabPanel" />
-	                                    <apex:outputText style="color: #ccc;" value="Next »" rendered="{!NOT(batchPagination.hasNext) }"/>
-	                                </td>
-	                                <td align="right">
-	                                    Records per page:&nbsp;&nbsp;
-	                                    <apex:selectList value="{!batchPagination.pageSize }" size="1" onchange="resetPageNumStatus();" >
-	                                        <apex:selectOption itemValue="10" itemLabel="10"/>
-	                                        <apex:selectOption itemValue="20" itemLabel="20"/>
-	                                        <apex:selectOption itemValue="50" itemLabel="50"/>
-	                                        <apex:selectOption itemValue="100" itemLabel="100"/>
-	                                        <apex:selectOption itemValue="200" itemLabel="200"/>
-	                                        <apex:actionSupport event="onchange" reRender="batchTabPanel"/>
-	                                    </apex:selectList>
-	                                </td>
-	                            </tr>
-	                        </table>
-	                        <apex:actionFunction status="loadingDiv" action="{!batchPagination.resetPageNumber}" name="resetPageNumStatus" reRender="batchTabPanel" />
+                            <!-- Pagination ICDS -->
+                            <table style="width: 100%">
+                                <tr>
+                                    <td>Page: <apex:outputText value=" {!batchPagination.pageNumber} of {!CEILING(batchPagination.resultSize / batchPagination.pageSize)}"/></td>
+                                    <td align="center">
+                                        <apex:commandLink status="loadingDiv" action="{!batchPagination.previousPage}" value="« Previous" rendered="{!batchPagination.hasPrevious}" reRender="batchTabPanel" />
+                                        <apex:outputText style="color: #ccc;" value="« Previous" rendered="{!NOT(batchPagination.hasPrevious)}"/>
+                                        &nbsp;&nbsp;
+                                        <apex:commandLink status="loadingDiv" action="{!batchPagination.nextPage}" value="Next »" rendered="{!batchPagination.hasNext}" reRender="batchTabPanel" />
+                                        <apex:outputText style="color: #ccc;" value="Next »" rendered="{!NOT(batchPagination.hasNext) }"/>
+                                    </td>
+                                    <td align="right">
+                                        Records per page:&nbsp;&nbsp;
+                                        <apex:selectList value="{!batchPagination.pageSize }" size="1" onchange="resetPageNumStatus();" >
+                                            <apex:selectOption itemValue="10" itemLabel="10"/>
+                                            <apex:selectOption itemValue="20" itemLabel="20"/>
+                                            <apex:selectOption itemValue="50" itemLabel="50"/>
+                                            <apex:selectOption itemValue="100" itemLabel="100"/>
+                                            <apex:selectOption itemValue="200" itemLabel="200"/>
+                                            <apex:actionSupport event="onchange" reRender="batchTabPanel"/>
+                                        </apex:selectList>
+                                    </td>
+                                </tr>
+                            </table>
+                            <apex:actionFunction status="loadingDiv" action="{!batchPagination.resetPageNumber}" name="resetPageNumStatus" reRender="batchTabPanel" />
                         </apex:PageBlock>
                     </section>
 
                     <section id="globMetricsTab" >
-	                    <apex:PageBlock title="Global Metrics" id="globMetricsPanel">
-	                        <apex:pageMessages />
-	                        <apex:pageBlockSection columns="1">
-	                            <apex:commandButton action="{!refreshDimagiToolsPage}" value="Refresh Dimagi Tools Dashboard" reRender="globMetricsPanel"/>
-	                            <apex:commandButton action="{!refreshSalesforcePage}" value="Refresh Salesforce Dashboard" reRender="globMetricsPanel"/>
-	                        </apex:pageBlockSection>
-	                    </apex:PageBlock>
+                        <apex:PageBlock title="Global Metrics" id="globMetricsPanel">
+                            <apex:pageMessages />
+                            <apex:pageBlockSection columns="1">
+                                <apex:commandButton action="{!refreshDimagiToolsPage}" value="Refresh Dimagi Tools Dashboard" reRender="globMetricsPanel"/>
+                                <apex:commandButton action="{!refreshSalesforcePage}" value="Refresh Salesforce Dashboard" reRender="globMetricsPanel"/>
+                            </apex:pageBlockSection>
+                        </apex:PageBlock>
                     </section>
 
                     <!-- Global Metrics tab -->
@@ -144,38 +147,38 @@
                     <apex:PageBlock title="ICDS Data" id="icdsTabPanel">
                         <apex:pageMessages />
                         <apex:outputPanel rendered="{!!upsertMode}">
-	                        <apex:pageBlockTable id="icdsTable" value="{!icdsData}" var="icds" onRowClick="selectICDSRow(this);" styleClass="icdsTable">
-	                            <apex:column headerValue="" value="{!icds.Id}" styleClass="icdsId" style="display:none" headerClass="headerClsNone" />
-	                            <apex:column headerValue="Snapshot Date" value="{!icds.Date__c}" />
-	                            <apex:column headerValue="Active Users" value="{!icds.Active_Users__c}" />
-	                            <apex:column headerValue="Forms" value="{!icds.Forms__c}" />
-	                            <apex:column headerValue="WAM" value="{!icds.WAMs__c}" />
-	                        </apex:pageBlockTable>
+                            <apex:pageBlockTable id="icdsTable" value="{!icdsData}" var="icds" onRowClick="selectICDSRow(this);" styleClass="icdsTable">
+                                <apex:column headerValue="" value="{!icds.Id}" styleClass="icdsId" style="display:none" headerClass="headerClsNone" />
+                                <apex:column headerValue="Snapshot Date" value="{!icds.Date__c}" />
+                                <apex:column headerValue="Active Users" value="{!icds.Active_Users__c}" />
+                                <apex:column headerValue="Forms" value="{!icds.Forms__c}" />
+                                <apex:column headerValue="WAM" value="{!icds.WAMs__c}" />
+                            </apex:pageBlockTable>
 
-	                        <!-- Pagination ICDS -->
-	                        <table style="width: 100%">
-	                            <tr>
-	                                <td>Page: <apex:outputText value=" {!icdsPagination.pageNumber} of {!CEILING(icdsPagination.resultSize / icdsPagination.pageSize)}"/></td>
-	                                <td align="center">
-	                                    <apex:commandLink status="loadingDiv" action="{!icdsPagination.previousPage}" value="« Previous" rendered="{!icdsPagination.hasPrevious}" reRender="icdsTabPanel" />
-	                                    <apex:outputText style="color: #ccc;" value="« Previous" rendered="{!NOT(icdsPagination.hasPrevious)}"/>
-	                                    &nbsp;&nbsp;
-	                                    <apex:commandLink status="loadingDiv" action="{!icdsPagination.nextPage}" value="Next »" rendered="{!icdsPagination.hasNext}" reRender="icdsTabPanel" />
-	                                    <apex:outputText style="color: #ccc;" value="Next »" rendered="{!NOT(icdsPagination.hasNext) }"/>
-	                                </td>
-	                                <td align="right">
-	                                    Records per page:&nbsp;&nbsp;
-	                                    <apex:selectList value="{!icdsPagination.pageSize }" size="1" onchange="resetPageNumStatus();" >
-	                                        <apex:selectOption itemValue="10" itemLabel="10"/>
-	                                        <apex:selectOption itemValue="20" itemLabel="20"/>
-	                                        <apex:selectOption itemValue="50" itemLabel="50"/>
-	                                        <apex:actionSupport event="onchange" reRender="icdsTabPanel"/>
-	                                    </apex:selectList>
-	                                </td>
-	                            </tr>
-	                        </table>
-	                        <hr />
-	                        <apex:commandButton status="loadingDiv" value="Add New Snapshot" action="{!switchToAddRecord}" reRender="icdsTabPanel" />
+                            <!-- Pagination ICDS -->
+                            <table style="width: 100%">
+                                <tr>
+                                    <td>Page: <apex:outputText value=" {!icdsPagination.pageNumber} of {!CEILING(icdsPagination.resultSize / icdsPagination.pageSize)}"/></td>
+                                    <td align="center">
+                                        <apex:commandLink status="loadingDiv" action="{!icdsPagination.previousPage}" value="« Previous" rendered="{!icdsPagination.hasPrevious}" reRender="icdsTabPanel" />
+                                        <apex:outputText style="color: #ccc;" value="« Previous" rendered="{!NOT(icdsPagination.hasPrevious)}"/>
+                                        &nbsp;&nbsp;
+                                        <apex:commandLink status="loadingDiv" action="{!icdsPagination.nextPage}" value="Next »" rendered="{!icdsPagination.hasNext}" reRender="icdsTabPanel" />
+                                        <apex:outputText style="color: #ccc;" value="Next »" rendered="{!NOT(icdsPagination.hasNext) }"/>
+                                    </td>
+                                    <td align="right">
+                                        Records per page:&nbsp;&nbsp;
+                                        <apex:selectList value="{!icdsPagination.pageSize }" size="1" onchange="resetPageNumStatus();" >
+                                            <apex:selectOption itemValue="10" itemLabel="10"/>
+                                            <apex:selectOption itemValue="20" itemLabel="20"/>
+                                            <apex:selectOption itemValue="50" itemLabel="50"/>
+                                            <apex:actionSupport event="onchange" reRender="icdsTabPanel"/>
+                                        </apex:selectList>
+                                    </td>
+                                </tr>
+                            </table>
+                            <hr />
+                            <apex:commandButton status="loadingDiv" value="Add New Snapshot" action="{!switchToAddRecord}" reRender="icdsTabPanel" />
                         </apex:outputPanel>
                         <apex:actionFunction status="loadingDiv" action="{!switchToUpdateRecord}" name="loadIcdsData" reRender="icdsTabPanel" >
                             <apex:param name="helperId" assignTo="{!helperId}" value=""/>
@@ -188,25 +191,25 @@
                                 <apex:inputField value="{!icdsRecord.Date__c}" id="dateInput"/>
                             </apex:outputPanel>
 
-	                        <apex:outputPanel >
-	                            <apex:outputLabel value="Active Users : " for="usersInput"/>
-	                            <apex:inputField value="{!icdsRecord.Active_Users__c}" id="usersInput"/>
-	                        </apex:outputPanel>
-
-	                        <apex:outputPanel >
-	                            <apex:outputLabel value="Forms : " for="formsInput"/>
-	                            <apex:inputField value="{!icdsRecord.Forms__c}" id="formsInput"/>
-	                        </apex:outputPanel>
-
-	                        <apex:outputPanel >
-	                            <apex:outputLabel value="WAM : " for="wamInput"/>
-	                            <apex:inputField value="{!icdsRecord.WAMs__c}" id="wamInput"/>
-	                        </apex:outputPanel>
+                            <apex:outputPanel >
+                                <apex:outputLabel value="Active Users : " for="usersInput"/>
+                                <apex:inputField value="{!icdsRecord.Active_Users__c}" id="usersInput"/>
+                            </apex:outputPanel>
 
                             <apex:outputPanel >
-	                            <apex:commandButton status="loadingDiv" value="Save" action="{!saveIcdsRecord}" reRender="icdsTabPanel" />&nbsp;&nbsp;&nbsp;
-	                            <apex:commandButton status="loadingDiv" value="Delete" disabled="{!icdsRecord.Id == null}" action="{!deleteIcdsRecord}" reRender="icdsTabPanel" />&nbsp;&nbsp;&nbsp;
-	                            <apex:commandButton status="loadingDiv" value="Cancel" action="{!openICDSList}" reRender="icdsTabPanel" immediate="true" />&nbsp;&nbsp;&nbsp;
+                                <apex:outputLabel value="Forms : " for="formsInput"/>
+                                <apex:inputField value="{!icdsRecord.Forms__c}" id="formsInput"/>
+                            </apex:outputPanel>
+
+                            <apex:outputPanel >
+                                <apex:outputLabel value="WAM : " for="wamInput"/>
+                                <apex:inputField value="{!icdsRecord.WAMs__c}" id="wamInput"/>
+                            </apex:outputPanel>
+
+                            <apex:outputPanel >
+                                <apex:commandButton status="loadingDiv" value="Save" action="{!saveIcdsRecord}" reRender="icdsTabPanel" />&nbsp;&nbsp;&nbsp;
+                                <apex:commandButton status="loadingDiv" value="Delete" disabled="{!icdsRecord.Id == null}" action="{!deleteIcdsRecord}" reRender="icdsTabPanel" />&nbsp;&nbsp;&nbsp;
+                                <apex:commandButton status="loadingDiv" value="Cancel" action="{!openICDSList}" reRender="icdsTabPanel" immediate="true" />&nbsp;&nbsp;&nbsp;
                             </apex:outputPanel>
                         </apex:pageBlockSection>
 
@@ -215,18 +218,74 @@
 
                     <!-- Malt Tables tab -->
                     <section id="maltTab" >
-	                    <apex:PageBlock title="Malt Tables" id="maltTabPanel">
-	                        <apex:pageMessages />
-	                            CSV Upload not yet implemented.
-	                    </apex:PageBlock>
+                        <apex:PageBlock title="Malt Tables" id="maltTabPanel">
+                            <apex:pageMessages />
+                            <br />
+                            <apex:outputPanel >
+                                <apex:outputLabel value="Month : " for="maltMonth"/>
+                                <apex:selectList styleClass="syncSelect" id="maltMonth" value="{!syncMonthMalt}" size="1">
+                                    <apex:selectOption itemValue="1" itemLabel="January"/>
+                                    <apex:selectOption itemValue="2" itemLabel="February"/>
+                                    <apex:selectOption itemValue="3" itemLabel="March"/>
+                                    <apex:selectOption itemValue="4" itemLabel="April"/>
+                                    <apex:selectOption itemValue="5" itemLabel="May"/>
+                                    <apex:selectOption itemValue="6" itemLabel="June"/>
+                                    <apex:selectOption itemValue="7" itemLabel="July"/>
+                                    <apex:selectOption itemValue="8" itemLabel="August"/>
+                                    <apex:selectOption itemValue="9" itemLabel="September"/>
+                                    <apex:selectOption itemValue="10" itemLabel="October"/>
+                                    <apex:selectOption itemValue="11" itemLabel="November"/>
+                                    <apex:selectOption itemValue="12" itemLabel="December"/>
+                                </apex:selectList>
+                                &nbsp;&nbsp;<apex:outputLabel value="Year : " for="maltYear"/>
+                                <apex:selectList styleClass="syncSelect" id="maltYear" value="{!syncYearMalt}" size="1">
+                                    <apex:selectOptions value="{!syncYears}" />
+                                </apex:selectList>
+                                &nbsp;&nbsp;<apex:outputLabel value="HQ Server Name : " for="maltServer"/>
+                                <apex:selectList styleClass="syncSelect" id="maltServer" value="{!syncServerMalt}" size="1">
+                                    <apex:selectOptions value="{!serverCodes}" />
+                                </apex:selectList>
+                                &nbsp;&nbsp;&nbsp;<apex:commandButton status="loadingDiv" value="Run Malt Synchronization" action="{!scheduleMaltSync}" reRender="maltTabPanel" />
+                                <br />
+                            </apex:outputPanel>
+
+                        </apex:PageBlock>
                     </section>
 
                     <!-- GIR tab -->
                     <section id="girTab" >
-	                    <apex:PageBlock title="GIR" id="girTabPanel">
-	                        <apex:pageMessages />
-	                            CSV Upload not yet implemented.
-	                    </apex:PageBlock>
+                        <apex:PageBlock title="GIR" id="girTabPanel">
+                            <apex:pageMessages />
+                            <br />
+                            <apex:outputPanel >
+                                <apex:outputLabel value="Month : " for="wamMonth"/>
+                                <apex:selectList styleClass="syncSelect" id="wamMonth" value="{!syncMonthWam}" size="1">
+                                    <apex:selectOption itemValue="1" itemLabel="January"/>
+                                    <apex:selectOption itemValue="2" itemLabel="February"/>
+                                    <apex:selectOption itemValue="3" itemLabel="March"/>
+                                    <apex:selectOption itemValue="4" itemLabel="April"/>
+                                    <apex:selectOption itemValue="5" itemLabel="May"/>
+                                    <apex:selectOption itemValue="6" itemLabel="June"/>
+                                    <apex:selectOption itemValue="7" itemLabel="July"/>
+                                    <apex:selectOption itemValue="8" itemLabel="August"/>
+                                    <apex:selectOption itemValue="9" itemLabel="September"/>
+                                    <apex:selectOption itemValue="10" itemLabel="October"/>
+                                    <apex:selectOption itemValue="11" itemLabel="November"/>
+                                    <apex:selectOption itemValue="12" itemLabel="December"/>
+                                </apex:selectList>
+                                &nbsp;&nbsp;<apex:outputLabel value="  Year : " for="wamYear"/>
+                                <apex:selectList styleClass="syncSelect" id="wamYear" value="{!syncYearWam}" size="1">
+                                    <apex:selectOptions value="{!syncYears}" />
+                                </apex:selectList>
+                                &nbsp;&nbsp;<apex:outputLabel value="HQ Server Name : " for="wamServer"/>
+                                <apex:selectList styleClass="syncSelect" id="wamServer" value="{!syncServerWam}" size="1">
+                                    <apex:selectOptions value="{!serverCodes}" />
+                                </apex:selectList>
+                                &nbsp;&nbsp;&nbsp;<apex:commandButton status="loadingDiv" value="Run GIR Synchronization" action="{!scheduleWamSync}" reRender="girTabPanel" />
+                                <br />
+                            </apex:outputPanel>
+
+                        </apex:PageBlock>
                     </section>
                 </div>
             </apex:outputPanel>
