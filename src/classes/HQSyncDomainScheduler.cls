@@ -4,7 +4,8 @@
  public class HQSyncDomainScheduler implements Schedulable {
 
     public void execute(SchedulableContext sc) {
-        deleteDuplicatedDomainSnapshot();
+        deleteDuplicatedDomainSnapshot();                  // Remove duplicated domain snapshots
+        HQAdminReportsExportController.deleteOldExports(); // Remove HQ Admin Report exports
         HQSyncUtils.startDomainJob();
     }
 

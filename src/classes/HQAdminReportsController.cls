@@ -1,6 +1,6 @@
 public class HQAdminReportsController {
 
-    private static final List<String> reportColumns = new List<String> {'Name', 'date_created__c', 'Deployment_Countries__c', 'Server_Name__c', 'is_test__c', 'hipaa_compliant__c', 'Internal_Properties__r.notes__c',
+    public static final List<String> reportColumns = new List<String> {'Name', 'date_created__c', 'Deployment_Countries__c', 'Server_Name__c', 'is_test__c', 'hipaa_compliant__c', 'Internal_Properties__r.notes__c',
                                                                         'InternalProp_project_state__c', 'InternalProp_using_adm__c', 'InternalProp_using_call_center__c', 'InternalProp_area__c', 'InternalProp_sub_area__c',
                                                                         'InternalProp_Business_Unit__c', 'InternalProp_self_started__c', 'InternalProp_commtrack_domain__c', 'InternalProp_custom_eula__c',
                                                                         'InternalProp_organization_name__c', 'Has_J2ME_submission_in_past_90_days__c', 'cpActiveMobileUsers__c', 'cpAllMobileUsers__c', 'Cp_n_users_submitted_form__c',
@@ -29,6 +29,7 @@ public class HQAdminReportsController {
     private Boolean facetsWasUpadated;
 
     public HQAdminReportsController() {
+        this.sortField = 'CreatedDate';
         this.supportedReportsList = HQAdminReportFactory.getSupportedReportsParamters();
         this.supportedReports = HQAdminReportFactory.getSupportedReportsMap();
 
@@ -42,7 +43,6 @@ public class HQAdminReportsController {
 
         this.tablePagination = new Pagination();
         this.sortDir = false;
-        this.sortField = null;
         this.totalRow = new Domain__c(Name = 'Total');
         this.facetsWasUpadated = true; // For first time opening we want calculate totals
         this.totalRowCount = 0;
@@ -54,9 +54,14 @@ public class HQAdminReportsController {
             this.tablePagination.resetPageNumber();
         }
         qb.selectFrom('Domain__c').addColumns(HQAdminReportsController.reportColumns).setLimit(this.tablePagination.pageSize).setOffset(this.tablePagination.getOffsetValue());
+
         if (String.isNotBlank(this.sortField)) {
             qb.orderBy(this.sortField, (this.sortDir == false ? QueryBuilder.QB_ASC : QueryBuilder.QB_DESC), this.sortDir);
+            if (this.sortField != 'Name') {
+                qb.orderBy('Name', QueryBuilder.QB_ASC);
+            }
         }
+
         List<Domain__c> result = Database.query(qb.buildQuery());
 
         if (this.facetsWasUpadated) {
@@ -82,6 +87,15 @@ public class HQAdminReportsController {
     public PageReference updateFacets() {
         this.facetsWasUpadated = true;
         return null;
+    }
+
+    @RemoteAction
+    public static Id generateCSVExportId(String loadedReport, String jsonFilters, String domainName, String sortField, Boolean sortDirection) {
+        HQ_Admin_Report_CSV_Files__c exportData = new HQ_Admin_Report_CSV_Files__c(Facet_Filters_JSON__c = jsonFilters, Domain_Name__c = domainName,
+                                                                                   Order_Field__c = sortField, Order_Direction__c = sortDirection,
+                                                                                   Name = loadedReport);
+        insert exportData;
+        return exportData.Id;
     }
 
     @RemoteAction

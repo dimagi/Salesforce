@@ -5,6 +5,7 @@ public class FacetController {
     public Map<String, String> dataTypeMapping { get; set;}
     public String domainNameSearch { get; set; }
     public Map<String, String> predefindedNotEqualFilters { get; set; }
+    public Map<String, String> displayNameMapping { get; set; }
 
 
     public QueryBuilder getQueryBuilder() {
@@ -68,6 +69,18 @@ public class FacetController {
 
     public List<FacetGroup> getFacets() {
         return this.facets;
+    }
+
+    public List<String> getCurrentFiltersForExport() {
+        List<String> filtersResult = new List<String>();
+        for (String fieldKey : this.currentFilters.keySet()) {
+            String valuesHelper = '';
+            for (String fieldValue : this.currentFilters.get(fieldKey)) {
+                valuesHelper += ',"' + fieldValue + '"';
+            }
+            filtersResult.add('"' + this.displayNameMapping.get(fieldKey) + ' : "' + valuesHelper);
+        }
+        return filtersResult;
     }
 
     private void reloadFacetValues(Facet facet, String dbQuery) {
@@ -139,6 +152,7 @@ public class FacetController {
     private static Facet createFacet(String name, String dataType, String fieldName, String queryFieldName, FacetController facetCtrl) {
         Facet facet = new Facet(name, dataType, fieldName, queryFieldName);
         facetCtrl.dataTypeMapping.put(fieldName, dataType);
+        facetCtrl.displayNameMapping.put(fieldName, name);
         return facet;
     }
 
@@ -150,6 +164,7 @@ public class FacetController {
         this.dataTypeMapping = new Map<String, String>();
         this.currentFilters = new Map<String, List<String>>();
         this.predefindedNotEqualFilters = new  Map<String, String>();
+        this.displayNameMapping = new Map<String, String>();
     }
 
     public static FacetController buildFacetController(String jsonFilters) {
