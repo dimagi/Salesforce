@@ -22,7 +22,7 @@ public class HQSyncGIRBatch extends HQSyncBatch {
         this.domainsWam = new Map<String, Decimal>();
         this.size = 60;
 
-        Date tmpDate = monthDate;
+        Date tmpDate = this.monthDate;
         String startDate = tmpDate.year() + '-' + tmpDate.month() + '-' + tmpDate.day();
         tmpDate.addDays(1);
         String endDate = tmpDate.year() + '-' + tmpDate.month() + '-' + tmpDate.day();
@@ -86,14 +86,12 @@ public class HQSyncGIRBatch extends HQSyncBatch {
                         objModel.domain_name = objModel.domain_name.subString(0, 80);
                     }
 
-                    if (objModel.wams_current == null || objModel.wams_current == 0) {
-                        continue; // we skip this object if forms is equal to 0 or null we don't need add anything
-                    }
-
-                    if (this.domainsWam.containsKey(objModel.domain_name)) {
-                        this.domainsWam.put(objModel.domain_name, this.domainsWam.get(objModel.domain_name) + objModel.wams_current);
-                    } else {
-                        this.domainsWam.put(objModel.domain_name, objModel.wams_current);
+                    if (objModel.wams_current != null && objModel.wams_current > 0) {
+                        if (this.domainsWam.containsKey(objModel.domain_name)) {
+                            this.domainsWam.put(objModel.domain_name, this.domainsWam.get(objModel.domain_name) + objModel.wams_current);
+                        } else {
+                            this.domainsWam.put(objModel.domain_name, objModel.wams_current);
+                        }
                     }
                 }
                 parser.skipChildren();
@@ -101,6 +99,7 @@ public class HQSyncGIRBatch extends HQSyncBatch {
         }
 
         if (manualRun == false) { // for manual run we want sync all data into map and save result to the Domain snapshots
+
             List<Domain__c> domainsToUpdate = new List<Domain__c>();
             for (Domain__c domain : [SELECT Id, Name, Wam_TMP__c FROM Domain__c WHERE Name IN: this.domainsWam.keySet() AND Server_Name__c =: this.serverName]) {
                 if (this.domainsWam.containsKey(domain.Name)) { // we update Wam_TMP__c because we have Wam__c history and we don't want a lot of history updateds for example 15 for 1 object sync no sense
@@ -117,6 +116,7 @@ public class HQSyncGIRBatch extends HQSyncBatch {
             if (domainsToUpdate.size() > 0) {
                 update domainsToUpdate;
             }
+
         }
 
         return this.domainsWam.size();
@@ -131,6 +131,10 @@ public class HQSyncGIRBatch extends HQSyncBatch {
             return;
         }
         StatusLoggerUtils.logError(StatusLoggerUtils.GIR_SYNC_LOGGER, this.jobName, offset, this.serverName + ' - ' + message + ' - ' +  e.getMessage());
-        insert new HQ_Sync_Error__c(Server_Name__c = this.serverName, Offset__c = offset, Object_Type__c = 'GIR', Date__c = this.monthDate);
+
+        List<HQ_Sync_Error__c> oldRunsErrors = [SELECT Id FROM HQ_Sync_Error__c WHERE Object_Type__c = 'GIR' AND Server_Name__c =: this.serverName AND Date__c =: this.monthDate AND Offset__c =: offset];
+        if (oldRunsErrors.size() == 0) { // we don't want duplicated offset error
+            insert new HQ_Sync_Error__c(Server_Name__c = this.serverName, Offset__c = offset, Object_Type__c = 'GIR', Date__c = this.monthDate);
+        }
     }
 }
