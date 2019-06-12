@@ -146,7 +146,7 @@ public class AdminPageMainController {
 
             Database.executeBatch(new HQSyncMaltTablesBatch(Date.newInstance(this.syncYearMalt, this.syncMonthMalt, 1),
                                                      this.syncServerMalt, new List<String>(), false,
-                                                     true, userEmail));
+                                                     true, userEmail), 1);
             ApexPages.addMessage(new ApexPages.message(ApexPages.severity.CONFIRM, 'Malt tables scheduled for : ' + this.syncServerMalt + ' ' + this.syncMonthMalt + '/' + this.syncYearMalt + ' - status email will be send when synchronization will end.'));
         } else {
             ApexPages.addMessage(new ApexPages.message(ApexPages.severity.ERROR, 'Date is invalid : ' + this.syncMonthMalt + '/' + this.syncYearMalt
@@ -169,7 +169,7 @@ public class AdminPageMainController {
 
             Database.executeBatch(new HQSyncGIRBatch(Date.newInstance(this.syncYearWam, this.syncMonthWam, 1),
                                                      this.syncServerWam, new List<String>(), false,
-                                                     true, userEmail));
+                                                     true, userEmail), 1);
             ApexPages.addMessage(new ApexPages.message(ApexPages.severity.CONFIRM, 'Malt tables scheduled for : ' + this.syncServerWam + ' ' + this.syncMonthWam + '/' + this.syncYearWam + ' - status email will be send when synchronization will end.'));
         } else {
             ApexPages.addMessage(new ApexPages.message(ApexPages.severity.ERROR, 'Date is invalid : ' + this.syncMonthWam + '/' + this.syncYearWam
