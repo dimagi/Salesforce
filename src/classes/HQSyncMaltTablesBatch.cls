@@ -22,7 +22,7 @@ public class HQSyncMaltTablesBatch extends HQSyncBatch {
         this.domainsMalt = new Map<String, Decimal>();
         this.size = 60;
 
-        Date tmpDate = monthDate;
+        Date tmpDate = this.monthDate;
         String startDate = tmpDate.year() + '-' + tmpDate.month() + '-' + tmpDate.day();
         tmpDate.addDays(1);
         String endDate = tmpDate.year() + '-' + tmpDate.month() + '-' + tmpDate.day();
@@ -86,14 +86,12 @@ public class HQSyncMaltTablesBatch extends HQSyncBatch {
                         objModel.domain_name = objModel.domain_name.subString(0, 80);
                     }
 
-                    if (objModel.num_of_forms == null && objModel.num_of_forms == 0) {
-                        continue; // we skip this object if forms is equal to 0 or null we don't need add anything
-                    }
-
-                    if (domainsMalt.containsKey(objModel.domain_name)) {
-                        domainsMalt.put(objModel.domain_name, domainsMalt.get(objModel.domain_name) + objModel.num_of_forms);
-                    } else {
-                        domainsMalt.put(objModel.domain_name, (objModel.num_of_forms != null ? objModel.num_of_forms : 0));
+                    if (objModel.num_of_forms != null && objModel.num_of_forms > 0) {
+                        if (domainsMalt.containsKey(objModel.domain_name)) {
+                            domainsMalt.put(objModel.domain_name, domainsMalt.get(objModel.domain_name) + objModel.num_of_forms);
+                        } else {
+                            domainsMalt.put(objModel.domain_name, (objModel.num_of_forms != null ? objModel.num_of_forms : 0));
+                        }
                     }
                 }
                 parser.skipChildren();
@@ -131,6 +129,10 @@ public class HQSyncMaltTablesBatch extends HQSyncBatch {
             return;
         }
         StatusLoggerUtils.logError(StatusLoggerUtils.MALT_SYNC_LOGGER, this.jobName, offset, this.serverName + ' - ' + message + ' - ' + e.getMessage());
-        insert new HQ_Sync_Error__c(Server_Name__c = this.serverName, Offset__c = offset, Object_Type__c = 'Malt Tables', Date__c = this.monthDate);
+
+        List<HQ_Sync_Error__c> oldRunsErrors = [SELECT Id FROM HQ_Sync_Error__c WHERE Object_Type__c = 'Malt Tables' AND Server_Name__c =: this.serverName AND Date__c =: this.monthDate AND Offset__c =: offset];
+        if (oldRunsErrors.size() == 0) { // we don't want duplicated offset error
+            insert new HQ_Sync_Error__c(Server_Name__c = this.serverName, Offset__c = offset, Object_Type__c = 'Malt Tables', Date__c = this.monthDate);
+        }
     }
 }
