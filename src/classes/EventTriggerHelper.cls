@@ -1,38 +1,32 @@
-/**
- * TODO refacor
- */
 public class EventTriggerHelper{
-    public static void createEventOnOpportunity(List<Event> eventList) {
-        
-        if(CheckRecursive.firstRun){
-            CheckRecursive.firstrun=false;
-            
-            Set<Id> contactIds = new Set<Id>();
-            Map<Id,Set<Id>> contactIdOppIdMap = new Map<Id,Set<Id>>();
 
+    public static void createEventOnOpportunity(List<Event> eventList) {
+        if(CheckRecursive.firstRun){
+            CheckRecursive.firstrun = false;
+            Set<Id> contactIds = new Set<Id>();
+            Map<Id,Set<Id>> contactIdOppIdMap = new Map<Id, Set<Id>>();
 
             for(Event theEvent : eventList) {
                 if(theEvent.WhoId != null) {
                     contactIds.add(theEvent.WhoId);
                 }
             }
-            
-                
-            for(OpportunityContactRole contactRole : [Select id,ContactId,Contact.Name,OpportunityId from OpportunityContactRole where ContactId IN :contactIds]) {
+
+            for(OpportunityContactRole contactRole : [SELECT Id, ContactId, Contact.Name, OpportunityId FROM OpportunityContactRole WHERE ContactId IN: contactIds]) {
                 if(contactIdOppIdMap.containsKey(contactRole.ContactId)) {
                     Set<Id> tempSet = new Set<Id>(contactIdOppIdMap.get(contactRole.ContactId));
                     tempSet.add(contactRole.OpportunityId);
                     contactIdOppIdMap.put(contactRole.ContactId,tempSet);
-                }else{
-                    contactIdOppIdMap.put(contactRole.ContactId,new Set<Id>{contactRole.OpportunityId});
+                } else {
+                    contactIdOppIdMap.put(contactRole.ContactId, new Set<Id> { contactRole.OpportunityId });
                 }
             }
-            
+
             List<Event> eventsToCreate = new List<Event>();
-            for(Event theEvent : eventList) {
-                if(theEvent.WhoId != null && contactIdOppIdMap.containsKey(theEvent.WhoId)) {
-                    for(Id theOppId :  contactIdOppIdMap.get(theEvent.WhoId)) {
-                        if(theEvent.WhatId != theOppId) {
+            for (Event theEvent : eventList) {
+                if (theEvent.WhoId != null && contactIdOppIdMap.containsKey(theEvent.WhoId)) {
+                    for( Id theOppId :  contactIdOppIdMap.get(theEvent.WhoId)) {
+                        if (theEvent.WhatId != theOppId) {
                             Event newTask = new Event(
                                 IsAllDayEvent = theEvent.IsAllDayEvent,
                                 OwnerId = theEvent.OwnerId,
@@ -57,13 +51,12 @@ public class EventTriggerHelper{
                     }
                 }
             }
+
             try{
                 insert eventsToCreate;
             }catch(Exception ex) {
-                
+                System.debug(System.LoggingLevel.ERROR, 'Cannot insert events for Opps');
             }
-            
-            
         }
     }
 }

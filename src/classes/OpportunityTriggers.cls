@@ -3,12 +3,10 @@
  *
  * @author  Antonio Grassi
  * @date    11/13/2012
- * TODO: refactor
  */
 public with sharing class OpportunityTriggers {
-    private static final Set<String> PRODUCTS_AS_TAGS = new Set<String>{'CommCare', 
-                                                                        'CommConnect', 
-                                                                        'CommTrack'};
+
+    private static final Set<String> PRODUCTS_AS_TAGS = new Set<String>{'CommCare', 'CommConnect', 'CommTrack'};
 
     public static void updateDomainAccountRelation(List<Opportunity> oppsNew, Map<Id, Opportunity> oldOppsMap) {
         Set<Id> oppsWithUpdatedAccount = new Set<Id>();

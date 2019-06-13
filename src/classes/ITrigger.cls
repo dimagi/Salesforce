@@ -1,10 +1,8 @@
 /**
  * Interface containing methods Trigger Handlers must implement to enforce best practice
  * and bulkification of triggers.
- TODO :delete
  */
-public interface ITrigger 
-{
+public interface ITrigger {
     /**
      * bulkBefore
      *
@@ -12,7 +10,7 @@ public interface ITrigger
      * any data required into maps prior execution of the trigger.
      */
     void bulkBefore();
-    
+
     /**
      * bulkAfter
      *
@@ -20,7 +18,7 @@ public interface ITrigger
      * any data required into maps prior execution of the trigger.
      */
     void bulkAfter();
-    
+
     /**
      * beforeInsert
      *
@@ -28,7 +26,7 @@ public interface ITrigger
      * trigger. Never execute any SOQL/SOSL etc in this and other iterative methods.
      */
     void beforeInsert(SObject so);
-    
+
     /**
      * beforeUpdate
      *
@@ -77,6 +75,6 @@ public interface ITrigger
      * method to accomplish any final operations such as creation or updates of other records.
      */
     void andFinally();
-    
+
     boolean skipExecution();
 }

@@ -4,7 +4,6 @@ Class Description: Class for Location creating from an Opportunity or a Deployme
 Author: Virginia Fernández (vfernandez@adooxen.com)
 Update Date: 2013-04-10
 Additional Comments: 
-TODO : refactor
 **************************************************/
 public with sharing class LocationController {
 
@@ -28,7 +27,7 @@ public with sharing class LocationController {
 
     public PageReference newOpportunityLocation() {
         insert location;
-        
+
         Opportunity_Location__c oppLocation = new Opportunity_Location__c();
         oppLocation.Location__c = location.Id;
         oppLocation.Opportunity__c = objId;
