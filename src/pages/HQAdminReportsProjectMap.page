@@ -77,7 +77,7 @@
         $j(document).ready(function() {
             $j('#dataModal').dialog({ autoOpen: false, modal: true, closeOnEscape: true, dialogClass: 'modalBase', width: 'auto', height: 'auto' });
             choosenFilters = {};
-            lastChoosenFilters = choosenFilters;
+            lastChoosenFilters = Object.assign({}, choosenFilters);
             showLoader('#facets-loader');
             HQAdminReportsProjectMapController.loadReportMapFacets(JSON.stringify(lastChoosenFilters), function(result, event){
                 if(event.status) {
@@ -405,7 +405,7 @@
         }
 
         function applyFilters() {
-            lastChoosenFilters = choosenFilters;
+            lastChoosenFilters = Object.assign({}, choosenFilters);
             showLoader('#facets-loader');
             dataController.refreshProjectData(mapController.updateStats);
             HQAdminReportsProjectMapController.loadReportMapFacets(JSON.stringify(lastChoosenFilters), function(result, event) {

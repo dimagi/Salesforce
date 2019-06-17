@@ -1,7 +1,7 @@
 public class HQAdminReportFactory {
 
-    private static final List<String> supportedReportsParams = new List<String> {'spaceList', 'allprojectSpaces', 'usingMessaging', 'commcareSupply'};
-    private static final Map<String, String> supportedReportsMap = new Map<String, String> {'spaceList' => 'Project Space List',
+    public static final List<String> supportedReportsParams = new List<String> {'spaceList', 'allprojectSpaces', 'usingMessaging', 'commcareSupply'};
+    public static final Map<String, String> supportedReportsMap = new Map<String, String> {'spaceList' => 'Project Space List',
                                                                                                 'allprojectSpaces' => 'All Project Spaces',
                                                                                                 'usingMessaging' => 'Project Spaces Using Messaging',
                                                                                                 'commcareSupply' => 'CommCare Supply Project Spaces'};
