@@ -367,6 +367,50 @@ public class HQAdminReportsTest {
         System.assertEquals(55, sum);
     }
 
+    @isTest
+    public static void shouldRemoveExports() {
+        HQ_Admin_Report_CSV_Files__c exportData1 = new HQ_Admin_Report_CSV_Files__c(Facet_Filters_JSON__c = 'jsonFilters1', Domain_Name__c = 'domainName1',
+                                                                                   Order_Field__c = 'sortField', Order_Direction__c = false,
+                                                                                   Name = 'loadedReport1');
+        HQ_Admin_Report_CSV_Files__c exportData2 = new HQ_Admin_Report_CSV_Files__c(Facet_Filters_JSON__c = 'jsonFilters2', Domain_Name__c = 'domainName2',
+                                                                                   Order_Field__c = 'sortField', Order_Direction__c = false,
+                                                                                   Name = 'loadedReport2');
+        HQ_Admin_Report_CSV_Files__c exportData3 = new HQ_Admin_Report_CSV_Files__c(Facet_Filters_JSON__c = 'jsonFilters3', Domain_Name__c = 'domainName3',
+                                                                                   Order_Field__c = 'sortField3', Order_Direction__c = false,
+                                                                                   Name = 'loadedReport3');
+        insert new List<HQ_Admin_Report_CSV_Files__c> { exportData1, exportData2, exportData3 };
+
+        Test.setCreatedDate(exportData1.Id, DateTime.now().addHours(-2));
+        Test.setCreatedDate(exportData2.Id, DateTime.now().addDays(-1));
+
+        System.assertEquals(3, [SELECT Id FROM HQ_Admin_Report_CSV_Files__c].size());
+        Test.startTest();
+        HQAdminReportsExportController.deleteOldExports();
+        Test.stopTest();
+        System.assertEquals(1, [SELECT Id FROM HQ_Admin_Report_CSV_Files__c].size());
+    }
+
+    @isTest
+    public static void testExportController() {
+         HQ_Admin_Report_CSV_Files__c exportData = new HQ_Admin_Report_CSV_Files__c(Facet_Filters_JSON__c = '{"cpIsActive__c":["false"]}', Domain_Name__c = '',
+                                                                                   Order_Field__c = '', Order_Direction__c = false,
+                                                                                   Name = 'spaceList');
+        insert exportData;
+
+        PageReference pageRef = Page.HQAdminReportExport;
+        pageRef.getParameters().put('facetId', exportData.Id);
+        Test.setCurrentPage(pageRef);
+
+        Test.startTest();
+        HQAdminReportsExportController reportCtrl = new HQAdminReportsExportController();
+        Test.stopTest();
+
+        System.assertEquals(1, [SELECT Id FROM HQ_Admin_Report_CSV_Files__c].size()); // in read-only mode we cannot delete records
+        System.assertEquals(5, reportCtrl.getDomainRecords().size());
+        System.assertEquals('project_space_list_' + Date.today().month() + '_' + Date.today().day() + '_' + Date.today().year(), reportCtrl.fileName);
+        System.assertEquals(DateTime.now(), reportCtrl.generationDate);
+    }
+
     private static void validateTotalRow(HQAdminReportsController reportCtrl, Integer expValue) {
         System.assertEquals(expValue, reportCtrl.totalRow.cpActiveMobileUsers__c);
         System.assertEquals(expValue, reportCtrl.totalRow.cpAllMobileUsers__c);

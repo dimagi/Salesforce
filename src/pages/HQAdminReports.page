@@ -19,7 +19,8 @@
 
         $j(document).ready(function() {
             choosenFilters = JSON.parse($j("[id$=loadedFilters]").val());
-            lastChoosenFilters = choosenFilters;
+            lastChoosenFilters = Object.assign({}, choosenFilters);
+            predefinedFilters = Object.assign({}, choosenFilters); // used to block checkboxes on the UI
             showLoader('#facets-loader');
             HQAdminReportsController.loadReportFacets('default-facets',JSON.stringify(lastChoosenFilters), lastDomainName, function(result, event){
                 if(event.status) {
@@ -208,7 +209,7 @@
 
         function applyFilters() {
             $j("[id$=loadedFilters]").val(JSON.stringify(choosenFilters));
-            lastChoosenFilters = choosenFilters;
+            lastChoosenFilters = Object.assign({}, choosenFilters);;
             lastDomainName = $j("[id$=searchDomainText]").val();
             showLoader('#facets-loader');
             HQAdminReportsController.loadReportFacets('default-facets', JSON.stringify(lastChoosenFilters), lastDomainName, function(result, event) {
@@ -220,6 +221,15 @@
             });
             addGraphs(false);
             return searchDomainJs(JSON.stringify(choosenFilters));
+        }
+
+        function exportReportToCSV() {
+            var sortField = $j("[id$=tableSortField").val(), sortDirection = $j("[id$=tableSortDirection").val();
+            HQAdminReportsController.generateCSVExportId("{!reportName}", JSON.stringify(lastChoosenFilters), lastDomainName, sortField, sortDirection, function(result, event) {
+                if(event.status) {
+                    window.open("HQAdminReportExport?facetId=" + result);
+                }
+            });
         }
     </script>
 
@@ -272,13 +282,17 @@
                                 </div>
                             </apex:facet>
                         </apex:actionstatus>
-
+                        <div class="export-container">
+                            <input type="button" class="btn msidebarRow" onclick="exportReportToCSV();" value="Export to CSV (up to 10k)" />
+                        </div>
                         <apex:outputPanel id="apex-data-container" layout="block" styleClass="tablePanel">
+                            <apex:inputHidden id="tableSortField" value="{!sortField}" />
+                            <apex:inputHidden id="tableSortDirection" value="{!sortDir}" />
                             <apex:pageBlockTable id="projectSpaceDataTable" value="{!DomainTableData}" var="projectSpaceData" footerClass="footerHeader" >
                                 <apex:column >
                                     <apex:facet name="header">
                                         <apex:outputPanel >
-                                            <apex:commandLink action="{!sortColumn}" reRender="projectSpaceDataTable" status="loadingDiv">
+                                            <apex:commandLink action="{!sortColumn}" reRender="projectSpaceDataTable,tableSortField,tableSortDirection" status="loadingDiv">
                                                 <apex:param name="sortField" value="Name" assignTo="{!sortField}" />
                                                 Project
                                                 <apex:image value="/img/s.gif" rendered="{!IF(sortField == 'Name', true, false)}" alt="{!IF(sortDir == false,'Sorted Ascending','Sorted Descending')}"
@@ -292,7 +306,7 @@
                                 <apex:column >
                                     <apex:facet name="header">
                                         <apex:outputPanel >
-                                            <apex:commandLink action="{!sortColumn}" reRender="projectSpaceDataTable" status="loadingDiv">
+                                            <apex:commandLink action="{!sortColumn}" reRender="projectSpaceDataTable,tableSortField,tableSortDirection" status="loadingDiv">
                                                 <apex:param name="sortField" value="Server_Name__c" assignTo="{!sortField}" />
                                                 Server Name
                                                 <apex:image value="/img/s.gif" rendered="{!IF(sortField == 'Server_Name__c', true, false)}" alt="{!IF(sortDir == false,'Sorted Ascending','Sorted Descending')}"
@@ -306,7 +320,7 @@
                                 <apex:column >
                                     <apex:facet name="header">
                                         <apex:outputPanel >
-                                            <apex:commandLink action="{!sortColumn}" reRender="projectSpaceDataTable" status="loadingDiv">
+                                            <apex:commandLink action="{!sortColumn}" reRender="projectSpaceDataTable,tableSortField,tableSortDirection" status="loadingDiv">
                                                 <apex:param name="sortField" value="date_created__c" assignTo="{!sortField}" />
                                                 Date Created
                                                 <apex:image value="/img/s.gif" rendered="{!IF(sortField == 'date_created__c', true, false)}" alt="{!IF(sortDir == false,'Sorted Ascending','Sorted Descending')}"
@@ -320,7 +334,7 @@
                                 <apex:column >
                                     <apex:facet name="header">
                                         <apex:outputPanel >
-                                            <apex:commandLink action="{!sortColumn}" reRender="projectSpaceDataTable" status="loadingDiv">
+                                            <apex:commandLink action="{!sortColumn}" reRender="projectSpaceDataTable,tableSortField,tableSortDirection" status="loadingDiv">
                                                 <apex:param name="sortField" value="InternalProp_organization_name__c" assignTo="{!sortField}" />
                                                 Organization
                                                 <apex:image value="/img/s.gif" rendered="{!IF(sortField == 'InternalProp_organization_name__c', true, false)}" alt="{!IF(sortDir == false,'Sorted Ascending','Sorted Descending')}"
@@ -338,7 +352,7 @@
                                 <apex:column >
                                     <apex:facet name="header">
                                         <apex:outputPanel >
-                                            <apex:commandLink action="{!sortColumn}" reRender="projectSpaceDataTable" status="loadingDiv">
+                                            <apex:commandLink action="{!sortColumn}" reRender="projectSpaceDataTable,tableSortField,tableSortDirection" status="loadingDiv">
                                                 <apex:param name="sortField" value="cpActiveMobileUsers__c" assignTo="{!sortField}" />
                                                 Active Mobile Workers
                                                 <apex:image value="/img/s.gif" rendered="{!IF(sortField == 'cpActiveMobileUsers__c', true, false)}" alt="{!IF(sortDir == false,'Sorted Ascending','Sorted Descending')}"
@@ -352,7 +366,7 @@
                                 <apex:column >
                                     <apex:facet name="header">
                                         <apex:outputPanel >
-                                            <apex:commandLink action="{!sortColumn}" reRender="projectSpaceDataTable" status="loadingDiv">
+                                            <apex:commandLink action="{!sortColumn}" reRender="projectSpaceDataTable,tableSortField,tableSortDirection" status="loadingDiv">
                                                 <apex:param name="sortField" value="cpAllMobileUsers__c" assignTo="{!sortField}" />
                                                 Mobile Workers
                                                 <apex:image value="/img/s.gif" rendered="{!IF(sortField == 'cpAllMobileUsers__c', true, false)}" alt="{!IF(sortDir == false,'Sorted Ascending','Sorted Descending')}"
@@ -366,7 +380,7 @@
                                 <apex:column >
                                     <apex:facet name="header">
                                         <apex:outputPanel >
-                                            <apex:commandLink action="{!sortColumn}" reRender="projectSpaceDataTable" status="loadingDiv">
+                                            <apex:commandLink action="{!sortColumn}" reRender="projectSpaceDataTable,tableSortField,tableSortDirection" status="loadingDiv">
                                                 <apex:param name="sortField" value="Cp_n_users_submitted_form__c" assignTo="{!sortField}" />
                                                 # Mobile Workers (Submitted Form)
                                                 <apex:image value="/img/s.gif" rendered="{!IF(sortField == 'Cp_n_users_submitted_form__c', true, false)}" alt="{!IF(sortDir == false,'Sorted Ascending','Sorted Descending')}"
@@ -380,7 +394,7 @@
                                 <apex:column >
                                     <apex:facet name="header">
                                         <apex:outputPanel >
-                                            <apex:commandLink action="{!sortColumn}" reRender="projectSpaceDataTable" status="loadingDiv">
+                                            <apex:commandLink action="{!sortColumn}" reRender="projectSpaceDataTable,tableSortField,tableSortDirection" status="loadingDiv">
                                                 <apex:param name="sortField" value="cpCasesIn60Days__c" assignTo="{!sortField}" />
                                                 Cases in last 60 days
                                                 <apex:image value="/img/s.gif" rendered="{!IF(sortField == 'cpCasesIn60Days__c', true, false)}" alt="{!IF(sortDir == false,'Sorted Ascending','Sorted Descending')}"
@@ -394,7 +408,7 @@
                                 <apex:column >
                                     <apex:facet name="header">
                                         <apex:outputPanel >
-                                            <apex:commandLink action="{!sortColumn}" reRender="projectSpaceDataTable" status="loadingDiv">
+                                            <apex:commandLink action="{!sortColumn}" reRender="projectSpaceDataTable,tableSortField,tableSortDirection" status="loadingDiv">
                                                 <apex:param name="sortField" value="cpAllActiveCases__c" assignTo="{!sortField}" />
                                                 Active Cases
                                                 <apex:image value="/img/s.gif" rendered="{!IF(sortField == 'cpAllActiveCases__c', true, false)}" alt="{!IF(sortDir == false,'Sorted Ascending','Sorted Descending')}"
@@ -408,7 +422,7 @@
                                 <apex:column >
                                     <apex:facet name="header">
                                         <apex:outputPanel >
-                                            <apex:commandLink action="{!sortColumn}" reRender="projectSpaceDataTable" status="loadingDiv">
+                                            <apex:commandLink action="{!sortColumn}" reRender="projectSpaceDataTable,tableSortField,tableSortDirection" status="loadingDiv">
                                                 <apex:param name="sortField" value="cpAllInactiveCases__c" assignTo="{!sortField}" />
                                                 Inactive Cases
                                                 <apex:image value="/img/s.gif" rendered="{!IF(sortField == 'cpAllInactiveCases__c', true, false)}" alt="{!IF(sortDir == false,'Sorted Ascending','Sorted Descending')}"
@@ -422,7 +436,7 @@
                                 <apex:column >
                                     <apex:facet name="header">
                                         <apex:outputPanel >
-                                            <apex:commandLink action="{!sortColumn}" reRender="projectSpaceDataTable" status="loadingDiv">
+                                            <apex:commandLink action="{!sortColumn}" reRender="projectSpaceDataTable,tableSortField,tableSortDirection" status="loadingDiv">
                                                 <apex:param name="sortField" value="cpAllCases__c" assignTo="{!sortField}" />
                                                 Cases
                                                 <apex:image value="/img/s.gif" rendered="{!IF(sortField == 'cpAllCases__c', true, false)}" alt="{!IF(sortDir == false,'Sorted Ascending','Sorted Descending')}"
@@ -436,7 +450,7 @@
                                 <apex:column >
                                     <apex:facet name="header">
                                         <apex:outputPanel >
-                                            <apex:commandLink action="{!sortColumn}" reRender="projectSpaceDataTable" status="loadingDiv">
+                                            <apex:commandLink action="{!sortColumn}" reRender="projectSpaceDataTable,tableSortField,tableSortDirection" status="loadingDiv">
                                                 <apex:param name="sortField" value="cpAllForms__c" assignTo="{!sortField}" />
                                                 Form Submissions
                                                 <apex:image value="/img/s.gif" rendered="{!IF(sortField == 'cpAllForms__c', true, false)}" alt="{!IF(sortDir == false,'Sorted Ascending','Sorted Descending')}"
@@ -450,7 +464,7 @@
                                 <apex:column >
                                     <apex:facet name="header">
                                         <apex:outputPanel >
-                                            <apex:commandLink action="{!sortColumn}" reRender="projectSpaceDataTable" status="loadingDiv">
+                                            <apex:commandLink action="{!sortColumn}" reRender="projectSpaceDataTable,tableSortField,tableSortDirection" status="loadingDiv">
                                                 <apex:param name="sortField" value="cpFormsIn30Days__c" assignTo="{!sortField}" />
                                                 Form Submissions in last 30 days
                                                 <apex:image value="/img/s.gif" rendered="{!IF(sortField == 'cpFormsIn30Days__c', true, false)}" alt="{!IF(sortDir == false,'Sorted Ascending','Sorted Descending')}"
@@ -464,7 +478,7 @@
                                 <apex:column >
                                     <apex:facet name="header">
                                         <apex:outputPanel >
-                                            <apex:commandLink action="{!sortColumn}" reRender="projectSpaceDataTable" status="loadingDiv">
+                                            <apex:commandLink action="{!sortColumn}" reRender="projectSpaceDataTable,tableSortField,tableSortDirection" status="loadingDiv">
                                                 <apex:param name="sortField" value="cpFirstFormSubmissionDate__c" assignTo="{!sortField}" />
                                                 First Form Submission
                                                 <apex:image value="/img/s.gif" rendered="{!IF(sortField == 'cpFirstFormSubmissionDate__c', true, false)}" alt="{!IF(sortDir == false,'Sorted Ascending','Sorted Descending')}"
@@ -478,7 +492,7 @@
                                 <apex:column >
                                     <apex:facet name="header">
                                         <apex:outputPanel >
-                                            <apex:commandLink action="{!sortColumn}" reRender="projectSpaceDataTable" status="loadingDiv">
+                                            <apex:commandLink action="{!sortColumn}" reRender="projectSpaceDataTable,tableSortField,tableSortDirection" status="loadingDiv">
                                                 <apex:param name="sortField" value="cp300thFormSubmission__c" assignTo="{!sortField}" />
                                                 300th Form Submission
                                                 <apex:image value="/img/s.gif" rendered="{!IF(sortField == 'cp300thFormSubmission__c', true, false)}" alt="{!IF(sortDir == false,'Sorted Ascending','Sorted Descending')}"
@@ -492,7 +506,7 @@
                                 <apex:column >
                                     <apex:facet name="header">
                                         <apex:outputPanel >
-                                            <apex:commandLink action="{!sortColumn}" reRender="projectSpaceDataTable" status="loadingDiv">
+                                            <apex:commandLink action="{!sortColumn}" reRender="projectSpaceDataTable,tableSortField,tableSortDirection" status="loadingDiv">
                                                 <apex:param name="sortField" value="cpLastFormSubmissionDate__c" assignTo="{!sortField}" />
                                                 Last Form Submission
                                                 <apex:image value="/img/s.gif" rendered="{!IF(sortField == 'cpLastFormSubmissionDate__c', true, false)}" alt="{!IF(sortDir == false,'Sorted Ascending','Sorted Descending')}"
@@ -506,7 +520,7 @@
                                 <apex:column >
                                     <apex:facet name="header">
                                         <apex:outputPanel >
-                                            <apex:commandLink action="{!sortColumn}" reRender="projectSpaceDataTable" status="loadingDiv">
+                                            <apex:commandLink action="{!sortColumn}" reRender="projectSpaceDataTable,tableSortField,tableSortDirection" status="loadingDiv">
                                                 <apex:param name="sortField" value="cpAllWebUsers__c" assignTo="{!sortField}" />
                                                 # Web Users
                                                 <apex:image value="/img/s.gif" rendered="{!IF(sortField == 'cpAllWebUsers__c', true, false)}" alt="{!IF(sortDir == false,'Sorted Ascending','Sorted Descending')}"
@@ -524,7 +538,7 @@
                                 <apex:column >
                                     <apex:facet name="header">
                                         <apex:outputPanel >
-                                            <apex:commandLink action="{!sortColumn}" reRender="projectSpaceDataTable" status="loadingDiv">
+                                            <apex:commandLink action="{!sortColumn}" reRender="projectSpaceDataTable,tableSortField,tableSortDirection" status="loadingDiv">
                                                 <apex:param name="sortField" value="InternalProp_project_state__c" assignTo="{!sortField}" />
                                                 Project State
                                                 <apex:image value="/img/s.gif" rendered="{!IF(sortField == 'InternalProp_project_state__c', true, false)}" alt="{!IF(sortDir == false,'Sorted Ascending','Sorted Descending')}"
@@ -538,7 +552,7 @@
                                 <apex:column headerValue="Using ADM?">
                                     <apex:facet name="header">
                                         <apex:outputPanel >
-                                            <apex:commandLink action="{!sortColumn}" reRender="projectSpaceDataTable" status="loadingDiv">
+                                            <apex:commandLink action="{!sortColumn}" reRender="projectSpaceDataTable,tableSortField,tableSortDirection" status="loadingDiv">
                                                 <apex:param name="sortField" value="InternalProp_using_adm__c" assignTo="{!sortField}" />
                                                 Using ADM?
                                                 <apex:image value="/img/s.gif" rendered="{!IF(sortField == 'InternalProp_using_adm__c', true, false)}" alt="{!IF(sortDir == false,'Sorted Ascending','Sorted Descending')}"
@@ -552,7 +566,7 @@
                                 <apex:column >
                                     <apex:facet name="header">
                                         <apex:outputPanel >
-                                            <apex:commandLink action="{!sortColumn}" reRender="projectSpaceDataTable" status="loadingDiv">
+                                            <apex:commandLink action="{!sortColumn}" reRender="projectSpaceDataTable,tableSortField,tableSortDirection" status="loadingDiv">
                                                 <apex:param name="sortField" value="InternalProp_using_call_center__c" assignTo="{!sortField}" />
                                                 Using Call Center?
                                                 <apex:image value="/img/s.gif" rendered="{!IF(sortField == 'InternalProp_using_call_center__c', true, false)}" alt="{!IF(sortDir == false,'Sorted Ascending','Sorted Descending')}"
@@ -566,7 +580,7 @@
                                 <apex:column >
                                     <apex:facet name="header">
                                         <apex:outputPanel >
-                                            <apex:commandLink action="{!sortColumn}" reRender="projectSpaceDataTable" status="loadingDiv">
+                                            <apex:commandLink action="{!sortColumn}" reRender="projectSpaceDataTable,tableSortField,tableSortDirection" status="loadingDiv">
                                                 <apex:param name="sortField" value="Cp_last_update__c" assignTo="{!sortField}" />
                                                 Date Last Updated
                                                 <apex:image value="/img/s.gif" rendered="{!IF(sortField == 'Cp_last_update__c', true, false)}" alt="{!IF(sortDir == false,'Sorted Ascending','Sorted Descending')}"
@@ -580,7 +594,7 @@
                                 <apex:column >
                                     <apex:facet name="header">
                                         <apex:outputPanel >
-                                            <apex:commandLink action="{!sortColumn}" reRender="projectSpaceDataTable" status="loadingDiv">
+                                            <apex:commandLink action="{!sortColumn}" reRender="projectSpaceDataTable,tableSortField,tableSortDirection" status="loadingDiv">
                                                 <apex:param name="sortField" value="InternalProp_area__c" assignTo="{!sortField}" />
                                                 Sector
                                                 <apex:image value="/img/s.gif" rendered="{!IF(sortField == 'InternalProp_area__c', true, false)}" alt="{!IF(sortDir == false,'Sorted Ascending','Sorted Descending')}"
@@ -594,7 +608,7 @@
                                 <apex:column >
                                     <apex:facet name="header">
                                         <apex:outputPanel >
-                                            <apex:commandLink action="{!sortColumn}" reRender="projectSpaceDataTable" status="loadingDiv">
+                                            <apex:commandLink action="{!sortColumn}" reRender="projectSpaceDataTable,tableSortField,tableSortDirection" status="loadingDiv">
                                                 <apex:param name="sortField" value="InternalProp_sub_area__c" assignTo="{!sortField}" />
                                                 Sub-Sector
                                                 <apex:image value="/img/s.gif" rendered="{!IF(sortField == 'InternalProp_sub_area__c', true, false)}" alt="{!IF(sortDir == false,'Sorted Ascending','Sorted Descending')}"
@@ -608,7 +622,7 @@
                                 <apex:column >
                                     <apex:facet name="header">
                                         <apex:outputPanel >
-                                            <apex:commandLink action="{!sortColumn}" reRender="projectSpaceDataTable" status="loadingDiv">
+                                            <apex:commandLink action="{!sortColumn}" reRender="projectSpaceDataTable,tableSortField,tableSortDirection" status="loadingDiv">
                                                 <apex:param name="sortField" value="InternalProp_Business_Unit__c" assignTo="{!sortField}" />
                                                 Business Unit
                                                 <apex:image value="/img/s.gif" rendered="{!IF(sortField == 'InternalProp_Business_Unit__c', true, false)}" alt="{!IF(sortDir == false,'Sorted Ascending','Sorted Descending')}"
@@ -622,7 +636,7 @@
                                 <apex:column >
                                     <apex:facet name="header">
                                         <apex:outputPanel >
-                                            <apex:commandLink action="{!sortColumn}" reRender="projectSpaceDataTable" status="loadingDiv">
+                                            <apex:commandLink action="{!sortColumn}" reRender="projectSpaceDataTable,tableSortField,tableSortDirection" status="loadingDiv">
                                                 <apex:param name="sortField" value="InternalProp_self_started__c" assignTo="{!sortField}" />
                                                 Self-Started?
                                                 <apex:image value="/img/s.gif" rendered="{!IF(sortField == 'InternalProp_self_started__c', true, false)}" alt="{!IF(sortDir == false,'Sorted Ascending','Sorted Descending')}"
@@ -636,7 +650,7 @@
                                 <apex:column >
                                     <apex:facet name="header">
                                         <apex:outputPanel >
-                                            <apex:commandLink action="{!sortColumn}" reRender="projectSpaceDataTable" status="loadingDiv">
+                                            <apex:commandLink action="{!sortColumn}" reRender="projectSpaceDataTable,tableSortField,tableSortDirection" status="loadingDiv">
                                                 <apex:param name="sortField" value="is_test__c" assignTo="{!sortField}" />
                                                 Test Project?
                                                 <apex:image value="/img/s.gif" rendered="{!IF(sortField == 'is_test__c', true, false)}" alt="{!IF(sortDir == false,'Sorted Ascending','Sorted Descending')}"
@@ -650,7 +664,7 @@
                                 <apex:column >
                                     <apex:facet name="header">
                                         <apex:outputPanel >
-                                            <apex:commandLink action="{!sortColumn}" reRender="projectSpaceDataTable" status="loadingDiv">
+                                            <apex:commandLink action="{!sortColumn}" reRender="projectSpaceDataTable,tableSortField,tableSortDirection" status="loadingDiv">
                                                 <apex:param name="sortField" value="cpIsActive__c" assignTo="{!sortField}" />
                                                 Active?
                                                 <apex:image value="/img/s.gif" rendered="{!IF(sortField == 'cpIsActive__c', true, false)}" alt="{!IF(sortDir == false,'Sorted Ascending','Sorted Descending')}"
@@ -664,7 +678,7 @@
                                 <apex:column headerValue="CommCare Supply?">
                                     <apex:facet name="header">
                                         <apex:outputPanel >
-                                            <apex:commandLink action="{!sortColumn}" reRender="projectSpaceDataTable" status="loadingDiv">
+                                            <apex:commandLink action="{!sortColumn}" reRender="projectSpaceDataTable,tableSortField,tableSortDirection" status="loadingDiv">
                                                 <apex:param name="sortField" value="InternalProp_commtrack_domain__c" assignTo="{!sortField}" />
                                                 CommCare Supply?
                                                 <apex:image value="/img/s.gif" rendered="{!IF(sortField == 'InternalProp_commtrack_domain__c', true, false)}" alt="{!IF(sortDir == false,'Sorted Ascending','Sorted Descending')}"
@@ -678,7 +692,7 @@
                                 <apex:column >
                                     <apex:facet name="header">
                                         <apex:outputPanel >
-                                            <apex:commandLink action="{!sortColumn}" reRender="projectSpaceDataTable" status="loadingDiv">
+                                            <apex:commandLink action="{!sortColumn}" reRender="projectSpaceDataTable,tableSortField,tableSortDirection" status="loadingDiv">
                                                 <apex:param name="sortField" value="cpAllOutgoingSms__c" assignTo="{!sortField}" />
                                                 Outgoing SMS
                                                 <apex:image value="/img/s.gif" rendered="{!IF(sortField == 'cpAllOutgoingSms__c', true, false)}" alt="{!IF(sortDir == false,'Sorted Ascending','Sorted Descending')}"
@@ -692,7 +706,7 @@
                                 <apex:column >
                                     <apex:facet name="header">
                                         <apex:outputPanel >
-                                            <apex:commandLink action="{!sortColumn}" reRender="projectSpaceDataTable" status="loadingDiv">
+                                            <apex:commandLink action="{!sortColumn}" reRender="projectSpaceDataTable,tableSortField,tableSortDirection" status="loadingDiv">
                                                 <apex:param name="sortField" value="cpAllIncomingSms__c" assignTo="{!sortField}" />
                                                 Incoming SMS
                                                 <apex:image value="/img/s.gif" rendered="{!IF(sortField == 'cpAllIncomingSms__c', true, false)}" alt="{!IF(sortDir == false,'Sorted Ascending','Sorted Descending')}"
@@ -706,7 +720,7 @@
                                 <apex:column >
                                     <apex:facet name="header">
                                         <apex:outputPanel >
-                                            <apex:commandLink action="{!sortColumn}" reRender="projectSpaceDataTable" status="loadingDiv">
+                                            <apex:commandLink action="{!sortColumn}" reRender="projectSpaceDataTable,tableSortField,tableSortDirection" status="loadingDiv">
                                                 <apex:param name="sortField" value="cpAllSms__c" assignTo="{!sortField}" />
                                                 # SMS Ever
                                                 <apex:image value="/img/s.gif" rendered="{!IF(sortField == 'cpAllSms__c', true, false)}" alt="{!IF(sortDir == false,'Sorted Ascending','Sorted Descending')}"
@@ -720,7 +734,7 @@
                                 <apex:column >
                                     <apex:facet name="header">
                                         <apex:outputPanel >
-                                            <apex:commandLink action="{!sortColumn}" reRender="projectSpaceDataTable" status="loadingDiv">
+                                            <apex:commandLink action="{!sortColumn}" reRender="projectSpaceDataTable,tableSortField,tableSortDirection" status="loadingDiv">
                                                 <apex:param name="sortField" value="cpIncomingSmsIn30Days__c" assignTo="{!sortField}" />
                                                 Incoming SMS in last 30 days
                                                 <apex:image value="/img/s.gif" rendered="{!IF(sortField == 'cpIncomingSmsIn30Days__c', true, false)}" alt="{!IF(sortDir == false,'Sorted Ascending','Sorted Descending')}"
@@ -734,7 +748,7 @@
                                 <apex:column >
                                     <apex:facet name="header">
                                         <apex:outputPanel >
-                                            <apex:commandLink action="{!sortColumn}" reRender="projectSpaceDataTable" status="loadingDiv">
+                                            <apex:commandLink action="{!sortColumn}" reRender="projectSpaceDataTable,tableSortField,tableSortDirection" status="loadingDiv">
                                                 <apex:param name="sortField" value="cpOutgoingSmsIn30Days__c" assignTo="{!sortField}" />
                                                 Outgoing SMS in last 30 days
                                                 <apex:image value="/img/s.gif" rendered="{!IF(sortField == 'cpOutgoingSmsIn30Days__c', true, false)}" alt="{!IF(sortDir == false,'Sorted Ascending','Sorted Descending')}"
@@ -748,7 +762,7 @@
                                 <apex:column >
                                     <apex:facet name="header">
                                         <apex:outputPanel >
-                                            <apex:commandLink action="{!sortColumn}" reRender="projectSpaceDataTable" status="loadingDiv">
+                                            <apex:commandLink action="{!sortColumn}" reRender="projectSpaceDataTable,tableSortField,tableSortDirection" status="loadingDiv">
                                                 <apex:param name="sortField" value="InternalProp_custom_eula__c" assignTo="{!sortField}" />
                                                 Custom EULA?
                                                 <apex:image value="/img/s.gif" rendered="{!IF(sortField == 'InternalProp_custom_eula__c', true, false)}" alt="{!IF(sortDir == false,'Sorted Ascending','Sorted Descending')}"
@@ -762,7 +776,7 @@
                                 <apex:column >
                                     <apex:facet name="header">
                                         <apex:outputPanel >
-                                            <apex:commandLink action="{!sortColumn}" reRender="projectSpaceDataTable" status="loadingDiv">
+                                            <apex:commandLink action="{!sortColumn}" reRender="projectSpaceDataTable,tableSortField,tableSortDirection" status="loadingDiv">
                                                 <apex:param name="sortField" value="hipaa_compliant__c" assignTo="{!sortField}" />
                                                 HIPAA Compiliant
                                                 <apex:image value="/img/s.gif" rendered="{!IF(sortField == 'hipaa_compliant__c', true, false)}" alt="{!IF(sortDir == false,'Sorted Ascending','Sorted Descending')}"
@@ -776,7 +790,7 @@
                                 <apex:column >
                                     <apex:facet name="header">
                                         <apex:outputPanel >
-                                            <apex:commandLink action="{!sortColumn}" reRender="projectSpaceDataTable" status="loadingDiv">
+                                            <apex:commandLink action="{!sortColumn}" reRender="projectSpaceDataTable,tableSortField,tableSortDirection" status="loadingDiv">
                                                 <apex:param name="sortField" value="Has_J2ME_submission_in_past_90_days__c" assignTo="{!sortField}" />
                                                 Has J2ME submission in past 90 days
                                                 <apex:image value="/img/s.gif" rendered="{!IF(sortField == 'Has_J2ME_submission_in_past_90_days__c', true, false)}" alt="{!IF(sortDir == false,'Sorted Ascending','Sorted Descending')}"
