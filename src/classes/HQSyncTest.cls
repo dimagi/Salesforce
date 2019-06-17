@@ -1078,6 +1078,62 @@ public class HQSyncTest {
      * Other Logic tests.
      */
     @isTest
+    public static void shouldDeleteDuplicatedSnapshots() {
+        generateDataForDomainSnapshot();
+
+        Domain__c domain1 = [SELECT Id FROM Domain__c WHERE id__c = 'domain_1'];
+        Domain__c domain2 = [SELECT Id FROM Domain__c WHERE id__c = 'domain_2'];
+        Domain__c domain3 = [SELECT Id FROM Domain__c WHERE id__c = 'domain_3'];
+        Domain__c domain4 = [SELECT Id FROM Domain__c WHERE id__c = 'domain_4'];
+        Domain__c domain5 = [SELECT Id FROM Domain__c WHERE id__c = 'domain_5'];
+
+        // duplicates
+        insert new Domain_Monthly_Snapshot__c(Snapshot_Date__c = Date.today().toStartOfMonth().addDays(-1), Software_Edition__c = 'Community', Domain__c = domain1.Id,
+                                                Active_Mobile_Users__c = 20, Forms__c = 325, Wam__c = 0, Forms_for_Period__c = 0, Server_Name__c = 'CommCare HQ');
+        insert new Domain_Monthly_Snapshot__c(Snapshot_Date__c = Date.today().toStartOfMonth().addDays(-1), Software_Edition__c = 'Standard', Domain__c = domain2.Id,
+                                                Active_Mobile_Users__c = 35, Forms__c = 340, Wam__c = 0, Forms_for_Period__c = 0, Server_Name__c = 'CommCare HQ');
+        insert new Domain_Monthly_Snapshot__c(Snapshot_Date__c = Date.today().toStartOfMonth().addDays(-1), Software_Edition__c = 'Pro', Domain__c = domain3.Id,
+                                                Active_Mobile_Users__c = 50, Forms__c = 355, Wam__c = 0, Forms_for_Period__c = 0, Server_Name__c = 'CommCare HQ');
+
+        // other months snapshots
+        Domain_Monthly_Snapshot__c snp1 = new Domain_Monthly_Snapshot__c(Snapshot_Date__c = Date.today().addMonths(1).toStartOfMonth().addDays(-1), Software_Edition__c = 'Community', Domain__c = domain1.Id,
+                                                Active_Mobile_Users__c = 20, Forms__c = 325, Wam__c = 0, Forms_for_Period__c = 0, Server_Name__c = 'CommCare HQ');
+        Domain_Monthly_Snapshot__c snp2 = new Domain_Monthly_Snapshot__c(Snapshot_Date__c = Date.today().addMonths(1).toStartOfMonth().addDays(-1), Software_Edition__c = 'Standard', Domain__c = domain2.Id,
+                                                Active_Mobile_Users__c = 35, Forms__c = 340, Wam__c = 0, Forms_for_Period__c = 0, Server_Name__c = 'CommCare HQ');
+        Domain_Monthly_Snapshot__c snp3 = new Domain_Monthly_Snapshot__c(Snapshot_Date__c = Date.today().addMonths(1).toStartOfMonth().addDays(-1), Software_Edition__c = 'Pro', Domain__c = domain3.Id,
+                                                Active_Mobile_Users__c = 50, Forms__c = 355, Wam__c = 0, Forms_for_Period__c = 0, Server_Name__c = 'CommCare HQ');
+        Domain_Monthly_Snapshot__c snp4 = new Domain_Monthly_Snapshot__c(Snapshot_Date__c = Date.today().addMonths(1).toStartOfMonth().addDays(-1), Software_Edition__c = 'Pro', Domain__c = domain3.Id,
+                                                Active_Mobile_Users__c = 50, Forms__c = 355, Wam__c = 0, Forms_for_Period__c = 0, Server_Name__c = 'CommCare HQ');
+        Domain_Monthly_Snapshot__c snp5 = new Domain_Monthly_Snapshot__c(Snapshot_Date__c = Date.today().addMonths(-1).toStartOfMonth().addDays(-1), Software_Edition__c = 'Community', Domain__c = domain1.Id,
+                                                Active_Mobile_Users__c = 20, Forms__c = 325, Wam__c = 0, Forms_for_Period__c = 0, Server_Name__c = 'CommCare HQ');
+        Domain_Monthly_Snapshot__c snp6 = new Domain_Monthly_Snapshot__c(Snapshot_Date__c = Date.today().addMonths(-1).toStartOfMonth().addDays(-1), Software_Edition__c = 'Standard', Domain__c = domain2.Id,
+                                                Active_Mobile_Users__c = 35, Forms__c = 340, Wam__c = 0, Forms_for_Period__c = 0, Server_Name__c = 'CommCare HQ');
+        Domain_Monthly_Snapshot__c snp7 = new Domain_Monthly_Snapshot__c(Snapshot_Date__c = Date.today().addMonths(-1).toStartOfMonth().addDays(-1), Software_Edition__c = 'Pro', Domain__c = domain3.Id,
+                                                Active_Mobile_Users__c = 50, Forms__c = 355, Wam__c = 0, Forms_for_Period__c = 0, Server_Name__c = 'CommCare HQ');
+        Domain_Monthly_Snapshot__c snp8 = new Domain_Monthly_Snapshot__c(Snapshot_Date__c = Date.today().addMonths(-1).toStartOfMonth().addDays(-1), Software_Edition__c = 'Pro', Domain__c = domain3.Id,
+                                                Active_Mobile_Users__c = 50, Forms__c = 355, Wam__c = 0, Forms_for_Period__c = 0, Server_Name__c = 'CommCare HQ');
+        insert new List<Domain_Monthly_Snapshot__c> { snp1, snp2, snp3, snp4, snp5, snp6, snp7, snp8 };
+
+        System.assertEquals(8, [SELECT Id FROM Domain_Monthly_Snapshot__c WHERE Snapshot_Date__c =: Date.today().toStartOfMonth().addDays(-1)].size());
+
+        Test.startTest();
+        HQSyncDomainScheduler.deleteDuplicatedDomainSnapshot();
+        Test.stopTest();
+
+        // Other months shouldn't be deleted
+        System.assertEquals(4, [SELECT Id FROM Domain_Monthly_Snapshot__c WHERE Id IN: new List<Id> { snp1.Id, snp2.Id, snp3.Id, snp4.Id }].size());
+        System.assertEquals(4, [SELECT Id FROM Domain_Monthly_Snapshot__c WHERE Id IN: new List<Id> { snp5.Id, snp6.Id, snp7.Id, snp8.Id }].size());
+        System.assertEquals(4, [SELECT Id FROM Domain_Monthly_Snapshot__c WHERE Snapshot_Date__c =: Date.today().addMonths(1).toStartOfMonth().addDays(-1)].size());
+        System.assertEquals(4, [SELECT Id FROM Domain_Monthly_Snapshot__c WHERE Snapshot_Date__c =: Date.today().addMonths(-1).toStartOfMonth().addDays(-1)].size());
+
+        System.assertEquals('domain_1', [SELECT Id, Name FROM Domain_Monthly_Snapshot__c WHERE Domain__c =: domain1.Id AND Snapshot_Date__c =: Date.today().toStartOfMonth().addDays(-1) LIMIT 1].Name);
+        System.assertEquals('domain_2', [SELECT Id, Name FROM Domain_Monthly_Snapshot__c WHERE Domain__c =: domain2.Id AND Snapshot_Date__c =: Date.today().toStartOfMonth().addDays(-1) LIMIT 1].Name);
+        System.assertEquals('domain_3', [SELECT Id, Name FROM Domain_Monthly_Snapshot__c WHERE Domain__c =: domain3.Id AND Snapshot_Date__c =: Date.today().toStartOfMonth().addDays(-1) LIMIT 1].Name);
+        System.assertEquals('domain_4', [SELECT Id, Name FROM Domain_Monthly_Snapshot__c WHERE Domain__c =: domain4.Id AND Snapshot_Date__c =: Date.today().toStartOfMonth().addDays(-1) LIMIT 1].Name);
+        System.assertEquals('domain_5', [SELECT Id, Name FROM Domain_Monthly_Snapshot__c WHERE Domain__c =: domain5.Id AND Snapshot_Date__c =: Date.today().toStartOfMonth().addDays(-1) LIMIT 1].Name);
+    }
+
+    @isTest
     public static void shouldUpdateWamAndFormsDomainMonthlySnapshot() {
         generateDataForDomainSnapshot();
 
