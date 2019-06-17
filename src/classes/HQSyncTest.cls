@@ -1126,11 +1126,11 @@ public class HQSyncTest {
         System.assertEquals(4, [SELECT Id FROM Domain_Monthly_Snapshot__c WHERE Snapshot_Date__c =: Date.today().addMonths(1).toStartOfMonth().addDays(-1)].size());
         System.assertEquals(4, [SELECT Id FROM Domain_Monthly_Snapshot__c WHERE Snapshot_Date__c =: Date.today().addMonths(-1).toStartOfMonth().addDays(-1)].size());
 
-        System.assertEquals('domain_1', [SELECT Id, Name FROM Domain_Monthly_Snapshot__c WHERE Domain__c =: domain1.Id AND Snapshot_Date__c =: Date.today().toStartOfMonth().addDays(-1) LIMIT 1].Name);
-        System.assertEquals('domain_2', [SELECT Id, Name FROM Domain_Monthly_Snapshot__c WHERE Domain__c =: domain2.Id AND Snapshot_Date__c =: Date.today().toStartOfMonth().addDays(-1) LIMIT 1].Name);
-        System.assertEquals('domain_3', [SELECT Id, Name FROM Domain_Monthly_Snapshot__c WHERE Domain__c =: domain3.Id AND Snapshot_Date__c =: Date.today().toStartOfMonth().addDays(-1) LIMIT 1].Name);
-        System.assertEquals('domain_4', [SELECT Id, Name FROM Domain_Monthly_Snapshot__c WHERE Domain__c =: domain4.Id AND Snapshot_Date__c =: Date.today().toStartOfMonth().addDays(-1) LIMIT 1].Name);
-        System.assertEquals('domain_5', [SELECT Id, Name FROM Domain_Monthly_Snapshot__c WHERE Domain__c =: domain5.Id AND Snapshot_Date__c =: Date.today().toStartOfMonth().addDays(-1) LIMIT 1].Name);
+        System.assertEquals('domain_name_1', [SELECT Id, Name, Domain__r.Name FROM Domain_Monthly_Snapshot__c WHERE Domain__c =: domain1.Id AND Snapshot_Date__c =: Date.today().toStartOfMonth().addDays(-1) LIMIT 1].Domain__r.Name);
+        System.assertEquals('domain_name_2', [SELECT Id, Name, Domain__r.Name FROM Domain_Monthly_Snapshot__c WHERE Domain__c =: domain2.Id AND Snapshot_Date__c =: Date.today().toStartOfMonth().addDays(-1) LIMIT 1].Domain__r.Name);
+        System.assertEquals('domain_name_3', [SELECT Id, Name, Domain__r.Name FROM Domain_Monthly_Snapshot__c WHERE Domain__c =: domain3.Id AND Snapshot_Date__c =: Date.today().toStartOfMonth().addDays(-1) LIMIT 1].Domain__r.Name);
+        System.assertEquals('domain_name_4', [SELECT Id, Name, Domain__r.Name FROM Domain_Monthly_Snapshot__c WHERE Domain__c =: domain4.Id AND Snapshot_Date__c =: Date.today().toStartOfMonth().addDays(-1) LIMIT 1].Domain__r.Name);
+        System.assertEquals('domain_name_5', [SELECT Id, Name, Domain__r.Name FROM Domain_Monthly_Snapshot__c WHERE Domain__c =: domain5.Id AND Snapshot_Date__c =: Date.today().toStartOfMonth().addDays(-1) LIMIT 1].Domain__r.Name);
     }
 
     @isTest
