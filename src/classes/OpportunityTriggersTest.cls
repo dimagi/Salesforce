@@ -1,8 +1,6 @@
 /**
  * Tests for Opportunity Triggers
- * TODO: refactor
  */
-
 @isTest
 private class OpportunityTriggersTest {
 
@@ -88,7 +86,6 @@ private class OpportunityTriggersTest {
                                           Implementing_Business_Unit__c = bunit.Id, AccountId = acc2.Id);
         insert opp2;
 
-
         HQSyncDomainModel.DomainModel d1 = new HQSyncDomainModel.DomainModel();
         d1.x_id = 'sample_external_id_1';
         d1.Name = 'd1';
@@ -135,7 +132,7 @@ private class OpportunityTriggersTest {
         Business_Unit__c bunit = new Business_Unit__c();
         bunit.Name = 'Test';
         insert bunit; 
-        
+
         Opportunity opp = new Opportunity();
         opp.Name = 'Test';
         opp.StageName = 'Stage 1 - Connect';
@@ -143,15 +140,14 @@ private class OpportunityTriggersTest {
         opp.Implementing_Business_Unit__c = bunit.Id;
         opp.Fogbugz_Ticket_Number__c = FogBugzHttpCalloutMock.TEST_FB_ID;
         insert opp;
-        
+
         Test.startTest();
-        
+
         opp.Name = 'Test 2';
         update opp;
-        
         opp.StageName = 'Stage 2 - Talking';
         update opp;
-        
+
         Test.stopTest();
     }
 
@@ -160,7 +156,7 @@ private class OpportunityTriggersTest {
         Business_Unit__c bunit = new Business_Unit__c();
         bunit.Name = 'Test';
         insert bunit; 
-        
+
         Opportunity opp = new Opportunity();
         opp.Name = 'Test';
         opp.StageName = 'Stage 1 - Connect';
@@ -169,12 +165,10 @@ private class OpportunityTriggersTest {
         opp.Fogbugz_Ticket_Number__c = FogBugzHttpCalloutMock.TEST_FB_ID;
         opp.Amount = 10;
         insert opp;
-        
+
         Test.startTest();
-        
         opp.Fogbugz_Probability__c = 10;
         update opp;
-        
         Test.stopTest();
     }
 
@@ -183,7 +177,6 @@ private class OpportunityTriggersTest {
         Business_Unit__c bunit = new Business_Unit__c();
         bunit.Name = 'Test';
         insert bunit; 
-        
         Opportunity opp = new Opportunity();
         opp.Name = 'Test';
         opp.StageName = 'Stage 1 - Connect';
@@ -191,15 +184,12 @@ private class OpportunityTriggersTest {
         opp.Implementing_Business_Unit__c = bunit.Id;
         opp.Fogbugz_Ticket_Number__c = FogBugzHttpCalloutMock.TEST_FB_ID;
         insert opp;
-        
+
         Test.startTest();
-        
         opp.StageName = 'Closed';
         update opp;
-        
         opp.StageName = 'Stage 1 - Connect';
         update opp;
-        
         Test.stopTest();
     }
 
@@ -208,18 +198,16 @@ private class OpportunityTriggersTest {
         Business_Unit__c bunit = new Business_Unit__c();
         bunit.Name = 'Test';
         insert bunit; 
-        
+
         Opportunity opp = new Opportunity();
         opp.Name = 'Test';
         opp.StageName = 'Closed';
         opp.CloseDate = Date.newInstance(2013, 4, 9);
         opp.Implementing_Business_Unit__c = bunit.Id;
         opp.Fogbugz_Ticket_Number__c = FogBugzHttpCalloutMock.TEST_FB_ID;
-        
+
         Test.startTest();
-        
         insert opp;
-        
         Test.stopTest();
     }
 }

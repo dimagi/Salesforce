@@ -1,10 +1,8 @@
-/**
- * TODO: refactor
- */
 @isTest
 public class TaskTriggerTest {
-    static testmethod void testbatch() {
 
+    @isTest
+    static void testbatch() {
         Account theAccount = new Account(
             Name ='Test Account'
         );
@@ -22,6 +20,7 @@ public class TaskTriggerTest {
             StageName = 'Stage 2 - Talking'
         );
         insert theOpp1;
+
         Opportunity theOpp2 = new Opportunity(
             Name = 'Test Opp2',
             CloseDate = date.today()+ 1,
@@ -34,13 +33,13 @@ public class TaskTriggerTest {
             ContactId = theContact.Id
         );
         insert contactRole1;
-        
+
         OpportunityContactRole contactRole2 = new OpportunityContactRole(
             OpportunityId = theOpp2.id,
             ContactId = theContact.Id
         );
         insert contactRole2;
-        
+
         Task theTask = new Task(
             Subject = 'Call',
             WhoId = theContact.Id,
@@ -48,10 +47,8 @@ public class TaskTriggerTest {
             Priority = 'Normal'
         );
         insert theTask;
-        
-        List<Task> taskList = [Select id from Task where WhatId = :theOpp2.Id];
-        system.assertNotEquals(taskList,null);
-    
 
-    }    
+        List<Task> taskList = [SELECT Id FROM Task WHERE WhatId =: theOpp2.Id];
+        System.assertNotEquals(taskList, null);
+    }
 }

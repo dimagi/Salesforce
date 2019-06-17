@@ -1,36 +1,33 @@
-/**
- * TODO: refactor
- */
-public class TaskTriggerHelper{
+public class TaskTriggerHelper {
+
     public static void createTaskOnOpportunity(List<Task> taskList) {
-        
-        if(CheckRecursive.firstRun){
-            CheckRecursive.firstrun=false;
-            
+        if (CheckRecursive.firstRun ){
+            CheckRecursive.firstrun = false;
+
             Set<Id> contactIds = new Set<Id>();
-            Map<Id,Set<Id>> contactIdOppIdMap = new Map<Id,Set<Id>>();
-            for(Task theTask : taskList) {
-                if(theTask.WhoId != null) {
+            Map<Id, Set<Id>> contactIdOppIdMap = new Map<Id, Set<Id>>();
+            for (Task theTask : taskList) {
+                if (theTask.WhoId != null) {
                     contactIds.add(theTask.WhoId);
                 }
             }
-            
-            for(OpportunityContactRole contactRole : [Select id,ContactId,Contact.Name,OpportunityId from OpportunityContactRole where ContactId IN :contactIds]) {
-                if(contactIdOppIdMap.containsKey(contactRole.ContactId)) {
+
+            for (OpportunityContactRole contactRole : [SELECT Id, ContactId, Contact.Name, OpportunityId FROM OpportunityContactRole WHERE ContactId IN :contactIds]) {
+                if (contactIdOppIdMap.containsKey(contactRole.ContactId)) {
                     Set<Id> tempSet = new Set<Id>(contactIdOppIdMap.get(contactRole.ContactId));
                     tempSet.add(contactRole.OpportunityId);
-                    contactIdOppIdMap.put(contactRole.ContactId,tempSet);
-                }else{
-                    contactIdOppIdMap.put(contactRole.ContactId,new Set<Id>{contactRole.OpportunityId});
+                    contactIdOppIdMap.put(contactRole.ContactId, tempSet);
+                } else {
+                    contactIdOppIdMap.put(contactRole.ContactId, new Set<Id> { contactRole.OpportunityId });
                 }
             }
-            
+
             List<Task> tasksToCreate = new List<Task>();
-            for(Task theTask : taskList) {
-                if(theTask.WhoId != null && contactIdOppIdMap.containsKey(theTask.WhoId)) {
-                    for(Id theOppId :  contactIdOppIdMap.get(theTask.WhoId)) {
-                        if(theTask.WhatId != theOppId){
-                            Task newTask = new Task(
+            for (Task theTask : taskList) {
+                if (theTask.WhoId != null && contactIdOppIdMap.containsKey(theTask.WhoId)) {
+                    for (Id theOppId :  contactIdOppIdMap.get(theTask.WhoId)) {
+                        if (theTask.WhatId != theOppId) {
+                            Task newTask = new Task (
                                 OwnerId = theTask.OwnerId,
                                 CallObject = theTask.CallObject,
                                 CallDisposition = theTask.CallDisposition,
@@ -52,13 +49,12 @@ public class TaskTriggerHelper{
                     }
                 }
             }
-            try{
+
+            try {
                 insert tasksToCreate;
-            }catch(Exception ex){
-                
+            } catch(Exception ex) {
+                System.debug(System.LoggingLevel.ERROR, 'Cannot insert tasks for Opps');
             }
-            
-            
         }
     }
 }

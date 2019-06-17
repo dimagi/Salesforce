@@ -1,17 +1,14 @@
 @isTest
-/**
- * TODO refacor
- */
 public class EmployeeTriggerTests {
 
     @testsetup
     static void setup() {
-        Id p = [select id from profile where name='System Administrator'].id;
+        Id p = [SELECT Id FROM Profile WHERE name='System Administrator'].Id;
 
-        User user = new User(alias = 'test1234', email='test1234@no1email.com',
-                emailencodingkey='UTF-8', lastname='Testing', languagelocalekey='en_US',
-                localesidkey='en_US', profileid = p, country='United States',IsActive =true,
-                timezonesidkey='America/Los_Angeles', username='tester1234@no1email.com');
+        User user = new User(alias = 'test1234', email = 'test1234@no1email.com',
+                emailencodingkey = 'UTF-8', lastname='Testing', languagelocalekey = 'en_US',
+                localesidkey = 'en_US', profileid = p, country = 'United States',IsActive = true,
+                timezonesidkey = 'America/Los_Angeles', username = 'tester1234@no1email.com');
 
         insert user;
 
@@ -23,7 +20,7 @@ public class EmployeeTriggerTests {
 
     @isTest
     static void testBusinessUnitNameInsert() {
-        List<Business_Unit__c> businessUnits = [Select Id, Name From Business_Unit__c];
+        List<Business_Unit__c> businessUnits = [SELECT Id, Name FROM Business_Unit__c];
 
         Test.startTest();
         SFDC_Employee__c emp = new SFDC_Employee__c(
@@ -38,8 +35,8 @@ public class EmployeeTriggerTests {
         insert emp;
         Test.stopTest();
 
-        emp = [Select Id, SF_User__c, Email_Address__c, Business_Unit__c, Business_Unit__r.Name From SFDC_Employee__c Where Id =: emp.Id];
-        User user = [Select Id, Business_Unit_Name__c From User Where Username =: emp.Email_Address__c];
+        emp = [SELECT Id, SF_User__c, Email_Address__c, Business_Unit__c, Business_Unit__r.Name FROM SFDC_Employee__c WHERE Id =: emp.Id];
+        User user = [SELECT Id, Business_Unit_Name__c FROM User WHERE Username =: emp.Email_Address__c];
         System.assertEquals(emp.SF_User__c, user.Id);
         System.assertEquals(emp.Business_Unit__r.Name, user.Business_Unit_Name__c);
     }
@@ -64,8 +61,8 @@ public class EmployeeTriggerTests {
         update emp;
         Test.stopTest();
 
-        emp = [Select Id, SF_User__c, Email_Address__c, Business_Unit__c, Business_Unit__r.Name From SFDC_Employee__c Where Id =: emp.Id];
-        User user = [Select Id, Business_Unit_Name__c From User Where Username =: emp.Email_Address__c];
+        emp = [SELECT Id, SF_User__c, Email_Address__c, Business_Unit__c, Business_Unit__r.Name FROM SFDC_Employee__c WHERE Id =: emp.Id];
+        User user = [SELECT Id, Business_Unit_Name__c FROM User WHERE Username =: emp.Email_Address__c];
         System.assertEquals(emp.SF_User__c, user.Id);
         System.assertEquals(emp.Business_Unit__r.Name, user.Business_Unit_Name__c);
     }

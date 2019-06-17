@@ -1,6 +1,5 @@
 /**
  * Custom SF loggers, it store data in DB and send email notifications.
- * TODO : Add styles to html table in email, like color.
  */
 public class StatusLoggerUtils {
 
@@ -94,7 +93,7 @@ public class StatusLoggerUtils {
         List<Status_Log__c> logsWarns = [SELECT Title__c, Counter__c, Message__c, Date__c FROM Status_Log__c WHERE Name =: logName AND Status__c =: WARNING_LOG ORDER BY Date__c DESC];
         List<Status_Log__c> logsError = [SELECT Title__c, Counter__c, Message__c, Date__c FROM Status_Log__c WHERE Name =: logName AND Status__c =: ERROR_LOG ORDER BY Date__c DESC];
 
-        String body = '<div><br/>INFO :<br/><table border="1">';
+        String body = '<div><br/>INFO :<br/><table border="1" style="border-collapse: collapse">';
         body += '<tr style="font-weight:bold"><td>Name</td><td>Message</td><td>Num</td><td>Date</td></tr>';
 
         for (Status_Log__c log : logsInfo) {
@@ -102,7 +101,7 @@ public class StatusLoggerUtils {
         }
 
         body += '</table>';
-        body += '<br/>WARNINGS :<br/><table border="1">';
+        body += '<br/>WARNINGS :<br/><table border="1" style="border-collapse: collapse">';
         body += '<tr style="font-weight:bold"><td>Name</td><td>Message</td><td>Num</td><td>Date</td></tr>';
 
         for (Status_Log__c log : logsWarns) {
@@ -110,7 +109,7 @@ public class StatusLoggerUtils {
         }
 
         body += '</table>';
-        body += '<br/>ERRORS :<br/><table border="1">';
+        body += '<br/>ERRORS :<br/><table border="1"style="border-collapse: collapse">';
         body += '<tr style="font-weight:bold"><td>Name</td><td>Message</td><td>Num</td><td>Date</td></tr>';
 
         for (Status_Log__c log : logsError) {

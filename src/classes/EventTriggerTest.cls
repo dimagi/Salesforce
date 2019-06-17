@@ -1,10 +1,7 @@
 @isTest
-/**
- * TODO refacor
- */
 public class EventTriggerTest {
-    static testmethod void testbatch() {
 
+    static testmethod void testbatch() {
         Account theAccount = new Account(
             Name ='Test Account'
         );
@@ -22,6 +19,7 @@ public class EventTriggerTest {
             StageName = 'Stage 2 - Talking'
         );
         insert theOpp1;
+
         Opportunity theOpp2 = new Opportunity(
             Name = 'Test Opp2',
             CloseDate = date.today()+ 1,
@@ -34,13 +32,13 @@ public class EventTriggerTest {
             ContactId = theContact.Id
         );
         insert contactRole1;
-        
+
         OpportunityContactRole contactRole2 = new OpportunityContactRole(
             OpportunityId = theOpp2.id,
             ContactId = theContact.Id
         );
         insert contactRole2;
-        
+
         Event theEvent = new Event(
             Subject = 'Call',
             WhoId = theContact.Id,
@@ -49,10 +47,8 @@ public class EventTriggerTest {
 
         );
         insert theEvent;
-        
-        List<Event> eventList = [Select Id from Event where WhatId = :theOpp1.Id];
-        system.assertNotEquals(eventList, null);
-    
 
-    }    
+        List<Event> eventList = [SELECT Id FROM Event WHERE WhatId =: theOpp1.Id];
+        System.assertNotEquals(eventList, null);
+    }
 }

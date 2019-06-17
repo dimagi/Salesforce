@@ -4,9 +4,6 @@
  * Trigger Handler for the Employee SObject. This class implements the ITrigger
  * interface to help ensure the trigger code is bulkified and all in one place.
  */
- /**
- * TODO refacor
- */
 public with sharing class EmployeeTriggerHandler implements ITrigger {
 
     public static boolean skipExecution = false;
