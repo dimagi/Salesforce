@@ -18,6 +18,31 @@ public class HQSyncUtils {
     public static final String CUSTOMER_INVOICE = 'Customer';
     public static final String SUBSCRIPTION_INVOICE = 'Subscription';
 
+    @future
+    public static void deleteDuplicatedDomainSnapshot(Date snapshotDate) {
+        AggregateResult[] groupedResults = [SELECT Domain__c, Snapshot_Date__c, COUNT(Id)
+                                            FROM Domain_Monthly_Snapshot__c
+                                            WHERE Snapshot_Date__c =: snapshotDate
+                                            GROUP BY Domain__c, Snapshot_Date__c HAVING COUNT(Id) > 1];
+
+        Set<Id> domainsId = new Set<Id>();
+        for (AggregateResult result : groupedResults) {
+            Id domainId = (Id) result.get('Domain__c');
+            domainsId.add(domainId);
+        }
+
+        Map<Id, Domain_Monthly_Snapshot__c> toDelete = new Map<Id, Domain_Monthly_Snapshot__c>();
+        for (Domain_Monthly_Snapshot__c domainSnp : [SELECT Id, Domain__c FROM Domain_Monthly_Snapshot__c
+                                                     WHERE Snapshot_Date__c =: snapshotDate AND Domain__c IN: domainsId ORDER BY Domain__c]) {
+            if (!toDelete.containsKey(domainSnp.Domain__c)) { // there is no difference which snp will be deleted
+                toDelete.put(domainSnp.Domain__c, domainSnp);
+            }
+        }
+        if (toDelete.size() > 0) {
+            delete toDelete.values();
+        }
+    }
+
     /**
      * Returns real domain ID, We can have duplicated domains, we want move all relations to one object.
      */
