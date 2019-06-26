@@ -1,0 +1,12 @@
+<apex:component selfClosing="true">
+    <!-- found here : http://www.codebycody.com/2014/08/super-simple-help-text.html -->
+    <apex:attribute name="helpText" description="Help Text." type="String" required="true"/>
+
+    <div class="mouseOverInfoOuter" id="searchInvoiceHelper" onfocus="addMouseOver(this)" onmouseover="addMouseOver(this)"
+        tabindex="0" style="vertical-align: -webkit-baseline-middle;">
+        <img src="/s.gif" alt="" class="infoIcon" title="" />
+        <div class="mouseOverInfo" id="searchInvoiceHelperText" style="display: none; opacity: -0.19999999999999996; left: 16px;">
+            <div class="body">{!helpText}</div>
+        </div>
+    </div>
+</apex:component>

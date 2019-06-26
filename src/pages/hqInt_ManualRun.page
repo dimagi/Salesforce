@@ -1,5 +1,20 @@
-<apex:page showHeader="true" sidebar="true" controller="HQSyncController">
+<apex:page showHeader="true" sidebar="true" controller="HQSyncController" docType="html-5.0">
+
+
+    <apex:includeScript value="{!URLFOR($Resource.ProjectReportOut2, 'js/jquery.min.js')}"/>
+    <apex:includeScript value="{!URLFOR($Resource.ProjectReportOut2, 'js/jquery-ui.min.js')}"/>
+    <apex:stylesheet value="{!URLFOR($Resource.ProjectReportOut2, 'css/jquery-ui.min.css')}" />
+
     <style type="text/css">
+        #tabs .ui-tabs-nav .ui-icon {
+            display: inline-block;
+            vertical-align: text-bottom;
+        }
+        .ui-state-active {
+            border: 1px solid #1797c0 !important;
+            background: #1797c0 !important;
+        }
+
         .serversSelect {
             height: 21.2px;
             vertical-align: top;
@@ -13,69 +28,189 @@
             margin-left: 3px;
             vertical-align: -webkit-baseline-middle !important;
         }
+
+        .syncSelect {
+            height: 24px !important;
+        }
+        .syncPanel {
+            margin-top: 10px;
+            margin-bottom: 10px;
+            display: block;
+        }
+        .syncLabel {
+            min-width: 160px;
+            display: inline-block;
+        }
+        .accList {
+            padding-left: 0px;
+        }
+        .loaderCell {
+            height: 24px;
+            vertical-align: middle;
+        }
     </style>
 
+
+    <script type="text/javascript">
+
+        $j = jQuery.noConflict();
+
+        $j(document).ready(function() {
+            $j("#tabs").tabs();
+        });
+
+        function reloadTabs() {
+            if ($j("#tabs")) {
+                $j("#tabs").tabs({ active: {!initialTab} });
+            }
+        }
+
+        function setFocusOnLoad() {}
+
+    </script>
+
     <apex:form >
-        <apex:tabPanel switchType="server" selectedTab="tabOne" id="accountTabPanel" tabClass="activeTab" inactiveTabClass="inactiveTab">
 
-            <apex:tab label="Domain synchronization - phase one" name="tabOne" id="tabOne">
-                <apex:pageBlock title="CommcareHq Job Run - Domain, Internal Properties, Deployment" id="phase1Block">
-                    <apex:actionPoller action="{!fetchDomainInstances}" reRender="phase1Block" interval="10" />
-                    <apex:outputPanel rendered="{!domainIsRunning}">
-                        <apex:image url="/img/loading32.gif"/>
-                        <apex:commandButton action="{!fetchDomainInstances}" value="Refresh Status" rendered="{!domainIsRunning}"/>
-                        <br/><br/>This Job is running !
-                        <br/><br/><br/>
-                        <b>Job Submitted Date</b> :  <apex:outputField value="{!batchClassJob.CreatedDate}"/><br/>
-                        <b>Batches Processed</b> : {!batchClassJob.JobItemsProcessed}/{!batchClassJob.TotalJobItems}
-                        <br/><br/><br/>
-                        For more information on this job, please go to setup -> Monitoring -> Apex Jobs
-                        <br/>NOTE : Only 1 instance of this job can run at a time.
-                    </apex:outputPanel>
+        <apex:actionstatus id="loadingDiv">
+            <apex:facet name="start">
+                <div class="waitingSearchDiv" id="el_loading" style="background-color: #fbfbfb; height:100%;opacity:0.65;width:100%;">
+                    <div class="waitingHolder" style="left : 50%; top : 50%; position: fixed; width: 91px;">
+                        <img class="waitingImage" src="{!$Resource.BrokenCircle}" title="Please Wait..." />
+                    </div>
+                </div>
+            </apex:facet>
+        </apex:actionstatus>
+
+        <apex:pageBlock title="Salesforce - HQ Data Synchronization" id="mainSyncBlock">
+
+            <apex:actionPoller enabled="{!IF(syncRunningPhaseTwo == true || syncRunningPhaseOne == true, true, false)}"
+                action="{!loadSynchronizationStatus}" reRender="mainSyncBlock,loaderContent" interval="5" oncomplete="reloadTabs();" />
+
+            <apex:outputPanel id="loaderContent" rendered="{!IF(syncRunningPhaseTwo == true || syncRunningPhaseOne == true, true, false)}">
+                <apex:outputPanel id="domainSyncLoader" rendered="{!syncRunningPhaseOne}">
+                    <h2>Domain synchronization Job is running !</h2>
+                    <br/>
+                    <apex:image url="/img/loading32.gif"/>
+                    <br />
+                    <b>Job Submitted Date</b> :  {!phaseOneJob.createdDate}<br/>
+                    <b>Batches Processed</b> : {!phaseOneJob.JobItemsProcessed} / {!phaseOneJob.TotalJobItems}
+                    <br/><br />
+                    For more information on this job, please go to setup -> Monitoring -> Apex Jobs
+                    <br/>NOTE : Only 1 instance of this job can run at a time.
+                </apex:outputPanel>
+
+                <apex:outputPanel id="accountingSyncLoader" rendered="{!syncRunningPhaseTwo}">
+                    <h2>Accounting synchronization Job is running !</h2>
                     <br/><br/>
-                    <div>
-                        <apex:selectList styleClass="serversSelect" id="phaseOneServer" value="{!phaseOneServer}" disabled="{!if(accountingIsRunning == true || domainIsRunning == true, true, false)}"
-                                            multiselect="false" size="1">
-                            <apex:actionSupport event="onchange" rerender="phase1Block"/>
-                            <apex:selectOptions value="{!serverCodes}"/>
-                        </apex:selectList>
-                        <apex:commandButton styleClass="manualRunButton" action="{!runDomainsSynchronizationJob}" value="Run Job Now" disabled="{!if(accountingIsRunning == true || domainIsRunning == true, true, false)}"/>
-                    </div>
-                </apex:pageBlock>
-            </apex:tab>
-
-            <apex:tab label="Accounting synchronization- phase two" name="tabTwo" id="tabTwo">
-                <apex:pageBlock id="phase2Block">
-                    <apex:actionPoller action="{!fetchAccountingInstances}" reRender="phase2Block" interval="10" status="status"/>
-                    <div>
-                        <apex:selectList styleClass="serversSelect" id="phaseTwoServer" value="{!phaseTwoServer}" disabled="{!if(accountingIsRunning == true || domainIsRunning == true, true, false)}"
-                                multiselect="false" size="1">
-                            <apex:actionSupport event="onchange" rerender="phase2Block"/>
-                            <apex:selectOptions value="{!serverCodes}"/>
-                        </apex:selectList>
-                        <apex:commandButton styleClass="manualRunButton" action="{!runAccountingJob}" disabled="{!if(accountingIsRunning == true || domainIsRunning == true, true, false)}" value="Run Job Now"/>
-                        <apex:commandButton styleClass="manualRunButton" action="{!fetchAccountingInstances}" value="Refresh Status"/>
-                        <span class="lastSyncSpan" >Last {!phaseTwoServer} accounting successful date {!serverSuccessfulDate}</span>
-                    </div>
-
-                    <div style="height:20px;">
-                        <apex:actionStatus startText="Refreshing..." id="status"/>
-                    </div>
 
                     <apex:pageBlockTable value="{!phase2Jobs}" var="job">
                         <apex:column headerValue="Object Name">
                             {!job.jobName}
                         </apex:column>
-                        <apex:column headerValue="Running Status">
-                            <apex:image url="/img/loading32.gif" height="10px" rendered="{!job.isRunning}"/>
+                        <apex:column headerValue="Running Status" styleClass="loaderCell">
+                            <apex:image url="/img/loading32.gif" height="20px" rendered="{!job.isRunning}"/>
                             <apex:outputPanel rendered="{!job.isRunning}">
-                                {!job.jobItemsProcessed}/{!job.totalJobItems}
+                                <b>Batches Processed</b> : {!job.jobItemsProcessed} / {!job.totalJobItems}
                             </apex:outputPanel>
                         </apex:column>
                     </apex:pageBlockTable>
-                </apex:pageBlock>
-            </apex:tab>
+                </apex:outputPanel>
+            </apex:outputPanel>
 
-        </apex:tabPanel>
+            <apex:outputPanel id="tabsContent" rendered="{!IF(syncRunningPhaseTwo == true || syncRunningPhaseOne == true, false, true)}">
+                <div id="tabs" >
+                    <apex:outputPanel >
+                        <ul>
+                            <li id="phaseOneTabLi">
+                                <a href="#phaseOneTab" ><span class="ui-icon ui-icon-blank"></span>Phase One - Domain, Internal Properties and Deployment<span class="ui-icon ui-icon-blank"></span></a>
+                            </li>
+                            <li id="phaseTwoTabLi">
+                                <a href="#phaseTwoTab" ><span class="ui-icon ui-icon-blank"></span>Phase Two - Accounting objects  like Invoices and Subscriptions<span class="ui-icon ui-icon-blank"></span></a>
+                            </li>
+                        </ul>
+                    </apex:outputPanel>
+
+                    <section id="phaseOneTab" >
+                        <apex:outputPanel styleClass="syncPanel">
+                            <label><b>Notice: </b><i>In phase one Domain, Internal Properties and Deployment objects are synchronized</i></label>
+                            <br />
+                        </apex:outputPanel>
+                        <apex:outputPanel styleClass="syncPanel">
+                            <apex:outputLabel styleClass="syncLabel" value="Synchronization Server : " for="serverCodePhaseOne" />
+                            <apex:selectList id="serverCodePhaseOne" value="{!phaseOneServer}" styleClass="syncSelect"
+                                             disabled="{!IF(syncRunningPhaseOne == true || syncRunningPhaseTwo == true, true, false)}"
+                                             multiselect="false" size="1">
+                                <apex:selectOptions value="{!serverCodes}" />
+                            </apex:selectList>
+                            <c:HelpIconComponent helpText="HQ server from which data will be loaded."/>
+                        </apex:outputPanel>
+
+                        <apex:outputPanel styleClass="syncPanel">
+                            <apex:outputLabel styleClass="syncLabel" value="Phase One Synchronization: " for="phaseOneButton" />
+                            <apex:commandButton id="phaseOneButton" styleClass="syncSelect"
+                                                action="{!runDomainsSynchronizationJob}"
+                                                disabled="{!if(syncRunningPhaseTwo == true || syncRunningPhaseOne == true, true, false)}"
+                                                value="Run Phase One Synchronization"
+                                                onclick="return confirm('Do you want to run Domains synchronization?');" />
+                            <c:HelpIconComponent helpText="This button will run Domain, Internal Properties and Deployment synchronization from HQ. This syn usally take a few hours."/>
+                        </apex:outputPanel>
+                    </section>
+
+                    <section id="phaseTwoTab" >
+                        <apex:outputPanel styleClass="syncPanel">
+                            <label><b>Notice: </b><i>In phase two Accounting objects are synchronized. You will find full list below:</i></label>
+                            <ul class="accList">
+                                <li>Accounting Feature</li>
+                                <li>Accounting Billing Account Admin</li>
+                                <li>Accounting Software Plan</li>
+                                <li>Accounting Subscriber</li>
+                                <li>Accounting Feature Rate</li>
+                                <li>Accounting Software Product Rate</li>
+                                <li>Accounting Software Plan Version</li>
+                                <li>Accounting Payment Method</li>
+                                <li>Accounting Billing Contact Info</li>
+                                <li>Accounting Payment Record</li>
+                                <li>Accounting Billing Account</li>
+                                <li>Accounting Subscription</li>
+                                <li>Accounting Subscription Invoice</li>
+                                <li>Accounting Customer Invoice</li>
+                                <li>Accounting Line Items</li>
+                                <li>Accounting Subscription Adjustment</li>
+                                <li>Accounting Credit Line</li>
+                                <li>Accounting Credit Adjustment</li>
+                            </ul>
+                            <br />
+                        </apex:outputPanel>
+                        <apex:outputPanel styleClass="syncPanel">
+                            <apex:outputLabel styleClass="syncLabel" value="Synchronization Server : " for="serverCodePhaseTwo" />
+                            <apex:selectList id="serverCodePhaseTwo" value="{!phaseTwoServer}" styleClass="syncSelect"
+                                             disabled="{!IF(syncRunningPhaseOne == true || syncRunningPhaseTwo == true, true, false)}"
+                                             multiselect="false" size="1">
+                                <apex:actionSupport event="onchange" action="{!loadServerSuccessfulDate}"
+                                                    status="loadingDiv" reRender="datePanelId"/>
+                                <apex:selectOptions value="{!serverCodes}" />
+                            </apex:selectList>
+                            <c:HelpIconComponent helpText="HQ server from which data will be loaded."/>
+                        </apex:outputPanel>
+
+                        <apex:outputPanel id="datePanelId" styleClass="syncPanel">
+                            <apex:outputLabel styleClass="syncLabel" value=" Last Synchronization Date : " for="syncDate" />
+                            <apex:input styleClass="syncSelect" id="syncDate" type="date" value="{!syncPhaseTwoDate}" />
+                            <c:HelpIconComponent helpText="Records with Last Update Date equal or greater will be synced. Update only if needed."/>
+                        </apex:outputPanel>
+
+                        <apex:outputPanel styleClass="syncPanel">
+                            <apex:outputLabel styleClass="syncLabel" value="Phase Two Synchronization: " for="phaseTwoButton" />
+                            <apex:commandButton id="phaseTwoButton" styleClass="syncSelect"
+                                                action="{!runAccountingJob}"
+                                                disabled="{!if(syncRunningPhaseTwo == true || syncRunningPhaseOne == true, true, false)}"
+                                                value="Run Phase Two Synchronization"
+                                                onclick="return confirm('Do you want to run Accounting objects synchronization?');" />
+                            <c:HelpIconComponent helpText="This button will run Accounting objects synchronization like Invoices and Subscriptions from HQ server."/>
+                        </apex:outputPanel>
+                    </section>
+                </div>
+            </apex:outputPanel>
+        </apex:pageBlock>
     </apex:form>
 </apex:page>
