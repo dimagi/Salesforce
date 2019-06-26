@@ -48,6 +48,12 @@
             height: 24px;
             vertical-align: middle;
         }
+        .loaderCell span {
+            vertical-align: super;
+        }
+        .accLoader {
+            vertical-align: middle;
+        }
     </style>
 
 
@@ -100,7 +106,10 @@
                 </apex:outputPanel>
 
                 <apex:outputPanel id="accountingSyncLoader" rendered="{!syncRunningPhaseTwo}">
-                    <h2>Accounting synchronization Job is running !</h2>
+                    <div>
+                        <h2>Accounting synchronization Job is running !&nbsp;&nbsp;</h2>
+                        <apex:image styleClass="accLoader" url="/img/loading32.gif" height="20px" />
+                    </div>
                     <br/><br/>
 
                     <apex:pageBlockTable value="{!phase2Jobs}" var="job">
