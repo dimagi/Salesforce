@@ -7,8 +7,9 @@ public class JobWrapper {
         this.isRunning = isRunning;
     }
 
-    public String jobName { get; set;}
-    public Boolean isRunning { get; set;}
-    public Integer jobItemsProcessed { get; set;}
-    public Integer totalJobItems { get; set;}
+    public String jobName { get; set; }
+    public Boolean isRunning { get; set; }
+    public Integer jobItemsProcessed { get; set; }
+    public Integer totalJobItems { get; set; }
+    public DateTime createdDate { get; set; }
 }

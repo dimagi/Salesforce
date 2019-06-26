@@ -1442,21 +1442,44 @@ public class HQSyncTest {
     }
 
     @isTest
-    public static void testManualSyncController() {
+    public static void testManualSyncControllerDomain() {
         Test.setMock(HttpCalloutMock.class, new HQSyncAPIMock());
         Test.startTest();
         HQSyncController hqCtrl = new HQSyncController();
-        System.assertEquals(false, hqCtrl.domainIsRunning);
-        System.assertEquals(false, hqCtrl.accountingIsRunning);
+
+        System.assertEquals(false, hqCtrl.syncRunningPhaseOne);
+        System.assertEquals(false, hqCtrl.syncRunningPhaseTwo);
         System.assertEquals(1, hqCtrl.serverCodes.size());
         System.assertEquals('CommCare HQ', hqCtrl.serverCodes.get(0).getValue());
-        System.assertEquals(null, hqCtrl.batchClassJob);
+        System.assertEquals(null, hqCtrl.phaseOneJob);
         System.assertNotEquals(null, hqCtrl.phase2Jobs);
 
         hqCtrl.runDomainsSynchronizationJob();
         hqCtrl.runAccountingJob();
-        System.assertEquals(true, hqCtrl.domainIsRunning);
-        System.assertEquals(true, hqCtrl.accountingIsRunning);
+        System.assertEquals(true, hqCtrl.syncRunningPhaseOne);
+        System.assertEquals(false, hqCtrl.syncRunningPhaseTwo);
+
+        Test.stopTest();
+    }
+
+    @isTest
+    public static void testManualSyncControllerAccounting() {
+        Test.setMock(HttpCalloutMock.class, new HQSyncAPIMock());
+        Test.startTest();
+        HQSyncController hqCtrl = new HQSyncController();
+
+        System.assertEquals(false, hqCtrl.syncRunningPhaseOne);
+        System.assertEquals(false, hqCtrl.syncRunningPhaseTwo);
+        System.assertEquals(1, hqCtrl.serverCodes.size());
+        System.assertEquals('CommCare HQ', hqCtrl.serverCodes.get(0).getValue());
+        System.assertEquals(null, hqCtrl.phaseOneJob);
+        System.assertNotEquals(null, hqCtrl.phase2Jobs);
+
+        hqCtrl.runAccountingJob();
+        hqCtrl.runDomainsSynchronizationJob();
+        System.assertEquals(false, hqCtrl.syncRunningPhaseOne);
+        System.assertEquals(true, hqCtrl.syncRunningPhaseTwo);
+
         Test.stopTest();
     }
 
