@@ -1,0 +1,25 @@
+<apex:page standardController="SFDC_Employee__c" extensions="EmployeeHistoryArchiveController">
+    <apex:pageBlock >
+        <apex:pageBlockTable value="{!employeeArchivedHistory}" var="archData" >
+            <apex:column headerValue="Date" value="{!archData.record.History_Created_Date__c}" />
+            <apex:column headerValue="User" >
+                {!userNameMap[archData.record.History_User_Id__c]}
+            </apex:column>
+            <apex:column headerValue="Action" >
+                <apex:outputPanel rendered="{!archData.record.History_Field_Name__c != 'created' && archData.record.History_New_Value__c != null}">
+                    Changed <b>{!IF(CONTAINS(archData.record.History_Field_Name__c, "__c"), LEFT(archData.record.History_Field_Name__c , LEN(archData.record.History_Field_Name__c) - 3), archData.record.History_Field_Name__c)}</b>
+                    to <b>{!archData.record.History_New_Value__c}</b>
+                </apex:outputPanel>
+
+                <apex:outputPanel rendered="{!archData.record.History_Field_Name__c != 'created' && archData.record.History_New_Value__c == null}">
+                    Deleted <b>{!archData.record.History_Old_Value__c}</b> in <b>
+                    {!IF(CONTAINS(archData.record.History_Field_Name__c, "__c"), LEFT(archData.record.History_Field_Name__c , LEN(archData.record.History_Field_Name__c) - 3), archData.record.History_Field_Name__c)}</b>
+                </apex:outputPanel>
+
+                <apex:outputPanel rendered="{!archData.record.History_Field_Name__c == 'created'}">
+                    Created.
+                </apex:outputPanel>
+            </apex:column>
+        </apex:pageBlockTable>
+    </apex:pageBlock>
+</apex:page>
