@@ -4,7 +4,7 @@
             cursor: pointer;
         }
         .fteProjectCell:hover {
-            background: #1797C0 !important;
+            background: #5fa6d4 !important;
         }
         .overbilled {
             color: red !important;

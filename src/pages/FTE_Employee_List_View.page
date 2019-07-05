@@ -3,11 +3,23 @@
         .fteProjectCell {
             cursor: pointer;
         }
+        .fteCell {
+            cursor: pointer;
+        }
+        .highlight td {
+            background: #5fa6d4 !important;
+        }
         .fteProjectCell:hover {
-            background: #1797C0 !important;
+            background: #5fa6d4 !important;
         }
         .overbilled {
-            color: red !important;
+            color: #e50000 !important;
+        }
+        .future {
+            background: #87bcdf;
+        }
+        .blocked {
+            background: #ccdae5;
         }
         .fteTable {
             margin-top: 10px;
@@ -21,6 +33,22 @@
             margin-right: 10px;
             height: 22px !important;
         }
+        .tLegend {
+            display: inline-block;
+        }
+        .tLegendElement {
+            display: flex;
+            margin-bottom: 5px;
+        }
+        .tLegendColor {
+            width: 90px;
+            height: 19px;
+            padding: 0px;
+            margin: 0px;
+        }
+        .boldText {
+            font-weight: bold;
+        }
     </style>
 
     <apex:pageBlock title="Total Allocated Time by Employee" id="employeeListBlockId">
@@ -33,7 +61,7 @@
                 FTE Tracker is currently calculating Empolyee Work Cards {!workCardJobStatus.jobItemsProcessed}/{!workCardJobStatus.totalJobItems}
             </apex:outputPanel>
 
-            <apex:outputPanel id="emplsPanel" >
+            <apex:outputPanel id="emplsPanel" rendered="{!!workCardJobStatus.isRunning}">
                 <apex:actionstatus id="loadingDiv">
                     <apex:facet name="start">
                         <div class="waitingSearchDiv" id="el_loading" style="background-color: #fbfbfb; height:100%;opacity:0.65;width:100%;">
@@ -64,27 +92,27 @@
                     <apex:selectList value="{!emplBusinessUnit}" multiselect="false" size="1" id="empl-bu">
                         <apex:selectOptions value="{!buList}"/>
                     </apex:selectList>
-                    <apex:commandButton action="{!searchEmplopyee}" value="Search" status="loadingDiv" id="searchEmployee" reRender="emplsPanel" />
-                    <apex:actionFunction action="{!searchEmplopyee}" name="searchEmployeeJs" status="loadingDiv" reRender="emplsPanel" />
+                    <apex:commandButton action="{!searchEmplopyee}" value="Search" status="loadingDiv" id="searchEmployee" reRender="employeeListBlockId" />
+                    <apex:actionFunction action="{!searchEmplopyee}" name="searchEmployeeJs" status="loadingDiv" reRender="employeeListBlockId" />
                 </div>
                 <hr />
 
                 <apex:pageBlockSection columns="1" id="tableSection">
                     <apex:pageBlockTable id="employeesHours" value="{!employeesList}" var="empTime" styleClass="fteTable">
                         <apex:column onclick="goToEmployeeView('{!empTime.objId}');" headerValue="Employee Name" value="{!empTime.name}" styleClass="{!empTime.nameCss}"/>
-                        <apex:column headerValue="Jan {!fteYear}" value="{!empTime.daysArray[0]}" styleClass="{!empTime.cssStyle[0]}"/>
-                        <apex:column headerValue="Feb {!fteYear}" value="{!empTime.daysArray[1]}" styleClass="{!empTime.cssStyle[1]}"/>
-                        <apex:column headerValue="Mar {!fteYear}" value="{!empTime.daysArray[2]}" styleClass="{!empTime.cssStyle[2]}"/>
-                        <apex:column headerValue="Apr {!fteYear}" value="{!empTime.daysArray[3]}" styleClass="{!empTime.cssStyle[3]}"/>
-                        <apex:column headerValue="May {!fteYear}" value="{!empTime.daysArray[4]}" styleClass="{!empTime.cssStyle[4]}"/>
-                        <apex:column headerValue="Jun {!fteYear}" value="{!empTime.daysArray[5]}" styleClass="{!empTime.cssStyle[5]}"/>
-                        <apex:column headerValue="Jul {!fteYear}" value="{!empTime.daysArray[6]}" styleClass="{!empTime.cssStyle[6]}"/>
-                        <apex:column headerValue="Aug {!fteYear}" value="{!empTime.daysArray[7]}" styleClass="{!empTime.cssStyle[7]}"/>
-                        <apex:column headerValue="Sep {!fteYear}" value="{!empTime.daysArray[8]}" styleClass="{!empTime.cssStyle[8]}"/>
-                        <apex:column headerValue="Ocb {!fteYear}" value="{!empTime.daysArray[9]}" styleClass="{!empTime.cssStyle[9]}"/>
-                        <apex:column headerValue="Nov {!fteYear}" value="{!empTime.daysArray[10]}" styleClass="{!empTime.cssStyle[10]}"/>
-                        <apex:column headerValue="Dec {!fteYear}" value="{!empTime.daysArray[11]}" styleClass="{!empTime.cssStyle[11]}"/>
-                        <apex:column headerValue="Total" value="{!empTime.daysArray[12]}" styleClass="{!empTime.cssStyle[12]}"/>
+                        <apex:column onclick="goToEmployeeView('{!empTime.objId}');" headerValue="Jan {!fteYear}" value="{!empTime.daysArray[0]}" styleClass="{!empTime.cssStyle[0]}"/>
+                        <apex:column onclick="goToEmployeeView('{!empTime.objId}');" headerValue="Feb {!fteYear}" value="{!empTime.daysArray[1]}" styleClass="{!empTime.cssStyle[1]}"/>
+                        <apex:column onclick="goToEmployeeView('{!empTime.objId}');" headerValue="Mar {!fteYear}" value="{!empTime.daysArray[2]}" styleClass="{!empTime.cssStyle[2]}"/>
+                        <apex:column onclick="goToEmployeeView('{!empTime.objId}');" headerValue="Apr {!fteYear}" value="{!empTime.daysArray[3]}" styleClass="{!empTime.cssStyle[3]}"/>
+                        <apex:column onclick="goToEmployeeView('{!empTime.objId}');" headerValue="May {!fteYear}" value="{!empTime.daysArray[4]}" styleClass="{!empTime.cssStyle[4]}"/>
+                        <apex:column onclick="goToEmployeeView('{!empTime.objId}');" headerValue="Jun {!fteYear}" value="{!empTime.daysArray[5]}" styleClass="{!empTime.cssStyle[5]}"/>
+                        <apex:column onclick="goToEmployeeView('{!empTime.objId}');" headerValue="Jul {!fteYear}" value="{!empTime.daysArray[6]}" styleClass="{!empTime.cssStyle[6]}"/>
+                        <apex:column onclick="goToEmployeeView('{!empTime.objId}');" headerValue="Aug {!fteYear}" value="{!empTime.daysArray[7]}" styleClass="{!empTime.cssStyle[7]}"/>
+                        <apex:column onclick="goToEmployeeView('{!empTime.objId}');" headerValue="Sep {!fteYear}" value="{!empTime.daysArray[8]}" styleClass="{!empTime.cssStyle[8]}"/>
+                        <apex:column onclick="goToEmployeeView('{!empTime.objId}');" headerValue="Ocb {!fteYear}" value="{!empTime.daysArray[9]}" styleClass="{!empTime.cssStyle[9]}"/>
+                        <apex:column onclick="goToEmployeeView('{!empTime.objId}');" headerValue="Nov {!fteYear}" value="{!empTime.daysArray[10]}" styleClass="{!empTime.cssStyle[10]}"/>
+                        <apex:column onclick="goToEmployeeView('{!empTime.objId}');" headerValue="Dec {!fteYear}" value="{!empTime.daysArray[11]}" styleClass="{!empTime.cssStyle[11]}"/>
+                        <apex:column onclick="goToEmployeeView('{!empTime.objId}');" headerValue="Total" value="{!empTime.daysArray[12]}" styleClass="{!empTime.cssStyle[12]}"/>
                     </apex:pageBlockTable>
                 </apex:pageBlockSection>
 
@@ -93,10 +121,10 @@
                     <tr>
                         <td>Page: <apex:outputText value=" {!employeePagination.pageNumber} of {!CEILING(employeePagination.resultSize / employeePagination.pageSize)}"/></td>
                         <td align="center">
-                            <apex:commandLink status="loadingDiv" action="{!employeePagination.previousPage}" value="« Previous" rendered="{!employeePagination.hasPrevious}" reRender="emplsPanel" />
+                            <apex:commandLink status="loadingDiv" action="{!employeePagination.previousPage}" value="« Previous" rendered="{!employeePagination.hasPrevious}" reRender="employeeListBlockId" />
                             <apex:outputText style="color: #ccc;" value="« Previous" rendered="{!NOT(employeePagination.hasPrevious)}"/>
                             &nbsp;&nbsp;
-                            <apex:commandLink status="loadingDiv" action="{!employeePagination.nextPage}" value="Next »" rendered="{!employeePagination.hasNext}" reRender="emplsPanel" />
+                            <apex:commandLink status="loadingDiv" action="{!employeePagination.nextPage}" value="Next »" rendered="{!employeePagination.hasNext}" reRender="employeeListBlockId" />
                             <apex:outputText style="color: #ccc;" value="Next »" rendered="{!NOT(employeePagination.hasNext) }"/>
                         </td>
                         <td align="right">
@@ -105,20 +133,26 @@
                                 <apex:selectOption itemValue="10" itemLabel="10"/>
                                 <apex:selectOption itemValue="20" itemLabel="20"/>
                                 <apex:selectOption itemValue="50" itemLabel="50"/>
-                                <apex:actionSupport event="onchange" reRender="emplsPanel"/>
+                                <apex:actionSupport event="onchange" reRender="employeeListBlockId"/>
                             </apex:selectList>
                         </td>
                     </tr>
                 </table>
 
-                <apex:actionFunction status="loadingDiv" action="{!employeePagination.resetPageNumber}" name="resetPageNum" reRender="emplsPanel" />
-                <apex:actionFunction action="{!goToEmployeeView}" name="goToEmployeeView" reRender="emplsPanel">
+                <apex:actionFunction status="loadingDiv" action="{!employeePagination.resetPageNumber}" name="resetPageNum" reRender="employeeListBlockId" />
+                <apex:actionFunction action="{!goToEmployeeView}" name="goToEmployeeView" reRender="employeeListBlockId">
                     <apex:param name="employeeId" assignTo="{!employeeId}" value=""/>
                 </apex:actionFunction>
 
                 <apex:commandButton action="{!goToEmployeeListView}" value="Employee List" id="EmplListButton" disabled="true"/>
                 <apex:commandButton action="{!goToProjectListView}" value="Project List" id="projListButton" />
                 <apex:commandButton action="{!goToCSVUploadView}" value="CSV File Upload" id="uploadButton" />
+                <hr />
+                <div class="tLegened">
+                    <div class="tLegendElement boldText">Table legend : </div>
+                    <div class="tLegendElement"><span class="future tLegendColor"></span>&nbsp;&nbsp;- future time allocation</div>
+                    <div class="tLegendElement"><span class="blocked tLegendColor"></span>&nbsp;&nbsp;- blocked time</div>
+                </div>
             </apex:outputPanel>
         </apex:form>
     </apex:pageBlock>

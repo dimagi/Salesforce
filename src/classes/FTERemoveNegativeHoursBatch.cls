@@ -1,8 +1,8 @@
 /**
  * Class for adjusting hours when we will have negative values in a month after moving hours.
- * TODO : probably to delete
+ * TODO : class to refactor, currently not used, that is why code is commented
  */
-public without sharing class FTERemoveNegativeHoursBatch implements Database.Batchable<FTEEmployeeMonthUpdated>, Database.Stateful {
+public without sharing class FTERemoveNegativeHoursBatch {} /*implements Database.Batchable<FTEEmployeeMonthUpdated>, Database.Stateful {
 
     public List<FTEEmployeeMonthUpdated> start(Database.BatchableContext BC) {
         AggregateResult[] groupedResults = [SELECT CALENDAR_MONTH(Date__c), CALENDAR_YEAR(Date__c), Employee__c, TC_Contract__c, SUM(Hours__c)
@@ -143,4 +143,4 @@ public without sharing class FTERemoveNegativeHoursBatch implements Database.Bat
         public Decimal hours {get; set;}
         public Date fteDate {get; set;}
     }
-}
+}*/

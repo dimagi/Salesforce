@@ -84,7 +84,7 @@
                 <apex:commandButton action="{!goToProjectListView}" value="Project List" id="projListButton" />
                 <apex:commandButton action="{!goToCSVUploadView}" value="CSV File Upload" id="uploadButton" />
                 <apex:commandButton action="{!goToEmployeeViewFromTimeCardView}" value="Employee View" id="backButton" />
-                &nbsp;&nbsp;&nbsp;<a class="btn" style="text-decoration:none;" href="apex/FTE_Download_File?employeeId={!employeeId}&month={!exportMonth}" target="_blank">Download CSV</a>
+                &nbsp;&nbsp;&nbsp;<a class="btn" style="text-decoration:none;" href="apex/FTE_Download_File?employeeId={!employeeId}&fteYear={!fteYear}&month={!exportMonth}" target="_blank">Download CSV</a>
             </apex:outputPanel>
         </apex:form>
     </apex:pageBlock>

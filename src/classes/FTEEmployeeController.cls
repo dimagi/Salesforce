@@ -4,30 +4,23 @@
 public class FTEEmployeeController extends FTEController {
 
     private Id employeeId;
-    private Integer employeeNetworkDays = 0;
+    public SFDC_Employee__c employee { get; set; }
 
-    public Id contractId { get; set;}
-    public Integer fteYear { get; set;}
-    public Integer exportMonth { get; set;}
-    public SFDC_Employee__c employee { get; set;}
+    public FTEDataManager fteTimeManager { get; set; }
+    public FTEEmployeeTime totalAssignedDays { get; set; }
+    public FTEEmployeeTime totalDaysWorked { get; set; }
+    public List<FTEEmployeeTime> contractsTime { get; set; }
 
-    public FTETimeManager fteTimeManager { get; set;}
-    public FTEEmployeeTime totalAssignedDays { get; set;}
-    public FTEEmployeeTime totalDaysWorked { get; set;}
-    public List<FTEEmployeeTime> contractsTime { get; set;}
+    public List<DContract__c> fteContracts { get; set; }
+    public List<SelectOption> fteContractsOptions { get; set; }
 
-    public List<DContract__c> fteContracts { get; set;}
-    public List<SelectOption> fteContractsOptions { get;set; }
-    public Id selectedFteContract { get; set;}
-    public String fteDays { get; set;}
-    public Integer employeeMonth { get; set;}
-    public Decimal fteHoursMax { get; set;}
-    public Decimal fteDaysMax { get; set;}
-    public Decimal userAvailableDays { get; set;}
-    public Boolean assignViewError { get; set;}
-    public Boolean notValidDays {get; set;}
-    public String monthName {get; set;}
-    public String contractName { get; set;}
+    public Integer employeeNetworkDays { get; set; }
+    public Id contractId { get; set; }
+    public Integer fteYear { get; set; }
+    public Integer exportMonth { get; set; }
+    public Id selectedFteContract { get; set; }
+    public String fteDays { get; set; }
+    public Integer employeeMonth { get; set; }
 
     public FTEEmployeeController() {
         String emplId = ApexPages.currentPage().getParameters().get('employeeId');
@@ -41,6 +34,18 @@ public class FTEEmployeeController extends FTEController {
         } else {
             this.fteYear = Date.today().year();
         }
+
+        this.fteContracts = [SELECT Id, Name FROM DContract__c WHERE FTE_Tracker__c = 'Yes' ORDER BY Name];
+        this.fteContractsOptions = new List<SelectOption>();
+        for (DContract__c con : this.fteContracts) {
+            this.fteContractsOptions.add(new SelectOption(con.Id, con.Name));
+        }
+
+        List<SFDC_Employee__c> emplList = [SELECT Id, Name, Hire_Date__c FROM SFDC_Employee__c WHERE Id =: this.employeeId LIMIT 1];
+        if (emplList.size() > 0) {
+            this.employee = emplList.get(0);
+        }
+        this.employeeNetworkDays = FTETrackerHelper.getNetworkDays(this.employee.Hire_Date__c, this.fteYear);
     }
 
     public void initFteEmployeeView() {
@@ -49,15 +54,100 @@ public class FTEEmployeeController extends FTEController {
             return;
         }
 
-        List<SFDC_Employee__c> emplList = [SELECT Id, Name, Hire_Date__c FROM SFDC_Employee__c WHERE Id =: this.employeeId LIMIT 1];
-        if (emplList.size() > 0) {
-            this.employee = emplList.get(0);
+        loadWorkCardJobStatus();
+
+        if (workCardJobStatus.isRunning == false) {
+            this.fteTimeManager = new FTEDataManager(this.fteYear, this.employee.Id, false);
+            this.fteTimeManager.loadEmployeeTime(); // loads employee time cards with tags
+            this.fteTimeManager.loadTemplateTime(); // loads uploaded csv templates to allocate future time
+            buildUITableData();
+        }
+    }
+
+    public void setThreshold() {
+        loadWorkCardJobStatus();
+        if (workCardJobStatus.isRunning == true) {
+            ApexPages.addMessage(new ApexPages.message(ApexPages.severity.ERROR, 'Cannot manage time template, FTE Tracker is currently busy.'));
+            return;
+        }
+        if (!FTETrackerHelper.isContractFTE(this.contractId)) {
+            ApexPages.addMessage(new ApexPages.message(ApexPages.severity.ERROR, 'Contract is not in FTE Tracker, try refresh page.'));
+            return;
+        }
+        if (this.fteDays != null && this.fteDays != '') {
+            Decimal value = Decimal.valueOf(this.fteDays);
+            if (value >= 0) {
+                FTEDataManager manager = new FTEDataManager(this.fteYear, this.employeeMonth, this.employee.Id, false);
+                manager.upsertTimeTemplate(this.contractId, value, this.employeeMonth, false); //set time will refresh work card
+                manager.loadEmployeeTime();
+                manager.loadTemplateTime();
+                manager.setTime(this.contractId, value * 8);
+            } else {
+                resetThreshold(this.contractId, this.employeeMonth);
+            }
+        } else {
+            resetThreshold(this.contractId, this.employeeMonth);
+        }
+        initFteEmployeeView();
+    }
+
+    public void resetThreshold(Id resetContract, Integer resetMonth) {
+        this.fteTimeManager.removeTimeTemplate(resetContract, resetMonth);
+    }
+
+    public void assignTime() {
+        loadWorkCardJobStatus();
+        if (workCardJobStatus.isRunning == true) {
+            ApexPages.addMessage(new ApexPages.message(ApexPages.severity.ERROR, 'Cannot assign time, FTE Tracker is currently busy.'));
+            return;
+        }
+        if (!FTETrackerHelper.isContractFTE(this.selectedFteContract)) {
+            ApexPages.addMessage(new ApexPages.message(ApexPages.severity.ERROR, 'Contract is not in FTE Tracker, try refresh page.'));
+            return;
         }
 
-        this.employeeNetworkDays = FTETrackerHelper.getNetworkDays(this.employee.Hire_Date__c, this.fteYear);
-        this.fteTimeManager = new FTETimeManager(this.employee, this.fteYear);
-        this.fteTimeManager.loadEmployeeTime();
-        buildUITableData();
+        if (this.fteDays != null && this.fteDays != '') {
+            Decimal value = Decimal.valueOf(this.fteDays);
+            if (value > 0) {
+                FTEDataManager manager = new FTEDataManager(this.fteYear, this.employeeMonth, this.employee.Id, false);
+                manager.loadEmployeeTime();
+                manager.loadTemplateTime();
+                FTEEmployeeTime emplTime = manager.assignedMap.get(this.selectedFteContract);
+                if (emplTime == null || emplTime.templateArray[this.employeeMonth - 1] == -1) { // we want use this method only when no template was added
+                    manager.addTime(this.selectedFteContract, value * 8);
+                } else {
+                    manager.upsertTimeTemplate(this.selectedFteContract, emplTime.templateArray[this.employeeMonth - 1] + value, this.employeeMonth, false);
+                    manager.setTime(this.selectedFteContract, (emplTime.templateArray[this.employeeMonth - 1]) * 8);
+                }
+                initFteEmployeeView();
+            }
+        }
+    }
+
+    public void unassignTime() {
+        loadWorkCardJobStatus();
+        if (workCardJobStatus.isRunning == true) {
+            ApexPages.addMessage(new ApexPages.message(ApexPages.severity.ERROR, 'Cannot unassign time, FTE Tracker is currently busy.'));
+            return;
+        }
+        if (!FTETrackerHelper.isContractFTE(this.contractId)) {
+            ApexPages.addMessage(new ApexPages.message(ApexPages.severity.ERROR, 'Contract is not in FTE Tracker, try refresh page.'));
+            return;
+        }
+        if (this.fteDays != null && this.fteDays != '') {
+            Decimal value = Decimal.valueOf(this.fteDays);
+            if (value > 0) {
+                FTEDataManager manager = new FTEDataManager(this.fteYear, this.employeeMonth, this.employee.Id, false);
+                manager.loadEmployeeTime();
+                manager.loadTemplateTime();
+
+                FTEEmployeeTime emplTime = manager.assignedMap.get(this.selectedFteContract);
+                if (emplTime == null || emplTime.templateArray[this.employeeMonth - 1] == -1) { // we want use this method only when no template was added
+                    manager.removeTime(this.contractId, value * 8);
+                }
+                initFteEmployeeView();
+            }
+        }
     }
 
     public override PageReference goToEmployeeListView () {
@@ -84,196 +174,50 @@ public class FTEEmployeeController extends FTEController {
         return pageRef;
     }
 
-    public void loadEmployeeMonth() {
-        this.assignViewError = false;
-        this.notValidDays = false;
-        this.fteDays = '0.25';
-        this.userAvailableDays = 0;
-
-        if (this.employeeMonth != null) {
-            this.fteDaysMax = this.fteTimeManager.unassigned.daysArray[this.employeeMonth];
-            this.fteHoursMax = this.fteTimeManager.unassigned.hoursArray[this.employeeMonth];
-            this.monthName = DateTime.newInstance(this.fteYear, this.employeeMonth + 1, 1).format('MMMM yyyy');
-            this.userAvailableDays = 21 - this.totalAssignedDays.daysArray[this.employeeMonth] > 0 ? 21 -
-                                            this.totalAssignedDays.daysArray[this.employeeMonth] : 0;
-            Decimal helperDecimal = employeeNetworkDays - this.totalAssignedDays.daysArray[12] > 0 ?
-                employeeNetworkDays - this.totalAssignedDays.daysArray[12] : 0;
-            this.userAvailableDays = this.userAvailableDays < helperDecimal ? this.userAvailableDays : helperDecimal;
-        } else {
-            ApexPages.addMessage(new ApexPages.message(ApexPages.severity.ERROR, 'Cannot load month number'));
-            this.assignViewError = true;
-            this.fteHoursMax = 0;
-        }
-
-        this.fteContracts = [SELECT Id, Name FROM DContract__c WHERE FTE_Tracker__c = 'Yes' ORDER BY Name];
-        this.fteContractsOptions = new List<SelectOption>();
-        for (DContract__c con : this.fteContracts) {
-            this.fteContractsOptions.add(new SelectOption(con.Id, con.Name));
-        }
-    }
-
-    public void loadEmployeeUnassMonth() {
-        this.assignViewError = false;
-        this.notValidDays = false;
-        this.fteDays = '0.25';
-        if (this.employeeMonth != null && this.contractId != null) {
-            this.contractName = this.fteTimeManager.assignedMap.get(this.contractId).name;
-            this.fteHoursMax = this.fteTimeManager.assignedMap.get(this.contractId).hoursArray[this.employeeMonth];
-            this.fteDaysMax = this.fteTimeManager.assignedMap.get(this.contractId).daysArray[this.employeeMonth];
-            this.monthName = DateTime.newInstance(this.fteYear, this.employeeMonth + 1, 1).format('MMMM yyyy');
-        } else {
-            ApexPages.addMessage(new ApexPages.message(ApexPages.severity.ERROR, 'Cannot load contract month'));
-            this.assignViewError = true;
-            this.fteHoursMax = 0;
-        }
-    }
-
-    public void moveTimeToUnassigned() {
-        if (notValidDays) {
-            return;
-        }
-        this.assignViewError = false;
-        if (this.employeeMonth == null) {
-            ApexPages.addMessage(new ApexPages.message(ApexPages.severity.ERROR, 'Cannot load month number'));
-            this.assignViewError = true;
-            return;
-        }
-
-        Decimal fteDaysdecimal = this.fteDays != null && this.fteDays != '' ? Decimal.valueOf(this.fteDays) : 0;
-        if (this.fteDaysMax < fteDaysdecimal || fteDaysdecimal < 0) {
-            ApexPages.addMessage(new ApexPages.message(ApexPages.severity.ERROR, 'Too much hours to assign / hours cannot be negative'));
-            this.assignViewError = true;
-            return;
-        }
-
-        if (String.isEmpty(this.contractId)) {
-            ApexPages.addMessage(new ApexPages.message(ApexPages.severity.ERROR, 'Cannot find FTE Contract'));
-            this.assignViewError = true;
-            return;
-        }
-
-        if (fteDaysdecimal == 0) {
-            ApexPages.addMessage(new ApexPages.message(ApexPages.severity.ERROR, 'Cannot move 0 hours'));
-            this.assignViewError = true;
-            return;
-        }
-
-        try {
-            Decimal hoursToUnassign = fteDaysdecimal * 8;
-            if (this.fteHoursMax < hoursToUnassign) {
-                hoursToUnassign = this.fteHoursMax;
-            }
-            this.fteTimeManager.moveTimeToUnassigned(hoursToUnassign, this.employeeMonth + 1, this.contractId);
-            moveHoursInFTEWorkCard((-1) * fteDaysdecimal, this.employeeMonth + 1, this.employee.Id);
-        } catch (Exception e) {
-            this.assignViewError = true;
-            ApexPages.addMessage(new ApexPages.message(ApexPages.severity.ERROR, 'Unexpected error: ' + e.getMessage()));
-        }
-
-        initFteEmployeeView();
-    }
-
-    public void moveTimeFromUnassigned() {
-        if (notValidDays) {
-            return;
-        }
-        this.assignViewError = false;
-        if (this.employeeMonth == null) {
-            ApexPages.addMessage(new ApexPages.message(ApexPages.severity.ERROR, 'Cannot load month number'));
-            this.assignViewError = true;
-            return;
-        }
-
-        Decimal fteDaysdecimal = this.fteDays != null && this.fteDays != '' ? Decimal.valueOf(this.fteDays) : 0;
-        if (this.fteDaysMax < fteDaysdecimal || fteDaysdecimal < 0) {
-            ApexPages.addMessage(new ApexPages.message(ApexPages.severity.ERROR, 'Too much hours to assign / hours cannot be negative'));
-            this.assignViewError = true;
-            return;
-        }
-
-        if (String.isEmpty(this.selectedFteContract)) {
-            ApexPages.addMessage(new ApexPages.message(ApexPages.severity.ERROR, 'Cannot find FTE Contract'));
-            this.assignViewError = true;
-            return;
-        }
-
-        if (fteDaysdecimal == 0) {
-            ApexPages.addMessage(new ApexPages.message(ApexPages.severity.ERROR, 'Cannot move 0 hours'));
-            this.assignViewError = true;
-            return;
-        }
-
-        try {
-            Decimal hoursToAssign = fteDaysdecimal * 8;
-            if (this.fteHoursMax < hoursToAssign) {
-                hoursToAssign = this.fteHoursMax;
-            }
-            this.fteTimeManager.moveTimeToAssigned(hoursToAssign, this.employeeMonth + 1, this.selectedFteContract);
-            moveHoursInFTEWorkCard(fteDaysdecimal, this.employeeMonth + 1, this.employee.Id);
-        } catch (Exception e) {
-            this.assignViewError = true;
-            ApexPages.addMessage(new ApexPages.message(ApexPages.severity.ERROR, 'Unexpected error: ' + e.getMessage() + ' Line : ' + e.getLineNumber()));
-        }
-        initFteEmployeeView();
-    }
-
     private void buildUITableData() {
         this.contractsTime = new List<FTEEmployeeTime>();
         this.contractsTime = this.fteTimeManager.assignedMap.values();
+        this.contractsTime.sort();
         this.totalAssignedDays = new FTEEmployeeTime('Total Assigned Days', null);
         this.totalDaysWorked = new FTEEmployeeTime('Total Days Worked', null);
+
         generateStyles();
+
         this.contractsTime.add(this.fteTimeManager.unassigned);
         this.contractsTime.add(this.totalAssignedDays);
         this.contractsTime.add(this.totalDaysWorked);
     }
 
     private void generateStyles() {
-        // Calculate totals and labor cost
+        // Calculate totals
         for (FTEEmployeeTime empT : this.contractsTime) {
-            empT.calculateDays();
-            this.totalAssignedDays.sumHours(empT);
-            this.totalDaysWorked.sumHours(empT);
+            empT.calculateDaysAndTotal();
+            this.totalAssignedDays.mergeEmployeeTime(empT);
+            this.totalDaysWorked.mergeEmployeeTime(empT);
         }
 
-        this.fteTimeManager.unassigned.calculateDays();
-        this.totalAssignedDays.calculateDays();
+        this.totalDaysWorked.mergeEmployeeTime(this.fteTimeManager.unassigned);
+        this.fteTimeManager.unassigned.calculateDaysAndTotal();
+        this.totalAssignedDays.calculateDaysAndTotal();
+        this.totalDaysWorked.calculateDaysAndTotal();
 
         // We add css classes here to avoid complex if sections in visualgforce page
         for (Integer i = 0; i < 12; i++) {
             if (this.totalAssignedDays.daysArray[i] > 21) {
-                this.totalAssignedDays.cssStyle[i] = 'topTotal overbilled';
+                this.totalAssignedDays.cssStyle[i] = this.totalAssignedDays.cssStyle[i].remove('fteCell') + ' topTotal overbilled';
             } else {
-                this.totalAssignedDays.cssStyle[i] = 'topTotal';
+                this.totalAssignedDays.cssStyle[i] = this.totalAssignedDays.cssStyle[i].remove('fteCell') + ' topTotal';
             }
-            this.totalDaysWorked.cssStyle[i] = '';
+            this.totalDaysWorked.cssStyle[i] = this.totalDaysWorked.cssStyle[i].remove('fteCell');
         }
         if (totalAssignedDays.daysArray[12] > employeeNetworkDays) {
-            this.totalAssignedDays.cssStyle[12] = 'topTotal overbilled';
+            this.totalAssignedDays.cssStyle[12] = this.totalAssignedDays.cssStyle[12] + ' topTotal overbilled';
         } else {
-            this.totalAssignedDays.cssStyle[12] = 'topTotal';
+            this.totalAssignedDays.cssStyle[12] = this.totalAssignedDays.cssStyle[12] + ' topTotal';
         }
 
-        this.totalDaysWorked.sumHours(this.fteTimeManager.unassigned);
-        this.totalDaysWorked.calculateDays();
         this.totalDaysWorked.nameCss = '';
         this.totalAssignedDays.nameCss = 'topTotal';
         this.fteTimeManager.unassigned.nameCss = '';
-    }
-
-    private void moveHoursInFTEWorkCard(Decimal daysValue, Integer month, Id EmployeeId) {
-        List<FTE_Work_Card__c> workCards = [SELECT Id, Month_1__c, Month_2__c, Month_3__c, Month_4__c, Month_5__c, Month_6__c, Month_7__c, Month_8__c, Month_9__c, Month_10__c, Month_11__c,
-                            Month_12__c, Total__c, Total_Hours__c FROM FTE_Work_Card__c WHERE Employee__c =: EmployeeId];
-        if (workCards.size() > 0) {
-            Decimal totalValue = workCards.get(0).Total__c;
-            Decimal totalHoursValue = workCards.get(0).Total_Hours__c;
-            SObject workCard = workCards.get(0);
-            Decimal monthValue = (Decimal) workCard.get('Month_' + month + '__c');
-
-            workCard.put('Total__c', TotalValue + daysValue);
-            workCard.put('Total_Hours__c', totalHoursValue + (daysValue * 8));
-            workCard.put('Month_' + month + '__c', monthValue + daysValue);
-            update workCard;
-        }
     }
 }

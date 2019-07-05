@@ -36,9 +36,10 @@ public class TimeCardCaseUpdateBatch implements Database.Batchable<FogBugzCase>,
 
             String dbCaseTitle = fbCase.caseId + ': ' + fbCase.title;
             Integer clientFBId = Integer.valueOf(fbCase.client);
-            List<Time_Card__c> timeCardsToUpdate = [SELECT Id, Area__c, Case__c, Project__c, Client__c FROM Time_Card__c WHERE Case_Number__c =: fbCase.caseId AND FTE_only__c = false
-                                                        AND (Area__c !=: fbCase.area OR Case__c !=: dbCaseTitle OR Project__c !=: fbCase.project
-                                                            OR Client__r.FB_Id__c !=: clientFBId)];
+            List<Time_Card__c> timeCardsToUpdate = [SELECT Id, Area__c, Case__c, Project__c, Client__c
+                                                    FROM Time_Card__c WHERE Case_Number__c =: fbCase.caseId AND FTE_only__c = false
+                                                    AND (Area__c !=: fbCase.area OR Case__c !=: dbCaseTitle OR Project__c !=: fbCase.project OR Client__r.FB_Id__c !=: clientFBId)
+                                                    ORDER BY Employee__c];
 
 
             List<DContract__c> contracts = [SELECT Id, Name FROM DContract__c WHERE FB_Id__c =: clientFBId];

@@ -1,11 +1,5 @@
 <apex:page controller="FTEIndividualProjectController" docType="html-5.0" action="{!initIndividualProject}">
     <style type="text/css">
-        .fteCell {
-            cursor: pointer;
-        }
-        .fteCell:hover {
-            background: #1797C0 !important;
-        }
         .fteProjectCell {
             cursor: pointer;
         }
@@ -28,6 +22,28 @@
             padding-left: 0px;
             margin-right: 10px;
             height: 22px !important;
+        }
+        .boldText {
+            font-weight: bold;
+        }
+        .tLegend {
+            display: inline-block;
+        }
+        .tLegendElement {
+            display: flex;
+            margin-bottom: 5px;
+        }
+        .tLegendColor {
+            width: 90px;
+            height: 19px;
+            padding: 0px;
+            margin: 0px;
+        }
+        .future {
+            background: #87bcdf !important;
+        }
+        .blocked {
+            background: #ccdae5 !important;
         }
     </style>
 
@@ -59,18 +75,18 @@
                 <apex:pageBlockTable id="employeeHours" value="{!individualContractDataList}" var="empTime" styleClass="fteTable">
                     <apex:column onclick="if ('{!empTime.name}' !== 'Total') {goToEmployeeView('{!empTime.objId}');}"
                                 headerValue="Name" value="{!empTime.name}" styleClass="{!empTime.nameCss}"/>
-                    <apex:column headerValue="January {!fteYear}" value="{!empTime.daysArray[0]}" styleClass="{!empTime.cssStyle[12]}" />
-                    <apex:column headerValue="February {!fteYear}" value="{!empTime.daysArray[1]}" styleClass="{!empTime.cssStyle[12]}" />
-                    <apex:column headerValue="March {!fteYear}" value="{!empTime.daysArray[2]}" styleClass="{!empTime.cssStyle[12]}" />
-                    <apex:column headerValue="April {!fteYear}" value="{!empTime.daysArray[3]}" styleClass="{!empTime.cssStyle[12]}" />
-                    <apex:column headerValue="May {!fteYear}" value="{!empTime.daysArray[4]}" styleClass="{!empTime.cssStyle[12]}" />
-                    <apex:column headerValue="June {!fteYear}" value="{!empTime.daysArray[5]}" styleClass="{!empTime.cssStyle[12]}" />
-                    <apex:column headerValue="July {!fteYear}" value="{!empTime.daysArray[6]}" styleClass="{!empTime.cssStyle[12]}" />
-                    <apex:column headerValue="August {!fteYear}" value="{!empTime.daysArray[7]}" styleClass="{!empTime.cssStyle[12]}" />
-                    <apex:column headerValue="September {!fteYear}" value="{!empTime.daysArray[8]}" styleClass="{!empTime.cssStyle[12]}" />
-                    <apex:column headerValue="October {!fteYear}" value="{!empTime.daysArray[9]}" styleClass="{!empTime.cssStyle[12]}" />
-                    <apex:column headerValue="November {!fteYear}" value="{!empTime.daysArray[10]}" styleClass="{!empTime.cssStyle[12]}" />
-                    <apex:column headerValue="December {!fteYear}" value="{!empTime.daysArray[11]}" styleClass="{!empTime.cssStyle[12]}" />
+                    <apex:column headerValue="January {!fteYear}" value="{!empTime.daysArray[0]}" styleClass="{!empTime.cssStyle[0]}" />
+                    <apex:column headerValue="February {!fteYear}" value="{!empTime.daysArray[1]}" styleClass="{!empTime.cssStyle[1]}" />
+                    <apex:column headerValue="March {!fteYear}" value="{!empTime.daysArray[2]}" styleClass="{!empTime.cssStyle[2]}" />
+                    <apex:column headerValue="April {!fteYear}" value="{!empTime.daysArray[3]}" styleClass="{!empTime.cssStyle[3]}" />
+                    <apex:column headerValue="May {!fteYear}" value="{!empTime.daysArray[4]}" styleClass="{!empTime.cssStyle[4]}" />
+                    <apex:column headerValue="June {!fteYear}" value="{!empTime.daysArray[5]}" styleClass="{!empTime.cssStyle[5]}" />
+                    <apex:column headerValue="July {!fteYear}" value="{!empTime.daysArray[6]}" styleClass="{!empTime.cssStyle[6]}" />
+                    <apex:column headerValue="August {!fteYear}" value="{!empTime.daysArray[7]}" styleClass="{!empTime.cssStyle[7]}" />
+                    <apex:column headerValue="September {!fteYear}" value="{!empTime.daysArray[8]}" styleClass="{!empTime.cssStyle[8]}" />
+                    <apex:column headerValue="October {!fteYear}" value="{!empTime.daysArray[9]}" styleClass="{!empTime.cssStyle[9]}" />
+                    <apex:column headerValue="November {!fteYear}" value="{!empTime.daysArray[10]}" styleClass="{!empTime.cssStyle[10]}" />
+                    <apex:column headerValue="December {!fteYear}" value="{!empTime.daysArray[11]}" styleClass="{!empTime.cssStyle[11]}" />
                     <apex:column headerValue="Total Hours {!fteYear}" value="{!empTime.daysArray[12]}" styleClass="{!empTime.cssStyle[12]}" />
                 </apex:pageBlockTable>
 
@@ -79,9 +95,18 @@
                     <apex:param name="employeeId" assignTo="{!employeeId}" value=""/>
                 </apex:actionFunction>
 
+
                 <apex:commandButton action="{!goToEmployeeListView}" value="Employee List" id="EmplListButton" />
                 <apex:commandButton action="{!goToProjectListView}" value="Project List" id="projListButton" />
                 <apex:commandButton action="{!goToCSVUploadView}" value="CSV File Upload" id="uploadButton" />
+
+                <hr />
+                <div class="tLegened">
+                    <div class="tLegendElement boldText">Table legend : </div>
+                    <div class="tLegendElement"><span class="future tLegendColor"></span>&nbsp;&nbsp;- future time allocation</div>
+                    <div class="tLegendElement"><span class="blocked tLegendColor"></span>&nbsp;&nbsp;- blocked time</div>
+                </div>
+
             </apex:outputPanel>
         </apex:form>
     </apex:pageBlock>
