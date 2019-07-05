@@ -48,13 +48,25 @@ public class EmployeeArchiveTest {
                                                          24000.99, 21000.00,  currentTime.addHours(-1), null);
         insert EmployeeArchiveManager.buildArchiveRecord(employeeObj2.Id, 'Test_Field_2__c', employeeObj.Id, false,
                                                          'SimpleName', null, currentTime.addHours(-2), null);
+        insert EmployeeArchiveManager.buildArchiveRecord(employeeObj2.Id, 'Test_Field_2__c', employeeObj.Id, false,
+                                                         Date.newInstance(2019, 1, 1), DateTime.newInstance(2019, 2, 3, 12 , 2, 2), currentTime.addHours(-3), null);
+        insert EmployeeArchiveManager.buildArchiveRecord(employeeObj2.Id, 'Test_Field_2__c', employeeObj.Id, false,
+                                                         11111111l, 2222222222222l, currentTime.addHours(-4), null);
+        insert EmployeeArchiveManager.buildArchiveRecord(employeeObj2.Id, 'Test_Field_2__c', employeeObj.Id, false,
+                                                         50, 100, currentTime.addHours(-5), null);
+        insert EmployeeArchiveManager.buildArchiveRecord(employeeObj2.Id, 'Test_Field_2__c', employeeObj.Id, false,
+                                                         false, true, currentTime.addHours(-6), null);
  
-        System.assertEquals(2, [SELECT Id FROM Employee_History_Archive__c].size());
+        System.assertEquals(6, [SELECT Id FROM Employee_History_Archive__c].size());
         List<Employee_History_Archive__c> records = [SELECT Employee_Id__c, History_Field_Name__c, History_Id__c, History_User_Id__c,
                                                      History_Is_Deleted__c, History_New_Value__c, History_Old_Value__c, History_Created_Date__c
                                                      FROM Employee_History_Archive__c ORDER BY History_Created_Date__c DESC];
         assertRecord(records.get(0), employeeObj.Id, 'Test_Field__c', employeeObj2.Id, null, false, '24000.99', '21000.00', currentTime.addHours(-1));
         assertRecord(records.get(1), employeeObj2.Id, 'Test_Field_2__c', employeeObj.Id, null, false, 'SimpleName', null, currentTime.addHours(-2));
+        assertRecord(records.get(2), employeeObj2.Id, 'Test_Field_2__c', employeeObj.Id, null, false, '' + Date.newInstance(2019, 1, 1), '' + DateTime.newInstance(2019, 2, 3, 12 , 2, 2), currentTime.addHours(-3));
+        assertRecord(records.get(3), employeeObj2.Id, 'Test_Field_2__c', employeeObj.Id, null, false, '11111111', '2222222222222', currentTime.addHours(-4));
+        assertRecord(records.get(4), employeeObj2.Id, 'Test_Field_2__c', employeeObj.Id, null, false, '50', '100', currentTime.addHours(-5));
+        assertRecord(records.get(5), employeeObj2.Id, 'Test_Field_2__c', employeeObj.Id, null, false, 'false', 'true', currentTime.addHours(-6));
     }
 
     private static void assertRecord(Employee_History_Archive__c record, Id expectedEmployee, String expectedField, Id expectedId,

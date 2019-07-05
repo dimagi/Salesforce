@@ -30,23 +30,8 @@ public class EmployeeArchiveManager {
     public static Employee_History_Archive__c buildArchiveRecord(Id parentId, String fieldName, Id recId, Boolean isDeleted,
                                                                  Object objNewWValue, Object objOldValue, DateTime historyCreatedDate,
                                                                  Id historyCreatedById) {
-        String newValue = null;
-        if (objNewWValue != null) {
-            if (objNewWValue instanceof Decimal) {
-                newValue = String.valueOf((Decimal) objNewWValue);
-            } else {
-                newValue = (String) objNewWValue;
-            }
-        }
-
-        String oldValue = null;
-        if (objOldValue != null) {
-            if (objOldValue instanceof Decimal) {
-                oldValue = String.valueOf((Decimal) objOldValue);
-            } else {
-                oldValue = (String) objOldValue;
-            }
-        }
+        String newValue = valueOf(objNewWValue);
+        String oldValue = valueOf(objOldValue);
 
         return new Employee_History_Archive__c(
                             Employee_Id__c = parentId,
@@ -72,5 +57,23 @@ public class EmployeeArchiveManager {
                 CreatedById, CreatedDate FROM SFDC_Employee__History
                 WHERE CreatedDate >: rangeDate
                 AND Id NOT IN: lastAddedHistoryRecords];
+    }
+
+    private static String valueOf(Object objValue) {
+        if (objValue != null) {
+            if (objValue instanceof Decimal) {
+                return String.valueOf((Decimal) objValue);
+            } else if (objValue instanceof Date) {
+                return '' + ((Date) objValue);
+            } else if (objValue instanceof DateTime) {
+                return '' + ((DateTime) objValue);
+            } else if (objValue instanceof Boolean) {
+                return '' + ((Boolean) objValue);
+            } else {
+                return (String) objValue;
+            }
+        }
+
+        return null;
     }
 }
