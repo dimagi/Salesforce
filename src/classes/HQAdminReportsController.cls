@@ -1,12 +1,12 @@
 public class HQAdminReportsController {
 
-    public static final List<String> reportColumns = new List<String> {'Name', 'date_created__c', 'Deployment_Countries__c', 'Server_Name__c', 'is_test__c', 'hipaa_compliant__c', 'Internal_Properties__r.notes__c',
-                                                                        'InternalProp_project_state__c', 'InternalProp_using_adm__c', 'InternalProp_using_call_center__c', 'InternalProp_area__c', 'InternalProp_sub_area__c',
-                                                                        'InternalProp_Business_Unit__c', 'InternalProp_self_started__c', 'InternalProp_commtrack_domain__c', 'InternalProp_custom_eula__c',
-                                                                        'InternalProp_organization_name__c', 'Has_J2ME_submission_in_past_90_days__c', 'cpActiveMobileUsers__c', 'cpAllMobileUsers__c', 'Cp_n_users_submitted_form__c',
-                                                                        'cpCasesIn60Days__c', 'cpAllActiveCases__c', 'cpAllInactiveCases__c', 'cpAllCases__c', 'cpAllForms__c', 'cpFormsIn30Days__c', 'cpFirstFormSubmissionDate__c',
-                                                                        'cp300thFormSubmission__c', 'cpLastFormSubmissionDate__c', 'cpAllWebUsers__c', 'cpIsActive__c', 'cpAllOutgoingSms__c', 'cpAllIncomingSms__c',
-                                                                        'cpAllSms__c', 'cpIncomingSmsIn30Days__c', 'cpOutgoingSmsIn30Days__c', 'Cp_last_update__c'};
+    public static final List<String> reportColumns = new List<String> {'Name', 'hr_name__c', 'date_created__c', 'Deployment_Countries__c', 'Server_Name__c', 'is_test__c', 'hipaa_compliant__c', 'Internal_Properties__r.notes__c',
+                                                                       'InternalProp_project_state__c', 'InternalProp_using_adm__c', 'InternalProp_using_call_center__c', 'InternalProp_area__c', 'InternalProp_sub_area__c',
+                                                                       'InternalProp_Business_Unit__c', 'InternalProp_self_started__c', 'InternalProp_commtrack_domain__c', 'InternalProp_custom_eula__c',
+                                                                       'InternalProp_organization_name__c', 'Has_J2ME_submission_in_past_90_days__c', 'cpActiveMobileUsers__c', 'cpAllMobileUsers__c', 'Cp_n_users_submitted_form__c',
+                                                                       'cpCasesIn60Days__c', 'cpAllActiveCases__c', 'cpAllInactiveCases__c', 'cpAllCases__c', 'cpAllForms__c', 'cpFormsIn30Days__c', 'cpFirstFormSubmissionDate__c',
+                                                                       'cp300thFormSubmission__c', 'cpLastFormSubmissionDate__c', 'cpAllWebUsers__c', 'cpIsActive__c', 'cpAllOutgoingSms__c', 'cpAllIncomingSms__c',
+                                                                       'cpAllSms__c', 'cpIncomingSmsIn30Days__c', 'cpOutgoingSmsIn30Days__c', 'Cp_last_update__c'};
 
     public List<String> supportedReportsList { get; set; } // we want keep order
     public Map<String, String> supportedReports { get; set; }
