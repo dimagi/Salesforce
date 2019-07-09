@@ -294,7 +294,7 @@
                                         <apex:outputPanel >
                                             <apex:commandLink action="{!sortColumn}" reRender="projectSpaceDataTable,tableSortField,tableSortDirection" status="loadingDiv">
                                                 <apex:param name="sortField" value="Name" assignTo="{!sortField}" />
-                                                Project
+                                                Project Space Id
                                                 <apex:image value="/img/s.gif" rendered="{!IF(sortField == 'Name', true, false)}" alt="{!IF(sortDir == false,'Sorted Ascending','Sorted Descending')}"
                                                             styleClass="{!IF(sortDir == false,'sortAsc','sortDesc')}" title="{!IF(sortDir == false,'Sorted Ascending','Sorted Descending')}" />
                                             </apex:commandLink>
@@ -302,6 +302,20 @@
                                     </apex:facet>
                                     <apex:facet name="footer">Total</apex:facet>
                                     {!projectSpaceData.Name}
+                                </apex:column>
+                                <apex:column >
+                                    <apex:facet name="header">
+                                        <apex:outputPanel >
+                                            <apex:commandLink action="{!sortColumn}" reRender="projectSpaceDataTable,tableSortField,tableSortDirection" status="loadingDiv">
+                                                <apex:param name="sortField" value="hr_name__c" assignTo="{!sortField}" />
+                                                Project Space Name
+                                                <apex:image value="/img/s.gif" rendered="{!IF(sortField == 'hr_name__c', true, false)}" alt="{!IF(sortDir == false,'Sorted Ascending','Sorted Descending')}"
+                                                            styleClass="{!IF(sortDir == false,'sortAsc','sortDesc')}" title="{!IF(sortDir == false,'Sorted Ascending','Sorted Descending')}" />
+                                            </apex:commandLink>
+                                        </apex:outputPanel>
+                                    </apex:facet>
+                                    <apex:facet name="footer">---</apex:facet>
+                                    {!projectSpaceData.hr_name__c}
                                 </apex:column>
                                 <apex:column >
                                     <apex:facet name="header">
