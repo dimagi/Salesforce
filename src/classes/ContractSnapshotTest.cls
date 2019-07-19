@@ -259,10 +259,7 @@ public class ContractSnapshotTest {
                                                    Contract_Expense_BUDGET__c = 0, of_Services_budget_for_GS__c = 100, Total_Amount_of_Contract__c = 3000);
         DContract__c dcontract4 = new DContract__c(Name = 'Sample Test 4', Prime_Contracting_Business_Unit__c = bu.Id, Percent_through_SOW_deliverables__c = 40, Expected_Buffer__c = 0,
                                                    Contract_Expense_BUDGET__c = 0, of_Services_budget_for_GS__c = 100, Total_Amount_of_Contract__c = 4000);
-        insert dcontract1;
-        insert dcontract2;
-        insert dcontract3;
-        insert dcontract4;
+        insert new List<DContract__c> { dcontract1, dcontract2, dcontract3, dcontract4 };
 
         PRO_Contract_Snapshot__c proS1 = new PRO_Contract_Snapshot__c(Contract__c = dcontract1.Id, Project_Quality_Overall_Status__c = 400, Customer_Satisfaction_of_services__c = 250,
                                                                 GS_Execution_Budget__c = 1000, Snapshot_Date__c = Date.newInstance(2017, 2, 9));
@@ -280,14 +277,7 @@ public class ContractSnapshotTest {
                                                                 GS_Execution_Budget__c = 1000, Snapshot_Date__c = Date.newInstance(2017, 3, 9));
         PRO_Contract_Snapshot__c proS8 = new PRO_Contract_Snapshot__c(Contract__c = dcontract4.Id, Project_Quality_Overall_Status__c = 543, Customer_Satisfaction_of_services__c = 776,
                                                                 GS_Execution_Budget__c = 4567, Snapshot_Date__c = Date.newInstance(2017, 2, 23));
-        insert proS1;
-        insert proS2;
-        insert proS3;
-        insert proS4;
-        insert proS5;
-        insert proS6;
-        insert proS7;
-        insert proS8;
+        insert new List<PRO_Contract_Snapshot__c> { proS1, proS2, proS3, proS4, proS5, proS6, proS7, proS8 };
 
         Project_Report_Out__c pro1 = new Project_Report_Out__c(Contract__c = dcontract1.Id, Contract_Snapshot__c = proS1.Id, Report_Out_Date__c = Date.newInstance(2017, 2, 9));
         Project_Report_Out__c pro2 = new Project_Report_Out__c(Contract__c = dcontract1.Id, Contract_Snapshot__c = proS2.Id, Report_Out_Date__c = Date.newInstance(2017, 2, 23));
@@ -301,14 +291,7 @@ public class ContractSnapshotTest {
 
         Project_Report_Out__c pro8 = new Project_Report_Out__c(Contract__c = dcontract4.Id, Contract_Snapshot__c = proS8.Id, Report_Out_Date__c = Date.newInstance(2017, 2, 23));
 
-        insert pro1;
-        insert pro2;
-        insert pro3;
-        insert pro4;
-        insert pro5;
-        insert pro6;
-        insert pro7;
-        insert pro8;
+        insert new List<Project_Report_Out__c> { pro1, pro2, pro3, pro4, pro5, pro6, pro7, pro8 };
 
         Test.startTest();
         Database.executeBatch(new GSOverallCalculationBatch(Date.newInstance(2017, 3, 8)));
@@ -335,10 +318,7 @@ public class ContractSnapshotTest {
                                                    Contract_Expense_BUDGET__c = 0, of_Services_budget_for_GS__c = 100, Total_Amount_of_Contract__c = 3000);
         DContract__c dcontract4 = new DContract__c(Name = 'Sample Test 4', Prime_Contracting_Business_Unit__c = bu.Id, Percent_through_SOW_deliverables__c = 40, Expected_Buffer__c = 0,
                                                    Contract_Expense_BUDGET__c = 0, of_Services_budget_for_GS__c = 100, Total_Amount_of_Contract__c = 4000);
-        insert dcontract1;
-        insert dcontract2;
-        insert dcontract3;
-        insert dcontract4;
+        insert new List<DContract__c> { dcontract1, dcontract2, dcontract3, dcontract4 };
 
         PRO_Contract_Snapshot__c proS1 = new PRO_Contract_Snapshot__c(Contract__c = dcontract1.Id, Project_Quality_Overall_Status__c = 400, Customer_Satisfaction_of_services__c = 250,
                                                                 GS_Execution_Budget__c = 1000, Snapshot_Date__c = Date.newInstance(2017, 2, 23));
@@ -356,14 +336,7 @@ public class ContractSnapshotTest {
                                                                 GS_Execution_Budget__c = 1000, Snapshot_Date__c = Date.newInstance(2017, 3, 23));
         PRO_Contract_Snapshot__c proS8 = new PRO_Contract_Snapshot__c(Contract__c = dcontract4.Id, Project_Quality_Overall_Status__c = 543, Customer_Satisfaction_of_services__c = 776,
                                                                 GS_Execution_Budget__c = 4567, Snapshot_Date__c = Date.newInstance(2017, 3, 9));
-        insert proS1;
-        insert proS2;
-        insert proS3;
-        insert proS4;
-        insert proS5;
-        insert proS6;
-        insert proS7;
-        insert proS8;
+        insert new List<PRO_Contract_Snapshot__c> { proS1, proS2, proS3, proS4, proS5, proS6, proS7, proS8 };
 
         Project_Report_Out__c pro1 = new Project_Report_Out__c(Contract__c = dcontract1.Id, Contract_Snapshot__c = proS1.Id, Report_Out_Date__c = Date.newInstance(2017, 2, 23));
         Project_Report_Out__c pro2 = new Project_Report_Out__c(Contract__c = dcontract1.Id, Contract_Snapshot__c = proS2.Id, Report_Out_Date__c = Date.newInstance(2017, 3, 9));
@@ -376,15 +349,7 @@ public class ContractSnapshotTest {
         Project_Report_Out__c pro7 = new Project_Report_Out__c(Contract__c = dcontract3.Id, Contract_Snapshot__c = proS7.Id, Report_Out_Date__c = Date.newInstance(2017, 3, 23));
 
         Project_Report_Out__c pro8 = new Project_Report_Out__c(Contract__c = dcontract4.Id, Contract_Snapshot__c = proS8.Id, Report_Out_Date__c = Date.newInstance(2017, 3, 9));
-
-        insert pro1;
-        insert pro2;
-        insert pro3;
-        insert pro4;
-        insert pro5;
-        insert pro6;
-        insert pro7;
-        insert pro8;
+        insert new List<Project_Report_Out__c> { pro1, pro2, pro3, pro4, pro5, pro6, pro7, pro8 };
 
         Test.startTest();
         Database.executeBatch(new GSOverallCalculationBatch(Date.newInstance(2017, 3, 22)));
@@ -411,10 +376,7 @@ public class ContractSnapshotTest {
                                                    Contract_Expense_BUDGET__c = 0, of_Services_budget_for_GS__c = 100, Total_Amount_of_Contract__c = 3000);
         DContract__c dcontract4 = new DContract__c(Name = 'Sample Test 4', Prime_Contracting_Business_Unit__c = bu.Id, Percent_through_SOW_deliverables__c = 40, Expected_Buffer__c = 0,
                                                    Contract_Expense_BUDGET__c = 0, of_Services_budget_for_GS__c = 100, Total_Amount_of_Contract__c = 4000);
-        insert dcontract1;
-        insert dcontract2;
-        insert dcontract3;
-        insert dcontract4;
+        insert new List<DContract__c> { dcontract1, dcontract2, dcontract3, dcontract4 };
 
         PRO_Contract_Snapshot__c proS1 = new PRO_Contract_Snapshot__c(Contract__c = dcontract1.Id, Project_Quality_Overall_Status__c = 400, Customer_Satisfaction_of_services__c = 250,
                                                                 GS_Execution_Budget__c = 1000, Snapshot_Date__c = Date.newInstance(2017, 3, 9));
@@ -432,14 +394,7 @@ public class ContractSnapshotTest {
                                                                 GS_Execution_Budget__c = 1000, Snapshot_Date__c = Date.newInstance(2017, 4, 13));
         PRO_Contract_Snapshot__c proS8 = new PRO_Contract_Snapshot__c(Contract__c = dcontract4.Id, Project_Quality_Overall_Status__c = 543, Customer_Satisfaction_of_services__c = 776,
                                                                 GS_Execution_Budget__c = 4567, Snapshot_Date__c = Date.newInstance(2017, 3, 23));
-        insert proS1;
-        insert proS2;
-        insert proS3;
-        insert proS4;
-        insert proS5;
-        insert proS6;
-        insert proS7;
-        insert proS8;
+        insert new List<PRO_Contract_Snapshot__c> { proS1, proS2, proS3, proS4, proS5, proS6, proS7, proS8 };
 
         Project_Report_Out__c pro1 = new Project_Report_Out__c(Contract__c = dcontract1.Id, Contract_Snapshot__c = proS1.Id, Report_Out_Date__c = Date.newInstance(2017, 3, 9));
         Project_Report_Out__c pro2 = new Project_Report_Out__c(Contract__c = dcontract1.Id, Contract_Snapshot__c = proS2.Id, Report_Out_Date__c = Date.newInstance(2017, 3, 23));
@@ -452,15 +407,7 @@ public class ContractSnapshotTest {
         Project_Report_Out__c pro7 = new Project_Report_Out__c(Contract__c = dcontract3.Id, Contract_Snapshot__c = proS7.Id, Report_Out_Date__c = Date.newInstance(2017, 4, 13));
 
         Project_Report_Out__c pro8 = new Project_Report_Out__c(Contract__c = dcontract4.Id, Contract_Snapshot__c = proS8.Id, Report_Out_Date__c = Date.newInstance(2017, 3, 23));
-
-        insert pro1;
-        insert pro2;
-        insert pro3;
-        insert pro4;
-        insert pro5;
-        insert pro6;
-        insert pro7;
-        insert pro8;
+        insert new List<Project_Report_Out__c> { pro1, pro2, pro3, pro4, pro5, pro6, pro7, pro8 };
 
         Test.startTest();
         Database.executeBatch(new GSOverallCalculationBatch(Date.newInstance(2017, 3, 27)));
@@ -489,10 +436,7 @@ public class ContractSnapshotTest {
                                                    Contract_Expense_BUDGET__c = 0, of_Services_budget_for_GS__c = 100, Total_Amount_of_Contract__c = 3000);
         DContract__c dcontract4 = new DContract__c(Name = 'Sample Test 4', Prime_Contracting_Business_Unit__c = bu2.Id, Percent_through_SOW_deliverables__c = 40, Expected_Buffer__c = 0,
                                                    Contract_Expense_BUDGET__c = 0, of_Services_budget_for_GS__c = 100, Total_Amount_of_Contract__c = 4000);
-        insert dcontract1;
-        insert dcontract2;
-        insert dcontract3;
-        insert dcontract4;
+        insert new List<DContract__c> { dcontract1, dcontract2, dcontract3, dcontract4 };
 
         PRO_Contract_Snapshot__c proS1 = new PRO_Contract_Snapshot__c(Contract__c = dcontract1.Id, Project_Quality_Overall_Status__c = 200, Customer_Satisfaction_of_services__c = 100,
                                                                 GS_Execution_Budget__c = 500, Snapshot_Date__c = Date.newInstance(2017, 1, 26));
@@ -502,21 +446,13 @@ public class ContractSnapshotTest {
                                                                 GS_Execution_Budget__c = 1000, Snapshot_Date__c = Date.newInstance(2017, 1, 26));
         PRO_Contract_Snapshot__c proS4 = new PRO_Contract_Snapshot__c(Contract__c = dcontract4.Id, Project_Quality_Overall_Status__c = 800, Customer_Satisfaction_of_services__c = 400,
                                                                 GS_Execution_Budget__c = 1500, Snapshot_Date__c = Date.newInstance(2017, 1, 26));
-
-        insert proS1;
-        insert proS2;
-        insert proS3;
-        insert proS4;
+        insert new List<PRO_Contract_Snapshot__c> { proS1, proS2, proS3, proS4 };
 
         Project_Report_Out__c pro1 = new Project_Report_Out__c(Contract__c = dcontract1.Id, Contract_Snapshot__c = proS1.Id, Report_Out_Date__c = Date.newInstance(2017, 1, 26));
         Project_Report_Out__c pro2 = new Project_Report_Out__c(Contract__c = dcontract2.Id, Contract_Snapshot__c = proS2.Id, Report_Out_Date__c = Date.newInstance(2017, 1, 26));
         Project_Report_Out__c pro3 = new Project_Report_Out__c(Contract__c = dcontract3.Id, Contract_Snapshot__c = proS3.Id, Report_Out_Date__c = Date.newInstance(2017, 1, 26));
         Project_Report_Out__c pro4 = new Project_Report_Out__c(Contract__c = dcontract4.Id, Contract_Snapshot__c = proS4.Id, Report_Out_Date__c = Date.newInstance(2017, 1, 26));
-
-        insert pro1;
-        insert pro2;
-        insert pro3;
-        insert pro4;
+        insert new List<Project_Report_Out__c> { pro1, pro2, pro3, pro4 };
 
         Test.startTest();
         Database.executeBatch(new GSOverallCalculationBatch(Date.newInstance(2017, 2, 8)));

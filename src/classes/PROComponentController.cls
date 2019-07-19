@@ -172,7 +172,7 @@ public class PROComponentController {
                                           GS_Execution_Budget__c, GS_Services_Completed__c, GS_Net_Income_to_Date__c, GS_Net_Income_to_Date_Handover__c, GS_Services_Completed_Handover__c,
                                           Project_Quality_Overall_Status__c, Customer_Satisfaction_of_services__c, GS_Project_Services_Budget_Handoff__c FROM DContract__c WHERE Id =: this.reportContractId];
 
-                dcontract.Last_Report_Out_Status__c = this.status;
+
                 dcontract.Percent_through_SOW_deliverables__c = this.proTabContractPercntgethroughSOW;
                 PRO_Contract_Snapshot__c proContractSnapshot = createProSnapshot(proToUpdate.Contract_Snapshot__c == null ? null : proToUpdate.Contract_Snapshot__c, dcontract);
 
