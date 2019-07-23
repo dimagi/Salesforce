@@ -183,7 +183,7 @@ public class OpenOpportunityReportController {
     public List<String> getChannelListForQuery() {
         List<String> channel = new List<String>();
         for (Selectoption so : getChannelPickListValues()) {
-            if (so.getValue() != 'Inside Sales') {
+            if (so.getValue() != 'Inside Sales' && so.getValue() != 'Pre-Bid') {
                 channel.add(so.getValue());
             }
         }

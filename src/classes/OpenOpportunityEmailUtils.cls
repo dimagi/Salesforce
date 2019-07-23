@@ -23,7 +23,8 @@ public with sharing class OpenOpportunityEmailUtils {
     private static String RED_COLOR = '#E9967A';
     private static String YELLOW_COLOR = '#F3F781';
     private static String GREEN_COLOR = '#41A317';
-    private static String COLOR_KEY = '<table border="1"><tr style="background:' + GREEN_COLOR + '"><td>Opportunity has transitioned in the last week.</td></tr><tr style="background:' + YELLOW_COLOR + '"><td>Opportunity has no Account attached.</td></tr><tr style="background:' + RED_COLOR + '"><td>Opportunity is overdue for an update.<br><b>-- Stage 1,2,5:</b> 30 days.<br><b>-- Stage 3,4,6:</b> 10 days</td></tr></table><br><br>';
+    private static String COLOR_KEY = '<table border="1"><tr style="background:' + GREEN_COLOR + '"><td>Opportunity has transitioned in the last week.</td></tr><tr style="background:' + YELLOW_COLOR + '"><td>Opportunity has no Account attached.</td></tr><tr style="background:' + RED_COLOR + '"><td>Opportunity is overdue for an update.<br><b>-- Stage 1,2,5:</b> 30 days.<br><b>-- Stage 3,4,6:</b> 14 days</td></tr></table><br><br>';
+    private static String COLOR_KEY_GLOBAL = '<table border="1"><tr style="background:' + GREEN_COLOR + '"><td>Opportunity has transitioned in the last week.</td></tr><tr style="background:' + YELLOW_COLOR + '"><td>Opportunity has no Account attached.</td></tr><tr style="background:' + RED_COLOR + '"><td>Opportunity is overdue for an update.<br><b>-- Stage 5:</b> 30 days.<br><b>-- Stage 3,4,6:</b> 14 days</td></tr></table><br><br>';
     // End Color Key
     // Instructions added by Nick
     private static String INSTRUCTIONS = '<b>Keep Warm (<a href="https://confluence.dimagi.com/display/internal/Overdue+Opportunities+Workflow">Instructions</a>)</b><br>"Keep Warm" functionality is used when you want to be reminded to follow-up with an account after a certain period of time. For instance, you had an opportunity with CRS - Tanzania that fizzled out but you want to remember to check on them in three months time.You should use this functionality instead of creating Opportunities in Stage 1 and/or Stage 2. Stage 1/2 opps should not be used as keep warm reminders.<br><br><b>Do not turn this red:</b><br>Each opportunity has a check box at the top to make it not show up on this report. You will NEVER be reminded of an opp if you use this.<br><br>';
@@ -34,37 +35,39 @@ public with sharing class OpenOpportunityEmailUtils {
 	Method Comments: Method call from the Weekly / Daily Schedule flow to build the HTML Content   
 	**************************************************/
     public static String buildEmailContent(Map<String, Opportunity[]> stagedOpportunities, Boolean hasComments, Map<String, String> stageComments) {
-        
+        return buildEmailContent(stagedOpportunities, hasComments, stageComments, '');
+    }
+
+    public static String buildEmailContent(Map<String, Opportunity[]> stagedOpportunities, Boolean hasComments, Map<String, String> stageComments, String message_type) {
         String result = ENVELOPE;
         String content = '';
-        
+
         List<String> sortedStages = new List<String>(stagedOpportunities.keySet());
         sortedStages.sort();
-        
+
         for(String stageName :sortedStages) {
-            
             String stageTable = '<tr><table class="main-stage-table" style="width:100%;border:1px solid #E3DEB8;">' + SUB_TITLE.replace('[SUB_TITLE]', stageName);
-            
+
             /**************************************************
-			Comments: for each stage we call buildEmailStageTable     
-			**************************************************/
+            Comments: for each stage we call buildEmailStageTable
+            **************************************************/
             stageTable += '<tr><td>' + buildEmailStageTable(stageName, stagedOpportunities.get(stageName), hasComments) + '</td></tr>';
-                        
+
             /**************************************************
             Comments: for each stage we call getEmailStageComments (if there are no comments, the input text is generated anyway)
-            **************************************************/                        
+            **************************************************/
             stageTable += '<tr><td>' + getEmailStageComments(stageComments.get(stageName)) + '</td></tr>';
-                        
-            stageTable += '</table></tr>';            
+
+            stageTable += '</table></tr>';
             stageTable = stageTable.replace('null', '');
-            content += stageTable;                                  
-        }       
-        
+            content += stageTable;
+        }
+
         // Added by Nick for the color key
-        TITLE += COLOR_KEY;
+        TITLE += (message_type == 'global' ? COLOR_KEY_GLOBAL : COLOR_KEY);
         TITLE += INSTRUCTIONS;
         // End added by Nick
-        
+
         result = result.replace('[TITLE]', TITLE);
         return result.replace('[CONTAINER]', CONTAINER.replace('[SUB_CONTAINER]', content));
     }
@@ -86,7 +89,7 @@ public with sharing class OpenOpportunityEmailUtils {
                                        
         Integer daysNotUpdatedLimitEarlyStages = Open_Opportunity_Settings__c.getOrgDefaults().Days_Not_Updated_Limit_Early_Stages__c != null 
                                        ? Open_Opportunity_Settings__c.getOrgDefaults().Days_Not_Updated_Limit_Early_Stages__c.intValue()
-                                       : 10;   
+                                       : 14;
                                   
         Integer daysSinceStageChange = Open_Opportunity_Settings__c.getOrgDefaults().Days_Since_Stage_Change__c != null
         							   ? Open_Opportunity_Settings__c.getOrgDefaults().Days_Since_Stage_Change__c.intValue()

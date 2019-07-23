@@ -48,18 +48,26 @@ public class OpenOpportunityMailer {
     }
 
     private static Map<String, Opportunity[]> getRedStagedOpportunities(Map<String, Opportunity[]> stagedOpportunities) {
+        return getRedStagedOpportunities(stagedOpportunities, '');
+    }
+
+    private static Map<String, Opportunity[]> getRedStagedOpportunities(Map<String, Opportunity[]> stagedOpportunities, String message_type) {
         Map<String, Opportunity[]> redStagedOpportunities = new Map<String, Opportunity[]>();
         Integer daysNotUpdatedLimit = Open_Opportunity_Settings__c.getOrgDefaults().Days_Not_Updated_Limit__c != null 
                                        ? Open_Opportunity_Settings__c.getOrgDefaults().Days_Not_Updated_Limit__c.intValue()
                                        : 30;
         Integer daysNotUpdatedLimitEarlyStages = Open_Opportunity_Settings__c.getOrgDefaults().Days_Not_Updated_Limit_Early_Stages__c != null 
                                        ? Open_Opportunity_Settings__c.getOrgDefaults().Days_Not_Updated_Limit_Early_Stages__c.intValue()
-                                       : 10;
+                                       : 14;
 
         Set<String> earlyStagesSet = new Set<String>(earlyStages);
 
         // Remove fresh opportunities
         for (String stageName :stagedOpportunities.keySet()) {
+            if (message_type == 'global' && (stageName == 'Stage 1 - Connect' || stageName == 'Stage 2 - Talking')) {
+                continue; // we skip Stage 1 and 2 for global email
+            }
+
             Opportunity[] opportunities = new Opportunity[] {};
 
             List<OpportunityContactRole> contactRoles = [SELECT ContactId, OpportunityId FROM OpportunityContactRole WHERE IsPrimary = true AND OpportunityId IN: stagedOpportunities.get(stageName)];
@@ -131,7 +139,7 @@ public class OpenOpportunityMailer {
 
     public static void sendRedOpenOpportunitiesUsers(User[] users, Map<String, Opportunity[]> stagedOpportunities, String message_type) {
         
-        Map<String, Opportunity[]> redStagedOpportunities = getRedStagedOpportunities(stagedOpportunities); 
+        Map<String, Opportunity[]> redStagedOpportunities = getRedStagedOpportunities(stagedOpportunities, message_type); 
     
         // Only send Mail if there are opportunities    
         if (!redStagedOpportunities.isEmpty()) {
@@ -141,7 +149,7 @@ public class OpenOpportunityMailer {
                 stageComments.put(stageComment, '');
             }
             
-            String content = OpenOpportunityEmailUtils.buildEmailContent(redStagedOpportunities, false, stageComments);
+            String content = OpenOpportunityEmailUtils.buildEmailContent(redStagedOpportunities, false, stageComments, message_type);
             
             // Added by Nick to check if global or individual subject should be used
             if(message_type == 'global') {
@@ -154,7 +162,7 @@ public class OpenOpportunityMailer {
     }
 
     public static void sendRedOpenOpportunitiesUsers(List<String> emails, Map<String, Opportunity[]> stagedOpportunities, String message_type) {
-        Map<String, Opportunity[]> redStagedOpportunities = getRedStagedOpportunities(stagedOpportunities);
+        Map<String, Opportunity[]> redStagedOpportunities = getRedStagedOpportunities(stagedOpportunities, message_type);
 
         // Only send Mail if there are opportunities
         if (!redStagedOpportunities.isEmpty()) {
@@ -164,7 +172,7 @@ public class OpenOpportunityMailer {
                 stageComments.put(stageComment, '');
             }
 
-            String content = OpenOpportunityEmailUtils.buildEmailContent(redStagedOpportunities, false, stageComments);
+            String content = OpenOpportunityEmailUtils.buildEmailContent(redStagedOpportunities, false, stageComments, message_type);
 
             if(message_type == 'global') {
                 sendEmails(content, emails, GLOBAL_RED_EMAIL_SUBJECT);
