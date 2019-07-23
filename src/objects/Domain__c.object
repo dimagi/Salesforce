@@ -66,6 +66,37 @@
         <type>Lookup</type>
     </fields>
     <fields>
+        <fullName>Countries_Picklist__c</fullName>
+        <externalId>false</externalId>
+        <label>Countries Picklist</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>MultiselectPicklist</type>
+        <valueSet>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>NIGER</fullName>
+                    <default>false</default>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+        <visibleLines>4</visibleLines>
+    </fields>
+    <fields>
+        <fullName>Countries_Wrapper__c</fullName>
+        <description>Countires wrapper field, we want use aggregate queries on country list but it is A big text area (Deployment_Countries__c).</description>
+        <externalId>false</externalId>
+        <label>Countries Wrapper</label>
+        <length>255</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
         <fullName>Country_of_deployment_salesforce__c</fullName>
         <deleteConstraint>SetNull</deleteConstraint>
         <description>This is the lookup for Country in Salesforce, not CommCareHQ</description>
@@ -78,6 +109,27 @@
         <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>Cp_last_update__c</fullName>
+        <externalId>false</externalId>
+        <label>Domain cp last update</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>DateTime</type>
+    </fields>
+    <fields>
+        <fullName>Cp_n_users_submitted_form__c</fullName>
+        <externalId>false</externalId>
+        <label>Domain cp n users submitted form</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
     </fields>
     <fields>
         <fullName>Deployment_Countries__c</fullName>
@@ -149,6 +201,17 @@
         <trackTrending>false</trackTrending>
         <type>Text</type>
         <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Domain_Deleted__c</fullName>
+        <defaultValue>false</defaultValue>
+        <description>If set to true it means that domain was marked as deleted in HQ. Do not update this field manually, it&apos;s automatically set by apex code.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>If set to true it means that domain was marked as deleted in HQ. Do not update this field manually, it&apos;s automatically set by apex code.</inlineHelpText>
+        <label>Domain Deleted</label>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
     </fields>
     <fields>
         <fullName>Domain_cp_has_project_icon__c</fullName>
@@ -244,6 +307,18 @@
         <unique>false</unique>
     </fields>
     <fields>
+        <fullName>Domain_cp_n_click_app_deploy__c</fullName>
+        <externalId>false</externalId>
+        <label>Domain_cp_n_click_app_deploy</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
         <fullName>Domain_cp_n_custom_roles__c</fullName>
         <externalId>false</externalId>
         <label>Domain_cp_n_custom_roles</label>
@@ -259,6 +334,30 @@
         <fullName>Domain_cp_n_deid_exports__c</fullName>
         <externalId>false</externalId>
         <label>Domain_cp_n_deid_exports</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Domain_cp_n_downloads_custom_exports__c</fullName>
+        <externalId>false</externalId>
+        <label>Domain_cp_n_downloads_custom_exports</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Domain_cp_n_form_builder_entered__c</fullName>
+        <externalId>false</externalId>
+        <label>Domain_cp_n_form_builder_entered</label>
         <precision>18</precision>
         <required>false</required>
         <scale>0</scale>
@@ -316,9 +415,57 @@
         <unique>false</unique>
     </fields>
     <fields>
+        <fullName>Domain_cp_n_reports_created__c</fullName>
+        <externalId>false</externalId>
+        <label>Domain_cp_n_reports_created</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Domain_cp_n_reports_edited__c</fullName>
+        <externalId>false</externalId>
+        <label>Domain_cp_n_reports_edited</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Domain_cp_n_saved_app_changes__c</fullName>
+        <externalId>false</externalId>
+        <label>Domain_cp_n_saved_app_changes</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
         <fullName>Domain_cp_n_saved_exports__c</fullName>
         <externalId>false</externalId>
         <label>Domain_cp_n_saved_exports</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Domain_cp_n_saved_scheduled_reports__c</fullName>
+        <externalId>false</externalId>
+        <label>Domain_cp_n_saved_scheduled_reports</label>
         <precision>18</precision>
         <required>false</required>
         <scale>0</scale>
@@ -352,6 +499,48 @@
         <unique>false</unique>
     </fields>
     <fields>
+        <fullName>Domain_cp_n_viewed_non_ucr_reports__c</fullName>
+        <externalId>false</externalId>
+        <label>Domain_cp_n_viewed_non_ucr_reports</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Domain_cp_n_viewed_ucr_reports__c</fullName>
+        <externalId>false</externalId>
+        <label>Domain_cp_n_viewed_ucr_reports</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Domain_cp_sms_30_d__c</fullName>
+        <defaultValue>false</defaultValue>
+        <externalId>false</externalId>
+        <label>Domain_cp_sms_30_d</label>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Domain_cp_sms_ever__c</fullName>
+        <defaultValue>false</defaultValue>
+        <externalId>false</externalId>
+        <label>Domain_cp_sms_ever</label>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
         <fullName>Domain_cp_use_domain_security__c</fullName>
         <defaultValue>false</defaultValue>
         <externalId>false</externalId>
@@ -370,6 +559,26 @@
         <type>Checkbox</type>
     </fields>
     <fields>
+        <fullName>Domain_date_created_date_wrapper__c</fullName>
+        <description>Wraps date created from Date/Time to Date. User for purpose of group by in SOQL query</description>
+        <externalId>false</externalId>
+        <label>Domain date created date wrapper</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>Domain_first_form_sub_date_wrapper__c</fullName>
+        <description>Wraps date first form submission from Date/Time to Date. User for purpose of group by in SOQL query</description>
+        <externalId>false</externalId>
+        <label>Domain first form sub date wrapper</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Date</type>
+    </fields>
+    <fields>
         <fullName>Domain_has_used_features__c</fullName>
         <defaultValue>false</defaultValue>
         <description>Experimental from Gillian - do not use. Marks which domains have used features at any point in time.</description>
@@ -380,13 +589,23 @@
         <type>Checkbox</type>
     </fields>
     <fields>
+        <fullName>Domain_last_form_sub_date_wrapper__c</fullName>
+        <description>Wraps last form submission from Date/Time to Date. User for purpose of group by in SOQL query</description>
+        <externalId>false</externalId>
+        <label>Domain last form sub date wrapper</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Date</type>
+    </fields>
+    <fields>
         <fullName>Downgrade_notes__c</fullName>
         <description>This field is meant to capture any anecdotal notes we have about why a project space chose to downgrade</description>
         <externalId>false</externalId>
         <inlineHelpText>CS/ Sales-- enter any relevant information you have about why this domain downgraded their plan</inlineHelpText>
         <label>Downgrade notes</label>
         <length>32768</length>
-        <trackHistory>false</trackHistory>
+        <trackHistory>true</trackHistory>
         <trackTrending>false</trackTrending>
         <type>LongTextArea</type>
         <visibleLines>3</visibleLines>
@@ -434,6 +653,15 @@
         <trackTrending>false</trackTrending>
         <type>Number</type>
         <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Has_J2ME_submission_in_past_90_days__c</fullName>
+        <defaultValue>false</defaultValue>
+        <externalId>false</externalId>
+        <label>Has J2ME submission in past 90 days</label>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
     </fields>
     <fields>
         <fullName>InternalProp_Business_Unit__c</fullName>
@@ -785,9 +1013,12 @@
         <trackTrending>false</trackTrending>
         <type>Picklist</type>
         <valueSet>
-            <restricted>true</restricted>
             <valueSetDefinition>
                 <sorted>false</sorted>
+                <value>
+                    <fullName>Introductory (~4 hours)</fullName>
+                    <default>false</default>
+                </value>
                 <value>
                     <fullName>Quick-start (~ 6 hrs)</fullName>
                     <default>false</default>
@@ -960,7 +1191,9 @@
     <fields>
         <fullName>View_Project_Space_Settings_in_HQ__c</fullName>
         <externalId>false</externalId>
-        <formula>HYPERLINK(&quot;https://www.commcarehq.org/a/&quot;&amp; Name &amp;&quot;/settings/project/basic/&quot;, &quot;View Project Space Settings HQ&quot;, &quot;_self&quot;)</formula>
+        <formula>IF(TEXT(Server_Name__c) = &quot;CommCareHQ&quot;, 
+HYPERLINK(&quot;https://www.commcarehq.org/a/&quot;&amp; Name &amp;&quot;/settings/project/basic/&quot;, &quot;View Project Space Settings HQ&quot;, &quot;_self&quot;),
+HYPERLINK(&quot;https://india.commcarehq.org/a/&quot;&amp; Name &amp;&quot;/settings/project/basic/&quot;, &quot;View Project Space Settings HQ&quot;, &quot;_self&quot;))</formula>
         <label>View Project Space Settings in HQ</label>
         <required>false</required>
         <trackHistory>false</trackHistory>
@@ -1965,6 +2198,20 @@
         <unique>false</unique>
     </fields>
     <fields>
+        <fullName>power_of_one__c</fullName>
+        <externalId>false</externalId>
+        <formula>1</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>power of one</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
         <fullName>project_type__c</fullName>
         <externalId>false</externalId>
         <label>Domain_project_type</label>
@@ -2202,6 +2449,15 @@
         <defaultValue>false</defaultValue>
         <externalId>false</externalId>
         <label>Domain_use_default_sms_response</label>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>use_sql_backend__c</fullName>
+        <defaultValue>false</defaultValue>
+        <externalId>false</externalId>
+        <label>use_sql_backend</label>
         <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Checkbox</type>

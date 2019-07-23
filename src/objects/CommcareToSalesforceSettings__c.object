@@ -50,6 +50,14 @@
         <type>Url</type>
     </fields>
     <fields>
+        <fullName>Single_Domain_Endpoint__c</fullName>
+        <externalId>false</externalId>
+        <label>Single Domain Endpoint</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Url</type>
+    </fields>
+    <fields>
         <fullName>Skip_in_batch_job__c</fullName>
         <defaultValue>false</defaultValue>
         <externalId>false</externalId>

@@ -103,6 +103,7 @@ public class CountryListAccTest {
                                           Wam__c = 75, cpActiveMobileUsers__c = 80, cpAllForms__c = 385, Account__c = acc2.Id);
         insert domain5;
 
+
         Accounting_Subscription__c subscription1 = new Accounting_Subscription__c(Created_By__c = 'Sample 1', date_start__c = Date.today().addMonths(-6), date_end__c = Date.today().addMonths(6), is_active__c = true,
                                                           Accounting_subscriber_domain__c = domain1.Id, plan_version__c = planVersion1.Id, Server_Name__c = 'CommCare HQ',
                                                           is_trial__c = false, service_type__c = 'Self_service');
@@ -123,6 +124,7 @@ public class CountryListAccTest {
                                                           Accounting_subscriber_domain__c = domain5.Id, plan_version__c = planVersion2.Id, Server_Name__c = 'CommCare HQ',
                                                           is_trial__c = false, service_type__c = 'Product');
         insert subscription5;
+
     }
 
     @isTest

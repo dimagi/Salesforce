@@ -1,6 +1,5 @@
 /*
  * Batch responsible for deleting old Batch Error Logs.
- * TODO delete
  */
 global class LogsDeletingBatch implements Database.Batchable<Batch_Error_Logs__c> {
 

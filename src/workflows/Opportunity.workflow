@@ -43,6 +43,23 @@
         <template>Dimagi_Emails/Opportunity_11_Questions</template>
     </alerts>
     <fieldUpdates>
+        <fullName>Fill_in_onboarding_questions</fullName>
+        <field>Onboarding_package_sold__c</field>
+        <name>Fill-in onboarding questions</name>
+        <notifyAssignee>false</notifyAssignee>
+        <operation>Literal</operation>
+        <protected>false</protected>
+    </fieldUpdates>
+    <fieldUpdates>
+        <fullName>Fill_in_onboarding_survey</fullName>
+        <description>Fill in the onboarding survey before closing the opp</description>
+        <field>Onboarding_Survey_filled_in__c</field>
+        <name>Fill in onboarding survey</name>
+        <notifyAssignee>false</notifyAssignee>
+        <operation>Literal</operation>
+        <protected>false</protected>
+    </fieldUpdates>
+    <fieldUpdates>
         <fullName>Opportunity_Clear_Update_Field</fullName>
         <field>Funding_Type__c</field>
         <name>Opportunity: Clear Update Field</name>
@@ -76,7 +93,7 @@
         <fullName>Set_Christina_as_Owner</fullName>
         <description>Sets Christina as the opportunity owner</description>
         <field>OwnerId</field>
-        <lookupValue>cjeffrey@dimagi.com</lookupValue>
+        <lookupValue>cpowers@dimagi.com</lookupValue>
         <lookupValueType>User</lookupValueType>
         <name>Set Christina as Owner</name>
         <notifyAssignee>true</notifyAssignee>
@@ -97,21 +114,10 @@
         <fullName>Set_Kieran_as_Owner</fullName>
         <description>Sets Kieran as the owner of an opportunity</description>
         <field>OwnerId</field>
-        <lookupValue>ksharpey@dimagi.com</lookupValue>
+        <lookupValue>cpowers@dimagi.com</lookupValue>
         <lookupValueType>User</lookupValueType>
         <name>Set Kieran as Owner</name>
         <notifyAssignee>false</notifyAssignee>
-        <operation>LookupValue</operation>
-        <protected>false</protected>
-        <reevaluateOnChange>true</reevaluateOnChange>
-    </fieldUpdates>
-    <fieldUpdates>
-        <fullName>Set_Marco_Horta_as_Opportunity_Owner</fullName>
-        <field>OwnerId</field>
-        <lookupValue>mhorta@dimagi.com</lookupValue>
-        <lookupValueType>User</lookupValueType>
-        <name>Set Marco Horta as Opportunity Owner</name>
-        <notifyAssignee>true</notifyAssignee>
         <operation>LookupValue</operation>
         <protected>false</protected>
         <reevaluateOnChange>true</reevaluateOnChange>
@@ -170,17 +176,6 @@
         <targetObject>AccountId</targetObject>
     </fieldUpdates>
     <fieldUpdates>
-        <fullName>Set_Stella_as_Owner</fullName>
-        <description>Sets Stella as the opp owner</description>
-        <field>OwnerId</field>
-        <lookupValue>sluk@dimagi.com</lookupValue>
-        <lookupValueType>User</lookupValueType>
-        <name>Set Stella as Owner</name>
-        <notifyAssignee>false</notifyAssignee>
-        <operation>LookupValue</operation>
-        <protected>false</protected>
-    </fieldUpdates>
-    <fieldUpdates>
         <fullName>Stage_Name_Reset</fullName>
         <description>Resets the stage name back to the original value.</description>
         <field>StageName</field>
@@ -190,6 +185,15 @@
         <operation>Literal</operation>
         <protected>false</protected>
     </fieldUpdates>
+    <rules>
+        <fullName>Opp Close Date Changes</fullName>
+        <active>false</active>
+        <criteriaItems>
+            <field>Opportunity.CloseDate</field>
+            <operation>notEqual</operation>
+        </criteriaItems>
+        <triggerType>onAllChanges</triggerType>
+    </rules>
     <rules>
         <fullName>Opportunity%3A Close Opportunity</fullName>
         <actions>
@@ -354,26 +358,6 @@
             <value>Ryan Hartford</value>
         </criteriaItems>
         <description>Sets Ryan as owner of an opportunity created by a non-mapped person in FB.</description>
-        <triggerType>onAllChanges</triggerType>
-    </rules>
-    <rules>
-        <fullName>Set Stella as Owner</fullName>
-        <actions>
-            <name>Set_Stella_as_Owner</name>
-            <type>FieldUpdate</type>
-        </actions>
-        <active>false</active>
-        <criteriaItems>
-            <field>Opportunity.Fogbugz_Owner_Mapping__c</field>
-            <operation>equals</operation>
-            <value>Stella Luk</value>
-        </criteriaItems>
-        <criteriaItems>
-            <field>Opportunity.OwnerId</field>
-            <operation>equals</operation>
-            <value>Salesforce Fogbugz Integration</value>
-        </criteriaItems>
-        <description>Sets Stella as owner of an opportunity created by a DSI person in FB.</description>
         <triggerType>onAllChanges</triggerType>
     </rules>
 </Workflow>
