@@ -3,8 +3,8 @@
 *   Description :   Apex based REST API which exposes POST method to send Email
 */
 @RestResource(urlMapping='/sendExcelmail/*')
-global class GETExcelSheetContent{
-    @HttpPost
+Global class GETExcelSheetContent{
+     @HttpPost
     global static void sendEmail(String EmailIdCSV, String Subject, String body,String urlForReport) {
         OrgWideEmailAddress orgWideAddress= [select Id from OrgWideEmailAddress where 
                                               Address = 'dimagi-salesforce@dimagi.com' limit 1];

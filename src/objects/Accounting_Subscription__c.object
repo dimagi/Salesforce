@@ -78,6 +78,28 @@
         <type>Lookup</type>
     </fields>
     <fields>
+        <fullName>Churn_risk__c</fullName>
+        <defaultValue>false</defaultValue>
+        <description>Tick that box if you already know that this accounting subscription is likely going to churn in coming months. Please qualify the churn risk in text box below</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Tick that box if you already know that this accounting subscription is likely going to churn in coming months. Please qualify the churn risk in text box below</inlineHelpText>
+        <label>Churn risk</label>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Churn_risk_explanation__c</fullName>
+        <description>Please explain what is the nature of the churn risk (and related timeline) if you checked the churn risk box</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Please explain what is the nature of the churn risk (and related timeline) if you checked the churn risk box</inlineHelpText>
+        <label>Churn risk explanation</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>TextArea</type>
+    </fields>
+    <fields>
         <fullName>Created_By__c</fullName>
         <externalId>false</externalId>
         <label>Created By</label>

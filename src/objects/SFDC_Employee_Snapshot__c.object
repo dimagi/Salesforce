@@ -195,6 +195,18 @@
         <type>Percent</type>
     </fields>
     <fields>
+        <fullName>BizOps__c</fullName>
+        <description>Percent work for Department BizOps</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Percent work for Department BizOps</inlineHelpText>
+        <label>BizOps</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackTrending>false</trackTrending>
+        <type>Percent</type>
+    </fields>
+    <fields>
         <fullName>Blood_Group__c</fullName>
         <externalId>false</externalId>
         <label>Blood Group (if known)</label>
@@ -2702,6 +2714,18 @@
         <type>Percent</type>
     </fields>
     <fields>
+        <fullName>New_Business__c</fullName>
+        <description>Percent work for Department New Business</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Percent work for Department New Business</inlineHelpText>
+        <label>New Business</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackTrending>false</trackTrending>
+        <type>Percent</type>
+    </fields>
+    <fields>
         <fullName>OCI_No__c</fullName>
         <externalId>false</externalId>
         <label>OCI No.</label>
@@ -3219,6 +3243,55 @@
         <scale>2</scale>
         <trackTrending>false</trackTrending>
         <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>Sub_Department__c</fullName>
+        <externalId>false</externalId>
+        <label>Sub-Department</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+        <valueSet>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>BizDev-B2B</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>BizDev-NIH</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>BizDev-Outreach</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>BizDev-Pre-Bid</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>BizDev-Self Serv</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>BizOps-BizStrat</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>BizOps-COps</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>BizOps-Fin</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>BizOps-PrOps</fullName>
+                    <default>false</default>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
     </fields>
     <fields>
         <fullName>Sub_Unit__c</fullName>

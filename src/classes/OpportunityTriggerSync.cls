@@ -43,9 +43,9 @@ public with sharing class OpportunityTriggerSync {
         Map<Id,Id> locationCountry = new Map<Id,Id>();
         for (Opportunity_Location__c ol : newLocations) {
             locationCountry.put(ol.Location__c, null);
-        }
+        } 
 
-        for (Location__c l : [SELECT Country__c
+        for (Location__c l : [SELECT Country__c 
                               FROM Location__c
                               WHERE Id IN :locationCountry.keySet()]) {
             locationCountry.put(l.Id, l.Country__c);
@@ -95,8 +95,8 @@ public with sharing class OpportunityTriggerSync {
             oldLocationIds.add(ol.Id);
         }
 
-        for (OpportunityCountry__c oc : [SELECT Opportunity__c, Country__c
-                                         FROM OpportunityCountry__c
+        for (OpportunityCountry__c oc : [SELECT Opportunity__c, Country__c 
+                                         FROM OpportunityCountry__c 
                                          WHERE Opportunity_Location__c IN: oldLocationIds]) {
             opptyCountryDelete.add(oc);
 
@@ -116,7 +116,7 @@ public with sharing class OpportunityTriggerSync {
         Set<String> processedOpptyCountry = new Set<String>();
         Map<Id, String> opptyStages = getOpptyStages(oldLocations);
 
-        for (OpportunityCountry__c oc : [SELECT OpportunityId__c, Country__c
+        for (OpportunityCountry__c oc : [SELECT OpportunityId__c, Country__c 
                                          FROM OpportunityCountry__c
                                          WHERE OpportunityId__c IN: oldOpptyCountries.keySet()]) {
 
@@ -150,7 +150,7 @@ public with sharing class OpportunityTriggerSync {
 
         OpportunityCountry__c[] opptyCountries = new OpportunityCountry__c[]{};
 
-        for (OpportunityCountry__c oc : [SELECT Opportunity__c, Country__c
+        for (OpportunityCountry__c oc : [SELECT Opportunity__c, Country__c 
                                          FROM OpportunityCountry__c
                                          WHERE Opportunity__c IN: opptyStages.keySet()]) {
 
@@ -180,7 +180,7 @@ public with sharing class OpportunityTriggerSync {
 
         Country__c c = new Country__c();
         c.Name = 'United States';
-        insert c;
+        insert c; 
 
         Location__c l = new Location__c();
         l.Country__c = c.Id;

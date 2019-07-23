@@ -47,7 +47,7 @@
     <enableActivities>false</enableActivities>
     <enableBulkApi>true</enableBulkApi>
     <enableFeeds>false</enableFeeds>
-    <enableHistory>false</enableHistory>
+    <enableHistory>true</enableHistory>
     <enableReports>true</enableReports>
     <enableSearch>true</enableSearch>
     <enableSharing>true</enableSharing>
@@ -60,6 +60,7 @@
         <referenceTo>Account</referenceTo>
         <relationshipName>Opportunity_Snapshots</relationshipName>
         <required>false</required>
+        <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Lookup</type>
     </fields>
@@ -70,6 +71,7 @@
         <precision>18</precision>
         <required>false</required>
         <scale>2</scale>
+        <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Currency</type>
     </fields>
@@ -85,6 +87,7 @@ For Outstanding Contract: Total Amount Remaining</inlineHelpText>
         <precision>18</precision>
         <required>false</required>
         <scale>2</scale>
+        <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Currency</type>
     </fields>
@@ -95,8 +98,20 @@ For Outstanding Contract: Total Amount Remaining</inlineHelpText>
         <precision>18</precision>
         <required>false</required>
         <scale>2</scale>
+        <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>Billing_efficiency__c</fullName>
+        <externalId>false</externalId>
+        <label>Billing efficiency %</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Percent</type>
     </fields>
     <fields>
         <fullName>Buffer_EV__c</fullName>
@@ -107,6 +122,7 @@ For Outstanding Contract: Total Amount Remaining</inlineHelpText>
         <precision>18</precision>
         <required>false</required>
         <scale>2</scale>
+        <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Currency</type>
     </fields>
@@ -117,6 +133,7 @@ For Outstanding Contract: Total Amount Remaining</inlineHelpText>
         <precision>18</precision>
         <required>false</required>
         <scale>2</scale>
+        <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Currency</type>
     </fields>
@@ -129,6 +146,7 @@ For Outstanding Contract: Total Amount Remaining</inlineHelpText>
         <precision>18</precision>
         <required>false</required>
         <scale>2</scale>
+        <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Percent</type>
     </fields>
@@ -137,6 +155,7 @@ For Outstanding Contract: Total Amount Remaining</inlineHelpText>
         <externalId>false</externalId>
         <label>Opportunity Close Date</label>
         <required>false</required>
+        <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Date</type>
     </fields>
@@ -147,6 +166,7 @@ For Outstanding Contract: Total Amount Remaining</inlineHelpText>
         <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
         <label>CommCare</label>
         <required>false</required>
+        <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Text</type>
         <unique>false</unique>
@@ -158,6 +178,7 @@ For Outstanding Contract: Total Amount Remaining</inlineHelpText>
         <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
         <label>CommConnect</label>
         <required>false</required>
+        <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Text</type>
         <unique>false</unique>
@@ -169,6 +190,7 @@ For Outstanding Contract: Total Amount Remaining</inlineHelpText>
         <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
         <label>CommTrack</label>
         <required>false</required>
+        <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Text</type>
         <unique>false</unique>
@@ -183,6 +205,7 @@ For Outstanding Contract: Total Amount Remaining</inlineHelpText>
         <precision>18</precision>
         <required>false</required>
         <scale>0</scale>
+        <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Number</type>
         <unique>false</unique>
@@ -192,6 +215,7 @@ For Outstanding Contract: Total Amount Remaining</inlineHelpText>
         <externalId>false</externalId>
         <label>Contract End Date</label>
         <required>false</required>
+        <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Date</type>
     </fields>
@@ -200,6 +224,7 @@ For Outstanding Contract: Total Amount Remaining</inlineHelpText>
         <externalId>false</externalId>
         <label>Contract Execution Date</label>
         <required>false</required>
+        <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Date</type>
     </fields>
@@ -210,6 +235,7 @@ For Outstanding Contract: Total Amount Remaining</inlineHelpText>
         <precision>18</precision>
         <required>false</required>
         <scale>2</scale>
+        <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Currency</type>
     </fields>
@@ -218,6 +244,7 @@ For Outstanding Contract: Total Amount Remaining</inlineHelpText>
         <externalId>false</externalId>
         <label>Contract Start Date</label>
         <required>false</required>
+        <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Date</type>
     </fields>
@@ -228,6 +255,7 @@ For Outstanding Contract: Total Amount Remaining</inlineHelpText>
         <precision>18</precision>
         <required>false</required>
         <scale>2</scale>
+        <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Currency</type>
     </fields>
@@ -238,6 +266,7 @@ For Outstanding Contract: Total Amount Remaining</inlineHelpText>
         <precision>18</precision>
         <required>false</required>
         <scale>2</scale>
+        <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Currency</type>
     </fields>
@@ -250,6 +279,7 @@ For Outstanding Contract: Total Amount Remaining</inlineHelpText>
         <relationshipLabel>Pipeline Snapshots</relationshipLabel>
         <relationshipName>Pipeline_Snapshots</relationshipName>
         <required>false</required>
+        <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Lookup</type>
     </fields>
@@ -258,6 +288,7 @@ For Outstanding Contract: Total Amount Remaining</inlineHelpText>
         <externalId>false</externalId>
         <label>Country</label>
         <required>false</required>
+        <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>TextArea</type>
     </fields>
@@ -270,6 +301,7 @@ For Outstanding Contract: Total Amount Remaining</inlineHelpText>
         <precision>18</precision>
         <required>false</required>
         <scale>2</scale>
+        <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Currency</type>
     </fields>
@@ -282,6 +314,7 @@ For Outstanding Contract: Total Amount Remaining</inlineHelpText>
         <precision>18</precision>
         <required>false</required>
         <scale>2</scale>
+        <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Currency</type>
     </fields>
@@ -294,6 +327,7 @@ For Outstanding Contract: Total Amount Remaining</inlineHelpText>
         <precision>18</precision>
         <required>false</required>
         <scale>0</scale>
+        <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Currency</type>
     </fields>
@@ -306,6 +340,7 @@ For Outstanding Contract: Total Amount Remaining</inlineHelpText>
         <precision>18</precision>
         <required>false</required>
         <scale>0</scale>
+        <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Currency</type>
     </fields>
@@ -316,6 +351,7 @@ For Outstanding Contract: Total Amount Remaining</inlineHelpText>
         <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
         <label>Current Channel</label>
         <required>false</required>
+        <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Text</type>
         <unique>false</unique>
@@ -326,6 +362,7 @@ For Outstanding Contract: Total Amount Remaining</inlineHelpText>
         <formula>Opportunity__r.CloseDate</formula>
         <label>Current Close Date</label>
         <required>false</required>
+        <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Date</type>
     </fields>
@@ -335,6 +372,7 @@ For Outstanding Contract: Total Amount Remaining</inlineHelpText>
         <formula>Contract__r.Contract_End_Date__c</formula>
         <label>Current Contract End Date</label>
         <required>false</required>
+        <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Date</type>
     </fields>
@@ -344,6 +382,7 @@ For Outstanding Contract: Total Amount Remaining</inlineHelpText>
         <formula>Contract__r.Contract_Start_Date__c</formula>
         <label>Current Contract Start Date</label>
         <required>false</required>
+        <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Date</type>
     </fields>
@@ -354,6 +393,7 @@ For Outstanding Contract: Total Amount Remaining</inlineHelpText>
         <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
         <label>Current Country</label>
         <required>false</required>
+        <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Text</type>
         <unique>false</unique>
@@ -366,6 +406,7 @@ For Outstanding Contract: Total Amount Remaining</inlineHelpText>
         <precision>18</precision>
         <required>false</required>
         <scale>0</scale>
+        <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Number</type>
         <unique>false</unique>
@@ -376,6 +417,7 @@ For Outstanding Contract: Total Amount Remaining</inlineHelpText>
         <formula>Contract__r.Date_of_Contract_Execution__c</formula>
         <label>Current Execution Date</label>
         <required>false</required>
+        <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Date</type>
     </fields>
@@ -388,6 +430,7 @@ For Outstanding Contract: Total Amount Remaining</inlineHelpText>
         <inlineHelpText>For contract - shows the Execution Owner (BU). For opportunity, shows the Execution Owner (BU).</inlineHelpText>
         <label>Current Execution Owner (BU)</label>
         <required>false</required>
+        <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Text</type>
         <unique>false</unique>
@@ -401,6 +444,7 @@ For Outstanding Contract: Total Amount Remaining</inlineHelpText>
         <precision>18</precision>
         <required>false</required>
         <scale>0</scale>
+        <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Currency</type>
     </fields>
@@ -411,6 +455,7 @@ For Outstanding Contract: Total Amount Remaining</inlineHelpText>
         <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
         <label>Current Implementation Type</label>
         <required>false</required>
+        <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Text</type>
         <unique>false</unique>
@@ -422,6 +467,7 @@ For Outstanding Contract: Total Amount Remaining</inlineHelpText>
         <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
         <label>Current Intracompany Subcontract</label>
         <required>false</required>
+        <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Text</type>
         <unique>false</unique>
@@ -432,6 +478,7 @@ For Outstanding Contract: Total Amount Remaining</inlineHelpText>
         <formula>IF(ISPICKVAL( Source_Type__c , &apos;Contract&apos;),   Contract__r.Contracting_Business_Unit__r.Name ,  Opportunity__r.Opportunity_Owning_Entity__r.Name )</formula>
         <label>Current Owner (BU)</label>
         <required>false</required>
+        <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Text</type>
         <unique>false</unique>
@@ -445,6 +492,7 @@ For Outstanding Contract: Total Amount Remaining</inlineHelpText>
         <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
         <label>Current Owner</label>
         <required>false</required>
+        <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Text</type>
         <unique>false</unique>
@@ -456,6 +504,7 @@ For Outstanding Contract: Total Amount Remaining</inlineHelpText>
         <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
         <label>Current Parent Contract Execution Owner</label>
         <required>false</required>
+        <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Text</type>
         <unique>false</unique>
@@ -469,6 +518,7 @@ For Outstanding Contract: Total Amount Remaining</inlineHelpText>
         <precision>18</precision>
         <required>false</required>
         <scale>0</scale>
+        <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Percent</type>
     </fields>
@@ -478,6 +528,7 @@ For Outstanding Contract: Total Amount Remaining</inlineHelpText>
         <formula>IF(ISPICKVAL( Source_Type__c , &apos;Contract&apos;),  Contract__r.Product_Text__c ,  Opportunity__r.Product_Text__c )</formula>
         <label>Current Products</label>
         <required>false</required>
+        <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Text</type>
         <unique>false</unique>
@@ -488,6 +539,7 @@ For Outstanding Contract: Total Amount Remaining</inlineHelpText>
         <formula>TEXT(Opportunity__r.Channel_Response__c)</formula>
         <label>Current RFP Response</label>
         <required>false</required>
+        <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Text</type>
         <unique>false</unique>
@@ -498,6 +550,7 @@ For Outstanding Contract: Total Amount Remaining</inlineHelpText>
         <formula>IF(ISPICKVAL( Source_Type__c , &apos;Contract&apos;), &apos;Closed&apos;,  TEXT(Opportunity__r.StageName ))</formula>
         <label>Current Stage</label>
         <required>false</required>
+        <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Text</type>
         <unique>false</unique>
@@ -511,6 +564,7 @@ For Outstanding Contract: Total Amount Remaining</inlineHelpText>
         <precision>18</precision>
         <required>false</required>
         <scale>0</scale>
+        <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Currency</type>
     </fields>
@@ -525,6 +579,7 @@ Contracts: End Date - Start Date</inlineHelpText>
         <precision>4</precision>
         <required>false</required>
         <scale>0</scale>
+        <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Number</type>
         <unique>false</unique>
@@ -536,6 +591,7 @@ Contracts: End Date - Start Date</inlineHelpText>
         <precision>18</precision>
         <required>false</required>
         <scale>0</scale>
+        <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Percent</type>
     </fields>
@@ -549,6 +605,7 @@ IF(OR(ISBLANK (Amount__c), ISBLANK(Duration_months__c)), NULL, Monthly_Recurring
         <precision>18</precision>
         <required>false</required>
         <scale>2</scale>
+        <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Currency</type>
     </fields>
@@ -561,6 +618,7 @@ IF(OR(ISBLANK (Amount__c), ISBLANK(Duration_months__c)), NULL, Monthly_Recurring
         <precision>18</precision>
         <required>false</required>
         <scale>2</scale>
+        <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Currency</type>
     </fields>
@@ -574,6 +632,7 @@ IF(OR(ISBLANK (Amount__c), ISBLANK(Duration_months__c)), NULL, Monthly_Recurring
         <precision>18</precision>
         <required>false</required>
         <scale>2</scale>
+        <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Currency</type>
     </fields>
@@ -584,6 +643,7 @@ IF(OR(ISBLANK (Amount__c), ISBLANK(Duration_months__c)), NULL, Monthly_Recurring
         <precision>18</precision>
         <required>false</required>
         <scale>2</scale>
+        <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Currency</type>
     </fields>
@@ -594,6 +654,7 @@ IF(OR(ISBLANK (Amount__c), ISBLANK(Duration_months__c)), NULL, Monthly_Recurring
         <precision>18</precision>
         <required>false</required>
         <scale>2</scale>
+        <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Currency</type>
     </fields>
@@ -605,6 +666,7 @@ IF(OR(ISBLANK (Amount__c), ISBLANK(Duration_months__c)), NULL, Monthly_Recurring
         <referenceTo>Account</referenceTo>
         <relationshipName>Opportunity_Snapshots1</relationshipName>
         <required>false</required>
+        <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Lookup</type>
     </fields>
@@ -615,6 +677,7 @@ IF(OR(ISBLANK (Amount__c), ISBLANK(Duration_months__c)), NULL, Monthly_Recurring
         <precision>18</precision>
         <required>false</required>
         <scale>2</scale>
+        <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Currency</type>
     </fields>
@@ -625,6 +688,7 @@ IF(OR(ISBLANK (Amount__c), ISBLANK(Duration_months__c)), NULL, Monthly_Recurring
         <precision>18</precision>
         <required>false</required>
         <scale>2</scale>
+        <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Currency</type>
     </fields>
@@ -635,6 +699,7 @@ IF(OR(ISBLANK (Amount__c), ISBLANK(Duration_months__c)), NULL, Monthly_Recurring
         <precision>18</precision>
         <required>false</required>
         <scale>2</scale>
+        <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Currency</type>
     </fields>
@@ -645,6 +710,7 @@ IF(OR(ISBLANK (Amount__c), ISBLANK(Duration_months__c)), NULL, Monthly_Recurring
         <precision>18</precision>
         <required>false</required>
         <scale>2</scale>
+        <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Currency</type>
     </fields>
@@ -655,6 +721,7 @@ IF(OR(ISBLANK (Amount__c), ISBLANK(Duration_months__c)), NULL, Monthly_Recurring
         <precision>18</precision>
         <required>false</required>
         <scale>2</scale>
+        <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Currency</type>
     </fields>
@@ -665,6 +732,7 @@ IF(OR(ISBLANK (Amount__c), ISBLANK(Duration_months__c)), NULL, Monthly_Recurring
         <precision>18</precision>
         <required>false</required>
         <scale>2</scale>
+        <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Currency</type>
     </fields>
@@ -677,6 +745,7 @@ IF(OR(ISBLANK (Amount__c), ISBLANK(Duration_months__c)), NULL, Monthly_Recurring
         <precision>18</precision>
         <required>false</required>
         <scale>2</scale>
+        <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Currency</type>
     </fields>
@@ -691,6 +760,7 @@ IF(OR(ISBLANK (Amount__c), ISBLANK(Duration_months__c)), NULL, Monthly_Recurring
         <precision>18</precision>
         <required>false</required>
         <scale>0</scale>
+        <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Currency</type>
     </fields>
@@ -701,6 +771,7 @@ IF(OR(ISBLANK (Amount__c), ISBLANK(Duration_months__c)), NULL, Monthly_Recurring
         <precision>18</precision>
         <required>false</required>
         <scale>2</scale>
+        <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Currency</type>
     </fields>
@@ -711,6 +782,7 @@ IF(OR(ISBLANK (Amount__c), ISBLANK(Duration_months__c)), NULL, Monthly_Recurring
         <precision>18</precision>
         <required>false</required>
         <scale>2</scale>
+        <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Currency</type>
     </fields>
@@ -721,6 +793,7 @@ IF(OR(ISBLANK (Amount__c), ISBLANK(Duration_months__c)), NULL, Monthly_Recurring
         <precision>18</precision>
         <required>false</required>
         <scale>2</scale>
+        <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Currency</type>
     </fields>
@@ -731,6 +804,7 @@ IF(OR(ISBLANK (Amount__c), ISBLANK(Duration_months__c)), NULL, Monthly_Recurring
         <precision>18</precision>
         <required>false</required>
         <scale>2</scale>
+        <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Currency</type>
     </fields>
@@ -739,6 +813,7 @@ IF(OR(ISBLANK (Amount__c), ISBLANK(Duration_months__c)), NULL, Monthly_Recurring
         <externalId>false</externalId>
         <label>Intracompany Sub-contract</label>
         <required>false</required>
+        <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Picklist</type>
         <valueSet>
@@ -756,11 +831,23 @@ IF(OR(ISBLANK (Amount__c), ISBLANK(Duration_months__c)), NULL, Monthly_Recurring
         </valueSet>
     </fields>
     <fields>
+        <fullName>Invoiced__c</fullName>
+        <externalId>false</externalId>
+        <label>% Invoiced</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Percent</type>
+    </fields>
+    <fields>
         <fullName>Month_Date__c</fullName>
         <externalId>false</externalId>
         <inlineHelpText>The month of this snapshot.</inlineHelpText>
         <label>Month</label>
         <required>false</required>
+        <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Date</type>
     </fields>
@@ -774,6 +861,7 @@ IF(OR(ISBLANK(Amount__c), ISBLANK (Duration_months__c)), NULL, Amount__c / Durat
         <precision>18</precision>
         <required>false</required>
         <scale>2</scale>
+        <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Currency</type>
     </fields>
@@ -784,6 +872,7 @@ IF(OR(ISBLANK(Amount__c), ISBLANK (Duration_months__c)), NULL, Amount__c / Durat
         <precision>18</precision>
         <required>false</required>
         <scale>2</scale>
+        <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Currency</type>
     </fields>
@@ -794,6 +883,7 @@ IF(OR(ISBLANK(Amount__c), ISBLANK (Duration_months__c)), NULL, Amount__c / Durat
         <precision>18</precision>
         <required>false</required>
         <scale>2</scale>
+        <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Currency</type>
     </fields>
@@ -805,6 +895,7 @@ IF(OR(ISBLANK(Amount__c), ISBLANK (Duration_months__c)), NULL, Amount__c / Durat
         <precision>16</precision>
         <required>false</required>
         <scale>0</scale>
+        <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Number</type>
         <unique>false</unique>
@@ -816,6 +907,7 @@ IF(OR(ISBLANK(Amount__c), ISBLANK (Duration_months__c)), NULL, Amount__c / Durat
         <precision>18</precision>
         <required>false</required>
         <scale>2</scale>
+        <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Currency</type>
     </fields>
@@ -826,6 +918,7 @@ IF(OR(ISBLANK(Amount__c), ISBLANK (Duration_months__c)), NULL, Amount__c / Durat
         <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
         <label>Opportunity_Name</label>
         <required>false</required>
+        <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Text</type>
         <unique>false</unique>
@@ -838,6 +931,7 @@ IF(OR(ISBLANK(Amount__c), ISBLANK (Duration_months__c)), NULL, Amount__c / Durat
         <referenceTo>Opportunity</referenceTo>
         <relationshipName>Opportunity_Snapshots</relationshipName>
         <required>false</required>
+        <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Lookup</type>
     </fields>
@@ -848,6 +942,7 @@ IF(OR(ISBLANK(Amount__c), ISBLANK (Duration_months__c)), NULL, Amount__c / Durat
         <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
         <label>Other (Product)</label>
         <required>false</required>
+        <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Text</type>
         <unique>false</unique>
@@ -862,6 +957,7 @@ IF(OR(ISBLANK(Amount__c), ISBLANK (Duration_months__c)), NULL, Amount__c / Durat
         <relationshipLabel>Pipeline Snapshots</relationshipLabel>
         <relationshipName>Opportunity_Snapshots</relationshipName>
         <required>false</required>
+        <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Lookup</type>
     </fields>
@@ -873,6 +969,7 @@ IF(OR(ISBLANK(Amount__c), ISBLANK (Duration_months__c)), NULL, Amount__c / Durat
         <precision>3</precision>
         <required>false</required>
         <scale>0</scale>
+        <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Percent</type>
     </fields>
@@ -889,6 +986,7 @@ IF(OR(ISBLANK(Amount__c), ISBLANK (Duration_months__c)), NULL, Amount__c / Durat
         <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
         <label>Product (Big Three)</label>
         <required>false</required>
+        <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Text</type>
         <unique>false</unique>
@@ -900,6 +998,7 @@ IF(OR(ISBLANK(Amount__c), ISBLANK (Duration_months__c)), NULL, Amount__c / Durat
         <precision>18</precision>
         <required>false</required>
         <scale>2</scale>
+        <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Currency</type>
     </fields>
@@ -910,6 +1009,7 @@ IF(OR(ISBLANK(Amount__c), ISBLANK (Duration_months__c)), NULL, Amount__c / Durat
         <precision>18</precision>
         <required>false</required>
         <scale>2</scale>
+        <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Currency</type>
     </fields>
@@ -919,6 +1019,7 @@ IF(OR(ISBLANK(Amount__c), ISBLANK (Duration_months__c)), NULL, Amount__c / Durat
         <label>Products</label>
         <length>255</length>
         <required>false</required>
+        <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Text</type>
         <unique>false</unique>
@@ -928,6 +1029,7 @@ IF(OR(ISBLANK(Amount__c), ISBLANK (Duration_months__c)), NULL, Amount__c / Durat
         <externalId>false</externalId>
         <label>RFP Response</label>
         <required>false</required>
+        <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Picklist</type>
         <valueSet>
@@ -955,6 +1057,7 @@ IF(OR(ISBLANK(Amount__c), ISBLANK (Duration_months__c)), NULL, Amount__c / Durat
         <precision>18</precision>
         <required>false</required>
         <scale>2</scale>
+        <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Currency</type>
     </fields>
@@ -965,6 +1068,7 @@ IF(OR(ISBLANK(Amount__c), ISBLANK (Duration_months__c)), NULL, Amount__c / Durat
         <precision>18</precision>
         <required>false</required>
         <scale>2</scale>
+        <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Currency</type>
     </fields>
@@ -974,6 +1078,7 @@ IF(OR(ISBLANK(Amount__c), ISBLANK (Duration_months__c)), NULL, Amount__c / Durat
         <inlineHelpText>Did this come from a contract or an opportunity?</inlineHelpText>
         <label>Source Type</label>
         <required>false</required>
+        <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Picklist</type>
         <valueSet>
@@ -995,6 +1100,7 @@ IF(OR(ISBLANK(Amount__c), ISBLANK (Duration_months__c)), NULL, Amount__c / Durat
         <externalId>false</externalId>
         <label>Stage</label>
         <required>false</required>
+        <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Picklist</type>
         <valueSet>
@@ -1064,6 +1170,29 @@ IF(OR(ISBLANK(Amount__c), ISBLANK (Duration_months__c)), NULL, Amount__c / Durat
         </valueSet>
     </fields>
     <fields>
+        <fullName>Submitted_this_month__c</fullName>
+        <externalId>false</externalId>
+        <label>Submitted this month</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+        <valueSet>
+            <restricted>true</restricted>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>No</fullName>
+                    <default>true</default>
+                </value>
+                <value>
+                    <fullName>Yes</fullName>
+                    <default>false</default>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+    <fields>
         <fullName>Three_Month_EV__c</fullName>
         <externalId>false</externalId>
         <formula>if(ispickval(Source_Type__c,&apos;Opportunity&apos;), 
@@ -1087,6 +1216,7 @@ Amount__c,
         <precision>18</precision>
         <required>false</required>
         <scale>0</scale>
+        <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Currency</type>
     </fields>
@@ -1098,6 +1228,7 @@ Amount__c,
         <precision>18</precision>
         <required>false</required>
         <scale>0</scale>
+        <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Currency</type>
     </fields>
@@ -1108,6 +1239,7 @@ Amount__c,
         <precision>18</precision>
         <required>false</required>
         <scale>2</scale>
+        <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Currency</type>
     </fields>
@@ -1118,6 +1250,7 @@ Amount__c,
         <precision>18</precision>
         <required>false</required>
         <scale>2</scale>
+        <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Currency</type>
     </fields>
@@ -1144,6 +1277,7 @@ Amount__c,
         <precision>18</precision>
         <required>false</required>
         <scale>0</scale>
+        <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Currency</type>
     </fields>
@@ -1154,6 +1288,7 @@ Amount__c,
         <precision>18</precision>
         <required>false</required>
         <scale>0</scale>
+        <trackHistory>true</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Percent</type>
     </fields>
@@ -1164,6 +1299,7 @@ Amount__c,
         <precision>18</precision>
         <required>false</required>
         <scale>0</scale>
+        <trackHistory>true</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Percent</type>
     </fields>
@@ -1189,6 +1325,7 @@ if( (month(Contract_End_Date__c)+12*year(Contract_End_Date__c)) &lt; (month(Mont
         <precision>18</precision>
         <required>false</required>
         <scale>2</scale>
+        <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Currency</type>
     </fields>
@@ -1215,6 +1352,7 @@ Amount__c,
         <precision>18</precision>
         <required>false</required>
         <scale>2</scale>
+        <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Currency</type>
     </fields>
@@ -1241,6 +1379,7 @@ Amount_Minus_Expense_Income__c ,
         <precision>18</precision>
         <required>false</required>
         <scale>2</scale>
+        <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Currency</type>
     </fields>
@@ -1267,6 +1406,7 @@ Amount__c,
         <precision>18</precision>
         <required>false</required>
         <scale>2</scale>
+        <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Currency</type>
     </fields>
@@ -1293,6 +1433,7 @@ Amount_Minus_Expense_Income__c ,
         <precision>18</precision>
         <required>false</required>
         <scale>2</scale>
+        <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Currency</type>
     </fields>
@@ -1319,6 +1460,7 @@ if( (month(Contract_End_Date__c)+12*year(Contract_End_Date__c)) &lt; (month(Mont
         <precision>18</precision>
         <required>false</required>
         <scale>2</scale>
+        <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Currency</type>
     </fields>
@@ -1475,6 +1617,7 @@ if( (month(Contract_End_Date__c)+12*year(Contract_End_Date__c)) &lt; (month(Mont
     </listViews>
     <nameField>
         <label>Pipeline Snapshot Name</label>
+        <trackHistory>false</trackHistory>
         <type>Text</type>
     </nameField>
     <pluralLabel>Pipeline Snapshots</pluralLabel>

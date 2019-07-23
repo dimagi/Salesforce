@@ -65,6 +65,36 @@
         <unique>false</unique>
     </fields>
     <fields>
+        <fullName>Accounting_Billing_Account__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <description>Field for Customer Invoice type. Fetched from Customer Invoice API</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Billing Account for Customer Invoice type</inlineHelpText>
+        <label>Accounting Billing Account</label>
+        <referenceTo>Accounting_BillingAccount__c</referenceTo>
+        <relationshipLabel>Accounting</relationshipLabel>
+        <relationshipName>Accounting</relationshipName>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>Accounting_Customer_PlanVersion__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <description>Customer Invoice highest software plan version.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Customer Invoice highest software plan version.</inlineHelpText>
+        <label>Accounting_Customer_PlanVersion</label>
+        <referenceTo>Accounting_SoftwarePlanVersion__c</referenceTo>
+        <relationshipLabel>Accounting</relationshipLabel>
+        <relationshipName>Accounting</relationshipName>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
         <fullName>Accounting_Subscription__c</fullName>
         <deleteConstraint>SetNull</deleteConstraint>
         <externalId>false</externalId>
@@ -87,6 +117,19 @@
         <trackTrending>false</trackTrending>
         <type>Text</type>
         <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Customer_Invoice_Monthly_fee__c</fullName>
+        <description>Field calculated during HQ sync, base of software customer software plans monthly fee.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Field calculated during HQ sync, base of software customer software plans monthly fee.</inlineHelpText>
+        <label>Customer Invoice Monthly fee</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
     </fields>
     <fields>
         <fullName>Days_Overdue__c</fullName>
@@ -128,6 +171,48 @@
         <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>Domain_internal_prop_self_started__c</fullName>
+        <externalId>false</externalId>
+        <formula>Project_Space__r.InternalProp_self_started__c</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Domain internal prop self started</label>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Domain_is_inside_sales__c</fullName>
+        <externalId>false</externalId>
+        <formula>Project_Space__r.Is_Inside_Sales__c</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Domain is inside sales</label>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Invoice_Type__c</fullName>
+        <externalId>false</externalId>
+        <label>Invoice Type</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+        <valueSet>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>Subscription</fullName>
+                    <default>true</default>
+                </value>
+                <value>
+                    <fullName>Customer</fullName>
+                    <default>false</default>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
     </fields>
     <fields>
         <fullName>Invoice__c</fullName>
@@ -288,6 +373,16 @@ YEAR(DATEVALUE(accounting_billingaccount_date_created__c)) == YEAR(DATEVALUE(dat
         </valueSet>
     </fields>
     <fields>
+        <fullName>Software_Plan_Version__c</fullName>
+        <externalId>false</externalId>
+        <label>Software Plan Versions</label>
+        <length>2048</length>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>LongTextArea</type>
+        <visibleLines>3</visibleLines>
+    </fields>
+    <fields>
         <fullName>Softwareplan_Edition__c</fullName>
         <externalId>false</externalId>
         <label>Softwareplan Edition</label>
@@ -355,7 +450,9 @@ YEAR(DATEVALUE(accounting_billingaccount_date_created__c)) == YEAR(DATEVALUE(dat
     <fields>
         <fullName>View_Credit_Adjustments__c</fullName>
         <externalId>false</externalId>
-        <formula>HYPERLINK(&quot;https://www.commcarehq.org/hq/accounting/credit_adjustments/&quot;, &quot;View Credit Adjustments in HQ&quot;, &quot;_self&quot;)</formula>
+        <formula>IF(TEXT(Server_Name__c) = &quot;CommCareHQ&quot;, 
+HYPERLINK(&quot;https://www.commcarehq.org/hq/accounting/credit_adjustments/&quot;, &quot;View Credit Adjustments in HQ&quot;, &quot;_self&quot;),
+HYPERLINK(&quot;https://india.commcarehq.org/hq/accounting/credit_adjustments/&quot;, &quot;View Credit Adjustments in HQ&quot;, &quot;_self&quot;))</formula>
         <label>View Credit Adjustments</label>
         <required>false</required>
         <trackHistory>false</trackHistory>
@@ -366,7 +463,9 @@ YEAR(DATEVALUE(accounting_billingaccount_date_created__c)) == YEAR(DATEVALUE(dat
     <fields>
         <fullName>View_Statements_in_HQ__c</fullName>
         <externalId>false</externalId>
-        <formula>HYPERLINK(&quot;https://www.commcarehq.org/hq/accounting/invoices/?account_name=&amp;subscriber=&quot; &amp; accounting_subscriber_domain__c, &quot;View Statements in HQ&quot;, &quot;_self&quot;)</formula>
+        <formula>IF(TEXT(Server_Name__c) = &quot;CommCareHQ&quot;, 
+HYPERLINK(&quot;https://www.commcarehq.org/hq/accounting/invoices/?account_name=&amp;subscriber=&quot; &amp; accounting_subscriber_domain__c, &quot;View Statements in HQ&quot;, &quot;_self&quot;),
+HYPERLINK(&quot;https://india.commcarehq.org/hq/accounting/invoices/?account_name=&amp;subscriber=&quot; &amp; accounting_subscriber_domain__c, &quot;View Statements in HQ&quot;, &quot;_self&quot;))</formula>
         <label>View Statements in HQ</label>
         <required>false</required>
         <trackHistory>false</trackHistory>
@@ -378,7 +477,9 @@ YEAR(DATEVALUE(accounting_billingaccount_date_created__c)) == YEAR(DATEVALUE(dat
         <fullName>View_Subscription_in_HQ__c</fullName>
         <description>Links to HQ Subscription settings</description>
         <externalId>false</externalId>
-        <formula>HYPERLINK(&quot;https://www.commcarehq.org/a/&quot;&amp; accounting_subscriber_domain__c &amp;&quot;/settings/project/subscription/&quot;, &quot;View Subscription in HQ&quot;, &quot;_self&quot;)</formula>
+        <formula>IF(TEXT(Server_Name__c) = &quot;CommCareHQ&quot;,
+HYPERLINK(&quot;https://www.commcarehq.org/a/&quot;&amp; accounting_subscriber_domain__c &amp;&quot;/settings/project/subscription/&quot;, &quot;View Subscription in HQ&quot;, &quot;_self&quot;),
+HYPERLINK(&quot;https://india.commcarehq.org/a/&quot;&amp; accounting_subscriber_domain__c &amp;&quot;/settings/project/subscription/&quot;, &quot;View Subscription in HQ&quot;, &quot;_self&quot;))</formula>
         <label>View Subscription in HQ</label>
         <required>false</required>
         <trackHistory>false</trackHistory>
@@ -400,7 +501,9 @@ YEAR(DATEVALUE(accounting_billingaccount_date_created__c)) == YEAR(DATEVALUE(dat
     <fields>
         <fullName>accounting_BillingContact_Address_Line_1__c</fullName>
         <externalId>false</externalId>
-        <formula>Accounting_Subscription__r.account__r.BillingContact__r.first_line__c</formula>
+        <formula>IF(Text(Invoice_Type__c) = &apos;Subscription&apos;, 
+Accounting_Subscription__r.account__r.BillingContact__r.first_line__c, 
+Accounting_Billing_Account__r.BillingContact__r.first_line__c)</formula>
         <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
         <label>Address Line 1</label>
         <required>false</required>
@@ -412,7 +515,9 @@ YEAR(DATEVALUE(accounting_billingaccount_date_created__c)) == YEAR(DATEVALUE(dat
     <fields>
         <fullName>accounting_BillingContact_Address_Line_2__c</fullName>
         <externalId>false</externalId>
-        <formula>Accounting_Subscription__r.account__r.BillingContact__r.second_line__c</formula>
+        <formula>IF(Text(Invoice_Type__c) = &apos;Subscription&apos;, 
+Accounting_Subscription__r.account__r.BillingContact__r.second_line__c, 
+Accounting_Billing_Account__r.BillingContact__r.second_line__c)</formula>
         <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
         <label>Address Line 2</label>
         <required>false</required>
@@ -424,7 +529,9 @@ YEAR(DATEVALUE(accounting_billingaccount_date_created__c)) == YEAR(DATEVALUE(dat
     <fields>
         <fullName>accounting_BillingContact_City__c</fullName>
         <externalId>false</externalId>
-        <formula>Accounting_Subscription__r.account__r.BillingContact__r.city__c</formula>
+        <formula>IF(Text(Invoice_Type__c) = &apos;Subscription&apos;, 
+Accounting_Subscription__r.account__r.BillingContact__r.city__c, 
+Accounting_Billing_Account__r.BillingContact__r.city__c)</formula>
         <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
         <label>City</label>
         <required>false</required>
@@ -436,7 +543,9 @@ YEAR(DATEVALUE(accounting_billingaccount_date_created__c)) == YEAR(DATEVALUE(dat
     <fields>
         <fullName>accounting_BillingContact_Company_Name__c</fullName>
         <externalId>false</externalId>
-        <formula>Accounting_Subscription__r.account__r.BillingContact__r.company_name__c</formula>
+        <formula>IF(Text(Invoice_Type__c) = &apos;Subscription&apos;, 
+Accounting_Subscription__r.account__r.BillingContact__r.company_name__c, 
+Accounting_Billing_Account__r.BillingContact__r.company_name__c)</formula>
         <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
         <label>Company Name</label>
         <required>false</required>
@@ -448,7 +557,9 @@ YEAR(DATEVALUE(accounting_billingaccount_date_created__c)) == YEAR(DATEVALUE(dat
     <fields>
         <fullName>accounting_BillingContact_Country__c</fullName>
         <externalId>false</externalId>
-        <formula>Accounting_Subscription__r.account__r.BillingContact__r.country__c</formula>
+        <formula>IF(Text(Invoice_Type__c) = &apos;Subscription&apos;, 
+Accounting_Subscription__r.account__r.BillingContact__r.country__c, 
+Accounting_Billing_Account__r.BillingContact__r.country__c)</formula>
         <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
         <label>Country</label>
         <required>false</required>
@@ -460,7 +571,9 @@ YEAR(DATEVALUE(accounting_billingaccount_date_created__c)) == YEAR(DATEVALUE(dat
     <fields>
         <fullName>accounting_BillingContact_Emails__c</fullName>
         <externalId>false</externalId>
-        <formula>Accounting_Subscription__r.account__r.BillingContact__r.emails__c</formula>
+        <formula>IF(Text(Invoice_Type__c) = &apos;Subscription&apos;, 
+Accounting_Subscription__r.account__r.BillingContact__r.emails__c, 
+Accounting_Billing_Account__r.BillingContact__r.emails__c)</formula>
         <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
         <label>Emails</label>
         <required>false</required>
@@ -472,7 +585,9 @@ YEAR(DATEVALUE(accounting_billingaccount_date_created__c)) == YEAR(DATEVALUE(dat
     <fields>
         <fullName>accounting_BillingContact_First_Name__c</fullName>
         <externalId>false</externalId>
-        <formula>Accounting_Subscription__r.account__r.BillingContact__r.first_name__c</formula>
+        <formula>IF(Text(Invoice_Type__c) = &apos;Subscription&apos;, 
+Accounting_Subscription__r.account__r.BillingContact__r.first_name__c, 
+Accounting_Billing_Account__r.BillingContact__r.first_name__c)</formula>
         <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
         <label>First Name</label>
         <required>false</required>
@@ -484,7 +599,9 @@ YEAR(DATEVALUE(accounting_billingaccount_date_created__c)) == YEAR(DATEVALUE(dat
     <fields>
         <fullName>accounting_BillingContact_Last_Name__c</fullName>
         <externalId>false</externalId>
-        <formula>Accounting_Subscription__r.account__r.BillingContact__r.last_name__c</formula>
+        <formula>IF(Text(Invoice_Type__c) = &apos;Subscription&apos;,
+    Accounting_Subscription__r.account__r.BillingContact__r.last_name__c,
+    Accounting_Billing_Account__r.BillingContact__r.last_name__c)</formula>
         <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
         <label>Last Name</label>
         <required>false</required>
@@ -496,7 +613,9 @@ YEAR(DATEVALUE(accounting_billingaccount_date_created__c)) == YEAR(DATEVALUE(dat
     <fields>
         <fullName>accounting_BillingContact_Phone_Number__c</fullName>
         <externalId>false</externalId>
-        <formula>Accounting_Subscription__r.account__r.BillingContact__r.phone_number__c</formula>
+        <formula>IF(Text(Invoice_Type__c) = &apos;Subscription&apos;, 
+Accounting_Subscription__r.account__r.BillingContact__r.phone_number__c, 
+Accounting_Billing_Account__r.BillingContact__r.phone_number__c)</formula>
         <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
         <label>Phone Number</label>
         <required>false</required>
@@ -508,7 +627,9 @@ YEAR(DATEVALUE(accounting_billingaccount_date_created__c)) == YEAR(DATEVALUE(dat
     <fields>
         <fullName>accounting_BillingContact_Postal_Code__c</fullName>
         <externalId>false</externalId>
-        <formula>Accounting_Subscription__r.account__r.BillingContact__r.postal_code__c</formula>
+        <formula>IF(Text(Invoice_Type__c) = &apos;Subscription&apos;, 
+Accounting_Subscription__r.account__r.BillingContact__r.postal_code__c, 
+Accounting_Billing_Account__r.BillingContact__r.postal_code__c)</formula>
         <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
         <label>Postal Code</label>
         <required>false</required>
@@ -520,7 +641,9 @@ YEAR(DATEVALUE(accounting_billingaccount_date_created__c)) == YEAR(DATEVALUE(dat
     <fields>
         <fullName>accounting_BillingContact_State__c</fullName>
         <externalId>false</externalId>
-        <formula>Accounting_Subscription__r.account__r.BillingContact__r.state_province_region__c</formula>
+        <formula>IF(Text(Invoice_Type__c) = &apos;Subscription&apos;, 
+Accounting_Subscription__r.account__r.BillingContact__r.state_province_region__c, 
+Accounting_Billing_Account__r.BillingContact__r.state_province_region__c)</formula>
         <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
         <label>State/Province/Region</label>
         <required>false</required>
@@ -532,7 +655,9 @@ YEAR(DATEVALUE(accounting_billingaccount_date_created__c)) == YEAR(DATEVALUE(dat
     <fields>
         <fullName>accounting_billingacLastPaymentMeth__c</fullName>
         <externalId>false</externalId>
-        <formula>Accounting_Subscription__r.account__r.last_payment_method__c</formula>
+        <formula>IF(Text(Invoice_Type__c) = &apos;Subscription&apos;, 
+Accounting_Subscription__r.account__r.last_payment_method__c, 
+Accounting_Billing_Account__r.last_payment_method__c)</formula>
         <label>Last payment method</label>
         <required>false</required>
         <trackHistory>false</trackHistory>
@@ -543,7 +668,9 @@ YEAR(DATEVALUE(accounting_billingaccount_date_created__c)) == YEAR(DATEVALUE(dat
     <fields>
         <fullName>accounting_billingacPreOrPostPay__c</fullName>
         <externalId>false</externalId>
-        <formula>Accounting_Subscription__r.account__r.pre_or_post_pay__c</formula>
+        <formula>IF(Text(Invoice_Type__c) = &apos;Subscription&apos;, 
+Accounting_Subscription__r.account__r.pre_or_post_pay__c, 
+Accounting_Billing_Account__r.pre_or_post_pay__c)</formula>
         <label>Prepay or postpay</label>
         <required>false</required>
         <trackHistory>false</trackHistory>
@@ -554,7 +681,9 @@ YEAR(DATEVALUE(accounting_billingaccount_date_created__c)) == YEAR(DATEVALUE(dat
     <fields>
         <fullName>accounting_billingaccount_account_type__c</fullName>
         <externalId>false</externalId>
-        <formula>Accounting_Subscription__r.account__r.account_type__c</formula>
+        <formula>IF(Text(Invoice_Type__c) = &apos;Subscription&apos;, 
+Accounting_Subscription__r.account__r.account_type__c, 
+Accounting_Billing_Account__r.account_type__c)</formula>
         <label>Account Type</label>
         <required>false</required>
         <trackHistory>false</trackHistory>
@@ -565,7 +694,9 @@ YEAR(DATEVALUE(accounting_billingaccount_date_created__c)) == YEAR(DATEVALUE(dat
     <fields>
         <fullName>accounting_billingaccount_created_by__c</fullName>
         <externalId>false</externalId>
-        <formula>Accounting_Subscription__r.account__r.created_by__c</formula>
+        <formula>IF(Text(Invoice_Type__c) = &apos;Subscription&apos;, 
+Accounting_Subscription__r.account__r.created_by__c, 
+Accounting_Billing_Account__r.created_by__c)</formula>
         <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
         <label>billingaccount_created_by</label>
         <required>false</required>
@@ -577,7 +708,9 @@ YEAR(DATEVALUE(accounting_billingaccount_date_created__c)) == YEAR(DATEVALUE(dat
     <fields>
         <fullName>accounting_billingaccount_created_by_dom__c</fullName>
         <externalId>false</externalId>
-        <formula>Accounting_Subscription__r.account__r.created_by_domain__c</formula>
+        <formula>IF(Text(Invoice_Type__c) = &apos;Subscription&apos;, 
+Accounting_Subscription__r.account__r.created_by_domain__c, 
+Accounting_Billing_Account__r.created_by_domain__c)</formula>
         <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
         <label>billingaccount_created_by_domain</label>
         <required>false</required>
@@ -589,7 +722,9 @@ YEAR(DATEVALUE(accounting_billingaccount_date_created__c)) == YEAR(DATEVALUE(dat
     <fields>
         <fullName>accounting_billingaccount_date_confirmed__c</fullName>
         <externalId>false</externalId>
-        <formula>Accounting_Subscription__r.account__r.date_confirmed_extra_charges__c</formula>
+        <formula>IF(Text(Invoice_Type__c) = &apos;Subscription&apos;, 
+Accounting_Subscription__r.account__r.date_confirmed_extra_charges__c, 
+Accounting_Billing_Account__r.date_confirmed_extra_charges__c)</formula>
         <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
         <label>billingAcc_date_confirmed_extra_charges</label>
         <required>false</required>
@@ -600,7 +735,9 @@ YEAR(DATEVALUE(accounting_billingaccount_date_created__c)) == YEAR(DATEVALUE(dat
     <fields>
         <fullName>accounting_billingaccount_date_created__c</fullName>
         <externalId>false</externalId>
-        <formula>Accounting_Subscription__r.account__r.date_created__c</formula>
+        <formula>IF(Text(Invoice_Type__c) = &apos;Subscription&apos;, 
+Accounting_Subscription__r.account__r.date_created__c, 
+Accounting_Billing_Account__r.date_created__c)</formula>
         <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
         <label>Billing Account Date Created</label>
         <required>false</required>
@@ -611,7 +748,9 @@ YEAR(DATEVALUE(accounting_billingaccount_date_created__c)) == YEAR(DATEVALUE(dat
     <fields>
         <fullName>accounting_billingaccount_dimagi_contact__c</fullName>
         <externalId>false</externalId>
-        <formula>Accounting_Subscription__r.account__r.dimagi_contact__c</formula>
+        <formula>IF(Text(Invoice_Type__c) = &apos;Subscription&apos;, 
+Accounting_Subscription__r.account__r.dimagi_contact__c, 
+Accounting_Billing_Account__r.dimagi_contact__c)</formula>
         <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
         <label>Dimagi Contact</label>
         <required>false</required>
@@ -623,7 +762,9 @@ YEAR(DATEVALUE(accounting_billingaccount_date_created__c)) == YEAR(DATEVALUE(dat
     <fields>
         <fullName>accounting_billingaccount_entry_point__c</fullName>
         <externalId>false</externalId>
-        <formula>Accounting_Subscription__r.account__r.entry_point__c</formula>
+        <formula>IF(Text(Invoice_Type__c) = &apos;Subscription&apos;, 
+Accounting_Subscription__r.account__r.entry_point__c, 
+Accounting_Billing_Account__r.entry_point__c)</formula>
         <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
         <label>Entry Point</label>
         <required>false</required>
@@ -635,7 +776,9 @@ YEAR(DATEVALUE(accounting_billingaccount_date_created__c)) == YEAR(DATEVALUE(dat
     <fields>
         <fullName>accounting_billingaccount_id__c</fullName>
         <externalId>false</externalId>
-        <formula>Accounting_Subscription__r.account__r.id__c</formula>
+        <formula>IF(Text(Invoice_Type__c) = &apos;Subscription&apos;, 
+Accounting_Subscription__r.account__r.id__c, 
+Accounting_Billing_Account__r.id__c)</formula>
         <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
         <label>billingaccount_id</label>
         <required>false</required>
@@ -647,7 +790,9 @@ YEAR(DATEVALUE(accounting_billingaccount_date_created__c)) == YEAR(DATEVALUE(dat
     <fields>
         <fullName>accounting_billingaccount_is_active__c</fullName>
         <externalId>false</externalId>
-        <formula>Accounting_Subscription__r.account__r.is_active__c</formula>
+        <formula>IF(Text(Invoice_Type__c) = &apos;Subscription&apos;, 
+Accounting_Subscription__r.account__r.is_active__c, 
+Accounting_Billing_Account__r.is_active__c)</formula>
         <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
         <label>Active Status</label>
         <trackHistory>false</trackHistory>
@@ -657,7 +802,9 @@ YEAR(DATEVALUE(accounting_billingaccount_date_created__c)) == YEAR(DATEVALUE(dat
     <fields>
         <fullName>accounting_billingaccount_is_auto_invoic__c</fullName>
         <externalId>false</externalId>
-        <formula>Accounting_Subscription__r.account__r.is_auto_invoiceable__c</formula>
+        <formula>IF(Text(Invoice_Type__c) = &apos;Subscription&apos;, 
+Accounting_Subscription__r.account__r.is_auto_invoiceable__c, 
+Accounting_Billing_Account__r.is_auto_invoiceable__c)</formula>
         <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
         <label>billingaccount_is_auto_invoiceable</label>
         <trackHistory>false</trackHistory>
@@ -667,7 +814,9 @@ YEAR(DATEVALUE(accounting_billingaccount_date_created__c)) == YEAR(DATEVALUE(dat
     <fields>
         <fullName>accounting_billingaccount_name__c</fullName>
         <externalId>false</externalId>
-        <formula>Accounting_Subscription__r.account__r.Name</formula>
+        <formula>IF(Text(Invoice_Type__c) = &apos;Subscription&apos;, 
+Accounting_Subscription__r.account__r.Name, 
+Accounting_Billing_Account__r.Name)</formula>
         <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
         <label>Account Name (FogBugz Client Name)</label>
         <required>false</required>
@@ -679,7 +828,9 @@ YEAR(DATEVALUE(accounting_billingaccount_date_created__c)) == YEAR(DATEVALUE(dat
     <fields>
         <fullName>accounting_billingaccount_salesforce_acc__c</fullName>
         <externalId>false</externalId>
-        <formula>Accounting_Subscription__r.account__r.salesforce_account_id__c</formula>
+        <formula>IF(Text(Invoice_Type__c) = &apos;Subscription&apos;, 
+Accounting_Subscription__r.account__r.salesforce_account_id__c, 
+Accounting_Billing_Account__r.salesforce_account_id__c)</formula>
         <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
         <label>Billing Account SF Account ID</label>
         <required>false</required>
@@ -691,7 +842,9 @@ YEAR(DATEVALUE(accounting_billingaccount_date_created__c)) == YEAR(DATEVALUE(dat
     <fields>
         <fullName>accounting_software_monthly_fee__c</fullName>
         <externalId>false</externalId>
-        <formula>Accounting_Subscription__r.plan_version__r.Software_Product_Rate__r.monthly_fee__c</formula>
+        <formula>IF(Text(Invoice_Type__c) = &apos;Subscription&apos;, 
+Accounting_Subscription__r.plan_version__r.Software_Product_Rate__r.monthly_fee__c, 
+Customer_Invoice_Monthly_fee__c)</formula>
         <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
         <label>Monthly fee</label>
         <precision>18</precision>
@@ -716,7 +869,9 @@ YEAR(DATEVALUE(accounting_billingaccount_date_created__c)) == YEAR(DATEVALUE(dat
     <fields>
         <fullName>accounting_softwareplan_edition__c</fullName>
         <externalId>false</externalId>
-        <formula>Accounting_Subscription__r.plan_version__r.Accounting_SoftwarePlan__r.edition__c</formula>
+        <formula>IF(Text(Invoice_Type__c) = &apos;Subscription&apos;, 
+Accounting_Subscription__r.plan_version__r.Accounting_SoftwarePlan__r.edition__c, 
+Accounting_Customer_PlanVersion__r.Accounting_SoftwarePlan__r.edition__c)</formula>
         <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
         <label>Edition</label>
         <required>false</required>
@@ -809,7 +964,10 @@ YEAR(DATEVALUE(accounting_billingaccount_date_created__c)) == YEAR(DATEVALUE(dat
     <fields>
         <fullName>accounting_subscriber_domain__c</fullName>
         <externalId>false</externalId>
-        <formula>Accounting_Subscription__r.Accounting_Subscriber__r.domain__c</formula>
+        <formula>IF(Text(Invoice_Type__c) = &apos;Subscription&apos;, 
+Accounting_Subscription__r.Accounting_Subscriber__r.domain__c,
+Project_Space__r.Name
+)</formula>
         <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
         <label>Project Space</label>
         <required>false</required>

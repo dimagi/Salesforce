@@ -116,6 +116,17 @@
         <visibleLines>6</visibleLines>
     </fields>
     <fields>
+        <fullName>Adhaar_card__c</fullName>
+        <externalId>false</externalId>
+        <label>Adhaar Card</label>
+        <length>14</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
         <fullName>Age__c</fullName>
         <externalId>false</externalId>
         <formula>Floor((today()- DOB__c )/365)</formula>
@@ -226,6 +237,19 @@
         <type>Percent</type>
     </fields>
     <fields>
+        <fullName>BizOps__c</fullName>
+        <description>Percent work for Department BizOps</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Percent work for Department BizOps</inlineHelpText>
+        <label>BizOps</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Percent</type>
+    </fields>
+    <fields>
         <fullName>Blood_Group__c</fullName>
         <externalId>false</externalId>
         <label>Blood Group (if known)</label>
@@ -276,11 +300,27 @@
             <valueSetDefinition>
                 <sorted>false</sorted>
                 <value>
+                    <fullName>Addis</fullName>
+                    <default>false</default>
+                </value>
+                <value>
                     <fullName>Amsterdam</fullName>
                     <default>false</default>
                 </value>
                 <value>
                     <fullName>Antigua</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Atascadero, CA</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Atlanta, GA</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Baltimore, MD</fullName>
                     <default>false</default>
                 </value>
                 <value>
@@ -308,11 +348,23 @@
                     <default>false</default>
                 </value>
                 <value>
+                    <fullName>Dallas, TX</fullName>
+                    <default>false</default>
+                </value>
+                <value>
                     <fullName>DC</fullName>
                     <default>false</default>
                 </value>
                 <value>
                     <fullName>Delhi</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Denver, CO</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Etna, NH</fullName>
                     <default>false</default>
                 </value>
                 <value>
@@ -336,6 +388,10 @@
                     <default>false</default>
                 </value>
                 <value>
+                    <fullName>Miami, FL</fullName>
+                    <default>false</default>
+                </value>
+                <value>
                     <fullName>Montreal</fullName>
                     <default>false</default>
                 </value>
@@ -345,6 +401,14 @@
                 </value>
                 <value>
                     <fullName>New Orleans</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Philadelphia, PA</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Raleigh, NC</fullName>
                     <default>false</default>
                 </value>
                 <value>
@@ -928,6 +992,34 @@
         <type>Lookup</type>
     </fields>
     <fields>
+        <fullName>Contractor_Location__c</fullName>
+        <externalId>false</externalId>
+        <inlineHelpText>Select location where external contractor completes their work</inlineHelpText>
+        <label>Contractor Location</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+        <valueSet>
+            <restricted>true</restricted>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>Onsite Dimagi office</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Offsite Vendor office</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Offsite Field location</fullName>
+                    <default>false</default>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+    <fields>
         <fullName>Corp_Photo__c</fullName>
         <externalId>false</externalId>
         <formula>IMAGE(&quot;http://www.salesforceius.com/appx/staffpix/&quot;&amp;  JPG__c , Name )</formula>
@@ -1107,7 +1199,7 @@
     <fields>
         <fullName>Data__c</fullName>
         <externalId>false</externalId>
-        <label>Data</label>
+        <label>Impact</label>
         <precision>18</precision>
         <required>false</required>
         <scale>0</scale>
@@ -1220,7 +1312,7 @@ TODAY() - Hire_Date__c)</formula>
         <label>Direct Manager SF ID</label>
         <length>80</length>
         <required>false</required>
-        <trackHistory>true</trackHistory>
+        <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Text</type>
         <unique>false</unique>
@@ -2188,6 +2280,17 @@ TODAY() - Hire_Date__c)</formula>
         <unique>false</unique>
     </fields>
     <fields>
+        <fullName>ICDS_Tracked__c</fullName>
+        <defaultValue>false</defaultValue>
+        <description>If this box is checked, employee will appear on the ICDS Timespend Dashboard</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Check if they should be on the ICDS Timespend Dashboard</inlineHelpText>
+        <label>Track for ICDS</label>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
         <fullName>INC__c</fullName>
         <externalId>false</externalId>
         <label>INC</label>
@@ -2945,7 +3048,7 @@ TODAY() - Hire_Date__c)</formula>
     <fields>
         <fullName>Marketing_Communications__c</fullName>
         <externalId>false</externalId>
-        <label>Marketing &amp; Communications</label>
+        <label>Sales &amp; Marketing</label>
         <precision>18</precision>
         <required>false</required>
         <scale>0</scale>
@@ -3091,6 +3194,19 @@ TODAY() - Hire_Date__c)</formula>
         <type>Percent</type>
     </fields>
     <fields>
+        <fullName>New_Business__c</fullName>
+        <description>Percent work for Department New Business</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Percent work for Department New Business</inlineHelpText>
+        <label>New Business</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Percent</type>
+    </fields>
+    <fields>
         <fullName>OCI_No__c</fullName>
         <externalId>false</externalId>
         <label>OCI No.</label>
@@ -3104,7 +3220,7 @@ TODAY() - Hire_Date__c)</formula>
     <fields>
         <fullName>Ops__c</fullName>
         <externalId>false</externalId>
-        <label>Ops</label>
+        <label>POps</label>
         <precision>18</precision>
         <required>false</required>
         <scale>0</scale>
@@ -3348,7 +3464,7 @@ TODAY() - Hire_Date__c)</formula>
         <precision>7</precision>
         <required>false</required>
         <scale>2</scale>
-        <trackHistory>false</trackHistory>
+        <trackHistory>true</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Number</type>
         <unique>false</unique>
@@ -3671,7 +3787,7 @@ TODAY() - Hire_Date__c)</formula>
         <precision>7</precision>
         <required>false</required>
         <scale>0</scale>
-        <trackHistory>true</trackHistory>
+        <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Number</type>
         <unique>false</unique>
@@ -3686,6 +3802,73 @@ TODAY() - Hire_Date__c)</formula>
         <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>Sub_Department__c</fullName>
+        <externalId>false</externalId>
+        <label>Sub-Department</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+        <valueSet>
+            <restricted>true</restricted>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>BizDev-B2B</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>BizDev-NIH</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>BizDev-Outreach</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>BizDev-Pre-Bid</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>BizDev-Self Serv</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>BizOps-BizStrat</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>BizOps-COps</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>BizOps-Fin</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>BizOps-PrOps</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>S&amp;M-MOFU</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>S&amp;M-TOFU</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>S&amp;M-BOFU</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>S&amp;M-CS</fullName>
+                    <default>false</default>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
     </fields>
     <fields>
         <fullName>Sub_Functional_Team__c</fullName>
@@ -3814,6 +3997,14 @@ TODAY() - Hire_Date__c)</formula>
                 </value>
                 <value>
                     <fullName>Business Development</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>BizOps</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>New Business</fullName>
                     <default>false</default>
                 </value>
             </valueSetDefinition>
@@ -3983,7 +4174,7 @@ TODAY() - Hire_Date__c)</formula>
     <fields>
         <fullName>Total_Department_Time_Split__c</fullName>
         <externalId>false</externalId>
-        <formula>Global_Services__c + Data__c + Tech__c + Ops__c + Marketing_Communications__c + BizDev__c</formula>
+        <formula>Global_Services__c + Data__c + Tech__c + Ops__c + Marketing_Communications__c + BizDev__c +  BizOps__c + New_Business__c</formula>
         <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
         <label>Total Department Time Split</label>
         <precision>18</precision>
@@ -4028,6 +4219,17 @@ TODAY() - Hire_Date__c)</formula>
                 </value>
             </valueSetDefinition>
         </valueSet>
+    </fields>
+    <fields>
+        <fullName>UAN__c</fullName>
+        <externalId>false</externalId>
+        <label>UAN</label>
+        <length>14</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
     </fields>
     <fields>
         <fullName>USD_Currency_Per_Pay_period__c</fullName>
@@ -4175,6 +4377,19 @@ TODAY() - Hire_Date__c)</formula>
         <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Vendor_Name__c</fullName>
+        <description>Company / Account that External Contractors have been engaged with</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Company / Account that External Contractors have been engaged with</inlineHelpText>
+        <label>Vendor Name</label>
+        <length>250</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
         <unique>false</unique>
     </fields>
     <fields>

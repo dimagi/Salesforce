@@ -422,6 +422,10 @@ See https://confluence.dimagi.com/display/BD/BD+Channels</inlineHelpText>
                     <fullName>CORE Funding (Gates)</fullName>
                     <default>false</default>
                 </value>
+                <value>
+                    <fullName>Gates Enterprise</fullName>
+                    <default>false</default>
+                </value>
             </valueSetDefinition>
         </valueSet>
     </fields>
@@ -1554,7 +1558,7 @@ Total_Services_Work_Remaining__c * (9 / (MONTH(Contract_End_Date__c) + 12*YEAR(C
         <fullName>Invoiced__c</fullName>
         <description>All Time Income divided by Total Amount of Contract</description>
         <externalId>false</externalId>
-        <formula>ALL_TIME_Income__c  /  Total_Amount_of_Contract__c</formula>
+        <formula>IF(OR(Total_Amount_of_Contract__c = 0, ISNULL(Total_Amount_of_Contract__c)), 0,  ALL_TIME_Income__c  / Total_Amount_of_Contract__c)</formula>
         <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
         <inlineHelpText>All Time Income divided by Total Amount of Contract</inlineHelpText>
         <label>% Invoiced</label>
@@ -1584,9 +1588,152 @@ Total_Services_Work_Remaining__c * (9 / (MONTH(Contract_End_Date__c) + 12*YEAR(C
         <type>Checkbox</type>
     </fields>
     <fields>
+        <fullName>Is_child_contract__c</fullName>
+        <description>Returns true if this is a child contract. Field used for services spend calculations.</description>
+        <externalId>false</externalId>
+        <formula>IF(Parent_Contract__c == null, false, true)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <inlineHelpText>Returns true if this is a child contract. Field used for services spend calculations.</inlineHelpText>
+        <label>Is child contract</label>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Last_PRO_Ability_to_meet_schedule__c</fullName>
+        <externalId>false</externalId>
+        <formula>TEXT(Last_Project_Report_Out__r.Ability_to_meet_Schedule__c)</formula>
+        <label>Last PRO-Ability to meet schedule</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Last_PRO_Ability_to_stay_within_scope__c</fullName>
+        <externalId>false</externalId>
+        <formula>TEXT(Last_Project_Report_Out__r.Ability_to_stay_within_Scope__c)</formula>
+        <label>Last PRO-Ability to stay within scope</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Last_PRO_Client_Facing_Deadlines__c</fullName>
+        <externalId>false</externalId>
+        <label>Last PRO-Client Facing Deadlines</label>
+        <length>32768</length>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Html</type>
+        <visibleLines>25</visibleLines>
+    </fields>
+    <fields>
+        <fullName>Last_PRO_Current_System_Usage__c</fullName>
+        <externalId>false</externalId>
+        <formula>TEXT(Last_Project_Report_Out__r.Current_System_Usage__c)</formula>
+        <label>Last PRO-Current System Usage</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Last_PRO_Internal_Developer_Deadlines__c</fullName>
+        <externalId>false</externalId>
+        <label>Last PRO-Internal Developer Deadlines</label>
+        <length>32768</length>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Html</type>
+        <visibleLines>25</visibleLines>
+    </fields>
+    <fields>
+        <fullName>Last_PRO_Issues_Questions_Notables__c</fullName>
+        <externalId>false</externalId>
+        <label>Last PRO-Issues / Questions / Notables</label>
+        <length>32768</length>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Html</type>
+        <visibleLines>25</visibleLines>
+    </fields>
+    <fields>
+        <fullName>Last_PRO_Key_accompl_last_two_weeks__c</fullName>
+        <externalId>false</externalId>
+        <label>Last PRO-Key accompl. (last two weeks)</label>
+        <length>32768</length>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Html</type>
+        <visibleLines>25</visibleLines>
+    </fields>
+    <fields>
+        <fullName>Last_PRO_Key_next_steps_next_two_weeks__c</fullName>
+        <externalId>false</externalId>
+        <label>Last PRO-Key next steps (next two weeks)</label>
+        <length>32768</length>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Html</type>
+        <visibleLines>25</visibleLines>
+    </fields>
+    <fields>
+        <fullName>Last_PRO_Partner_Relationship__c</fullName>
+        <externalId>false</externalId>
+        <formula>TEXT(Last_Project_Report_Out__r.Partner_Relationship__c)</formula>
+        <label>Last PRO-Partner Relationship</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Last_PRO_Project_Overview_Document_POD__c</fullName>
+        <externalId>false</externalId>
+        <formula>Last_Project_Report_Out__r.Project_Dashboard__c</formula>
+        <label>Last PRO-Project Overview Document (POD)</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Last_PRO_Resourcing_Planning__c</fullName>
+        <externalId>false</externalId>
+        <formula>TEXT(Last_Project_Report_Out__r.Resource_Planning__c)</formula>
+        <label>Last PRO-Resourcing Planning</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Last_Project_Report_Out__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <description>Pro with the latest date</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Pro with the latest date</inlineHelpText>
+        <label>Last PRO</label>
+        <referenceTo>Project_Report_Out__c</referenceTo>
+        <relationshipLabel>Contracts</relationshipLabel>
+        <relationshipName>Contracts</relationshipName>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
         <fullName>Last_Report_Out_Created_Date__c</fullName>
         <externalId>false</externalId>
-        <label>Last Report Out Created Date</label>
+        <label>Last PRO-Created Date</label>
         <summarizedField>Project_Report_Out__c.CreatedDate</summarizedField>
         <summaryForeignKey>Project_Report_Out__c.Contract__c</summaryForeignKey>
         <summaryOperation>max</summaryOperation>
@@ -1598,7 +1745,7 @@ Total_Services_Work_Remaining__c * (9 / (MONTH(Contract_End_Date__c) + 12*YEAR(C
         <fullName>Last_Report_Out_Date__c</fullName>
         <externalId>false</externalId>
         <inlineHelpText>The most recent date that a report out was filled out for.</inlineHelpText>
-        <label>Last Report Out Date</label>
+        <label>Last PRO-Date</label>
         <summarizedField>Project_Report_Out__c.Report_Out_Date__c</summarizedField>
         <summaryForeignKey>Project_Report_Out__c.Contract__c</summaryForeignKey>
         <summaryOperation>max</summaryOperation>
@@ -1611,7 +1758,7 @@ Total_Services_Work_Remaining__c * (9 / (MONTH(Contract_End_Date__c) + 12*YEAR(C
         <description>Stores the value from the most recent report out.</description>
         <externalId>false</externalId>
         <inlineHelpText>Stores the value from the most recent report out submitted.</inlineHelpText>
-        <label>Last Report Out Status</label>
+        <label>Last PRO-Status</label>
         <length>20</length>
         <required>false</required>
         <trackHistory>false</trackHistory>
@@ -2212,6 +2359,16 @@ Total_Services_Work_Remaining__c * (9 / (MONTH(Contract_End_Date__c) + 12*YEAR(C
         <type>Currency</type>
     </fields>
     <fields>
+        <fullName>Project_Retrospective__c</fullName>
+        <externalId>false</externalId>
+        <inlineHelpText>Link to end-of-project retrospective</inlineHelpText>
+        <label>Project Retrospective</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Url</type>
+    </fields>
+    <fields>
         <fullName>Proposal_Dropbox_Location__c</fullName>
         <externalId>false</externalId>
         <inlineHelpText>Should be in Dimagi - Proposals</inlineHelpText>
@@ -2231,6 +2388,30 @@ Total_Services_Work_Remaining__c * (9 / (MONTH(Contract_End_Date__c) + 12*YEAR(C
         <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>R_D_Cluster__c</fullName>
+        <description>This field is to signify whether a project is part of the Research and Development Cluster, information needed for the A-133 Audit.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>This field is to signify whether a project is part of the Research and Development Cluster, information needed for the A-133 Audit.</inlineHelpText>
+        <label>R&amp;D Cluster</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+        <valueSet>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>Yes</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>No</fullName>
+                    <default>false</default>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
     </fields>
     <fields>
         <fullName>Require_Services_Spend_Refresh__c</fullName>
@@ -3401,6 +3582,28 @@ Total_Non_Expense_Income_Remaining__c * (9 / (MONTH(Contract_End_Date__c) + 12*Y
         <label>Ag Contracts</label>
     </listViews>
     <listViews>
+        <fullName>Ag_Contracts1</fullName>
+        <columns>NAME</columns>
+        <columns>Account__c</columns>
+        <columns>Summary_Overview__c</columns>
+        <columns>Country_Text__c</columns>
+        <columns>Area__c</columns>
+        <columns>Total_Amount_of_Contract__c</columns>
+        <columns>Contract_Start_Date__c</columns>
+        <columns>Percent_through_SOW_deliverables__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Area__c</field>
+            <operation>includes</operation>
+            <value>Agriculture and Food Security</value>
+        </filters>
+        <filters>
+            <field>Contract_Start_Date__c</field>
+            <operation>greaterThan</operation>
+        </filters>
+        <label>Ag Contracts</label>
+    </listViews>
+    <listViews>
         <fullName>All</fullName>
         <columns>NAME</columns>
         <columns>Country_Text__c</columns>
@@ -3449,7 +3652,7 @@ Total_Non_Expense_Income_Remaining__c * (9 / (MONTH(Contract_End_Date__c) + 12*Y
             <value>Managed Servers</value>
         </filters>
         <filters>
-            <field>Invoiced__c</field>
+            <field>Percent_through_SOW_deliverables__c</field>
             <operation>greaterOrEqual</operation>
             <value>25</value>
         </filters>
@@ -3467,6 +3670,25 @@ Total_Non_Expense_Income_Remaining__c * (9 / (MONTH(Contract_End_Date__c) + 12*Y
         <sharedTo>
             <group>All_Dimagi</group>
         </sharedTo>
+    </listViews>
+    <listViews>
+        <fullName>All_by_Country_Export_for_DHA</fullName>
+        <columns>NAME</columns>
+        <columns>Country_Text__c</columns>
+        <columns>Account__c</columns>
+        <columns>Project_Manager__c</columns>
+        <columns>Summary_Overview__c</columns>
+        <columns>LAST_UPDATE</columns>
+        <columns>Total_Amount_of_Contract__c</columns>
+        <columns>Prime_Contracting_Business_Unit__c</columns>
+        <columns>Area__c</columns>
+        <columns>Sub_Area__c</columns>
+        <columns>Status__c</columns>
+        <columns>Funder_Account__c</columns>
+        <columns>Contract_Start_Date__c</columns>
+        <columns>Contract_End_Date__c</columns>
+        <filterScope>Everything</filterScope>
+        <label>All by Country - Export for DHA</label>
     </listViews>
     <listViews>
         <fullName>Cash_Flow_3Month_12Month</fullName>
@@ -3768,19 +3990,5 @@ Total_Non_Expense_Income_Remaining__c * (9 / (MONTH(Contract_End_Date__c) + 12*Y
         <openType>sidebar</openType>
         <page>ServicesSpendRecalculationPage</page>
         <protected>false</protected>
-    </webLinks>
-    <webLinks>
-        <fullName>Refresh_Total_Spending</fullName>
-        <availability>online</availability>
-        <displayType>button</displayType>
-        <linkType>javascript</linkType>
-        <masterLabel>Refresh Total Spending</masterLabel>
-        <openType>onClickJavaScript</openType>
-        <protected>false</protected>
-        <url>{!REQUIRESCRIPT(&quot;/soap/ajax/30.0/connection.js&quot;)}
-{!REQUIRESCRIPT(&quot;/soap/ajax/30.0/apex.js&quot;)}
-
-sforce.apex.execute(&quot;BatchCalculateTotalHoursBtn&quot;,&quot;executeBatch&quot;,{contractId: &quot;{!DContract__c.Id}&quot;});
-document.location.reload(true)</url>
     </webLinks>
 </CustomObject>

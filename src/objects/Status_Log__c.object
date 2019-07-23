@@ -47,7 +47,7 @@
     <enableBulkApi>true</enableBulkApi>
     <enableFeeds>false</enableFeeds>
     <enableHistory>false</enableHistory>
-    <enableReports>false</enableReports>
+    <enableReports>true</enableReports>
     <enableSearch>false</enableSearch>
     <enableSharing>true</enableSharing>
     <enableStreamingApi>true</enableStreamingApi>
@@ -95,6 +95,10 @@
                 </value>
                 <value>
                     <fullName>ERROR</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>WARN</fullName>
                     <default>false</default>
                 </value>
             </valueSetDefinition>

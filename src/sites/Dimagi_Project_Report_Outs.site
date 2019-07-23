@@ -8,7 +8,7 @@
     <allowStandardSearch>false</allowStandardSearch>
     <authorizationRequiredPage>Unauthorized</authorizationRequiredPage>
     <bandwidthExceededPage>BandwidthExceeded</bandwidthExceededPage>
-    <clickjackProtectionLevel>AllowAllFraming</clickjackProtectionLevel>
+    <clickjackProtectionLevel>NoFraming</clickjackProtectionLevel>
     <description>Front end to enable non-SF users to fill out a Project Report Out.</description>
     <fileNotFoundPage>FileNotFound</fileNotFoundPage>
     <genericErrorPage>Exception</genericErrorPage>
@@ -16,7 +16,7 @@
     <inactiveIndexPage>InMaintenance</inactiveIndexPage>
     <indexPage>ProjectReportOut</indexPage>
     <masterLabel>Dimagi Project Report Outs</masterLabel>
-    <requireHttps>false</requireHttps>
+    <requireHttps>true</requireHttps>
     <requireInsecurePortalAccess>false</requireInsecurePortalAccess>
     <siteAdmin>nnestle@dimagi.com</siteAdmin>
     <siteTemplate>SiteTemplate</siteTemplate>

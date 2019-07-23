@@ -63,6 +63,18 @@
         <unique>false</unique>
     </fields>
     <fields>
+        <fullName>Domain__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <externalId>false</externalId>
+        <label>Domain</label>
+        <referenceTo>Domain__c</referenceTo>
+        <relationshipLabel>Domain Monthly Snapshots</relationshipLabel>
+        <relationshipName>Domain_Monthly_Snapshots</relationshipName>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
         <fullName>Forms__c</fullName>
         <externalId>false</externalId>
         <label>Forms</label>
@@ -85,7 +97,34 @@
         <unique>false</unique>
     </fields>
     <fields>
+        <fullName>Is_Inside_Sales__c</fullName>
+        <defaultValue>false</defaultValue>
+        <externalId>false</externalId>
+        <label>Is Inside Sales?</label>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Is_Test__c</fullName>
+        <externalId>false</externalId>
+        <label>Is Test</label>
+        <length>255</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Likely_Real__c</fullName>
+        <defaultValue>false</defaultValue>
+        <externalId>false</externalId>
+        <label>Likely Real</label>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
         <fullName>Scale_of_Programs__c</fullName>
+        <defaultValue>1</defaultValue>
         <externalId>false</externalId>
         <label>Scale of Programs</label>
         <precision>18</precision>
@@ -96,12 +135,40 @@
         <unique>false</unique>
     </fields>
     <fields>
+        <fullName>Self_Started__c</fullName>
+        <defaultValue>false</defaultValue>
+        <externalId>false</externalId>
+        <label>Self Started?</label>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Server_Name__c</fullName>
+        <externalId>false</externalId>
+        <label>Server Name</label>
+        <length>255</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
         <fullName>Snapshot_Date__c</fullName>
         <externalId>false</externalId>
         <label>Snapshot Date</label>
         <required>false</required>
         <trackTrending>false</trackTrending>
         <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>Software_Edition__c</fullName>
+        <externalId>false</externalId>
+        <label>Software Edition</label>
+        <length>255</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
     </fields>
     <fields>
         <fullName>Software_Plan_Edition__c</fullName>
@@ -139,6 +206,24 @@
                 </value>
             </valueSetDefinition>
         </valueSet>
+    </fields>
+    <fields>
+        <fullName>Subscription_Is_Trial__c</fullName>
+        <defaultValue>false</defaultValue>
+        <externalId>false</externalId>
+        <label>Subscription: Is Trial?</label>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Subscription_Service_Type__c</fullName>
+        <externalId>false</externalId>
+        <label>Subscription: Service Type</label>
+        <length>255</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
     </fields>
     <fields>
         <fullName>Wam__c</fullName>
