@@ -155,6 +155,7 @@ public class FogBugzAPI {
     }
 
     public String updateCaseTitleStageTag(FogBugzCase fbCase, boolean editTags, Set<String> products, boolean close, boolean reopen) {
+        System.debug('Update Case Title Stage Tag : ' + fbCase);
         Map<String, String> params = new Map<String, String> {
             'cmd' => 'edit',
             'ixBug' => fbCase.caseId,
@@ -191,6 +192,8 @@ public class FogBugzAPI {
 
             params.put('sTags', tags);
         }
+
+        System.debug('Case- edit tags: ' + editTags + ' close: ' + close + ' reopen: ' + reopen);
 
         HTTPRequest req = buildHTTPRequest(params);
         HTTP connection = new HTTP();
