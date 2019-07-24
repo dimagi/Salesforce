@@ -97,6 +97,7 @@ public with sharing class OpportunityTriggers {
      */
     @future(callout=true)
     public static void updateCase(String opportunityId, boolean editTags, String oldProds, String newProds, String oldStage) {
+        System.debug('Update Case future method: ');
         Opportunity o = FogBugzUtils.fetchOpportunity(opportunityId);
 
         if (o != null) {
@@ -145,6 +146,8 @@ public with sharing class OpportunityTriggers {
 
             Boolean close = o.IsClosed;
             Boolean reopen = FogBugzUtils.closedStages.contains(oldStage) && (!o.StageName.equals(oldStage));
+            System.debug('Case - Opp: ' + opportunityId + ' tags: ' + editTags + ' close: ' + close + 'reopen: ' + reopen);
+            System.debug('Case - old stage: ' + oldStage + ' new stage: ' + o.StageName);
             String fbCaseId = !Test.isRunningTest() ? fbAPI.updateCaseTitleStageTag(fbCase, editTags, tags, close, reopen) : FogBugzHttpCalloutMock.EMPTY_ID;
         } else {
             System.debug(LoggingLevel.WARN, 'OpportunityTriggers::updateCase() - Could not find opportunity just created (???)');

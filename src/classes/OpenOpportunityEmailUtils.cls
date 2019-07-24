@@ -85,11 +85,11 @@ public with sharing class OpenOpportunityEmailUtils {
 
         Integer daysNotUpdatedLimit = Open_Opportunity_Settings__c.getOrgDefaults().Days_Not_Updated_Limit__c != null 
                                        ? Open_Opportunity_Settings__c.getOrgDefaults().Days_Not_Updated_Limit__c.intValue()
-                                       : 30;
+                                       : 14;
                                        
         Integer daysNotUpdatedLimitEarlyStages = Open_Opportunity_Settings__c.getOrgDefaults().Days_Not_Updated_Limit_Early_Stages__c != null 
                                        ? Open_Opportunity_Settings__c.getOrgDefaults().Days_Not_Updated_Limit_Early_Stages__c.intValue()
-                                       : 14;
+                                       : 30;
                                   
         Integer daysSinceStageChange = Open_Opportunity_Settings__c.getOrgDefaults().Days_Since_Stage_Change__c != null
         							   ? Open_Opportunity_Settings__c.getOrgDefaults().Days_Since_Stage_Change__c.intValue()
