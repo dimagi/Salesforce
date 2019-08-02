@@ -5,6 +5,36 @@
 private class OpportunityTriggersTest {
 
     @isTest
+    public static void shouldAddUpdateFogBugzAssignedTo() {
+        Opportunity opp1 = new Opportunity(Name = 'Opp simple 1', StageName = 'Closed - Lost', Fogbugz_Assigned_To__c = 'CLOSED', CloseDate = Date.today());
+        Opportunity opp2 = new Opportunity(Name = 'Opp simple 2', StageName = 'Closed - Lost', Fogbugz_Assigned_To__c = '', CloseDate = Date.today());
+        Opportunity opp3 = new Opportunity(Name = 'Opp simple 3', StageName = 'Closed - Lost', Fogbugz_Assigned_To__c = 'Person', CloseDate = Date.today());
+        insert new List<Opportunity> { opp1, opp2, opp3 };
+
+        Test.startTest();
+        opp1.StageName = 'Stage 1 - Connect';
+        opp2.StageName = 'Stage 1 - Connect';
+        opp3.StageName = 'Stage 1 - Connect';
+        update new List<Opportunity> { opp1, opp2, opp3 };
+        Test.stopTest();
+
+        Opportunity testOpp = [SELECT Id, Name, StageName, Fogbugz_Assigned_To__c, IsClosed FROM Opportunity WHERE Id =: opp1.Id];
+        System.assertEquals('Stage 1 - Connect', testOpp.StageName);
+        System.assertEquals('REOPENED', testOpp.Fogbugz_Assigned_To__c);
+        System.assertEquals(false, testOpp.IsClosed);
+
+        testOpp = [SELECT Id, Name, StageName, Fogbugz_Assigned_To__c, IsClosed FROM Opportunity WHERE Id =: opp2.Id];
+        System.assertEquals('Stage 1 - Connect', testOpp.StageName);
+        System.assertEquals(null, testOpp.Fogbugz_Assigned_To__c);
+        System.assertEquals(false, testOpp.IsClosed);
+
+        testOpp = [SELECT Id, Name, StageName, Fogbugz_Assigned_To__c, IsClosed FROM Opportunity WHERE Id =: opp3.Id];
+        System.assertEquals('Stage 1 - Connect', testOpp.StageName);
+        System.assertEquals('Person', testOpp.Fogbugz_Assigned_To__c);
+        System.assertEquals(false, testOpp.IsClosed);
+    }
+
+    @isTest
     public static void shouldUpdateAccountRelationInTheDomainObjectBulk() {
         Business_Unit__c bunit = new Business_Unit__c();
         bunit.Name = 'Test';
