@@ -162,7 +162,7 @@ public class RenewalSubscriptionsTest {
         opp2Products = [SELECT Id, Quantity, UnitPrice FROM OpportunityLineItem WHERE OpportunityId =: opp2.Id and ProductCode = 'Standard'];
         System.assertEquals(1, opp2Products.size());
         System.assertEquals(12, opp2Products.get(0).Quantity);
-        System.assertEquals(100, opp2Products.get(0).UnitPrice);
+        System.assertEquals(300, opp2Products.get(0).UnitPrice);
 
         futureList = batchJob.getFutureSubscriptions();
         System.assertEquals(1, futureList.size());
