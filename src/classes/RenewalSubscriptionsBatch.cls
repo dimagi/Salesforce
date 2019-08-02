@@ -71,7 +71,7 @@ public without sharing class RenewalSubscriptionsBatch implements Database.Batch
 
         this.salesPrices = new Map<String, Decimal>();
         this.salesPrices.put('Community', this.settings.Community__c != null ? this.settings.Community__c : 0);
-        this.salesPrices.put('Standard', this.settings.Standard__c != null ? this.settings.Standard__c : 100);
+        this.salesPrices.put('Standard', this.settings.Standard__c != null ? this.settings.Standard__c : 300);
         this.salesPrices.put('Pro', this.settings.Pro__c != null ? this.settings.Pro__c : 500);
         this.salesPrices.put('Advanced', this.settings.Advanced__c != null ? this.settings.Advanced__c : 1000);
         this.salesPrices.put('Enterprise', this.settings.Enterprise__c != null ? this.settings.Enterprise__c : 2000);
