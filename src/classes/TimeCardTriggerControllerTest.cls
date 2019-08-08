@@ -37,6 +37,8 @@ public class TimeCardTriggerControllerTest {
                                             Fee__c = 10, Fringe__c = 20, G_A__c = 10, Overhead__c = 52);
         insert new Project_Billing_Rate__c(Name = 'Test Daily Rate', Date__c = Date.newInstance(2018, 03, 01), Custom_1__c = 0, Custom_2__c = 0, Custom_3__c = 0,
                                             Fee__c = 10, Fringe__c = 30, G_A__c = 10, Overhead__c = 52);
+        insert new Project_Billing_Rate__c(Name = TimeCardTriggerController.CONTRACTOR_RATE_NAME, Date__c = Date.newInstance(2000, 01, 01), Custom_1__c = 0, Custom_2__c = 0, Custom_3__c = 0,
+                                            Fee__c = 0, Fringe__c = 0, G_A__c = 0, Overhead__c = 0);
     }
 
     @isTest
@@ -558,6 +560,10 @@ public class TimeCardTriggerControllerTest {
         Database.executeBatch(new TimeCardCalculator(), 200);
         Test.stopTest();
 
+        for (Time_Card__c dbTC : [SELECT Id, Time_Card_Salary__c, Billing_Rate__c, Uses_Contractor_Billing_Rate__c FROM Time_Card__c]) {
+            System.debug('TC salary : ' + dbTC.Time_Card_Salary__c + ' billing rate : ' + dbTC.Billing_Rate__c);
+        }
+
         DContract__c dcontractFromDB = [SELECT Id, Name, Services_Spend__c FROM DContract__c WHERE Id =: parent.Id];
         System.assertEquals(740.28, dcontractFromDB.Services_Spend__c);
 
@@ -682,6 +688,238 @@ public class TimeCardTriggerControllerTest {
         System.assertEquals(1101.24, dcontractFromDB.Services_Spend__c);
     }
 
+    /**
+     * Tests with contractor as an employees
+     */
+
+    @isTest
+    public static void shouldUseContractorBillingRate() {
+        insert new Project_Billing_Rate__c(Name = TimeCardTriggerController.CONTRACTOR_RATE_NAME, Date__c = Date.newInstance(2019, 2, 1), Custom_1__c = 0, Custom_2__c = 0, Custom_3__c = 0,
+                                           Fee__c = 0, Fringe__c = 0, G_A__c = 0, Overhead__c = 15);
+        DContract__c parent1 = [SELECT Id FROM DContract__c WHERE Name = 'Sample Parent 1'];
+        DContract__c child1 = [SELECT Id FROM DContract__c WHERE Name = 'Sample Child 1'];
+        SFDC_Employee__c employeeObj1 = new SFDC_Employee__c(Name = 'Old Test Employee', Salary__c = 50000, Exchange_Rate__c = 1,
+                                                             Effective_Exchange_Rate_Date__c = Date.newInstance(2016, 2, 24), Per_Week_Hours__c = 40,
+                                                             Effective_Salary_Date__c = Date.newInstance(2016, 2, 24), Employee_Type__c = 'Contractor');
+        insert employeeObj1;
+
+        Time_Card__c timeCardObj1 = new Time_Card__c(Time_Card_Salary__c = 1.0, Billing_Rate__c = null, Total__c = 8, Date__c = Date.newInstance(2019, 1, 7),
+                                                        Employee__c = employeeObj1.Id, Client__c = parent1.Id);
+        Time_Card__c timeCardObj2 = new Time_Card__c(Time_Card_Salary__c = 2.0, Billing_Rate__c = null, Total__c = 4, Date__c = Date.newInstance(2019, 2, 1),
+                                                        Employee__c = employeeObj1.Id, Client__c = parent1.Id);
+        Time_Card__c timeCardObj3 = new Time_Card__c(Time_Card_Salary__c = 3.0, Billing_Rate__c = null, Total__c = 10, Date__c = Date.newInstance(2019, 3, 2),
+                                                        Employee__c = employeeObj1.Id, Client__c = parent1.Id);
+        Time_Card__c timeCardObj4 = new Time_Card__c(Time_Card_Salary__c = 4.0, Billing_Rate__c = null, Total__c = 8, Date__c = Date.newInstance(2019, 1, 14),
+                                                        Employee__c = employeeObj1.Id, Client__c = child1.Id);
+
+        List<Time_Card__c> timeCards = new List<Time_Card__c> { timeCardObj1, timeCardObj2, timeCardObj3, timeCardObj4 };
+
+        Test.startTest();
+        insert timeCards;
+        Test.stopTest();
+
+        Time_Card__c testTc = [SELECT Id, Time_Card_Salary__c, Billing_Rate__c, Uses_Contractor_Billing_Rate__c
+                               FROM Time_Card__c WHERE Id =: timeCardObj1.Id];
+        System.assertEquals(true, testTc.Uses_Contractor_Billing_Rate__c);
+        System.assertEquals(24.03846154, testTc.Time_Card_Salary__c);
+        System.assertEquals(1, testTc.Billing_Rate__c);
+
+        testTc = [SELECT Id, Time_Card_Salary__c, Billing_Rate__c, Uses_Contractor_Billing_Rate__c
+                  FROM Time_Card__c WHERE Id =: timeCardObj2.Id];
+        System.assertEquals(true, testTc.Uses_Contractor_Billing_Rate__c);
+        System.assertEquals(24.03846154, testTc.Time_Card_Salary__c);
+        System.assertEquals(1.15, testTc.Billing_Rate__c);
+
+        testTc = [SELECT Id, Time_Card_Salary__c, Billing_Rate__c, Uses_Contractor_Billing_Rate__c
+                  FROM Time_Card__c WHERE Id =: timeCardObj3.Id];
+        System.assertEquals(true, testTc.Uses_Contractor_Billing_Rate__c);
+        System.assertEquals(24.03846154, testTc.Time_Card_Salary__c);
+        System.assertEquals(1.15, testTc.Billing_Rate__c);
+
+        testTc = [SELECT Id, Time_Card_Salary__c, Billing_Rate__c, Uses_Contractor_Billing_Rate__c
+                  FROM Time_Card__c WHERE Id =: timeCardObj4.Id];
+        System.assertEquals(true, testTc.Uses_Contractor_Billing_Rate__c);
+        System.assertEquals(24.03846154, testTc.Time_Card_Salary__c);
+        System.assertEquals(1, testTc.Billing_Rate__c);
+    }
+
+    @isTest
+    public static void shouldUseContractorBillingRateAfterUpdate() {
+        insert new Project_Billing_Rate__c(Name = TimeCardTriggerController.CONTRACTOR_RATE_NAME, Date__c = Date.newInstance(2019, 2, 1), Custom_1__c = 0, Custom_2__c = 0, Custom_3__c = 0,
+                                           Fee__c = 0, Fringe__c = 0, G_A__c = 0, Overhead__c = 15);
+        DContract__c parent1 = [SELECT Id FROM DContract__c WHERE Name = 'Sample Parent 1'];
+        DContract__c child1 = [SELECT Id FROM DContract__c WHERE Name = 'Sample Child 1'];
+        SFDC_Employee__c employeeObj1 = new SFDC_Employee__c(Name = 'Old Test Employee', Salary__c = 50000, Exchange_Rate__c = 1,
+                                                             Effective_Exchange_Rate_Date__c = Date.newInstance(2016, 2, 24), Per_Week_Hours__c = 40,
+                                                             Effective_Salary_Date__c = Date.newInstance(2016, 2, 24), Employee_Type__c = 'Employee');
+        insert employeeObj1;
+
+        SFDC_Employee__c employeeObj2 = new SFDC_Employee__c(Name = 'Old Test Employee 2', Salary__c = 80000, Exchange_Rate__c = 1,
+                                                             Effective_Exchange_Rate_Date__c = Date.newInstance(2016, 2, 24), Per_Week_Hours__c = 40,
+                                                             Effective_Salary_Date__c = Date.newInstance(2016, 2, 24), Employee_Type__c = 'Employee');
+        insert employeeObj2;
+
+        Time_Card__c timeCardObj1 = new Time_Card__c(Time_Card_Salary__c = 1.0, Billing_Rate__c = null, Total__c = 8, Date__c = Date.newInstance(2019, 1, 7),
+                                                        Employee__c = employeeObj1.Id, Client__c = child1.Id);
+        Time_Card__c timeCardObj2 = new Time_Card__c(Time_Card_Salary__c = 2.0, Billing_Rate__c = null, Total__c = 4, Date__c = Date.newInstance(2019, 2, 1),
+                                                        Employee__c = employeeObj1.Id, Client__c = child1.Id);
+        Time_Card__c timeCardObj3 = new Time_Card__c(Time_Card_Salary__c = 3.0, Billing_Rate__c = null, Total__c = 10, Date__c = Date.newInstance(2019, 3, 2),
+                                                        Employee__c = employeeObj2.Id, Client__c = child1.Id);
+        Time_Card__c timeCardObj4 = new Time_Card__c(Time_Card_Salary__c = 4.0, Billing_Rate__c = null, Total__c = 8, Date__c = Date.newInstance(2019, 1, 14),
+                                                        Employee__c = employeeObj1.Id, Client__c = child1.Id);
+
+        List<Time_Card__c> timeCards = new List<Time_Card__c> { timeCardObj1, timeCardObj2, timeCardObj3, timeCardObj4 };
+        Test.startTest();
+        insert timeCards;
+
+        employeeObj1.Employee_Type__c = 'Contractor';
+        update employeeObj1;
+
+        timeCardObj1.Uses_Contractor_Billing_Rate__c = true;
+        timeCardObj1.Client__c = parent1.Id;
+        timeCardObj2.Uses_Contractor_Billing_Rate__c = true;
+        timeCardObj2.Client__c = parent1.Id;
+        timeCardObj3.Uses_Contractor_Billing_Rate__c = false;
+        timeCardObj3.Client__c = parent1.Id;
+        timeCardObj4.Uses_Contractor_Billing_Rate__c = true;
+        timeCardObj4.Client__c = parent1.Id;
+        update timeCards;
+        Test.stopTest();
+
+        Time_Card__c testTc = [SELECT Id, Time_Card_Salary__c, Billing_Rate__c, Uses_Contractor_Billing_Rate__c
+                               FROM Time_Card__c WHERE Id =: timeCardObj1.Id];
+        System.assertEquals(true, testTc.Uses_Contractor_Billing_Rate__c);
+        System.assertEquals(1, testTc.Billing_Rate__c);
+
+        testTc = [SELECT Id, Time_Card_Salary__c, Billing_Rate__c, Uses_Contractor_Billing_Rate__c
+                  FROM Time_Card__c WHERE Id =: timeCardObj2.Id];
+        System.assertEquals(true, testTc.Uses_Contractor_Billing_Rate__c);
+        System.assertEquals(1.15, testTc.Billing_Rate__c);
+
+        testTc = [SELECT Id, Time_Card_Salary__c, Billing_Rate__c, Uses_Contractor_Billing_Rate__c
+                  FROM Time_Card__c WHERE Id =: timeCardObj3.Id];
+        System.assertEquals(false, testTc.Uses_Contractor_Billing_Rate__c);
+        System.assertEquals(2.39096, testTc.Billing_Rate__c);
+
+        testTc = [SELECT Id, Time_Card_Salary__c, Billing_Rate__c, Uses_Contractor_Billing_Rate__c
+                  FROM Time_Card__c WHERE Id =: timeCardObj4.Id];
+        System.assertEquals(true, testTc.Uses_Contractor_Billing_Rate__c);
+        System.assertEquals(1, testTc.Billing_Rate__c);
+    }
+
+    @isTest
+    public static void shouldUseContractorBillingRateWithEmployeeSnapshot() {
+        DContract__c parent1 = [SELECT Id, Project_Billing_Rate__c, Services_Spend__c FROM DContract__c WHERE Name = 'Sample Parent 1'];
+        DContract__c child1 = [SELECT Id, Project_Billing_Rate__c, Services_Spend__c FROM DContract__c WHERE Name = 'Sample Child 1'];
+        DContract__c child2 = [SELECT Id, Project_Billing_Rate__c, Services_Spend__c FROM DContract__c WHERE Name = 'Sample Child 2'];
+
+        parent1.Project_Billing_Rate__c = 'Test Daily Rate';
+        child1.Project_Billing_Rate__c = 'Test Daily Rate';
+        update parent1;
+        update child1;
+        update child2;
+
+        SFDC_Employee__c employeeObj = [SELECT Id FROM SFDC_Employee__c WHERE Name = 'Sample Employee'];
+        SFDC_Employee_Snapshot__c emplSnp1 = new SFDC_Employee_Snapshot__c(Salary__c = 30000, Exchange_Rate__c = 2.0, Per_Week_Hours__c = 20, Employee_Type__c = 'Contractor',
+                                                                              Snapshot_Date__c = Date.newInstance(2018, 1, 31), Employee_Record__c = employeeObj.Id);
+        insert emplSnp1;
+        SFDC_Employee_Snapshot__c emplSnp2 = new SFDC_Employee_Snapshot__c(Salary__c = 40000, Exchange_Rate__c = 3.0, Per_Week_Hours__c = 20,
+                                                                              Snapshot_Date__c = Date.newInstance(2018, 2, 28), Employee_Record__c = employeeObj.Id);
+        insert emplSnp2;
+        SFDC_Employee_Snapshot__c emplSnp3 = new SFDC_Employee_Snapshot__c(Salary__c = 45000, Exchange_Rate__c = 1.0, Per_Week_Hours__c = 30, Employee_Type__c = 'Contractor',
+                                                                              Snapshot_Date__c = Date.newInstance(2018, 3, 31), Employee_Record__c = employeeObj.Id);
+        insert emplSnp3;
+
+        Test.startTest();
+        // January : Salary -> (30000 / (260 / 2)) / 8 Billing Rate -> contractor = 1
+        Time_Card__c timeCardObj1 = new Time_Card__c(Time_Card_Salary__c = 0, Billing_Rate__c = 2.0, Total__c = 8, Date__c = Date.newInstance(2018 , 1, 2),
+                                                        Employee__c = employeeObj.Id, Client__c = child1.Id);
+        Time_Card__c timeCardObj2 = new Time_Card__c(Time_Card_Salary__c = 0, Billing_Rate__c = 3.0, Total__c = 4, Date__c = Date.newInstance(2018 , 1, 12),
+                                                        Employee__c = employeeObj.Id, Client__c = parent1.Id);
+        Time_Card__c timeCardObj3 = new Time_Card__c(Time_Card_Salary__c = 0, Billing_Rate__c = 2.0, Total__c = 10, Date__c = Date.newInstance(2018 , 1, 20),
+                                                        Employee__c = employeeObj.Id, Client__c = child1.Id);
+        // Febryuary : Salary -> (30000 / (260 / 2)) / 8 Billing Rate -> (1.1 * 1.2 * 1.1 * 1.52) = 2.20704
+        Time_Card__c timeCardObj4 = new Time_Card__c(Time_Card_Salary__c = 0, Billing_Rate__c = 2.0, Total__c = 8, Date__c = Date.newInstance(2018 , 2, 20),
+                                                        Employee__c = employeeObj.Id, Client__c = child1.Id);
+        Time_Card__c timeCardObj5 = new Time_Card__c(Time_Card_Salary__c = 0, Billing_Rate__c = 3.0, Total__c = 4, Date__c = Date.newInstance(2018 , 2, 15),
+                                                        Employee__c = employeeObj.Id, Client__c = parent1.Id);
+        Time_Card__c timeCardObj6 = new Time_Card__c(Time_Card_Salary__c = 0, Billing_Rate__c = 2.0, Total__c = 10, Date__c = Date.newInstance(2018 , 2, 2),
+                                                        Employee__c = employeeObj.Id, Client__c = child1.Id);
+        // March : Salary -> (40000 / (260 / 3)) / 8 Billing Rate -> contractor = 1
+        Time_Card__c timeCardObj7 = new Time_Card__c(Time_Card_Salary__c = 0, Billing_Rate__c = 2.0, Total__c = 8, Date__c = Date.newInstance(2018 , 3, 15),
+                                                        Employee__c = employeeObj.Id, Client__c = child1.Id);
+        Time_Card__c timeCardObj8 = new Time_Card__c(Time_Card_Salary__c = 0, Billing_Rate__c = 3.0, Total__c = 4, Date__c = Date.newInstance(2018 , 3, 20),
+                                                        Employee__c = employeeObj.Id, Client__c = parent1.Id);
+        Time_Card__c timeCardObj9 = new Time_Card__c(Time_Card_Salary__c = 0, Billing_Rate__c = 2.0, Total__c = 10, Date__c = Date.newInstance(2018 , 3, 1),
+                                                        Employee__c = employeeObj.Id, Client__c = child1.Id);
+        // April : Salary from Employee -> (50000 / 260) / 8 Billing Rate -> (1.1 * 1.3 * 1.1 * 1.52) = 2.39096
+        Time_Card__c timeCardObj10 = new Time_Card__c(Time_Card_Salary__c = 0, Billing_Rate__c = 2.0, Total__c = 8, Date__c = Date.newInstance(2018 , 4, 15),
+                                                        Employee__c = employeeObj.Id, Client__c = child1.Id);
+        Time_Card__c timeCardObj11 = new Time_Card__c(Time_Card_Salary__c = 0, Billing_Rate__c = 3.0, Total__c = 4, Date__c = Date.newInstance(2018 , 4, 20),
+                                                        Employee__c = employeeObj.Id, Client__c = parent1.Id);
+        Time_Card__c timeCardObj12 = new Time_Card__c(Time_Card_Salary__c = 0, Billing_Rate__c = 2.0, Total__c = 10, Date__c = Date.newInstance(2018 , 4, 1),
+                                                        Employee__c = employeeObj.Id, Client__c = child1.Id);
+
+        List<Time_Card__c> timeCards = new List<Time_Card__c> {timeCardObj1, timeCardObj2, timeCardObj3,timeCardObj4, timeCardObj5, timeCardObj6, timeCardObj7, timeCardObj8, timeCardObj9,
+                                                                    timeCardObj10, timeCardObj11, timeCardObj12};
+        insert timeCards;
+        Test.stopTest();
+
+        for (Time_Card__c tc : [SELECT Id, Date__c, Time_Card_Salary__c, Billing_Rate__c,  Client__r.Name FROM TIme_Card__c]) {
+            System.debug('Debug tc : ' + tc.Client__r.Name + ' ' + tc.Date__c + ' ' + tc.Billing_Rate__c + ' ' + tc.Time_Card_Salary__c);
+        }
+
+        TimeCardCalculator tcCalculator = new TimeCardCalculator();
+        Database.QueryLocatorIterator iter = tcCalculator.start(null).iterator();
+        List<sObject> testData = new List<sObject>();
+        while (iter.hasNext()) {
+            testData.add(iter.next());
+        }
+        tcCalculator.execute(null, testData);
+        tcCalculator.finish(null);
+
+        Decimal child1Value = (8 * (((30000 / 2.0) / (260.0 / 2.0)) / 8.0).setScale(8) * 1).setScale(8)
+                            + (10 * (((30000 / 2.0) / (260.0 / 2.0)) / 8.0).setScale(8) * 1).setScale(8)
+                            + (8 * (((40000 / 3.0) / (260.0 / 2.0)) / 8.0).setScale(8) * 2.2070400000).setScale(8)
+                            + (10 * (((40000 / 3.0) / (260.0 / 2.0)) / 8.0).setScale(8) * 2.2070400000).setScale(8)
+                            + (8 * ((45000 / (260.0 * (30.0 / 40.0))) / 8.0).setScale(8) * 1).setScale(8)
+                            + (10 * ((45000 / (260.0 * (30.0 / 40.0))) / 8.0).setScale(8) * 1).setScale(8)
+                            + (8 * ((50000 / 260.0) / 8.0).setScale(8) * 2.3909600000).setScale(8)
+                            + (10 * ((50000 / 260.0) / 8.0).setScale(8) * 2.3909600000);
+
+        Decimal parentValue = (4 * (((30000 / 2.0) / (260.0 / 2.0)) / 8.0).setScale(8) * 1).setScale(8)
+                            + (4 * (((40000 / 3.0) / (260.0 / 2.0)) / 8.0).setScale(8) * 2.2070400000).setScale(8)
+                            + (4 * ((45000 / (260.0 * (30.0 / 40.0))) / 8.0).setScale(8) * 1).setScale(8)
+                            + (4 * ((50000 / 260.0) / 8.0).setScale(8) * 2.3909600000).setScale(8);
+
+        for (Time_Card__c tc : [SELECT Id, Date__c, Time_Card_Salary__c, Billing_Rate__c,  Client__r.Name FROM TIme_Card__c]) {
+            System.debug('Debug tc 2 : ' + tc.Client__r.Name + ' ' + tc.Date__c + ' ' + tc.Billing_Rate__c + ' ' + tc.Time_Card_Salary__c);
+        }
+
+        DContract__c dcontractFromDB = [SELECT Id, Name, Services_Spend__c FROM DContract__c WHERE Name = 'Sample Parent 1'];
+        System.assertEquals((parentValue + child1Value).setScale(2), dcontractFromDB.Services_Spend__c);
+
+        dcontractFromDB = [SELECT Id, Name, Services_Spend__c FROM DContract__c WHERE Name = 'Sample Child 1'];
+        System.assertEquals((child1Value).setScale(2), dcontractFromDB.Services_Spend__c);
+
+        dcontractFromDB = [SELECT Id, Name, Services_Spend__c FROM DContract__c WHERE Name = 'Sample Child 2'];
+        System.assertEquals(0, dcontractFromDB.Services_Spend__c);
+
+        for (Time_Card__c tcToTest : [SELECT Id, Time_Card_Salary__c, Billing_Rate__c, Uses_Contractor_Billing_Rate__c
+                                      FROM Time_Card__c WHERE Id IN: new List<Time_Card__c>
+                                      { timeCardObj1, timeCardObj2, timeCardObj3, timeCardObj7, timeCardObj8, timeCardObj9 }]) {
+            System.assertEquals(true, tcToTest.Uses_Contractor_Billing_Rate__c);
+            System.assertEquals(1, tcToTest.Billing_Rate__c);
+        }
+
+        for (Time_Card__c tcToTest : [SELECT Id, Time_Card_Salary__c, Billing_Rate__c, Uses_Contractor_Billing_Rate__c
+                                      FROM Time_Card__c WHERE Id NOT IN: new List<Time_Card__c>
+                                      { timeCardObj1, timeCardObj2, timeCardObj3, timeCardObj7, timeCardObj8, timeCardObj9 }]) {
+            System.assertEquals(false, tcToTest.Uses_Contractor_Billing_Rate__c);
+            System.assertNotEquals(1, tcToTest.Billing_Rate__c);
+        }
+    }
+
     @isTest
     public static void futureMethodShouldRecalculateTimeCardCostAndBillingRate() {
         Test.startTest();
@@ -744,10 +982,333 @@ public class TimeCardTriggerControllerTest {
         System.assertEquals(1.96625, tc4DB.Billing_Rate__c);
     }
 
+    @isTest
+    public static void shouldUpdateContractorBillingRatesAfterAddingSnapshot() {
+        setUpSnapshotTests();
+        SFDC_Employee__c employeeObj1 = [SELECT Id FROM SFDC_Employee__c WHERE Name = 'Old Test Employee'];
+        SFDC_Employee__c employeeObj2 = [SELECT Id FROM SFDC_Employee__c WHERE Name = 'Old Test Employee 2'];
+
+        for (Time_Card__c tc : [SELECT Id, Uses_Contractor_Billing_Rate__c, Billing_Rate__c FROM Time_Card__c
+                                WHERE Employee__c =: employeeObj1.Id AND Date__c <=: Date.newInstance(2018, 3, 1)]) {
+            System.assertEquals(false, tc.Uses_Contractor_Billing_Rate__c);
+            System.assertNotEquals(1.0, tc.Billing_Rate__c);
+        }
+        for (Time_Card__c tc : [SELECT Id, Uses_Contractor_Billing_Rate__c, Billing_Rate__c FROM Time_Card__c
+                                WHERE Employee__c =: employeeObj2.Id]) {
+            System.assertEquals(true, tc.Uses_Contractor_Billing_Rate__c);
+            System.assertEquals(1.0, tc.Billing_Rate__c);
+        }
+
+        Test.startTest();
+        SFDC_Employee_Snapshot__c emplSnp1_1 = new SFDC_Employee_Snapshot__c(Salary__c = 30000, Exchange_Rate__c = 2.0, Per_Week_Hours__c = 20,
+                                                                              Snapshot_Date__c = Date.newInstance(2018, 1, 31), Employee_Record__c = employeeObj1.Id);
+        SFDC_Employee_Snapshot__c emplSnp2_1 = new SFDC_Employee_Snapshot__c(Salary__c = 40000, Exchange_Rate__c = 3.0, Per_Week_Hours__c = 20, Employee_Type__c = 'Contractor',
+                                                                              Snapshot_Date__c = Date.newInstance(2018, 2, 28), Employee_Record__c = employeeObj1.Id);
+        SFDC_Employee_Snapshot__c emplSnp1_2 = new SFDC_Employee_Snapshot__c(Salary__c = 39000, Exchange_Rate__c = 2.0, Per_Week_Hours__c = 20,
+                                                                              Snapshot_Date__c = Date.newInstance(2018, 3, 31), Employee_Record__c = employeeObj2.Id);
+        insert new List<SFDC_Employee_Snapshot__c> { emplSnp1_1, emplSnp2_1, emplSnp1_2 };
+        Test.stopTest();
+
+        for (Time_Card__c tc : [SELECT Id, Date__c, Time_Card_Salary__c, Billing_Rate__c,  Client__r.Name, Employee__r.Name,
+                                Uses_Contractor_Billing_Rate__c FROM TIme_Card__c ORDER BY Employee__c]) {
+            System.debug('Debug tc : ' + tc.Employee__r.Name + ' ' + tc.Uses_Contractor_Billing_Rate__c + ' ' + tc.Client__r.Name + ' '
+                            + tc.Date__c + ' ' + tc.Billing_Rate__c + ' ' + tc.Time_Card_Salary__c);
+        }
+
+        for (Time_Card__c tc : [SELECT Id, Uses_Contractor_Billing_Rate__c, Billing_Rate__c FROM Time_Card__c
+                                WHERE Employee__c =: employeeObj1.Id AND Date__c <: Date.newInstance(2018, 2, 1)]) {
+            System.assertEquals(false, tc.Uses_Contractor_Billing_Rate__c);
+            System.assertNotEquals(1.0, tc.Billing_Rate__c);
+        }
+        for (Time_Card__c tc : [SELECT Id, Uses_Contractor_Billing_Rate__c, Billing_Rate__c FROM Time_Card__c
+                                WHERE Employee__c =: employeeObj1.Id AND Date__c >=: Date.newInstance(2018, 2, 1)]) {
+            System.assertEquals(true, tc.Uses_Contractor_Billing_Rate__c);
+            System.assertEquals(1.0, tc.Billing_Rate__c);
+        }
+        for (Time_Card__c tc : [SELECT Id, Uses_Contractor_Billing_Rate__c, Billing_Rate__c FROM Time_Card__c
+                                WHERE Employee__c =: employeeObj2.Id]) {
+            System.assertEquals(false, tc.Uses_Contractor_Billing_Rate__c);
+            System.assertNotEquals(1.0, tc.Billing_Rate__c);
+        }
+    }
+
+    @isTest
+    public static void shouldUpdateContractorBillingRatesAfterUpdatingSnapshot() {
+        setUpSnapshotTests();
+        SFDC_Employee__c employeeObj1 = [SELECT Id FROM SFDC_Employee__c WHERE Name = 'Old Test Employee'];
+        SFDC_Employee__c employeeObj2 = [SELECT Id FROM SFDC_Employee__c WHERE Name = 'Old Test Employee 2'];
+
+        SFDC_Employee_Snapshot__c emplSnp1_1 = new SFDC_Employee_Snapshot__c(Salary__c = 30000, Exchange_Rate__c = 2.0, Per_Week_Hours__c = 20,
+                                                                              Snapshot_Date__c = Date.newInstance(2018, 1, 31), Employee_Record__c = employeeObj1.Id);
+        SFDC_Employee_Snapshot__c emplSnp2_1 = new SFDC_Employee_Snapshot__c(Salary__c = 40000, Exchange_Rate__c = 3.0, Per_Week_Hours__c = 20, Employee_Type__c = 'Contractor',
+                                                                              Snapshot_Date__c = Date.newInstance(2018, 2, 28), Employee_Record__c = employeeObj1.Id);
+        SFDC_Employee_Snapshot__c emplSnp1_2 = new SFDC_Employee_Snapshot__c(Salary__c = 39000, Exchange_Rate__c = 2.0, Per_Week_Hours__c = 20,
+                                                                              Snapshot_Date__c = Date.newInstance(2018, 3, 31), Employee_Record__c = employeeObj2.Id);
+        insert new List<SFDC_Employee_Snapshot__c> { emplSnp1_1, emplSnp2_1, emplSnp1_2 };
+
+        for (Time_Card__c tc : [SELECT Id, Uses_Contractor_Billing_Rate__c, Billing_Rate__c FROM Time_Card__c
+                                WHERE Employee__c =: employeeObj1.Id AND Date__c <: Date.newInstance(2018, 2, 1)]) {
+            System.assertEquals(false, tc.Uses_Contractor_Billing_Rate__c);
+            System.assertNotEquals(1.0, tc.Billing_Rate__c);
+        }
+        for (Time_Card__c tc : [SELECT Id, Uses_Contractor_Billing_Rate__c, Billing_Rate__c FROM Time_Card__c
+                                WHERE Employee__c =: employeeObj1.Id AND Date__c >=: Date.newInstance(2018, 2, 1)]) {
+            System.assertEquals(true, tc.Uses_Contractor_Billing_Rate__c);
+            System.assertEquals(1.0, tc.Billing_Rate__c);
+        }
+        for (Time_Card__c tc : [SELECT Id, Uses_Contractor_Billing_Rate__c, Billing_Rate__c FROM Time_Card__c
+                                WHERE Employee__c =: employeeObj2.Id]) {
+            System.assertEquals(false, tc.Uses_Contractor_Billing_Rate__c);
+            System.assertNotEquals(1.0, tc.Billing_Rate__c);
+        }
+
+        Test.startTest();
+        emplSnp1_1.Employee_Type__c = 'Contractor';
+        emplSnp2_1.Employee_Type__c = 'Employee';
+        emplSnp1_2.Employee_Type__c = 'Contractor';
+        update new List<SFDC_Employee_Snapshot__c> { emplSnp1_1, emplSnp2_1, emplSnp1_2 };
+        Test.stopTest();
+
+        for (Time_Card__c tc : [SELECT Id, Uses_Contractor_Billing_Rate__c, Billing_Rate__c FROM Time_Card__c
+                                WHERE Employee__c =: employeeObj1.Id AND Date__c <: Date.newInstance(2018, 2, 1)]) {
+            System.assertEquals(true, tc.Uses_Contractor_Billing_Rate__c);
+            System.assertEquals(1.0, tc.Billing_Rate__c);
+        }
+        for (Time_Card__c tc : [SELECT Id, Uses_Contractor_Billing_Rate__c, Billing_Rate__c FROM Time_Card__c
+                                WHERE Employee__c =: employeeObj1.Id AND Date__c >=: Date.newInstance(2018, 2, 1)]) {
+            System.assertEquals(false, tc.Uses_Contractor_Billing_Rate__c);
+            System.assertNotEquals(1.0, tc.Billing_Rate__c);
+        }
+        for (Time_Card__c tc : [SELECT Id, Uses_Contractor_Billing_Rate__c, Billing_Rate__c FROM Time_Card__c
+                                WHERE Employee__c =: employeeObj2.Id]) {
+            System.assertEquals(true, tc.Uses_Contractor_Billing_Rate__c);
+            System.assertEquals(1.0, tc.Billing_Rate__c);
+        }
+    }
+
+    private static void setUpSnapshotTests() {
+        DContract__c parent1 = [SELECT Id, Project_Billing_Rate__c, Services_Spend__c FROM DContract__c WHERE Name = 'Sample Parent 1'];
+        DContract__c child1 = [SELECT Id, Project_Billing_Rate__c, Services_Spend__c FROM DContract__c WHERE Name = 'Sample Child 1'];
+        DContract__c child2 = [SELECT Id, Project_Billing_Rate__c, Services_Spend__c FROM DContract__c WHERE Name = 'Sample Child 2'];
+
+        SFDC_Employee__c employeeObj1 = new SFDC_Employee__c(Name = 'Old Test Employee', Salary__c = 50000, Exchange_Rate__c = 1,  Effective_Salary_Date__c = Date.newInstance(2016, 2, 24),
+                                                                    Effective_Exchange_Rate_Date__c = Date.newInstance(2016, 2, 24), Per_Week_Hours__c = 40);
+        insert employeeObj1;
+        SFDC_Employee__c employeeObj2 = new SFDC_Employee__c(Name = 'Old Test Employee 2', Salary__c = 65000, Exchange_Rate__c = 1,  Effective_Salary_Date__c = Date.newInstance(2016, 2, 24),
+                                                                    Effective_Exchange_Rate_Date__c = Date.newInstance(2016, 2, 24), Per_Week_Hours__c = 40, Employee_Type__c = 'Contractor');
+        insert employeeObj2;
+
+        // January : Salary -> (30000 / (260 / 2)) / 8 Billing Rate -> contractor = 1
+        Time_Card__c timeCardObj1 = new Time_Card__c(Time_Card_Salary__c = 0, Billing_Rate__c = 2.0, Total__c = 8, Date__c = Date.newInstance(2018 , 1, 2),
+                                                        Employee__c = employeeObj1.Id, Client__c = child1.Id);
+        Time_Card__c timeCardObj2 = new Time_Card__c(Time_Card_Salary__c = 0, Billing_Rate__c = 3.0, Total__c = 4, Date__c = Date.newInstance(2018 , 1, 12),
+                                                        Employee__c = employeeObj1.Id, Client__c = parent1.Id);
+        Time_Card__c timeCardObj3 = new Time_Card__c(Time_Card_Salary__c = 0, Billing_Rate__c = 2.0, Total__c = 10, Date__c = Date.newInstance(2018 , 1, 20),
+                                                        Employee__c = employeeObj1.Id, Client__c = child1.Id);
+        // Febryuary : Salary -> (30000 / (260 / 2)) / 8 Billing Rate -> (1.1 * 1.2 * 1.1 * 1.52) = 2.20704
+        Time_Card__c timeCardObj4 = new Time_Card__c(Time_Card_Salary__c = 0, Billing_Rate__c = 2.0, Total__c = 8, Date__c = Date.newInstance(2018 , 2, 20),
+                                                        Employee__c = employeeObj1.Id, Client__c = child1.Id);
+        Time_Card__c timeCardObj5 = new Time_Card__c(Time_Card_Salary__c = 0, Billing_Rate__c = 3.0, Total__c = 4, Date__c = Date.newInstance(2018 , 2, 15),
+                                                        Employee__c = employeeObj1.Id, Client__c = parent1.Id);
+        Time_Card__c timeCardObj6 = new Time_Card__c(Time_Card_Salary__c = 0, Billing_Rate__c = 2.0, Total__c = 10, Date__c = Date.newInstance(2018 , 2, 2),
+                                                        Employee__c = employeeObj1.Id, Client__c = child1.Id);
+        // March : Salary -> (40000 / (260 / 3)) / 8 Billing Rate -> contractor = 1
+        Time_Card__c timeCardObj7 = new Time_Card__c(Time_Card_Salary__c = 0, Billing_Rate__c = 2.0, Total__c = 8, Date__c = Date.newInstance(2018 , 3, 15),
+                                                        Employee__c = employeeObj2.Id, Client__c = child1.Id);
+        Time_Card__c timeCardObj8 = new Time_Card__c(Time_Card_Salary__c = 0, Billing_Rate__c = 3.0, Total__c = 4, Date__c = Date.newInstance(2018 , 3, 20),
+                                                        Employee__c = employeeObj2.Id, Client__c = parent1.Id);
+        Time_Card__c timeCardObj9 = new Time_Card__c(Time_Card_Salary__c = 0, Billing_Rate__c = 2.0, Total__c = 10, Date__c = Date.newInstance(2018 , 3, 1),
+                                                        Employee__c = employeeObj2.Id, Client__c = child1.Id);
+        insert new List<Time_Card__c> { timeCardObj1, timeCardObj2, timeCardObj3, timeCardObj4, timeCardObj5, timeCardObj6,
+                                        timeCardObj7, timeCardObj8, timeCardObj9 };
+    }
+
+    @isTest
+    public static void testAllInOne() {
+        setUpAllInOneDate();
+
+        for (Time_Card__c tc : [SELECT Id, Date__c, Time_Card_Salary__c, Billing_Rate__c,  Client__r.Name FROM Time_Card__c]) {
+            System.assertNotEquals(null, tc.Time_Card_Salary__c);
+            System.assertNotEquals(0, tc.Time_Card_Salary__c);
+            System.assertNotEquals(null, tc.Billing_Rate__c);
+            System.assertNotEquals(0, tc.Billing_Rate__c);
+        }
+        for (Time_Card__c tc : [SELECT Id, Date__c, Time_Card_Salary__c, Billing_Rate__c,  Client__r.Name, Employee__r.Name,
+                                Uses_Contractor_Billing_Rate__c FROM TIme_Card__c ORDER BY Employee__c]) {
+            System.debug('Debug tc : ' + tc.Employee__r.Name + ' ' + tc.Uses_Contractor_Billing_Rate__c + ' ' + tc.Client__r.Name + ' '
+                            + tc.Date__c + ' ' + tc.Billing_Rate__c + ' ' + tc.Time_Card_Salary__c);
+        }
+        System.assertEquals(12, [SELECT Id FROM Time_Card__c WHERE Uses_Contractor_Billing_Rate__c = true].size());
+
+        insert new Project_Billing_Rate__c(Name = TimeCardTriggerController.CONTRACTOR_RATE_NAME, Date__c = Date.newInstance(2018, 03, 01), Custom_1__c = 0, Custom_2__c = 0, Custom_3__c = 0,
+                                            Fee__c = 0, Fringe__c = 15, G_A__c = 0, Overhead__c = 0);
+        insert new Project_Billing_Rate__c(Name = TimeCardTriggerController.CONTRACTOR_RATE_NAME, Date__c = Date.newInstance(2018, 04, 01), Custom_1__c = 0, Custom_2__c = 0, Custom_3__c = 0,
+                                            Fee__c = 0, Fringe__c = 10, G_A__c = 0, Overhead__c = 0);
+
+        insert new Project_Billing_Rate_Update__c(Name = TimeCardTriggerController.CONTRACTOR_RATE_NAME,
+                                                  From_Range__c = Date.newInstance(2018, 03, 01),
+                                                  To_Range__c = Date.newInstance(2018, 04, 01));
+        insert new Project_Billing_Rate_Update__c(Name = TimeCardTriggerController.CONTRACTOR_RATE_NAME,
+                                                  From_Range__c = Date.newInstance(2018, 04, 01),
+                                                  To_Range__c = Date.newInstance(2018, 09, 01));
+
+        TimeCardCalculator tcCalculator = new TimeCardCalculator();
+        Database.QueryLocatorIterator iter = tcCalculator.start(null).iterator();
+        List<sObject> testData = new List<sObject>();
+        while (iter.hasNext()) {
+            testData.add(iter.next());
+        }
+        tcCalculator.execute(null, testData);
+        tcCalculator.finish(null);
+
+        for (Time_Card__c tc : [SELECT Id, Date__c, Time_Card_Salary__c, Billing_Rate__c,  Client__r.Name, Employee__r.Name,
+                                Uses_Contractor_Billing_Rate__c FROM TIme_Card__c ORDER BY Employee__c]) {
+            System.debug('Debug tc : ' + tc.Employee__r.Name + ' ' + tc.Uses_Contractor_Billing_Rate__c + ' ' + tc.Client__r.Name + ' '
+                            + tc.Date__c + ' ' + tc.Billing_Rate__c + ' ' + tc.Time_Card_Salary__c);
+        }
+
+        Decimal child1ValueEmployee1 = (8 * (((30000 / 2.0) / (260.0 / 2.0)) / 8.0).setScale(8) * 2.0231200000).setScale(8)
+                            + (10 * (((30000 / 2.0) / (260.0 / 2.0)) / 8.0).setScale(8) * 2.2070400000).setScale(8)
+                            + (8 * (((40000 / 3.0) / (260.0 / 2.0)) / 8.0).setScale(8) * 2.2070400000).setScale(8)
+                            + (10 * (((40000 / 3.0) / (260.0 / 2.0)) / 8.0).setScale(8) * 2.2070400000).setScale(8)
+                            + (8 * ((45000 / (260.0 * (30.0 / 40.0))) / 8.0).setScale(8) * 2.3909600000).setScale(8)
+                            + (10 * ((45000 / (260.0 * (30.0 / 40.0))) / 8.0).setScale(8) * 2.3909600000).setScale(8)
+                            + (8 * ((50000 / 260.0) / 8.0).setScale(8) * 1.1).setScale(8)
+                            + (10 * ((50000 / 260.0) / 8.0).setScale(8) * 1.1);
+
+        Decimal child1ValueEmployee2 = (8 * (((39000 / 2.0) / (260.0 / 2.0)) / 8.0).setScale(8) * 1).setScale(8)
+                            + (10 * (((39000 / 2.0) / (260.0 / 2.0)) / 8.0).setScale(8) * 1).setScale(8)
+                            + (8 * (((49000 / 3.0) / (260.0 / 2.0)) / 8.0).setScale(8) * 1).setScale(8)
+                            + (10 * (((49000 / 3.0) / (260.0 / 2.0)) / 8.0).setScale(8) * 1).setScale(8)
+                            + (8 * (((49000 / 0.95) / (260.0 * (30.0 / 40.0))) / 8.0).setScale(8) * 1.15).setScale(8)
+                            + (10 * (((49000 / 0.95) / (260.0 * (30.0 / 40.0))) / 8.0).setScale(8) * 1.15).setScale(8)
+                            + (8 * ((50000 / 260.0) / 8.0).setScale(8) * 2.3909600000).setScale(8)
+                            + (10 * ((50000 / 260.0) / 8.0).setScale(8) * 2.3909600000);
+
+        Decimal parentValueEmployee1 = (4 * (((30000 / 2.0) / (260.0 / 2.0)) / 8.0).setScale(8) * 2.0231200000).setScale(8)
+                            + (4 * (((40000 / 3.0) / (260.0 / 2.0)) / 8.0).setScale(8) * 2.2070400000).setScale(8)
+                            + (4 * ((45000 / (260.0 * (30.0 / 40.0))) / 8.0).setScale(8) * 2.3909600000).setScale(8)
+                            + (4 * ((50000 / 260.0) / 8.0).setScale(8) * 1.1).setScale(8);
+
+        Decimal parentValueEmployee2 = (4 * (((39000 / 2.0) / (260.0 / 2.0)) / 8.0).setScale(8) * 1).setScale(8)
+                            + (4 * (((49000 / 3.0) / (260.0 / 2.0)) / 8.0).setScale(8) * 1).setScale(8)
+                            + (4 * (((49000 / 0.95) / (260.0 * (30.0 / 40.0))) / 8.0).setScale(8) * 1.15).setScale(8)
+                            + (4 * ((50000 / 260.0) / 8.0).setScale(8) * 2.3909600000).setScale(8);
+
+
+        DContract__c dcontractFromDB = [SELECT Id, Name, Services_Spend__c FROM DContract__c WHERE Name = 'Sample Parent 1'];
+        System.assertEquals((parentValueEmployee1 + parentValueEmployee2 + child1ValueEmployee1 + child1ValueEmployee2).setScale(2),
+                                dcontractFromDB.Services_Spend__c);
+
+        dcontractFromDB = [SELECT Id, Name, Services_Spend__c FROM DContract__c WHERE Name = 'Sample Child 1'];
+        System.assertEquals((child1ValueEmployee1 + child1ValueEmployee2).setScale(2), dcontractFromDB.Services_Spend__c);
+
+        dcontractFromDB = [SELECT Id, Name, Services_Spend__c FROM DContract__c WHERE Name = 'Sample Child 2'];
+        System.assertEquals(0, dcontractFromDB.Services_Spend__c);
+    }
+
+    private static void setUpAllInOneDate() {
+        DContract__c parent1 = [SELECT Id, Project_Billing_Rate__c, Services_Spend__c FROM DContract__c WHERE Name = 'Sample Parent 1'];
+        DContract__c child1 = [SELECT Id, Project_Billing_Rate__c, Services_Spend__c FROM DContract__c WHERE Name = 'Sample Child 1'];
+        DContract__c child2 = [SELECT Id, Project_Billing_Rate__c, Services_Spend__c FROM DContract__c WHERE Name = 'Sample Child 2'];
+
+        parent1.Project_Billing_Rate__c = 'Test Daily Rate';
+        child1.Project_Billing_Rate__c = 'Test Daily Rate';
+        update new List<DContract__c> { parent1, child1, child2 };
+
+        SFDC_Employee__c employeeObj1 = [SELECT Id FROM SFDC_Employee__c WHERE Name = 'Sample Employee'];
+        employeeObj1.Employee_Type__c = 'Contractor';
+        update employeeObj1;
+        SFDC_Employee_Snapshot__c emplSnp1_1 = new SFDC_Employee_Snapshot__c(Salary__c = 30000, Exchange_Rate__c = 2.0, Per_Week_Hours__c = 20,
+                                                                              Snapshot_Date__c = Date.newInstance(2018, 1, 31), Employee_Record__c = employeeObj1.Id);
+        SFDC_Employee_Snapshot__c emplSnp2_1 = new SFDC_Employee_Snapshot__c(Salary__c = 40000, Exchange_Rate__c = 3.0, Per_Week_Hours__c = 20,
+                                                                              Snapshot_Date__c = Date.newInstance(2018, 2, 28), Employee_Record__c = employeeObj1.Id);
+        SFDC_Employee_Snapshot__c emplSnp3_1 = new SFDC_Employee_Snapshot__c(Salary__c = 45000, Exchange_Rate__c = 1.0, Per_Week_Hours__c = 30,
+                                                                              Snapshot_Date__c = Date.newInstance(2018, 3, 31), Employee_Record__c = employeeObj1.Id);
+
+        SFDC_Employee__c employeeObj2 = new SFDC_Employee__c(Name = 'Sample Employee 2', Salary__c = 50000, Exchange_Rate__c = 1, Effective_Salary_Date__c = Date.newInstance(2016, 2, 24),
+                                                            Effective_Exchange_Rate_Date__c = Date.newInstance(2016, 2, 24), Per_Week_Hours__c = 40);
+        insert employeeObj2;
+        SFDC_Employee_Snapshot__c emplSnp1_2 = new SFDC_Employee_Snapshot__c(Salary__c = 39000, Exchange_Rate__c = 2.0, Per_Week_Hours__c = 20, Employee_Type__c = 'Contractor',
+                                                                              Snapshot_Date__c = Date.newInstance(2018, 1, 31), Employee_Record__c = employeeObj2.Id);
+        SFDC_Employee_Snapshot__c emplSnp2_2 = new SFDC_Employee_Snapshot__c(Salary__c = 49000, Exchange_Rate__c = 3.0, Per_Week_Hours__c = 20, Employee_Type__c = 'Contractor',
+                                                                              Snapshot_Date__c = Date.newInstance(2018, 2, 28), Employee_Record__c = employeeObj2.Id);
+        SFDC_Employee_Snapshot__c emplSnp3_2 = new SFDC_Employee_Snapshot__c(Salary__c = 49000, Exchange_Rate__c = 0.95, Per_Week_Hours__c = 30, Employee_Type__c = 'Contractor',
+                                                                              Snapshot_Date__c = Date.newInstance(2018, 3, 31), Employee_Record__c = employeeObj2.Id);
+        insert new List<SFDC_Employee_Snapshot__c> { emplSnp3_1, emplSnp2_1, emplSnp1_1, emplSnp1_2, emplSnp2_2, emplSnp3_2 };
+
+        Test.startTest();
+        // Employee 1
+        // January : Salary -> (30000 / (260 / 2)) / 8 Billing Rate -> contractor = 1
+        Time_Card__c timeCardObj1 = new Time_Card__c(Time_Card_Salary__c = 0, Billing_Rate__c = 2.0, Total__c = 8, Date__c = Date.newInstance(2018 , 1, 2),
+                                                        Employee__c = employeeObj1.Id, Client__c = child1.Id);
+        Time_Card__c timeCardObj2 = new Time_Card__c(Time_Card_Salary__c = 0, Billing_Rate__c = 3.0, Total__c = 4, Date__c = Date.newInstance(2018 , 1, 12),
+                                                        Employee__c = employeeObj1.Id, Client__c = parent1.Id);
+        Time_Card__c timeCardObj3 = new Time_Card__c(Time_Card_Salary__c = 0, Billing_Rate__c = 2.0, Total__c = 10, Date__c = Date.newInstance(2018 , 1, 20),
+                                                        Employee__c = employeeObj1.Id, Client__c = child1.Id);
+        // Febryuary : Salary -> (30000 / (260 / 2)) / 8 Billing Rate -> (1.1 * 1.2 * 1.1 * 1.52) = 2.20704
+        Time_Card__c timeCardObj4 = new Time_Card__c(Time_Card_Salary__c = 0, Billing_Rate__c = 2.0, Total__c = 8, Date__c = Date.newInstance(2018 , 2, 20),
+                                                        Employee__c = employeeObj1.Id, Client__c = child1.Id);
+        Time_Card__c timeCardObj5 = new Time_Card__c(Time_Card_Salary__c = 0, Billing_Rate__c = 3.0, Total__c = 4, Date__c = Date.newInstance(2018 , 2, 15),
+                                                        Employee__c = employeeObj1.Id, Client__c = parent1.Id);
+        Time_Card__c timeCardObj6 = new Time_Card__c(Time_Card_Salary__c = 0, Billing_Rate__c = 2.0, Total__c = 10, Date__c = Date.newInstance(2018 , 2, 2),
+                                                        Employee__c = employeeObj1.Id, Client__c = child1.Id);
+        // March : Salary -> (40000 / (260 / 3)) / 8 Billing Rate -> contractor = 1
+        Time_Card__c timeCardObj7 = new Time_Card__c(Time_Card_Salary__c = 0, Billing_Rate__c = 2.0, Total__c = 8, Date__c = Date.newInstance(2018 , 3, 15),
+                                                        Employee__c = employeeObj1.Id, Client__c = child1.Id);
+        Time_Card__c timeCardObj8 = new Time_Card__c(Time_Card_Salary__c = 0, Billing_Rate__c = 3.0, Total__c = 4, Date__c = Date.newInstance(2018 , 3, 20),
+                                                        Employee__c = employeeObj1.Id, Client__c = parent1.Id);
+        Time_Card__c timeCardObj9 = new Time_Card__c(Time_Card_Salary__c = 0, Billing_Rate__c = 2.0, Total__c = 10, Date__c = Date.newInstance(2018 , 3, 1),
+                                                        Employee__c = employeeObj1.Id, Client__c = child1.Id);
+        // April : Salary from Employee -> (50000 / 260) / 8 Billing Rate -> (1.1 * 1.3 * 1.1 * 1.52) = 2.39096
+        Time_Card__c timeCardObj10 = new Time_Card__c(Time_Card_Salary__c = 0, Billing_Rate__c = 2.0, Total__c = 8, Date__c = Date.newInstance(2018 , 4, 15),
+                                                        Employee__c = employeeObj1.Id, Client__c = child1.Id);
+        Time_Card__c timeCardObj11 = new Time_Card__c(Time_Card_Salary__c = 0, Billing_Rate__c = 3.0, Total__c = 4, Date__c = Date.newInstance(2018 , 4, 20),
+                                                        Employee__c = employeeObj1.Id, Client__c = parent1.Id);
+        Time_Card__c timeCardObj12 = new Time_Card__c(Time_Card_Salary__c = 0, Billing_Rate__c = 2.0, Total__c = 10, Date__c = Date.newInstance(2018 , 4, 1),
+                                                        Employee__c = employeeObj1.Id, Client__c = child1.Id);
+        // Employee 2
+        // January : Salary -> (30000 / (260 / 2)) / 8 Billing Rate -> contractor = 1
+        Time_Card__c timeCardObj13 = new Time_Card__c(Time_Card_Salary__c = 0, Billing_Rate__c = 2.0, Total__c = 8, Date__c = Date.newInstance(2018 , 1, 2),
+                                                        Employee__c = employeeObj2.Id, Client__c = child1.Id);
+        Time_Card__c timeCardObj14 = new Time_Card__c(Time_Card_Salary__c = 0, Billing_Rate__c = 3.0, Total__c = 4, Date__c = Date.newInstance(2018 , 1, 12),
+                                                        Employee__c = employeeObj2.Id, Client__c = parent1.Id);
+        Time_Card__c timeCardObj15 = new Time_Card__c(Time_Card_Salary__c = 0, Billing_Rate__c = 2.0, Total__c = 10, Date__c = Date.newInstance(2018 , 1, 20),
+                                                        Employee__c = employeeObj2.Id, Client__c = child1.Id);
+        // Febryuary : Salary -> (30000 / (260 / 2)) / 8 Billing Rate -> (1.1 * 1.2 * 1.1 * 1.52) = 2.20704
+        Time_Card__c timeCardObj16 = new Time_Card__c(Time_Card_Salary__c = 0, Billing_Rate__c = 2.0, Total__c = 8, Date__c = Date.newInstance(2018 , 2, 20),
+                                                        Employee__c = employeeObj2.Id, Client__c = child1.Id);
+        Time_Card__c timeCardObj17 = new Time_Card__c(Time_Card_Salary__c = 0, Billing_Rate__c = 3.0, Total__c = 4, Date__c = Date.newInstance(2018 , 2, 15),
+                                                        Employee__c = employeeObj2.Id, Client__c = parent1.Id);
+        Time_Card__c timeCardObj18 = new Time_Card__c(Time_Card_Salary__c = 0, Billing_Rate__c = 2.0, Total__c = 10, Date__c = Date.newInstance(2018 , 2, 2),
+                                                        Employee__c = employeeObj2.Id, Client__c = child1.Id);
+        // March : Salary -> (40000 / (260 / 3)) / 8 Billing Rate -> contractor = 1
+        Time_Card__c timeCardObj19 = new Time_Card__c(Time_Card_Salary__c = 0, Billing_Rate__c = 2.0, Total__c = 8, Date__c = Date.newInstance(2018 , 3, 15),
+                                                        Employee__c = employeeObj2.Id, Client__c = child1.Id);
+        Time_Card__c timeCardObj20 = new Time_Card__c(Time_Card_Salary__c = 0, Billing_Rate__c = 3.0, Total__c = 4, Date__c = Date.newInstance(2018 , 3, 20),
+                                                        Employee__c = employeeObj2.Id, Client__c = parent1.Id);
+        Time_Card__c timeCardObj21 = new Time_Card__c(Time_Card_Salary__c = 0, Billing_Rate__c = 2.0, Total__c = 10, Date__c = Date.newInstance(2018 , 3, 1),
+                                                        Employee__c = employeeObj2.Id, Client__c = child1.Id);
+        // April : Salary from Employee -> (50000 / 260) / 8 Billing Rate -> (1.1 * 1.3 * 1.1 * 1.52) = 2.39096
+        Time_Card__c timeCardObj22 = new Time_Card__c(Time_Card_Salary__c = 0, Billing_Rate__c = 2.0, Total__c = 8, Date__c = Date.newInstance(2018 , 4, 15),
+                                                        Employee__c = employeeObj2.Id, Client__c = child1.Id);
+        Time_Card__c timeCardObj23 = new Time_Card__c(Time_Card_Salary__c = 0, Billing_Rate__c = 3.0, Total__c = 4, Date__c = Date.newInstance(2018 , 4, 20),
+                                                        Employee__c = employeeObj2.Id, Client__c = parent1.Id);
+        Time_Card__c timeCardObj24 = new Time_Card__c(Time_Card_Salary__c = 0, Billing_Rate__c = 2.0, Total__c = 10, Date__c = Date.newInstance(2018 , 4, 1),
+                                                        Employee__c = employeeObj2.Id, Client__c = child1.Id);
+
+        List<Time_Card__c> timeCards = new List<Time_Card__c> { timeCardObj1, timeCardObj2, timeCardObj3,timeCardObj4, timeCardObj5, timeCardObj6,
+                                                                timeCardObj7, timeCardObj8, timeCardObj9, timeCardObj10, timeCardObj11, timeCardObj12,
+                                                                timeCardObj13, timeCardObj14, timeCardObj15, timeCardObj16, timeCardObj17, timeCardObj18,
+                                                                timeCardObj19, timeCardObj20, timeCardObj21, timeCardObj22, timeCardObj23, timeCardObj24 };
+
+        insert timeCards;
+        Test.stopTest();
+    }
+
     /**
      * Test for Billing Rates
      */
-
     @isTest
     public static void shouldSortBillingRate() {
         insert new Project_Billing_Rate__c(Name = 'Loaded Daily Rate Order', Date__c = Date.newInstance(1990, 01, 01), Custom_1__c = 0, Custom_2__c = 0, Custom_3__c = 0,
@@ -778,7 +1339,7 @@ public class TimeCardTriggerControllerTest {
         Test.startTest();
         BillingRateController brc = new BillingRateController();
         brc.initManageRates();
-        System.assertEquals(3, brc.billingRates.size()); // we have 2 rates from setUp method
+        System.assertEquals(4, brc.billingRates.size()); // we have 2 rates from setUp method
 
         brc.newBillingRate.Name = 'Simple new rate';
         brc.newBillingRate.Fee__c = 30;
@@ -791,7 +1352,7 @@ public class TimeCardTriggerControllerTest {
         brc.saveNewRate();
         Test.stopTest();
 
-        System.assertEquals(4, brc.billingRates.size());
+        System.assertEquals(5, brc.billingRates.size());
         Project_Billing_Rate__c newRate = [SELECT Id, Name, Date__c, Custom_1__c, Overhead__c, G_A__c, Fringe__c, Fee__c, Custom_2__c, Custom_3__c FROM Project_Billing_Rate__c WHERE Name = 'Simple new rate'];
         System.assertEquals(11, newRate.Custom_1__c);
         System.assertEquals(12, newRate.Custom_2__c);
@@ -813,7 +1374,7 @@ public class TimeCardTriggerControllerTest {
         Test.startTest();
         BillingRateController brc = new BillingRateController();
         brc.initManageRates();
-        System.assertEquals(3, brc.billingRates.size());
+        System.assertEquals(4, brc.billingRates.size());
 
         brc.newBillingRate.Name = 'Loaded Daily Rate 3';
         brc.newBillingRate.Fee__c = 30;
@@ -821,7 +1382,7 @@ public class TimeCardTriggerControllerTest {
         brc.saveNewRate();
         Test.stopTest();
 
-        System.assertEquals(3, brc.billingRates.size());
+        System.assertEquals(4, brc.billingRates.size());
     }
 
     @isTest

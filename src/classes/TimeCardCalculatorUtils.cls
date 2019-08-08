@@ -43,6 +43,7 @@ public class TimeCardCalculatorUtils {
     @future
     public static void calculateTimeCardSalaryAndBillingRate(Set<Id> timeCardIds) {
         List<Time_Card__c> timeCards = [SELECT Id, Client__c, Client__r.Project_Billing_Rate__c, Employee__c, Time_Card_Salary__c, Billing_Rate__c, Date__c FROM Time_Card__c WHERE Id IN: timeCardIds];
+        Date dateThreshold = Date.newInstance(2017, 12, 1);
 
         TimeCardCalculatorHelper calculatorHelper = new TimeCardCalculatorHelper();
         calculatorHelper.loadEmployeesSalary(timeCards);
@@ -50,7 +51,17 @@ public class TimeCardCalculatorUtils {
 
         for (Time_Card__c timeCard : timeCards) {
             Decimal emplSalary = calculatorHelper.getSalary(timeCard.Employee__c, timeCard.Date__c);
-            Decimal billingRate = calculatorHelper.getBillingRate(timeCard.Client__r.Project_Billing_Rate__c, timeCard.Date__c);
+
+            String billingRateName = calculatorHelper.getClientBillingRate(timeCard.Client__c);
+            // We don't have snapshot for older time cards. We don't want recalculate all services spend
+            if (timeCard.Date__c >= dateThreshold && calculatorHelper.wasContractor(timeCard.Employee__c, timeCard) == true) {
+                billingRateName = TimeCardTriggerController.CONTRACTOR_RATE_NAME;
+                timeCard.Uses_Contractor_Billing_Rate__c = true;
+            } else {
+                timeCard.Uses_Contractor_Billing_Rate__c = false;
+            }
+
+            Decimal billingRate = calculatorHelper.getBillingRate(billingRateName, timeCard.Date__c);
             timeCard.Time_Card_Salary__c = emplSalary;
             timeCard.Billing_Rate__c = billingRate;
             clientsToRefresh.add(timeCard.Client__c);

@@ -53,40 +53,48 @@ public without sharing class TimeCardCalculator implements Database.Batchable<sO
         this.updatesList = updatesList;
         this.billingRatesUpdate = new Set<String>();
         this.brUpdate = false;
+
+        fillRatesMap();
+    }
+
+    public void fillRatesMap() {
+        if (this.updatesList == null || this.updatesList.size() == 0) {
+            this.updatesList = [SELECT Id, Name FROM Project_Billing_Rate_Update__c WHERE CreatedDate >=: Date.today().addDays(-3)];
+        }
+
+        for (Project_Billing_Rate_Update__c brUp : this.updatesList) {
+            if (!this.billingRatesUpdate.contains(brUp.Name)) {
+                this.billingRatesUpdate.add(brUp.Name);
+                this.brUpdate = true;
+            }
+        }
     }
 
     public Database.QueryLocator start(Database.BatchableContext context) {
-        String selectTc = 'SELECT Id, Date__c, Billing_Rate__c, Time_Card_Salary__c, Client__c, Total__c, Client__r.Project_Billing_Rate_Updated__c, Client__r.Project_Billing_Rate__c, Client__r.Parent_Contract__c FROM Time_Card__c ';
+        String selectTc = 'SELECT Id, Date__c, Billing_Rate__c, Time_Card_Salary__c, Client__c, Total__c, Uses_Contractor_Billing_Rate__c, Client__r.Project_Billing_Rate_Updated__c, Client__r.Project_Billing_Rate__c, Client__r.Parent_Contract__c FROM Time_Card__c ';
         String whereTc = 'WHERE Client__c IN: contractsToRecalculateQuery';
         String orderBy = ' ORDER BY Client__c, Date__c DESC';
 
-        if (this.contractsToRecalculate.size() > 0) { // Contract UI button or manual run
+        if (this.contractsToRecalculate.size() > 0) {
+            // Contract UI button or manual run
             this.contractsToRecalculate.addAll(TimeCardCalculatorUtils.getParentAndChildContracts(this.contractsToRecalculate));
-        } else if (this.recalculateAll) { // run manually only
+        } else if (this.recalculateAll) {
+            // run manually only - uses list of contracts from employee, additionaly loads updated billing rates to recalculate contractor rate
             Map<Id, DContract__c> contracts = new Map<Id, DContract__c>([SELECT Id FROM DContract__c]);
             Set<Id> setId = new Set<Id>();
             setId.addAll(contracts.keySet());
             this.contractsToRecalculate.addAll(setId);
-        } else if (this.updatesList.size() > 0) { // Billing Rate manager button
-            for (Project_Billing_Rate_Update__c brUp : this.updatesList) {
-                if (!this.billingRatesUpdate.contains(brUp.Name)) {
-                    this.billingRatesUpdate.add(brUp.Name);
-                    this.brUpdate = true;
-                }
+        } else {
+            // daily job or scheduled by Billing Rate Manager Page
+            Map<Id, DContract__c> contracts = null;
+            if (!this.billingRatesUpdate.contains(TimeCardTriggerController.CONTRACTOR_RATE_NAME)) {
+                contracts = new Map<Id, DContract__c>([SELECT Id FROM DContract__c WHERE Require_Services_Spend_Refresh__c = true
+                                                       OR Project_Billing_Rate_Updated__c = true OR Project_Billing_Rate__c
+                                                       IN: this.billingRatesUpdate]);
+            } else { // we must fetch all time cards because schema and record numbers dosen't allow to safty fetch such informations from database
+                contracts = new Map<Id, DContract__c>([SELECT Id FROM DContract__c]);
             }
-            Map<Id, DContract__c> contracts = new Map<Id, DContract__c> ([SELECT Id FROM DContract__c WHERE Project_Billing_Rate__c IN: this.billingRatesUpdate]);
-            Set<Id> setId = new Set<Id>();
-            setId.addAll(contracts.keySet());
-            this.contractsToRecalculate.addAll(TimeCardCalculatorUtils.getParentAndChildContracts(setId));
-        } else { // daily
-            for (Project_Billing_Rate_Update__c brUp : [SELECT Id, Name FROM Project_Billing_Rate_Update__c]) {
-                if (!this.billingRatesUpdate.contains(brUp.Name)) {
-                    this.billingRatesUpdate.add(brUp.Name);
-                    this.brUpdate = true;
-                }
-            }
-            Map<Id, DContract__c> contracts = new Map<Id, DContract__c>([SELECT Id FROM DContract__c WHERE Require_Services_Spend_Refresh__c = true
-                                                                            OR Project_Billing_Rate_Updated__c = true OR Project_Billing_Rate__c IN: this.billingRatesUpdate]);
+
             Set<Id> setId = new Set<Id>();
             setId.addAll(contracts.keySet());
             this.contractsToRecalculate.addAll(TimeCardCalculatorUtils.getParentAndChildContracts(setId));
@@ -94,6 +102,7 @@ public without sharing class TimeCardCalculator implements Database.Batchable<sO
 
         this.contractsToRecalculateQuery = new Set<Id>(this.contractsToRecalculate);
         fillServicesSpendMap();
+
         return Database.getQueryLocator(selectTc + whereTc + orderBy);
     }
 
@@ -104,16 +113,25 @@ public without sharing class TimeCardCalculator implements Database.Batchable<sO
             Time_Card__c timeCard = (Time_Card__c) tcSObj;
             Decimal currentServicesSpend = 0;
 
-            if (timeCard.Client__r.Project_Billing_Rate_Updated__c == true) {
+            if (timeCard.Client__r.Project_Billing_Rate_Updated__c == true && timeCard.Uses_Contractor_Billing_Rate__c == false) {
                 timeCard.Billing_Rate__c = this.timeCardHelper.getBillingRate(timeCard.Client__r.Project_Billing_Rate__c, timeCard.Date__c);
                 timeCardsToUpdate.add(timeCard);
-            } else if (this.brUpdate && this.billingRatesUpdate.contains(timeCard.Client__r.Project_Billing_Rate__c)) {
-                timeCard.Billing_Rate__c = this.timeCardHelper.getBillingRate(timeCard.Client__r.Project_Billing_Rate__c, timeCard.Date__c);
+            } else if (this.brUpdate
+                        && (this.billingRatesUpdate.contains(timeCard.Client__r.Project_Billing_Rate__c)
+                            || (timeCard.Uses_Contractor_Billing_Rate__c == true
+                                && this.billingRatesUpdate.contains(TimeCardTriggerController.CONTRACTOR_RATE_NAME)))) {
+                String billingRateName = timeCard.Client__r.Project_Billing_Rate__c;
+                if (timeCard.Uses_Contractor_Billing_Rate__c == true) {
+                    billingRateName = TimeCardTriggerController.CONTRACTOR_RATE_NAME;
+                }
+                timeCard.Billing_Rate__c = this.timeCardHelper.getBillingRate(billingRateName, timeCard.Date__c);
                 timeCardsToUpdate.add(timeCard);
             }
 
-            currentServicesSpend += (timeCard.Total__c * (timeCard.Time_Card_Salary__c != null ? timeCard.Time_Card_Salary__c : 0.0) * (timeCard.Billing_Rate__c != null ? timeCard.Billing_Rate__c : 0.0)).setScale(8);
+            currentServicesSpend += (timeCard.Total__c * (timeCard.Time_Card_Salary__c != null ? timeCard.Time_Card_Salary__c : 0.0)
+                                        * (timeCard.Billing_Rate__c != null ? timeCard.Billing_Rate__c : 0.0)).setScale(8);
             putServicesSpendForClient(currentServicesSpend, timeCard.Client__c);
+
             if (timeCard.Client__r.Parent_Contract__c != null) {
                 putServicesSpendForClient(currentServicesSpend, timeCard.Client__r.Parent_Contract__c);
             }

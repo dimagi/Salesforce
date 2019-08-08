@@ -4,6 +4,7 @@
 public class ScriptBatchJob implements Database.Batchable<SObject>, Database.AllowsCallouts, Database.Stateful {
 
     private Date helperDate;
+    private Date dateThreshold = Date.newInstance(2017, 12, 1);
 
     public ScriptBatchJob() {
         this.helperDate = Date.today();
@@ -14,24 +15,32 @@ public class ScriptBatchJob implements Database.Batchable<SObject>, Database.All
     }
 
     public Database.QueryLocator start(Database.BatchableContext context) {
-        return Database.getQueryLocator('SELECT Id, Name, Last_PRO_Client_Facing_Deadlines__c, Last_PRO_Internal_Developer_Deadlines__c,'
-                                        + ' Last_PRO_Issues_Questions_Notables__c, Last_PRO_Key_accompl_last_two_weeks__c,'
-                                        + ' Last_PRO_Key_next_steps_next_two_weeks__c, Last_Project_Report_Out__r.Requires_Developer_Work__c,'
-                                        + ' Last_Project_Report_Out__r.Client_Facing__c, Last_Project_Report_Out__r.Issues_Questions_Notables__c,'
-                                        + ' Last_Project_Report_Out__r.Key_Accomplishments_Last_Two_Weeks__c, Last_Project_Report_Out__r.Key_Next_Steps_next_2_weeks__c'
-                                        + ' FROM DContract__c WHERE Last_Project_Report_Out__c != null');
+        return Database.getQueryLocator('SELECT Id, Client__c, Client__r.Project_Billing_Rate__c, Employee__c, '
+                                      + 'Time_Card_Salary__c, Billing_Rate__c, Date__c '
+                                      + 'FROM Time_Card__c WHERE Date__c >=: dateThreshold ORDER BY Employee__c, Date__c');
     }
 
     public void execute(Database.BatchableContext context, List<SObject> scope) {
-        List<DContract__c> toUpdate = new List<DContract__c>();
+        List<Time_Card__c> toUpdate = new List<Time_Card__c>();
+        List<Time_Card__c> timeCards = new List<Time_Card__c>();
+
         for (SObject objRec : scope) {
-            DContract__c dContract = (DContract__c) objRec;
-            dContract.Last_PRO_Client_Facing_Deadlines__c = dContract.Last_Project_Report_Out__r.Client_Facing__c;
-            dContract.Last_PRO_Internal_Developer_Deadlines__c = dContract.Last_Project_Report_Out__r.Requires_Developer_Work__c;
-            dContract.Last_PRO_Issues_Questions_Notables__c = dContract.Last_Project_Report_Out__r.Issues_Questions_Notables__c;
-            dContract.Last_PRO_Key_accompl_last_two_weeks__c = dContract.Last_Project_Report_Out__r.Key_Accomplishments_Last_Two_Weeks__c;
-            dContract.Last_PRO_Key_next_steps_next_two_weeks__c = dContract.Last_Project_Report_Out__r.Key_Next_Steps_next_2_weeks__c;
-            toUpdate.add(dContract);
+            timeCards.add((Time_Card__c) objRec);
+        }
+
+        TimeCardCalculatorHelper calculatorHelper = new TimeCardCalculatorHelper();
+        calculatorHelper.loadEmployeesSalary(timeCards);
+
+        for (Time_Card__c timeCard : timeCards) {
+
+            if (timeCard.Date__c >= this.dateThreshold && calculatorHelper.wasContractor(timeCard.Employee__c, timeCard) == true) {
+                timeCard.Billing_Rate__c = calculatorHelper.getBillingRate(TimeCardTriggerController.CONTRACTOR_RATE_NAME, timeCard.Date__c);
+                timeCard.Uses_Contractor_Billing_Rate__c = true;
+            } else {
+                timeCard.Uses_Contractor_Billing_Rate__c = false;
+            }
+            toUpdate.add(timeCard);
+
         }
 
         if (toUpdate.size() > 0) {
