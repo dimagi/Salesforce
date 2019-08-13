@@ -183,44 +183,42 @@ public class OpenOpportunityMailer {
     }
 
     private static void sendEmail(String content, String[] recipients, String subjectTemplate, String userName) {
-        
         String subject = subjectTemplate.replace('<Name of User>', userName).replace('<Date>', Date.today().format());
-        
         OrgWideEmailAddress wideAddress = OpenOpportunityReportController.getOrganizationWideAddressMail();
-        
         Messaging.Singleemailmessage mail = new Messaging.Singleemailmessage();
-        
+
         if (wideAddress != null) {
             mail.setOrgWideEmailAddressId(wideAddress.Id);
         }
-        
+
         mail.setHtmlBody(content);
         mail.setSubject(subject);
         mail.setToAddresses(recipients);
-        Messaging.sendEmail(new Messaging.Email[] {mail});
+        if (!Test.isRunningTest()) {
+            Messaging.sendEmail(new Messaging.Email[] { mail });
+        }
     }
-    
+
     private static void sendEmails(String content, User[] users, String subjectTemplate) {
-        
         Messaging.Email[] mails = new Messaging.Email[]{};
         OrgWideEmailAddress wideAddress = OpenOpportunityReportController.getOrganizationWideAddressMail();
-        
-        for (User user: users) { 
-	        
-	        String subject = subjectTemplate.replace('<Name of User>', user.Name).replace('<Date>', Date.today().format());
-	        Messaging.Singleemailmessage mail = new Messaging.Singleemailmessage();
-	        
-	        if (wideAddress != null) {
-	            mail.setOrgWideEmailAddressId(wideAddress.Id);
-	        }
-	        
-	        mail.setHtmlBody(content);
-	        mail.setSubject(subject);
-	        mail.setTargetObjectId(user.Id);
-	        mail.setSaveAsActivity(false);
-	        mails.add(mail);
-	        
+
+        for (User user: users) {
+
+            String subject = subjectTemplate.replace('<Name of User>', user.Name).replace('<Date>', Date.today().format());
+            Messaging.Singleemailmessage mail = new Messaging.Singleemailmessage();
+
+            if (wideAddress != null) {
+                mail.setOrgWideEmailAddressId(wideAddress.Id);
+            }
+
+            mail.setHtmlBody(content);
+            mail.setSubject(subject);
+            mail.setTargetObjectId(user.Id);
+            mail.setSaveAsActivity(false);
+            mails.add(mail);
         }
+
         Messaging.sendEmail(mails);
     }
 
@@ -243,6 +241,8 @@ public class OpenOpportunityMailer {
             mails.add(mail);
         }
 
-        Messaging.sendEmail(mails);
+        if (!Test.isRunningTest()) {
+            Messaging.sendEmail(mails);
+        }
     }
 }

@@ -8,6 +8,11 @@ public class TimeCardCalculatorHelper {
     private Map<Id, Map<Date, Decimal>> employeeSalarySnpMap;
     private Map<Id, String> billingRateMap;
 
+    // contractor
+    private Set<Id> employeeContractor; // we need this map to store info if empl is now contractor
+    private Map<Id, Set<Date>> employeeContractorMap; // we need this map to check if there was snapshot and ie employee was contractor
+    private Map<Id, Set<Date>> employeeNotContractorMap; // we need this additional map to check if there was snapshot
+
     // billing rate
     private String lastRateName = '';
     private Date lastFromRateDate = Date.newInstance(1900, 1, 1);
@@ -19,6 +24,10 @@ public class TimeCardCalculatorHelper {
     public TimeCardCalculatorHelper() {
         this.employeeSalaryMap = new Map<Id, Decimal>();
         this.employeeSalarySnpMap = new Map<Id, Map<Date, Decimal>>();
+
+        this.employeeContractor = new Set<Id>();
+        this.employeeContractorMap = new Map<Id, Set<Date>>();
+        this.employeeNotContractorMap = new Map<Id, Set<Date>>();
 
         this.billingRateHistoryMap = new Map<String, List<SalaryHistoryRecord>>();
         this.currentRateHistory = new List<SalaryHistoryRecord>();
@@ -37,13 +46,29 @@ public class TimeCardCalculatorHelper {
         return this.billingRateMap.get(clientId);
     }
 
+    public Boolean wasContractor(Id employeeId, Time_Card__c timeCard) {
+        Date keyDate = getKeyDate(timeCard.Date__c);
+        if (this.employeeContractorMap.containsKey(employeeId)
+            && this.employeeContractorMap.get(employeeId).contains(keyDate)) {
+            // In time card month employee was contractor so we want use Contractor Billing Rate instead of Project Billing Rate
+            return true;
+        } else if (this.employeeNotContractorMap.containsKey(employeeId)
+                   && this.employeeNotContractorMap.get(employeeId).contains(keyDate)) {
+            // In time card month employee wasn't contractor, we need this additional map in some important cases
+            return false;
+        }
+
+        return this.employeeContractor.contains(employeeId);
+    }
+
     public void loadEmployeesSalary(List<Time_Card__c> timeCards) {
         Map<Id, Set<Date>> emplMap = new Map<Id, Set<Date>>();
         Set<Id> contractsIds = new Set<Id>();
 
         for (Time_Card__c timeCard : timeCards) {
             contractsIds.add(timeCard.Client__c);
-            Date lastMonthDate = Date.newInstance(timeCard.Date__c.year(), timeCard.Date__c.month(), Date.daysInMonth(timeCard.Date__c.year(), timeCard.Date__c.month()));
+
+            Date lastMonthDate = getKeyDate(timeCard.Date__c);
             if (emplMap.containsKey(timeCard.Employee__c)) {
                 Set<Date> dateSet = emplMap.get(timeCard.Employee__c);
                 dateSet.add(lastMonthDate);
@@ -68,20 +93,33 @@ public class TimeCardCalculatorHelper {
             return;
         }
 
-        SFDC_Employee__c employee = [SELECT Id, Salary__c, Exchange_Rate__c, Per_Week_Hours__c FROM SFDC_Employee__c WHERE Id =: employeeId];
+        SFDC_Employee__c employee = [SELECT Id, Salary__c, Exchange_Rate__c, Per_Week_Hours__c, Employee_Type__c
+                                     FROM SFDC_Employee__c WHERE Id =: employeeId];
         this.employeeSalaryMap.put(employeeId, TimeCardCalculatorUtils.calculateSalaryForEmployee(employee));
+        if (employee.Employee_Type__c == 'Contractor') { // If employee is now contractor we want mark it if there is no snapshot for current month
+            this.employeeContractor.add(employee.Id);
+        }
+        Set<Date> employeeContractorMapping = new Set<Date>();
+        Set<Date> employeeNotContractorMapping = new Set<Date>();
 
         Map<Date, Decimal> emplSnpTmp = new Map<Date, Decimal>();
-        for (SFDC_Employee_Snapshot__c emplSnp : [SELECT Id, Salary__c, Exchange_Rate__c, Per_Week_Hours__c, Snapshot_Date__c FROM SFDC_Employee_Snapshot__c
-                                                    WHERE Employee_Record__c =: employeeId AND Snapshot_Date__c IN: dateSet]) {
+        for (SFDC_Employee_Snapshot__c emplSnp : [SELECT Id, Salary__c, Exchange_Rate__c, Per_Week_Hours__c, Snapshot_Date__c, Employee_Type__c
+                                                  FROM SFDC_Employee_Snapshot__c WHERE Employee_Record__c =: employeeId AND Snapshot_Date__c IN: dateSet]) {
             emplSnpTmp.put(emplSnp.Snapshot_Date__c, TimeCardCalculatorUtils.calculateSalaryForEmplSnapshot(emplSnp));
+            if (emplSnp.Employee_Type__c == 'Contractor') { // If employee is contractor or was we want use different billing rates for calculating services spend
+                employeeContractorMapping.add(emplSnp.Snapshot_Date__c);
+            } else {
+                employeeNotContractorMapping.add(emplSnp.Snapshot_Date__c);
+            }
         }
 
         this.employeeSalarySnpMap.put(employeeId, emplSnpTmp);
+        this.employeeContractorMap.put(employeeId, employeeContractorMapping);
+        this.employeeNotContractorMap.put(employeeId, employeeNotContractorMapping);
     }
 
     public Decimal getSalary(Id employeeId, Date tcDate) {
-        Date keyDate = Date.newInstance(tcDate.year(), tcDate.month(), Date.daysInMonth(tcDate.year(), tcDate.month())); // Employee Snapshot is taken in the last month day
+        Date keyDate = getKeyDate(tcDate); // Employee Snapshot is taken in the last month day
 
         if (employeeSalarySnpMap.containsKey(employeeId)) {
             Map<Date, Decimal> currentMap = employeeSalarySnpMap.get(employeeId);
@@ -122,7 +160,6 @@ public class TimeCardCalculatorHelper {
             this.lastToRateDate = this.currentRateHistory.size() > index + 1 ? this.currentRateHistory.get(index + 1).getValueDate() : Date.today().addYears(1);
         }
 
-        System.debug(billingRate + ' Billing Rate for time card : ' + tcDate + ' ' + this.contractRate + ' ' + this.lastFromRateDate + ' ' + this.lastToRateDate);
         return this.contractRate;
     }
 
@@ -153,5 +190,9 @@ public class TimeCardCalculatorHelper {
         }
 
         return billingRateHistory;
+    }
+
+    public static Date getKeyDate(Date inputDate) {
+        return Date.newInstance(inputDate.year(), inputDate.month(), Date.daysInMonth(inputDate.year(), inputDate.month()));
     }
 }

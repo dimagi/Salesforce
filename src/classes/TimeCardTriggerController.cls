@@ -3,40 +3,46 @@
  */
 public class TimeCardTriggerController {
 
-    public static void handleAfterInsert(List<Time_Card__c> newTimeCards) {
-        // We must avoid situation when we exceed transaction limits (100 SOQL),
-        // there is possibility that each time card will be from different month or for different employee
+    public static String CONTRACTOR_RATE_NAME = 'Contractor Billing Rate (0% Indirects)';
+
+    public static void handleBeforeInsert(List<Time_Card__c> newTimeCards) {
         TimeCardCalculatorHelper timeCardHelper = new TimeCardCalculatorHelper();
         Set<Id> contractsIds = new Set<Id>();
         timeCardHelper.loadEmployeesSalary(newTimeCards);
         Date dateThreshold = Date.newInstance(2017, 12, 1);
 
-        List<Time_Card__c> tcToUpdate = new List<Time_Card__c>();
         for (Time_Card__c timeCard : newTimeCards) {
             contractsIds.add(timeCard.Client__c);
-            Time_Card__c tc = new Time_Card__c(Id = timeCard.Id);
             if (timeCard.Date__c >= dateThreshold) {
                 Decimal emplSalary = timeCardHelper.getSalary(timeCard.Employee__c, timeCard.Date__c);
-                tc.Time_Card_Salary__c = emplSalary;
+                timeCard.Time_Card_Salary__c = emplSalary;
             }
-            Decimal billingRate = timeCardHelper.getBillingRate(timeCardHelper.getClientBillingRate(timeCard.Client__c), timeCard.Date__c);
-            tc.Billing_Rate__c = billingRate;
-            tcToUpdate.add(tc);
+
+            String billingRateName = timeCardHelper.getClientBillingRate(timeCard.Client__c);
+            // We don't have snapshot for older time cards. We don't want recalculate all services spend
+            if (timeCard.Date__c >= dateThreshold && timeCardHelper.wasContractor(timeCard.Employee__c, timeCard) == true) {
+                billingRateName = CONTRACTOR_RATE_NAME;
+                timeCard.Uses_Contractor_Billing_Rate__c = true;
+            }
+
+            Decimal tmpValue = timeCardHelper.getBillingRate(billingRateName, timeCard.Date__c);
+            timeCard.Billing_Rate__c = tmpValue;
         }
 
         TimeCardCalculatorUtils.markContractsToRefresh(contractsIds);
-        if (tcToUpdate.size() > 0) {
-            update tcToUpdate;
-        }
+    }
+
+    public static void handleAfterInsert(List<Time_Card__c> newTimeCards) {
     }
 
     public static void handleAfterUpdate(List<Time_Card__c> updatedTimeCards, Map<Id, Time_Card__c> beforeUpdateTimeCards) {
+        // Time card Total can't be updated in fogbugz, time card must be deleted and submited again in such case insert and delte trigger will work
         if (RecursiveTriggerHelper.hasRecursiveFlag()) {
             return;
         }
 
         List<FTE_Tag__c> tags = new List<FTE_Tag__c>();
-        List<Time_Card__c> timeCardsToUpdate = new List<Time_Card__c>();
+        List<Time_Card__c> timeCardsWithNewClient = new List<Time_Card__c>();
         Set<Id> contractsIds = new Set<Id>();
 
         for (Time_Card__c tc : updatedTimeCards) {
@@ -46,20 +52,14 @@ public class TimeCardTriggerController {
 
                     contractsIds.add(oldTC.Client__c);
                     contractsIds.add(tc.Client__c);
-                    Time_Card__c tcToUpdate = null;
 
                     if (tc.FTE_Contract__c != null) {
                         tags.add(new FTE_Tag__c(Action__c = 'Tag Deleted', Date__c = tc.Date__c, Hours__c = tc.FTE_hours__c,
                                             Employee__c = tc.Employee__c, TC_Contract__c = oldTC.Client__c,
                                             FTE_Contract__c = tc.FTE_Contract__c)); // we can't move time card tags here, it's possible that we will fatch time card with updated client
-
-                        tcToUpdate = new Time_Card__c(Id = tc.Id, FTE_Contract__c = null, FTE_hours__c = 0);
                     }
 
-                    if (tcToUpdate == null) {
-                        tcToUpdate = new Time_Card__c(Id = tc.Id);
-                    }
-                    timeCardsToUpdate.add(tcToUpdate);
+                    timeCardsWithNewClient.add(tc);
                 }
             }
         }
@@ -67,16 +67,27 @@ public class TimeCardTriggerController {
         if (tags.size() > 0) {
             insert tags;
         }
-        if (timeCardsToUpdate.size() > 0) {
+        if (timeCardsWithNewClient.size() > 0) {
+            Date dateThreshold = Date.newInstance(2017, 12, 1);
             Map<Id, String> billingRateMap = new Map<Id, String>();
             TimeCardCalculatorHelper timeCardHelper = new TimeCardCalculatorHelper();
+
             for (DContract__c client : [SELECT Id, Project_Billing_Rate__c FROM DContract__c WHERE Id IN: contractsIds]) {
                 billingRateMap.put(client.Id, client.Project_Billing_Rate__c);
             }
 
-            for (Time_Card__c tcToRecalc : timeCardsToUpdate) {
-                Decimal billingRate = timeCardHelper.getBillingRate(billingRateMap.get(tcToRecalc.Client__c), tcToRecalc.Date__c);
-                tcToRecalc.Billing_Rate__c = billingRate;
+            List<Time_Card__c> timeCardsToUpdate = new List<Time_Card__c>();
+            for (Time_Card__c tcToRecalc : timeCardsWithNewClient) {
+                String billingRateName = billingRateMap.get(tcToRecalc.Client__c);
+                if (tcToRecalc.Uses_Contractor_Billing_Rate__c == true && tcToRecalc.Date__c >= dateThreshold) {
+                    billingRateName = CONTRACTOR_RATE_NAME;
+                }
+                Decimal billingRate = timeCardHelper.getBillingRate(billingRateName, tcToRecalc.Date__c);
+
+                timeCardsToUpdate.add(new Time_Card__c(Id = tcToRecalc.Id, Billing_Rate__c = billingRate,
+                                                       FTE_hours__c = 0,
+                                                       FTE_Contract__c = null));
+                                                       // if client was updated then it means tags will be moved to other place
             }
 
             RecursiveTriggerHelper.setRecursiveFlag();

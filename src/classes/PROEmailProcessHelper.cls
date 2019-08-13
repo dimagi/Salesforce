@@ -30,7 +30,7 @@ public class PROEmailProcessHelper {
                                                 projectInchargeId));
             }
 
-            if (emailMessageList.size() > 0) {
+            if (emailMessageList.size() > 0 && !Test.isRunningTest()) {
                 Messaging.sendEmail(emailMessageList);
             }
         }
@@ -103,7 +103,7 @@ public class PROEmailProcessHelper {
                                                 projectInChargeId));
             }
 
-            if(ownerEmailMessageList.size()>0){
+            if(ownerEmailMessageList.size() > 0 && !Test.isRunningTest()){
                 Messaging.sendEmail(ownerEmailMessageList);
             }
 
