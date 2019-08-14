@@ -47,6 +47,7 @@ public class BillingRateController {
             ApexPages.addMessage(new ApexPages.message(ApexPages.severity.ERROR, 'Name cannot be empty.'));
             return;
         }
+        setUpDefaultValues(this.newBillingRate);
         insert this.newBillingRate;
         initManageRates();
     }
@@ -88,6 +89,7 @@ public class BillingRateController {
             ApexPages.addMessage(new ApexPages.message(ApexPages.severity.ERROR, 'Name cannot be empty.'));
             return;
         }
+        setUpDefaultValues(this.newBillingRate);
         insert this.newBillingRate;
         handleInsert();
         initManageRate();
@@ -137,6 +139,7 @@ public class BillingRateController {
             ApexPages.addMessage(new ApexPages.message(ApexPages.severity.ERROR, 'Effective Data cannot be empty.'));
             return null;
         }
+        setUpDefaultValues(this.newBillingRate);
         handleUpdate();
         update this.newBillingRate;
         return goToRateView();
@@ -237,5 +240,29 @@ public class BillingRateController {
             return rateFromDB.get(index - 1);
         }
         return null;
+    }
+
+    public void setUpDefaultValues(Project_Billing_Rate__c br) {
+        if (br.Overhead__c == null) {
+            br.Overhead__c = 0;
+        }
+        if (br.G_A__c == null) {
+            br.G_A__c = 0;
+        }
+        if (br.Fringe__c == null) {
+            br.Fringe__c = 0;
+        }
+        if (br.Fee__c == null) {
+            br.Fee__c = 0;
+        }
+        if (br.Custom_1__c == null) {
+            br.Custom_1__c = 0;
+        }
+        if (br.Custom_2__c == null) {
+            br.Custom_2__c = 0;
+        }
+        if (br.Custom_3__c == null) {
+            br.Custom_3__c = 0;
+        }
     }
 }
