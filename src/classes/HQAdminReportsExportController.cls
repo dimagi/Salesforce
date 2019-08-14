@@ -44,6 +44,9 @@ public class HQAdminReportsExportController {
         for (Domain__c domain : domains) {
             domain.hr_name__c = escapedCsv(domain.hr_name__c);
             domain.Deployment_Countries__c = escapedCsv(domain.Deployment_Countries__c);
+            if (domain.Internal_Properties__c == null) {
+                domain.Internal_Properties__r = new Internal_Properties__c();
+            }
             domain.Internal_Properties__r.organization_name__c = escapedCsv(domain.Internal_Properties__r.organization_name__c);
             domain.Internal_Properties__r.project_state__c = escapedCsv(domain.Internal_Properties__r.project_state__c);
             domain.Internal_Properties__r.area__c = escapedCsv(domain.Internal_Properties__r.area__c);
@@ -80,7 +83,7 @@ public class HQAdminReportsExportController {
         this.loadedFilters = facetCtrl.getCurrentFiltersForExport();
 
         this.qb = facetCtrl.getQueryBuilder();
-        this.qb.selectFrom('Domain__c').addColumns(exportColumns).setLimit(10000);
+        this.qb.selectFrom('Domain__c').addColumns(exportColumns).addColumn('Internal_Properties__c').setLimit(10000);
 
         if (String.isNotBlank(this.exportFacet.Order_Field__c)) {
             this.qb.orderBy(this.exportFacet.Order_Field__c, (this.exportFacet.Order_Direction__c == false ? QueryBuilder.QB_ASC : QueryBuilder.QB_DESC), this.exportFacet.Order_Direction__c);
