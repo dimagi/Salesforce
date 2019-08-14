@@ -374,6 +374,9 @@ public class HQSyncModels {
             obj.city__c = city;
             obj.company_name__c = company_name;
             obj.country__c = country;
+            if (String.isNotBlank(emails) && emails.length() > 255) {
+                emails = emails.substring(0, 255);
+            }
             obj.emails__c = emails;
             obj.first_line__c = first_line;
             obj.first_name__c = first_name;
