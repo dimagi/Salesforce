@@ -1,4 +1,7 @@
 <apex:page controller="BillingRateController" docType="html-5.0" action="{!initManageRate}">
+
+    <apex:includeScript value="{!URLFOR($Resource.ProjectReportOut2, 'js/jquery.min.js')}"/>
+
     <style type="text/css">
         .brTable {
             margin-top: 10px;
@@ -26,7 +29,21 @@
     </style>
 
     <script type="text/javascript">
+        $j = jQuery.noConflict();
+
         function setFocusOnLoad() {}
+
+        function setYear(fromValue, toValue) {
+            var i, startYear, endYear, htmlStr, cYear = new Date().getFullYear();
+            startYear = (cYear - fromValue);
+            endYear = (cYear + toValue);
+            htmlStr = '';
+
+            for(i = startYear; i<= endYear; i++) {
+                htmlStr += "<option value=\""+i+"\">"+i+"</option>";
+            }
+            $j('#calYearPicker').html(htmlStr);
+        }
     </script>
 
     <apex:pageBlock title="Billing Rates Manager : {!billingRateName}" id="brManagerHistory">
@@ -50,7 +67,7 @@
 
             <apex:outputPanel styleClass="bText" id="rateForm">
                 <apex:pageBlockSection title="New Rate Numnbers" columns="2" collapsible="false">
-                    <apex:inputField value="{!newBillingRate.Date__c}"/>
+                    <apex:inputField onclick="setYear(10, 4)" value="{!newBillingRate.Date__c}"/>
                     <apex:inputField value="{!newBillingRate.Overhead__c}"/>
                     <apex:inputField value="{!newBillingRate.Fringe__c}" />
                     <apex:inputField value="{!newBillingRate.Fee__c}"/>
