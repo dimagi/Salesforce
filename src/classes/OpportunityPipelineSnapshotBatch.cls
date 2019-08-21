@@ -27,7 +27,8 @@ public class OpportunityPipelineSnapshotBatch implements Database.Batchable<Oppo
                     Funder_Account__c, Expense_Income__c, Opportunity_Owning_Entity__c, Probability, Product_Text__c,
                     Channel_Response__c, StageName, CloseDate, OwnerId
                     FROM Opportunity
-                    WHERE StageName = 'Stage 4 - Proposal Development'
+                    WHERE StageName = 'Stage 3 - Prospect'
+                    OR StageName = 'Stage 4 - Proposal Development'
                     OR StageName = 'Stage 5 - Submitted'
                     OR StageName = 'Stage 6 - In Negotiations'
                     OR StageName = 'Cash on Hand'
