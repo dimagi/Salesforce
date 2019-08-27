@@ -9,7 +9,7 @@ public class SFAuthUtils {
     }
 
     public static String getSignInUrl(PRO_OAuth_Settings__c settings, String callback, String state) {
-        String body = 'client_id=' + settings.ClientID__c + '&redirect_uri=' + callback + '&state=' + state;
+        String body = 'client_id=' + settings.ClientID__c + '&prompt=consent&redirect_uri=' + callback + '&state=' + state + '&access_type=offline';
         String retUrl = SFAuthUtils.AUTH_URL + '?' + body + '&response_type=code&scope=profile+email';
         if (settings.Domain_Name__c != 'gmail.com') {
             retUrl = retUrl + '&hd=' + settings.Domain_Name__c;
@@ -20,15 +20,19 @@ public class SFAuthUtils {
     public static String getAuthorizedReqToken(PRO_OAuth_Settings__c settings, String callback, String code) {
         String body = 'client_id=' + settings.ClientID__c + '&redirect_uri=' + EncodingUtil.urlEncode(callback, 'UTF-8') + '&client_secret=' +
                             settings.ClientSecret__c + '&code=' + code + '&grant_type=authorization_code';
-        String tokenResponse = basicAuthCallout(SFAuthUtils.ACCESS_TOKEN_URL, '', body, 'POST');
-        return tokenResponse;
+        return basicAuthCallout(SFAuthUtils.ACCESS_TOKEN_URL, '', body, 'POST');
+    }
+
+    public static String refreshToken(PRO_OAuth_Settings__c settings, String refreshToken) {
+        String body = 'client_id=' + settings.ClientID__c + '&client_secret=' + settings.ClientSecret__c
+                + '&refresh_token=' + refreshToken + '&grant_type=refresh_token';
+        return basicAuthCallout(SFAuthUtils.ACCESS_TOKEN_URL, '', body, 'POST');
     }
 
     public static String callForUserInfo(String token) {
         String userInfoURL = SFAuthUtils.USER_INFO_URL + '?access_token=' + token;
         String responseJSON = basicAuthCallout(userInfoURL, '', '', 'GET');
-        String response = getFromJSON(responseJSON, 'email');
-        return response;
+        return getFromJSON(responseJSON, 'email');
     }
 
     public static String basicAuthCallout(String endPoint, String header, String body, String method) {
@@ -42,7 +46,6 @@ public class SFAuthUtils {
         Http http = new Http();
 
         HTTPResponse res = http.send(req);
-        System.debug('Auth debug log  - ' + res.getBody() + ' code - ' + res.getStatusCode());
         if (res.getStatusCode() != 200) {
             throw new CalloutException('Incorrect data');
         }

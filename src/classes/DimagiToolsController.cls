@@ -43,7 +43,9 @@ public without sharing class DimagiToolsController {
                 googleResponse = new Cookie('googleResponse', null, null, 0, true);
                 projectState = new Cookie('projectState', null, null, 0, true);
                 ApexPages.currentPage().setCookies(new Cookie[] { googleResponse, projectState });
-                this.token = SFAuthUtils.getFromJSON(SFAuthUtils.getAuthorizedReqToken(getSettings(), this.callback, code), 'access_token');
+                String responseToken = SFAuthUtils.getAuthorizedReqToken(getSettings(), this.callback, code);
+                this.token = SFAuthUtils.getFromJSON(responseToken, 'access_token');
+                this.refreshToken = SFAuthUtils.getFromJSON(responseToken, 'refresh_token');
                 this.currentLoginEmail = SFAuthUtils.callForUserInfo(this.token);
                 isTokenValid();
             }
@@ -75,6 +77,7 @@ public without sharing class DimagiToolsController {
 
     private String callback;
     private String token;
+    private String refreshToken;
     private Boolean tokenIsValid; // we must use it because checking token with google in some cases cause Pending job exception.
 
     public String currentLoginEmail { get; set; }
@@ -103,8 +106,24 @@ public without sharing class DimagiToolsController {
         }
 
         String domainName = getSettings().Domain_Name__c;
-        String userEmail = SFAuthUtils.callForUserInfo(this.token);
-        if (userEmail == this.currentLoginEmail && (domainName == 'gmail.com' || domainName == this.currentLoginEmail.split('@')[1])) {
+        try {
+            String userEmail = SFAuthUtils.callForUserInfo(this.token); // call user info with token
+            checkEmailResponse(userEmail, domainName); // check token response and user email
+        } catch (CalloutException cexp) { // if expection try use refresh token to fetch new one
+            this.token = SFAuthUtils.getFromJSON(SFAuthUtils.refreshToken(getSettings(), this.refreshToken), 'access_token');
+            String userEmail = SFAuthUtils.callForUserInfo(this.token);
+            checkEmailResponse(userEmail, domainName); // check token response and user email
+        }
+
+        if (this.tokenIsValid == false) {
+            throw new CalloutException('Incorrect token');
+        }
+        return this.tokenIsValid;
+    }
+
+    private Boolean checkEmailResponse(String userEmail, String domainName) {
+        if (String.isNotEmpty(this.currentLoginEmail) && userEmail == this.currentLoginEmail
+               && (domainName == 'gmail.com' || domainName == this.currentLoginEmail.split('@')[1])) {
              this.tokenIsValid = true;
         } else {
             this.token = null;
