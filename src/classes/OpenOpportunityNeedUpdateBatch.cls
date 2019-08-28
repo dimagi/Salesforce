@@ -6,20 +6,13 @@
  */
 global class OpenOpportunityNeedUpdateBatch implements Database.Batchable<sObject> {
 
-    public OpenOpportunityNeedUpdateBatch(){}
+    public OpenOpportunityNeedUpdateBatch() {}
 
     global Iterable<sObject> start(Database.BatchableContext bc) {
-
         Opportunity [] opportunities = new Opportunity [] {};
+        opportunities = [SELECT Id, OwnerId FROM Opportunity WHERE Isclosed = false];
 
-        opportunities = [SELECT 
-                                Id,
-                                OwnerId
-                            FROM Opportunity
-                            WHERE Isclosed = false];
-                            
         Set<Id> usersId = new Set<Id>();
-        
         for(Opportunity opp :opportunities) {
             usersId.add(opp.OwnerId);
         }
@@ -36,6 +29,6 @@ global class OpenOpportunityNeedUpdateBatch implements Database.Batchable<sObjec
         OpenOpportunityMailer.sendRedOpenOpportunitiesBatchReport(user, new String[]{user.Email}, stagedOpportunities);
     }
 
-    global void finish(Database.BatchableContext bc){}
+    global void finish(Database.BatchableContext bc) {}
 
 }
