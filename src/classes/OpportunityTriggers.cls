@@ -80,7 +80,8 @@ public with sharing class OpportunityTriggers {
         if ((oppNew.Name != oppOld.Name) ||
             (oppNew.StageName != oppOld.StageName) ||
             (oppOld.Fogbugz_Probability__c != oppNew.Fogbugz_Probability__c) ||
-            (oppOld.Product_Text__c != oppNew.Product_Text__c)) {
+            (oppOld.Product_Text__c != oppNew.Product_Text__c) ||
+            (oppOld.Amount != oppNew.Amount)) {
 
             if (!System.isBatch()) {
                 FogBugzCase fbCase = FogBugzUtils.createFBCaseFromOpportunity(oppNew);
