@@ -32,7 +32,8 @@ public class OpenOpportunityReportController {
         Opportunity[] result = new Opportunity[] {};
 
         String queryValues = this.getOpenOpportunitiesQueryValues();
-        String sql = 'SELECT ' + queryValues + ' FROM Opportunity WHERE IsClosed = false AND StageName IN :stages AND Channel_Response__c IN: channel';
+        String sql = 'SELECT ' + queryValues + ' FROM Opportunity WHERE IsClosed = false AND StageName IN :stages AND Channel_Response__c IN: channel'
+                        + ' ORDER BY Total_Days_Not_Updated__c DESC';
 
         result = Database.query(sql);
         return result; 
@@ -114,7 +115,8 @@ public class OpenOpportunityReportController {
         /* Added in filter for Opportunity_Owning_Entity__c so can filter on business unit in the report
         /* Nick Nestle May 9, 2013
         *******/
-        String sql = 'SELECT ' + queryValues + ' FROM Opportunity WHERE IsClosed = false AND (OwnerId IN :usersId OR Opportunity_Owning_Entity__c IN :usersId) AND StageName IN :stages AND Channel_Response__c IN: channel';
+        String sql = 'SELECT ' + queryValues + ' FROM Opportunity WHERE IsClosed = false AND (OwnerId IN :usersId OR Opportunity_Owning_Entity__c IN :usersId) AND StageName IN :stages AND Channel_Response__c IN: channel'
+                        + ' ORDER BY Total_Days_Not_Updated__c DESC';
 
         result = Database.query(sql);
         return result;
@@ -191,49 +193,35 @@ public class OpenOpportunityReportController {
     }
 
     public void updateStageDate(Id[] usersId) {
-    	
         Opportunity[] result = new Opportunity[] {};
-             
-        result = [SELECT 
-                       StageName,
-                       CreatedDate, 
-                       Stage_Name_Updated_Date__c,
-                                              
-                       (SELECT StageName, CreatedDate FROM OpportunityHistories)                       
-                       
-                   FROM Opportunity 
-                   WHERE IsClosed = false
-                   AND Stage_Name_Updated_Date__c = null
-                   AND OwnerId IN :usersId];    	
-    	
+
+        result = [SELECT StageName, CreatedDate, Stage_Name_Updated_Date__c, (SELECT StageName, CreatedDate FROM OpportunityHistories)
+                  FROM Opportunity WHERE IsClosed = false AND Stage_Name_Updated_Date__c = null AND OwnerId IN :usersId
+                  ORDER BY Total_Days_Not_Updated__c DESC];
+
         Opportunity[] opportunities = new Opportunity[] {};
-        
         for (Opportunity opp :result) {
-            
             if (opp.Stage_Name_Updated_Date__c == null) {
-                
+
                 opp.Stage_Name_Updated_Date__c = Date.valueOf(opp.CreatedDate);
-                for (OpportunityHistory oh :opp.OpportunityHistories) {                   
-                    
+                for (OpportunityHistory oh :opp.OpportunityHistories) {
                     String ohStageName = oh.StageName;
                     Date createdDate = Date.valueOf(oh.CreatedDate);
-                                        
+
                     if (ohStageName != opp.StageName) {
-                        
                         opp.Stage_Name_Updated_Date__c = createdDate;
                         break;
-                    }                   
-                }               
+                    }
+                }
                 opportunities.add(opp);
-            }        
-        }    
-        
-        if (!opportunities.isEmpty()) {         
+            }
+        }
+
+        if (!opportunities.isEmpty()) {
             update opportunities;
-        }      	
-    	
-    }    
-    
+        }
+    }
+
     public static Open_Opportunity_Fields__c[] getOpportunityFields() {
  
         if (selectedColumnFields == null) {
