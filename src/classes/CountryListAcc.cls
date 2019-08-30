@@ -59,10 +59,10 @@ public class CountryListAcc {
         //Create collection of wrapper class
         if(this.lstAcc.size() > 0){
             for(Account ac : this.lstAcc){
-                this.wrapperList.add(new AccountWrapper(ac,false));
+                this.wrapperList.add(new AccountWrapper(ac, false));
                 this.setId.add(ac.Id);
                 this.accIdList.add(ac.Id);
-                this.accountMap.put(ac.Id,ac.Name);
+                this.accountMap.put(ac.Id, ac.Name);
             }
         }
 
@@ -71,6 +71,7 @@ public class CountryListAcc {
                 this.wrapperList.add(new AccountWrapper(acc, true));
                 this.lstAcc.add(acc);
                 this.setId.add(acc.Id);
+                this.accountMap.put(acc.Id, acc.Name);
             }
         }
         this.showPage = true;
