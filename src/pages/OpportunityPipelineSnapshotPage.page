@@ -53,7 +53,7 @@
                     <apex:column headerValue="Month" value="{!snp.Month_Date__c}" />
                     <apex:column headerValue="Stage" value="{!snp.Stage__c}" />
                     <apex:column headerValue="Amount" value="{!snp.Amount__c}" />
-                    <apex:column headerValue="Month Cash (EV" value="{!snp.Three_Month_EV__c}" />
+                    <apex:column headerValue="Month Cash (EV)" value="{!snp.Three_Month_EV__c}" />
                     <apex:column headerValue="12Month Cash (EV)" value="{!snp.Twelve_Month_Cash_EV__c}" />
                     <apex:column headerValue="18 Month Cash (EV)" value="{!snp.X18_Month_Cash_EV__c}" />
                     <apex:column headerValue="24 Month Cash (EV)" value="{!snp.X24_Month_Cash_EV__c}" />
