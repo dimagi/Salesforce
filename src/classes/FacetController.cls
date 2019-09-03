@@ -56,7 +56,8 @@ public class FacetController {
     }
 
     public void setCurrentFilteringJSON(String jsonData) {
-        this.currentFilters = (Map<String, List<String>>) JSON.deserialize(jsonData, Map<String, List<String>>.class);
+        String unescapedFilters = jsonData != null ? jsonData.unescapeHtml4() : jsonData;
+        this.currentFilters = (Map<String, List<String>>) JSON.deserialize(unescapedFilters, Map<String, List<String>>.class);
     }
 
     public String getCurrentFilteringJSON() {
