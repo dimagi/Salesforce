@@ -11,6 +11,19 @@
     <apex:stylesheet value="{!URLFOR($Resource.hqAdminReports, 'hqAdminReports.css')}"/>
     <apex:includeScript value="{!URLFOR($Resource.hqAdminReports, 'hqAdminReports.js')}"/>
 
+    <style type="text/css">
+        .tableColumn {
+            overflow-wrap: break-word;
+            min-width: 150px;
+            max-width: 150px;
+        }
+        .tableNotesColumn {
+            overflow-wrap: break-word;
+            min-width: 450px;
+            max-width: 450px;
+        }
+    </style>
+
     <script type="text/javascript">
         $j = jQuery.noConflict();
 
@@ -130,7 +143,8 @@
             nv.addGraph(function() {
                 var currentLabel, chart, reduceTicks, divElement = $j("[id$=domains-graph-" + graphMetadata.graphId);
                 reduceTicks = domainsData.graphData[0].values.length > 15;
-                chart =  nv.models.multiBarChart().height(350).reduceXTicks(reduceTicks);
+                chart =  nv.models.multiBarChart().height(440).reduceXTicks(reduceTicks);
+                chart.margin({top: 30, right: 60, bottom: 90, left: 60})
                 chart.xAxis.axisLabel(graphMetadata.xLabel);
                 chart.xAxis.tickFormat(function(d) {
                         var result, dDate = new Date(d)
@@ -162,6 +176,7 @@
                 var chart, divElement = $j("[id$=domains-graph-cumulative-" + graphMetadata.graphId), cumulativeDomainData;
                 cumulativeDomainData = graphMetadata.cumulative === true ? generateCumulativeData(domainsData) : domainsData.graphData;
                 chart = nv.models.lineChart();
+                chart.margin({top: 30, right: 60, bottom: 60, left: 60})
                 chart.xAxis.axisLabel(graphMetadata.xLabel);
                 chart.xAxis.tickFormat(function(d) {
                         var result, dDate = new Date(d);
@@ -241,7 +256,7 @@
             <div id="menu-container">
                 <div class="msidebar">
                     <div class="msidebarHeader">
-                        <h2>Reports : </h2>
+                        <h2>Reports: </h2>
                     </div>
                     <div class="msidebarContent">
                         <apex:repeat value="{!supportedReportsList}" var="reportKey">
@@ -289,7 +304,7 @@
                             <apex:inputHidden id="tableSortField" value="{!sortField}" />
                             <apex:inputHidden id="tableSortDirection" value="{!sortDir}" />
                             <apex:pageBlockTable id="projectSpaceDataTable" value="{!DomainTableData}" var="projectSpaceData" footerClass="footerHeader" >
-                                <apex:column >
+                                <apex:column styleClass="tableColumn">
                                     <apex:facet name="header">
                                         <apex:outputPanel >
                                             <apex:commandLink action="{!sortColumn}" reRender="projectSpaceDataTable,tableSortField,tableSortDirection" status="loadingDiv">
@@ -303,7 +318,7 @@
                                     <apex:facet name="footer">Total</apex:facet>
                                     {!projectSpaceData.Name}
                                 </apex:column>
-                                <apex:column >
+                                <apex:column styleClass="tableColumn" >
                                     <apex:facet name="header">
                                         <apex:outputPanel >
                                             <apex:commandLink action="{!sortColumn}" reRender="projectSpaceDataTable,tableSortField,tableSortDirection" status="loadingDiv">
@@ -317,7 +332,7 @@
                                     <apex:facet name="footer">---</apex:facet>
                                     {!projectSpaceData.hr_name__c}
                                 </apex:column>
-                                <apex:column >
+                                <apex:column styleClass="tableColumn" >
                                     <apex:facet name="header">
                                         <apex:outputPanel >
                                             <apex:commandLink action="{!sortColumn}" reRender="projectSpaceDataTable,tableSortField,tableSortDirection" status="loadingDiv">
@@ -331,7 +346,7 @@
                                     <apex:facet name="footer">---</apex:facet>
                                     {!projectSpaceData.Server_Name__c}
                                 </apex:column>
-                                <apex:column >
+                                <apex:column styleClass="tableColumn" >
                                     <apex:facet name="header">
                                         <apex:outputPanel >
                                             <apex:commandLink action="{!sortColumn}" reRender="projectSpaceDataTable,tableSortField,tableSortDirection" status="loadingDiv">
@@ -345,7 +360,7 @@
                                     <apex:facet name="footer">---</apex:facet>
                                     {!projectSpaceData.date_created__c}
                                 </apex:column>
-                                <apex:column >
+                                <apex:column styleClass="tableColumn" >
                                     <apex:facet name="header">
                                         <apex:outputPanel >
                                             <apex:commandLink action="{!sortColumn}" reRender="projectSpaceDataTable,tableSortField,tableSortDirection" status="loadingDiv">
@@ -359,11 +374,11 @@
                                     <apex:facet name="footer">---</apex:facet>
                                     {!projectSpaceData.InternalProp_organization_name__c}
                                 </apex:column>
-                                <apex:column headerValue="Deployment Country">
+                                <apex:column styleClass="tableColumn" headerValue="Deployment Country">
                                     <apex:facet name="footer">---</apex:facet>
                                     {!projectSpaceData.Deployment_Countries__c}
                                 </apex:column>
-                                <apex:column >
+                                <apex:column styleClass="tableColumn" >
                                     <apex:facet name="header">
                                         <apex:outputPanel >
                                             <apex:commandLink action="{!sortColumn}" reRender="projectSpaceDataTable,tableSortField,tableSortDirection" status="loadingDiv">
@@ -377,7 +392,7 @@
                                     <apex:facet name="footer">{!totalRow.cpActiveMobileUsers__c}</apex:facet>
                                     {!projectSpaceData.cpActiveMobileUsers__c}
                                 </apex:column>
-                                <apex:column >
+                                <apex:column styleClass="tableColumn" >
                                     <apex:facet name="header">
                                         <apex:outputPanel >
                                             <apex:commandLink action="{!sortColumn}" reRender="projectSpaceDataTable,tableSortField,tableSortDirection" status="loadingDiv">
@@ -391,7 +406,7 @@
                                     <apex:facet name="footer">{!totalRow.cpAllMobileUsers__c}</apex:facet>
                                     {!projectSpaceData.cpAllMobileUsers__c}
                                 </apex:column>
-                                <apex:column >
+                                <apex:column styleClass="tableColumn" >
                                     <apex:facet name="header">
                                         <apex:outputPanel >
                                             <apex:commandLink action="{!sortColumn}" reRender="projectSpaceDataTable,tableSortField,tableSortDirection" status="loadingDiv">
@@ -405,7 +420,7 @@
                                     <apex:facet name="footer">{!totalRow.Cp_n_users_submitted_form__c}</apex:facet>
                                     {!projectSpaceData.Cp_n_users_submitted_form__c}
                                 </apex:column>
-                                <apex:column >
+                                <apex:column styleClass="tableColumn" >
                                     <apex:facet name="header">
                                         <apex:outputPanel >
                                             <apex:commandLink action="{!sortColumn}" reRender="projectSpaceDataTable,tableSortField,tableSortDirection" status="loadingDiv">
@@ -419,7 +434,7 @@
                                     <apex:facet name="footer">{!totalRow.cpCasesIn60Days__c}</apex:facet>
                                     {!projectSpaceData.cpCasesIn60Days__c}
                                 </apex:column>
-                                <apex:column >
+                                <apex:column styleClass="tableColumn" >
                                     <apex:facet name="header">
                                         <apex:outputPanel >
                                             <apex:commandLink action="{!sortColumn}" reRender="projectSpaceDataTable,tableSortField,tableSortDirection" status="loadingDiv">
@@ -433,7 +448,7 @@
                                     <apex:facet name="footer">{!totalRow.cpAllActiveCases__c}</apex:facet>
                                     {!projectSpaceData.cpAllActiveCases__c}
                                 </apex:column>
-                                <apex:column >
+                                <apex:column styleClass="tableColumn" >
                                     <apex:facet name="header">
                                         <apex:outputPanel >
                                             <apex:commandLink action="{!sortColumn}" reRender="projectSpaceDataTable,tableSortField,tableSortDirection" status="loadingDiv">
@@ -447,7 +462,7 @@
                                     <apex:facet name="footer">{!totalRow.cpAllInactiveCases__c}</apex:facet>
                                     {!projectSpaceData.cpAllInactiveCases__c}
                                 </apex:column>
-                                <apex:column >
+                                <apex:column styleClass="tableColumn" >
                                     <apex:facet name="header">
                                         <apex:outputPanel >
                                             <apex:commandLink action="{!sortColumn}" reRender="projectSpaceDataTable,tableSortField,tableSortDirection" status="loadingDiv">
@@ -461,7 +476,7 @@
                                     <apex:facet name="footer">{!totalRow.cpAllCases__c}</apex:facet>
                                     {!projectSpaceData.cpAllCases__c}
                                 </apex:column>
-                                <apex:column >
+                                <apex:column styleClass="tableColumn" >
                                     <apex:facet name="header">
                                         <apex:outputPanel >
                                             <apex:commandLink action="{!sortColumn}" reRender="projectSpaceDataTable,tableSortField,tableSortDirection" status="loadingDiv">
@@ -475,7 +490,7 @@
                                     <apex:facet name="footer">{!totalRow.cpAllForms__c}</apex:facet>
                                     {!projectSpaceData.cpAllForms__c}
                                 </apex:column>
-                                <apex:column >
+                                <apex:column styleClass="tableColumn" >
                                     <apex:facet name="header">
                                         <apex:outputPanel >
                                             <apex:commandLink action="{!sortColumn}" reRender="projectSpaceDataTable,tableSortField,tableSortDirection" status="loadingDiv">
@@ -489,7 +504,7 @@
                                     <apex:facet name="footer">{!totalRow.cpFormsIn30Days__c}</apex:facet>
                                     {!projectSpaceData.cpFormsIn30Days__c}
                                 </apex:column>
-                                <apex:column >
+                                <apex:column styleClass="tableColumn" >
                                     <apex:facet name="header">
                                         <apex:outputPanel >
                                             <apex:commandLink action="{!sortColumn}" reRender="projectSpaceDataTable,tableSortField,tableSortDirection" status="loadingDiv">
@@ -503,7 +518,7 @@
                                     <apex:facet name="footer">---</apex:facet>
                                     {!projectSpaceData.cpFirstFormSubmissionDate__c}
                                 </apex:column>
-                                <apex:column >
+                                <apex:column styleClass="tableColumn" >
                                     <apex:facet name="header">
                                         <apex:outputPanel >
                                             <apex:commandLink action="{!sortColumn}" reRender="projectSpaceDataTable,tableSortField,tableSortDirection" status="loadingDiv">
@@ -517,7 +532,7 @@
                                     <apex:facet name="footer">---</apex:facet>
                                     {!projectSpaceData.cp300thFormSubmission__c}
                                 </apex:column>
-                                <apex:column >
+                                <apex:column styleClass="tableColumn" >
                                     <apex:facet name="header">
                                         <apex:outputPanel >
                                             <apex:commandLink action="{!sortColumn}" reRender="projectSpaceDataTable,tableSortField,tableSortDirection" status="loadingDiv">
@@ -531,7 +546,7 @@
                                     <apex:facet name="footer">---</apex:facet>
                                     {!projectSpaceData.cpLastFormSubmissionDate__c}
                                 </apex:column>
-                                <apex:column >
+                                <apex:column styleClass="tableColumn" >
                                     <apex:facet name="header">
                                         <apex:outputPanel >
                                             <apex:commandLink action="{!sortColumn}" reRender="projectSpaceDataTable,tableSortField,tableSortDirection" status="loadingDiv">
@@ -545,11 +560,11 @@
                                     <apex:facet name="footer">{!totalRow.cpAllWebUsers__c}</apex:facet>
                                     {!projectSpaceData.cpAllWebUsers__c}
                                 </apex:column>
-                                <apex:column headerValue="Notes" style="white-space: nowrap;">
+                                <apex:column styleClass="tableNotesColumn" headerValue="Notes" >
                                 <apex:facet name="footer">---</apex:facet>
                                     {!projectSpaceData.Internal_Properties__r.notes__c}
                                 </apex:column>
-                                <apex:column >
+                                <apex:column styleClass="tableColumn" >
                                     <apex:facet name="header">
                                         <apex:outputPanel >
                                             <apex:commandLink action="{!sortColumn}" reRender="projectSpaceDataTable,tableSortField,tableSortDirection" status="loadingDiv">
@@ -563,7 +578,7 @@
                                     <apex:facet name="footer">---</apex:facet>
                                     {!projectSpaceData.InternalProp_project_state__c}
                                 </apex:column>
-                                <apex:column headerValue="Using ADM?">
+                                <apex:column styleClass="tableColumn" headerValue="Using ADM?">
                                     <apex:facet name="header">
                                         <apex:outputPanel >
                                             <apex:commandLink action="{!sortColumn}" reRender="projectSpaceDataTable,tableSortField,tableSortDirection" status="loadingDiv">
@@ -577,7 +592,7 @@
                                     <apex:facet name="footer">---</apex:facet>
                                     {!projectSpaceData.InternalProp_using_adm__c}
                                 </apex:column>
-                                <apex:column >
+                                <apex:column styleClass="tableColumn" >
                                     <apex:facet name="header">
                                         <apex:outputPanel >
                                             <apex:commandLink action="{!sortColumn}" reRender="projectSpaceDataTable,tableSortField,tableSortDirection" status="loadingDiv">
@@ -591,7 +606,7 @@
                                     <apex:facet name="footer">---</apex:facet>
                                     {!projectSpaceData.InternalProp_using_call_center__c}
                                 </apex:column>
-                                <apex:column >
+                                <apex:column styleClass="tableColumn" >
                                     <apex:facet name="header">
                                         <apex:outputPanel >
                                             <apex:commandLink action="{!sortColumn}" reRender="projectSpaceDataTable,tableSortField,tableSortDirection" status="loadingDiv">
@@ -605,7 +620,7 @@
                                     <apex:facet name="footer">---</apex:facet>
                                     {!projectSpaceData.Cp_last_update__c}
                                 </apex:column>
-                                <apex:column >
+                                <apex:column styleClass="tableColumn" >
                                     <apex:facet name="header">
                                         <apex:outputPanel >
                                             <apex:commandLink action="{!sortColumn}" reRender="projectSpaceDataTable,tableSortField,tableSortDirection" status="loadingDiv">
@@ -619,7 +634,7 @@
                                     <apex:facet name="footer">---</apex:facet>
                                     {!projectSpaceData.InternalProp_area__c}
                                 </apex:column>
-                                <apex:column >
+                                <apex:column styleClass="tableColumn" >
                                     <apex:facet name="header">
                                         <apex:outputPanel >
                                             <apex:commandLink action="{!sortColumn}" reRender="projectSpaceDataTable,tableSortField,tableSortDirection" status="loadingDiv">
@@ -633,7 +648,7 @@
                                     <apex:facet name="footer">---</apex:facet>
                                     {!projectSpaceData.InternalProp_sub_area__c}
                                 </apex:column>
-                                <apex:column >
+                                <apex:column styleClass="tableColumn" >
                                     <apex:facet name="header">
                                         <apex:outputPanel >
                                             <apex:commandLink action="{!sortColumn}" reRender="projectSpaceDataTable,tableSortField,tableSortDirection" status="loadingDiv">
@@ -647,7 +662,7 @@
                                     <apex:facet name="footer">---</apex:facet>
                                     {!projectSpaceData.InternalProp_Business_Unit__c}
                                 </apex:column>
-                                <apex:column >
+                                <apex:column styleClass="tableColumn" >
                                     <apex:facet name="header">
                                         <apex:outputPanel >
                                             <apex:commandLink action="{!sortColumn}" reRender="projectSpaceDataTable,tableSortField,tableSortDirection" status="loadingDiv">
@@ -661,7 +676,7 @@
                                     <apex:facet name="footer">---</apex:facet>
                                     {!projectSpaceData.InternalProp_self_started__c}
                                 </apex:column>
-                                <apex:column >
+                                <apex:column styleClass="tableColumn" >
                                     <apex:facet name="header">
                                         <apex:outputPanel >
                                             <apex:commandLink action="{!sortColumn}" reRender="projectSpaceDataTable,tableSortField,tableSortDirection" status="loadingDiv">
@@ -675,7 +690,7 @@
                                     <apex:facet name="footer">---</apex:facet>
                                     {!projectSpaceData.is_test__c}
                                 </apex:column>
-                                <apex:column >
+                                <apex:column styleClass="tableColumn" >
                                     <apex:facet name="header">
                                         <apex:outputPanel >
                                             <apex:commandLink action="{!sortColumn}" reRender="projectSpaceDataTable,tableSortField,tableSortDirection" status="loadingDiv">
@@ -689,7 +704,7 @@
                                     <apex:facet name="footer">---</apex:facet>
                                     {!projectSpaceData.cpIsActive__c}
                                 </apex:column>
-                                <apex:column headerValue="CommCare Supply?">
+                                <apex:column styleClass="tableColumn" headerValue="CommCare Supply?">
                                     <apex:facet name="header">
                                         <apex:outputPanel >
                                             <apex:commandLink action="{!sortColumn}" reRender="projectSpaceDataTable,tableSortField,tableSortDirection" status="loadingDiv">
@@ -703,7 +718,7 @@
                                     <apex:facet name="footer">---</apex:facet>
                                     {!projectSpaceData.InternalProp_commtrack_domain__c}
                                 </apex:column>
-                                <apex:column >
+                                <apex:column styleClass="tableColumn" >
                                     <apex:facet name="header">
                                         <apex:outputPanel >
                                             <apex:commandLink action="{!sortColumn}" reRender="projectSpaceDataTable,tableSortField,tableSortDirection" status="loadingDiv">
@@ -717,7 +732,7 @@
                                     <apex:facet name="footer">{!totalRow.cpAllOutgoingSms__c}</apex:facet>
                                     {!projectSpaceData.cpAllOutgoingSms__c}
                                 </apex:column>
-                                <apex:column >
+                                <apex:column styleClass="tableColumn" >
                                     <apex:facet name="header">
                                         <apex:outputPanel >
                                             <apex:commandLink action="{!sortColumn}" reRender="projectSpaceDataTable,tableSortField,tableSortDirection" status="loadingDiv">
@@ -731,7 +746,7 @@
                                     <apex:facet name="footer">{!totalRow.cpAllIncomingSms__c}</apex:facet>
                                     {!projectSpaceData.cpAllIncomingSms__c}
                                 </apex:column>
-                                <apex:column >
+                                <apex:column styleClass="tableColumn" >
                                     <apex:facet name="header">
                                         <apex:outputPanel >
                                             <apex:commandLink action="{!sortColumn}" reRender="projectSpaceDataTable,tableSortField,tableSortDirection" status="loadingDiv">
@@ -745,7 +760,7 @@
                                     <apex:facet name="footer">{!totalRow.cpAllSms__c}</apex:facet>
                                     {!projectSpaceData.cpAllSms__c}
                                 </apex:column>
-                                <apex:column >
+                                <apex:column styleClass="tableColumn" >
                                     <apex:facet name="header">
                                         <apex:outputPanel >
                                             <apex:commandLink action="{!sortColumn}" reRender="projectSpaceDataTable,tableSortField,tableSortDirection" status="loadingDiv">
@@ -759,7 +774,7 @@
                                     <apex:facet name="footer">{!totalRow.cpIncomingSmsIn30Days__c}</apex:facet>
                                     {!projectSpaceData.cpIncomingSmsIn30Days__c}
                                 </apex:column>
-                                <apex:column >
+                                <apex:column styleClass="tableColumn" >
                                     <apex:facet name="header">
                                         <apex:outputPanel >
                                             <apex:commandLink action="{!sortColumn}" reRender="projectSpaceDataTable,tableSortField,tableSortDirection" status="loadingDiv">
@@ -773,7 +788,7 @@
                                     <apex:facet name="footer">{!totalRow.cpOutgoingSmsIn30Days__c}</apex:facet>
                                     {!projectSpaceData.cpOutgoingSmsIn30Days__c}
                                 </apex:column>
-                                <apex:column >
+                                <apex:column styleClass="tableColumn" >
                                     <apex:facet name="header">
                                         <apex:outputPanel >
                                             <apex:commandLink action="{!sortColumn}" reRender="projectSpaceDataTable,tableSortField,tableSortDirection" status="loadingDiv">
@@ -787,7 +802,7 @@
                                     <apex:facet name="footer">---</apex:facet>
                                     {!projectSpaceData.InternalProp_custom_eula__c}
                                 </apex:column>
-                                <apex:column >
+                                <apex:column styleClass="tableColumn" >
                                     <apex:facet name="header">
                                         <apex:outputPanel >
                                             <apex:commandLink action="{!sortColumn}" reRender="projectSpaceDataTable,tableSortField,tableSortDirection" status="loadingDiv">
@@ -801,7 +816,7 @@
                                     <apex:facet name="footer">---</apex:facet>
                                     {!projectSpaceData.hipaa_compliant__c}
                                 </apex:column>
-                                <apex:column >
+                                <apex:column styleClass="tableColumn" >
                                     <apex:facet name="header">
                                         <apex:outputPanel >
                                             <apex:commandLink action="{!sortColumn}" reRender="projectSpaceDataTable,tableSortField,tableSortDirection" status="loadingDiv">
