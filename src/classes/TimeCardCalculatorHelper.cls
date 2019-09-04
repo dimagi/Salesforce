@@ -96,7 +96,9 @@ public class TimeCardCalculatorHelper {
         SFDC_Employee__c employee = [SELECT Id, Salary__c, Exchange_Rate__c, Per_Week_Hours__c, Employee_Type__c
                                      FROM SFDC_Employee__c WHERE Id =: employeeId];
         this.employeeSalaryMap.put(employeeId, TimeCardCalculatorUtils.calculateSalaryForEmployee(employee));
-        if (employee.Employee_Type__c == 'Contractor') { // If employee is now contractor we want mark it if there is no snapshot for current month
+        if (employee.Employee_Type__c == TimeCardCalculatorUtils.CONTRACTOR
+            || employee.Employee_Type__c == TimeCardCalculatorUtils.EXTERNAL_CONTRACTOR) {
+            // If employee is now contractor we want mark it if there is no snapshot for current month
             this.employeeContractor.add(employee.Id);
         }
         Set<Date> employeeContractorMapping = new Set<Date>();
@@ -106,7 +108,9 @@ public class TimeCardCalculatorHelper {
         for (SFDC_Employee_Snapshot__c emplSnp : [SELECT Id, Salary__c, Exchange_Rate__c, Per_Week_Hours__c, Snapshot_Date__c, Employee_Type__c
                                                   FROM SFDC_Employee_Snapshot__c WHERE Employee_Record__c =: employeeId AND Snapshot_Date__c IN: dateSet]) {
             emplSnpTmp.put(emplSnp.Snapshot_Date__c, TimeCardCalculatorUtils.calculateSalaryForEmplSnapshot(emplSnp));
-            if (emplSnp.Employee_Type__c == 'Contractor') { // If employee is contractor or was we want use different billing rates for calculating services spend
+            if (emplSnp.Employee_Type__c == TimeCardCalculatorUtils.CONTRACTOR
+                || emplSnp.Employee_Type__c == TimeCardCalculatorUtils.EXTERNAL_CONTRACTOR) {
+                // If employee is contractor or was we want use different billing rates for calculating services spend
                 employeeContractorMapping.add(emplSnp.Snapshot_Date__c);
             } else {
                 employeeNotContractorMapping.add(emplSnp.Snapshot_Date__c);

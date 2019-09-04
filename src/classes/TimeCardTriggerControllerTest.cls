@@ -700,7 +700,7 @@ public class TimeCardTriggerControllerTest {
         DContract__c child1 = [SELECT Id FROM DContract__c WHERE Name = 'Sample Child 1'];
         SFDC_Employee__c employeeObj1 = new SFDC_Employee__c(Name = 'Old Test Employee', Salary__c = 50000, Exchange_Rate__c = 1,
                                                              Effective_Exchange_Rate_Date__c = Date.newInstance(2016, 2, 24), Per_Week_Hours__c = 40,
-                                                             Effective_Salary_Date__c = Date.newInstance(2016, 2, 24), Employee_Type__c = 'Contractor');
+                                                             Effective_Salary_Date__c = Date.newInstance(2016, 2, 24), Employee_Type__c = 'External Contractor');
         insert employeeObj1;
 
         Time_Card__c timeCardObj1 = new Time_Card__c(Time_Card_Salary__c = 1.0, Billing_Rate__c = null, Total__c = 8, Date__c = Date.newInstance(2019, 1, 7),
@@ -826,7 +826,7 @@ public class TimeCardTriggerControllerTest {
         SFDC_Employee_Snapshot__c emplSnp2 = new SFDC_Employee_Snapshot__c(Salary__c = 40000, Exchange_Rate__c = 3.0, Per_Week_Hours__c = 20,
                                                                               Snapshot_Date__c = Date.newInstance(2018, 2, 28), Employee_Record__c = employeeObj.Id);
         insert emplSnp2;
-        SFDC_Employee_Snapshot__c emplSnp3 = new SFDC_Employee_Snapshot__c(Salary__c = 45000, Exchange_Rate__c = 1.0, Per_Week_Hours__c = 30, Employee_Type__c = 'Contractor',
+        SFDC_Employee_Snapshot__c emplSnp3 = new SFDC_Employee_Snapshot__c(Salary__c = 45000, Exchange_Rate__c = 1.0, Per_Week_Hours__c = 30, Employee_Type__c = 'External Contractor',
                                                                               Snapshot_Date__c = Date.newInstance(2018, 3, 31), Employee_Record__c = employeeObj.Id);
         insert emplSnp3;
 
@@ -1065,7 +1065,7 @@ public class TimeCardTriggerControllerTest {
         Test.startTest();
         emplSnp1_1.Employee_Type__c = 'Contractor';
         emplSnp2_1.Employee_Type__c = 'Employee';
-        emplSnp1_2.Employee_Type__c = 'Contractor';
+        emplSnp1_2.Employee_Type__c = 'External Contractor';
         update new List<SFDC_Employee_Snapshot__c> { emplSnp1_1, emplSnp2_1, emplSnp1_2 };
         Test.stopTest();
 
@@ -1095,7 +1095,7 @@ public class TimeCardTriggerControllerTest {
                                                                     Effective_Exchange_Rate_Date__c = Date.newInstance(2016, 2, 24), Per_Week_Hours__c = 40);
         insert employeeObj1;
         SFDC_Employee__c employeeObj2 = new SFDC_Employee__c(Name = 'Old Test Employee 2', Salary__c = 65000, Exchange_Rate__c = 1,  Effective_Salary_Date__c = Date.newInstance(2016, 2, 24),
-                                                                    Effective_Exchange_Rate_Date__c = Date.newInstance(2016, 2, 24), Per_Week_Hours__c = 40, Employee_Type__c = 'Contractor');
+                                                                    Effective_Exchange_Rate_Date__c = Date.newInstance(2016, 2, 24), Per_Week_Hours__c = 40, Employee_Type__c = 'External Contractor');
         insert employeeObj2;
 
         // January : Salary -> (30000 / (260 / 2)) / 8 Billing Rate -> contractor = 1
@@ -1233,7 +1233,7 @@ public class TimeCardTriggerControllerTest {
                                                                               Snapshot_Date__c = Date.newInstance(2018, 1, 31), Employee_Record__c = employeeObj2.Id);
         SFDC_Employee_Snapshot__c emplSnp2_2 = new SFDC_Employee_Snapshot__c(Salary__c = 49000, Exchange_Rate__c = 3.0, Per_Week_Hours__c = 20, Employee_Type__c = 'Contractor',
                                                                               Snapshot_Date__c = Date.newInstance(2018, 2, 28), Employee_Record__c = employeeObj2.Id);
-        SFDC_Employee_Snapshot__c emplSnp3_2 = new SFDC_Employee_Snapshot__c(Salary__c = 49000, Exchange_Rate__c = 0.95, Per_Week_Hours__c = 30, Employee_Type__c = 'Contractor',
+        SFDC_Employee_Snapshot__c emplSnp3_2 = new SFDC_Employee_Snapshot__c(Salary__c = 49000, Exchange_Rate__c = 0.95, Per_Week_Hours__c = 30, Employee_Type__c = 'External Contractor',
                                                                               Snapshot_Date__c = Date.newInstance(2018, 3, 31), Employee_Record__c = employeeObj2.Id);
         insert new List<SFDC_Employee_Snapshot__c> { emplSnp3_1, emplSnp2_1, emplSnp1_1, emplSnp1_2, emplSnp2_2, emplSnp3_2 };
 

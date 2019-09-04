@@ -1,5 +1,8 @@
 public class TimeCardCalculatorUtils {
 
+    public static final String CONTRACTOR = 'Contractor';
+    public static final String EXTERNAL_CONTRACTOR = 'External Contractor';
+
     public static Decimal calculateSalaryForEmployee(SFDC_Employee__c employee) {
         Decimal salary = (((employee.Salary__c != null ? employee.Salary__c : 0)
                             / (employee.Exchange_Rate__c != null && employee.Exchange_Rate__c != 0 ? employee.Exchange_Rate__c : 1.0))

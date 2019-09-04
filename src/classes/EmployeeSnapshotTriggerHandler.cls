@@ -41,7 +41,8 @@ public class EmployeeSnapshotTriggerHandler {
                 tc.Time_Card_Salary__c = emplSalary;
 
                 String billingRateName = tc.Client__r.Project_Billing_Rate__c;
-                if (emplSnp.Employee_Type__c == 'Contractor') {
+                if (emplSnp.Employee_Type__c == TimeCardCalculatorUtils.CONTRACTOR
+                    || emplSnp.Employee_Type__c == TimeCardCalculatorUtils.EXTERNAL_CONTRACTOR) {
                     billingRateName = TimeCardTriggerController.CONTRACTOR_RATE_NAME;
                     tc.Uses_Contractor_Billing_Rate__c = true;
                 } else {
