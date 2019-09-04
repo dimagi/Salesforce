@@ -83,12 +83,16 @@ public class OpportunityPipelineSnapshotTest {
         Opportunity opp1 = [SELECT Id FROM Opportunity WHERE Name = 'Test Opportunity 1'];
         Opportunity opp2 = [SELECT Id FROM Opportunity WHERE Name = 'Test Opportunity 2'];
         Account snapShotAccount = [SELECT Id FROM Account WHERE Name = 'Test Account'];
+        Opportunity opp3 = new Opportunity(Name = 'Test Opportunity 3', StageName = 'Stage 3 - Prospect', Channel_Response__c = 'Inside Sales', Amount = 40000,
+                                                Expense_Income__c = 23000, Expected_Buffer__c = 40, Duration_months__c = 24, Country_Text__c = 'Sample text 3 test',
+                                                Product_Text__c = 'Product test 3', CloseDate = date.today().addMonths(6), Probability = 35, AccountId = snapShotAccount.Id);
+        insert opp3;
 
         Test.startTest();
         Database.executeBatch(new OpportunityPipelineSnapshotBatch(), 50);
         Test.stopTest();
 
-        System.assertEquals(2, [SELECT Id FROM Pipeline_Snapshot__c].size()); // 2 normal and 2 total records
+        System.assertEquals(3, [SELECT Id FROM Pipeline_Snapshot__c].size());
 
         Pipeline_Snapshot__c psToTest = [SELECT Id, Name, Month_Date__c, Account__c, Amount__c, Amount_Minus_Expense_Income__c, Country__c, Duration_months__c,
                                         Expected_Buffer__c, Opportunity_Amount__c, CloseDate__c, Opportunity_Expense_Income__c, Probability__c, Products__c, RFP_Response__c
@@ -102,6 +106,12 @@ public class OpportunityPipelineSnapshotTest {
         assertPipelineSnapshotValues(psToTest, 'Test Opportunity 2 - ' + Date.today().month() + '/' + Date.today().year(), snapShotAccount.Id, 70000, 47000,
                                             'Sample text 2 test', 24, 40, Date.today().addMonths(6), 23000,
                                             40, 'Product test 2', 'Inside Sales');
+        psToTest = [SELECT Id, Name, Month_Date__c, Account__c, Amount__c, Amount_Minus_Expense_Income__c, Country__c, Duration_months__c,
+                                        Expected_Buffer__c, Opportunity_Amount__c, CloseDate__c, Opportunity_Expense_Income__c, Probability__c, Products__c, RFP_Response__c
+                                        FROM Pipeline_Snapshot__c WHERE Stage__c != 'Total' AND Opportunity__c =: opp3.Id LIMIT 1];
+        assertPipelineSnapshotValues(psToTest, 'Test Opportunity 3 - ' + Date.today().month() + '/' + Date.today().year(), snapShotAccount.Id, 40000, 17000,
+                                            'Sample text 3 test', 24, 40, Date.today().addMonths(6), 23000,
+                                            35, 'Product test 3', 'Inside Sales');
     }
 
     @isTest
