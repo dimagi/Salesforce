@@ -1,0 +1,26 @@
+<apex:page standardController="Project_Location__c" extensions="DeploymentRelationsController" lightningStylesheets="true">
+    <apex:form >
+        <apex:pageBlock title="New Contract Deployment">
+
+        <apex:pageBlockButtons >
+            <apex:commandButton action="{!saveNewRelation}" value="Save" />
+            <apex:commandButton action="{!goBack}" immediate="true" value="Cancel" />
+        </apex:pageBlockButtons>
+
+            <apex:pageBlockSection columns="1">
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="Deployment" for="deploymentId" />
+                    <apex:inputField id="deploymentId" value="{!record.Project__c}" />
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="Location" for="locationId" />
+                    <apex:inputField id="locationId" value="{!record.Location__c}" />
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="Include in map view?" for="mapViewId" />
+                    <apex:inputField id="mapViewId" value="{!record.Include_in_map_view__c}" />
+                </apex:pageBlockSectionItem>
+            </apex:pageBlockSection>
+        </apex:pageBlock>
+    </apex:form>
+</apex:page>
