@@ -9,8 +9,10 @@ public without sharing class RenewalSubscriptionsBatch implements Database.Batch
     private Integer recordCounter;
     private Date currentDate;
     private Business_Unit__c incBusinessUnit;
-    private User defaultOppOwnerImplementation;
-    private User defaultOppOwnerProduct;
+    private User implementationNonEnterpriseOwner;
+    private User implementationEnterpriseOwner;
+    private User productNonEnterpriseOwner;
+    private User productEnterpriseOwner;
     private Subscription_Renewal_Settings__c settings;
 
     private Map<String, PricebookEntry> priceBookEntries;
@@ -32,10 +34,14 @@ public without sharing class RenewalSubscriptionsBatch implements Database.Batch
         this.settings = Subscription_Renewal_Settings__c.getOrgDefaults();
 
         this.incBusinessUnit = [SELECT Id FROM Business_Unit__c WHERE Name =: settings.Default_Business_Unit__c];
-        this.defaultOppOwnerImplementation = [SELECT Id FROM User WHERE Name =: settings.Default_Opportunity_Owner_Impl__c];
-        this.defaultOppOwnerProduct = [SELECT Id FROM User WHERE Name =: settings.Default_Opportunity_Owner_Prod__c];
 
-        if (this.incBusinessUnit == null || this.defaultOppOwnerImplementation == null || this.defaultOppOwnerProduct == null) {
+        this.implementationNonEnterpriseOwner = [SELECT Id FROM User WHERE Name =: settings.Implementation_non_Enterprise_Owner__c];
+        this.implementationEnterpriseOwner = [SELECT Id FROM User WHERE Name =: settings.Implementation_Enterprise_Owner__c];
+        this.productNonEnterpriseOwner = [SELECT Id FROM User WHERE Name =: settings.Product_non_Enterprise_Owner__c];
+        this.productEnterpriseOwner = [SELECT Id FROM User WHERE Name =: settings.Product_Enterprise_Owner__c];
+
+        if (this.incBusinessUnit == null || this.implementationNonEnterpriseOwner == null || this.implementationEnterpriseOwner == null
+                || this.productNonEnterpriseOwner == null || this.productEnterpriseOwner == null) {
             EmailHelper.sendEmail(settings.Error_Emails__c.split(','), 'Subscription Renewal ERROR',
                                   'Cannot find default Opportunity owner or Inc business unit');
             NoDataFoundException ex = new NoDataFoundException();
@@ -102,10 +108,21 @@ public without sharing class RenewalSubscriptionsBatch implements Database.Batch
             }
             if (!this.domainsToSkip.contains(subscription.Accounting_subscriber_domain__c)) {
                 String oppSource = '';
-                if (subscription.service_type__c == 'IMPLEMENTATION') {
+                Id ownerId = null;
+                if (subscription.service_type__c == 'IMPLEMENTATION' && subscription.Software_Plan_Edition__c != 'Enterprise') {
                     oppSource = IMPL_RENEWAL;
-                } else if (subscription.service_type__c == 'PRODUCT' || subscription.service_type__c == 'TRIAL' || subscription.service_type__c == 'NOT_SET') {
+                    ownerId = this.implementationNonEnterpriseOwner.Id;
+                } else if (subscription.service_type__c == 'IMPLEMENTATION' && subscription.Software_Plan_Edition__c == 'Enterprise') {
+                    oppSource = IMPL_RENEWAL;
+                    ownerId = this.implementationEnterpriseOwner.Id;
+                } else if ((subscription.service_type__c == 'PRODUCT' || subscription.service_type__c == 'TRIAL' || subscription.service_type__c == 'NOT_SET')
+                                && subscription.Software_Plan_Edition__c != 'Enterprise') {
                     oppSource = PROD_RENEWAL;
+                    ownerId = this.productNonEnterpriseOwner.Id;
+                } else if ((subscription.service_type__c == 'PRODUCT' || subscription.service_type__c == 'TRIAL' || subscription.service_type__c == 'NOT_SET')
+                                && subscription.Software_Plan_Edition__c == 'Enterprise') {
+                    oppSource = PROD_RENEWAL;
+                    ownerId = this.productEnterpriseOwner.Id;
                 } else {
                     continue; // we skip this subscription
                 }
@@ -131,7 +148,7 @@ public without sharing class RenewalSubscriptionsBatch implements Database.Batch
                                                         CloseDate = subscription.date_end__c,
                                                         Domain_Name__c = subscription.Accounting_subscriber_domain__c,
                                                         StageName = 'Stage 3 - Prospect',
-                                                        OwnerId = (oppSource == IMPL_RENEWAL ? this.defaultOppOwnerImplementation.Id : this.defaultOppOwnerProduct.Id),
+                                                        OwnerId = ownerId,
                                                         Implementation_Type__c = 'Self Service',
                                                         Channel_Response__c = 'Inside Sales',
                                                         Opportunity_Owning_Entity__c = this.incBusinessUnit.Id,
@@ -194,7 +211,7 @@ public without sharing class RenewalSubscriptionsBatch implements Database.Batch
                 Accounting_subscriber_domain__r.Opportunity__r.CreatedDate, Accounting_subscriber_domain__r.Opportunity__c,
                 Accounting_subscriber_domain__r.Opportunity__r.CloseDate, Accounting_subscriber_domain__r.Opportunity__r.IsClosed
                 FROM Accounting_Subscription__c
-                WHERE Accounting_subscriber_domain__r.Name != '' AND date_end__c != null AND date_end__c <=: this.currentDate.addDays(60)
+                WHERE Accounting_subscriber_domain__r.Name != '' AND date_end__c != null AND date_end__c <=: this.currentDate.addDays(90)
                 AND date_end__c >=: this.currentDate AND Accounting_subscriber_domain__r.Name NOT IN: domainsWithFutureSubscriptions AND is_active__c = true
                 AND is_hidden_to_ops__c = false AND is_trial__c = false AND Server_Name__c = 'CommCareHQ' ORDER BY date_end__c DESC];
     }

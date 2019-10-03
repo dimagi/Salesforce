@@ -13,8 +13,11 @@ public class RenewalSubscriptionsTest {
 
         Subscription_Renewal_Settings__c settings = Subscription_Renewal_Settings__c.getOrgDefaults();
         settings.Default_Business_Unit__c = 'Inc';
-        settings.Default_Opportunity_Owner_Prod__c = 'FirstName LastName';
-        settings.Default_Opportunity_Owner_Impl__c = 'FirstName LastName';
+        settings.Implementation_non_Enterprise_Owner__c = 'FirstName LastName';
+        settings.Implementation_Enterprise_Owner__c = 'FirstName LastName';
+        settings.Product_non_Enterprise_Owner__c = 'FirstName LastName';
+        settings.Product_Enterprise_Owner__c = 'FirstName LastName';
+
         settings.Error_Emails__c = 'dimagiErrors@dimagi.com';
         settings.Pro__c = 750;
         insert settings;
