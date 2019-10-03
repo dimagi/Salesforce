@@ -39,11 +39,7 @@ public class HQSyncAPI {
         req.setEndpoint(this.endPoint + '?' + SFUtils.buildURLParams(parameters));
         req.setMethod('GET');
 
-        String username = this.serverSettings.CommCare_User_Name__c;
-        String password = this.serverSettings.CommCare_Password__c;
-
-        Blob headerValue = Blob.valueOf(username + ':' + password);
-        String authorizationHeader = 'BASIC ' + EncodingUtil.base64Encode(headerValue);
+        String authorizationHeader = 'ApiKey ' + this.serverSettings.CommCare_User_Name__c + ':' + this.serverSettings.CommCare_Password__c;
         req.setHeader('Authorization', authorizationHeader);
         req.setTimeout(120000);
 
