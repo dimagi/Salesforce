@@ -53,11 +53,7 @@ public class HQSyncUtils {
         req.setEndpoint(String.format(serverSettings.Single_Domain_Endpoint__c, new List<String> { domainName }));
         req.setMethod('GET');
 
-        String username = serverSettings.CommCare_User_Name__c;
-        String password = serverSettings.CommCare_Password__c;
-
-        Blob headerValue = Blob.valueOf(username + ':' + password);
-        String authorizationHeader = 'BASIC ' + EncodingUtil.base64Encode(headerValue);
+        String authorizationHeader = 'ApiKey ' + serverSettings.CommCare_User_Name__c + ':' + serverSettings.CommCare_Password__c;
         req.setHeader('Authorization', authorizationHeader);
         req.setTimeout(120000);
 
