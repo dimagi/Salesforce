@@ -13,7 +13,7 @@ public class PROEmailContractSnoozeHelper {
         fourthNegFailedReocrds = new List<DContract__c>();
         toAddresses = new List<String>();
 
-        List<PRO_Email_Remindar_Settings__c> settingList=PRO_Email_Remindar_Settings__c.getALL().values();
+        List<PRO_Email_Remindar_Settings__c> settingList = PRO_Email_Remindar_Settings__c.getALL().values();
         PRO_Email_Remindar_Settings__c settings = settingList[0];
 
         if (settings.Error_Email__c != null && settings.Error_Email__c.contains(',')) {
@@ -30,9 +30,9 @@ public class PROEmailContractSnoozeHelper {
     */
     public void SnoozeContractByOwnerId(Id ownerId,integer snoozeDays){
 
-        List<DContract__c> contractList = [SELECT id FROM DContract__c
+        List<DContract__c> contractList = [SELECT Id FROM DContract__c
                                            WHERE Is_First_Nag_Sent__c = true
-                                           AND((In_Charge_Of_Report_Out__c='Project Manager' AND  Project_Manager__C=:ownerId) OR
+                                           AND((In_Charge_Of_Report_Out__c='Project Manager' AND Project_Manager__C=:ownerId) OR
                                            (In_Charge_Of_Report_Out__c='Field Manager' AND  Field_Manager__C=:ownerId) OR
                                            (In_Charge_Of_Report_Out__c='Backstop' AND  Backstop__C=:ownerId))];
         if (contractList.size() > 0) {
@@ -41,7 +41,7 @@ public class PROEmailContractSnoozeHelper {
     }
 
     public void SnoozeContract(Id contractId,integer snoozeDays) {
-        List<DContract__c> contractList = [SELECT id FROM DContract__c WHERE Id =: contractId AND Is_First_Nag_Sent__c = true];
+        List<DContract__c> contractList = [SELECT Id FROM DContract__c WHERE Id =: contractId AND Is_First_Nag_Sent__c = true];
         if( contractList.size() > 0) {
           SnoozeContract(contractList,snoozeDays);
         }

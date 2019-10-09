@@ -1,15 +1,21 @@
 public class PROEmailRemindarBatch implements Database.Batchable<DContract__c>, Database.Stateful {
 
-    PROEmailContractFilterHelper contractFilterHelper = null;
-    PROEmailProcessHelper processHelper = null;
-    Id orgWideId;
-    String managmentTeamEmail;
-    Map<Id, SFDC_Employee__c> businessUnitEmpMap = new Map<Id, SFDC_Employee__c>();
-    PROEmailContractSnoozeHelper snoozeHelperObj;
+    @TestVisible
+    private PROEmailContractFilterHelper contractFilterHelper = null;
+    @TestVisible
+    private PROEmailProcessHelper processHelper = null;
+    private Id orgWideId;
+    private String managmentTeamEmail;
+    private Map<Id, SFDC_Employee__c> businessUnitEmpMap = new Map<Id, SFDC_Employee__c>();
+    private PROEmailContractSnoozeHelper snoozeHelperObj;
 
+    @TestVisible
     private List<DContract__c> firstNagProcessed;
+    @TestVisible
     private List<DContract__c> secondNagProcessed;
+    @TestVisible
     private List<DContract__c> thirdNagProcessed;
+    @TestVisible
     private List<DContract__c> fourthNagProcessed;
 
     public PROEmailRemindarBatch() {
@@ -57,10 +63,10 @@ public class PROEmailRemindarBatch implements Database.Batchable<DContract__c>, 
         List<DContract__c> thirdNagContract = new List<DContract__c>();
         List<DContract__c> fourthNagContract = new List<DContract__c>();
 
-        firstNagContract.addAll(contractFilterHelper.filter(contracts,PROEmailContractFilterType.FirstNag));
-        secondNagContract.addAll(contractFilterHelper.filter(contracts,PROEmailContractFilterType.SecondNag));
-        thirdNagContract.addAll(contractFilterHelper.filter(contracts,PROEmailContractFilterType.ThirdNag));
-        fourthNagContract.addAll(contractFilterHelper.filter(contracts,PROEmailContractFilterType.FourthNag));
+        firstNagContract.addAll(contractFilterHelper.filter(contracts, PROEmailContractFilterType.FirstNag));
+        secondNagContract.addAll(contractFilterHelper.filter(contracts, PROEmailContractFilterType.SecondNag));
+        thirdNagContract.addAll(contractFilterHelper.filter(contracts, PROEmailContractFilterType.ThirdNag));
+        fourthNagContract.addAll(contractFilterHelper.filter(contracts, PROEmailContractFilterType.FourthNag));
 
         if (firstNagContract.size() > 0) {
             snoozeHelperObj.SetFirstNegSent(firstNagContract);
@@ -82,10 +88,10 @@ public class PROEmailRemindarBatch implements Database.Batchable<DContract__c>, 
     }
 
     public void finish(Database.BatchableContext context) {
-            processHelper.processFirstNag(firstNagProcessed);
-            processHelper.processSecondNag(secondNagProcessed);
-            processHelper.processThirdNag(thirdNagProcessed);
-            processHelper.processFourthNag(fourthNagProcessed);
+        processHelper.processFirstNag(firstNagProcessed);
+        processHelper.processSecondNag(secondNagProcessed);
+        processHelper.processThirdNag(thirdNagProcessed);
+        processHelper.processFourthNag(fourthNagProcessed);
     }
 
     /*
@@ -93,27 +99,13 @@ public class PROEmailRemindarBatch implements Database.Batchable<DContract__c>, 
         require report out.
     */
     private List<DContract__c> GetContract() {
-        List<DContract__c> contractList;
-        if (Test.isRunningTest()) {
-            contractList = [SELECT Id, Name, Last_Report_Out_Date__c, Last_Report_Out_Status__c, Is_Snooze__c, Is_First_Nag_Sent__c,
-                                    Snooze_Days__c, Snooze_Date__c, First_Nag_Sent_Date__c , OwnerId, Owner.Name,Owner.Email,
-                                    Backstop__c, Backstop__r.FirstName, Backstop__r.LastName, Backstop__r.Email,
-                                    Project_Manager__c, Project_Manager__r.FirstName, Project_Manager__r.LastName, Project_Manager__r.Email,
-                                    Prime_Contracting_Business_Unit__c, Last_Report_Out_Created_Date__c,
-                                    In_Charge_Of_Report_Out__c, Field_Manager__c, Field_Manager__r.FirstName, Field_Manager__r.LastName, CreatedDate
-                                    FROM DContract__c
-                                    WHERE Requires_Report_Out__c = 'Yes' AND Workflow_Escalation_Enabled__C = true LIMIT 30];
-        } else {
-            contractList = [SELECT Id, Name, Last_Report_Out_Date__c, Last_Report_Out_Status__c, Is_Snooze__c, Is_First_Nag_Sent__c,
-                                    Snooze_Days__c, Snooze_Date__c, First_Nag_Sent_Date__c , OwnerId, Owner.Name,Owner.Email,
-                                    Backstop__c, Backstop__r.FirstName, Backstop__r.LastName, Backstop__r.Email,
-                                    Project_Manager__c, Project_Manager__r.FirstName, Project_Manager__r.LastName, Project_Manager__r.Email,
-                                    Prime_Contracting_Business_Unit__c, Last_Report_Out_Created_Date__c,
-                                    In_Charge_Of_Report_Out__c, Field_Manager__c, Field_Manager__r.FirstName, Field_Manager__r.LastName, CreatedDate
-                                    FROM DContract__c
-                                    WHERE Requires_Report_Out__c = 'Yes' AND Workflow_Escalation_Enabled__C = true];
-        }
-
-       return contractList;
+        return [SELECT Id, Name, Last_Report_Out_Date__c, Last_Report_Out_Status__c, Is_Snooze__c, Is_First_Nag_Sent__c,
+                Snooze_Days__c, Snooze_Date__c, First_Nag_Sent_Date__c , OwnerId, Owner.Name,Owner.Email,
+                Backstop__c, Backstop__r.FirstName, Backstop__r.LastName, Backstop__r.Email,
+                Project_Manager__c, Project_Manager__r.FirstName, Project_Manager__r.LastName, Project_Manager__r.Email,
+                Prime_Contracting_Business_Unit__c, Last_Report_Out_Created_Date__c,
+                In_Charge_Of_Report_Out__c, Field_Manager__c, Field_Manager__r.FirstName, Field_Manager__r.LastName, CreatedDate
+                FROM DContract__c
+                WHERE Requires_Report_Out__c = 'Yes' AND Workflow_Escalation_Enabled__C = true];
     }
 }

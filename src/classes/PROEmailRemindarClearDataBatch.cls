@@ -1,8 +1,10 @@
 public class PROEmailRemindarClearDataBatch implements Database.Batchable<DContract__c>, Database.Stateful {
 
-    Map<String, Integer> FrequencyMap = null;
-    List<DContract__c> failedReocrds = new List<DContract__c>();
-    String failedDML = '';
+    @TestVisible
+    private Date currentDate = Date.today();
+    private Map<String, Integer> FrequencyMap = null;
+    private List<DContract__c> failedReocrds = new List<DContract__c>();
+    private String failedDML = '';
 
     public PROEmailRemindarClearDataBatch(){
         FrequencyMap = new Map<String, Integer>();
@@ -17,22 +19,21 @@ public class PROEmailRemindarClearDataBatch implements Database.Batchable<DContr
     }
 
     public void execute(Database.BatchableContext context, List<DContract__c> contracts) {
-         Date currentDate = Date.today();
          List<DContract__c> updateList = new List<DContract__c>();
-         Integer currentYear = currentDate.year();
-         Integer currentMonth = currentDate.month();
+         Integer currentYear = this.currentDate.year();
+         Integer currentMonth = this.currentDate.month();
          List<Date> thursDayList = PROHelper.GetAllThursDayOfMonth(currentYear,currentMonth);
 
          //If Thursday then clear Data.
-         if (PROHelper.IsThursDay(currentDate)) {
+         if (PROHelper.IsThursDay(this.currentDate)) {
             for (DContract__c contract : contracts) {
                 Integer noOfDays = FrequencyMap.get(contract.Last_Report_Out_Status__c);
                 if (noOfDays == null || noOfDays == 0) {
                     noOfDays = 2;
                 }
 
-                if (noOfDays == 1 || (noOfDays == 2 && (thursDayList[1] == currentDate || thursDayList[3] == currentDate ))
-                                  || (noOfDays == 3 && thursDayList[2] == currentDate) || (noOfDays == 4 && thursDayList[3] == currentDate)) {
+                if (noOfDays == 1 || (noOfDays == 2 && (thursDayList[1] == this.currentDate || thursDayList[3] == this.currentDate ))
+                                  || (noOfDays == 3 && thursDayList[2] == this.currentDate) || (noOfDays == 4 && thursDayList[3] == this.currentDate)) {
 
                     contract.Is_Snooze__c = false;
                     contract.Snooze_Date__c = null;
