@@ -9,7 +9,7 @@ public class PROEmailTemplateHelper {
 
         if (settingList != null && settingList.size() > 0) {
             PRO_Email_Remindar_Settings__c settings = settingList[0];
-            SnoozePageURL=settings.Snooze_Page_URL__C;
+            SnoozePageURL = settings.Snooze_Page_URL__C;
         }
     }
 
@@ -118,9 +118,9 @@ public class PROEmailTemplateHelper {
         String PMName = '';
         if (contract.Project_Manager__r != null){
             if (contract.Project_Manager__r.FirstName != null) {
-                PMName=contract.Project_Manager__r.FirstName;
+                PMName = contract.Project_Manager__r.FirstName;
             } else {
-                PMName=contract.Project_Manager__r.LastName;
+                PMName = contract.Project_Manager__r.LastName;
             }
         }
         return PMName.trim();
@@ -130,9 +130,9 @@ public class PROEmailTemplateHelper {
         String BTName = '';
         if (contract.Backstop__r != null) {
             if (contract.Backstop__r.FirstName != null) {
-                BTName=contract.Backstop__r.FirstName;
+                BTName = contract.Backstop__r.FirstName;
             } else {
-                BTName=contract.Backstop__r.LastName;
+                BTName = contract.Backstop__r.LastName;
             }
         }
         return BTName.trim();

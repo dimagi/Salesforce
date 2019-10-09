@@ -55,7 +55,7 @@ public class PROEmailProcessHelper {
                                                 projectInchargeId));
             }
 
-            if(ownerEmailMessageList.size()>0){
+            if(ownerEmailMessageList.size() > 0  && !Test.isRunningTest()){
                 Messaging.sendEmail(ownerEmailMessageList);
             }
 
@@ -65,7 +65,7 @@ public class PROEmailProcessHelper {
 
             for (Id backstopId : backstopMap.keySet()) {
                 List<DContract__c> contractList = backstopMap.get(backstopId);
-                String name='';
+                String name = '';
 
                 if (contractList[0].backstop__r.FirstName != null) {
                     name = contractList[0].backstop__r.FirstName;
@@ -77,7 +77,7 @@ public class PROEmailProcessHelper {
                                                 backstopId));
             }
 
-            if (backtopEmailMessageList.size() > 0) {
+            if (backtopEmailMessageList.size() > 0 && !Test.isRunningTest()) {
                 Messaging.sendEmail(backtopEmailMessageList);
             }
         }
@@ -142,7 +142,7 @@ public class PROEmailProcessHelper {
                 }
             }
 
-            if (cdEmailMessageList.size() > 0) {
+            if (cdEmailMessageList.size() > 0 && !Test.isRunningTest()) {
                 Messaging.sendEmail(cdEmailMessageList);
             }
         }
@@ -218,7 +218,9 @@ public class PROEmailProcessHelper {
             emailMsg.setOrgWideEmailAddressId(orgwideId);
             emailMsg.setToAddresses(new String[] { managmentTeamEmail });
             emailMsg.setSaveAsActivity(false);
-            Messaging.sendEmail(new Messaging.SingleEmailMessage[] {emailMsg });
+            if (!Test.isRunningTest()) {
+                Messaging.sendEmail(new Messaging.SingleEmailMessage[] { emailMsg });
+            }
         }
     }
 
@@ -235,21 +237,6 @@ public class PROEmailProcessHelper {
                 contractList.add(contract);
                 ownerMap.put(contract.Prime_Contracting_Business_Unit__c, contractList);
             }
-        }
-        return ownerMap;
-    }
-
-    private Map<Id, List<DContract__c>> getOwnerMap(List<DContract__c> contracts) {
-        Map<Id, List<DContract__c>> ownerMap = new Map<Id, List<DContract__c>>();
-        
-        for (DContract__c contract : contracts) {
-            List<DContract__c> contractList = ownerMap.get(contract.OwnerId);
-            if (contractList == null) {
-                contractList = new List<DContract__c>();
-            }
-
-            contractList.add(contract);
-            ownerMap.put(contract.OwnerId,contractList);
         }
         return ownerMap;
     }
