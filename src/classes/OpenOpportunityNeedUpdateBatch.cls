@@ -17,7 +17,7 @@ global class OpenOpportunityNeedUpdateBatch implements Database.Batchable<sObjec
             usersId.add(opp.OwnerId);
         }
 
-        User[] users = [SELECT Id, Email, Name FROM User WHERE Id IN :usersId];
+        User[] users = [SELECT Id, Email, Name FROM User WHERE IsActive = true AND Id IN :usersId];
         return users;
     }
 
@@ -26,7 +26,7 @@ global class OpenOpportunityNeedUpdateBatch implements Database.Batchable<sObjec
         List<String> channel = OpenOpportunityReportController.getInstance().getChannelListForQuery();
         Map<String, Opportunity[]> stagedOpportunities = OpenOpportunityReportController.getInstance().getOpenOpportunitiesOrderByStage(user.Id, channel);
 
-        OpenOpportunityMailer.sendRedOpenOpportunitiesBatchReport(user, new String[]{user.Email}, stagedOpportunities);
+        OpenOpportunityMailer.sendRedOpenOpportunitiesBatchReport(user, new String[] { user.Email }, stagedOpportunities);
     }
 
     global void finish(Database.BatchableContext bc) {}
