@@ -5,12 +5,10 @@
  *
  */
 global class OpenOpportunitiesNeedUpdateScheduler implements Schedulable {
-	
+
     public OpenOpportunitiesNeedUpdateScheduler() {}
-    
+
     global void execute(SchedulableContext sc) {
-    
        Database.executeBatch(new OpenOpportunityNeedUpdateBatch(), 1);
     }
-
 }
