@@ -1,4 +1,4 @@
-<apex:page Controller="CountryListAcc" tabStyle="Country__c">
+<apex:page Controller="CountryListAcc" tabStyle="Country__c" lightningStylesheets="true">
     <apex:includeScript value="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js" />
 
     <apex:form id="thFrm">

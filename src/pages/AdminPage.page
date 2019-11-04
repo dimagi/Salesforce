@@ -1,4 +1,4 @@
-<apex:page controller="AdminPageMainController" >
+<apex:page controller="AdminPageMainController" lightningStylesheets="true">
 
     <apex:includeScript value="{!URLFOR($Resource.ProjectReportOut2, 'js/jquery.min.js')}"/>
     <apex:includeScript value="{!URLFOR($Resource.ProjectReportOut2, 'js/jquery-ui.min.js')}"/>

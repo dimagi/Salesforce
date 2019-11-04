@@ -1,4 +1,4 @@
-<apex:page controller="BillingRateController" docType="html-5.0" action="{!initUpdateRate}">
+<apex:page controller="BillingRateController" docType="html-5.0" action="{!initUpdateRate}" lightningStylesheets="true">
 
     <apex:includeScript value="{!URLFOR($Resource.ProjectReportOut2, 'js/jquery.min.js')}"/>
 

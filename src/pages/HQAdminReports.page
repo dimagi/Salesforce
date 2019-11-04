@@ -1,4 +1,4 @@
-<apex:page controller="HQAdminReportsController" sidebar="false" docType="html-5.0">
+<apex:page controller="HQAdminReportsController" sidebar="false" docType="html-5.0" lightningstylesheets="true">
 
     <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css"/>
     <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
@@ -21,6 +21,18 @@
             overflow-wrap: break-word;
             min-width: 450px;
             max-width: 450px;
+        }
+        .graph-menu-item {
+            display: inline;
+            float: left;
+            padding-top: 1px;
+        }
+        .btn {
+            font-size: 13px !important;
+            height: 28px !important;
+        }
+        .graph-menu {
+            margin-bottom: 10px;
         }
     </style>
 
@@ -93,9 +105,11 @@
                     $j('#interval-' + tmpGraph.graphId).val(tmpGraph.defaultInterval);
 
                     if (tmpGraph.fieldMapping.length > 1) {
-                        $j('#group-field-' + tmpGraph.graphId).show();
-                        $j('#group-field-label-' + tmpGraph.graphId).show();
+                        $j('#group-field-div-' + tmpGraph.graphId).show();
+                    } else {
+                        $j('#group-field-div-' + tmpGraph.graphId).hide();
                     }
+
                     $j('#datepicker-from-' + tmpGraph.graphId).datepicker({ changeMonth: true, changeYear: true })
                         .on("change", function(e) {
                             var correctDate = new Date(), fDate = $j(this).val();
@@ -246,6 +260,8 @@
                 }
             });
         }
+
+        function setFocusOnLoad() {}
     </script>
 
     <apex:form >
@@ -276,7 +292,7 @@
                             <img src="{!$Resource.BrokenCircle}" title="Please Wait..."/>
                         </div>
                         <input type="button" class="btn msidebarRow" onclick="applyFilters();" value="Apply" /><br/>
-                        <apex:inputText styleClass="msidebarRow" value="{!facetCtrl.domainNameSearch}" id="searchDomainText" onkeydown="if(event.keyCode == 13) { this.blur(); applyFilters(); }"/>
+                        <apex:inputText styleClass="msidebarRowText" value="{!facetCtrl.domainNameSearch}" id="searchDomainText" onkeydown="if(event.keyCode == 13) { this.blur(); applyFilters(); }"/>
                         <apex:actionFunction action="{!updateFacets}" name="searchDomainJs" status="loadingDiv"
                                      reRender="apex-data-container,pagination-panel" >
                             <apex:param name="currentFilteringJSON" value="" assignTo="{!facetCtrl.currentFilteringJSON}" />
@@ -876,30 +892,36 @@
                                 <img src="{!$Resource.BrokenCircle}" title="Please Wait..."/>
                             </div>
                             <div id="domains-graph-navigation-{!graphMeta.graphId}" class="graph-menu">
-                                <label for="datepicker-from-{!graphMeta.graphId}">From : </label>
-                                <input id="datepicker-from-{!graphMeta.graphId}" type="text" />
-
-                                <label for="datepicker-to-{!graphMeta.graphId}">To : </label>
-                                <input id="datepicker-to-{!graphMeta.graphId}" type="text" />
-
-                                <label for="interval-{!graphMeta.graphId}">Interval : </label>
-                                <select name="interval-{!graphMeta.graphId}" id="interval-{!graphMeta.graphId}">
-                                    <option value="daily">Daily</option>
-                                    <option value="weekly">Weekly</option>
-                                    <option value="monthly" >Monthly</option>
-                                    <option value="yearly" >Yearly</option>
-                                </select>
-
-                                <label hidden="true" for="group-field-{!graphMeta.graphId}" id="group-field-label-{!graphMeta.graphId}">Date field : </label>
-                                <select hidden="true" name="group-field-{!graphMeta.graphId}" id="group-field-{!graphMeta.graphId}">
-                                    <apex:repeat value="{!graphMeta.fieldMapping}" var="fieldOptions">
-                                        <option value="{!fieldOptions.fieldName}">
-                                            {!fieldOptions.fieldLabel}
-                                        </option>
-                                    </apex:repeat>
-                                </select>
-
-                                <input type="button" class="btn" onclick="applyGraphData('{!graphMeta.graphId}');" value="Apply" />
+                                <div class="graph-menu-item">
+                                    <label for="datepicker-from-{!graphMeta.graphId}">From : </label>
+                                    <input id="datepicker-from-{!graphMeta.graphId}" type="text" />
+                                </div>
+                                <div class="graph-menu-item">
+                                    <label for="datepicker-to-{!graphMeta.graphId}">To : </label>
+                                    <input id="datepicker-to-{!graphMeta.graphId}" type="text" />
+                                </div>
+                                <div class="graph-menu-item">
+                                    <label for="interval-{!graphMeta.graphId}">Interval : </label>
+                                    <select name="interval-{!graphMeta.graphId}" id="interval-{!graphMeta.graphId}">
+                                        <option value="daily">Daily</option>
+                                        <option value="weekly">Weekly</option>
+                                        <option value="monthly" >Monthly</option>
+                                        <option value="yearly" >Yearly</option>
+                                    </select>
+                                </div>
+                                <div class="graph-menu-item" id="group-field-div-{!graphMeta.graphId}">
+                                    <label for="group-field-{!graphMeta.graphId}" id="group-field-label-{!graphMeta.graphId}">Date field : </label>
+                                    <select name="group-field-{!graphMeta.graphId}" id="group-field-{!graphMeta.graphId}">
+                                        <apex:repeat value="{!graphMeta.fieldMapping}" var="fieldOptions">
+                                            <option value="{!fieldOptions.fieldName}">
+                                                {!fieldOptions.fieldLabel}
+                                            </option>
+                                        </apex:repeat>
+                                    </select>
+                                </div>
+                                <div class="graph-menu-item">
+                                    <input type="button" class="btn" onclick="applyGraphData('{!graphMeta.graphId}');" value="Apply" />
+                                </div>
                                 <br/><br/>
                             </div>
                             <div id="tabs-{!graphMeta.graphId}" class="graph-tabs">
