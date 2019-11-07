@@ -5,16 +5,16 @@
  * @since 2014-08
  */
 public with sharing class ReportDeliveryController {
-    
+
      // Constants
     private static final String REPORT_URL = 'https://' + URL.getSalesforceBaseUrl().getHost() + '/';
-    
+
     private String fieldId = null; // It is used if selected filter is a custom field
-    
+
     public String folderId {get; set;}
     public String reportId {get; set;}
     public String filterId {get; set;}
-    
+
     public string EmailBody{get;set;}
     public string EmailSubject{get;set;}
     public String jobName {get; set;}
@@ -26,7 +26,7 @@ public with sharing class ReportDeliveryController {
     public String theMonth {get; set;}
     public String theMonthDay {get; set;}
     public List<String> errorMsgs {get; set;}
-    
+
     public String JOB_NAME_IS_REQUIRED_ERROR = 'Job name is required';
     public String PREFERRED_TIME_IS_REQUIRED_ERROR = 'Preferred time is required';
     public String FOLDER_IS_REQUIRED_ERROR = 'Folder is required';
@@ -41,9 +41,9 @@ public with sharing class ReportDeliveryController {
         errorMsgs = new List<String>();
         frequency = 'Weekly';
     }
-    
+
     /*** PRIVATE METHODS ***/
-    
+
     /*
      * Validate data
      *
@@ -51,9 +51,8 @@ public with sharing class ReportDeliveryController {
      * @return Boolean
      */
     private Boolean validateData() {
-                                        
         errorMsgs.clear(); // clean up errorMsgs, just in case
-        
+
         // Validate required data
         if (jobName == '') {
             errorMsgs.add(JOB_NAME_IS_REQUIRED_ERROR);
@@ -70,30 +69,29 @@ public with sharing class ReportDeliveryController {
         if (filterId == null) {
             errorMsgs.add(FILTER_IS_REQUIRED_ERROR);
         }
-        if(frequency == 'Weekly'){
+        if(frequency == 'Weekly') {
             if (weeklyFrequency.size() == 0) {
                 errorMsgs.add(WEEKLY_FREQUENCY_REQUIRED_ERROR);
             }
-        }   
-        if(otherRecipient != ''){
-            if(!validateEmail()){
+        }
+        if(otherRecipient != '') {
+            if(!validateEmail()) {
                 //errorMsgs.add(OTHER_RECIPIENT_ERROR);
             }
         }
-        if(EmailSubject==null || EmailSubject==''){
+        if(EmailSubject==null || EmailSubject=='') {
             errorMsgs.add(SUBJECT_IS_REQUIRED_ERROR );
         }
-                                  
-        return (errorMsgs.size() == 0);                        
+        return (errorMsgs.size() == 0);
     }
-    
+
     /*
      * Validate email
      *
      * @param - 
      * @return Boolean
      */
-    private Boolean validateEmail(){
+    private Boolean validateEmail() {
         Boolean correctEmail = true;
         String pat = '[a-zA-Z0-9\\.\\!\\#\\$\\%\\&\\*\\/\\=\\?\\^\\_\\+\\-\\`\\{\\|\\}\\~\'._%+-]+@[a-zA-Z0-9\\-.-]+\\.[a-zA-Z]+';
         List<String> otherRecipients = otherRecipient.split(';');
@@ -104,19 +102,18 @@ public with sharing class ReportDeliveryController {
         }
         return correctEmail;
     }
-    
+
     /*
      * Process filter first: If selected filter is a standard field leave as it is, otherwise get the id of the selected field
      * (if the selected filter is a standard field the report url uses the name of the field, otherwise the url requires the id of the custom field)
      */
     private void processFilter() {
-
-        System.debug('FilterId:'+filterId);
+        System.debug('FilterId:' + filterId);
         //check if the filter has a custom field or object
-        boolean isAnyCustom = filterId.contains('__c') || filterId.contains('.'); 
+        boolean isAnyCustom = filterId.contains('__c') || filterId.contains('.');
+
         /**
-        if(isAnyCustom){
-    
+        if (isAnyCustom) {
             List<String> filterTypes = filterId.split('\\.');
             if (filterTypes.size() == 2) {
                 // selected filter is a custom field
@@ -148,41 +145,35 @@ public with sharing class ReportDeliveryController {
             } else {
                 fieldId = filterId; // selected filter is a standard field
             } 
-        }else {
+        } else {
             fieldId = filterId; // selected filter is a standard field
-        }           
-
+        }
         **/
-        
+
         String salesforceHost;
         Organization org = [SELECT id,isSandbox FROM Organization limit 1];
-        if(org.isSandbox)
+        if (org.isSandbox) {
             salesforceHost = 'https://dimagi--dsandbox.cs20.my.salesforce.com';
-        else
-            salesforceHost = 'https://dimagi.my.salesforce.com';    
+        } else {
+            salesforceHost = 'https://dimagi.my.salesforce.com';
+        }
 
-        
         String reportUrl1 = salesforceHost + '/' + reportId;
         //String reportUrl1 = 'https://dimagi--dsandbox.cs20.my.salesforce.com/00Om0000000Oxzn';
-        system.debug('--reportUrl1--'+reportUrl1);
+        System.debug('--reportUrl1--' + reportUrl1);
         PageReference ref = new PageReference(reportUrl1);
         ref.setRedirect(true);
         Blob b;
-        if (Test.IsRunningTest())
-		{
-        	b = Blob.valueOf('UNIT.TEST');
-   		}
-   		else
-   		{
-        	b = ref.getContent();
-   		}
-        
+        if (Test.IsRunningTest()) {
+            b = Blob.valueOf('UNIT.TEST');
+        } else {
+            b = ref.getContent();
+        }
 
         String output = b.toString();
-        System.debug('Check file content: '+output);
-        
-        try
-        {
+        System.debug('Check file content: '+ output);
+
+        try {
             String str1 = Output.substring(Output.indexOf('Summarize information by:'));
             system.debug('--str1---'+str1);
             String str2 = str1.substring(0,str1.indexOf(filterId));
@@ -194,67 +185,60 @@ public with sharing class ReportDeliveryController {
             String str5 = str4.substring(0,str4.indexOf('"'));
             system.debug('--str5---'+str5);
             fieldId = str5;
-        }catch(exception e)
-        {
-            fieldId = '';   
+        } catch(exception e) {
+            fieldId = '';
         }
     }
-    
+
     /*** PUBLIC METHODS ***/
-    
     /*
      * This methods schedule the report and creates a report delivery info record
-     */   
-    public PageReference scheduleReport(){
-         
-        if (validateData()){
-        // Process filter first: If selected filter is a standard field leave as it is, otherwise get the id of the selected field
+     */
+    public PageReference scheduleReport() {
+        if (validateData()) {
+            // Process filter first: If selected filter is a standard field leave as it is, otherwise get the id of the selected field
             processFilter();
-            
+
             // Schedule the report
             Id jobId = SchedulerUtility.schedule(jobName, frequency, preferredTime, weeklyFrequency, frequencyMonthly, theMonthDay, theMonth);
-            
+
             System.debug('JobId: '+jobId);
-            
             String scheuldeError = SchedulerUtility.getErrorMsg();
-            if(!scheuldeError.equals('')){
+            if (!scheuldeError.equals('')) {
                 errorMsgs.add(scheuldeError);
             }
-            
-            // if job is scheduled create a report delivery info records        
+
+            // if job is scheduled create a report delivery info records
             if (jobId != null) {
                 // create report delivery info record
-                
                 Boolean isCreated = ReportDeliveryUtility.createReportDeliveryInfo(jobId, reportId, filterId, fieldId, otherRecipient,emailBody,EmailSubject);
                 System.debug('Is Created: '+isCreated );
             }
-            
-            if(errorMsgs.size() == 0){
+
+            if (errorMsgs.size() == 0) {
                 PageReference pageRef = Page.ReportDeliverySchedule;
-            
                 return pageRef;
-            }else{
+            } else {
                 return null;
             }
-            
         }
         return null;
-    }    
-    
+    }
+
     public List<SelectOption> getFrequencySelectList() {
-        List<SelectOption> options = new List<SelectOption>(); 
-        options.add(new SelectOption('Weekly','Weekly')); 
-        options.add(new SelectOption('Monthly','Monthly')); 
+        List<SelectOption> options = new List<SelectOption>();
+        options.add(new SelectOption('Weekly','Weekly'));
+        options.add(new SelectOption('Monthly','Monthly'));
         return options; 
     }
-    
+
     public List<SelectOption> getFrequencyMonthlySelectList() {
         List<SelectOption> options = new List<SelectOption>(); 
         options.add(new SelectOption('On day','On day')); 
         options.add(new SelectOption('On','On')); 
         return options; 
     }
-    
+
     public List<SelectOption> getWeeklyFrequencySelectedList() {
         List<SelectOption> options = new List<SelectOption>();
         options.add(new SelectOption('1','Sunday'));
@@ -266,7 +250,7 @@ public with sharing class ReportDeliveryController {
         options.add(new SelectOption('7','Saturday'));
         return options;
     }
-    
+
     public List<SelectOption> getTheMonthList() {
         List<SelectOption> options = new List<SelectOption>();
         options.add(new SelectOption('1','the 1st'));
@@ -276,7 +260,7 @@ public with sharing class ReportDeliveryController {
         options.add(new SelectOption('L','the last'));
         return options;
     }
-    
+
     public List<SelectOption> getMonthlyFrequencySelectedList() {
         List<SelectOption> options = new List<SelectOption>();
         options.add(new SelectOption('1','1'));
@@ -313,7 +297,7 @@ public with sharing class ReportDeliveryController {
         options.add(new SelectOption('L','last'));
         return options;
     }
-    
+
     public List<SelectOption> getPreferredTimeSelectedList() {
         List<SelectOption> options = new List<SelectOption>();
         options.add(new SelectOption('None','--None--'));
@@ -343,7 +327,7 @@ public with sharing class ReportDeliveryController {
         options.add(new SelectOption('23','11:00 PM'));
         return options;
     }
-    
+
     public List<SelectOption> getFolderSelectList() {
         List<SelectOption> options = new List<SelectOption>();
         options.add(new SelectOption('', '-- Select Folder --',true));
@@ -380,11 +364,11 @@ public with sharing class ReportDeliveryController {
             Reports.ReportMetadata rm = results.getReportMetadata();
             Reports.ReportExtendedMetadata rem = results.getReportExtendedMetadata();
 
-            MAP<String,Reports.DetailColumn> columnsMap = rem.getDetailColumnInfo();
+            Map<String,Reports.DetailColumn> columnsMap = rem.getDetailColumnInfo();
             for(String s : columnsMap.keySet()) {
                 options.add(new SelectOption(columnsMap.get(s).getLabel(), columnsMap.get(s).getLabel()));
             }
-            MAP<String,Reports.GroupingColumn> groupingMap = rem.getGroupingColumnInfo();
+            Map<String,Reports.GroupingColumn> groupingMap = rem.getGroupingColumnInfo();
             for(String s : groupingMap.keySet()) {
                 options.add(new SelectOption(groupingMap.get(s).getLabel(), groupingMap.get(s).getLabel()));
             }
@@ -409,5 +393,4 @@ public with sharing class ReportDeliveryController {
         }
         return JSON.serialize(popularGrouping);
     }
-     
 }

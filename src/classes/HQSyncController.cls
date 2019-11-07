@@ -3,7 +3,7 @@
  */
 public class HQSyncController {
 
-    public Date syncPhaseTwoDate { get; set; }
+    public CommcareToSalesforceSettings__c syncPhaseTwoDateWrapper { get; set; }
     public Boolean syncRunningPhaseOne { get; set; }
     public Boolean syncRunningPhaseTwo { get; set; }
 
@@ -25,7 +25,8 @@ public class HQSyncController {
         this.phaseOneServer = values[0];
         this.phaseTwoServer = values[0];
 
-        this.syncPhaseTwoDate = Date.today().addDays(-2);
+        this.syncPhaseTwoDateWrapper = new CommcareToSalesforceSettings__c();
+        this.syncPhaseTwoDateWrapper.Last_Run_Date__c = Date.today().addDays(-2);
         loadServerSuccessfulDate();
 
         loadSynchronizationStatus();
@@ -172,13 +173,13 @@ public class HQSyncController {
     }
 
     public void saveServerSuccessfulDate() {
-        this.syncPhaseTwoDate = Date.today().addDays(-2);
+        this.syncPhaseTwoDateWrapper.Last_Run_Date__c = Date.today().addDays(-2);
         CommcareToSalesforceSettings__c serverSettings = CommcareToSalesforceSettings__c.getInstance(this.phaseTwoServer);
         if (serverSettings != null) {
-            if (this.syncPhaseTwoDate != null
-                    && ((serverSettings.Last_Run_Date__c != null && this.syncPhaseTwoDate <= serverSettings.Last_Run_Date__c)
+            if (this.syncPhaseTwoDateWrapper.Last_Run_Date__c != null
+                    && ((serverSettings.Last_Run_Date__c != null && this.syncPhaseTwoDateWrapper.Last_Run_Date__c <= serverSettings.Last_Run_Date__c)
                     || (serverSettings.Last_Run_Date__c == null))) {
-                this.syncPhaseTwoDate = serverSettings.Last_Run_Date__c;
+                this.syncPhaseTwoDateWrapper.Last_Run_Date__c = serverSettings.Last_Run_Date__c;
             }
         } else {
             ApexPages.addMessage(new ApexPages.message(ApexPages.severity.ERROR, 'Cannot load server settings.'));
@@ -186,11 +187,11 @@ public class HQSyncController {
     }
 
     public void loadServerSuccessfulDate() {
-        this.syncPhaseTwoDate = Date.today().addDays(-2);
+        this.syncPhaseTwoDateWrapper.Last_Run_Date__c = Date.today().addDays(-2);
         CommcareToSalesforceSettings__c serverSettings = CommcareToSalesforceSettings__c.getInstance(this.phaseTwoServer);
         if (serverSettings != null) {
             if (serverSettings.Last_Run_Date__c != null) {
-                this.syncPhaseTwoDate = serverSettings.Last_Run_Date__c;
+                this.syncPhaseTwoDateWrapper.Last_Run_Date__c = Date.today().addDays(-2);
             }
         } else {
             ApexPages.addMessage(new ApexPages.message(ApexPages.severity.ERROR, 'Cannot load server settings.'));

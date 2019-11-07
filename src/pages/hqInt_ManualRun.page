@@ -1,5 +1,4 @@
-<apex:page showHeader="true" sidebar="true" controller="HQSyncController" docType="html-5.0">
-
+<apex:page showHeader="true" sidebar="true" controller="HQSyncController" docType="html-5.0" lightningStylesheets="true">
 
     <apex:includeScript value="{!URLFOR($Resource.ProjectReportOut2, 'js/jquery.min.js')}"/>
     <apex:includeScript value="{!URLFOR($Resource.ProjectReportOut2, 'js/jquery-ui.min.js')}"/>
@@ -156,7 +155,7 @@
 
                         <apex:outputPanel styleClass="syncPanel">
                             <apex:outputLabel styleClass="syncLabel" value="Phase One Synchronization: " for="phaseOneButton" />
-                            <apex:commandButton id="phaseOneButton" styleClass="syncSelect"
+                            <apex:commandButton id="phaseOneButton"
                                                 action="{!runDomainsSynchronizationJob}"
                                                 disabled="{!if(syncRunningPhaseTwo == true || syncRunningPhaseOne == true, true, false)}"
                                                 value="Run Phase One Synchronization"
@@ -204,13 +203,13 @@
 
                         <apex:outputPanel id="datePanelId" styleClass="syncPanel">
                             <apex:outputLabel styleClass="syncLabel" value=" Last Synchronization Date : " for="syncDate" />
-                            <apex:input styleClass="syncSelect" id="syncDate" type="date" value="{!syncPhaseTwoDate}" />
+                            <apex:inputField styleClass="syncSelect" id="syncDate" value="{!syncPhaseTwoDateWrapper.Last_Run_Date__c}" />
                             <c:HelpIconComponent helpText="Records with Last Update Date equal or greater will be synced. Update only if needed."/>
                         </apex:outputPanel>
 
                         <apex:outputPanel styleClass="syncPanel">
                             <apex:outputLabel styleClass="syncLabel" value="Phase Two Synchronization: " for="phaseTwoButton" />
-                            <apex:commandButton id="phaseTwoButton" styleClass="syncSelect"
+                            <apex:commandButton id="phaseTwoButton"
                                                 action="{!runAccountingJob}"
                                                 disabled="{!if(syncRunningPhaseTwo == true || syncRunningPhaseOne == true, true, false)}"
                                                 value="Run Phase Two Synchronization"

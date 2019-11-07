@@ -1,4 +1,5 @@
-<apex:page controller="OpportunityPipelineSnapshotController" docType="html-5.0" action="{!initPipelineSnapshot}">
+<apex:page controller="OpportunityPipelineSnapshotController" docType="html-5.0"
+           action="{!initPipelineSnapshot}" lightningStylesheets="true">
     <style type="text/css">
         .snpTable {
             margin-top: 10px;
