@@ -1,20 +1,25 @@
-trigger ContractTrigger on DContract__c (after insert,after update,before insert,before update) {
+trigger ContractTrigger on DContract__c (after insert, after update, before insert, before update, before delete) {
 
     //Set Workflow Escalation Enabled
     if (Trigger.IsBefore) {
-        for (DContract__c cont : Trigger.New) {
-            DContract__c oldCont = null;
-
-            if (Trigger.IsUpdate) {
-                oldCont = Trigger.OldMap.get(cont.id);
+        if (Trigger.isDelete) {
+            for (DContract__c c : Trigger.old) {
+                c.addError('You can\'t delete contracts!');
             }
+        } else {
+            for (DContract__c cont : Trigger.New) {
+                DContract__c oldCont = null;
 
-            if (oldCont == null || cont.Requires_Report_Out__c != oldCont.Requires_Report_Out__c){
-                
-                if (cont.Requires_Report_Out__c == 'Yes') {
-                  cont.Workflow_Escalation_Enabled__c = true;
-                } else {
-                  cont.Workflow_Escalation_Enabled__c = false;
+                if (Trigger.IsUpdate) {
+                    oldCont = Trigger.OldMap.get(cont.id);
+                }
+
+                if (oldCont == null || cont.Requires_Report_Out__c != oldCont.Requires_Report_Out__c){
+                    if (cont.Requires_Report_Out__c == 'Yes') {
+                      cont.Workflow_Escalation_Enabled__c = true;
+                    } else {
+                      cont.Workflow_Escalation_Enabled__c = false;
+                    }
                 }
             }
         }
