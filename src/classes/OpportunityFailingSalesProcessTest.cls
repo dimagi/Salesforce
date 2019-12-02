@@ -4,12 +4,15 @@ public class OpportunityFailingSalesProcessTest {
     @testSetup
     public static void setUpData() {
         insert new Opportunity(Name = 'Test Opportunity 1', StageName = 'Stage 5 - Submitted', Channel_Response__c = 'Inside Sales',
-                                                 CloseDate = date.today().addMonths(5), Probability = 30);
+                                                 CloseDate = date.today().addMonths(5), Probability = 30,
+                                                 Opportunity_Owner_Division__c = 'Solutions', Opportunity_Owner_Sub_Division__c = 'Inbound Sales');
         insert new Opportunity(Name = 'Test Opportunity 2', StageName = 'Stage 5 - Submitted', Channel_Response__c = 'Inside Sales',
-                                                 CloseDate = date.today().addMonths(5), Probability = 30);
+                                                 CloseDate = date.today().addMonths(5), Probability = 30,
+                                                 Opportunity_Owner_Division__c = 'Solutions', Opportunity_Owner_Sub_Division__c = 'Inbound Sales');
         insert new Opportunity(Name = 'Test Opportunity 3', StageName = 'Stage 5 - Submitted', Channel_Response__c = 'Inside Sales',
                                                  CloseDate = date.today().addMonths(5), Probability = 30, Latest_day_Opp_failed_sales_process__c = Date.today().addDays(-15),
-                                                 Nb_times_Opp_failed_sales_process__c = 15);
+                                                 Nb_times_Opp_failed_sales_process__c = 15,
+                                                 Opportunity_Owner_Division__c = 'Solutions', Opportunity_Owner_Sub_Division__c = 'Inbound Sales');
     }
 
     @isTest

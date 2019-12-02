@@ -54,7 +54,8 @@ public class RenewalSubscriptionsTest {
 
         Business_Unit__c bizUnit = new Business_Unit__c(Name = 'Test Business Unit 1');
         Opportunity opp = new Opportunity(Name = 'AAA Opportunity 1', Business_Unit_Owner__c = bizUnit.Id, StageName = 'Stage 5 - Submitted',
-                                                 CloseDate = date.today().addMonths(5), Probability = 30, Domain_Name__c = domain4.Id);
+                                                 CloseDate = date.today().addMonths(5), Probability = 30, Domain_Name__c = domain4.Id,
+                                                 Opportunity_Owner_Division__c = 'Solutions', Opportunity_Owner_Sub_Division__c = 'Inbound Sales');
         insert opp;
 
 
