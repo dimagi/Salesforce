@@ -120,7 +120,15 @@ public without sharing class FogBugzUtils {
                     o.CloseDate = Date.today();
                 }
 
-                upsert o;
+                Database.UpsertResult[] srList = Database.upsert(new List<Opportunity> { o }, false);
+                if (!srList.get(0).isSuccess()) { // we are updating single record
+                    success = false;
+                    String oppErrorMessage = '';
+                    for(Database.Error err : srList.get(0).getErrors()) {
+                        oppErrorMessage += err.getMessage() + 'Opp Id: ' + srList.get(0).getId() + ' ';
+                    }
+                    StatusLoggerUtils.logError(StatusLoggerUtils.FOGBUGZ_SYNC_LOGGER, 'Fogbugz Sync Error batchId : ' + batchId, 0, o.Fogbugz_Ticket_Number__c + ' ' + oppErrorMessage);
+                }
             } else {
                 System.debug(LoggingLevel.INFO, 'FogBugzUtils::syncOpportunityFromFB() - Case not updated in FB, case #' + o.Fogbugz_Ticket_Number__c);
                 StatusLoggerUtils.logWarning(StatusLoggerUtils.FOGBUGZ_SYNC_LOGGER, 'Fogbugz Sync batchId : ' + batchId, 0,
