@@ -64,6 +64,7 @@ public without sharing class FogBugzSynchronizerBatch implements Database.Batcha
                     if (!us.isEmpty()) {
                         o.OwnerId = us[0].Id;
                     } else {
+                        StatusLoggerUtils.logError(StatusLoggerUtils.FOGBUGZ_SYNC_LOGGER, 'Cannot find default owner', 0, FogBugz_Settings__c.getOrgDefaults().Default_Opportunity_Owner__c);
                         System.debug(LoggingLevel.WARN, 'FogBugzSynchronizerBatch::execute() - Cannot find default owner: ' +
                              FogBugz_Settings__c.getOrgDefaults().Default_Opportunity_Owner__c);
                     }
@@ -91,7 +92,6 @@ public without sharing class FogBugzSynchronizerBatch implements Database.Batcha
         }
 
         if(!Test.isRunningTest()) {
-            StatusLoggerUtils.logInfo(StatusLoggerUtils.FOGBUGZ_SYNC_LOGGER, 'End sync job: ' + this.filterId, 0, 'End sync job');
             if (this.lastJob && DateTime.now().hour() == 9) { // send one email a day at 9:00 am
                 StatusLoggerUtils.sendLog(StatusLoggerUtils.FOGBUGZ_SYNC_LOGGER);
             }

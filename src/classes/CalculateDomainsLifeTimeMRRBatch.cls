@@ -39,6 +39,5 @@ public class CalculateDomainsLifeTimeMRRBatch implements Database.Batchable<SObj
     }
 
     public void finish(Database.BatchableContext context) {
-        Database.executeBatch(new DeactivateDuplicatedSubscriptionsBatch(), 4);
     }
 }

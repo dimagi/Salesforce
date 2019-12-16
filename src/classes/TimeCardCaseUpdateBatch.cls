@@ -60,6 +60,7 @@ public class TimeCardCaseUpdateBatch implements Database.Batchable<FogBugzCase>,
                 tcList.addAll(timeCardsToUpdate);
             }
 
+            //TODO think about it or fix it in fogbugz
             if (timeCardsToUpdate.size() > 0 && newContract == null && !Test.isRunningTest()) {
                 EmailHelper.sendEmail(BatchDefaultSettings__c.getOrgDefaults().Error_Emails__c.split(','),
                         'Contract Fogbugz Id Mismatch', 'Case Id : ' + fbCase.caseId + ', Cannot find contract with Fogbugz Id : ' + fbCase.client);
@@ -73,7 +74,7 @@ public class TimeCardCaseUpdateBatch implements Database.Batchable<FogBugzCase>,
 
     public void finish(Database.BatchableContext context) {
         if (!Test.isRunningTest()) {
-            Database.executeBatch(new BatchRecalculateTimeCardCost(null));
+            Database.executeBatch(new TimeCardCalculator());
         }
     }
 }

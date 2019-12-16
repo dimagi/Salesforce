@@ -142,10 +142,6 @@ public without sharing class FogBugzUtils {
             success = false;
         }
 
-        if(success == true) {
-            StatusLoggerUtils.logInfo(StatusLoggerUtils.FOGBUGZ_SYNC_LOGGER, 'Fogbugz Sync batchId : ' + batchId, 0,
-                                            'Fogbugz Opp Successfully synced - FogBugz Ticket No - ' + o.Fogbugz_Ticket_Number__c);
-        }
         return success;
     }
 
