@@ -208,15 +208,10 @@ public class PROComponentController {
             }
         } catch(DmlException ex) {
              ApexPages.addMessage(new ApexPages.message(ApexPages.severity.ERROR,ex.getDmlMessage(0)));
-             if (!Test.isRunningTest()) {
-                EmailHelper.sendEmailFromException(BatchDefaultSettings__c.getOrgDefaults().Error_Emails__c.split(','), 'PRO errors', 'PRO save error', ex);
-             }
         } catch (Exception e) {
             System.debug(e);
             ApexPages.addMessage(new ApexPages.message(ApexPages.severity.ERROR,'There was an error trying to save. Please try again.'));
-            if (!Test.isRunningTest()) {
-                EmailHelper.sendEmailFromException(BatchDefaultSettings__c.getOrgDefaults().Error_Emails__c.split(','), 'PRO errors', 'PRO save error', e);
-            }
+            System.debug(LoggingLevel.ERROR, 'Cannot save PRO : ' + e.getMessage());
         }
         return page;
     }

@@ -66,8 +66,5 @@ public class OpportunityFailingSalesProcessBatch implements Database.Batchable<O
     }
 
     public void finish(Database.BatchableContext BC) {
-        if (!Test.isRunningTest()) {
-            EmailHelper.sendEmail(BatchDefaultSettings__c.getOrgDefaults().Error_Emails__c.split(','), 'Opportunity Failing Process', 'Job finished : ' + Date.today());
-        }
     }
 }

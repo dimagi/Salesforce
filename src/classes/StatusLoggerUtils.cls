@@ -17,7 +17,6 @@ public class StatusLoggerUtils {
     public static final String GIR_SYNC_LOGGER = 'GIR_LOGGER';
     public static final String RENEWAL_LOGGER = 'RENEWAL_LOGGER';
     public static final String DOMAIN_SNP_LOGGER = 'DOMAIN_SNP_LOGGER';
-    public static final String TIME_CARD_LOGGER = 'TIME_CARD_LOGGER';
     public static final String ZENDESK_LOGGER = 'ZENDESK_LOGGER';
     public static final String AEE_LOGGER = 'AGGREGATE_EXECUTION_EFFICIENCY_LOGGER';
     public static final String CASE_CREATE_LOGGER = 'SF_FB_CASE_LOGGER';
@@ -92,6 +91,11 @@ public class StatusLoggerUtils {
         List<Status_Log__c> logsInfo = [SELECT Title__c, Counter__c, Message__c, Date__c FROM Status_Log__c WHERE Name =: logName AND Status__c =: INFO_LOG ORDER BY Date__c DESC];
         List<Status_Log__c> logsWarns = [SELECT Title__c, Counter__c, Message__c, Date__c FROM Status_Log__c WHERE Name =: logName AND Status__c =: WARNING_LOG ORDER BY Date__c DESC];
         List<Status_Log__c> logsError = [SELECT Title__c, Counter__c, Message__c, Date__c FROM Status_Log__c WHERE Name =: logName AND Status__c =: ERROR_LOG ORDER BY Date__c DESC];
+
+        if (logsInfo.size() == 0 && logsWarns.size() == 0 && logsError.size() == 0) {
+            // we don't want send empty tables in email, it is just spam
+            return;
+        }
 
         String body = '<div><br/>INFO :<br/><table border="1" style="border-collapse: collapse">';
         body += '<tr style="font-weight:bold"><td>Name</td><td>Message</td><td>Num</td><td>Date</td></tr>';

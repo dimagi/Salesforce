@@ -162,11 +162,6 @@ public without sharing class TimeCardCalculator implements Database.Batchable<sO
                 }
             }
         }
-
-        if (!Test.isRunningTest()) {
-            StatusLoggerUtils.logInfo(StatusLoggerUtils.TIME_CARD_LOGGER, 'Time Card Calculator', 0, 'Finished Time Card Calculator Job');
-            StatusLoggerUtils.sendLog(StatusLoggerUtils.TIME_CARD_LOGGER,  BatchDefaultSettings__c.getOrgDefaults().Error_Emails__c.split(','));
-        }
     }
 
     private void putServicesSpendForClient(Decimal value, Id clientId) {

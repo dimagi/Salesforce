@@ -38,13 +38,5 @@ public class CreateFBCasesBatch implements Database.Batchable<sObject>, Database
      }
 
     public void finish(Database.BatchableContext info) {
-        String body = 'Job Status : ' + DateTime.now() + '</br></br>';
-        for (String line : this.oppErrors) {
-            body += line + '</br>';
-        }
-
-        if (!Test.isRunningTest()) {
-            EmailHelper.sendEmail(FogBugz_Settings__c.getOrgDefaults().Error_Email__c, 'CreateFBCasesBatch Job Status', body);
-        }
     }
 }
