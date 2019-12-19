@@ -123,7 +123,7 @@ public without sharing class FogBugzSynchronizerBatch implements Database.Batcha
 
                     // before was c.lastModifiedDate > minTime, but sometimes some cases are not returned by filter or some errors can occurs
                     // so we want check cases from last few hours to be sure all opps will be closed and updated
-                    if (minTime == null || c.lastModifiedDate == null || c.lastModifiedDate > minTime.addHours(-3)) {
+                    if (minTime == null || c.lastModifiedDate == null || c.lastModifiedDate > minTime.addHours(-4)) {
                         allOpportunities.add(o);
                     }
                 } else {
