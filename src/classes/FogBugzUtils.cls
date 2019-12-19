@@ -93,18 +93,16 @@ public without sharing class FogBugzUtils {
 
                 String fbArea = fbCase.area == null ? null : (fbCase.area.length() > 40 ? fbCase.area.substring(0, 40) : fbCase.area);
                 if (fbArea == 'Closed - Won') { // When User will close Opp in SF then 100% is set as default, so we must
-                                                     // do this also when Opp is closed in FB
+                                                // do this also when Opp is closed in FB
                     o.Probability = 100;
                     if (o.StageName !=  fbCase.area) {
-                        o.CloseDate = Date.today(); // We don't want update it again if we are using 3h time window it can be next day
+                        o.CloseDate = Date.today(); // We don't want update it again if we are using 4h time window it can be next day
                     }
                 } else if (fbArea == 'Closed' || fbArea == 'Closed - No Go' || fbArea == 'Closed - Lost') {
                     o.Probability = 0;
                 }
 
-                if (!(o.IsClosed && fbCase.assignedTo == 'CLOSED') || (fbArea != null && fbArea.contains('Closed'))) { // We want avoid problem with 3 hours time frame, but we want add correct closed stage to Opp
-                    o.StageName = fbArea;
-                }
+                o.StageName = fbArea;
                 o.Fogbugz_Assigned_To__c = fbCase.assignedTo;
                 o.Name = fbCase.title == null ? null : (fbCase.title.length() > 120 ? fbCase.title.substring(0, 120) : fbCase.title);
                 o.Fogbugz_Opened_By__c = null;
