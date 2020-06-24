@@ -159,8 +159,6 @@ public with sharing class OpenOpportunityEmailUtils {
         else {
             result += '<th [LEFT_STYLE]>Opportunity Name</th>' +
                         '<th [RIGHT_STYLE]>Stage Duration</th>' +
-                        '<th [RIGHT_STYLE]>Fogbugz Ticket Number</th>' +
-                        '<th [RIGHT_STYLE]>Fogbugz Assigned To</th>' +
                         '<th [RIGHT_STYLE]>Probability (%)</th>' +
                         '<th [RIGHT_STYLE]>Amount</th>' +
                         '<th [RIGHT_STYLE]>Account Name</th>' +
@@ -263,9 +261,8 @@ public with sharing class OpenOpportunityEmailUtils {
                         }
                     }
                     
-                    if (selectedField.Name.equals('Fogbugz_Ticket_Number__c')) {
-                        result += '<td [STYLE]><span><a href="' + FOGBUGZ_LINK + fieldValue 
-                                + '" target="_blank">' + fieldValue + '</a></span></td>';
+                    if (selectedField.Name.equals('Fogbugz_Ticket_Number__c') || selectedField.Name.equals('Fogbugz_Assigned_To__c')) {
+                        result += '';
                     }
                     else {
                         result += '<td [STYLE]><span>' + fieldValue + '</span></td>';
@@ -286,8 +283,6 @@ public with sharing class OpenOpportunityEmailUtils {
 
             result += '<td [LEFT_STYLE]><span><a href="' + href + '" target="_blank">' + opp.Name + '</a></span></td>' +
                         '<td [STYLE]><span>' + opp.Stage_Duration__c + '</span></td>' +
-                        '<td [STYLE]><span><a href="' + opp.Fogbugz_Link__c + '" target="_blank">' + opp.Fogbugz_Ticket_Number__c + '</a></span></td>' +
-                        '<td [STYLE]><span>' + opp.Fogbugz_Assigned_To__c + '</span></td>' +
                         '<td [STYLE]><span>' + opp.Fogbugz_Probability__c + '</span></td>' +
                         '<td [STYLE]><span>' + amountValue + '</span></td>' +
                         '<td [STYLE]><span>' + opp.Account.Name + '</span></td>' +
