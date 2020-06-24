@@ -28,11 +28,12 @@ public class OpenOpportunityReportController {
 
     public Opportunity[] getOpenOpportunitiesAllUsers(String[] channel) {
         String[] stages = new String[] {'Stage 1 - Connect','Stage 2 - Talking','Stage 3 - Prospect','Stage 4 - Proposal Development','Stage 5 - Submitted','Stage 6 - In Negotiations'};
+        String OpportunityOwnerDivisionFilter = 'Solutions';
 
         Opportunity[] result = new Opportunity[] {};
 
         String queryValues = this.getOpenOpportunitiesQueryValues();
-        String sql = 'SELECT ' + queryValues + ' FROM Opportunity WHERE IsClosed = false AND StageName IN :stages AND Channel_Response__c IN: channel'
+        String sql = 'SELECT ' + queryValues + ' FROM Opportunity WHERE IsClosed = false AND StageName IN :stages AND Channel_Response__c IN: channel AND Opportunity_Owner_Division__c =: OpportunityOwnerDivisionFilter'
                         + ' ORDER BY Total_Days_Not_Updated__c DESC';
 
         result = Database.query(sql);
