@@ -154,7 +154,9 @@ public without sharing class RenewalSubscriptionsBatch implements Database.Batch
                                                         Opportunity_Owning_Entity__c = this.incBusinessUnit.Id,
                                                         Contract_Owner_BU__c = this.incBusinessUnit.Id,
                                                         Implementing_Business_Unit__c = this.incBusinessUnit.Id,
-                                                        Opportunity_Source__c = oppSource
+                                                        Opportunity_Source__c = oppSource,
+                                                        Opportunity_Owner_Division__c = 'SaaS',
+                                                        Opportunity_Owner_Sub_Division__c = 'Inbound Sales'
                                                     );
 
                 PricebookEntry pbe = this.priceBookEntries.get(subscription.Software_Plan_Edition__c);
