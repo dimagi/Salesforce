@@ -153,8 +153,13 @@ public with sharing class OpenOpportunityEmailUtils {
             result += '<th [LEFT_STYLE]>Opportunity Name</th>';
             for(Open_Opportunity_Fields__c selectedField :selectedFields) {
                 
-                result += '<th [RIGHT_STYLE]>' + selectedField.Label__c + '</th>';
-            }           
+                if (selectedField.Name.equals('Fogbugz_Ticket_Number__c') || selectedField.Name.equals('Fogbugz_Assigned_To__c')) {
+                    result += '';
+                }
+                else {
+                    result += '<th [RIGHT_STYLE]>' + selectedField.Label__c + '</th>';
+                }
+            }
         }
         else {
             result += '<th [LEFT_STYLE]>Opportunity Name</th>' +
