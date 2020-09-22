@@ -8,6 +8,7 @@ public class FTEIndividualProjectController extends FTEController {
     public Id employeeId { get; set;}
     public List<FTEEmployeeTime> individualContractDataList { get; set;}
     public Integer fteYear { get; set;}
+    public Map<Id, FTEEmployeeTime> projectTimeTrackingMap { get; set;}
 
     public FTEIndividualProjectController() {
         String conId = ApexPages.currentPage().getParameters().get('contractId');
@@ -21,6 +22,15 @@ public class FTEIndividualProjectController extends FTEController {
         } else {
             this.fteYear = Date.today().year();
         }
+        this.projectTimeTrackingMap = new Map<Id, FTEEmployeeTime>();
+    }
+
+    public PageReference refreshIndividualProject(){
+        PageReference pageRef = Page.FTE_Individual_Project_View;
+        pageref.getParameters().put('contractId', this.contractId);
+        pageref.getParameters().put('fteYear', String.valueOf(this.fteYear));
+        pageRef.setRedirect(true);
+        return pageRef;
     }
 
     public void initIndividualProject() {
@@ -40,14 +50,33 @@ public class FTEIndividualProjectController extends FTEController {
         Map<Id, FTEEmployeeTime> projectTimeMap = new Map<Id, FTEEmployeeTime>();
         Decimal totalHours = 0;
 
-        FTEEmployeeTime totalProjectTime = new FTEEmployeeTime('Total', null);
+        FTEEmployeeTime totalProjectTime = new FTEEmployeeTime('Total', null, false);
+        List<FTE_Work_Card__c> workCards = [SELECT Id, Employee__c, Employee__r.name, Month_1__c, Month_2__c, Month_3__c, Month_4__c, 
+                                                    Month_5__c, Month_6__c, Month_7__c, Month_8__c, Month_9__c, 
+                                                    Month_10__c, Month_11__c, Month_12__c, Total__c, Total_Hours__c FROM FTE_Work_Card__c 
+                                                    WHERE Contract__c =:  this.contractId
+                                                    AND Year__c	 =: this.fteYear
+                                                    ORDER BY Employee__r.Name];
+
+        for(FTE_Work_Card__c workCard : workCards){
+             FTEEmployeeTime tmpHelper;
+            if (!this.projectTimeTrackingMap.containsKey(workCard.Employee__c)) {
+                    this.projectTimeTrackingMap.put(workCard.Employee__c, new FTEEmployeeTime(workCard.Employee__r.name, workCard.Employee__c, false));
+            }
+            tmpHelper = this.projectTimeTrackingMap.get(workCard.Employee__c);
+            for(Integer i=1; i< tmpHelper.hoursArray.size(); i++){
+                tmpHelper.hoursArray[i-1] = (Decimal) workCard.get('month_'+ i + '__c') * 8;
+            }
+            tmpHelper.hoursArray[12]=workCard.Total__c * 8;
+        }
+
         for (Time_Card__c timeCard : [SELECT Id, Employee__c, Employee__r.Name, Date__c, Total__c, FTE_hours__c, FTE_Contract__c FROM Time_Card__c WHERE
                                                 (Client__c =: this.contractId OR FTE_Contract__c =: this.contractId) AND CALENDAR_YEAR(Date__c) =: this.fteYear]) {
             FTEEmployeeTime tmpHelper;
             if (projectTimeMap.containsKey(timeCard.Employee__c)) {
                 tmpHelper = projectTimeMap.get(timeCard.Employee__c);
             } else {
-                tmpHelper = new FTEEmployeeTime(timeCard.Employee__r.Name, timeCard.Employee__c);
+                tmpHelper = new FTEEmployeeTime(timeCard.Employee__r.Name, timeCard.Employee__c, false);
             }
 
             Decimal realHours = timeCard.Total__c != null ? timeCard.Total__c : 0;
@@ -63,7 +92,7 @@ public class FTEIndividualProjectController extends FTEController {
             projectTimeMap.put(timeCard.Employee__c, tmpHelper);
         }
 
-        this.individualContractDataList = projectTimeMap.values();
+        this.individualContractDataList = this.projectTimeTrackingMap.values();
         for (FTEEmployeeTime empT : this.individualContractDataList) {
             empT.calculateDays();
             totalProjectTime.sumHours(empT);

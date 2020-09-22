@@ -28,12 +28,17 @@ public class FTETrackerTest {
                     Unassigned Contract 1   No  3       0,375
                     Unassigned Contract 2   No  22      2,75    2 TO FTE 4 AND 16 TO FTE 3
                                                 75,1    9,3875
+    testSetup work cards
+    Employee        Contract                Month days   
+    FTE Employee    FTE Contract 1          1,2,3,4,5,6,7,8,9,10,11,12 
+    Other Employee  FTE Contract 2          1,2,3,4,5,6,7,8,9,10,11,12 
     */
 
     @testSetup
     static void setup() {
         Date currentDate = Date.today();
         List<Time_Card__c> timeCards = new List<Time_Card__c>();
+        List<FTe_Work_Card__c> workCards = new List<FTe_Work_Card__c>();
 
         SFDC_Employee__c testEmployee = addEmployee('FTE Employee');
         Dcontract__c fteContract1 = addContract('FTE Contract 1', 'Yes');
@@ -57,6 +62,9 @@ public class FTETrackerTest {
         timeCards.add(addTimeCard(fteContract3.Id, testEmployee.Id, Date.newInstance(currentDate.year(), currentDate.month(), 14), 1));
         timeCards.add(addTimeCard(fteContract3.Id, testEmployee.Id, Date.newInstance(currentDate.year(), currentDate.month(), 15), 3.3));
 
+        workCards.add(addWorkCard(fteContract1.Id, testEmployee, currentDate.year()));
+        workCards.add(addWorkCard(fteContract2.Id, testEmployee, currentDate.year()));
+
         Dcontract__c fteContract4 = addContract('FTE Contract 4', 'Yes');
         timeCards.add(addTimeCard(fteContract4.Id, testEmployee.Id, Date.newInstance(currentDate.year(), currentDate.month(), 16), 5));
         timeCards.add(addTimeCard(fteContract4.Id, testEmployee.Id, Date.newInstance(currentDate.year(), currentDate.month(), 17), 9));
@@ -79,6 +87,9 @@ public class FTETrackerTest {
         timeCards.add(addTimeCard(unassignedContract2.Id, testEmployee.Id, Date.newInstance(currentDate.year(), currentDate.month(), 5), 3.3));
 
         SFDC_Employee__c testEmployee2 = addEmployee('Other Employee');
+
+        workCards.add(addWorkCard(fteContract1.Id, testEmployee2, currentDate.year()));
+        workCards.add(addWorkCard(fteContract2.Id, testEmployee2, currentDate.year()));
 
         timeCards.add(addTimeCard(fteContract1.Id, testEmployee2.Id, Date.newInstance(currentDate.year(), currentDate.month(), 1), 8, 5,
                                                                                                 unassignedContract1.Id));
@@ -130,6 +141,7 @@ public class FTETrackerTest {
                                                                                                 fteContract4.Id));
         timeCards.add(addTimeCard(unassignedContract2.Id, testEmployee3.Id, Date.newInstance(currentDate.year(), currentDate.month(), 24), 4));
 
+        insert workCards;
         insert timeCards;
     }
 
@@ -143,9 +155,9 @@ public class FTETrackerTest {
         List<FTE_Work_Card__c> workCards = [SELECT Id, Employee__c, Employee__r.Name, Month_1__c, Month_2__c, Month_3__c,
                                    Month_4__c, Month_5__c, Month_6__c, Month_7__c, Month_8__c, Month_9__c, Month_10__c, Month_11__c, Month_12__c,
                                    Total__c, Total_Hours__c, Year__c FROM FTE_Work_Card__c ORDER BY Employee__r.Name];
-        System.assertEquals(3, workCards.size());
-        System.assertEquals(92.1, workCards.get(0).Total_Hours__c);
-        System.assertEquals(11.5, workCards.get(0).Total__c);
+        System.assertEquals(5, workCards.size());
+        System.assertEquals(600, workCards.get(0).Total_Hours__c);
+        System.assertEquals(75, workCards.get(0).Total__c);
     }
 
     @isTest
@@ -163,12 +175,12 @@ public class FTETrackerTest {
 
         List<SFDC_Employee__c> employees = [SELECT Id, Name FROM SFDC_Employee__c WHERE Employee_Status__c = 'Active' ORDER BY Name];
         System.assertEquals(3, employees.size());
-        List<FTE_Work_Card__c> workCards = [SELECT Id, Employee__c, Employee__r.Name, Month_1__c, Month_2__c, Month_3__c,
+        List<FTE_Work_Card__c> workCards = [SELECT Id, contract__r.name, Employee__c, Employee__r.Name, Month_1__c, Month_2__c, Month_3__c,
                                    Month_4__c, Month_5__c, Month_6__c, Month_7__c, Month_8__c, Month_9__c, Month_10__c, Month_11__c, Month_12__c,
                                    Total__c, Total_Hours__c, Year__c FROM FTE_Work_Card__c WHERE Year__c =: Date.today().year() ORDER BY Employee__r.Name];
-        System.assertEquals(3, workCards.size());
-        System.assertEquals(85.8, workCards.get(0).Total_Hours__c); // -25,6 + 19,3
-        System.assertEquals(10.75, workCards.get(0).Total__c);
+        System.assertEquals(5, workCards.size());
+        System.assertEquals(600, workCards.get(0).Total_Hours__c); // -25,6 + 19,3
+        System.assertEquals(75, workCards.get(0).Total__c);
     }
 
     @isTest
@@ -192,11 +204,12 @@ public class FTETrackerTest {
         controller.moveTimeToUnassigned();
         controller.initFteEmployeeView();
         Test.stopTest();
+        List<Integer> hoursArray = new List<Integer>{2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 20, 20};
 
         System.assertEquals(70.9, controller.fteTimeManager.unassigned.hoursArray[currentDate.month() - 1]);
         System.assertEquals(8.75, controller.fteTimeManager.unassigned.daysArray[currentDate.month() - 1]);
-        System.assertEquals(68.1, controller.totalAssignedDays.hoursArray[currentDate.month() - 1]);
-        System.assertEquals(8.5, controller.totalAssignedDays.daysArray[currentDate.month() - 1]);
+        System.assertEquals((hoursArray[currentDate.month() - 1] - 3) * 8, controller.totalAssignedDays.hoursArray[currentDate.month() - 1]);
+        System.assertEquals(hoursArray[currentDate.month() - 1] - 3, controller.totalAssignedDays.daysArray[currentDate.month() - 1]);
     }
 
     @isTest
@@ -245,11 +258,12 @@ public class FTETrackerTest {
         controller.moveTimeFromUnassigned();
         controller.initFteEmployeeView();
         Test.stopTest();
+        List<Integer> hoursArray = new List<Integer>{2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 20, 20};
 
         System.assertEquals(26.9, controller.fteTimeManager.unassigned.hoursArray[currentDate.month() - 1]);
         System.assertEquals(3.25, controller.fteTimeManager.unassigned.daysArray[currentDate.month() - 1]);
-        System.assertEquals(112.1, controller.totalAssignedDays.hoursArray[currentDate.month() - 1]);
-        System.assertEquals(14, controller.totalAssignedDays.daysArray[currentDate.month() - 1]);
+        System.assertEquals((hoursArray[currentDate.month() - 1] + 2.5) * 8, controller.totalAssignedDays.hoursArray[currentDate.month() - 1]);
+        System.assertEquals(hoursArray[currentDate.month() - 1] + 2.5, controller.totalAssignedDays.daysArray[currentDate.month() - 1]);
     }
 
     @isTest
@@ -290,11 +304,11 @@ public class FTETrackerTest {
         FTEEmployeeController controller = new FTEEmployeeController();
         controller.initFteEmployeeView();
         Test.stopTest();
-
+        List<Integer> hoursArray = new List<Integer>{16, 32, 48, 64, 80, 96, 112, 128, 144, 160, 160, 160};
         System.assertEquals(46.9, controller.fteTimeManager.unassigned.hoursArray[currentDate.month() - 1]);
         System.assertEquals(5.75, controller.fteTimeManager.unassigned.daysArray[currentDate.month() - 1]);
-        System.assertEquals(92.1, controller.totalAssignedDays.hoursArray[currentDate.month() - 1]);
-        System.assertEquals(11.5, controller.totalAssignedDays.daysArray[currentDate.month() - 1]);
+        System.assertEquals(hoursArray[currentDate.month() - 1], controller.totalAssignedDays.hoursArray[currentDate.month() - 1]);
+        System.assertEquals(hoursArray[currentDate.month() - 1]/8, controller.totalAssignedDays.daysArray[currentDate.month() - 1]);
     }
 
     @isTest
@@ -1275,8 +1289,8 @@ public class FTETrackerTest {
         Test.startTest();
         FTEIndividualProjectController projCtrl = new FTEIndividualProjectController();
         projCtrl.initIndividualProject();
-        System.assertEquals(4, projCtrl.individualContractDataList.size()); // 3 employees and 1 total row
-        System.assertEquals('Total', projCtrl.individualContractDataList.get(3).name);
+        System.assertEquals(3, projCtrl.individualContractDataList.size()); // 3 employees and 1 total row
+        System.assertEquals('Total', projCtrl.individualContractDataList.get(2).name);
 
         System.assertNotEquals(null, projCtrl.goToEmployeeView());
         System.assertNotEquals(null, projCtrl.goToProjectListView());
@@ -1480,5 +1494,15 @@ public class FTETrackerTest {
             FTE_Contract__c = fteId
         );
         return timeCardObj;
+    }
+
+    private static FTE_Work_Card__c addWorkCard(Id contractId,  SFDC_Employee__c employee, Decimal workCardYear) {
+        FTE_Work_Card__c workCardObj = new FTE_Work_Card__c(Contract__c = contractId,  Employee__c = employee.Id, 
+                                                                 Year__c = workCardYear, Month_1__c = 1,
+                                                                 Month_2__c = 2, Month_3__c = 3, Month_4__c = 4, Month_5__c = 5, Month_6__c = 6,
+                                                                 Month_7__c = 7, Month_8__c = 8, Month_9__c = 9, Month_10__c = 10, Month_11__c = 10,
+                                                                 Month_12__c = 10, Total__c = 75, Total_Hours__c = 600
+        );
+        return workCardObj;
     }
 }

@@ -44,20 +44,27 @@ public class FTEEmployeeController extends FTEController {
     }
 
     public void initFteEmployeeView() {
-        if (this.employeeId == null) {
-            ApexPages.addMessage(new ApexPages.message(ApexPages.severity.ERROR, 'Empty Employee ID'));
-            return;
-        }
+        try{
+            if (this.employeeId == null) {
+                ApexPages.addMessage(new ApexPages.message(ApexPages.severity.ERROR, 'Empty Employee ID'));
+                return;
+            }
 
-        List<SFDC_Employee__c> emplList = [SELECT Id, Name, Hire_Date__c FROM SFDC_Employee__c WHERE Id =: this.employeeId LIMIT 1];
-        if (emplList.size() > 0) {
-            this.employee = emplList.get(0);
-        }
+            List<SFDC_Employee__c> emplList = [SELECT Id, Name, Hire_Date__c FROM SFDC_Employee__c WHERE Id =: this.employeeId LIMIT 1];
+            if (emplList.size() > 0) {
+                this.employee = emplList.get(0);
+            }
 
-        this.employeeNetworkDays = FTETrackerHelper.getNetworkDays(this.employee.Hire_Date__c, this.fteYear);
-        this.fteTimeManager = new FTETimeManager(this.employee, this.fteYear);
-        this.fteTimeManager.loadEmployeeTime();
-        buildUITableData();
+            this.employeeNetworkDays = FTETrackerHelper.getNetworkDays(this.employee.Hire_Date__c, this.fteYear);
+            this.fteTimeManager = new FTETimeManager(this.employee, this.fteYear);
+            this.fteTimeManager.loadEmployeeTime();
+            buildUITableData();
+        }
+        catch(Exception e){
+             ApexPages.addMessage(new ApexPages.message(ApexPages.severity.ERROR, 'Unexpected error: ' + e.getMessage()));
+             this.assignViewError = true;
+             return;
+        }
     }
 
     public override PageReference goToEmployeeListView () {
@@ -91,10 +98,13 @@ public class FTEEmployeeController extends FTEController {
         this.userAvailableDays = 0;
 
         if (this.employeeMonth != null) {
-            this.fteDaysMax = this.fteTimeManager.unassigned.daysArray[this.employeeMonth];
-            this.fteHoursMax = this.fteTimeManager.unassigned.hoursArray[this.employeeMonth];
+            // this.fteDaysMax = this.fteTimeManager.unassigned.daysArray[this.employeeMonth];
+            // this.fteHoursMax = this.fteTimeManager.unassigned.hoursArray[this.employeeMonth];
+            this.fteDaysMax = this.fteTimeManager.unAssignedTimeMap.daysArray[this.employeeMonth];
+            this.fteHoursMax = this.fteTimeManager.unAssignedTimeMap.hoursArray[this.employeeMonth];
+
             this.monthName = DateTime.newInstance(this.fteYear, this.employeeMonth + 1, 1).format('MMMM yyyy');
-            this.userAvailableDays = 21 - this.totalAssignedDays.daysArray[this.employeeMonth] > 0 ? 21 -
+            this.userAvailableDays = 22 - this.totalAssignedDays.daysArray[this.employeeMonth] > 0 ? 22 -
                                             this.totalAssignedDays.daysArray[this.employeeMonth] : 0;
             Decimal helperDecimal = employeeNetworkDays - this.totalAssignedDays.daysArray[12] > 0 ?
                 employeeNetworkDays - this.totalAssignedDays.daysArray[12] : 0;
@@ -117,10 +127,18 @@ public class FTEEmployeeController extends FTEController {
         this.notValidDays = false;
         this.fteDays = '0.25';
         if (this.employeeMonth != null && this.contractId != null) {
-            this.contractName = this.fteTimeManager.assignedMap.get(this.contractId).name;
-            this.fteHoursMax = this.fteTimeManager.assignedMap.get(this.contractId).hoursArray[this.employeeMonth];
-            this.fteDaysMax = this.fteTimeManager.assignedMap.get(this.contractId).daysArray[this.employeeMonth];
+            this.contractName = this.fteTimeManager.assignedTimeMap.get(this.contractId).name;
+            this.fteHoursMax = this.fteTimeManager.assignedTimeMap.get(this.contractId).hoursArray[this.employeeMonth];
+            this.fteDaysMax = this.fteTimeManager.assignedTimeMap.get(this.contractId).daysArray[this.employeeMonth];
             this.monthName = DateTime.newInstance(this.fteYear, this.employeeMonth + 1, 1).format('MMMM yyyy');
+            List <FTE_Work_Card__c> wc = [SELECT Id, Contract__r.name, Month_1__c, Month_2__c, Month_3__c, Month_4__c, Month_5__c, Month_6__c, Month_7__c, Month_8__c, Month_9__c, Month_10__c, Month_11__c,
+                                            Month_12__c, Total__c, Total_Hours__c FROM FTE_Work_Card__c WHERE Employee__c =:  this.employee.Id AND contract__c =: this.contractId AND Year__c =: this.fteYear LIMIT 1];
+            Integer Month  = this.employeeMonth + 1;
+			// if (wc.size() > 0) {
+            //     this.contractName = wc.get(0).Contract__r.name;
+            //     this.fteHoursMax = (Decimal) wc.get(0).get('month_'+ Month + '__c') * 8;
+            //     this.fteDaysMax = (Decimal) wc.get(0).get('month_'+ Month + '__c');
+            // }
         } else {
             ApexPages.addMessage(new ApexPages.message(ApexPages.severity.ERROR, 'Cannot load contract month'));
             this.assignViewError = true;
@@ -164,7 +182,8 @@ public class FTEEmployeeController extends FTEController {
                 hoursToUnassign = this.fteHoursMax;
             }
             this.fteTimeManager.moveTimeToUnassigned(hoursToUnassign, this.employeeMonth + 1, this.contractId);
-            moveHoursInFTEWorkCard((-1) * fteDaysdecimal, this.employeeMonth + 1, this.employee.Id);
+            this.fteTimeManager.updateWorkcard((-1) * fteDaysdecimal, this.employeeMonth + 1, this.contractId);
+            // moveHoursInFTEWorkCard((-1) * fteDaysdecimal, this.employeeMonth + 1, this.employee.Id);
         } catch (Exception e) {
             this.assignViewError = true;
             ApexPages.addMessage(new ApexPages.message(ApexPages.severity.ERROR, 'Unexpected error: ' + e.getMessage()));
@@ -209,7 +228,8 @@ public class FTEEmployeeController extends FTEController {
                 hoursToAssign = this.fteHoursMax;
             }
             this.fteTimeManager.moveTimeToAssigned(hoursToAssign, this.employeeMonth + 1, this.selectedFteContract);
-            moveHoursInFTEWorkCard(fteDaysdecimal, this.employeeMonth + 1, this.employee.Id);
+            this.fteTimeManager.updateWorkcard(fteDaysdecimal, this.employeeMonth + 1, this.selectedFteContract);         
+            // moveHoursInFTEWorkCard(fteDaysdecimal, this.employeeMonth + 1, this.employee.Id);
         } catch (Exception e) {
             this.assignViewError = true;
             ApexPages.addMessage(new ApexPages.message(ApexPages.severity.ERROR, 'Unexpected error: ' + e.getMessage() + ' Line : ' + e.getLineNumber()));
@@ -219,11 +239,12 @@ public class FTEEmployeeController extends FTEController {
 
     private void buildUITableData() {
         this.contractsTime = new List<FTEEmployeeTime>();
-        this.contractsTime = this.fteTimeManager.assignedMap.values();
-        this.totalAssignedDays = new FTEEmployeeTime('Total Assigned Days', null);
-        this.totalDaysWorked = new FTEEmployeeTime('Total Days Worked', null);
+        this.contractsTime = this.fteTimeManager.assignedTimeMap.values();
+        this.totalAssignedDays = new FTEEmployeeTime('Total Assigned Days', null, false);
+        this.totalDaysWorked = new FTEEmployeeTime('Total Days Worked', null, false);
         generateStyles();
-        this.contractsTime.add(this.fteTimeManager.unassigned);
+        // this.contractsTime.add(this.fteTimeManager.unassigned);
+        this.contractsTime.add(this.fteTimeManager.unAssignedTimeMap);
         this.contractsTime.add(this.totalAssignedDays);
         this.contractsTime.add(this.totalDaysWorked);
     }
@@ -235,13 +256,13 @@ public class FTEEmployeeController extends FTEController {
             this.totalAssignedDays.sumHours(empT);
             this.totalDaysWorked.sumHours(empT);
         }
-
+        this.fteTimeManager.unAssignedTimeMap.calculateDays();
         this.fteTimeManager.unassigned.calculateDays();
         this.totalAssignedDays.calculateDays();
 
         // We add css classes here to avoid complex if sections in visualgforce page
         for (Integer i = 0; i < 12; i++) {
-            if (this.totalAssignedDays.daysArray[i] > 21) {
+            if (this.totalAssignedDays.daysArray[i] > 22) {
                 this.totalAssignedDays.cssStyle[i] = 'topTotal overbilled';
             } else {
                 this.totalAssignedDays.cssStyle[i] = 'topTotal';
@@ -254,7 +275,7 @@ public class FTEEmployeeController extends FTEController {
             this.totalAssignedDays.cssStyle[12] = 'topTotal';
         }
 
-        this.totalDaysWorked.sumHours(this.fteTimeManager.unassigned);
+        this.totalDaysWorked.sumHours(this.fteTimeManager.unAssignedTimeMap);
         this.totalDaysWorked.calculateDays();
         this.totalDaysWorked.nameCss = '';
         this.totalAssignedDays.nameCss = 'topTotal';

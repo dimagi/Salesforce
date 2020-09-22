@@ -41,7 +41,7 @@ public without sharing class FTEHoursUploadBatch implements Database.Batchable<F
                     try {
                         FTEEmployeeTime emplTime = fteTimeManager.assignedMap.get(fteDataRec.getContractId());
                         if (emplTime == null) {
-                            emplTime = new FTEEmployeeTime(fteDataRec.getContractName(), fteDataRec.getContractId());
+                            emplTime = new FTEEmployeeTime(fteDataRec.getContractName(), fteDataRec.getContractId(), false);
                             fteTimeManager.assignedMap.put(fteDataRec.getContractId(), emplTime);
                         }
 
@@ -49,8 +49,10 @@ public without sharing class FTEHoursUploadBatch implements Database.Batchable<F
                         Decimal missingTime = 0;
                         if (timeDiff > 0) { // we must move time to unassigned
                             fteTimeManager.moveTimeToUnassigned(timeDiff, i, fteDataRec.getContractId());
+                            fteTimeManager.updateWorkcard((timeDiff / 8), i, fteDataRec.getContractId());
                         } else if (timeDiff < 0) { // we must move time to assigned
                             missingTime = fteTimeManager.moveTimeToAssigned((-1) * timeDiff, i, fteDataRec.getContractId());
+                            fteTimeManager.updateWorkcard((-1) *(timeDiff / 8), i, fteDataRec.getContractId());
                         }
 
                         if (missingTime > 0) {

@@ -93,10 +93,10 @@
                     <tr>
                         <td>Page: <apex:outputText value=" {!employeePagination.pageNumber} of {!CEILING(employeePagination.resultSize / employeePagination.pageSize)}"/></td>
                         <td align="center">
-                            <apex:commandLink status="loadingDiv" action="{!employeePagination.previousPage}" value="« Previous" rendered="{!employeePagination.hasPrevious}" reRender="emplsPanel" />
+                            <apex:commandLink status="loadingDiv" action="{!goToPreviousPage}" value="« Previous" rendered="{!employeePagination.hasPrevious}" reRender="emplsPanel" />
                             <apex:outputText style="color: #ccc;" value="« Previous" rendered="{!NOT(employeePagination.hasPrevious)}"/>
                             &nbsp;&nbsp;
-                            <apex:commandLink status="loadingDiv" action="{!employeePagination.nextPage}" value="Next »" rendered="{!employeePagination.hasNext}" reRender="emplsPanel" />
+                            <apex:commandLink status="loadingDiv" action="{!goToNextPage}" value="Next »" rendered="{!employeePagination.hasNext}" reRender="emplsPanel" />
                             <apex:outputText style="color: #ccc;" value="Next »" rendered="{!NOT(employeePagination.hasNext) }"/>
                         </td>
                         <td align="right">

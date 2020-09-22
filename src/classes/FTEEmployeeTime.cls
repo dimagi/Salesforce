@@ -10,7 +10,7 @@ public class FTEEmployeeTime {
     public List<String> cssStyle { get; set;}
     public String nameCss { get; set;}
 
-    public FTEEmployeeTime (String name, Id objId) {
+    public FTEEmployeeTime (String name, Id objId, Boolean isUnAssigned) {
         this.name = name;
         this.objId = objId;
         this.hoursArray = new Decimal [] {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
@@ -18,6 +18,10 @@ public class FTEEmployeeTime {
         this.cssStyle = new String [] {'fteCell', 'fteCell', 'fteCell', 'fteCell', 'fteCell', 'fteCell', 'fteCell', 'fteCell', 'fteCell', 'fteCell',
                                         'fteCell', 'fteCell', '', ''};
         this.nameCss = 'fteProjectCell';
+        // Unassigned Days Default to 22.00
+        if(isUnAssigned == true){
+            this.hoursArray = new Decimal [] {176, 176, 176, 176, 176, 176, 176, 176, 176, 176, 176, 176, 176*12};
+        }   
     }
 
     public void calculateDays() {

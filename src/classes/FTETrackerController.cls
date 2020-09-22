@@ -9,6 +9,7 @@ public class FTETrackerController extends FTEController {
     public String employeeNameSearch { get; set;}
     public Pagination employeePagination { get; set;}
     public String emplDepartment { get; set; }
+    public Map<Id, FTEEmployeeTime> employeeTimeMap { get; set;}
     public List<SelectOption> departmentList {
         get {
             List<SelectOption> result = SFUtils.getPicklistValuesWithLabel(new SFDC_Employee__c(), 'Sub_Unit__c');
@@ -41,6 +42,7 @@ public class FTETrackerController extends FTEController {
         this.employeePagination.pageSize = 50;
         this.emplDepartment = '---';
         this.emplBusinessUnit = '---';
+        this.employeeTimeMap = new Map<Id, FTEEmployeeTime>();
     }
 
     public String testQuery { get; set; }
@@ -83,40 +85,48 @@ public class FTETrackerController extends FTEController {
         testQueryCount = qbCount.buildQuery();
         workCards = Database.query(qb.buildQuery());
         this.employeePagination.handleResulSize(Database.countQuery(qbCount.buildQuery()));
-
-        for (FTE_Work_Card__c workCard : workCards) {
-            Integer empNetworkDays = FTETrackerHelper.getNetworkDays(workCard.Employee__r.Hire_Date__c, this.fteYear);
-            FTEEmployeeTime empTime = new FTEEmployeeTime(workCard.Employee__r.Name, workCard.Employee__c);
-            empTime.daysArray[0] = workCard.Month_1__c;
-            empTime.daysArray[1] = workCard.Month_2__c;
-            empTime.daysArray[2] = workCard.Month_3__c;
-            empTime.daysArray[3] = workCard.Month_4__c;
-            empTime.daysArray[4] = workCard.Month_5__c;
-            empTime.daysArray[5] = workCard.Month_6__c;
-            empTime.daysArray[6] = workCard.Month_7__c;
-            empTime.daysArray[7] = workCard.Month_8__c;
-            empTime.daysArray[8] = workCard.Month_9__c;
-            empTime.daysArray[9] = workCard.Month_10__c;
-            empTime.daysArray[10] = workCard.Month_11__c;
-            empTime.daysArray[11] = workCard.Month_12__c;
-            empTime.daysArray[12] = workCard.Total__c;
-            if (workCard.Total__c > empNetworkDays) {
-                empTime.cssStyle[12] = 'fteCell overbilled';
-            }
-            for (Integer i = 0; i < 12; i++) {
-                if (empTime.daysArray[i] > 21) {
-                    empTime.cssStyle[i] = 'fteCell overbilled';
-                }
-            }
-            this.employees.add(empTime);
+        calculateEmployeeTime(workCards);
+        for (FTEEmployeeTime empT : this.employeeTimeMap.values()) {
+            empT.calculateDays();
+            this.employees.add(empT);
         }
-
         return this.employees;
+    }
+    
+    public void calculateEmployeeTime(List<FTE_Work_Card__c> workCards){
+        try{
+            for (FTE_Work_Card__c workCard : workCards) {
+                FTEEmployeeTime tmpHelper;
+                if (!this.employeeTimeMap.containsKey(workCard.Employee__c)) {
+                    this.employeeTimeMap.put(workCard.Employee__c, new FTEEmployeeTime(workCard.employee__r.name, workCard.Employee__c, false));
+                }
+                tmpHelper = this.employeeTimeMap.get(workCard.Employee__c);
+                
+                for(Integer i=1; i< tmpHelper.hoursArray.size(); i++){
+                    tmpHelper.hoursArray[i-1] += (Decimal) workCard.get('month_'+ i + '__c') * 8;
+                }
+				tmpHelper.hoursArray[12] += workCard.Total__c * 8;
+            }
+        }
+        catch(Exception e){
+            System.debug(e.getMessage()+'------'+ e.getLineNumber());
+        }
     }
 
      public void searchEmplopyee() {
          this.employeePagination.pageNumber = 1;
-     }
+         this.employeeTimeMap.clear();
+    }
+
+    public void goToPreviousPage(){
+         this.employeePagination.pageNumber -= 1;
+         this.employeeTimeMap.clear();
+    }
+
+    public void goToNextPage(){
+         this.employeePagination.pageNumber += 1;
+         this.employeeTimeMap.clear();
+    } 
 
     public PageReference goToEmployeeView() {
         PageReference pageRef = Page.FTE_Employee_View;

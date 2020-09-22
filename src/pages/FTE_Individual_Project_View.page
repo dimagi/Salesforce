@@ -74,7 +74,7 @@
                     <apex:column headerValue="Total Hours {!fteYear}" value="{!empTime.daysArray[12]}" styleClass="{!empTime.cssStyle[12]}" />
                 </apex:pageBlockTable>
 
-                <apex:actionFunction action="{!initIndividualProject}" name="updateFteYear" status="loadingDiv" reRender="employeeHours" />
+                <apex:actionFunction action="{!refreshIndividualProject}" name="updateFteYear" status="loadingDiv" reRender="employeeHours" />
                 <apex:actionFunction action="{!goToEmployeeView}" name="goToEmployeeView" reRender="contractName">
                     <apex:param name="employeeId" assignTo="{!employeeId}" value=""/>
                 </apex:actionFunction>
