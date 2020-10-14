@@ -28,7 +28,7 @@ public class FTEEmployeeController extends FTEController {
     public Boolean notValidDays {get; set;}
     public String monthName {get; set;}
     public String contractName { get; set;}
-
+    
     public FTEEmployeeController() {
         String emplId = ApexPages.currentPage().getParameters().get('employeeId');
         if (emplId != null && emplId InstanceOf Id) {
@@ -181,7 +181,7 @@ public class FTEEmployeeController extends FTEController {
             if (this.fteHoursMax < hoursToUnassign) {
                 hoursToUnassign = this.fteHoursMax;
             }
-            this.fteTimeManager.moveTimeToUnassigned(hoursToUnassign, this.employeeMonth + 1, this.contractId);
+            // this.fteTimeManager.moveTimeToUnassigned(hoursToUnassign, this.employeeMonth + 1, this.contractId);
             this.fteTimeManager.updateWorkcard((-1) * fteDaysdecimal, this.employeeMonth + 1, this.contractId);
             // moveHoursInFTEWorkCard((-1) * fteDaysdecimal, this.employeeMonth + 1, this.employee.Id);
         } catch (Exception e) {
@@ -227,7 +227,7 @@ public class FTEEmployeeController extends FTEController {
             if (this.fteHoursMax < hoursToAssign) {
                 hoursToAssign = this.fteHoursMax;
             }
-            this.fteTimeManager.moveTimeToAssigned(hoursToAssign, this.employeeMonth + 1, this.selectedFteContract);
+            // this.fteTimeManager.moveTimeToAssigned(hoursToAssign, this.employeeMonth + 1, this.selectedFteContract);
             this.fteTimeManager.updateWorkcard(fteDaysdecimal, this.employeeMonth + 1, this.selectedFteContract);         
             // moveHoursInFTEWorkCard(fteDaysdecimal, this.employeeMonth + 1, this.employee.Id);
         } catch (Exception e) {

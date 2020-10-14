@@ -9,6 +9,9 @@ public class FTETimeCardGenerator {
     private Map<Id, FTEMonthTimeCard> fteContractMap;
     private Map<Id, FTEMonthTimeCard> contractMap;
 
+    private Map<Id, FTEMonthTimeCard> fteWorkCardContractMap;
+    private Map<Id, FTEMonthTimeCard> workCardContractMap;
+    
     public String fileName {get; set;}
     public String csvFile {get; set;}
 
@@ -26,6 +29,8 @@ public class FTETimeCardGenerator {
     }
 
     public List<FTEMonthTimeCard> generateMonthTimeCards() {
+        List<FTEMonthTimeCard> workCardresult = generateMonthWorkCards();
+        System.debug('workCardresult: '+workCardresult);
         SFDC_Employee__c employee = [SELECT Id, Name FROM SFDC_Employee__c WHERE Id =: employeeId LIMIT 1];
         this.employeeName = employee.Name;
         this.monthYearText = DateTime.newInstance(this.fteYear, this.employeeMonth, 1).format('MMMM yyyy');
@@ -56,7 +61,7 @@ public class FTETimeCardGenerator {
                                         FROM Time_Card__c WHERE Id IN: fteCards ORDER BY Client__r.FTE_Tracker__c ASC, FTE_Contract__r.CreatedDate, Client__r.CreatedDate];
 
         for (Time_Card__c timeCard : fteCards) {
-            System.debug('Client order : ' + timeCard.Client__r.Name + ' ' + timeCard.FTE_Contract__r.CreatedDate + ' ' + timeCard.Client__r.CreatedDate);
+           // System.debug('Client order : ' + timeCard.Client__r.Name + ' ' + timeCard.FTE_Contract__r.CreatedDate + ' ' + timeCard.Client__r.CreatedDate);
         }
 
         while(fteCards.size() > 0) {
@@ -67,7 +72,38 @@ public class FTETimeCardGenerator {
         return getResult();
     }
 
+    public List<FTEMonthTimeCard> generateMonthWorkCards() {
+
+        SFDC_Employee__c employee = [SELECT Id, Name FROM SFDC_Employee__c WHERE Id =: employeeId LIMIT 1];
+        this.employeeName = employee.Name;
+        this.monthYearText = DateTime.newInstance(this.fteYear, this.employeeMonth, 1).format('MMMM yyyy');
+        this.fileName = employee.Name.replaceAll(' ', '_') + '_' + this.monthYearText.replaceAll(' ', '_') + '.csv';
+
+        this.monthDays = Date.daysInMonth(this.fteYear, employeeMonth);
+        this.unassignedHours = new FTEMonthTimeCard('Overhead', this.monthDays);
+        this.fteWorkCardContractMap = new Map<Id, FTEMonthTimeCard>();
+        this.workCardContractMap = new Map<Id, FTEMonthTimeCard>();
+
+        List<FTE_Work_Card__c> fteWorkCards = new List<FTE_Work_Card__c>();
+        
+        String queryStr = 'SELECT Id, Name,Contract__r.Name, Month_' + this.employeeMonth + '__c, Total__c, Year__c FROM FTE_Work_Card__c WHERE Employee__c =: employeeId AND Year__c =: fteYear ORDER BY Contract__r.Name';
+
+        System.debug('queryStr '+queryStr);
+        
+        fteWorkCards = Database.query(queryStr);
+        for (FTE_Work_Card__c fteWorkCard : fteWorkCards) {
+            System.debug('Results: '+fteWorkCard);
+            addWorkCardLoggedTime(fteWorkCard, this.employeeMonth);
+
+        }
+
+        // Generate list for UI and csv file
+        return getWorkCardResult();
+
+    }
+
     public List<Time_Card__c> moveTimeCardTime(List<Time_Card__c> fteCards) {
+        System.debug('----no. of times');
         List<Time_Card__c> timeCards = new List<Time_Card__c>();
         Boolean timeMoved = false;
         for (Time_Card__c fteCard : fteCards) {
@@ -76,7 +112,8 @@ public class FTETimeCardGenerator {
             if (fteCard.Client__r.FTE_Tracker__c != 'Yes' && fteCard.FTE_Contract__r.FTE_Tracker__c == 'Yes') { // From Unassigned to Assigned
                 FTEMonthTimeCard monthCard = this.contractMap.get(fteCard.Client__c);
                 FTEMonthTimeCard monthCardTag = this.fteContractMap.get(fteCard.FTE_Contract__c);
-
+				System.debug('Contarct' + monthCard);
+                System.debug('FTE CONTRACT'+monthCardTag);
                 if (monthCardTag == null) {
                     this.fteContractMap.put(fteCard.FTE_Contract__c, new FTEMonthTimeCard(fteCard.FTE_Contract__r.Name, this.monthDays));
                     monthCardTag = this.fteContractMap.get(fteCard.FTE_Contract__c);
@@ -201,7 +238,7 @@ public class FTETimeCardGenerator {
                 }
             }
         }
-
+		System.debug(timeMoved);
         return timeMoved == true ? timeCards : new List<Time_Card__c>();
     }
 
@@ -266,7 +303,22 @@ public class FTETimeCardGenerator {
 
     private List<FTEMonthTimeCard> getResult() {
         // Generate list for UI and csv file
-        List<FTEMonthTimeCard> result = this.fteContractMap.values();
+        List<FTEMonthTimeCard> result = this.fteWorkCardContractMap.values();
+        for (FTEMonthTimeCard resRecord : result) {
+            for (Integer i = 0; i < this.monthDays; i++) {
+                resRecord.hours[i] = resRecord.hours[i].setScale(2);
+            }
+        }
+        for (Integer i = 0; i < this.monthDays; i++) {
+            unassignedHours.hours[i] = unassignedHours.hours[i].setScale(2);
+        }
+        result.add(unassignedHours);
+        return result;
+    }
+
+    private List<FTEMonthTimeCard> getWorkCardResult() {
+        // Generate list for UI and csv file
+        List<FTEMonthTimeCard> result = this.fteWorkCardContractMap.values();
         for (FTEMonthTimeCard resRecord : result) {
             for (Integer i = 0; i < this.monthDays; i++) {
                 resRecord.hours[i] = resRecord.hours[i].setScale(2);
@@ -299,6 +351,20 @@ public class FTETimeCardGenerator {
         }
     }
 
+    private void addWorkCardLoggedTime(FTE_Work_Card__c wc, Integer employeeMonth) {
+        Decimal monthTotalHours = (Decimal) wc.get('Month_' + employeeMonth + '__c');
+        System.debug('monthTotalHours: '+monthTotalHours);
+        
+            if (!this.fteWorkCardContractMap.containsKey(wc.Contract__c)) {
+                this.fteWorkCardContractMap.put(wc.Contract__c, new FTEMonthTimeCard(wc.Contract__r.Name, this.monthDays));
+            }
+            FTEMonthTimeCard monthCard = this.fteWorkCardContractMap.get(wc.Contract__c);
+            setWorkCardHoursValue(monthCard, monthTotalHours);
+            this.total += monthTotalHours;
+            System.debug('total: '+total);
+        
+    }
+
     private void setHoursValue(FTEMonthTimeCard monthData, Integer day, Decimal value) {
             if (monthData.hours[day - 1] != null) {
                 monthData.hours[day - 1] += value;
@@ -306,5 +372,28 @@ public class FTETimeCardGenerator {
                 monthData.hours[day - 1] = value;
             }
             monthData.totalHours += value;
+    }
+
+    private void setWorkCardHoursValue(FTEMonthTimeCard monthData, Decimal monthTotalHours) {
+        system.debug('monthTotalHours in setWorkCardHoursValue'+monthTotalHours);
+        for(Integer i = 0; i<monthData.hours.size(); i++){
+           System.debug(DateTime.newInstance(this.fteYear, this.employeeMonth, i).format('EEEE'));
+            if((('Saturday').equals(DateTime.newInstance(this.fteYear, this.employeeMonth, i).format('EEEE'))))
+            {
+                System.debug('if loop' +DateTime.newInstance(this.fteYear, this.employeeMonth, i).format('EEEE'));
+                monthData.hours[i] = 0;
+
+            } else if((('Sunday').equals(DateTime.newInstance(this.fteYear, this.employeeMonth, i).format('EEEE')))){
+                System.debug('if loop' +DateTime.newInstance(this.fteYear, this.employeeMonth, i).format('EEEE'));
+                monthData.hours[i] = 0;
+            } else {
+                 System.debug('if loop' +DateTime.newInstance(this.fteYear, this.employeeMonth, i).format('EEEE'));
+                monthData.hours[i] = (monthTotalHours/this.monthDays)*8;
+            }
+        }
+            
+        monthData.totalHours = monthTotalHours; 
+        
+        System.debug('monthData hours: '+monthData.hours);
     }
 }
