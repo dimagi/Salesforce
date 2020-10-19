@@ -43,7 +43,7 @@ public class PROFinancialComponentController {
 
         this.childcontractMap = new Map<Id,List<DContract__c>>();
         this.contractMap = new Map<Id,DContract__c>([SELECT Id, Name, Requires_Developer_Work__c, Last_Report_Out_Date__c, Last_Report_Out_Status__c, Percent_through_SOW_deliverables__c,
-                                            Burdened_Income_Budget__c, Direct_Costs_Travel_BUDGET__c, Direct_Costs_Total_Expenses__c, Percent_through_Contract__c,
+                                            Burdened_Income_Budget__c, Total_ID_Subcontract_Expense_Budgets__c, Direct_Costs_Travel_BUDGET__c, Direct_Costs_Total_Expenses__c, Percent_through_Contract__c,
                                             Product_Income_Budget__c, Services_Income__c, Product_Spend__c, Total_Amount_of_Contract__c, Direct_Costs_Sub_Contract_BUDGET__c,
                                             Internal_Sub_contract_BUDGET__c, Project_Other_BUDGET__c, Direct_Costs_Travel_Expenses__c, Direct_Costs_Sub_contract_Expenses__c,
                                             Internal_Sub_contract_Spend__c, Project_Other_Spent__c, Expected_Margin__c,Budget_Used__c, Margin_by_SOW_Completed__c,
@@ -180,6 +180,7 @@ public class PROFinancialComponentController {
             Decimal Percent_through_Contract = contractObj.Percent_through_Contract__c != null ? contractObj.Percent_through_Contract__c: 0 ;
             Decimal Percent_through_SOW_deliverables = contractObj.Percent_through_SOW_deliverables__c != null ? contractObj.Percent_through_SOW_deliverables__c: 0 ;
             Decimal Expected_Margin = contractObj.Expected_Margin__c != null ? contractObj.Expected_Margin__c: 0 ;
+            Decimal Total_ID_Subcontract_Expense_Budgets = contractObj.Total_ID_Subcontract_Expense_Budgets__c != null ? Total_ID_Subcontract_Expense_Budgets__c : 0;
 
             if(childContracts != null && childContracts.size() > 0) {
                 for(DContract__c childContract : childContracts) {
@@ -211,6 +212,7 @@ public class PROFinancialComponentController {
 
             Decimal a = Product_Income_Budget;
             Decimal b = Product_Spend;
+            Decimal c = Total_ID_Subcontract_Expense_Budgets;
             DimagiToolsController.PROProjectBudget prbjObj1 = new DimagiToolsController.PROProjectBudget();
             prbjObj1.categoryName = 'Product';
             prbjObj1.contractamount = Integer.valueOf(Product_Income_Budget);
@@ -223,10 +225,10 @@ public class PROFinancialComponentController {
             b = LaborSpent;
             DimagiToolsController.PROProjectBudget prbjObj2 = new DimagiToolsController.PROProjectBudget();
             prbjObj2.categoryName = 'Services & Labor';
-            prbjObj2.contractamount = Integer.valueOf(Burdened_Income_Budget);
+            prbjObj2.contractamount = Integer.valueOf(Burdened_Income_Budget-Total_ID_Subcontract_Expense_Budgets);
             prbjObj2.spentAmount = Integer.valueOf(LaborSpent);
             prbjObj2.amountRemaining = Integer.valueOf(Burdened_Income_Budget - LaborSpent);
-            prbjObj2.prcntgUsed = a != 0 ? Math.round((b/a) * 100) : 0;
+            prbjObj2.prcntgUsed = a != 0 ? Math.round((b/(a-c)) * 100) : 0;
             this.proBudgetList.add(prbjObj2);
 
             a = Contract_Expense_BUDGET;
@@ -239,8 +241,19 @@ public class PROFinancialComponentController {
             prbjObj3.prcntgUsed = a != 0 ? Math.round((b/a) * 100) : 0;
             this.proBudgetList.add(prbjObj3);
 
+// TODO
+            a = Total_ID_Subcontract_Expense_Budgets;
+            b = ;
+            DimagiToolsController.PROProjectBudget prbjObj4 = new DimagiToolsController.PROProjectBudget();
+            prbjObj3.categoryName = 'Interdivision Expense';
+            prbjObj3.contractamount = Integer.valueOf(Total_ID_Subcontract_Expense_Budgets);
+            prbjObj3.spentAmount = Integer.valueOf(b);
+            prbjObj3.amountRemaining = Integer.valueOf(a-b);
+            prbjObj3.prcntgUsed = a != 0 ? Math.round((b/a) * 100) : 0;
+            this.proBudgetList.add(prbjObj3);
+
             a = Total_Amount_of_Contract;
-            b = prbjObj1.spentAmount + prbjObj2.spentAmount + prbjObj3.spentAmount;//calculate manually
+            b = prbjObj1.spentAmount + prbjObj2.spentAmount + prbjObj3.spentAmount +prbjObj4.spentAmount;//calculate manually
             DimagiToolsController.PROProjectBudget prbjObj5 = new DimagiToolsController.PROProjectBudget();
             prbjObj5.categoryName = 'Total';
             prbjObj5.contractamount = Integer.valueOf(Total_Amount_of_Contract);
