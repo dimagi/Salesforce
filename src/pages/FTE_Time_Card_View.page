@@ -1,40 +1,193 @@
 <apex:page controller="FTEFileController" docType="html-5.0" action="{!loadExportTimeCards}">
     <style type="text/css">
         .hoursTable {
-            width: auto !important;
-            margin-top: 10px;
-            margin-bottom: 10px;
-            border-collapse: collapse !important;
-            border-width: 1px 1px 1px 1px;
+        width: auto !important;
+        margin-top: 10px;
+        margin-bottom: 10px;
+        border-collapse: collapse !important;
+        border-width: 1px 1px 1px 1px;
         }
         .hoursCellHeader {
-            background: #f2f3f3;
-            font-weight: bold;
-            font-size: .9em;
+        background: #f2f3f3;
+        font-weight: bold;
+        font-size: .9em;    
         }
         .dataCell {
-            border-collapse: collapse !important;
-            border-width: 1px 1px 1px 1px !important;
+        border-collapse: collapse !important;
+        border-width: 1px 1px 1px 1px !important;
         }
         .rowHighlight:hover {
-            background-color: #e3f3ff !important;
+        background-color: #e3f3ff !important;
         }
         .firstColumn {
-            vertical-align: middle !important;
-            padding: 4px 8px 4px 8px !important;
+        vertical-align: middle !important;
+        padding: 4px 8px 4px 8px !important;
         }
         .dataColumn {
-            padding: 4px 15px 4px 15px !important;
+        padding: 4px 15px 4px 15px !important;
         }
         .topTotal {
-            border-top-width: 3px !important;
-            border-top-color: black !important;
+        border-top-width: 3px !important;
+        border-top-color: black !important;
         }
         a {
-            padding: 4px 3px !important;
+        padding: 4px 3px !important;
+        }
+        .hoursModal {
+        line-height: 1.5em;
+        padding: 10px 5px 30px 5px !important;
+        min-width: 300px;
+        }
+        .hoursModal label, input, span, h1, select {
+        display:block;
+        margin-bottom: 3px;
+        }
+        .hoursModal input.text {
+        margin-bottom:12px;
+        width:95%;
+        padding: .4em;
+        }
+        .hoursModal fieldset {
+        padding:5px;
+        border:0;
+        margin-top:0px;
+        }
+        .hoursModal h1 {
+        font-size: 1.2em;
+        margin: .6em 0;
+        }
+        .ui-button {
+        padding: 3px;
+        }
+        .ui-dialog .ui-state-error {
+        padding: .3em;
+        }
+        .validateTips {
+        border: 1px solid transparent;
+        padding: 0.3em;
         }
     </style>
-
+    
+    <apex:includeScript value="{!URLFOR($Resource.ProjectReportOut2, 'js/jquery.min.js')}"/>
+    <apex:includeScript value="{!URLFOR($Resource.ProjectReportOut2, 'js/jquery-ui.min.js')}"/>
+    <apex:stylesheet value="{!URLFOR($Resource.ProjectReportOut2, 'css/jquery-ui.min.css')}" />
+    
+    <script type="text/javascript">
+    $j = jQuery.noConflict();
+    
+    function unassignHours() {
+        $j("#unassignModal").dialog( "close" );
+        updateDayCard($j("#daysToUnassig").val());
+    }
+    
+    $j(document).ready(function() {
+        $j("#tcExport").dialog({ autoOpen: false, modal: true, closeOnEscape: true, dialogClass: 'modalBase', width: 240, height: 125 });
+        $j("#unassignModal").dialog({ autoOpen: false, modal: true, closeOnEscape: true, width: 'auto', height: 'auto', resizable: false,
+                                     buttons: {
+                                         "Confirm": {
+                                             text: "Confirm",
+                                             id: "unassignConfirm",
+                                             click: unassignHours,
+                                         },
+                                         Cancel: function() {
+                                             $j("#daysToUnassig").tooltip('disable');
+                                             $j("#unassignModal").dialog( "close" );
+                                         }
+                                     },
+                                     close: function() { $j("#daysToUnassig").tooltip('disable'); }});
+    });
+    
+    function loadModalData(day, totalHours, name) {
+        unAssignDays(day, totalHours, name);
+    }
+    
+    function showUnassignedModal() {
+        $j("#daysToUnassig").val("0.25");
+        $j("#unassignModal").dialog('open');
+        $j('#unassignModal').dialog('option' , 'title' , 'Update Hours');
+        
+        $j("#daysToUnassig").tooltip({
+            items: '#daysToUnassig',
+            content: "Validation enabled!",
+            disabled: true,
+            show: false,
+            hide: false,
+            position: {my: "left top", at: "left bottom"},
+            close: function( event, ui ) {
+                if (event.originalEvent.type != 'blur') {
+                    $j(this).tooltip('enable').tooltip('open');
+                }
+            }
+        });
+        $j('#daysToUnassig').keyup(function() {
+            validateDaysValue($j(this), $j("#unassignConfirm"), true);
+        });
+        $j('#daysToUnassig').change(function() {
+            validateDaysValue($j(this), $j("#unassignConfirm"), true);
+        });
+        validateDaysValue($j("#daysToUnassig"), $j("#unassignConfirm"), true);
+        return false;
+    }
+    
+    function validateDaysValue(tooltipElement, confirmButton, toUnassigned) {
+        var fteDaysMax, daysValue, daysNum, empAvailableDays;
+        daysValue = tooltipElement.val();
+        empAvailableDays = $j("[id$=userAvailableDaysId]").val();
+        
+        try {
+            if (daysValue == null || daysValue == undefined || daysValue == '') {
+                setTooltipMessage(tooltipElement, confirmButton, 'Days cannot be empty');
+                return;
+            }
+            if (!isFinite(daysValue)) {
+                setTooltipMessage(tooltipElement, confirmButton, 'Wrong number format');
+                return;
+            }
+            
+            daysNum = new Number(daysValue);
+            console.log(daysNum, empAvailableDays);
+            
+              if (daysNum > empAvailableDays) {
+                setTooltipMessage(tooltipElement, confirmButton, 'Days overbilled! Maximum value you can update ' + empAvailableDays);
+                return;
+            }
+            
+            /*  if (daysNum <= 0) {
+                setTooltipMessage(tooltipElement, confirmButton, 'Value must be greater then 0');
+                return;
+            } */
+            
+            if (daysNum > fteDaysMax) {
+                setTooltipMessage(tooltipElement, confirmButton, 'Maximum value is ' + fteDaysMax);
+                return;
+            }
+            
+            enableConfirmButton(confirmButton, tooltipElement);
+        } catch (e) {
+            setTooltipMessage(tooltipElement, confirmButton, 'Unexpected error, during validation');
+            console.error(e);
+        }
+    }
+    
+    function enableConfirmButton(buttonElement, tooltipElement) {
+        tooltipElement.tooltip('disable');
+        buttonElement.button("enable");
+    }
+    
+    function disableConfirmButton(buttonElement) {
+        buttonElement.button("disable");
+    }
+    
+    function setTooltipMessage(tooltipElement, buttonElement, textMessage) {
+        disableConfirmButton(buttonElement);
+        tooltipElement.tooltip("option", "content", textMessage);
+        tooltipElement.tooltip('enable').tooltip('open');
+    }
+    
+    
+    </script>
+    
+    
     <apex:pageBlock title="Monthly Timecard: {!employee.Name} {!monthYearText}">
         <apex:form >
             <apex:outputPanel >
@@ -47,39 +200,63 @@
                         </div>
                     </apex:facet>
                 </apex:actionstatus>
-
-                <table class="list hoursTable">
-                    <!-- Headers section -->
-                    <tr class="headerRow">
-                        <td class="headerRow firstColumn" rowspan="2">Day of Week</td>
-                        <td class="headerRow firstColumn" rowspan="2">Day of Month</td>
-                        <td class="headerRow" colspan="{!employeeMonthProjects.size}">Projects:</td>
-                    </tr>
-                    <tr class="headerRow">
-                        <apex:repeat value="{!employeeMonthProjects}" var="currentColumn">
-                            <td class="headerRow dataColumn">{!currentColumn.name}</td>
-                        </apex:repeat>
-                    </tr>
-
-                    <!-- Data section -->
-                    <apex:repeat value="{!rowList}" var="dayRecord">
-                        <tr class="dataRow rowHighlight">
-                            <td class="dataCell firstColumn">{!dayRecord.columnName}</td>
-                            <td class="dataCell firstColumn">{!dayRecord.dayNumber}</td>
+                <apex:outputPanel id="accountsList">
+                    <table class="list hoursTable" id = 'employeeHours'>
+                        <!-- Headers section -->
+                        <tr class="headerRow">
+                            <td class="headerRow firstColumn" rowspan="2">Day of Week</td>
+                            <td class="headerRow firstColumn" rowspan="2">Day of Month</td>
+                            <td class="headerRow" colspan="{!employeeMonthProjects.size}">Projects:</td>
+                        </tr>
+                        <tr class="headerRow">
                             <apex:repeat value="{!employeeMonthProjects}" var="currentColumn">
-                                <td class="dataCell dataColumn">{!currentColumn.hours[dayRecord.index]}</td>
+                                <td class="headerRow dataColumn">{!currentColumn.name}</td>
                             </apex:repeat>
                         </tr>
-                    </apex:repeat>
-
-                    <tr class="dataRow rowHighlight">
-                        <td class="topTotal dataCell hoursCellHeader" colspan="2">Total Project Hours:</td>
-                        <apex:repeat value="{!employeeMonthProjects}" var="currentColumn">
-                            <td class="topTotal dataCell dataColumn">{!currentColumn.totalHours}</td>
+                        
+                        <!-- Data section -->
+                        <apex:repeat id="employeeHours" value="{!rowList}" var="dayRecord">
+                            <tr class="dataRow rowHighlight">
+                                <td class="dataCell firstColumn">{!dayRecord.columnName}</td>
+                                <td class="dataCell firstColumn">{!dayRecord.dayNumber}</td>
+                                <apex:repeat value="{!employeeMonthProjects}" var="currentColumn">
+                                    <td onclick="if ('{!currentColumn.name}' !== 'Overhead' && '{!currentColumn.totalHours}' !== '0.00'){loadModalData('{!dayRecord.index}', '{!currentColumn.totalHours}', '{!currentColumn.name}');}" class="dataCell dataColumn">{!currentColumn.hours[dayRecord.index]} </td>                                
+                                </apex:repeat>
+                            </tr>
                         </apex:repeat>
-                    </tr>
-                </table>
-
+                        
+                        <tr class="dataRow rowHighlight">
+                            <td class="topTotal dataCell hoursCellHeader" colspan="2">Total Project Hours:</td>
+                            <apex:repeat value="{!employeeMonthProjects}" var="currentColumn">
+                                <td class="topTotal dataCell dataColumn">{!currentColumn.totalHours}</td>
+                            </apex:repeat>
+                        </tr>
+                    </table>
+                </apex:outputPanel>
+                <apex:actionFunction action="{!updateDayCard}" status="loadingDiv" name="updateDayCard" reRender="accountsList">
+                    <apex:param name="fteDays" assignTo="{!fteDays}" value=""/>
+                </apex:actionFunction>
+                
+                <div id="unassignModal" class="hoursModal">
+                    <fieldset>
+                        <apex:inputHidden id="userAvailableDaysId" value="{!userAvailableDays}" />
+                        <apex:outputText styleClass="boldText" id="contractNameUnass" />
+                        <apex:outputText id="monthNameUnassign" />
+                        <apex:outputText id="fteDaysMaxUnassId" />
+                        <label class="boldText" for="daysToUnassig">Hours to Update:</label>
+                        <input type="text" name="daysToUnassig" id="daysToUnassig" value="0.25" class="text ui-widget-content ui-corner-all" />
+                    </fieldset>
+                </div>
+                
+                <apex:actionFunction action="{!unAssignDays}" status="loadingDiv" name="unAssignDays" oncomplete="showUnassignedModal();"
+                        reRender="userAvailableDaysId">
+                    <apex:param name="day" assignTo="{!day}" value=""/>
+                    <apex:param name="totalHours" assignTo="{!totalHoursOfContract}" value=""/>
+                    <apex:param name="name" assignTo="{!contractName}" value=""/>
+                    <!-- 	 <apex:param name="contractId" assignTo="{!contractId}" value=""/> -->
+                </apex:actionFunction>
+                
+                
                 <apex:commandButton action="{!goToEmployeeListView}" value="Employee List" id="EmplListButton" />
                 <apex:commandButton action="{!goToProjectListView}" value="Project List" id="projListButton" />
                 <apex:commandButton action="{!goToCSVUploadView}" value="CSV File Upload" id="uploadButton" />
