@@ -323,6 +323,10 @@ public class FTETimeManager {
         List<FTE_Work_Card__c> workCards = [SELECT Id,Contract__C FROM FTE_Work_Card__c WHERE Employee__c =:  this.employee.Id AND Year__c =: this.fteYear];
        
         if (workCardsFromDB.size() > 0) {
+            // Delete daycards if workcard get deleted.
+             List<FTE_Day_Card__c> dayCardsFromDb = [SELECT Id, Contract__c, Employee__c, hours__c, Date__c, Work_Card_Total_Hours__c, Available_Hours__c FROM FTE_Day_Card__c WHERE Contract__c =: contractId AND Employee__c =:this.employee.Id
+                                                AND CALENDAR_YEAR(Date__c) =: this.fteYear];
+
             Decimal totalValue = workCardsFromDB.get(0).Total__c;
             Decimal totalHoursValue = workCardsFromDB.get(0).Total_Hours__c;
             FTE_Work_Card__c workCard = workCardsFromDB.get(0);
@@ -333,12 +337,14 @@ public class FTETimeManager {
             workCard.put('Month_' + month + '__c', monthValue + days);
             if(workCard.Total__c == 0  && workCards.size() > 1){
                 delete workCard;
+                delete dayCardsFromDb;
             }
             else{
 				if (workCard.Total__c == 0){
 				    workCard.put('contract__c', '');
                 }
                 update workCard;
+                delete dayCardsFromDb;
             }
         }
         else{

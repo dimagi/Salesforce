@@ -66,6 +66,9 @@
         border: 1px solid transparent;
         padding: 0.3em;
         }
+        .overbilled {
+            color: red !important;
+        }
     </style>
     
     <apex:includeScript value="{!URLFOR($Resource.ProjectReportOut2, 'js/jquery.min.js')}"/>
@@ -226,9 +229,15 @@
                         </apex:repeat>
                         
                         <tr class="dataRow rowHighlight">
+                            <td class="topTotal dataCell hoursCellHeader" colspan="2">Assigned Project Hours:</td>
+                            <apex:repeat value="{!employeeMonthProjects}" var="currentColumn">
+                                  <td class="topTotal dataCell dataColumn {!IF((currentColumn.workCardTotalHours) > currentColumn.totalHours,'overbilled', 'class2')}">{!currentColumn.totalHours}</td>
+                            </apex:repeat>
+                        </tr>
+                        <tr class="dataRow rowHighlight">
                             <td class="topTotal dataCell hoursCellHeader" colspan="2">Total Project Hours:</td>
                             <apex:repeat value="{!employeeMonthProjects}" var="currentColumn">
-                                <td class="topTotal dataCell dataColumn">{!currentColumn.totalHours}</td>
+                                  <td class="topTotal dataCell dataColumn {!IF((currentColumn.workCardTotalHours) > currentColumn.totalHours,'overbilled', 'class2')}">{!currentColumn.totalHours}</td>
                             </apex:repeat>
                         </tr>
                     </table>
