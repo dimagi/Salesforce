@@ -183,14 +183,13 @@ public class PROFinancialComponentController {
             //SAL-36
             Decimal Total_ID_Subcontract_Expense_Budgets = contractObj.Total_ID_Subcontract_Expense_Budgets__c != null ? contractObj.Total_ID_Subcontract_Expense_Budgets__c : 0;
             Decimal ID_Subcontract_Spend = contractObj.ID_Subcontract_Spend__c != null ? contractObj.ID_Subcontract_Spend__c : 0 ;
-            Decimal idSubcontractValue = 0;            
-            if(contractObj.ID_Subcontract_1_Type__c != null){
-                if(contractObj.ID_Subcontract_1_Type__c.equals('LOE')){
-                    idSubcontractValue = 0;
-                } else {
-                    idSubcontractValue = ID_Subcontract_Spend;
-                }
-            }
+            Decimal idSubcontractValue;            
+            String subContractType = contractObj.ID_Subcontract_1_Type__c;
+            if('LOE'.equals(subContractType)){                
+                idSubcontractValue = 0;
+            } else {
+                idSubcontractValue = ID_Subcontract_Spend;
+            }            
             
             if(childContracts != null && childContracts.size() > 0) {
                 for(DContract__c childContract : childContracts) {
@@ -310,14 +309,13 @@ public class PROFinancialComponentController {
             //SAL-37
             Decimal Total_ID_Subcontract_Expense_Budgets = contractObj.Total_ID_Subcontract_Expense_Budgets__c != null ? contractObj.Total_ID_Subcontract_Expense_Budgets__c : 0;
             Decimal ID_Subcontract_Spend = contractObj.ID_Subcontract_Spend__c != null ? contractObj.ID_Subcontract_Spend__c : 0 ;
-            Decimal idSubcontractValue = 0;            
-            if(contractObj.ID_Subcontract_1_Type__c != null){
-                if(contractObj.ID_Subcontract_1_Type__c.equals('LOE')){
-                    idSubcontractValue = 0;
-                } else {
-                    idSubcontractValue = ID_Subcontract_Spend;
-                }
-            }
+            Decimal idSubcontractValue;            
+            String subContractType = contractObj.ID_Subcontract_1_Type__c;
+            if('LOE'.equals(subContractType)){                
+                idSubcontractValue = 0;
+            } else {
+                idSubcontractValue = ID_Subcontract_Spend;
+            } 
             
             Decimal a = Direct_Costs_Travel_BUDGET;
             Decimal b = Direct_Costs_Travel_Expenses;
