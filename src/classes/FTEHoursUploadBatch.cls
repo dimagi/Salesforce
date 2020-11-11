@@ -45,20 +45,25 @@ public without sharing class FTEHoursUploadBatch implements Database.Batchable<F
             SFDC_Employee__c employee = [SELECT Id, Name, Hire_Date__c FROM SFDC_Employee__c WHERE Id =: fteDataRec.getEmployeeId() LIMIT 1];
             FTETimeManager fteTimeManager = new FTETimeManager(employee, this.batchYear);
             fteTimeManager.loadEmployeeTime();
-            Decimal [] temp =  new Decimal [] {22, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22};
-
-            // List<Fte_Work_Card__c> workCards = [Select Id, Employee__c, Contract__c, Month_1__c, Month_2__c, Month_3__c, Month_4__c, Month_5__c, Month_6__c, Month_7__c, 
-            //                                     Month_8__c, Month_9__c, Month_10__c, Month_11__c, Month_12__c, Total__c FROM Fte_Work_Card__c
-            //                                     WHERE Employee__c =: fteDataRec.getEmployeeId() AND Year__c =: fteDataRec.getFteYear() 
-            //                                    ];
-
+            
+            
+            system.debug('FTEHoursUploadBatch before temp Array: ');
+            Decimal[] temp =  new Decimal[12];
+            for(Integer i=0; i<12; i++){
+                system.debug('i value '+i+' csvYear : '+csvYear);
+                Decimal workingDays = (Decimal)FTEWorkCardTriggerHandler.getMonthWorkingDays(i+1,csvYear);
+                system.debug('workingDays: '+workingDays);
+                temp[i]=workingDays;    
+                system.debug('temp[i]: '+i+ ' Month '+temp[i]);
+            }
 
             List<Fte_Work_Card__c> workCards = new List<Fte_Work_Card__c>();
             for (Fte_Work_Card__c workcard : globalWorkCards) {
                 if (workcard.Employee__c == fteDataRec.getEmployeeId()) {
                    // workcards.add(workcard);
-                    for(Integer i=1; i<= 12; i++){
-						temp[i] -= (Decimal) workcard.get('Month_'+ i + '__c');
+                    for(Integer i=0; i<12; i++){
+                        Integer month = i+1;
+						temp[i] -= (Decimal) workcard.get('Month_'+ month + '__c');
             		}
                 }
             }
@@ -70,15 +75,15 @@ public without sharing class FTEHoursUploadBatch implements Database.Batchable<F
             }   
             System.debug(workCards);
             this.employeesSet.add(employee.Id);
-            for (Integer i = 1; i <= 12; i++) {
-                Decimal monthDays = fteDataRec.getMonthTime(i);
+            for (Integer i = 0; i < 12; i++) {
+                Decimal monthDays = fteDataRec.getMonthTime(i+1);
 
                 if (monthDays != null && monthDays >= 0) {
                     try {
                             Decimal missingTime = 0;
                             missingTime = temp[i] - monthDays;
                             if(missingTime >= 0) {
-                                fteTimeManager.updateWorkcard(monthDays, i, fteDataRec.getContractId());
+                                fteTimeManager.updateWorkcard(monthDays, i+1, fteDataRec.getContractId());
                             }
 
                       /*

@@ -31,10 +31,6 @@ public without sharing class FTEGenerateEmployeesWorkCardBatch implements Databa
             if (this.calculationYear == null) {
                 result = generateWrapperList([SELECT Id, Name, Hire_Date__c, Termination_Date__c, Employee_Type__c, Employee_Status__c
                                               FROM SFDC_Employee__c ORDER BY Name]);
-                // List<FTE_Work_Card__c> oldCards = [SELECT Id FROM FTE_Work_Card__c];
-                // if (oldCards.size() > 0) {
-                //     delete oldCards;
-                // }
             } else if (this.calculationYear != null) {
                 Integer currentYear = Date.today().year();
                 if (this.contractsId.size() > 0) {

@@ -104,7 +104,8 @@ public class FTEEmployeeController extends FTEController {
             this.fteHoursMax = this.fteTimeManager.unAssignedTimeMap.hoursArray[this.employeeMonth];
 
             this.monthName = DateTime.newInstance(this.fteYear, this.employeeMonth + 1, 1).format('MMMM yyyy');
-            this.userAvailableDays = 22 - this.totalAssignedDays.daysArray[this.employeeMonth] > 0 ? 22 -
+            Decimal workingDays = (Decimal)FTEWorkCardTriggerHandler.getMonthWorkingDays(this.employeeMonth+1,this.fteYear);            
+            this.userAvailableDays = workingDays - this.totalAssignedDays.daysArray[this.employeeMonth] > 0 ? workingDays -
                                             this.totalAssignedDays.daysArray[this.employeeMonth] : 0;
             Decimal helperDecimal = employeeNetworkDays - this.totalAssignedDays.daysArray[12] > 0 ?
                 employeeNetworkDays - this.totalAssignedDays.daysArray[12] : 0;
@@ -260,9 +261,9 @@ public class FTEEmployeeController extends FTEController {
         this.fteTimeManager.unassigned.calculateDays();
         this.totalAssignedDays.calculateDays();
 
-        // We add css classes here to avoid complex if sections in visualgforce page
+        // We add css classes here to avoid complex if sections in visualgforce page 
         for (Integer i = 0; i < 12; i++) {
-            if (this.totalAssignedDays.daysArray[i] > 22) {
+            if (this.totalAssignedDays.daysArray[i] > 23) {  // Maximum working in any month 23 days
                 this.totalAssignedDays.cssStyle[i] = 'topTotal overbilled';
             } else {
                 this.totalAssignedDays.cssStyle[i] = 'topTotal';

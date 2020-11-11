@@ -39,13 +39,12 @@ public class FTEEmployeeTime {
             for(Integer i=0; i<12; i++){
                 Decimal workingDays = (Decimal)FTEWorkCardTriggerHandler.getMonthWorkingDays(i+1,year);
                 this.hoursArray[i]=workingDays*8;
-               // system.debug('this.hoursArray[i] :'+this.hoursArray[i]);
+                
                 total += this.hoursArray[i];
             }
             this.hoursArray[12]=total;
-           // system.debug('this.hoursArray[12] :'+this.hoursArray[12]);
-        }   
-       // system.debug('this.hoursArray :'+this.hoursArray);
+            
+        }          
     }
     
     public void calculateDays() {

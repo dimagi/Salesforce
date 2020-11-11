@@ -32,15 +32,16 @@ public class FTECsvUploadController extends FTEController {
         }
     }
 
-    public Boolean processFTEDataRecords() {
+    public Boolean processFTEDataRecords(Integer year) {
+         system.debug(this.records.values());
         loadWorkCardJobStatus();
         if (this.workCardJobStatus.isRunning == false) {
             removeFTEDataStatusRecords(); // Remove status of last batch upload
 
             if (!Test.isRunningTest()) {
-                Database.executeBatch(new FTEHoursUploadBatch(this.records.values()), 1);
+                Database.executeBatch(new FTEHoursUploadBatch(this.records.values(), year), 1);
             } else {
-                Database.executeBatch(new FTEHoursUploadBatch(this.records.values())); // no more then one batch execute can be invoked from test
+                Database.executeBatch(new FTEHoursUploadBatch(this.records.values()), 200); // no more then one batch execute can be invoked from test
             }
 
             loadWorkCardJobStatus();
@@ -173,7 +174,7 @@ public class FTECsvUploadController extends FTEController {
             return null;
         }
 
-        Boolean success = processFTEDataRecords();
+        Boolean success = processFTEDataRecords(year);
         if (success) {
             ApexPages.addMessage(new ApexPages.message(ApexPages.severity.INFO, 'CSV file ' + fileName + ' was parsed. Upload job was scheduled, please wait for results.'));
         } else {

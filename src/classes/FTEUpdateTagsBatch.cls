@@ -51,7 +51,7 @@ public without sharing class FTEUpdateTagsBatch implements Database.Batchable<FT
             }
 
             if (!Test.isRunningTest()) {
-                Database.executeBatch(new FTEGenerateEmployeesWorkCardBatch(), 1);
+             //   Database.executeBatch(new FTEGenerateEmployeesWorkCardBatch(), 1);
             }
         } catch (Exception ex) {
             if (!Test.isRunningTest()) {
