@@ -14,7 +14,8 @@ private class OpportunityProductTriggerTest {
         PricebookEntry pbe = new PricebookEntry(Product2ID = prod.Id, Pricebook2Id = standardPb.id, UnitPrice = 50, isActive = true);
         insert pbe;
 
-        Opportunity opp = new Opportunity(Name = 'Test Opp', CloseDate = Date.today(), StageName = 'Stage 1 - Connecting');
+        Opportunity opp = new Opportunity(Name = 'Test Opp', CloseDate = Date.today(), StageName = 'Stage 1 - Connecting',
+                                            Opportunity_Owner_Division__c = 'Solutions', Opportunity_Owner_Sub_Division__c='Inbound Sales');
         insert opp;
 
         OpportunityLineItem oli = new OpportunityLineItem(OpportunityId = opp.Id, PricebookEntryId = pbe.Id, Quantity = 1, totalPrice = 50 );
@@ -45,7 +46,8 @@ private class OpportunityProductTriggerTest {
         PricebookEntry pbe3 = new PricebookEntry(Product2ID = prod3.Id, Pricebook2Id = pb.id, UnitPrice = 50, isActive = true);
         insert pbe3;
 
-        Opportunity opp = new Opportunity(Name = 'Test Opp', CloseDate = date.today(), StageName = 'Stage 1 - Connecting');
+        Opportunity opp = new Opportunity(Name = 'Test Opp', CloseDate = date.today(), StageName = 'Stage 1 - Connecting',
+                                            Opportunity_Owner_Division__c = 'Solutions', Opportunity_Owner_Sub_Division__c='Inbound Sales');
         insert opp;
 
         List<OpportunityLineItem> prods = new List<OpportunityLineItem>();
