@@ -132,7 +132,7 @@ public class FTEFileController extends FTEController {
         system.debug('dayCardFromDb.hours__c : '+dayCardFromDb.hours__c);
         //if(fteDaysdecimal > dayCardFromDb.hours__c){
             this.userAvailableDays = dayCardFromDb.hours__c + dayCardFromDb.Available_Hours__c;
-        	this.userAvailableDays = this.userAvailableDays.setScale(2);
+        	this.userAvailableDays = this.userAvailableDays.setScale(4);
        // }
         
     }
