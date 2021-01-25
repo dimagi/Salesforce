@@ -50,8 +50,6 @@ public class FTETimeCardGenerator {
             
         }
         
-        List<DContract__C> contracts = [Select Id from DContract__C where name= 'Abt Associates:VC IDIQ'];
-        FTEMonthTimeCard monthCard =  this.fteWorkCardContractMap.get(contracts.get(0).Id);       
         return getResult();
     }
     
@@ -106,13 +104,13 @@ public class FTETimeCardGenerator {
         this.csvFile += csvEmptyRowPart2 + NEW_LINE;
     }
     
-    private void addCsvCell(String val, Integer countValue,  Integer limitValue) {
+   /* private void addCsvCell(String val, Integer countValue,  Integer limitValue) {
         if (countValue != limitValue) {
             this.csvFile += '"' + val + '",';
         } else {
             this.csvFile += '"' + val + '"'+ NEW_LINE;
         }
-    }
+    }*/
     
     private List<FTEMonthTimeCard> getResult() {
         // Generate list for UI and csv file

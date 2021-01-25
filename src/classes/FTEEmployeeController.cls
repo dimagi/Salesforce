@@ -283,6 +283,7 @@ public class FTEEmployeeController extends FTEController {
         this.fteTimeManager.unassigned.nameCss = '';
     }
 
+    /**
     private void moveHoursInFTEWorkCard(Decimal daysValue, Integer month, Id EmployeeId) {
         List<FTE_Work_Card__c> workCards = [SELECT Id, Month_1__c, Month_2__c, Month_3__c, Month_4__c, Month_5__c, Month_6__c, Month_7__c, Month_8__c, Month_9__c, Month_10__c, Month_11__c,
                             Month_12__c, Total__c, Total_Hours__c FROM FTE_Work_Card__c WHERE Employee__c =: EmployeeId];
@@ -298,4 +299,5 @@ public class FTEEmployeeController extends FTEController {
             update workCard;
         }
     }
+	**/
 }

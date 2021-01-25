@@ -41,7 +41,7 @@ public class FTECsvUploadController extends FTEController {
             if (!Test.isRunningTest()) {
                 Database.executeBatch(new FTEHoursUploadBatch(this.records.values(), year), 1);
             } else {
-                Database.executeBatch(new FTEHoursUploadBatch(this.records.values()), 200); // no more then one batch execute can be invoked from test
+                Database.executeBatch(new FTEHoursUploadBatch(this.records.values(), year), 200); // no more then one batch execute can be invoked from test
             }
 
             loadWorkCardJobStatus();

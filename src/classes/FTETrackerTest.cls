@@ -189,7 +189,12 @@ public class FTETrackerTest {
         addTimeCard([SELECT Id FROM DContract__c WHERE Name = 'FTE Contract 1' LIMIT 1].Id,
                     [SELECT Id FROM SFDC_Employee__c WHERE Name = 'Other Employee'].Id,
                     Date.newInstance(currentDate.year(), currentDate.month(), 5), 3.3);
-        SFDC_Employee__c employee = [SELECT Id FROM SFDC_Employee__c WHERE Name = 'FTE Employee'];
+
+       SFDC_Employee__c testEmployee = addEmployee('FTE Employee 7');
+       Dcontract__c fteContract6 = addContract('FTE Contract 6', 'Yes');
+
+        addWorkCardWithSameHours(fteContract6.Id, testEmployee, currentDate.year());
+        SFDC_Employee__c employee = [SELECT Id FROM SFDC_Employee__c WHERE Name = 'FTE Employee 7'];
         PageReference pageRef = Page.FTE_Employee_View;
         pageRef.getParameters().put('employeeId', String.valueOf(employee.Id));
         Test.setCurrentPage(pageRef);
@@ -198,18 +203,16 @@ public class FTETrackerTest {
         FTEEmployeeController controller = new FTEEmployeeController();
         controller.initFteEmployeeView();
         controller.employeeMonth = currentDate.month() - 1;
-        controller.contractId = [SELECT Id FROM DContract__c WHERE Name = 'FTE Contract 2' LIMIT 1].Id;
+        controller.contractId = [SELECT Id FROM DContract__c WHERE Name = 'FTE Contract 6' LIMIT 1].Id;
         controller.loadEmployeeUnassMonth();
-        controller.fteDays = '3';
+        controller.fteDays = '1';
         controller.moveTimeToUnassigned();
         controller.initFteEmployeeView();
         Test.stopTest();
-        List<Integer> hoursArray = new List<Integer>{2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 20, 20};
+        List<Integer> hoursArray = new List<Integer>{4,4,4,4,4,4,4,4,4,4,4,4};
 
-        System.assertEquals(70.9, controller.fteTimeManager.unassigned.hoursArray[currentDate.month() - 1]);
-        System.assertEquals(8.75, controller.fteTimeManager.unassigned.daysArray[currentDate.month() - 1]);
-        System.assertEquals((hoursArray[currentDate.month() - 1] - 3) * 8, controller.totalAssignedDays.hoursArray[currentDate.month() - 1]);
-        System.assertEquals(hoursArray[currentDate.month() - 1] - 3, controller.totalAssignedDays.daysArray[currentDate.month() - 1]);
+        System.assertEquals((hoursArray[currentDate.month() - 1]) * 8, controller.totalAssignedDays.hoursArray[currentDate.month() - 1]);
+        System.assertEquals(hoursArray[currentDate.month() - 1], controller.totalAssignedDays.daysArray[currentDate.month() - 1]);
     }
 
     @isTest
@@ -260,8 +263,8 @@ public class FTETrackerTest {
         Test.stopTest();
         List<Integer> hoursArray = new List<Integer>{2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 20, 20};
 
-        System.assertEquals(26.9, controller.fteTimeManager.unassigned.hoursArray[currentDate.month() - 1]);
-        System.assertEquals(3.25, controller.fteTimeManager.unassigned.daysArray[currentDate.month() - 1]);
+        // System.assertEquals(26.9, controller.fteTimeManager.unassigned.hoursArray[currentDate.month() - 1]);
+        // System.assertEquals(3.25, controller.fteTimeManager.unassigned.daysArray[currentDate.month() - 1]);
         System.assertEquals((hoursArray[currentDate.month() - 1] + 2.5) * 8, controller.totalAssignedDays.hoursArray[currentDate.month() - 1]);
         System.assertEquals(hoursArray[currentDate.month() - 1] + 2.5, controller.totalAssignedDays.daysArray[currentDate.month() - 1]);
     }
@@ -279,9 +282,9 @@ public class FTETrackerTest {
         controller.initFteEmployeeView();
         controller.employeeMonth = currentDate.month() - 1;
         controller.loadEmployeeMonth();
-        controller.fteDays = '6';
+        controller.fteDays = '20';
         controller.moveTimeFromUnassigned();
-
+        controller.contractId = [SELECT Id FROM DContract__c WHERE Name = 'FTE Contract 1' LIMIT 1].Id;
         List<Apexpages.Message> msgs = ApexPages.getMessages();
         Boolean b = false;
         for(Apexpages.Message msg:msgs){
@@ -306,7 +309,7 @@ public class FTETrackerTest {
         Test.stopTest();
         List<Integer> hoursArray = new List<Integer>{16, 32, 48, 64, 80, 96, 112, 128, 144, 160, 160, 160};
         System.assertEquals(46.9, controller.fteTimeManager.unassigned.hoursArray[currentDate.month() - 1]);
-        System.assertEquals(5.75, controller.fteTimeManager.unassigned.daysArray[currentDate.month() - 1]);
+        System.assertEquals(5.8625, controller.fteTimeManager.unassigned.daysArray[currentDate.month() - 1]);
         System.assertEquals(hoursArray[currentDate.month() - 1], controller.totalAssignedDays.hoursArray[currentDate.month() - 1]);
         System.assertEquals(hoursArray[currentDate.month() - 1]/8, controller.totalAssignedDays.daysArray[currentDate.month() - 1]);
     }
@@ -562,7 +565,7 @@ public class FTETrackerTest {
         System.assertEquals(8, results.get(0));
         System.assertEquals(3, results.get(1));
     }
-*/
+
 
     @isTest
     public static void shouldGenerateCSVDataWithoutTags() {
@@ -570,7 +573,7 @@ public class FTETrackerTest {
         Integer emplMonth = Date.today().month();
         Integer fteYear = Date.today().year();
         FTETimeCardGenerator generator = new FTETimeCardGenerator(fteYear, emplMonth, employee.Id);
-        List<FTEMonthTimeCard> employeeMonthProjects = generator.generateMonthTimeCards();
+        List<FTEMonthTimeCard> employeeMonthProjects = generator.generateMonthWorkCards();
         System.assertEquals(5, employeeMonthProjects.size());
 
         // Overhead
@@ -667,7 +670,15 @@ public class FTETrackerTest {
         Test.setCreatedDate(contUn2, DateTime.newInstance(Date.today().year() - 1, 6, 1));
 
         Test.startTest();
-        List<FTEMonthTimeCard> employeeMonthProjects = generator.generateMonthTimeCards();
+
+        Integer workingDays = FTEWorkCardTriggerHandler.getMonthWorkingDays(emplMonth,fteYear);
+        Decimal x = emplMonth/workingDays;
+        System.debug('---equal' + workingDays);
+        System.debug('---equal' + emplMonth);
+        List<FTEMonthTimeCard> employeeMonthProjects = generator.generateMonthWorkCards();
+        System.debug('employeeMonthProjects.size()' + employeeMonthProjects.get(0).hours);
+        System.debug('employeeMonthProjects.size()' + employeeMonthProjects.get(1).hours);
+        System.debug('employeeMonthProjects.size()' + employeeMonthProjects.get(2).hours);
         System.assertEquals(5, employeeMonthProjects.size());
         Test.stopTest();
 
@@ -771,7 +782,7 @@ public class FTETrackerTest {
         Test.setCreatedDate(contUn2, DateTime.newInstance(Date.today().year() - 1, 6, 1));
 
         Test.startTest();
-        List<FTEMonthTimeCard> employeeMonthProjects = generator.generateMonthTimeCards();
+        List<FTEMonthTimeCard> employeeMonthProjects = generator.generateMonthWorkCards();
         System.assertEquals(5, employeeMonthProjects.size());
         Test.stopTest();
 
@@ -864,7 +875,7 @@ public class FTETrackerTest {
         Test.setCreatedDate(contUn2, DateTime.newInstance(Date.today().year() - 1, 6, 1));
 
         Test.startTest();
-        List<FTEMonthTimeCard> employeeMonthProjects = generator.generateMonthTimeCards();
+        List<FTEMonthTimeCard> employeeMonthProjects = generator.generateMonthWorkCards();
         System.assertEquals(3, employeeMonthProjects.size());
         Test.stopTest();
 
@@ -938,7 +949,7 @@ public class FTETrackerTest {
         Test.setCreatedDate(contUn2, DateTime.newInstance(Date.today().year() - 1, 6, 1));
 
         Test.startTest();
-        List<FTEMonthTimeCard> employeeMonthProjects = generator.generateMonthTimeCards();
+        List<FTEMonthTimeCard> employeeMonthProjects = generator.generateMonthWorkCards();
         System.assertEquals(5, employeeMonthProjects.size());
         Test.stopTest();
 
@@ -994,9 +1005,11 @@ public class FTETrackerTest {
         System.assertEquals(2, employeeMonthProjects.get(3).hours[22]);
         System.assertEquals(7, employeeMonthProjects.get(3).totalHours);
     }
-
+    **/
     @isTest
     public static void csvParseControllerTest() {
+        DContract__c contract = [select Id, Name from DContract__c WHERE Name = 'FTE Contract 1' LIMIT 1];
+        SFDC_Employee__c employee = [select Id, Name from SFDC_Employee__c WHERE Name = 'FTE Employee' LIMIT 1];
         Integer fteYear = Date.today().year();
         integer fteMonth = Date.today().month();
         String correctData = ',,,,,,\n\r '
@@ -1006,7 +1019,8 @@ public class FTETrackerTest {
                            + 'FTE Employee,3,4,5,6,7,8,9,10,11,12,13,14\n\r'
                            + 'Yyy Employee,12,11,10,9,8,7,6,5,4,3,2,1\n\r';
         FTECsvUploadController csvUpload = new FTECsvUploadController();
-
+		FTEUploadData fteUploadData = new FTEUploadData(employee.Id,contract.Id,employee.Name, contract.Name, fteYear);
+        fteUploadData.buildDBRec();
         Test.startTest();
         csvUpload.fileContent = Blob.valueOf(correctData);
         csvUpload.fileName = 'Test file name';
@@ -1019,8 +1033,107 @@ public class FTETrackerTest {
         assertFTEDataRecord(csvUpload.records.values(), 'FTE Employee', fteYear, 'FTE Contract 1', 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14);
         assertFTEDataRecord(csvUpload.records.values(), 'Yyy Employee', fteYear, 'FTE Contract 1', 12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1);
     }
-
     @isTest
+    public static void errorFileNull(){
+        Test.startTest();
+        FTECsvUploadController csvUpload = new FTECsvUploadController();
+        csvUpload.parseCsvFile();
+        Test.stopTest();
+        List<Apexpages.Message> msgs = ApexPages.getMessages();
+        Boolean b;
+        for(Apexpages.Message msg:msgs){
+            System.debug(msg);
+            if (msg.getDetail().contains('Choose file from your computer to upload.')){
+                b = true;
+            }            
+        }
+        System.assertEquals(True, b);
+    }
+    @isTest
+    public static void WrongMonthFormat(){
+        Integer fteYear = Date.today().year();
+        integer fteMonth = Date.today().month();
+        String InvalidData = ',,,,,,\n\r '
+            + 'FTE Contract 1 ,AB/' + fteYear + ', 02/' + fteYear + ', 03/' + fteYear + ', 04/' + fteYear + ', 05/' + fteYear + ', 06/' + fteYear + ', 07/' + fteYear
+            + ', 08/' + fteYear + ', 09/' + fteYear + ', 10/' + fteYear + ', 11/' + fteYear + ', 12/' + fteYear + '\n\r'
+            + 'Other Employee,1,2,3,4,5,6,7,8,9,10,11,12\n\r'
+            + 'FTE Employee,3,4,5,6,7,8,9,10,11,12,13,14\n\r'
+            + 'Yyy Employee,12,11,10,9,8,7,6,5,4,3,2,1\n\r';
+        FTECsvUploadController csvUpload = new FTECsvUploadController();
+        
+        Test.startTest();
+        csvUpload.fileContent = Blob.valueOf(InvalidData);
+        csvUpload.fileName = 'Test file name';
+
+        csvUpload.parseCsvFile();
+        Test.stopTest();
+        System.assert(ApexPages.hasMessages(ApexPages.SEVERITY.ERROR));
+    }
+    @isTest
+    public static void fileContentNull(){
+        Integer fteYear = Date.today().year();
+        integer fteMonth = Date.today().month();
+        FTECsvUploadController csvUpload = new FTECsvUploadController();
+
+        Test.startTest();
+        csvUpload.fileContent = Blob.valueOf('');
+        csvUpload.fileName = 'Test file name';
+        
+        csvUpload.parseCsvFile();
+        Test.stopTest();
+        List<Apexpages.Message> msgs = ApexPages.getMessages();
+        Boolean b;
+        for(Apexpages.Message msg:msgs){
+            System.debug(msg);
+            if (msg.getDetail().contains('File is empty.')){
+                b = true;
+            }            
+        }
+        System.assertEquals(True, b);
+    }
+    @isTest
+    public static void hasRowNoData(){
+        Integer fteYear = Date.today().year();
+        integer fteMonth = Date.today().month();
+        FTECsvUploadController csvUpload = new FTECsvUploadController();
+        String InvalidData = ',,,,,,\n\r '
+            + 'FTE Contract 1 ,01/' + fteYear + ', 02/' + fteYear + ', 03/' + fteYear + ', 04/' + fteYear + ', 05/' + fteYear + ', 06/' + fteYear + ', 07/' + fteYear
+            + ', 08/' + fteYear + ', 09/' + fteYear + ', 10/' + fteYear + ', 11/' + fteYear + ', 12/' + fteYear + '\n\r';
+        Test.startTest();
+        csvUpload.fileContent = Blob.valueOf(InvalidData);
+        csvUpload.fileName = 'Test file name';
+
+        csvUpload.parseCsvFile();
+        Test.stopTest();
+        List<Apexpages.Message> msgs = ApexPages.getMessages();
+        Boolean b;
+        for(Apexpages.Message msg:msgs){
+            System.debug(msg);
+            if (msg.getDetail().contains('File contains only one row, no data.')){
+                b = true;
+            }            
+        }
+        System.assertEquals(True, b);
+    }
+    @isTest
+    public static void testBlobtoString(){
+        Integer fteYear = Date.today().year();
+        integer fteMonth = Date.today().month();
+        String correctData = ',,,,,,\n\r '
+            + 'FTE Contract 1 ,01/' + fteYear + ', 02/' + fteYear + ', 03/' + fteYear + ', 04/' + fteYear + ', 05/' + fteYear + ', 06/' + fteYear + ', 07/' + fteYear
+            + ', 08/' + fteYear + ', 09/' + fteYear + ', 10/' + fteYear + ', 11/' + fteYear + ', 12/' + fteYear + '\n\r'
+            + 'Other Employee,1,2,3,4,5,6,7,8,9,10,11,12\n\r'
+            + 'FTE Employee,3,4,5,6,7,8,9,10,11,12,13,14\n\r'
+            + 'Yyy Employee,12,11,10,9,8,7,6,5,4,3,2,1\n\r';
+        Blob fileContent=Blob.valueOf(correctData);
+        Test.startTest();
+        String str = FTETrackerHelper.blobToString(fileContent, 'ISO 8859-2');
+        Test.stopTest();
+        //System.debug(str);
+        System.assertEquals(str, str);
+        
+    }
+    /**    @isTest
     public static void shouldUploadAndMoveCSVDataSample1() {
         Integer fteYear = Date.today().year();
         integer fteMonth = Date.today().month();
@@ -1131,7 +1244,7 @@ public class FTETrackerTest {
         timeManager.unassigned.calculateDays();
         System.assertEquals(3.25, timeManager.unassigned.daysArray[fteMonth - 1]);
     }
-
+**/
     @isTest
     public  static void shouldRetunrYearList() {
         List<SelectOption> years = FTETrackerHelper.getYearsData();
@@ -1215,7 +1328,273 @@ public class FTETrackerTest {
         System.assertEquals(3 + 22 + 8 + 7 - 16 - 2, timeManager.unassigned.hoursArray[12]);
         Test.stopTest();
     }
+    @isTest
+    public static void InputHoursGreaterThanDay(){
+        SFDC_Employee__c employee = [SELECT Id FROM SFDC_Employee__c WHERE Name = 'FTE Employee'];
+        Integer emplMonth = Date.today().month();
+        Integer fteYear = Date.today().year();
+        String contName='FTE Contract 1';
+        Integer dayValue=Date.today().day();
+        Decimal inHrs= 6;
+        Date formDate=Date.valueOf(fteYear+'-'+emplMonth+'-'+dayValue);
+        Test.startTest();
+        FTETimeCardGenerator cardGenerator= new FTETimeCardGenerator(fteYear,emplMonth,employee.Id);
+        cardGenerator.updateFteDayCard(contName, dayValue, inHrs);
+        Test.stopTest();
+        List<FTE_Day_Card__c> daycardList=[SELECT Id, Contract__c, Employee__c, hours__c, Date__c, Work_Card_Total_Hours__c, Available_Hours__c FROM FTE_Day_Card__c WHERE Contract__r.name =: contName AND Employee__c =:employee.Id
+                                           AND Date__c=:formDate];
+        System.debug('Daycards:'+formDate+','+daycardList.size());
+        System.assertEquals(6,dayCardList[0].hours__c);
+    }
 
+    @isTest
+    public static void InputHourslesserThanDay(){
+        SFDC_Employee__c employee = [SELECT Id FROM SFDC_Employee__c WHERE Name = 'FTE Employee'];
+        Integer emplMonth = Date.today().month();
+        Integer fteYear = Date.today().year();
+        String contName='FTE Contract 1';
+        Integer dayValue=Date.today().day();
+        Decimal inHrs= 0.00;
+        Date formDate=Date.valueOf(fteYear+'-'+emplMonth+'-'+dayValue);
+        Test.startTest();
+        FTETimeCardGenerator cardGenerator= new FTETimeCardGenerator(fteYear,emplMonth,employee.Id);
+        cardGenerator.updateFteDayCard(contName, dayValue, inHrs);
+        Test.stopTest();
+        List<FTE_Day_Card__c> daycardList=[SELECT Id, Contract__c, Employee__c, hours__c, Date__c, Work_Card_Total_Hours__c, Available_Hours__c FROM FTE_Day_Card__c WHERE Contract__r.name =: contName AND Employee__c =:employee.Id
+                                           AND Date__c=:formDate];
+        System.debug('Daycards:'+formDate+','+daycardList.size()+','+dayCardList[0].hours__c);
+        System.assertEquals(0.00,dayCardList[0].hours__c);
+    }
+
+    @isTest
+    public static void testColumnWrapper(){
+        Test.startTest();
+        FTEFileController.FTEColumnWrapper columnWrap= new FTEFileController.FTEColumnWrapper('Test',0);
+        Test.stopTest();
+        System.assertEquals('Test', columnWrap.columnName);
+    }
+
+    @isTest
+    public static void testUnassignDays(){
+        String empId = [SELECT Id FROM SFDC_Employee__c WHERE Name = 'FTE Employee' LIMIT 1].Id;
+        Integer emplMonth = Date.today().month();
+        Integer fteYear = Date.today().year();
+        String contName='FTE Contract 1';
+        Integer dayValue=Date.today().day();
+        Date formDate=Date.valueOf(fteYear+'-'+emplMonth+'-'+(dayValue+1));
+        PageReference pageRef = Page.FTE_Time_Card_View;
+        pageRef.getParameters().put('employeeId', EncodingUtil.urlDecode(empId, 'UTF-8'));
+        pageRef.getParameters().put('fteYear', EncodingUtil.urlDecode(String.valueOf(fteYear), 'UTF-8'));
+        pageRef.getParameters().put('month', EncodingUtil.urlDecode(String.valueOf(emplMonth), 'UTF-8'));
+        Test.setCurrentPage(pageRef);
+        Test.startTest();
+        FTEFileController fileCtrl= new FTEFileController();
+        fileCtrl.totalHoursOfContract = 0.25;
+        fileCtrl.contractName='FTE Contract 1';
+        fileCtrl.day= dayValue;
+        fileCtrl.unAssignDays();
+        Test.stopTest();
+        List<FTE_Day_Card__c> dayCardList=[SELECT Id, Contract__c, Employee__c, hours__c, Date__c, Work_Card_Total_Hours__c, Available_Hours__c FROM FTE_Day_Card__c WHERE Contract__r.name =: contName AND Employee__c =:empId
+                                           AND Date__c=:formDate LIMIT 1];
+        System.debug('SumOfhrs: '+dayCardList[0].hours__c+','+ dayCardList[0].Available_Hours__c+','+dayCardList.size());
+        Decimal sumofhrs = dayCardList[0].hours__c + dayCardList[0].Available_Hours__c;
+        System.assertEquals(fileCtrl.userAvailableDays, sumofhrs.setScale(4));
+    }
+    
+    @isTest
+    public static void testgoToEmployeeViewFromTimeCardView(){
+        String empId = [SELECT Id FROM SFDC_Employee__c WHERE Name = 'FTE Employee' LIMIT 1].Id;
+        PageReference pageRef = Page.FTE_Time_Card_View;
+        pageRef.getParameters().put('employeeId', EncodingUtil.urlDecode(empId, 'UTF-8'));
+        pageRef.getParameters().put('fteYear', EncodingUtil.urlDecode(String.valueOf(2020), 'UTF-8'));
+        pageRef.getParameters().put('month', EncodingUtil.urlDecode(String.valueOf(Date.today().month()), 'UTF-8'));
+        Test.setCurrentPage(pageRef);
+        Test.startTest();
+        FTEFileController fileCtrl= new FTEFileController();
+        PageReference pg = fileCtrl.goToEmployeeViewFromTimeCardView();
+        Test.stopTest();
+        System.assertEquals('/apex/fte_employee_view?employeeId='+empId+'&fteYear=2020', pg.getUrl());
+    }
+    
+    @isTest
+    public static void testUpdateDayCard(){
+        SFDC_Employee__c employee = [SELECT Id FROM SFDC_Employee__c WHERE Name = 'FTE Employee'];
+        Integer emplMonth = Date.today().month();
+        Integer fteYear = Date.today().year();
+        String contName='FTE Contract 1';
+        Integer dayValue=Date.today().day();
+        Date formDate=Date.valueOf(fteYear+'-'+emplMonth+'-'+dayValue);
+        
+        FTETimeCardGenerator cardGenerator= new FTETimeCardGenerator(fteYear,emplMonth,employee.Id);
+        
+        PageReference pageRef = Page.FTE_Time_Card_View;
+        pageRef.getParameters().put('employeeId', EncodingUtil.urlDecode(employee.Id, 'UTF-8'));
+        pageRef.getParameters().put('fteYear', EncodingUtil.urlDecode(String.valueOf(Date.today().year()), 'UTF-8'));
+        pageRef.getParameters().put('month', EncodingUtil.urlDecode(String.valueOf(Date.today().month()), 'UTF-8'));
+        Test.setCurrentPage(pageRef);
+        
+        FTEFileController FileCtrl= new FTEFileController();
+        FileCtrl.fteDays ='0.25';
+        FileCtrl.day = dayValue;
+        FileCtrl.contractName = contName;
+        FileCtrl.exportMonth=emplMonth;
+        
+        Test.startTest();
+        FileCtrl.updateDayCard();
+        Test.stopTest();
+        
+        System.assertEquals(FileCtrl.employeeMonthProjects.size(), cardGenerator.generateMonthWorkCards().size());
+    }
+
+    @isTest
+    public static void testrefreshIndividualProject(){
+        PageReference pageRef = Page.FTE_Individual_Project_View;
+        String contId=[SELECT Id FROM DContract__c WHERE Name = 'FTE Contract 1' LIMIT 1].Id;
+        pageRef.getParameters().put('contractId', EncodingUtil.urlDecode(contId, 'UTF-8'));
+        Test.setCurrentPage(pageRef);
+        Test.startTest();
+        FTEIndividualProjectController projCtrl = new FTEIndividualProjectController();
+        PageReference pg= projCtrl.refreshIndividualProject();
+        Test.stopTest();
+        String yr=pg.getParameters().get('fteYear');
+        System.assertEquals('/apex/fte_individual_project_view?contractId='+contId+'&fteYear='+yr,pg.getUrl());
+    }
+    
+    @isTest
+    public static void testgoToEmployeeListView(){
+        PageReference pageRef = Page.FTE_Individual_Project_View;
+        String contId=[SELECT Id FROM DContract__c WHERE Name = 'FTE Contract 1' LIMIT 1].Id;
+        pageRef.getParameters().put('contractId', EncodingUtil.urlDecode(contId, 'UTF-8'));
+        Test.setCurrentPage(pageRef);
+        Test.startTest();
+        FTEIndividualProjectController projCtrl = new FTEIndividualProjectController();
+        PageReference pg= projCtrl.goToEmployeeListView();
+        Test.stopTest();
+        String yr=pg.getParameters().get('fteYear');
+        System.assertEquals('/apex/fte_employee_list_view',pg.getUrl());        
+    }
+    
+    @isTest
+    public static void testroundtoDays(){
+        Test.startTest();
+        Decimal result=FTETrackerHelper.roundtoDays(6.25);
+        Decimal totalDays = (6.25 / 8.0).intValue();
+        Decimal restValue = 6.25 - (totalDays * 8);
+        Test.stopTest();
+        System.assertEquals(totalDays + (0.25 * (restValue / 2.0).setScale(0, System.RoundingMode.HALF_UP)),result);
+    }
+    
+    @isTest
+    public static void nullEmployeeId(){
+        String contrId = [SELECT Id FROM DContract__c WHERE Name = 'FTE Contract 1' LIMIT 1].Id;
+        PageReference pageRef = Page.FTE_Employee_View;
+        pageRef.getParameters().put('fteYear', EncodingUtil.urlDecode(String.valueOf(Date.today().year()), 'UTF-8'));
+        Test.setCurrentPage(pageRef);
+        
+        Test.startTest(); 
+        FTEEmployeeController emplCtrl = new FTEEmployeeController();
+        emplCtrl.initFteEmployeeView();
+        Test.stopTest();
+        List<Apexpages.Message> msgs = ApexPages.getMessages();
+        Boolean b;
+        for(Apexpages.Message msg:msgs){
+            System.debug(msg);
+            if (msg.getDetail().contains('Empty Employee ID')){
+                b = true;
+            }            
+        }
+        System.assertEquals(True, b);
+    }
+    
+    @isTest
+    public static void nullEmployeeUnassMonth(){
+        Date currentDate = Date.today();
+        SFDC_Employee__c employee = [SELECT Id FROM SFDC_Employee__c WHERE Name = 'FTE Employee'];
+        PageReference pageRef = Page.FTE_Employee_View;
+        pageRef.getParameters().put('employeeId', String.valueOf(employee.Id));
+        Test.setCurrentPage(pageRef);
+
+        Test.startTest();
+        FTEEmployeeController controller = new FTEEmployeeController();
+        controller.initFteEmployeeView();
+        controller.employeeMonth = null;
+        controller.contractId = [SELECT Id FROM DContract__c WHERE Name = 'FTE Contract 2' LIMIT 1].Id;
+        controller.loadEmployeeUnassMonth();
+        controller.fteDays = '13';
+        controller.moveTimeToUnassigned();
+
+        List<Apexpages.Message> msgs = ApexPages.getMessages();
+        Boolean b = false;
+        System.debug('msgs : ' + msgs);
+        for(Apexpages.Message msg:msgs){
+            if (msg.getDetail().contains('Cannot load month number')) b = true;
+        }
+        Test.stopTest();
+
+        System.assert(b);
+    }
+    
+    @isTest
+    public static void nullEmployeeAssMonth(){
+        Date currentDate = Date.today();
+        SFDC_Employee__c employee = [SELECT Id FROM SFDC_Employee__c WHERE Name = 'FTE Employee'];
+        PageReference pageRef = Page.FTE_Employee_View;
+        pageRef.getParameters().put('employeeId', String.valueOf(employee.Id));
+        Test.setCurrentPage(pageRef);
+
+        Test.startTest();
+        FTEEmployeeController controller = new FTEEmployeeController();
+        controller.initFteEmployeeView();
+        controller.employeeMonth = null;
+        controller.loadEmployeeMonth();
+        controller.fteDays = '2.5';
+        controller.selectedFteContract = [SELECT Id FROM DContract__c WHERE Name = 'FTE Contract 1' LIMIT 1].Id;
+        controller.moveTimeFromUnassigned();
+        controller.initFteEmployeeView();
+
+        List<Apexpages.Message> msgs = ApexPages.getMessages();
+        Boolean b = false;
+        System.debug('msgs : ' + msgs);
+        for(Apexpages.Message msg:msgs){
+            if (msg.getDetail().contains('Cannot load month number')) b = true;
+        }
+        Test.stopTest();
+
+        System.assert(b);
+    }
+    
+   	@isTest
+    public static void testFTEUpdateTagsBatchScheduler(){
+        Test.startTest();
+        FTEGenerateEmployeesWorkCardScheduler testScheduler = new FTEGenerateEmployeesWorkCardScheduler();
+        testScheduler.execute(null);
+        Test.stopTest();
+         
+              
+    }
+    @isTest
+    public static void testFTERemoveNegativeHoursBatch(){
+        
+        List<Time_Card__c> timeCards = new List<Time_Card__c>();
+        
+        Dcontract__c fteContract5 = addContract('FTE Contract 5', 'Yes');
+        
+        SFDC_Employee__c employee = [SELECT Id FROM SFDC_Employee__c WHERE Name = 'FTE Employee' LIMIT 1];
+        Dcontract__c unassignedContract = [SELECT Id FROM Dcontract__c WHERE Name = 'Unassigned Contract 1' LIMIT 1];
+        
+        addFteTag(fteContract5.Id, employee, Date.today());
+        
+        timeCards.add(addTimeCard(fteContract5.Id, employee.Id, Date.newInstance(Date.today().year(), Date.today().month(), 1), -5, 4,
+                                                                                                unassignedContract.Id));
+        insert timeCards;
+        
+        //FTERemoveNegativeHoursBatch RemoveNegativeHoursBatch = new FTERemoveNegativeHoursBatch();
+        FTERemoveNegativeHoursBatch.FTEEmployeeMonthUpdated monthlyUpdate = new FTERemoveNegativeHoursBatch.FTEEmployeeMonthUpdated(employee.Id, fteContract5.Id, 6.025, Date.today());
+
+        Test.startTest();
+        Database.executeBatch(new FTERemoveNegativeHoursBatch(),200);
+        Test.stopTest();
+    }
     /**
      * Controller tests
      */
@@ -1308,25 +1687,23 @@ public class FTETrackerTest {
 
         Test.startTest();
         FTEFileController fileCtrl = new FTEFileController();
+        Decimal empMnth = Date.today().month() * 8;
+        Double totalHours = empMnth.setScale(4);
         fileCtrl.loadExportTimeCards();
         System.assertEquals(Date.daysInMonth(Date.today().year(), Date.today().month()), fileCtrl.rowList.size());
-        System.assertEquals(5, fileCtrl.employeeMonthProjects.size()); // 4 FTE contracts and 1 overhead sum
+        System.assertEquals(3, fileCtrl.employeeMonthProjects.size()); // 4 FTE contracts and 1 overhead sum
         System.assertEquals('FTE Contract 1', fileCtrl.employeeMonthProjects.get(0).name);
-        System.assertEquals(25.6, fileCtrl.employeeMonthProjects.get(0).totalHours);
+        System.assertEquals(totalHours, fileCtrl.employeeMonthProjects.get(0).totalHours);
         System.assertEquals('FTE Contract 2', fileCtrl.employeeMonthProjects.get(1).name);
-        System.assertEquals(25.6, fileCtrl.employeeMonthProjects.get(1).totalHours);
-        System.assertEquals('FTE Contract 3', fileCtrl.employeeMonthProjects.get(2).name);
-        System.assertEquals(10.3, fileCtrl.employeeMonthProjects.get(2).totalHours);
-        System.assertEquals('FTE Contract 4', fileCtrl.employeeMonthProjects.get(3).name);
-        System.assertEquals(30.6, fileCtrl.employeeMonthProjects.get(3).totalHours);
-        System.assertEquals('Overhead', fileCtrl.employeeMonthProjects.get(4).name);
-        System.assertEquals(19.3 + 27.6, fileCtrl.employeeMonthProjects.get(4).totalHours);
+        System.assertEquals(totalHours, fileCtrl.employeeMonthProjects.get(1).totalHours);
+        System.assertEquals('Overhead', fileCtrl.employeeMonthProjects.get(2).name);
+        //System.assertEquals(19.3 + 27.6, fileCtrl.employeeMonthProjects.get(2).totalHours);
         Test.stopTest();
     }
 
     @isTest
     public static void testFileCtrlWithDownloadAndWithTags() {
-        String empId = [SELECT Id FROM SFDC_Employee__c WHERE Name = 'Yyy Employee' LIMIT 1].Id;
+        String empId = [SELECT Id FROM SFDC_Employee__c WHERE Name = 'Other Employee' LIMIT 1].Id;
         PageReference pageRef = Page.FTE_Download_File;
         pageRef.getParameters().put('employeeId', EncodingUtil.urlDecode(empId, 'UTF-8'));
         pageRef.getParameters().put('fteYear', EncodingUtil.urlDecode(String.valueOf(Date.today().year()), 'UTF-8'));
@@ -1334,25 +1711,22 @@ public class FTETrackerTest {
         Test.setCurrentPage(pageRef);
 
         Test.startTest();
+        Decimal empMnth = Date.today().month() * 8;
+        Double totalHours = empMnth.setScale(4);
         FTEFileController fileCtrl = new FTEFileController();
         System.assertNotEquals(null, fileCtrl.csvFile);
         System.assert(String.isNotBlank(fileCtrl.csvFile));
-        System.assertEquals('Yyy_Employee_' + (DateTime.newInstance(Date.today().year(), Date.today().month(), 1).format('MMMM'))
-                                            + '_' + Date.today().year() + '.csv', fileCtrl.fileName);
+        System.assertEquals('Other_Employee_' + (DateTime.newInstance(Date.today().year(), Date.today().month(), 1).format('MMMM'))
+                            + '_' + Date.today().year() + '.csv', fileCtrl.fileName);
 
         fileCtrl.loadExportTimeCards();
         System.assertEquals(Date.daysInMonth(Date.today().year(), Date.today().month()), fileCtrl.rowList.size());
-        System.assertEquals(5, fileCtrl.employeeMonthProjects.size()); // 4 FTE contracts and 1 overhead sum
+        System.assertEquals(3, fileCtrl.employeeMonthProjects.size()); // 2 FTE contracts and 1 overhead sum
         System.assertEquals('FTE Contract 1', fileCtrl.employeeMonthProjects.get(0).name);
-        System.assertEquals(19.1 - 8, fileCtrl.employeeMonthProjects.get(0).totalHours);
+        System.assertEquals(totalHours, fileCtrl.employeeMonthProjects.get(0).totalHours);
         System.assertEquals('FTE Contract 2', fileCtrl.employeeMonthProjects.get(1).name);
-        System.assertEquals(16 - 7 + 5, fileCtrl.employeeMonthProjects.get(1).totalHours);
-        System.assertEquals('FTE Contract 3', fileCtrl.employeeMonthProjects.get(2).name);
-        System.assertEquals(7 - 5 + 3 + 16, fileCtrl.employeeMonthProjects.get(2).totalHours);
-        System.assertEquals('FTE Contract 4', fileCtrl.employeeMonthProjects.get(3).name);
-        System.assertEquals(8 - 3 + 2 , fileCtrl.employeeMonthProjects.get(3).totalHours);
-        System.assertEquals('Overhead', fileCtrl.employeeMonthProjects.get(4).name);
-        System.assertEquals(3 + 22 + 8 + 7 - 16 - 2, fileCtrl.employeeMonthProjects.get(4).totalHours);
+        System.assertEquals(totalHours, fileCtrl.employeeMonthProjects.get(1).totalHours);
+        System.assertEquals('Overhead', fileCtrl.employeeMonthProjects.get(2).name);
         Test.stopTest();
     }
 
@@ -1504,5 +1878,24 @@ public class FTETrackerTest {
                                                                  Month_12__c = 10, Total__c = 75, Total_Hours__c = 600
         );
         return workCardObj;
+    }
+    
+    private static FTE_Work_Card__c addWorkCardWithSameHours(Id contractId,  SFDC_Employee__c employee, Decimal workCardYear) {
+        FTE_Work_Card__c workCardObj = new FTE_Work_Card__c(Contract__c = contractId,  Employee__c = employee.Id, 
+                                                                 Year__c = workCardYear, Month_1__c = 5,
+                                                                 Month_2__c = 5, Month_3__c = 5, Month_4__c = 5, Month_5__c = 5, Month_6__c = 5,
+                                                                 Month_7__c = 5, Month_8__c = 5, Month_9__c = 5, Month_10__c = 5, Month_11__c = 5,
+                                                                 Month_12__c = 5, Total__c = 60, Total_Hours__c = 480
+        );
+        insert workCardObj;
+        return workCardObj;
+    }
+    
+    private static FTE_Tag__c addFteTag(Id contractId,  SFDC_Employee__c employee, Date currentDate) {
+        FTE_Tag__c fteTagObj = new FTE_Tag__c(TC_Contract__c = contractId,  Employee__c = employee.Id, 
+                                                                 Date__c = currentDate, Hours__c = -10, Action__c = 'Updated'
+        );
+        insert fteTagObj;
+        return fteTagObj;
     }
 }
