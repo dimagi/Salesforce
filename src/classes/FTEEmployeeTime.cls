@@ -49,7 +49,8 @@ public class FTEEmployeeTime {
     
     public void calculateDays() {
         for (Integer i = 0 ; i < this.hoursArray.size(); i++) {
-            this.daysArray[i] = FTETrackerHelper.roundtoDays(this.hoursArray[i]);
+            //this.daysArray[i] = FTETrackerHelper.roundtoDays(this.hoursArray[i]);
+            this.daysArray[i] = ((this.hoursArray[i])/8).setScale(4);
         }
     }
     

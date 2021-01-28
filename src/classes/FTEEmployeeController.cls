@@ -109,7 +109,7 @@ public class FTEEmployeeController extends FTEController {
                                             this.totalAssignedDays.daysArray[this.employeeMonth] : 0;
             Decimal helperDecimal = employeeNetworkDays - this.totalAssignedDays.daysArray[12] > 0 ?
                 employeeNetworkDays - this.totalAssignedDays.daysArray[12] : 0;
-            this.userAvailableDays = this.userAvailableDays < helperDecimal ? this.userAvailableDays : helperDecimal;
+            // this.userAvailableDays = this.userAvailableDays < helperDecimal ? this.userAvailableDays : helperDecimal;
         } else {
             ApexPages.addMessage(new ApexPages.message(ApexPages.severity.ERROR, 'Cannot load month number'));
             this.assignViewError = true;
