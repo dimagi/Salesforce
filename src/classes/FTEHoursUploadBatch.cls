@@ -107,7 +107,8 @@ public without sharing class FTEHoursUploadBatch implements Database.Batchable<F
                         }
                         */
                         if (missingTime < 0) {
-                            insert new FTE_Data_Record_Status__c(Status__c = 'Insufficient hours', Status_Message__c = 'There was no enough hours to move from unassigned for month : ' + i + '. Contract: '
+                            Integer month = i+1;
+                            insert new FTE_Data_Record_Status__c(Status__c = 'Insufficient hours', Status_Message__c = 'There was no enough hours to move from unassigned for month : ' + month + '. Contract: '
                                                                                + fteDataRec.getContractName() + ' Employee: ' + fteDataRec.getEmployeeName() + ' hours missing : ' + missingTime.setScale(2));
                         }
                         
