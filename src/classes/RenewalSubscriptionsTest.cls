@@ -134,7 +134,7 @@ public class RenewalSubscriptionsTest {
 
         System.debug([SELECT Id FROM OpportunityLineItem]);
         List<OpportunityLineItem> opp1Products = [SELECT Id FROM OpportunityLineItem WHERE OpportunityId =: opp1.Id];
-        System.assertEquals(2, opp1Products.size());
+        System.assertEquals(1, opp1Products.size());
 
         opp1Products = [SELECT Id, Quantity, UnitPrice FROM OpportunityLineItem WHERE OpportunityId =: opp1.Id and ProductCode = 'Pro'];
         System.assertEquals(1, opp1Products.size());
@@ -161,7 +161,7 @@ public class RenewalSubscriptionsTest {
         System.assertEquals('FirstName LastName', opp2.Owner.Name);
 
         List<OpportunityLineItem> opp2Products = [SELECT Id FROM OpportunityLineItem WHERE OpportunityId =: opp2.Id];
-        System.assertEquals(2, opp2Products.size());
+        System.assertEquals(1, opp2Products.size());
 
         opp2Products = [SELECT Id, Quantity, UnitPrice FROM OpportunityLineItem WHERE OpportunityId =: opp2.Id and ProductCode = 'Standard'];
         System.assertEquals(1, opp2Products.size());
@@ -198,7 +198,8 @@ public class RenewalSubscriptionsTest {
 
         Business_Unit__c bizUnit = new Business_Unit__c(Name = 'Test Business Unit 1');
         Opportunity opp = new Opportunity(Name = 'Old Renewal Opportunity', Business_Unit_Owner__c = bizUnit.Id, StageName = 'Closed',
-                                                 CloseDate = date.today().addDays(-1), Probability = 30, Domain_Name__c = domain1.Id);
+                                                 CloseDate = date.today().addDays(-1), Probability = 30, Domain_Name__c = domain1.Id,
+                                                 Opportunity_Owner_Division__c = 'Solutions', Opportunity_Owner_Sub_Division__c='Inbound Sales');
         insert opp;
         Test.setCreatedDate(opp.Id, DateTime.now().addDays(-200));
         update new Domain__c(Id = domain1.Id, Opportunity__c = opp.Id);
