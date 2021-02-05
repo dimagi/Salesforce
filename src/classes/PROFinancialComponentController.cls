@@ -47,13 +47,13 @@ public class PROFinancialComponentController {
                                                      Product_Income_Budget__c, Services_Income__c, Product_Spend__c, Total_Amount_of_Contract__c, Direct_Costs_Sub_Contract_BUDGET__c,
                                                      Internal_Sub_contract_BUDGET__c, Project_Other_BUDGET__c, Direct_Costs_Travel_Expenses__c, Direct_Costs_Sub_contract_Expenses__c,
                                                      Internal_Sub_contract_Spend__c, Project_Other_Spent__c, Expected_Margin__c,Budget_Used__c, Margin_by_SOW_Completed__c,
-                                                     Margin_by_Contract_Dates__c, Execution_Efficiency__c, Contract_Expense_BUDGET__c,
+                                                     Margin_by_Contract_Dates__c, Execution_Efficiency__c, Contract_Expense_BUDGET__c, ID_Subcontract_Expense_Spend__c,
                                                      (SELECT Id, Name, Requires_Developer_Work__c, Last_Report_Out_Date__c, Last_Report_Out_Status__c, Percent_through_SOW_deliverables__c,
                                                       Burdened_Income_Budget__c, Total_ID_Subcontract_Expense_Budgets__c,ID_Subcontract_1_Type__c, ID_Subcontract_Spend__c, Direct_Costs_Travel_BUDGET__c, Direct_Costs_Total_Expenses__c, Percent_through_Contract__c,
                                                       Product_Income_Budget__c, Services_Income__c, Product_Spend__c, Total_Amount_of_Contract__c, Direct_Costs_Sub_Contract_BUDGET__c,
                                                       Internal_Sub_contract_BUDGET__c, Project_Other_BUDGET__c, Direct_Costs_Travel_Expenses__c, Direct_Costs_Sub_contract_Expenses__c,
                                                       Internal_Sub_contract_Spend__c, Project_Other_Spent__c, Expected_Margin__c, Budget_Used__c ,Margin_by_SOW_Completed__c,
-                                                      Margin_by_Contract_Dates__c, Execution_Efficiency__c, Contract_Expense_BUDGET__c FROM Contracts__r)
+                                                      Margin_by_Contract_Dates__c, Execution_Efficiency__c, Contract_Expense_BUDGET__c,ID_Subcontract_Expense_Spend__c FROM Contracts__r)
                                                      FROM DContract__c
                                                      WHERE Id IN : customContractsIdsToAddInList OR
                                                      (In_Charge_Of_Report_Out__c='Project Manager' AND  Project_Manager__r.Email=:this.employeeEmail) OR
@@ -185,11 +185,11 @@ public class PROFinancialComponentController {
             Decimal ID_Subcontract_Spend = contractObj.ID_Subcontract_Spend__c != null ? contractObj.ID_Subcontract_Spend__c : 0 ;
             Decimal idSubcontractValue;            
             String subContractType = contractObj.ID_Subcontract_1_Type__c;
-            if('LOE'.equals(subContractType)){                
+            /*if('LOE'.equals(subContractType)){                
                 idSubcontractValue = 0;
-            } else {
-                idSubcontractValue = ID_Subcontract_Spend;
-            }            
+            } else {*/
+                idSubcontractValue = contractObj.ID_Subcontract_Expense_Spend__c != null ? contractObj.ID_Subcontract_Expense_Spend__c : 0 ;
+            //}            
             
             if(childContracts != null && childContracts.size() > 0) {
                 for(DContract__c childContract : childContracts) {
@@ -310,12 +310,12 @@ public class PROFinancialComponentController {
             Decimal Total_ID_Subcontract_Expense_Budgets = contractObj.Total_ID_Subcontract_Expense_Budgets__c != null ? contractObj.Total_ID_Subcontract_Expense_Budgets__c : 0;
             Decimal ID_Subcontract_Spend = contractObj.ID_Subcontract_Spend__c != null ? contractObj.ID_Subcontract_Spend__c : 0 ;
             Decimal idSubcontractValue;            
-            String subContractType = contractObj.ID_Subcontract_1_Type__c;
+            /*String subContractType = contractObj.ID_Subcontract_1_Type__c;
             if('LOE'.equals(subContractType)){                
                 idSubcontractValue = 0;
-            } else {
-                idSubcontractValue = ID_Subcontract_Spend;
-            } 
+            } else {*/
+                idSubcontractValue = contractObj.ID_Subcontract_Expense_Spend__c != null ? contractObj.ID_Subcontract_Expense_Spend__c : 0 ;
+           // } 
             
             Decimal a = Direct_Costs_Travel_BUDGET;
             Decimal b = Direct_Costs_Travel_Expenses;
