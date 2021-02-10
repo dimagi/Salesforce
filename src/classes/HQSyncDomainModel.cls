@@ -75,9 +75,9 @@ public class HQSyncDomainModel {
         public Integer cp_n_saved_app_changes;
         public Integer cp_n_form_builder_entered;
         public Integer cp_n_users_submitted_form;
-        public Integer cp_j2me_90_d_bool; // number in API (0 or 1), in HQ saved as Boolean
-        public Integer cp_sms_30_d; // number in API (0 or 1), in HQ saved as Boolean
-        public Integer cp_sms_ever; // number in API (0 or 1), in HQ saved as Boolean
+        public Boolean cp_j2me_90_d_bool; // number in API (0 or 1), in HQ saved as Boolean // Date: Dec10th, Modified Integer to Boolean
+        public Boolean cp_sms_30_d; // number in API (0 or 1), in HQ saved as Boolean   // Date: Dec10th, Modified Integer to Boolean
+        public Boolean cp_sms_ever; // number in API (0 or 1), in HQ saved as Boolean   // Date: Dec10th, Modified Integer to Boolean
     }
 
     /**
@@ -439,9 +439,9 @@ public class HQSyncDomainModel {
 
                 domainObj.Cp_last_update__c = calculatedProperties.cp_last_update;
                 domainObj.Cp_n_users_submitted_form__c = calculatedProperties.cp_n_users_submitted_form;
-                domainObj.Has_J2ME_submission_in_past_90_days__c = calculatedProperties.cp_j2me_90_d_bool == null || calculatedProperties.cp_j2me_90_d_bool == 0 ? false : true;
-                domainObj.Domain_cp_sms_30_d__c = calculatedProperties.cp_sms_30_d == null || calculatedProperties.cp_sms_30_d == 0 ? false : true;
-                domainObj.Domain_cp_sms_ever__c = calculatedProperties.cp_sms_ever == null || calculatedProperties.cp_sms_ever == 0 ? false : true;
+                domainObj.Has_J2ME_submission_in_past_90_days__c = calculatedProperties.cp_j2me_90_d_bool;
+                domainObj.Domain_cp_sms_30_d__c = calculatedProperties.cp_sms_30_d;
+                domainObj.Domain_cp_sms_ever__c = calculatedProperties.cp_sms_ever;
             }
             domainObj.Server_Name__c = serverName;
 
