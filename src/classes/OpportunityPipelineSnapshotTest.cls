@@ -89,7 +89,8 @@ public class OpportunityPipelineSnapshotTest {
         Account snapShotAccount = [SELECT Id FROM Account WHERE Name = 'Test Account'];
         Opportunity opp3 = new Opportunity(Name = 'Test Opportunity 3', StageName = 'Stage 3 - Prospect', Channel_Response__c = 'Inside Sales', Amount = 40000,
                                                 Expense_Income__c = 23000, Expected_Buffer__c = 40, Duration_months__c = 24, Country_Text__c = 'Sample text 3 test',
-                                                Product_Text__c = 'Product test 3', CloseDate = date.today().addMonths(6), Probability = 35, AccountId = snapShotAccount.Id);
+                                                Product_Text__c = 'Product test 3', CloseDate = date.today().addMonths(6), Probability = 35, AccountId = snapShotAccount.Id,
+                                           		Opportunity_Owner_Division__c = 'Solutions', Opportunity_Owner_Sub_Division__c='Inbound Sales');
         insert opp3;
 
         Test.startTest();

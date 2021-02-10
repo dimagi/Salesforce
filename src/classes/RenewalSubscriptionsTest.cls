@@ -198,7 +198,8 @@ public class RenewalSubscriptionsTest {
 
         Business_Unit__c bizUnit = new Business_Unit__c(Name = 'Test Business Unit 1');
         Opportunity opp = new Opportunity(Name = 'Old Renewal Opportunity', Business_Unit_Owner__c = bizUnit.Id, StageName = 'Closed',
-                                                 CloseDate = date.today().addDays(-1), Probability = 30, Domain_Name__c = domain1.Id);
+                                                 CloseDate = date.today().addDays(-1), Probability = 30, Domain_Name__c = domain1.Id,
+                                                 Opportunity_Owner_Division__c = 'Solutions', Opportunity_Owner_Sub_Division__c='Inbound Sales');
         insert opp;
         Test.setCreatedDate(opp.Id, DateTime.now().addDays(-200));
         update new Domain__c(Id = domain1.Id, Opportunity__c = opp.Id);

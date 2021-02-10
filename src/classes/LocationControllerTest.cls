@@ -29,6 +29,8 @@ private class LocationControllerTest {
         opp.Proposal_Dropbox_Location__c = 'proposal';
         opp.X7_Long_term_partnership_or_one_off__c = 'long term';
         opp.X10_Major_component_risks__c = 'risk';
+        opp.Opportunity_Owner_Division__c = 'Solutions';
+        opp.Opportunity_Owner_Sub_Division__c='Inbound Sales';
         insert opp;
 
         Country__c country = new Country__c();

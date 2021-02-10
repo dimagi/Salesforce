@@ -20,7 +20,9 @@ public class TestFogBugzSynchronization {
             Name = 'Test name',
             StageName = 'Test stage',
             CloseDate = Date.today(),
-            Fogbugz_Ticket_Number__c = 'Should not change'
+            Fogbugz_Ticket_Number__c = 'Should not change',
+            Opportunity_Owner_Division__c = 'Solutions',
+            Opportunity_Owner_Sub_Division__c='Inbound Sales'
         );
         insert o;
         Test.stopTest();
@@ -93,7 +95,9 @@ public class TestFogBugzSynchronization {
             StageName = 'Change me',
             CloseDate = Date.today(),
             Fogbugz_Assigned_To__c = 'Change me',
-            Fogbugz_Ticket_Number__c = fbCaseId
+            Fogbugz_Ticket_Number__c = fbCaseId,
+            Opportunity_Owner_Division__c = 'Solutions',
+            Opportunity_Owner_Sub_Division__c='Inbound Sales'
         );
         insert o;
         return o;

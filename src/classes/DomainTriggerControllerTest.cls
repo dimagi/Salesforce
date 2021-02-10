@@ -26,15 +26,20 @@ public class DomainTriggerControllerTest {
         insert new List<Account> { acc1, acc2, acc3 };
 
         Opportunity opp1 = new Opportunity(Name = 'opp1', StageName = 'Stage 1 - Connect', CloseDate = Date.today().addDays(50), Fogbugz_Probability__c = 0,
-                                          Implementing_Business_Unit__c = bunit.Id, AccountId = acc1.Id, Fogbugz_Ticket_Number__c = '111');
+                                          Implementing_Business_Unit__c = bunit.Id, AccountId = acc1.Id, Fogbugz_Ticket_Number__c = '111', 
+                                                    Opportunity_Owner_Division__c = 'Solutions', Opportunity_Owner_Sub_Division__c='Inbound Sales');
         Opportunity opp2 = new Opportunity(Name = 'opp2', StageName = 'Stage 1 - Connect', CloseDate = Date.today().addDays(50), Fogbugz_Probability__c = 0,
-                                          Implementing_Business_Unit__c = bunit.Id, Fogbugz_Ticket_Number__c = '222');
+                                          Implementing_Business_Unit__c = bunit.Id, Fogbugz_Ticket_Number__c = '222', 
+                                                    Opportunity_Owner_Division__c = 'Solutions', Opportunity_Owner_Sub_Division__c='Inbound Sales');
         Opportunity opp3 = new Opportunity(Name = 'opp3', StageName = 'Stage 1 - Connect', CloseDate = Date.today().addDays(50), Fogbugz_Probability__c = 0,
-                                          Implementing_Business_Unit__c = bunit.Id, Fogbugz_Ticket_Number__c = '333');
+                                          Implementing_Business_Unit__c = bunit.Id, Fogbugz_Ticket_Number__c = '333', 
+                                                    Opportunity_Owner_Division__c = 'Solutions', Opportunity_Owner_Sub_Division__c='Inbound Sales');
         Opportunity opp4 = new Opportunity(Name = 'opp4', StageName = 'Stage 1 - Connect', CloseDate = Date.today().addDays(50), Fogbugz_Probability__c = 0,
-                                          Implementing_Business_Unit__c = bunit.Id, AccountId = acc3.Id, Fogbugz_Ticket_Number__c = '444');
+                                          Implementing_Business_Unit__c = bunit.Id, AccountId = acc3.Id, Fogbugz_Ticket_Number__c = '444', 
+                                                    Opportunity_Owner_Division__c = 'Solutions', Opportunity_Owner_Sub_Division__c='Inbound Sales');
         Opportunity opp5 = new Opportunity(Name = 'opp5', StageName = 'Stage 1 - Connect', CloseDate = Date.today().addDays(50), Fogbugz_Probability__c = 0,
-                                          Implementing_Business_Unit__c = bunit.Id, AccountId = acc1.Id, Fogbugz_Ticket_Number__c = '555');
+                                          Implementing_Business_Unit__c = bunit.Id, AccountId = acc1.Id, Fogbugz_Ticket_Number__c = '555', 
+                                                    Opportunity_Owner_Division__c = 'Solutions', Opportunity_Owner_Sub_Division__c='Inbound Sales');
         insert new List<Opportunity> { opp1, opp2, opp3, opp4, opp5 };
 
         Contact c1 = new Contact(Title = 'Test Contact 1', Department = 'Account', Email = 'test2@test.com', FirstName = 'Test 1', LastName = 'Contact');

@@ -13,7 +13,8 @@ public class ContractOpportunityRelationsTest {
         Product2 product = new Product2(Name = 'Test Product');
         insert product;
 
-        Opportunity opportunity = new Opportunity(Name = 'Test Opportunity', StageName = 'Stage 2 - Talking', AccountId = account.Id, CloseDate = Date.today().addMonths(6));
+        Opportunity opportunity = new Opportunity(Name = 'Test Opportunity', StageName = 'Stage 2 - Talking', AccountId = account.Id, CloseDate = Date.today().addMonths(6), 
+                                                    Opportunity_Owner_Division__c = 'Solutions', Opportunity_Owner_Sub_Division__c='Inbound Sales');
         insert opportunity;
     }
 

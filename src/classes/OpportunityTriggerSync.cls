@@ -176,6 +176,8 @@ public with sharing class OpportunityTriggerSync {
         o.Name = 'Test';
         o.CloseDate = System.today();
         o.StageName = 'Test';
+        o.Opportunity_Owner_Division__c = 'Solutions';
+        o.Opportunity_Owner_Sub_Division__c='Inbound Sales';
         insert o;
 
         Country__c c = new Country__c();

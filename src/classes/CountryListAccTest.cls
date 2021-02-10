@@ -48,15 +48,20 @@ public class CountryListAccTest {
         insert dcontract5;
 
         // Opportunity
-        Opportunity opp1 = new Opportunity(Name = 'Opp 1', StageName = 'Stage 2 - Talking', AccountId = acc1.Id, CloseDate = Date.today().addMonths(6));
+        Opportunity opp1 = new Opportunity(Name = 'Opp 1', StageName = 'Stage 2 - Talking', AccountId = acc1.Id, CloseDate = Date.today().addMonths(6), 
+                                                    Opportunity_Owner_Division__c = 'Solutions', Opportunity_Owner_Sub_Division__c='Inbound Sales');
         insert opp1;
-        Opportunity opp2 = new Opportunity(Name = 'Opp 1', StageName = 'Stage 2 - Talking', AccountId = acc2.Id, CloseDate = Date.today().addMonths(6));
+        Opportunity opp2 = new Opportunity(Name = 'Opp 1', StageName = 'Stage 2 - Talking', AccountId = acc2.Id, CloseDate = Date.today().addMonths(6), 
+                                                    Opportunity_Owner_Division__c = 'Solutions', Opportunity_Owner_Sub_Division__c='Inbound Sales');
         insert opp2;
-        Opportunity opp3 = new Opportunity(Name = 'Opp 1', StageName = 'Stage 2 - Talking', AccountId = acc3.Id, CloseDate = Date.today().addMonths(6));
+        Opportunity opp3 = new Opportunity(Name = 'Opp 1', StageName = 'Stage 2 - Talking', AccountId = acc3.Id, CloseDate = Date.today().addMonths(6), 
+                                                    Opportunity_Owner_Division__c = 'Solutions', Opportunity_Owner_Sub_Division__c='Inbound Sales');
         insert opp3;
-        Opportunity opp4 = new Opportunity(Name = 'Opp 1', StageName = 'Closed - Won', AccountId = acc4.Id, CloseDate = Date.today().addMonths(-1));
+        Opportunity opp4 = new Opportunity(Name = 'Opp 1', StageName = 'Closed - Won', AccountId = acc4.Id, CloseDate = Date.today().addMonths(-1), 
+                                                    Opportunity_Owner_Division__c = 'Solutions', Opportunity_Owner_Sub_Division__c='Inbound Sales');
         insert opp4;
-        Opportunity opp5 = new Opportunity(Name = 'Opp 1', StageName = 'Closed - Lost', AccountId = acc1.Id, CloseDate = Date.today().addMonths(-1));
+        Opportunity opp5 = new Opportunity(Name = 'Opp 1', StageName = 'Closed - Lost', AccountId = acc1.Id, CloseDate = Date.today().addMonths(-1), 
+                                                    Opportunity_Owner_Division__c = 'Solutions', Opportunity_Owner_Sub_Division__c='Inbound Sales');
         insert opp5;
 
         // Domains & Subscriptions
