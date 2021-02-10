@@ -224,7 +224,7 @@
                     }
                 }
                 if (daysNum <= 0) {
-                    setTooltipMessage(tooltipElement, confirmButton, 'Value must be greather then 0');
+                    setTooltipMessage(tooltipElement, confirmButton, 'Value must be greater then 0');
                     return;
                 }
                 if (daysNum > fteDaysMax) {
@@ -273,7 +273,7 @@
                 </apex:actionstatus>
 
                 <apex:pageBlockTable id="employeeHours" value="{!contractsTime}" var="empTime" styleClass="fteTable">
-                    <apex:column onclick="if ('{!empTime.name}' !== 'Unassigned' && '{!empTime.name}' !== 'Total Days Worked' && '{!empTime.name}' !== 'Total Assigned Days') {goToIndividualProjectView('{!empTime.objId}');}"
+                    <apex:column onclick="if ('{!empTime.name}' !== 'Un Assigned' && '{!empTime.name}' !== 'Total Days Worked' && '{!empTime.name}' !== 'Total Assigned Days') {goToIndividualProjectView('{!empTime.objId}');}"
                                  headerValue="Contract Name" value="{!empTime.name}" styleClass="{!empTime.nameCss}"/>
                     <apex:column onclick="if ('{!empTime.name}' !== 'Total Days Worked' && '{!empTime.name}' !== 'Total Assigned Days') {loadModalData(0, '{!empTime.objId}');}"
                                  headerValue="Jan {!fteYear}" value="{!empTime.daysArray[0]}" styleClass="{!empTime.cssStyle[0]}"/>

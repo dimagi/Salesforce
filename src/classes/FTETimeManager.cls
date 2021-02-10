@@ -12,13 +12,18 @@ public class FTETimeManager {
     public Map<Id, FTEEmployeeTime> assignedMap { get; set;}
     public Map<Id, FTEEmployeeTime> unassignedMap { get; set;}
 
+    public Map<Id, FTEEmployeeTime> assignedTimeMap { get; set;}
+    public FTEEmployeeTime unAssignedTimeMap { get; set;}
+    
     public FTETimeManager(SFDC_Employee__c employee, Integer fteYear) {
         this.employee = employee;
         this.fteYear = fteYear;
 
         this.assignedMap = new Map<Id, FTEEmployeeTime>();
         this.unassignedMap = new Map<Id, FTEEmployeeTime>();
-        this.unassigned = new FTEEmployeeTime('Unassigned', null); // Sum of all unassigned employee contracts
+        this.unassigned = new FTEEmployeeTime('Unassigned', null, false); // Sum of all unassigned employee contracts       
+        this.assignedTimeMap = new Map<Id, FTEEmployeeTime>();
+        this.unAssignedTimeMap = new FTEEmployeeTime('Un Assigned', null, true, this.fteYear); 
     }
 
     public void loadEmployeeTime() {
@@ -34,8 +39,28 @@ public class FTETimeManager {
         for (Time_Card__c timeCard : timeCards) {
             calculateLoggedTime(timeCard); // sum hours and moved hours
         }
+         List<FTE_Work_Card__c> workCards = [SELECT Id, Contract__c, contract__r.name, Month_1__c, Month_2__c, Month_3__c, Month_4__c, 
+                                                    Month_5__c, Month_6__c, Month_7__c, Month_8__c, Month_9__c, 
+                                                    Month_10__c, Month_11__c, Month_12__c, Total__c, Total_Hours__c FROM FTE_Work_Card__c 
+                                                    WHERE Employee__c =:  this.employee.Id
+                                                    AND Year__c	 =: this.fteYear AND Contract__c != null
+                                                    ORDER BY contract__r.Name];
+        
+        for (FTE_Work_Card__c workCard : workCards) {
+            if (!this.assignedTimeMap.containsKey(workCard.Contract__c)) {
+                    this.assignedTimeMap.put(workCard.Contract__c, new FTEEmployeeTime(workCard.Contract__r.name, workCard.Contract__c, false));
+            }
+            tmpHelper = this.assignedTimeMap.get(workCard.Contract__c);
+            for(Integer i=1; i< tmpHelper.hoursArray.size(); i++){
+                tmpHelper.hoursArray[i-1] = (Decimal) workCard.get('month_'+ i + '__c') * 8;
+                System.debug(this.unAssignedTimeMap.hoursArray[i-1]);
+                this.unAssignedTimeMap.hoursArray[i-1] -= (Decimal) workCard.get('month_'+ i + '__c') * 8;
+            }
+            tmpHelper.hoursArray[12]=workCard.Total__c * 8;
+			this.unAssignedTimeMap.hoursArray[12] -= workCard.Total__c * 8;
+            system.debug('unAssignedTimeMap :'+this.unAssignedTimeMap);
+        }
     }
-
     public void moveTimeToUnassigned(Decimal fteHours, Integer month, Id contractId) {
         Date monthStart = Date.newInstance(this.fteYear, month, 1);
         Date endMonth = Date.newInstance(this.fteYear, month, Date.daysInMonth(this.fteYear, month));
@@ -268,14 +293,14 @@ public class FTETimeManager {
         FTEEmployeeTime tmpHelper = this.unassigned;
         if (fteTracker == true) {
             if (!this.assignedMap.containsKey(clientId)) {
-                this.assignedMap.put(clientId, new FTEEmployeeTime(clientName, clientId));
+                this.assignedMap.put(clientId, new FTEEmployeeTime(clientName, clientId, false));
             }
             tmpHelper = this.assignedMap.get(clientId);
             tmpHelper.hoursArray[month - 1] += loggedHours;
             tmpHelper.hoursArray[12] += loggedHours;
         } else {
             if (!this.unassignedMap.containsKey(clientId)) {
-                this.unassignedMap.put(clientId, new FTEEmployeeTime(clientName, clientId));
+                this.unassignedMap.put(clientId, new FTEEmployeeTime(clientName, clientId, false));
             }
             tmpHelper.hoursArray[month - 1] += loggedHours;
             tmpHelper.hoursArray[12] += loggedHours;
@@ -293,5 +318,50 @@ public class FTETimeManager {
         }
         Integer rand = Math.round(Math.random()*1000);
         return Math.mod(rand, upperLimit);
+    }
+    
+     public void updateWorkcard(Decimal days, Integer month, Id contractId){
+        List<FTE_Work_Card__c> workCardsFromDB = [SELECT Id, Contract__c, Month_1__c, Month_2__c, Month_3__c, Month_4__c, Month_5__c, Month_6__c, Month_7__c, Month_8__c, Month_9__c, Month_10__c, Month_11__c,
+                                            Month_12__c, Total__c, Total_Hours__c FROM FTE_Work_Card__c WHERE Employee__c =:  this.employee.Id AND Contract__C =: contractId AND Year__c =: this.fteYear];
+        List<FTE_Work_Card__c> workCards = [SELECT Id,Contract__C FROM FTE_Work_Card__c WHERE Employee__c =:  this.employee.Id AND Year__c =: this.fteYear];
+       
+        if (workCardsFromDB.size() > 0) {
+            // Delete daycards if workcard get deleted.
+             List<FTE_Day_Card__c> dayCardsFromDb = [SELECT Id, Contract__c, Employee__c, hours__c, Date__c, Work_Card_Total_Hours__c, Available_Hours__c FROM FTE_Day_Card__c WHERE Contract__c =: contractId AND Employee__c =:this.employee.Id
+                                                AND CALENDAR_YEAR(Date__c) =: this.fteYear AND CALENDAR_MONTH(Date__c) =: month];
+
+            Decimal totalValue = workCardsFromDB.get(0).Total__c;
+            Decimal totalHoursValue = workCardsFromDB.get(0).Total_Hours__c;
+            FTE_Work_Card__c workCard = workCardsFromDB.get(0);
+            Decimal monthValue = (Decimal) workCard.get('Month_' + month + '__c');
+
+            workCard.put('Total__c', totalValue + days);
+            workCard.put('Total_Hours__c', totalHoursValue + (days * 8));
+            workCard.put('Month_' + month + '__c', monthValue + days);
+            if(workCard.Total__c == 0  && workCards.size() > 1){
+                delete workCard;
+                delete dayCardsFromDb;
+            }
+            else{
+				if (workCard.Total__c == 0){
+				    workCard.put('contract__c', '');
+                }
+                update workCard;
+                delete dayCardsFromDb;
+            }
+        }
+        else{
+            FTE_Work_Card__c workCard = new FTE_Work_Card__c(Employee__c = this.employee.Id, contract__c= contractId, Year__c = this.fteYear, Month_1__c = 0,
+                                                             Month_2__c = 0, Month_3__c = 0, Month_4__c = 0, Month_5__c = 0, Month_6__c = 0,
+                                                             Month_7__c = 0, Month_8__c = 0, Month_9__c = 0, Month_10__c = 0, Month_11__c = 0,
+                                                             Month_12__c = 0, Total__c = 0, Total_Hours__c = 0);
+            workCard.put('Month_' + month + '__c', days);
+            workCard.put('Total__c', days);
+            workCard.put('Total_Hours__c', days*8);
+            if (workCards.size() > 0 && workCards.get(0).Contract__C == null) {
+                workCard.Id = workCards.get(0).Id;
+            }
+            upsert workCard;
+        }
     }
 }

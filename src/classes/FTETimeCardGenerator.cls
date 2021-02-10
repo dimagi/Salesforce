@@ -1,222 +1,70 @@
 public class FTETimeCardGenerator {
-
+    
     public static final String NEW_LINE = '\n';
-
+    
     private Integer fteYear;
     private Integer employeeMonth;
     private Id employeeId;
     private FTEMonthTimeCard unassignedHours;
     private Map<Id, FTEMonthTimeCard> fteContractMap;
     private Map<Id, FTEMonthTimeCard> contractMap;
-
+    
+    public Map<Id, FTEMonthTimeCard> fteWorkCardContractMap;
     public String fileName {get; set;}
     public String csvFile {get; set;}
-
+    
     private Decimal total = 0;
     private Decimal totalUnassigned = 0;
+    private Decimal oveHeadTotal = 0;
     private Map<Id, String> contractNameMap;
     private Integer monthDays;
     private String monthYearText;
     private String employeeName;
-
+    
     public FTETimeCardGenerator(Integer fteYear, Integer employeeMonth, Id employeeId) {
         this.employeeMonth = employeeMonth;
         this.employeeId = employeeId;
         this.fteYear = fteYear;
     }
-
-    public List<FTEMonthTimeCard> generateMonthTimeCards() {
+    
+    public List<FTEMonthTimeCard> generateMonthWorkCards() {        
         SFDC_Employee__c employee = [SELECT Id, Name FROM SFDC_Employee__c WHERE Id =: employeeId LIMIT 1];
         this.employeeName = employee.Name;
         this.monthYearText = DateTime.newInstance(this.fteYear, this.employeeMonth, 1).format('MMMM yyyy');
         this.fileName = employee.Name.replaceAll(' ', '_') + '_' + this.monthYearText.replaceAll(' ', '_') + '.csv';
-
-        List<Time_Card__c> timeCards = [SELECT Id, Client__c, Client__r.FTE_Tracker__c, Client__r.Name, Total__c, FTE_hours__c,
-                                        FTE_Contract__c, FTE_Contract__r.Name, FTE_Contract__r.FTE_Tracker__c, Date__c
-                                        FROM Time_Card__c WHERE Employee__c =: this.employeeId AND Client__c != null
-                                        AND CALENDAR_YEAR(Date__c) =: this.fteYear AND CALENDAR_MONTH(Date__c) =: this.employeeMonth
-                                        ORDER BY Client__r.Name];
-
+        
         this.monthDays = Date.daysInMonth(this.fteYear, employeeMonth);
         this.unassignedHours = new FTEMonthTimeCard('Overhead', this.monthDays);
-        this.fteContractMap = new Map<Id, FTEMonthTimeCard>();
-        this.contractMap = new Map<Id, FTEMonthTimeCard>();
-
-        List<Time_Card__c> fteCards = new List<Time_Card__c>();
-        for (Time_Card__c timeCard : timeCards) {
-            System.debug('Client order : ' + timeCard.Client__r.Name);
-            addLoggedTime(timeCard);
-            if (timeCard.FTE_Contract__c != null) {
-                fteCards.add(timeCard);
-            }
+        this.fteWorkCardContractMap = new Map<Id, FTEMonthTimeCard>();
+        
+        List<FTE_Work_Card__c> fteWorkCards = new List<FTE_Work_Card__c>();
+        
+        String queryStr = 'SELECT Id, Name,Contract__r.Name, Month_' + this.employeeMonth + '__c, Total__c, Year__c FROM FTE_Work_Card__c WHERE Employee__c =: employeeId AND Year__c =: fteYear ORDER BY Contract__r.Name';
+        
+        
+        fteWorkCards = Database.query(queryStr);
+        for (FTE_Work_Card__c fteWorkCard : fteWorkCards) {
+            Decimal value = (Decimal) fteWorkCard.get('Month_'+ this.employeeMonth + '__c');
+            oveHeadTotal += value;            
+            addWorkCardLoggedTime(fteWorkCard, this.employeeMonth);
+            
         }
-
-        fteCards = [SELECT Id, Client__c, Client__r.FTE_Tracker__c, Client__r.Name, Total__c, FTE_hours__c, FTE_Contract__r.CreatedDate, Client__r.CreatedDate,
-                                        FTE_Contract__c, FTE_Contract__r.Name, FTE_Contract__r.FTE_Tracker__c, Date__c
-                                        FROM Time_Card__c WHERE Id IN: fteCards ORDER BY Client__r.FTE_Tracker__c ASC, FTE_Contract__r.CreatedDate, Client__r.CreatedDate];
-
-        for (Time_Card__c timeCard : fteCards) {
-            System.debug('Client order : ' + timeCard.Client__r.Name + ' ' + timeCard.FTE_Contract__r.CreatedDate + ' ' + timeCard.Client__r.CreatedDate);
-        }
-
-        while(fteCards.size() > 0) {
-            fteCards = moveTimeCardTime(fteCards);
-        }
-
-        // Generate list for UI and csv file
+        
         return getResult();
     }
-
-    public List<Time_Card__c> moveTimeCardTime(List<Time_Card__c> fteCards) {
-        List<Time_Card__c> timeCards = new List<Time_Card__c>();
-        Boolean timeMoved = false;
-        for (Time_Card__c fteCard : fteCards) {
-            Decimal hoursHelper = fteCard.FTE_hours__c;
-
-            if (fteCard.Client__r.FTE_Tracker__c != 'Yes' && fteCard.FTE_Contract__r.FTE_Tracker__c == 'Yes') { // From Unassigned to Assigned
-                FTEMonthTimeCard monthCard = this.contractMap.get(fteCard.Client__c);
-                FTEMonthTimeCard monthCardTag = this.fteContractMap.get(fteCard.FTE_Contract__c);
-
-                if (monthCardTag == null) {
-                    this.fteContractMap.put(fteCard.FTE_Contract__c, new FTEMonthTimeCard(fteCard.FTE_Contract__r.Name, this.monthDays));
-                    monthCardTag = this.fteContractMap.get(fteCard.FTE_Contract__c);
-                }
-
-                for (Integer i = 0; i < this.monthDays; i++) {
-                    Decimal hoursToMove = monthCard.hours[i] < hoursHelper ? monthCard.hours[i] : hoursHelper;
-                    if (hoursToMove > 0) {
-                        timeMoved = true;
-                    }
-
-                    monthCardTag.hours[i] += hoursToMove;
-                    monthCardTag.totalHours += hoursToMove;
-
-                    monthCard.hours[i] -= hoursToMove;
-                    monthCard.totalHours -= hoursToMove;
-
-                    unassignedHours.hours[i] -= hoursToMove;
-                    unassignedHours.totalHours -= hoursToMove;
-
-                    hoursHelper -= hoursToMove;
-                    fteCard.FTE_hours__c -= hoursToMove;
-
-                    this.totalUnassigned -= hoursToMove;
-                    this.total += hoursToMove;
-                    if (hoursHelper <= 0) {
-                        break;
-                    }
-                }
-            } else if (fteCard.Client__r.FTE_Tracker__c == 'Yes' && fteCard.FTE_Contract__r.FTE_Tracker__c != 'Yes') { //From Assigned to Unassigned
-                FTEMonthTimeCard monthCard = this.fteContractMap.get(fteCard.Client__c);
-                FTEMonthTimeCard monthCardTag = this.contractMap.get(fteCard.FTE_Contract__c);
-
-                if (monthCardTag == null) {
-                    this.contractMap.put(fteCard.FTE_Contract__c, new FTEMonthTimeCard(fteCard.FTE_Contract__r.Name, this.monthDays));
-                    monthCardTag = this.contractMap.get(fteCard.FTE_Contract__c);
-                }
-
-                for (Integer i = 0; i < this.monthDays; i++) {
-                    Decimal hoursToMove = monthCard.hours[i] < hoursHelper ? monthCard.hours[i] : hoursHelper;
-                    if (hoursToMove > 0) {
-                        timeMoved = true;
-                    }
-
-                    monthCardTag.hours[i] += hoursToMove;
-                    monthCardTag.totalHours += hoursToMove;
-
-                    monthCard.hours[i] -= hoursToMove;
-                    monthCard.totalHours -= hoursToMove;
-
-                    unassignedHours.hours[i] += hoursToMove;
-                    unassignedHours.totalHours += hoursToMove;
-
-                    hoursHelper -= hoursToMove;
-                    fteCard.FTE_hours__c -= hoursToMove;
-
-                    this.totalUnassigned += hoursToMove;
-                    this.total -= hoursToMove;
-                    if (hoursHelper <= 0) {
-                        break;
-                    }
-                }
-            } else if (fteCard.Client__r.FTE_Tracker__c == 'Yes' && fteCard.FTE_Contract__r.FTE_Tracker__c == 'Yes') {
-                FTEMonthTimeCard monthCard = this.fteContractMap.get(fteCard.Client__c);
-                FTEMonthTimeCard monthCardTag = this.fteContractMap.get(fteCard.FTE_Contract__c);
-
-                if (monthCardTag == null) {
-                    this.fteContractMap.put(fteCard.FTE_Contract__c, new FTEMonthTimeCard(fteCard.FTE_Contract__r.Name, this.monthDays));
-                    monthCardTag = this.fteContractMap.get(fteCard.FTE_Contract__c);
-                }
-
-                for (Integer i = 0; i < this.monthDays; i++) {
-                    Decimal hoursToMove = monthCard.hours[i] < hoursHelper ? monthCard.hours[i] : hoursHelper;
-                    if (hoursToMove > 0) {
-                        timeMoved = true;
-                    }
-                    monthCard.hours[i] -= hoursToMove;
-                    monthCard.totalHours -= hoursToMove;
-
-                    monthCardTag.hours[i] += hoursToMove;
-                    monthCardTag.totalHours += hoursToMove;
-
-                    hoursHelper -= hoursToMove;
-                    fteCard.FTE_hours__c -= hoursToMove;
-                    if (hoursHelper <= 0) {
-                        break;
-                    }
-                }
-
-                if (hoursHelper > 0) {
-                    timeCards.add(fteCard);
-                }
-            } else { //From Unassigned to Unassigned
-                FTEMonthTimeCard monthCard = this.contractMap.get(fteCard.Client__c);
-                FTEMonthTimeCard monthCardTag = this.contractMap.get(fteCard.FTE_Contract__c);
-
-                if (monthCardTag == null) {
-                    this.contractMap.put(fteCard.FTE_Contract__c, new FTEMonthTimeCard(fteCard.FTE_Contract__r.Name, this.monthDays));
-                    monthCardTag = this.contractMap.get(fteCard.FTE_Contract__c);
-                }
-
-                for (Integer i = 0; i < this.monthDays; i++) {
-                    Decimal hoursToMove = monthCard.hours[i] < hoursHelper ? monthCard.hours[i] : hoursHelper;
-                    if (hoursToMove > 0) {
-                        timeMoved = true;
-                    }
-                    monthCard.hours[i] -= hoursToMove;
-                    monthCard.totalHours -= hoursToMove;
-
-                    monthCardTag.hours[i] += hoursToMove;
-                    monthCardTag.totalHours += hoursToMove;
-
-                    hoursHelper -= hoursToMove;
-                    fteCard.FTE_hours__c -= hoursToMove;
-                    if (hoursHelper <= 0) {
-                        break;
-                    }
-                }
-
-                if (hoursHelper > 0) {
-                    timeCards.add(fteCard);
-                }
-            }
-        }
-
-        return timeMoved == true ? timeCards : new List<Time_Card__c>();
-    }
-
+    
     public void generateCsv() {
         if (this.fileName == null) {
             return;
         }
-
+        
         List<FTEMonthTimeCard> result = getResult();
         String csvEmptyRowPart1 = '"",""';
         String csvEmptyRowPart2 = '';
         for (FTEMonthTimeCard monthData : result) { // build dynamic empty row based on columns
-           csvEmptyRowPart2 += ',""';
+            csvEmptyRowPart2 += ',""';
         }
-
+        
         this.csvFile = '"Employee Name",';
         this.csvFile += '"' + this.employeeName + '"';
         this.csvFile += csvEmptyRowPart2 + NEW_LINE;
@@ -226,20 +74,20 @@ public class FTETimeCardGenerator {
         this.csvFile += '"Report Type:","Hours by Project",';
         this.csvFile += csvEmptyRowPart2 + NEW_LINE;
         this.csvFile += csvEmptyRowPart1 + csvEmptyRowPart2 + NEW_LINE;
-
+        
         this.csvFile += '"","","Projects:"';
         for (Integer i = 0 ; i < result.size() - 1; i++) {
-             this.csvFile += ',""';
+            this.csvFile += ',""';
         }
         this.csvFile += NEW_LINE;
-
+        
         this.csvFile += '"Day of Week:",';
         this.csvFile += '"Day of Month"';
         for (FTEMonthTimeCard monthData : result) {
-             this.csvFile += ',"' + monthData.name + '"';
+            this.csvFile += ',"' + monthData.name + '"';
         }
         this.csvFile += NEW_LINE;
-
+        
         for (Integer day = 1; day <= this.monthDays; day++) {
             this.csvFile += '"' + DateTime.newInstance(this.fteYear, this.monthDays, day).format('EEEE') + '","' + day + '"';
             for (FTEMonthTimeCard monthData : result) {
@@ -247,64 +95,186 @@ public class FTETimeCardGenerator {
             }
             this.csvFile += NEW_LINE;
         }
-
+        
         this.csvFile += '"Total Project Hours:",""';
         for (FTEMonthTimeCard monthData : result) {
-             this.csvFile += ',"' + monthData.totalHours + '"';
+            this.csvFile += ',"' + monthData.totalHours + '"';
         }
-
+        
         this.csvFile += csvEmptyRowPart2 + NEW_LINE;
     }
-
-    private void addCsvCell(String val, Integer countValue,  Integer limitValue) {
-         if (countValue != limitValue) {
+    
+   /* private void addCsvCell(String val, Integer countValue,  Integer limitValue) {
+        if (countValue != limitValue) {
             this.csvFile += '"' + val + '",';
         } else {
             this.csvFile += '"' + val + '"'+ NEW_LINE;
         }
-    }
-
+    }*/
+    
     private List<FTEMonthTimeCard> getResult() {
         // Generate list for UI and csv file
-        List<FTEMonthTimeCard> result = this.fteContractMap.values();
+        Integer workingDays = FTEWorkCardTriggerHandler.getMonthWorkingDays(this.employeeMonth,this.fteYear);
+        List<FTEMonthTimeCard> result = this.fteWorkCardContractMap.values();
+        
         for (FTEMonthTimeCard resRecord : result) {
             for (Integer i = 0; i < this.monthDays; i++) {
-                resRecord.hours[i] = resRecord.hours[i].setScale(2);
+                resRecord.hours[i] = resRecord.hours[i].setScale(4);
+                unassignedHours.hours[i] += resRecord.hours[i].setScale(4);                 
             }
         }
         for (Integer i = 0; i < this.monthDays; i++) {
-            unassignedHours.hours[i] = unassignedHours.hours[i].setScale(2);
+            
+            if((('Saturday').equals(DateTime.newInstance(this.fteYear, this.employeeMonth, i+1).format('EEEE'))))
+            {
+                unassignedHours.hours[i] = unassignedHours.hours[i] > 0 ? (0-unassignedHours.hours[i]) : 0;
+                
+            } else if((('Sunday').equals(DateTime.newInstance(this.fteYear, this.employeeMonth, i+1).format('EEEE')))){
+                
+                unassignedHours.hours[i] = unassignedHours.hours[i] > 0 ? (0-unassignedHours.hours[i]) : 0;
+                
+            } else {
+                unassignedHours.hours[i] = 8- unassignedHours.hours[i];            
+            }
+            unassignedHours.totalHours += unassignedHours.hours[i]; 
         }
+        unassignedHours.totalHours =  unassignedHours.totalHours.setScale(4); 
+        // unassignedHours.totalHours =  unassignedHours.totalHours.round(System.RoundingMode.HALF_UP); 
+        unassignedHours.totalProjectHours = (workingDays-this.oveHeadTotal)*8;
+        
         result.add(unassignedHours);
         return result;
     }
-
-    private void addLoggedTime(Time_Card__c tc) {
-        Integer day = tc.Date__c.day();
-        if (tc.Client__r.FTE_Tracker__c == 'Yes') {
-            if (!this.fteContractMap.containsKey(tc.Client__c)) {
-                this.fteContractMap.put(tc.Client__c, new FTEMonthTimeCard(tc.Client__r.Name, this.monthDays));
+    
+    // TODO: Get Monthly working days and asisgn them to this.monthDays
+    private void addWorkCardLoggedTime(FTE_Work_Card__c wc, Integer employeeMonth) {
+        Decimal monthTotalHours = (Decimal) wc.get('Month_' + employeeMonth + '__c');     
+        
+        if (!this.fteWorkCardContractMap.containsKey(wc.Contract__c)) {
+            this.fteWorkCardContractMap.put(wc.Contract__c, new FTEMonthTimeCard(wc.Contract__r.Name, this.monthDays));
+        }
+        FTEMonthTimeCard monthCard = this.fteWorkCardContractMap.get(wc.Contract__c);
+        setWorkCardHoursValue(monthCard, monthTotalHours, wc.Contract__c);
+        this.total += monthTotalHours;       
+        
+    }
+    
+    private void setWorkCardHoursValue(FTEMonthTimeCard monthData, Decimal monthTotalHours, Id contractId) {
+        List<FTE_Day_Card__c> dayCardsFromDb = [SELECT Id, Contract__c, Employee__c, hours__c, Date__c, Work_Card_Total_Hours__c, Available_Hours__c FROM FTE_Day_Card__c WHERE Contract__c =: contractId AND Employee__c =:this.employeeId
+                                                AND CALENDAR_YEAR(Date__c) =: this.fteYear AND CALENDAR_MONTH(Date__c) =: this.employeeMonth];
+        
+        Integer workingDays = FTEWorkCardTriggerHandler.getMonthWorkingDays(this.employeeMonth,this.fteYear);
+        if (dayCardsFromDb.size() > 0 && monthTotalHours > 0) {            
+            // Start check Work_Card_Total_Hours__c updated or not.
+            Decimal newDcHours = 0;
+            Boolean isMonthTotalHoursUpdated = false;
+            List<FTE_Day_Card__c> dayCardsToBeUpdated = new  List<FTE_Day_Card__c> ();
+            if((dayCardsFromDb.get(0).Work_Card_Total_Hours__c != null) && (monthTotalHours != dayCardsFromDb.get(0).Work_Card_Total_Hours__c)){
+                system.debug('isMonthTotalHoursUpdated :');
+                newDcHours = (monthTotalHours/workingDays)*8;
+                System.debug('newDcHours--' + newDcHours);
+                isMonthTotalHoursUpdated = true;
+            }            
+            // - End
+            
+            Map<Date, FTE_Day_Card__c> dayCardsMap = new Map<Date, FTE_Day_Card__c>();
+            for(FTE_Day_Card__c dc: dayCardsFromDb){
+                // Start - Update day cards with new day card hours                               
+                String dayOfWeek = DateTime.newInstance(dc.date__c.Year(), dc.date__c.Month(), dc.date__c.Day()).format('EEEE');                
+                if(isMonthTotalHoursUpdated)  { 
+                    if(dayOfWeek != 'Saturday' && dayOfWeek != 'Sunday'){
+                        dc.hours__c = newDcHours;
+                    } else {
+                        dc.hours__c = 0;
+                    }                                      
+                    dc.Work_Card_Total_Hours__c = monthTotalHours;
+                    dc.Available_Hours__c = 0;
+                    dayCardsToBeUpdated.add(dc);
+                }   
+                // - End 
+                if(!dayCardsMap.containsKey(dc.Date__c)){
+                    dayCardsMap.put(dc.Date__c, dc);
+                }
+            }            
+            for(Integer i = 0; i<monthData.hours.size(); i++){
+                Date dayCardDate = Date.newInstance(this.fteYear, this.employeeMonth, i+1);
+                // System.debug(dayCardDate + '-----' + dayCardsMap.get(dayCardDate));
+                FTE_Day_Card__c temp = dayCardsMap.get(dayCardDate);                
+                monthData.hours[i] = temp.hours__c;                 
+                monthData.workCardTotalHours = (temp.Work_Card_Total_Hours__c*8).setScale(4);
             }
-            FTEMonthTimeCard monthCard = this.fteContractMap.get(tc.Client__c);
-            setHoursValue(monthCard, day, tc.Total__c);
-            this.total += tc.Total__c;
-        } else {
-            if (!this.contractMap.containsKey(tc.Client__c)) { // we use additional map as a helper to move hours from contract
-                this.contractMap.put(tc.Client__c, new FTEMonthTimeCard(tc.Client__r.Name, this.monthDays));
+            //  monthData.totalHours = monthData.totalHours.round(System.RoundingMode.HALF_UP); 
+            monthData.totalHours = (monthTotalHours*8) - dayCardsMap.values().get(0).Available_Hours__c; 
+            monthData.totalProjectHours = monthTotalHours*8;
+            
+            if(isMonthTotalHoursUpdated) {
+                update dayCardsToBeUpdated;
             }
-            FTEMonthTimeCard monthCard = this.contractMap.get(tc.Client__c);
-            setHoursValue(monthCard, day, tc.Total__c);
-            setHoursValue(unassignedHours, day, tc.Total__c);
-            this.totalUnassigned += tc.Total__c;
+            
+        } else if(monthTotalHours > 0) {
+            List<FTE_Day_Card__c> dayCardsToBeInserted = new List<FTE_Day_Card__c>();
+            for(Integer i = 0; i<monthData.hours.size(); i++){
+                // System.debug(DateTime.newInstance(this.fteYear, this.employeeMonth, i).format('EEEE'));
+                if((('Saturday').equals(DateTime.newInstance(this.fteYear, this.employeeMonth, i+1).format('EEEE'))))
+                {
+                    monthData.hours[i] = 0;
+                    FTE_Day_Card__c dayCardSat = new FTE_Day_Card__c(Contract__c = contractId, Employee__c = this.employeeId, hours__c = 0, Available_Hours__c = 0,
+                                                                     Work_Card_Total_Hours__c = monthTotalHours.setScale(4), Date__c = Date.newInstance(this.fteYear, this.employeeMonth, i+1));
+                    dayCardsToBeInserted.add(dayCardSat);
+                } else if((('Sunday').equals(DateTime.newInstance(this.fteYear, this.employeeMonth, i+1).format('EEEE')))) {
+                    monthData.hours[i] = 0;
+                    FTE_Day_Card__c dayCardSun = new FTE_Day_Card__c(Contract__c = contractId, Employee__c = this.employeeId, hours__c = 0, Available_Hours__c = 0,
+                                                                     Work_Card_Total_Hours__c = monthTotalHours.setScale(4), Date__c = Date.newInstance(this.fteYear, this.employeeMonth, i+1));
+                    dayCardsToBeInserted.add(dayCardSun);
+                } else {
+                    monthData.hours[i] = (monthTotalHours/workingDays)*8;
+                    FTE_Day_Card__c dayCard = new FTE_Day_Card__c(Contract__c = contractId, Employee__c = this.employeeId, hours__c = (monthTotalHours/workingDays)*8, Available_Hours__c = 0,
+                                                                  Work_Card_Total_Hours__c = monthTotalHours.setScale(4), Date__c = Date.newInstance(this.fteYear, this.employeeMonth, i+1));
+                    dayCardsToBeInserted.add(dayCard);
+                }
+            }
+            // System.debug(dayCardsToBeInserted.size());
+            monthData.totalHours = (monthTotalHours*8).setScale(4); 
+            monthData.totalProjectHours = monthTotalHours*8;
+            monthData.workCardTotalHours = monthTotalHours*8;
+            System.debug(monthData.workCardTotalHours);
+            insert dayCardsToBeInserted;
+        } else if(monthTotalHours == 0.0) {            
+            delete dayCardsFromDb;
         }
     }
-
-    private void setHoursValue(FTEMonthTimeCard monthData, Integer day, Decimal value) {
-            if (monthData.hours[day - 1] != null) {
-                monthData.hours[day - 1] += value;
-            } else {
-                monthData.hours[day - 1] = value;
+    
+    public void updateFteDayCard(String contractName, Integer day, Decimal inputHours) {        
+        
+        List<FTE_Day_Card__c> dayCardFromDb = [SELECT Id, Contract__c, Employee__c, hours__c, Date__c, Work_Card_Total_Hours__c, Available_Hours__c FROM FTE_Day_Card__c WHERE Contract__r.name =: contractName AND Employee__c =:this.employeeId
+                                               AND CALENDAR_YEAR(Date__c) =: this.fteYear AND CALENDAR_MONTH(Date__c) =: this.employeeMonth];
+        Map<Date, FTE_Day_Card__c> dayCardsMap = new Map<Date, FTE_Day_Card__c>();
+        
+        for(FTE_Day_Card__c dc : dayCardFromDb){
+            if(!dayCardsMap.containsKey(dc.Date__c)){
+                dayCardsMap.put(dc.Date__c, dc);
             }
-            monthData.totalHours += value;
+        } 
+        Date dayCardDate = Date.newInstance(this.fteYear, this.employeeMonth, day);
+        FTE_Day_Card__c singleDayCard = dayCardsMap.get(dayCardDate);
+        
+        Decimal diff;
+        if(inputHours < singleDayCard.hours__c) {
+            diff = singleDayCard.hours__c-inputHours;
+            for(FTE_Day_Card__c dc : dayCardFromDb){
+                dc.Available_Hours__c += diff;
+                dc.Available_Hours__c= dc.Available_Hours__c.setScale(4); // Nov 5th
+            }
+            update dayCardFromDb;
+        } else if(inputHours > singleDayCard.hours__c){
+            diff = inputHours-singleDayCard.hours__c;
+            for(FTE_Day_Card__c dc : dayCardFromDb){
+                dc.Available_Hours__c -= diff;
+                dc.Available_Hours__c= dc.Available_Hours__c.setScale(4);  // Nov 5th
+            }
+            update dayCardFromDb;
+        }        
+        singleDayCard.hours__c = inputHours;
+        update singleDayCard;      
     }
 }
