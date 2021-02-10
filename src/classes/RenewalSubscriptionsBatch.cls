@@ -169,11 +169,12 @@ public without sharing class RenewalSubscriptionsBatch implements Database.Batch
                     domainToUpdate.Opportunity__c = newOpp.Id;
                     update domainToUpdate;
                     insert new OpportunityLineItem(PricebookEntryId = pbe.Id, Quantity = 12, UnitPrice = price, OpportunityId = newOpp.Id);
-                    insert new OpportunityLineItem(PricebookEntryId = commCareEntry.Id, Quantity = 1, UnitPrice = commCareEntry.UnitPrice, OpportunityId = newOpp.Id);
+                    // SAL-48 removing commcare: product pricebook entry
+                    // insert new OpportunityLineItem(PricebookEntryId = commCareEntry.Id, Quantity = 1, UnitPrice = commCareEntry.UnitPrice, OpportunityId = newOpp.Id);
                     this.recordCounter++;
                 } catch (DMLException e) {
-                    StatusLoggerUtils.logError(StatusLoggerUtils.RENEWAL_LOGGER, domainToUpdate.Name + ' - ' + subscription.Name, 0, e.getMessage());
                     Database.rollback(sp);
+                    StatusLoggerUtils.logError(StatusLoggerUtils.RENEWAL_LOGGER, domainToUpdate.Name + ' - ' + subscription.Name, 0, e.getMessage());
                 }
             }
 
