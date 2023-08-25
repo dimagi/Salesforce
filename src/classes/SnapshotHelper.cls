@@ -77,12 +77,12 @@ public class SnapshotHelper {
         List<Pipeline_Snapshot__c> oldSnapshots;
         if (forTotal) {
             oldSnapshots = [SELECT Id, Contract__c, Work_Completed__c, Services_Spend__c, Expense_Travel_Spend__c, Product_Spend__c, Total_Calculated_Costs__c, GS_Services_Completed__c,
-                            GS_Services_Completed_Handover__c, GS_Net_Income_to_Date__c, GS_Net_Income_to_Date_Handover__c FROM Pipeline_Snapshot__c
+                            GS_Services_Completed_Handover__c, GS_Project_Services_Budget_Handoff_Cp__c, GS_Net_Income_to_Date__c, GS_Net_Income_to_Date_Handover__c FROM Pipeline_Snapshot__c
                             WHERE Contract__c =: snapshot.Contract__c AND Month_Date__c < :monthDate AND Month_Date__c > :monthDate.addMonths(-6)
                             AND Stage__c = 'Total' ORDER BY Month_Date__c DESC];
         } else {
             oldSnapshots = [SELECT Id, Contract__c, Work_Completed__c, Services_Spend__c, Expense_Travel_Spend__c, Product_Spend__c, Total_Calculated_Costs__c, GS_Services_Completed__c,
-                            GS_Services_Completed_Handover__c, GS_Net_Income_to_Date__c, GS_Net_Income_to_Date_Handover__c FROM Pipeline_Snapshot__c
+                            GS_Services_Completed_Handover__c, GS_Project_Services_Budget_Handoff_Cp__c, GS_Net_Income_to_Date__c, GS_Net_Income_to_Date_Handover__c FROM Pipeline_Snapshot__c
                             WHERE Contract__c =: snapshot.Contract__c AND Month_Date__c < :monthDate AND Month_Date__c > :monthDate.addMonths(-6)
                             AND Stage__c != 'Total' ORDER BY Month_Date__c DESC];
         }
@@ -103,6 +103,8 @@ public class SnapshotHelper {
             sn.GS_Services_Handover_Completed_for_Per__c = (sn.GS_Services_Completed_Handover__c != null ? sn.GS_Services_Completed_Handover__c : 0) - (oldSn.GS_Services_Completed_Handover__c != null ? oldSn.GS_Services_Completed_Handover__c : 0);
             sn.GS_Net_Income_for_Period__c = (sn.GS_Net_Income_to_Date__c != null ? sn.GS_Net_Income_to_Date__c : 0) - (oldSn.GS_Net_Income_to_Date__c != null ? oldSn.GS_Net_Income_to_Date__c : 0);
             sn.GS_Net_Income_for_Period_by_Handover__c = (sn.GS_Net_Income_to_Date_Handover__c != null ? sn.GS_Net_Income_to_Date_Handover__c : 0) - (oldSn.GS_Net_Income_to_Date_Handover__c != null ? oldSn.GS_Net_Income_to_Date_Handover__c : 0);
+            Decimal revenue = ((((sn.GS_Project_Services_Budget_Handoff_Cp__c != null ? sn.GS_Project_Services_Budget_Handoff_Cp__c : 0)*(sn.Work_Completed__c != null ? sn.Work_Completed__c : 0))-((oldSn.GS_Project_Services_Budget_Handoff_Cp__c != null ? oldSn.GS_Project_Services_Budget_Handoff_Cp__c : 0)*(oldSn.Work_Completed__c != null ? oldSn.Work_Completed__c : 0))))/100;
+            sn.GS_Revenue_Helper__c = (revenue != null ? revenue : 0);
 
         return sn;
     }

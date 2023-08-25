@@ -40,6 +40,10 @@
                 <behavior>Edit</behavior>
                 <field>OwnerId</field>
             </layoutItems>
+            <layoutItems>
+                <behavior>Edit</behavior>
+                <field>Description__c</field>
+            </layoutItems>
         </layoutColumns>
         <style>TwoColumnsTopToBottom</style>
     </layoutSections>
@@ -73,6 +77,18 @@
         <style>CustomLinks</style>
     </layoutSections>
     <relatedLists>
+        <fields>OPPORTUNITY.NAME</fields>
+        <fields>ACCOUNT.NAME</fields>
+        <fields>Opp_Stage__c</fields>
+        <fields>OPPORTUNITY.PROBABILITY</fields>
+        <fields>OPPORTUNITY.CLOSE_DATE</fields>
+        <fields>OPPORTUNITY.AMOUNT</fields>
+        <fields>CORE.USERS.ALIAS</fields>
+        <relatedList>Opportunity.Country__c</relatedList>
+        <sortField>Opp_Stage__c</sortField>
+        <sortOrder>Asc</sortOrder>
+    </relatedLists>
+    <relatedLists>
         <fields>ACCOUNT.NAME</fields>
         <fields>Account_Status__c</fields>
         <fields>Number_of_Open_Opps__c</fields>
@@ -89,6 +105,16 @@
         <fields>ACCOUNT.NAME</fields>
         <fields>CONTACT.PHONE1</fields>
         <relatedList>Contact.Country__c</relatedList>
+    </relatedLists>
+    <relatedLists>
+        <excludeButtons>New</excludeButtons>
+        <fields>DContract__c.NAME</fields>
+        <fields>DContract__c.Status__c</fields>
+        <fields>DContract__c.Contract_Start_Date__c</fields>
+        <fields>DContract__c.Contract_End_Date__c</fields>
+        <fields>DContract__c.Area__c</fields>
+        <fields>DContract__c.Sub_Area__c</fields>
+        <relatedList>Contract_Country__c.Country__c</relatedList>
     </relatedLists>
     <relatedLists>
         <excludeButtons>New</excludeButtons>
@@ -110,16 +136,6 @@
         <fields>Area__c</fields>
         <fields>Sub_Area__c</fields>
         <relatedList>ProjectCountry__c.Country_Open__c</relatedList>
-    </relatedLists>
-    <relatedLists>
-        <excludeButtons>New</excludeButtons>
-        <fields>DContract__c.NAME</fields>
-        <fields>DContract__c.Status__c</fields>
-        <fields>DContract__c.Contract_Start_Date__c</fields>
-        <fields>DContract__c.Contract_End_Date__c</fields>
-        <fields>DContract__c.Area__c</fields>
-        <fields>DContract__c.Sub_Area__c</fields>
-        <relatedList>Contract_Country__c.Country__c</relatedList>
     </relatedLists>
     <relatedLists>
         <excludeButtons>New</excludeButtons>
@@ -153,9 +169,19 @@
         <fields>NAME</fields>
         <relatedList>City__c.Country__c</relatedList>
     </relatedLists>
+    <relatedLists>
+        <fields>NAME</fields>
+        <relatedList>Domain__c.Country_of_deployment_salesforce__c</relatedList>
+    </relatedLists>
     <showEmailCheckbox>false</showEmailCheckbox>
     <showHighlightsPanel>false</showHighlightsPanel>
     <showInteractionLogPanel>false</showInteractionLogPanel>
     <showRunAssignmentRulesCheckbox>false</showRunAssignmentRulesCheckbox>
     <showSubmitAndAttachButton>false</showSubmitAndAttachButton>
+    <summaryLayout>
+        <masterLabel>00hb0000000hiju</masterLabel>
+        <sizeX>4</sizeX>
+        <sizeY>0</sizeY>
+        <summaryLayoutStyle>Default</summaryLayoutStyle>
+    </summaryLayout>
 </Layout>

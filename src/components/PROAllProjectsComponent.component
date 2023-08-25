@@ -52,23 +52,23 @@
 	    <apex:pageBlockSection title="Roles" collapsible="false" columns="1">
 	        <apex:pageBlockSectionItem >
 	            <apex:outputLabel value="Project Manager" for="ProjectManager"/>
-	            <apex:inputField id="ProjectManager" value="{!project.Project_Manager__c}" onchange="ShowMessage()" />
+	            <apex:inputField IgnoreEditPermissionForRendering="true" id="ProjectManager" value="{!project.Project_Manager__c}" onchange="ShowMessage()" />
 	        </apex:pageBlockSectionItem>
 
 	        <apex:pageBlockSectionItem >
 	            <apex:outputLabel value="Field Manager" for="FieldManager"/>
-	            <apex:inputField id="FieldManager" value="{!project.Field_Manager__c}" />
+	            <apex:inputField IgnoreEditPermissionForRendering="true" id="FieldManager" value="{!project.Field_Manager__c}" />
 	        </apex:pageBlockSectionItem>
 
 	        <apex:pageBlockSectionItem >
 	            <apex:outputLabel value="Backstop" for="Backstop"/>
-	            <apex:inputField id="Backstop" value="{!project.Backstop__c}" />
+	            <apex:inputField IgnoreEditPermissionForRendering="true" id="Backstop" value="{!project.Backstop__c}" />
 	        </apex:pageBlockSectionItem>
 
             <apex:pageBlockSectionItem >
                 <apex:outputLabel value="In Charge of Report Out" for="InChangeOfReportOut"/>
 
-	            <apex:selectList value="{!project.In_Charge_Of_Report_Out__c}" multiselect="false" id="InChangeOfReportOut" size="1">
+	            <apex:selectList value="{!selectedInCharge}" multiselect="false" id="InChangeOfReportOut" size="1">
 	                <apex:selectOption itemValue="Project Manager" itemLabel="Project Manager"></apex:selectOption>
 	                <apex:selectOption itemValue="Field Manager" itemLabel="Field Manager"></apex:selectOption>
 	                <apex:selectOption itemValue="Backstop" itemLabel="Backstop"></apex:selectOption>

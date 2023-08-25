@@ -4,6 +4,8 @@
     <description>Used to specify which date range to calculate Expected Value for.</description>
     <enableEnhancedLookup>false</enableEnhancedLookup>
     <enableFeeds>false</enableFeeds>
+    <label>Expected Value Date</label>
+    <visibility>Public</visibility>
     <fields>
         <fullName>EV_Date_1__c</fullName>
         <externalId>false</externalId>
@@ -13,6 +15,4 @@
         <trackTrending>false</trackTrending>
         <type>Date</type>
     </fields>
-    <label>Expected Value Date</label>
-    <visibility>Public</visibility>
 </CustomObject>

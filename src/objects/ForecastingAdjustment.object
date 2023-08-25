@@ -2,6 +2,10 @@
 <CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
     <enableFeeds>false</enableFeeds>
     <fields>
+        <fullName>ForecastingItemCategory</fullName>
+        <type>Picklist</type>
+    </fields>
+    <fields>
         <fullName>ProductFamily</fullName>
         <type>Picklist</type>
     </fields>

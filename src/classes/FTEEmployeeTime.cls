@@ -5,10 +5,51 @@ public class FTEEmployeeTime {
     
     public String name { get; set;}
     public Id objId { get; set;}
+    public DateTime hireDate {get;set;}
+    public DateTime termDate {get;set;}
     public List<Decimal> hoursArray { get; set;}
     public List<Decimal> daysArray { get; set;}
     public List<String> cssStyle { get; set;}
     public String nameCss { get; set;}
+    public String ContractName{get;set;}
+    public list<String> Headers {get;set;}
+    
+    public FTEEmployeeTime (String name, Id objId,DateTime hireDate, DateTime terminationDate, Boolean isUnAssigned) {
+        this.name = name;
+        this.objId = objId;
+      //  this.hireDate = date.newinstance(hireDate.year(), hireDate.month(), hireDate.day());
+       /// this.termDate = date.newinstance(terminationDate.year(), terminationDate.month(), terminationDate.day());
+        system.debug(hireDate);
+        system.debug(terminationDate);
+        
+        this.hireDate = hireDate;
+        this.termDate = terminationDate;
+        this.hoursArray = new Decimal [] {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+            this.daysArray = new Decimal [] {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+                this.cssStyle = new String [] {'fteCell', 'fteCell', 'fteCell', 'fteCell', 'fteCell', 'fteCell', 'fteCell', 'fteCell', 'fteCell', 'fteCell',
+                    'fteCell', 'fteCell', '', ''};
+                        this.nameCss = 'fteProjectCell';
+        // Unassigned Days Default to 22.00
+        if(isUnAssigned == true){
+            this.hoursArray = new Decimal [] {176, 176, 176, 176, 176, 176, 176, 176, 176, 176, 176, 176, 176*12};
+                }   
+    }
+    public FTEEmployeeTime (String name, Id objId, Boolean isUnAssigned,String ContractName) {
+        this.ContractName = ContractName;
+        this.name = name;
+        this.objId = objId;
+        this.Headers = new String[]{ 'Jan-', 'Feb-', 'Mar-', 'April-', 'May-', 'Jun-', 'Jul-', 'Aug-', 'Sep-', 'Oct-', 'Nov-', 'Dec-' };
+        this.hoursArray = new Decimal [] {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+            this.daysArray = new Decimal [] {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+                this.cssStyle = new String [] {'fteCell', 'fteCell', 'fteCell', 'fteCell', 'fteCell', 'fteCell', 'fteCell', 'fteCell', 'fteCell', 'fteCell',
+                    'fteCell', 'fteCell', '', ''};
+                        this.nameCss = 'fteProjectCell';
+        // Unassigned Days Default to 22.00
+        if(isUnAssigned == true){
+            this.hoursArray = new Decimal [] {176, 176, 176, 176, 176, 176, 176, 176, 176, 176, 176, 176, 176*12};
+                }   
+    }
+    
     
     public FTEEmployeeTime (String name, Id objId, Boolean isUnAssigned) {
         this.name = name;

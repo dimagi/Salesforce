@@ -5,7 +5,27 @@
         <type>Default</type>
     </actionOverrides>
     <actionOverrides>
+        <actionName>Accept</actionName>
+        <formFactor>Large</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Accept</actionName>
+        <formFactor>Small</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
         <actionName>CancelEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>CancelEdit</actionName>
+        <formFactor>Large</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>CancelEdit</actionName>
+        <formFactor>Small</formFactor>
         <type>Default</type>
     </actionOverrides>
     <actionOverrides>
@@ -13,7 +33,27 @@
         <type>Default</type>
     </actionOverrides>
     <actionOverrides>
+        <actionName>Clone</actionName>
+        <formFactor>Large</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Clone</actionName>
+        <formFactor>Small</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
         <actionName>Delete</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Delete</actionName>
+        <formFactor>Large</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Delete</actionName>
+        <formFactor>Small</formFactor>
         <type>Default</type>
     </actionOverrides>
     <actionOverrides>
@@ -21,7 +61,27 @@
         <type>Default</type>
     </actionOverrides>
     <actionOverrides>
+        <actionName>Edit</actionName>
+        <formFactor>Large</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Edit</actionName>
+        <formFactor>Small</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
         <actionName>List</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>List</actionName>
+        <formFactor>Large</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>List</actionName>
+        <formFactor>Small</formFactor>
         <type>Default</type>
     </actionOverrides>
     <actionOverrides>
@@ -29,7 +89,27 @@
         <type>Default</type>
     </actionOverrides>
     <actionOverrides>
+        <actionName>New</actionName>
+        <formFactor>Large</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>New</actionName>
+        <formFactor>Small</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
         <actionName>SaveEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>SaveEdit</actionName>
+        <formFactor>Large</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>SaveEdit</actionName>
+        <formFactor>Small</formFactor>
         <type>Default</type>
     </actionOverrides>
     <actionOverrides>
@@ -37,7 +117,27 @@
         <type>Default</type>
     </actionOverrides>
     <actionOverrides>
+        <actionName>Tab</actionName>
+        <formFactor>Large</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Tab</actionName>
+        <formFactor>Small</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
         <actionName>View</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>View</actionName>
+        <formFactor>Large</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>View</actionName>
+        <formFactor>Small</formFactor>
         <type>Default</type>
     </actionOverrides>
     <allowInChatterGroups>false</allowInChatterGroups>
@@ -48,10 +148,22 @@
     <enableBulkApi>true</enableBulkApi>
     <enableFeeds>false</enableFeeds>
     <enableHistory>true</enableHistory>
+    <enableLicensing>false</enableLicensing>
     <enableReports>true</enableReports>
     <enableSearch>true</enableSearch>
     <enableSharing>true</enableSharing>
     <enableStreamingApi>true</enableStreamingApi>
+    <label>Pipeline Snapshot</label>
+    <nameField>
+        <label>Pipeline Snapshot Name</label>
+        <trackHistory>false</trackHistory>
+        <type>Text</type>
+    </nameField>
+    <pluralLabel>Pipeline Snapshots</pluralLabel>
+    <searchLayouts></searchLayouts>
+    <sharingModel>ReadWrite</sharingModel>
+    <startsWith>Vowel</startsWith>
+    <visibility>Public</visibility>
     <fields>
         <fullName>Account__c</fullName>
         <deleteConstraint>SetNull</deleteConstraint>
@@ -63,6 +175,19 @@
         <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>ALL_TIME_Income__c</fullName>
+        <description>Copied from the contract at the time of the snapshot</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Copied from the contract at the time of the snapshot</inlineHelpText>
+        <label>ALL TIME Income</label>
+        <precision>16</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
     </fields>
     <fields>
         <fullName>Amount_Minus_Expense_Income__c</fullName>
@@ -114,17 +239,17 @@ For Outstanding Contract: Total Amount Remaining</inlineHelpText>
         <type>Percent</type>
     </fields>
     <fields>
-        <fullName>Buffer_EV__c</fullName>
+        <fullName>Buffer_at_GS_BD_Handover__c</fullName>
         <externalId>false</externalId>
-        <formula>Expected_Buffer__c * (Amount_Minus_Expense_Income__c * Probability__c)</formula>
+        <formula>Contract__r.Buffer_at_GS_BD_Handover__c</formula>
         <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
-        <label>Buffer EV</label>
+        <label>Buffer % at GS-BD Handover</label>
         <precision>18</precision>
         <required>false</required>
         <scale>2</scale>
         <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
-        <type>Currency</type>
+        <type>Percent</type>
     </fields>
     <fields>
         <fullName>Buffer_EV_for_Period__c</fullName>
@@ -138,17 +263,17 @@ For Outstanding Contract: Total Amount Remaining</inlineHelpText>
         <type>Currency</type>
     </fields>
     <fields>
-        <fullName>Buffer_at_GS_BD_Handover__c</fullName>
+        <fullName>Buffer_EV__c</fullName>
         <externalId>false</externalId>
-        <formula>Contract__r.Buffer_at_GS_BD_Handover__c</formula>
+        <formula>Expected_Buffer__c * (Amount_Minus_Expense_Income__c * Probability__c)</formula>
         <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
-        <label>Buffer % at GS-BD Handover</label>
+        <label>Buffer EV</label>
         <precision>18</precision>
         <required>false</required>
         <scale>2</scale>
         <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
-        <type>Percent</type>
+        <type>Currency</type>
     </fields>
     <fields>
         <fullName>CloseDate__c</fullName>
@@ -484,10 +609,21 @@ For Outstanding Contract: Total Amount Remaining</inlineHelpText>
         <unique>false</unique>
     </fields>
     <fields>
+        <fullName>Current_Owner_Name__c</fullName>
+        <externalId>false</externalId>
+        <label>Current Owner Name</label>
+        <length>255</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
         <fullName>Current_Owner__c</fullName>
         <externalId>false</externalId>
-        <formula>if(ispickval(Source_Type__c,&apos;Opportunity&apos;),
- Opportunity__r.Owner.Alias,
+        <formula>if(ispickval(Source_Type__c,&apos;Opportunity&apos;), Opportunity__r.Owner.Username 
+,
   Contract__r.Owner:User.Alias )</formula>
         <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
         <label>Current Owner</label>
@@ -569,6 +705,17 @@ For Outstanding Contract: Total Amount Remaining</inlineHelpText>
         <type>Currency</type>
     </fields>
     <fields>
+        <fullName>Division__c</fullName>
+        <externalId>false</externalId>
+        <label>Division</label>
+        <length>250</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
         <fullName>Duration_months__c</fullName>
         <externalId>false</externalId>
         <inlineHelpText>The Duration at the time the snapshot was taken.
@@ -582,6 +729,30 @@ Contracts: End Date - Start Date</inlineHelpText>
         <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Execution_Owner_Division__c</fullName>
+        <externalId>false</externalId>
+        <formula>text(Contract__r.Execution_Owner_Division__c)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Execution Owner (Division)</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Execution_Owner_Sub_Division__c</fullName>
+        <externalId>false</externalId>
+        <formula>text( Contract__r.Execution_Owner_SubDivision__c )</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Execution Owner (Sub-Division)</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
         <unique>false</unique>
     </fields>
     <fields>
@@ -637,9 +808,9 @@ IF(OR(ISBLANK (Amount__c), ISBLANK(Duration_months__c)), NULL, Monthly_Recurring
         <type>Currency</type>
     </fields>
     <fields>
-        <fullName>Expense_Travel_Spend__c</fullName>
+        <fullName>Expense_Travel_Spend_for_Period__c</fullName>
         <externalId>false</externalId>
-        <label>Expense &amp; Travel Spend</label>
+        <label>Expense &amp; Travel Spend for Period</label>
         <precision>18</precision>
         <required>false</required>
         <scale>2</scale>
@@ -648,9 +819,9 @@ IF(OR(ISBLANK (Amount__c), ISBLANK(Duration_months__c)), NULL, Monthly_Recurring
         <type>Currency</type>
     </fields>
     <fields>
-        <fullName>Expense_Travel_Spend_for_Period__c</fullName>
+        <fullName>Expense_Travel_Spend__c</fullName>
         <externalId>false</externalId>
-        <label>Expense &amp; Travel Spend for Period</label>
+        <label>Expense &amp; Travel Spend</label>
         <precision>18</precision>
         <required>false</required>
         <scale>2</scale>
@@ -682,9 +853,9 @@ IF(OR(ISBLANK (Amount__c), ISBLANK(Duration_months__c)), NULL, Monthly_Recurring
         <type>Currency</type>
     </fields>
     <fields>
-        <fullName>GS_Net_Income_for_Period__c</fullName>
+        <fullName>GS_Net_Income_for_Period_by_Handover__c</fullName>
         <externalId>false</externalId>
-        <label>GS Net Income for Period</label>
+        <label>GS Net Income for Period by Handover</label>
         <precision>18</precision>
         <required>false</required>
         <scale>2</scale>
@@ -693,9 +864,9 @@ IF(OR(ISBLANK (Amount__c), ISBLANK(Duration_months__c)), NULL, Monthly_Recurring
         <type>Currency</type>
     </fields>
     <fields>
-        <fullName>GS_Net_Income_for_Period_by_Handover__c</fullName>
+        <fullName>GS_Net_Income_for_Period__c</fullName>
         <externalId>false</externalId>
-        <label>GS Net Income for Period by Handover</label>
+        <label>GS Net Income for Period</label>
         <precision>18</precision>
         <required>false</required>
         <scale>2</scale>
@@ -728,6 +899,7 @@ IF(OR(ISBLANK (Amount__c), ISBLANK(Duration_months__c)), NULL, Monthly_Recurring
     <fields>
         <fullName>GS_Project_Services_Budget_Handoff_Cp__c</fullName>
         <externalId>false</externalId>
+        <inlineHelpText>Services Budget from a monthly snapshot of the contract.</inlineHelpText>
         <label>GS Project Services Budget @ Handoff</label>
         <precision>18</precision>
         <required>false</required>
@@ -741,6 +913,7 @@ IF(OR(ISBLANK (Amount__c), ISBLANK(Duration_months__c)), NULL, Monthly_Recurring
         <externalId>false</externalId>
         <formula>Contract__r.GS_Project_Services_Budget_Handoff__c</formula>
         <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <inlineHelpText>Current value of Service Budget @ Handoff on the Contract record.</inlineHelpText>
         <label>GS Project Services Budget @ Handoff</label>
         <precision>18</precision>
         <required>false</required>
@@ -750,16 +923,72 @@ IF(OR(ISBLANK (Amount__c), ISBLANK(Duration_months__c)), NULL, Monthly_Recurring
         <type>Currency</type>
     </fields>
     <fields>
-        <fullName>GS_Revenue__c</fullName>
-        <description>GS_Project_Services_Budget_Handoff_Cp__c * Work_Completed_for_Period__c</description>
+        <fullName>GS_Revenue_Helper__c</fullName>
+        <description>Updated calculation for GS Revenue implemented in April 2023. This approach looks at the difference between this snapshot and the prior one: 
+[(GS Project Services Budget @ Handoff(GS_Project_Services_Budget_Handoff_Cp__c) [CURRENT SNAPSHOT] * (Work_Completed__c [CURRENT SNAPSHOT])]
+MINUS
+[(GS Project Services Budget @ Handoff(GS_Project_Services_Budget_Handoff_Cp__c) [PRIOR SNAPSHOT] * (Work_Completed__c [PRIOR SNAPSHOT])]
+It is used to populate GS Revenue for snapshots from 4/2023 onwards.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Source calculation for the field GS Revenue as updated in April 2023 snapshots and beyond. 
+[(GS Project Services Budget @ Handoff(GS_Project_Services_Budget_Handoff_Cp__c) [CURRENT SNAPSHOT] * (Work_Completed__c [CURRENT SNAPSHOT])]
+MINUS
+[(GS Project Services Budget @ Handoff(GS_Project_Services_Budget_Handoff_Cp__c) [PRIOR SNAPSHOT] * (Work_Completed__c [PRIOR SNAPSHOT])]</inlineHelpText>
+        <label>GS Revenue - Helper</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>GS_Revenue_Old__c</fullName>
+        <description>This is the original calculation used for GS Revenue per snapshot, which looked at the Project Services Budget at Handoff times the % work completed for a period. This calculation did not work well when then handoff budget amount changed and the % complete work was negative for a period. The original calculation is maintained in this field.</description>
         <externalId>false</externalId>
         <formula>GS_Project_Services_Budget_Handoff_Cp__c * Work_Completed_for_Period__c</formula>
         <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
-        <inlineHelpText>GS_Project_Services_Budget_Handoff_Cp__c * Work_Completed_for_Period__c</inlineHelpText>
+        <inlineHelpText>Deprecated calculation for GS Revenue, used in old snapshots. This is only visible to admins.</inlineHelpText>
+        <label>GS Revenue - Old</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>GS_Revenue__c</fullName>
+        <description>This field holds either the value GS Revenue - Old (for snapshots prior to 4/2023) or GS Revenue - New (for snapshots 4/2023 and beyond). The source field is determined by the field &quot;New GS Revenue logic implemented?&quot;
+
+Current logic (GS Revenue - New):
+[(GS Project Services Budget @ Handoff(GS_Project_Services_Budget_Handoff_Cp__c) [CURRENT SNAPSHOT] * (Work_Completed__c [CURRENT SNAPSHOT])]
+MINUS
+[(GS Project Services Budget @ Handoff(GS_Project_Services_Budget_Handoff_Cp__c) [PRIOR SNAPSHOT] * (Work_Completed__c [PRIOR SNAPSHOT])]
+
+Prior logic (GS Revenue - Old): GS_Project_Services_Budget_Handoff_Cp__c * Work_Completed_for_Period__c</description>
+        <externalId>false</externalId>
+        <formula>if ( New_GS_Revenue_logic_Implemented__c == true, GS_Revenue_Helper__c, GS_Revenue_Old__c )</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <inlineHelpText>For snapshots 3/2023 and older: GS_Project_Services_Budget_Handoff_Cp__c * Work_Completed_for_Period__c
+For snapshots 4/2023 and beyond: [(GS Project Services Budget @ Handoff(GS_Project_Services_Budget_Handoff_Cp__c) [CURRENT SNAPSHOT] * (Work_Completed__c [CURRENT SNAPSHOT])]
+MINUS
+[(GS Project Services Budget @ Handoff(GS_Project_Services_Budget_Handoff_Cp__c) [PRIOR SNAPSHOT] * (Work_Completed__c [PRIOR SNAPSHOT])]</inlineHelpText>
         <label>GS Revenue</label>
         <precision>18</precision>
         <required>false</required>
         <scale>0</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>GS_Services_Completed_for_Period__c</fullName>
+        <externalId>false</externalId>
+        <label>GS Services Completed for Period</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
         <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Currency</type>
@@ -779,17 +1008,6 @@ IF(OR(ISBLANK (Amount__c), ISBLANK(Duration_months__c)), NULL, Monthly_Recurring
         <fullName>GS_Services_Completed__c</fullName>
         <externalId>false</externalId>
         <label>GS Services Completed</label>
-        <precision>18</precision>
-        <required>false</required>
-        <scale>2</scale>
-        <trackHistory>false</trackHistory>
-        <trackTrending>false</trackTrending>
-        <type>Currency</type>
-    </fields>
-    <fields>
-        <fullName>GS_Services_Completed_for_Period__c</fullName>
-        <externalId>false</externalId>
-        <label>GS Services Completed for Period</label>
         <precision>18</precision>
         <required>false</required>
         <scale>2</scale>
@@ -822,10 +1040,12 @@ IF(OR(ISBLANK (Amount__c), ISBLANK(Duration_months__c)), NULL, Monthly_Recurring
                 <value>
                     <fullName>Yes</fullName>
                     <default>false</default>
+                    <label>Yes</label>
                 </value>
                 <value>
                     <fullName>No</fullName>
                     <default>false</default>
+                    <label>No</label>
                 </value>
             </valueSetDefinition>
         </valueSet>
@@ -842,16 +1062,6 @@ IF(OR(ISBLANK (Amount__c), ISBLANK(Duration_months__c)), NULL, Monthly_Recurring
         <type>Percent</type>
     </fields>
     <fields>
-        <fullName>Month_Date__c</fullName>
-        <externalId>false</externalId>
-        <inlineHelpText>The month of this snapshot.</inlineHelpText>
-        <label>Month</label>
-        <required>false</required>
-        <trackHistory>false</trackHistory>
-        <trackTrending>false</trackTrending>
-        <type>Date</type>
-    </fields>
-    <fields>
         <fullName>Monthly_Recurring_Revenue_MRR__c</fullName>
         <externalId>false</externalId>
         <formula>IF(OR(ISPICKVAL(Opportunity__r.Implementation_Type__c, &quot;Self Service&quot;), ISPICKVAL(Opportunity__r.Implementation_Type__c, &quot;Enterprise&quot;), ISPICKVAL(Opportunity__r.Implementation_Type__c, &quot;Managed Server&quot;)),
@@ -864,6 +1074,27 @@ IF(OR(ISBLANK(Amount__c), ISBLANK (Duration_months__c)), NULL, Amount__c / Durat
         <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>Month_Date__c</fullName>
+        <externalId>false</externalId>
+        <inlineHelpText>The month of this snapshot.</inlineHelpText>
+        <label>Month</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>New_GS_Revenue_logic_Implemented__c</fullName>
+        <defaultValue>false</defaultValue>
+        <description>Added as part of an effort in April 2023 to change how GS Revenue is calculated. If TRUE then the field &quot;GS Revenue - Helper&quot; is used to populate the field GS Revenue. It is automatically set to TRUE by new</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Automatically set to TRUE for new pipeline snapshots; used to determine how the field GS Revenue is populated (the calculation was changed in March 2023). Only visible to Admins.</inlineHelpText>
+        <label>New GS Revenue logic Implemented ?</label>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
     </fields>
     <fields>
         <fullName>Opportunity_Amount_Minus_Expense_Income__c</fullName>
@@ -924,6 +1155,31 @@ IF(OR(ISBLANK(Amount__c), ISBLANK (Duration_months__c)), NULL, Amount__c / Durat
         <unique>false</unique>
     </fields>
     <fields>
+        <fullName>Opportunity_Owner_Division__c</fullName>
+        <externalId>false</externalId>
+        <formula>TEXT(Opportunity__r.Opportunity_Owner_Division__c)</formula>
+        <label>Opportunity Owner (Division)</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Opportunity_Owner_Sub_Division__c</fullName>
+        <description>Looks up Sub-Division from Opportunity (Opportunity Owner - Sub-Division)</description>
+        <externalId>false</externalId>
+        <formula>text( Opportunity__r.Opportunity_Owner_Sub_Division__c )</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <inlineHelpText>Looks up Sub-Division from Opportunity (Opportunity Owner - Sub-Division)</inlineHelpText>
+        <label>Opportunity Owner (Sub-Division)</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
         <fullName>Opportunity__c</fullName>
         <deleteConstraint>Restrict</deleteConstraint>
         <externalId>false</externalId>
@@ -934,6 +1190,18 @@ IF(OR(ISBLANK(Amount__c), ISBLANK (Duration_months__c)), NULL, Amount__c / Durat
         <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>Option_Year_or_Contract_Extension__c</fullName>
+        <description>Option Year or Contract Extension?</description>
+        <externalId>false</externalId>
+        <formula>Opportunity__r.Option_Year__c</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <inlineHelpText>Option Year or Contract Extension?</inlineHelpText>
+        <label>Option Year or Contract Extension?</label>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
     </fields>
     <fields>
         <fullName>Other_Product__c</fullName>
@@ -974,6 +1242,17 @@ IF(OR(ISBLANK(Amount__c), ISBLANK (Duration_months__c)), NULL, Amount__c / Durat
         <type>Percent</type>
     </fields>
     <fields>
+        <fullName>Products__c</fullName>
+        <externalId>false</externalId>
+        <label>Products</label>
+        <length>255</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
         <fullName>Product_Big_Three__c</fullName>
         <externalId>false</externalId>
         <formula>If( CONTAINS(Products__c , &quot;CommCare&quot;), 
@@ -992,17 +1271,6 @@ IF(OR(ISBLANK(Amount__c), ISBLANK (Duration_months__c)), NULL, Amount__c / Durat
         <unique>false</unique>
     </fields>
     <fields>
-        <fullName>Product_Spend__c</fullName>
-        <externalId>false</externalId>
-        <label>Product Spend</label>
-        <precision>18</precision>
-        <required>false</required>
-        <scale>2</scale>
-        <trackHistory>false</trackHistory>
-        <trackTrending>false</trackTrending>
-        <type>Currency</type>
-    </fields>
-    <fields>
         <fullName>Product_Spend_for_Period__c</fullName>
         <externalId>false</externalId>
         <label>Product Spend for Period</label>
@@ -1014,15 +1282,15 @@ IF(OR(ISBLANK(Amount__c), ISBLANK (Duration_months__c)), NULL, Amount__c / Durat
         <type>Currency</type>
     </fields>
     <fields>
-        <fullName>Products__c</fullName>
+        <fullName>Product_Spend__c</fullName>
         <externalId>false</externalId>
-        <label>Products</label>
-        <length>255</length>
+        <label>Product Spend</label>
+        <precision>18</precision>
         <required>false</required>
+        <scale>2</scale>
         <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
-        <type>Text</type>
-        <unique>false</unique>
+        <type>Currency</type>
     </fields>
     <fields>
         <fullName>RFP_Response__c</fullName>
@@ -1038,22 +1306,26 @@ IF(OR(ISBLANK(Amount__c), ISBLANK (Duration_months__c)), NULL, Amount__c / Durat
                 <value>
                     <fullName>Non-RFP</fullName>
                     <default>false</default>
+                    <label>Non-RFP</label>
                 </value>
                 <value>
                     <fullName>Prime-RFP</fullName>
                     <default>false</default>
+                    <label>Prime-RFP</label>
                 </value>
                 <value>
                     <fullName>Sub-RFP</fullName>
                     <default>false</default>
+                    <label>Sub-RFP</label>
                 </value>
             </valueSetDefinition>
         </valueSet>
     </fields>
     <fields>
-        <fullName>Services_Spend__c</fullName>
+        <fullName>Services_Spend_for_Period__c</fullName>
         <externalId>false</externalId>
-        <label>Services Spend</label>
+        <inlineHelpText>Total Services Spend for the current snapshot - Total Services Spend for the prior snapshot</inlineHelpText>
+        <label>Services Spend for Period</label>
         <precision>18</precision>
         <required>false</required>
         <scale>2</scale>
@@ -1062,9 +1334,9 @@ IF(OR(ISBLANK(Amount__c), ISBLANK (Duration_months__c)), NULL, Amount__c / Durat
         <type>Currency</type>
     </fields>
     <fields>
-        <fullName>Services_Spend_for_Period__c</fullName>
+        <fullName>Services_Spend__c</fullName>
         <externalId>false</externalId>
-        <label>Services Spend for Period</label>
+        <label>Services Spend</label>
         <precision>18</precision>
         <required>false</required>
         <scale>2</scale>
@@ -1087,10 +1359,12 @@ IF(OR(ISBLANK(Amount__c), ISBLANK (Duration_months__c)), NULL, Amount__c / Durat
                 <value>
                     <fullName>Contract</fullName>
                     <default>false</default>
+                    <label>Contract</label>
                 </value>
                 <value>
                     <fullName>Opportunity</fullName>
                     <default>false</default>
+                    <label>Opportunity</label>
                 </value>
             </valueSetDefinition>
         </valueSet>
@@ -1110,68 +1384,92 @@ IF(OR(ISBLANK(Amount__c), ISBLANK (Duration_months__c)), NULL, Amount__c / Durat
                     <fullName>Stage 1 - Connect</fullName>
                     <color>#0B6FCE</color>
                     <default>false</default>
+                    <label>Stage 1 - Connect</label>
                 </value>
                 <value>
                     <fullName>Stage 2 - Talking</fullName>
                     <color>#78C953</color>
                     <default>false</default>
+                    <label>Stage 2 - Talking</label>
                 </value>
                 <value>
                     <fullName>Stage 3 - Prospect</fullName>
                     <color>#E27001</color>
                     <default>false</default>
+                    <label>Stage 3 - Prospect</label>
                 </value>
                 <value>
                     <fullName>Stage 4 - Proposal Development</fullName>
                     <color>#DDDDDD</color>
                     <default>false</default>
+                    <label>Stage 4 - Proposal Development</label>
                 </value>
                 <value>
                     <fullName>Stage 5 - Submitted</fullName>
                     <color>#BBBBBB</color>
                     <default>false</default>
+                    <label>Stage 5 - Submitted</label>
                 </value>
                 <value>
                     <fullName>Stage 6 - In Negotiations</fullName>
                     <color>#999999</color>
                     <default>false</default>
+                    <label>Stage 6 - In Negotiations</label>
                 </value>
                 <value>
                     <fullName>Closed</fullName>
                     <color>#A845DC</color>
                     <default>false</default>
+                    <label>Closed</label>
                 </value>
                 <value>
                     <fullName>Outstanding Contracted</fullName>
                     <color>#F3D904</color>
                     <default>false</default>
+                    <label>Outstanding Contracted</label>
                 </value>
                 <value>
                     <fullName>Total</fullName>
                     <color>#A53711</color>
                     <default>false</default>
+                    <label>Total</label>
                 </value>
                 <value>
                     <fullName>Cash on Hand</fullName>
                     <color>#009900</color>
                     <default>false</default>
+                    <label>Cash on Hand</label>
                 </value>
                 <value>
                     <fullName>Predicted pipeline</fullName>
                     <color>#0B6FCE</color>
                     <default>false</default>
+                    <label>Predicted pipeline</label>
                 </value>
                 <value>
                     <fullName>Core run rate</fullName>
                     <color>#FF0000</color>
                     <default>false</default>
+                    <label>Core run rate</label>
                 </value>
             </valueSetDefinition>
         </valueSet>
     </fields>
     <fields>
+        <fullName>Subdivision__c</fullName>
+        <externalId>false</externalId>
+        <label>Subdivision</label>
+        <length>250</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
         <fullName>Submitted_this_month__c</fullName>
         <externalId>false</externalId>
+        <inlineHelpText>Shows &quot;Yes&quot; if the opportunity stage was at &quot;Stage 5 - Submitted&quot; at the time the Snapshot ran AND if there are no prior snapshots for which the Stage was &quot;Stage 5  - Submitted&quot;. Note that this will not capture submission for opportunities that moved from Stage 4 to Stage 6 in the course of a single month.</inlineHelpText>
         <label>Submitted this month</label>
         <required>false</required>
         <trackHistory>false</trackHistory>
@@ -1184,10 +1482,12 @@ IF(OR(ISBLANK(Amount__c), ISBLANK (Duration_months__c)), NULL, Amount__c / Durat
                 <value>
                     <fullName>No</fullName>
                     <default>true</default>
+                    <label>No</label>
                 </value>
                 <value>
                     <fullName>Yes</fullName>
                     <default>false</default>
+                    <label>Yes</label>
                 </value>
             </valueSetDefinition>
         </valueSet>
@@ -1221,6 +1521,19 @@ Amount__c,
         <type>Currency</type>
     </fields>
     <fields>
+        <fullName>Total_Amount_of_Contract__c</fullName>
+        <description>Copied from the contract at the time of the snapshot</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Copied from the contract at the time of the snapshot</inlineHelpText>
+        <label>Total Amount of Contract</label>
+        <precision>16</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
         <fullName>Total_Amount_REMAINING__c</fullName>
         <externalId>false</externalId>
         <inlineHelpText>Maps to Total Amount REMAINING on the contract object.</inlineHelpText>
@@ -1233,9 +1546,9 @@ Amount__c,
         <type>Currency</type>
     </fields>
     <fields>
-        <fullName>Total_Calculated_Costs__c</fullName>
+        <fullName>Total_Calculated_Costs_for_Period__c</fullName>
         <externalId>false</externalId>
-        <label>Total Calculated Costs</label>
+        <label>Total Calculated Costs for Period</label>
         <precision>18</precision>
         <required>false</required>
         <scale>2</scale>
@@ -1244,9 +1557,9 @@ Amount__c,
         <type>Currency</type>
     </fields>
     <fields>
-        <fullName>Total_Calculated_Costs_for_Period__c</fullName>
+        <fullName>Total_Calculated_Costs__c</fullName>
         <externalId>false</externalId>
-        <label>Total Calculated Costs for Period</label>
+        <label>Total Calculated Costs</label>
         <precision>18</precision>
         <required>false</required>
         <scale>2</scale>
@@ -1282,9 +1595,9 @@ Amount__c,
         <type>Currency</type>
     </fields>
     <fields>
-        <fullName>Work_Completed__c</fullName>
+        <fullName>Work_Completed_for_Period__c</fullName>
         <externalId>false</externalId>
-        <label>% of Work Completed</label>
+        <label>% of Work Completed for Period</label>
         <precision>18</precision>
         <required>false</required>
         <scale>0</scale>
@@ -1293,9 +1606,9 @@ Amount__c,
         <type>Percent</type>
     </fields>
     <fields>
-        <fullName>Work_Completed_for_Period__c</fullName>
+        <fullName>Work_Completed__c</fullName>
         <externalId>false</externalId>
-        <label>% of Work Completed for Period</label>
+        <label>% of Work Completed</label>
         <precision>18</precision>
         <required>false</required>
         <scale>0</scale>
@@ -1464,7 +1777,6 @@ if( (month(Contract_End_Date__c)+12*year(Contract_End_Date__c)) &lt; (month(Mont
         <trackTrending>false</trackTrending>
         <type>Currency</type>
     </fields>
-    <label>Pipeline Snapshot</label>
     <listViews>
         <fullName>Cash_predicted_and_core_run_rate_snaps</fullName>
         <columns>NAME</columns>
@@ -1485,6 +1797,21 @@ if( (month(Contract_End_Date__c)+12*year(Contract_End_Date__c)) &lt; (month(Mont
             <value>6/30/2014</value>
         </filters>
         <label>Cash, predicted and core run rate snaps</label>
+    </listViews>
+    <listViews>
+        <fullName>Division_and_Subdivision_View_11_7</fullName>
+        <columns>NAME</columns>
+        <columns>CREATED_DATE</columns>
+        <columns>Division__c</columns>
+        <columns>Subdivision__c</columns>
+        <columns>Source_Type__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>CREATED_DATE</field>
+            <operation>equals</operation>
+            <value>11/7/2021 12:00 AM</value>
+        </filters>
+        <label>Division and Subdivision View 11/7</label>
     </listViews>
     <listViews>
         <fullName>January_Snapshots</fullName>
@@ -1615,13 +1942,4 @@ if( (month(Contract_End_Date__c)+12*year(Contract_End_Date__c)) &lt; (month(Mont
         </filters>
         <label>3Month / 12Month Cash Flow</label>
     </listViews>
-    <nameField>
-        <label>Pipeline Snapshot Name</label>
-        <trackHistory>false</trackHistory>
-        <type>Text</type>
-    </nameField>
-    <pluralLabel>Pipeline Snapshots</pluralLabel>
-    <searchLayouts/>
-    <sharingModel>ReadWrite</sharingModel>
-    <startsWith>Vowel</startsWith>
 </CustomObject>

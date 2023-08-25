@@ -2,6 +2,8 @@
 <CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
     <customSettingsType>List</customSettingsType>
     <enableFeeds>false</enableFeeds>
+    <label>CommcareToSalesforceSettings</label>
+    <visibility>Public</visibility>
     <fields>
         <fullName>API_Limit_Parameter__c</fullName>
         <externalId>false</externalId>
@@ -75,6 +77,4 @@
         <type>Text</type>
         <unique>false</unique>
     </fields>
-    <label>CommcareToSalesforceSettings</label>
-    <visibility>Public</visibility>
 </CustomObject>

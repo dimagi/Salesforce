@@ -5,23 +5,55 @@ public class ContractOpportunityRelationsTest {
     public static void setUp() {
         Account account = new Account(Name = 'Test');
         insert account;
-
+        contact cntName = new contact(FirstName='singh', LastName = 'Singh', email='abcd@dimagi.com');
+        insert cntName;
+        
+        contact cntName2 = new contact(FirstName='singh', LastName = 'Bharat', email='abcdf@dimagi.com');
+        insert cntName2;
+        
         DContract__c contract = new DContract__c(Name = 'Test', Account__c = account.Id, Implementing_Account__c = account.Id,
-                                                 Area__c = 'Test Area', Sub_Area__c = 'Test Sub Area');
+                                                 Area__c = 'Test Area', Sub_Area__c = 'Test Sub Area', Project_Manager__c = cntName2.id, 
+                                                 Backstop__c = cntName2.id, Field_Manager__c = cntName2.id );
         insert contract;
 
         Product2 product = new Product2(Name = 'Test Product');
         insert product;
 
         Opportunity opportunity = new Opportunity(Name = 'Test Opportunity', StageName = 'Stage 2 - Talking', AccountId = account.Id, CloseDate = Date.today().addMonths(6), 
-                                                    Opportunity_Owner_Division__c = 'Solutions', Opportunity_Owner_Sub_Division__c='Inbound Sales');
+                                                    Opportunity_Owner_Division__c = 'Solutions',Opportunity_Owner_Sub_Division__c='USH - Delivery'); //, Opportunity_Owner_Sub_Division__c='USH - Delivery'
         insert opportunity;
+        Business_Unit__c bu = new Business_Unit__c(Name = 'Inc');
+        insert bu;
+        
+        SFDC_Employee__c employee = new SFDC_Employee__c(Exchange_Rate__c = 1 , Business_Unit__c = bu.id, Employee_Status__c = 'Active', Email_Address__c = 'abcd@dimagi.com', Name = 'Singh',Title__c = 'Country Director');
+        Insert employee;
+        PRO_Email_Remindar_Settings__c resettings= new PRO_Email_Remindar_Settings__c (Name = 'test', Dev_Work_Emails__c = 'abcd@dimagi.com');
+        insert resettings;
+        Contract_Contact__c cont =  new Contract_Contact__c(Contract__c = contract.id, contact__C = cntName.id );
+        insert cont;
+        
     }
+    
+    @isTest
+     public static void testContractTrigger() {
+        Business_Unit__c bu = [select id, name from Business_Unit__c where name =: 'Inc' LIMIT 1];
+        SFDC_Employee__c emp = [SELECT Id, Email_Address__c, Business_Unit__c, Contact__c FROM SFDC_Employee__c 
+                                      where Name =: 'Singh' LIMIT 1];
+          contact cntNames =  [select id, firstname, email from contact where firstName = 'singh' LIMIT 1];
+          DContract__c contract = [SELECT Id, Name FROM DContract__c WHERE Name = 'Test' LIMIT 1];
+          contract.Project_Manager__c = cntNames.id;
+          contract.Requires_Developer_Work__c = true;
+          update contract;
+         
+         
+     }
+    
 
     @isTest
     public static void testOpportunityContractRelation() {
         Opportunity opportunity = [SELECT Id, Name FROM Opportunity WHERE Name = 'Test Opportunity' LIMIT 1];
         DContract__c contract = [SELECT Id, Name FROM DContract__c WHERE Name = 'Test' LIMIT 1];
+  
 
         ApexPages.StandardController sc = new ApexPages.standardController(new Contract_Opportunity__c());
         PageReference pageRef = Page.ContractOpportunityPage;

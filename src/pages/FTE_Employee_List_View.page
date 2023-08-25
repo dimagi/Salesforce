@@ -1,4 +1,4 @@
-<apex:page controller="FTETrackerController" docType="html-5.0" action="{!loadWorkCardJobStatus}">
+<apex:page controller="FTESortController" docType="html-5.0" action="{!loadWorkCardJobStatus}">
     <style type="text/css">
         .fteProjectCell {
             cursor: pointer;
@@ -55,7 +55,7 @@
                     <apex:outputLabel value="Find Employee :" for="searchProjectText"/>
                     <apex:inputText value="{!employeeNameSearch}" id="searchProjectText" onkeydown="if(event.keyCode == 13) { this.blur(); searchEmployeeJs(); }"/>
 
-                    <apex:outputLabel value="Department :" for="empl-department"/>
+                   <!-- <apex:outputLabel value="Department :" for="empl-department"/>
                     <apex:selectList value="{!emplDepartment}" multiselect="false" size="1" id="empl-department" >
                         <apex:selectOptions value="{!departmentList}"/>
                     </apex:selectList>
@@ -63,27 +63,168 @@
                     <apex:outputLabel value="Business Unit:" for="empl-bu"/>
                     <apex:selectList value="{!emplBusinessUnit}" multiselect="false" size="1" id="empl-bu">
                         <apex:selectOptions value="{!buList}"/>
+                    </apex:selectList> -->
+                    
+                    <apex:outputLabel value="Division :" for="empl-division"/>
+                    <apex:selectList value="{!Division}" multiselect="false" size="1" id="empl-division" >
+                        <apex:selectOptions value="{!divisionList}"/>
+                    </apex:selectList> 
+                    <apex:outputLabel value="Sub Division :" for="empl-subdivision"/>
+                    <apex:selectList value="{!subDivision}" multiselect="false" size="1" id="empl-subdivision" >
+                        <apex:selectOptions value="{!subDivisionList}"/>
                     </apex:selectList>
+                    
                     <apex:commandButton action="{!searchEmplopyee}" value="Search" status="loadingDiv" id="searchEmployee" reRender="emplsPanel" />
                     <apex:actionFunction action="{!searchEmplopyee}" name="searchEmployeeJs" status="loadingDiv" reRender="emplsPanel" />
                 </div>
                 <hr />
 
                 <apex:pageBlockSection columns="1" id="tableSection">
-                    <apex:pageBlockTable id="employeesHours" value="{!employeesList}" var="empTime" styleClass="fteTable">
-                        <apex:column onclick="goToEmployeeView('{!empTime.objId}');" headerValue="Employee Name" value="{!empTime.name}" styleClass="{!empTime.nameCss}"/>
-                        <apex:column headerValue="Jan {!fteYear}" value="{!empTime.daysArray[0]}" styleClass="{!empTime.cssStyle[0]}"/>
-                        <apex:column headerValue="Feb {!fteYear}" value="{!empTime.daysArray[1]}" styleClass="{!empTime.cssStyle[1]}"/>
-                        <apex:column headerValue="Mar {!fteYear}" value="{!empTime.daysArray[2]}" styleClass="{!empTime.cssStyle[2]}"/>
-                        <apex:column headerValue="Apr {!fteYear}" value="{!empTime.daysArray[3]}" styleClass="{!empTime.cssStyle[3]}"/>
-                        <apex:column headerValue="May {!fteYear}" value="{!empTime.daysArray[4]}" styleClass="{!empTime.cssStyle[4]}"/>
-                        <apex:column headerValue="Jun {!fteYear}" value="{!empTime.daysArray[5]}" styleClass="{!empTime.cssStyle[5]}"/>
-                        <apex:column headerValue="Jul {!fteYear}" value="{!empTime.daysArray[6]}" styleClass="{!empTime.cssStyle[6]}"/>
-                        <apex:column headerValue="Aug {!fteYear}" value="{!empTime.daysArray[7]}" styleClass="{!empTime.cssStyle[7]}"/>
-                        <apex:column headerValue="Sep {!fteYear}" value="{!empTime.daysArray[8]}" styleClass="{!empTime.cssStyle[8]}"/>
-                        <apex:column headerValue="Ocb {!fteYear}" value="{!empTime.daysArray[9]}" styleClass="{!empTime.cssStyle[9]}"/>
-                        <apex:column headerValue="Nov {!fteYear}" value="{!empTime.daysArray[10]}" styleClass="{!empTime.cssStyle[10]}"/>
-                        <apex:column headerValue="Dec {!fteYear}" value="{!empTime.daysArray[11]}" styleClass="{!empTime.cssStyle[11]}"/>
+                    <apex:pageBlockTable id="employeesHours" value="{!employees}" var="empTime" styleClass="fteTable">
+                      
+                        <apex:column onclick="goToEmployeeView('{!empTime.objId}');" value="{!empTime.name}" styleClass="{!empTime.nameCss}">
+                             <apex:facet name="header">
+                            <apex:commandLink value="Employee Name" action="{!toggleSort}" rerender="emplsPanel,tableSection" status="loadingDiv" >
+                                <apex:param name="sortField" value="Employee__r.Name" assignTo="{!sortField}"/>
+                              <!--  <apex:outputPanel rendered="{!BEGINS(sortField,'Employee Name')}"> -->
+                                    &nbsp;<apex:image value="{!IF(sortingFieldsPosition[0] = 'asc','/img/arrowUp.gif','/img/arrowDown.gif')}"/>
+                                <!--   </apex:outputPanel> -->
+                            </apex:commandLink>
+                            </apex:facet> </apex:column>
+                        <apex:column >
+                            <apex:facet name="header">
+                            <apex:commandLink value="Hire Date" action="{!toggleSort}" rerender="emplsPanel,tableSection" status="loadingDiv" >
+                                <apex:param name="sortField" value="Employee__r.Hire_Date__c" assignTo="{!sortField}"/>
+                              <!--  <apex:outputPanel rendered="{!BEGINS(sortField,'Employee Name')}"> -->
+                                    &nbsp;<apex:image value="{!IF(sortingFieldsPosition[1] = 'asc','/img/arrowUp.gif','/img/arrowDown.gif')}"/>
+                                <!--   </apex:outputPanel> -->
+                            </apex:commandLink>
+                            </apex:facet>
+                        <apex:outputText value="{0, date, MM/dd/yyyy}">
+                            <apex:param value="{!empTime.hireDate}" /> 
+                            </apex:outputText> </apex:column>
+                        <apex:column >
+                            <apex:facet name="header">
+                            <apex:commandLink value="Termination Date" action="{!toggleSort}" rerender="emplsPanel,tableSection" status="loadingDiv" >
+                                <apex:param name="sortField" value="Employee__r.Termination_Date__c" assignTo="{!sortField}"/>
+                              <!--  <apex:outputPanel rendered="{!BEGINS(sortField,'Employee Name')}"> -->
+                                    &nbsp;<apex:image value="{!IF(sortingFieldsPosition[2] = 'asc','/img/arrowUp.gif','/img/arrowDown.gif')}"/>
+                                <!--   </apex:outputPanel> -->
+                            </apex:commandLink>
+                            </apex:facet>
+                            <apex:outputText value="{0, date, MM/dd/yyyy}">
+                            <apex:param value="{!empTime.termDate}" /> 
+                            </apex:outputText>
+                        </apex:column>
+                        <apex:column value="{!empTime.daysArray[0]}" styleClass="{!empTime.cssStyle[0]}">
+                                     <apex:facet name="header">
+                            <apex:commandLink value="Jan {!fteYear}" action="{!toggleSort}" rerender="emplsPanel,tableSection" status="loadingDiv" >
+                                <apex:param name="sortField" value="Month_1__c" assignTo="{!sortField}"/>
+                              <!--  <apex:outputPanel rendered="{!BEGINS(sortField,'Employee Name')}"> -->
+                                    &nbsp;<apex:image value="{!IF(sortingFieldsPosition[3] = 'asc','/img/arrowUp.gif','/img/arrowDown.gif')}"/>
+                                <!--   </apex:outputPanel> -->
+                            </apex:commandLink>
+                            </apex:facet>
+                        </apex:column>
+                        <apex:column value="{!empTime.daysArray[1]}" styleClass="{!empTime.cssStyle[1]}">
+                            <apex:facet name="header">
+                            <apex:commandLink value="Feb {!fteYear}" action="{!toggleSort}" rerender="emplsPanel,tableSection" status="loadingDiv" >
+                                <apex:param name="sortField" value="Month_2__c" assignTo="{!sortField}"/>
+                              <!--  <apex:outputPanel rendered="{!BEGINS(sortField,'Employee Name')}"> -->
+                                    &nbsp;<apex:image value="{!IF(sortingFieldsPosition[4] = 'asc','/img/arrowUp.gif','/img/arrowDown.gif')}"/>
+                                <!--   </apex:outputPanel> -->
+                            </apex:commandLink>
+                            </apex:facet> </apex:column>
+                        <apex:column value="{!empTime.daysArray[2]}" styleClass="{!empTime.cssStyle[2]}">
+                            <apex:facet name="header">
+                            <apex:commandLink value="Mar {!fteYear}" action="{!toggleSort}" rerender="emplsPanel,tableSection" status="loadingDiv" >
+                                <apex:param name="sortField" value="Month_3__c" assignTo="{!sortField}"/>
+                              <!--  <apex:outputPanel rendered="{!BEGINS(sortField,'Employee Name')}"> -->
+                                    &nbsp;<apex:image value="{!IF(sortingFieldsPosition[5] = 'asc','/img/arrowUp.gif','/img/arrowDown.gif')}"/>
+                                <!--   </apex:outputPanel> -->
+                            </apex:commandLink>
+                            </apex:facet> </apex:column>
+                        <apex:column headerValue="Apr {!fteYear}" value="{!empTime.daysArray[3]}" styleClass="{!empTime.cssStyle[3]}">
+                            <apex:facet name="header">
+                            <apex:commandLink value="Apr {!fteYear}" action="{!toggleSort}" rerender="emplsPanel,tableSection" status="loadingDiv" >
+                                <apex:param name="sortField" value="Month_4__c" assignTo="{!sortField}"/>
+                              <!--  <apex:outputPanel rendered="{!BEGINS(sortField,'Employee Name')}"> -->
+                                    &nbsp;<apex:image value="{!IF(sortingFieldsPosition[6] = 'asc','/img/arrowUp.gif','/img/arrowDown.gif')}"/>
+                                <!--   </apex:outputPanel> -->
+                            </apex:commandLink>
+                            </apex:facet> </apex:column>
+                        <apex:column value="{!empTime.daysArray[4]}" styleClass="{!empTime.cssStyle[4]}">
+                            <apex:facet name="header">
+                            <apex:commandLink value="May {!fteYear}" action="{!toggleSort}" rerender="emplsPanel,tableSection" status="loadingDiv" >
+                                <apex:param name="sortField" value="Month_5__c" assignTo="{!sortField}"/>
+                              <!--  <apex:outputPanel rendered="{!BEGINS(sortField,'Employee Name')}"> -->
+                                    &nbsp;<apex:image value="{!IF(sortingFieldsPosition[7] = 'asc','/img/arrowUp.gif','/img/arrowDown.gif')}"/>
+                                <!--   </apex:outputPanel> -->
+                            </apex:commandLink>
+                            </apex:facet> </apex:column>
+                        <apex:column headerValue="Jun {!fteYear}" value="{!empTime.daysArray[5]}" styleClass="{!empTime.cssStyle[5]}">
+                            <apex:facet name="header">
+                            <apex:commandLink value="Jun {!fteYear}" action="{!toggleSort}" rerender="emplsPanel,tableSection" status="loadingDiv" >
+                                <apex:param name="sortField" value="Month_6__c" assignTo="{!sortField}"/>
+                              <!--  <apex:outputPanel rendered="{!BEGINS(sortField,'Employee Name')}"> -->
+                                    &nbsp;<apex:image value="{!IF(sortingFieldsPosition[8] = 'asc','/img/arrowUp.gif','/img/arrowDown.gif')}"/>
+                                <!--   </apex:outputPanel> -->
+                            </apex:commandLink>
+                            </apex:facet> </apex:column>
+                        <apex:column value="{!empTime.daysArray[6]}" styleClass="{!empTime.cssStyle[6]}">
+                            <apex:facet name="header">
+                            <apex:commandLink value="Jul {!fteYear}" action="{!toggleSort}" rerender="emplsPanel,tableSection" status="loadingDiv" >
+                                <apex:param name="sortField" value="Month_7__c" assignTo="{!sortField}"/>
+                              <!--  <apex:outputPanel rendered="{!BEGINS(sortField,'Employee Name')}"> -->
+                                    &nbsp;<apex:image value="{!IF(sortingFieldsPosition[9] = 'asc','/img/arrowUp.gif','/img/arrowDown.gif')}"/>
+                                <!--   </apex:outputPanel> -->
+                            </apex:commandLink>
+                            </apex:facet> </apex:column>
+                        <apex:column value="{!empTime.daysArray[7]}" styleClass="{!empTime.cssStyle[7]}">
+                            <apex:facet name="header">
+                            <apex:commandLink value="Aug {!fteYear}" action="{!toggleSort}" rerender="emplsPanel,tableSection" status="loadingDiv" >
+                                <apex:param name="sortField" value="Month_8__c" assignTo="{!sortField}"/>
+                              <!--  <apex:outputPanel rendered="{!BEGINS(sortField,'Employee Name')}"> -->
+                                    &nbsp;<apex:image value="{!IF(sortingFieldsPosition[10] = 'asc','/img/arrowUp.gif','/img/arrowDown.gif')}"/>
+                                <!--   </apex:outputPanel> -->
+                            </apex:commandLink>
+                            </apex:facet> </apex:column>
+                        <apex:column value="{!empTime.daysArray[8]}" styleClass="{!empTime.cssStyle[8]}">
+                             <apex:facet name="header">
+                            <apex:commandLink value="Sep {!fteYear}" action="{!toggleSort}" rerender="emplsPanel,tableSection" status="loadingDiv" >
+                                <apex:param name="sortField" value="Month_9__c" assignTo="{!sortField}"/>
+                              <!--  <apex:outputPanel rendered="{!BEGINS(sortField,'Employee Name')}"> -->
+                                    &nbsp;<apex:image value="{!IF(sortingFieldsPosition[11] = 'asc','/img/arrowUp.gif','/img/arrowDown.gif')}"/>
+                                <!--   </apex:outputPanel> -->
+                            </apex:commandLink>
+                            </apex:facet> </apex:column>
+                        <apex:column value="{!empTime.daysArray[9]}" styleClass="{!empTime.cssStyle[9]}">
+                             <apex:facet name="header">
+                            <apex:commandLink value="Oct {!fteYear}" action="{!toggleSort}" rerender="emplsPanel,tableSection" status="loadingDiv" >
+                                <apex:param name="sortField" value="Month_10__c" assignTo="{!sortField}"/>
+                              <!--  <apex:outputPanel rendered="{!BEGINS(sortField,'Employee Name')}"> -->
+                                    &nbsp;<apex:image value="{!IF(sortingFieldsPosition[12] = 'asc','/img/arrowUp.gif','/img/arrowDown.gif')}"/>
+                                <!--   </apex:outputPanel> -->
+                            </apex:commandLink>
+                            </apex:facet> </apex:column>
+                        <apex:column value="{!empTime.daysArray[10]}" styleClass="{!empTime.cssStyle[10]}">
+                             <apex:facet name="header">
+                            <apex:commandLink value="Nov {!fteYear}" action="{!toggleSort}" rerender="emplsPanel,tableSection" status="loadingDiv" >
+                                <apex:param name="sortField" value="Month_11__c" assignTo="{!sortField}"/>
+                              <!--  <apex:outputPanel rendered="{!BEGINS(sortField,'Employee Name')}"> -->
+                                    &nbsp;<apex:image value="{!IF(sortingFieldsPosition[13] = 'asc','/img/arrowUp.gif','/img/arrowDown.gif')}"/>
+                                <!--   </apex:outputPanel> -->
+                            </apex:commandLink>
+                            </apex:facet> </apex:column>
+                        <apex:column headerValue="Dec {!fteYear}" value="{!empTime.daysArray[11]}" styleClass="{!empTime.cssStyle[11]}">
+                            <apex:facet name="header">
+                            <apex:commandLink value="Dec {!fteYear}" action="{!toggleSort}" rerender="emplsPanel,tableSection" status="loadingDiv" >
+                                <apex:param name="sortField" value="Month_12__c" assignTo="{!sortField}"/>
+                              <!--  <apex:outputPanel rendered="{!BEGINS(sortField,'Employee Name')}"> -->
+                                    &nbsp;<apex:image value="{!IF(sortingFieldsPosition[14] = 'asc','/img/arrowUp.gif','/img/arrowDown.gif')}"/>
+                                <!--   </apex:outputPanel> -->
+                            </apex:commandLink>
+                            </apex:facet> </apex:column>
                         <apex:column headerValue="Total" value="{!empTime.daysArray[12]}" styleClass="{!empTime.cssStyle[12]}"/>
                     </apex:pageBlockTable>
                 </apex:pageBlockSection>
@@ -93,11 +234,11 @@
                     <tr>
                         <td>Page: <apex:outputText value=" {!employeePagination.pageNumber} of {!CEILING(employeePagination.resultSize / employeePagination.pageSize)}"/></td>
                         <td align="center">
-                            <apex:commandLink status="loadingDiv" action="{!goToPreviousPage}" value="« Previous" rendered="{!employeePagination.hasPrevious}" reRender="emplsPanel" />
+                            <apex:commandLink status="loadingDiv" action="{!goToPreviousPage}" value="« Previous" rendered="{!employeePagination.hasPrevious}" reRender="emplsPanel"/>
                             <apex:outputText style="color: #ccc;" value="« Previous" rendered="{!NOT(employeePagination.hasPrevious)}"/>
                             &nbsp;&nbsp;
-                            <apex:commandLink status="loadingDiv" action="{!goToNextPage}" value="Next »" rendered="{!employeePagination.hasNext}" reRender="emplsPanel" />
-                            <apex:outputText style="color: #ccc;" value="Next »" rendered="{!NOT(employeePagination.hasNext) }"/>
+                            <apex:commandLink status="loadingDiv" action="{!goToNextPage}" value="Next »" rendered="{!employeePagination.hasNext}" reRender="emplsPanel"/>
+                            <apex:outputText style="color: #ccc;" value="Next »" rendered="{!NOT(employeePagination.hasNext) }" />
                         </td>
                         <td align="right">
                             Records per page:&nbsp;&nbsp;
@@ -105,7 +246,7 @@
                                 <apex:selectOption itemValue="10" itemLabel="10"/>
                                 <apex:selectOption itemValue="20" itemLabel="20"/>
                                 <apex:selectOption itemValue="50" itemLabel="50"/>
-                                <apex:actionSupport event="onchange" reRender="emplsPanel"/>
+                                <apex:actionSupport action="{!renderOnpageSize}" event="onchange" reRender="emplsPanel"/>
                             </apex:selectList>
                         </td>
                     </tr>
@@ -115,10 +256,14 @@
                 <apex:actionFunction action="{!goToEmployeeView}" name="goToEmployeeView" reRender="emplsPanel">
                     <apex:param name="employeeId" assignTo="{!employeeId}" value=""/>
                 </apex:actionFunction>
+                
+                 <apex:actionFunction status="loadingDiv" action="{!employeePagination.resetPageNumber}" name="resetPageNum" reRender="emplsPanel" />
 
                 <apex:commandButton action="{!goToEmployeeListView}" value="Employee List" id="EmplListButton" disabled="true"/>
                 <apex:commandButton action="{!goToProjectListView}" value="Project List" id="projListButton" />
                 <apex:commandButton action="{!goToCSVUploadView}" value="CSV File Upload" id="uploadButton" />
+                <apex:commandButton action="{!export_FTEListViewExcel}" value="Export Excel" id="ExportExcel" />
+                <apex:commandButton action="{!export_FTEListViewPDF}" value="Export PDF" id="Exportpdf" />
             </apex:outputPanel>
         </apex:form>
     </apex:pageBlock>

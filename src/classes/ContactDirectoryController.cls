@@ -45,7 +45,7 @@ public class ContactDirectoryController {
     public void loadPageData() {
         if (isTokenValid()) {
             this.empList = [SELECT Id, Name, Email_Address__c, Skype_ID__c, Direct_Manager_Lookup__c, Direct_Manager_Lookup__r.Name,
-                            Business_Unit__c, Sub_Unit__c, Entity__c, Personal_Phone_Number__c, Title__c,
+                            Division__c, Sub_Division__c, Entity__c, Personal_Phone_Number__c, Title__c,
                             Languages_Spoken__c, Language_1_Proficiency__c, Language_Spoken_2__c, Language_2_Proficiency__c,
                             Language_Spoken_3__c, Language_3_Proficiency__c, Language_Spoken_4__c, Language_4_Proficiency__c,
                             Language_Spoken_5__c, Language_5_Proficiency__c, Language_Spoken_6__c, Language_6_Proficiency__c
@@ -62,7 +62,7 @@ public class ContactDirectoryController {
         if (isTokenValid()) {
             String searchString = '%' + this.empSearchName + '%';
             this.empList = [SELECT Id, Name, Email_Address__c, Skype_ID__c, Direct_Manager__c, Direct_Manager_Lookup__c, Direct_Manager_Lookup__r.Name,
-                            Business_Unit__c, Sub_Unit__c, Entity__c, Personal_Phone_Number__c, Title__c,
+                            Division__c, Sub_Division__c, Entity__c, Personal_Phone_Number__c, Title__c,
                             Languages_Spoken__c, Language_1_Proficiency__c, Language_Spoken_2__c, Language_2_Proficiency__c,
                             Language_Spoken_3__c, Language_3_Proficiency__c, Language_Spoken_4__c, Language_4_Proficiency__c,
                             Language_Spoken_5__c, Language_5_Proficiency__c, Language_Spoken_6__c, Language_6_Proficiency__c

@@ -262,7 +262,7 @@
                     <apex:param name="day" assignTo="{!day}" value=""/>
                     <apex:param name="totalHours" assignTo="{!totalHoursOfContract}" value=""/>
                     <apex:param name="name" assignTo="{!contractName}" value=""/>
-                    <!-- 	 <apex:param name="contractId" assignTo="{!contractId}" value=""/> -->
+                    <!--     <apex:param name="contractId" assignTo="{!contractId}" value=""/> -->
                 </apex:actionFunction>
                 
                 
@@ -270,7 +270,7 @@
                 <apex:commandButton action="{!goToProjectListView}" value="Project List" id="projListButton" />
                 <apex:commandButton action="{!goToCSVUploadView}" value="CSV File Upload" id="uploadButton" />
                 <apex:commandButton action="{!goToEmployeeViewFromTimeCardView}" value="Employee View" id="backButton" />
-                &nbsp;&nbsp;&nbsp;<a class="btn" style="text-decoration:none;" href="apex/FTE_Download_File?employeeId={!employeeId}&month={!exportMonth}" target="_blank">Download CSV</a>
+                &nbsp;&nbsp;&nbsp;<a class="btn" style="text-decoration:none;" href="apex/FTE_Download_File?employeeId={!employeeId}&month={!exportMonth}&fteyear={!fteYear}" target="_blank">Download CSV</a>
             </apex:outputPanel>
         </apex:form>
     </apex:pageBlock>

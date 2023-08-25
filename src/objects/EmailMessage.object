@@ -5,7 +5,27 @@
         <type>Default</type>
     </actionOverrides>
     <actionOverrides>
+        <actionName>CancelEdit</actionName>
+        <formFactor>Large</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>CancelEdit</actionName>
+        <formFactor>Small</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
         <actionName>Delete</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Delete</actionName>
+        <formFactor>Large</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Delete</actionName>
+        <formFactor>Small</formFactor>
         <type>Default</type>
     </actionOverrides>
     <actionOverrides>
@@ -13,7 +33,27 @@
         <type>Default</type>
     </actionOverrides>
     <actionOverrides>
+        <actionName>Edit</actionName>
+        <formFactor>Large</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Edit</actionName>
+        <formFactor>Small</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
         <actionName>List</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>List</actionName>
+        <formFactor>Large</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>List</actionName>
+        <formFactor>Small</formFactor>
         <type>Default</type>
     </actionOverrides>
     <actionOverrides>
@@ -21,16 +61,60 @@
         <type>Default</type>
     </actionOverrides>
     <actionOverrides>
+        <actionName>SaveEdit</actionName>
+        <formFactor>Large</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>SaveEdit</actionName>
+        <formFactor>Small</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
         <actionName>View</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>View</actionName>
+        <formFactor>Large</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>View</actionName>
+        <formFactor>Small</formFactor>
         <type>Default</type>
     </actionOverrides>
     <compactLayoutAssignment>SYSTEM</compactLayoutAssignment>
     <enableFeeds>false</enableFeeds>
+    <searchLayouts>
+        <customTabListAdditionalFields>Status</customTabListAdditionalFields>
+        <customTabListAdditionalFields>HasAttachment</customTabListAdditionalFields>
+        <customTabListAdditionalFields>Address</customTabListAdditionalFields>
+        <customTabListAdditionalFields>Subject</customTabListAdditionalFields>
+        <customTabListAdditionalFields>MessageDate</customTabListAdditionalFields>
+        <lookupDialogsAdditionalFields>Status</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>HasAttachment</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>Address</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>Subject</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>MessageDate</lookupDialogsAdditionalFields>
+        <lookupPhoneDialogsAdditionalFields>Status</lookupPhoneDialogsAdditionalFields>
+        <lookupPhoneDialogsAdditionalFields>HasAttachment</lookupPhoneDialogsAdditionalFields>
+        <lookupPhoneDialogsAdditionalFields>Address</lookupPhoneDialogsAdditionalFields>
+        <lookupPhoneDialogsAdditionalFields>Subject</lookupPhoneDialogsAdditionalFields>
+        <lookupPhoneDialogsAdditionalFields>MessageDate</lookupPhoneDialogsAdditionalFields>
+        <searchResultsAdditionalFields>FromName</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>ToAddress</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>Subject</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>MessageDate</searchResultsAdditionalFields>
+    </searchLayouts>
     <fields>
         <fullName>BccAddress</fullName>
     </fields>
     <fields>
         <fullName>CcAddress</fullName>
+    </fields>
+    <fields>
+        <fullName>FirstOpenedDate</fullName>
     </fields>
     <fields>
         <fullName>FromAddress</fullName>
@@ -55,6 +139,9 @@
     </fields>
     <fields>
         <fullName>IsPrivateDraft</fullName>
+    </fields>
+    <fields>
+        <fullName>LastOpenedDate</fullName>
     </fields>
     <fields>
         <fullName>MessageDate</fullName>
@@ -85,25 +172,4 @@
     <fields>
         <fullName>ValidatedFromAddress</fullName>
     </fields>
-    <searchLayouts>
-        <customTabListAdditionalFields>Status</customTabListAdditionalFields>
-        <customTabListAdditionalFields>HasAttachment</customTabListAdditionalFields>
-        <customTabListAdditionalFields>Address</customTabListAdditionalFields>
-        <customTabListAdditionalFields>Subject</customTabListAdditionalFields>
-        <customTabListAdditionalFields>MessageDate</customTabListAdditionalFields>
-        <lookupDialogsAdditionalFields>Status</lookupDialogsAdditionalFields>
-        <lookupDialogsAdditionalFields>HasAttachment</lookupDialogsAdditionalFields>
-        <lookupDialogsAdditionalFields>Address</lookupDialogsAdditionalFields>
-        <lookupDialogsAdditionalFields>Subject</lookupDialogsAdditionalFields>
-        <lookupDialogsAdditionalFields>MessageDate</lookupDialogsAdditionalFields>
-        <lookupPhoneDialogsAdditionalFields>Status</lookupPhoneDialogsAdditionalFields>
-        <lookupPhoneDialogsAdditionalFields>HasAttachment</lookupPhoneDialogsAdditionalFields>
-        <lookupPhoneDialogsAdditionalFields>Address</lookupPhoneDialogsAdditionalFields>
-        <lookupPhoneDialogsAdditionalFields>Subject</lookupPhoneDialogsAdditionalFields>
-        <lookupPhoneDialogsAdditionalFields>MessageDate</lookupPhoneDialogsAdditionalFields>
-        <searchResultsAdditionalFields>FromName</searchResultsAdditionalFields>
-        <searchResultsAdditionalFields>ToAddress</searchResultsAdditionalFields>
-        <searchResultsAdditionalFields>Subject</searchResultsAdditionalFields>
-        <searchResultsAdditionalFields>MessageDate</searchResultsAdditionalFields>
-    </searchLayouts>
 </CustomObject>

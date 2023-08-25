@@ -8,6 +8,7 @@ public class FTEEmployeeController extends FTEController {
 
     public Id contractId { get; set;}
     public Integer fteYear { get; set;}
+    public Integer exportYear { get; set;}
     public Integer exportMonth { get; set;}
     public SFDC_Employee__c employee { get; set;}
 
@@ -86,8 +87,11 @@ public class FTEEmployeeController extends FTEController {
         PageReference pageRef = null;
         pageRef = Page.FTE_Time_Card_View;
         pageref.getParameters().put('employeeId', this.employeeId);
-        pageref.getParameters().put('fteYear', String.valueOf(this.fteYear));
+        pageref.getParameters().put('fteYear', String.valueOf(this.exportYear));
+     //   pageref.getParameters().put('exportYear', String.valueOf(this.exportYear));
+        system.debug('@@String.valueOf(this.fteYear)' + String.valueOf(this.exportYear));
         pageref.getParameters().put('month', String.valueOf(this.exportMonth));
+        system.debug('@@String.valueOf(this.exportMonth)' + String.valueOf(this.exportMonth));
         return pageRef;
     }
 
@@ -115,7 +119,7 @@ public class FTEEmployeeController extends FTEController {
             this.assignViewError = true;
             this.fteHoursMax = 0;
         }
-
+/***** Condition **/
         this.fteContracts = [SELECT Id, Name FROM DContract__c WHERE FTE_Tracker__c = 'Yes' ORDER BY Name];
         this.fteContractsOptions = new List<SelectOption>();
         for (DContract__c con : this.fteContracts) {
@@ -182,8 +186,9 @@ public class FTEEmployeeController extends FTEController {
             if (this.fteHoursMax < hoursToUnassign) {
                 hoursToUnassign = this.fteHoursMax;
             }
+            FTEUploadData data = new FTEUploadData();
             // this.fteTimeManager.moveTimeToUnassigned(hoursToUnassign, this.employeeMonth + 1, this.contractId);
-            this.fteTimeManager.updateWorkcard((-1) * fteDaysdecimal, this.employeeMonth + 1, this.contractId);
+            this.fteTimeManager.updateWorkcard(0, (-1) * fteDaysdecimal, this.employeeMonth + 1,data , this.contractId, false);
             // moveHoursInFTEWorkCard((-1) * fteDaysdecimal, this.employeeMonth + 1, this.employee.Id);
         } catch (Exception e) {
             this.assignViewError = true;
@@ -203,14 +208,12 @@ public class FTEEmployeeController extends FTEController {
             this.assignViewError = true;
             return;
         }
-
         Decimal fteDaysdecimal = this.fteDays != null && this.fteDays != '' ? Decimal.valueOf(this.fteDays) : 0;
         if (this.fteDaysMax < fteDaysdecimal || fteDaysdecimal < 0) {
             ApexPages.addMessage(new ApexPages.message(ApexPages.severity.ERROR, 'Too much hours to assign / hours cannot be negative'));
             this.assignViewError = true;
             return;
         }
-
         if (String.isEmpty(this.selectedFteContract)) {
             ApexPages.addMessage(new ApexPages.message(ApexPages.severity.ERROR, 'Cannot find FTE Contract'));
             this.assignViewError = true;
@@ -228,8 +231,11 @@ public class FTEEmployeeController extends FTEController {
             if (this.fteHoursMax < hoursToAssign) {
                 hoursToAssign = this.fteHoursMax;
             }
+            
+            System.debug('--' + fteDaysdecimal);
             // this.fteTimeManager.moveTimeToAssigned(hoursToAssign, this.employeeMonth + 1, this.selectedFteContract);
-            this.fteTimeManager.updateWorkcard(fteDaysdecimal, this.employeeMonth + 1, this.selectedFteContract);         
+               FTEUploadData data = new FTEUploadData();
+            this.fteTimeManager.updateWorkcard(0, fteDaysdecimal, this.employeeMonth + 1, data, this.selectedFteContract, false);         
             // moveHoursInFTEWorkCard(fteDaysdecimal, this.employeeMonth + 1, this.employee.Id);
         } catch (Exception e) {
             this.assignViewError = true;

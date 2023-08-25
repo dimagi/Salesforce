@@ -5,7 +5,27 @@
         <type>Default</type>
     </actionOverrides>
     <actionOverrides>
+        <actionName>CancelEdit</actionName>
+        <formFactor>Large</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>CancelEdit</actionName>
+        <formFactor>Small</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
         <actionName>ComposeGmail</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>ComposeGmail</actionName>
+        <formFactor>Large</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>ComposeGmail</actionName>
+        <formFactor>Small</formFactor>
         <type>Default</type>
     </actionOverrides>
     <actionOverrides>
@@ -13,7 +33,27 @@
         <type>Default</type>
     </actionOverrides>
     <actionOverrides>
+        <actionName>LogCall</actionName>
+        <formFactor>Large</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>LogCall</actionName>
+        <formFactor>Small</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
         <actionName>MailMerge</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>MailMerge</actionName>
+        <formFactor>Large</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>MailMerge</actionName>
+        <formFactor>Small</formFactor>
         <type>Default</type>
     </actionOverrides>
     <actionOverrides>
@@ -21,7 +61,27 @@
         <type>Default</type>
     </actionOverrides>
     <actionOverrides>
+        <actionName>RequestUpdate</actionName>
+        <formFactor>Large</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>RequestUpdate</actionName>
+        <formFactor>Small</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
         <actionName>SaveEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>SaveEdit</actionName>
+        <formFactor>Large</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>SaveEdit</actionName>
+        <formFactor>Small</formFactor>
         <type>Default</type>
     </actionOverrides>
     <actionOverrides>
@@ -29,10 +89,51 @@
         <type>Default</type>
     </actionOverrides>
     <actionOverrides>
+        <actionName>SendEmail</actionName>
+        <formFactor>Large</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>SendEmail</actionName>
+        <formFactor>Small</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
         <actionName>ViewAll</actionName>
         <type>Default</type>
     </actionOverrides>
+    <actionOverrides>
+        <actionName>ViewAll</actionName>
+        <formFactor>Large</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>ViewAll</actionName>
+        <formFactor>Small</formFactor>
+        <type>Default</type>
+    </actionOverrides>
     <enableFeeds>false</enableFeeds>
+    <searchLayouts>
+        <searchResultsAdditionalFields>TASK.SUBJECT</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>TASK.WHO_NAME</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>TASK.WHAT_NAME</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>TASK.DUE_DATE</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>CORE.USERS.ALIAS</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>TASK.TYPE</searchResultsAdditionalFields>
+    </searchLayouts>
+    <sharingModel>ControlledByParent</sharingModel>
+    <fields>
+        <fullName>activitycount__c</fullName>
+        <externalId>false</externalId>
+        <formula>1</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>activitycount</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
     <fields>
         <fullName>ActivitySubtype__c</fullName>
         <externalId>false</externalId>
@@ -45,46 +146,77 @@
                 <value>
                     <fullName>Call - exploratory</fullName>
                     <default>true</default>
+                    <label>Call - exploratory</label>
                 </value>
                 <value>
                     <fullName>Call - qualifying follow-up</fullName>
                     <default>false</default>
+                    <label>Call - qualifying follow-up</label>
                 </value>
                 <value>
                     <fullName>Call - exploratory no-show</fullName>
                     <default>false</default>
+                    <label>Call - exploratory no-show</label>
                 </value>
                 <value>
                     <fullName>Call - opportunity follow-up</fullName>
                     <default>false</default>
+                    <label>Call - opportunity follow-up</label>
                 </value>
                 <value>
                     <fullName>Call - follow-up no show</fullName>
                     <default>false</default>
+                    <label>Call - follow-up no show</label>
+                </value>
+                <value>
+                    <fullName>Call - KAM</fullName>
+                    <default>false</default>
+                    <label>Call - KAM</label>
                 </value>
                 <value>
                     <fullName>Call - Support</fullName>
                     <default>false</default>
+                    <label>Call - Support</label>
                 </value>
                 <value>
                     <fullName>Call - Unscheduled Exploratory</fullName>
                     <default>false</default>
+                    <label>Call - Unscheduled Exploratory</label>
                 </value>
                 <value>
                     <fullName>Call - No call required (use this for exceptions that skip the call process)</fullName>
                     <default>false</default>
+                    <label>Call - No call required (use this for exceptions that skip the call process)</label>
                 </value>
                 <value>
                     <fullName>Call - customer success (post-closing)</fullName>
                     <default>false</default>
+                    <label>Call - customer success (post-closing)</label>
                 </value>
                 <value>
                     <fullName>Call - strategic partner follow-up (not necessarily an opp)</fullName>
                     <default>false</default>
+                    <label>Call - strategic partner follow-up (not necessarily an opp)</label>
                 </value>
                 <value>
                     <fullName>Call - strategic partner follow-up - no-show</fullName>
                     <default>false</default>
+                    <label>Call - strategic partner follow-up - no-show</label>
+                </value>
+                <value>
+                    <fullName>Call - ABS</fullName>
+                    <default>false</default>
+                    <label>Call - ABS</label>
+                </value>
+                <value>
+                    <fullName>Call - High lead score - exploratory</fullName>
+                    <default>false</default>
+                    <label>Call - High lead score - exploratory</label>
+                </value>
+                <value>
+                    <fullName>Call - High lead score - exploratory no-show</fullName>
+                    <default>false</default>
+                    <label>Call - High lead score - exploratory no-show</label>
                 </value>
             </valueSetDefinition>
         </valueSet>
@@ -129,67 +261,91 @@
                     <fullName>1 Converted to Self-start opp</fullName>
                     <color>#A845DC</color>
                     <default>false</default>
+                    <label>1 Converted to Self-start opp</label>
                 </value>
                 <value>
                     <fullName>2 Converted to Enterprise opp</fullName>
                     <color>#F3D904</color>
                     <default>false</default>
+                    <label>2 Converted to Enterprise opp</label>
                 </value>
                 <value>
                     <fullName>3 Converted to Services opp</fullName>
                     <color>#0B6FCE</color>
                     <default>false</default>
+                    <label>3 Converted to Services opp</label>
                 </value>
                 <value>
                     <fullName>4 Existing opportunity - stage change</fullName>
                     <default>false</default>
+                    <label>4 Existing opportunity - stage change</label>
                 </value>
                 <value>
                     <fullName>5 Existing opportunity - no change</fullName>
                     <default>false</default>
+                    <label>5 Existing opportunity - no change</label>
                 </value>
                 <value>
                     <fullName>6 Need follow-up call - Unable to qualify</fullName>
                     <default>false</default>
+                    <label>6 Need follow-up call - Unable to qualify</label>
                 </value>
                 <value>
                     <fullName>7 Passive &amp; Friendly - self-start</fullName>
                     <default>false</default>
+                    <label>7 Passive &amp; Friendly - self-start</label>
                 </value>
                 <value>
                     <fullName>8 Passive &amp; Friendly - decided to use other solution</fullName>
                     <default>false</default>
+                    <label>8 Passive &amp; Friendly - decided to use other solution</label>
                 </value>
                 <value>
                     <fullName>9 Passive &amp; Friendly - partner program</fullName>
                     <default>false</default>
+                    <label>9 Passive &amp; Friendly - partner program</label>
                 </value>
                 <value>
                     <fullName>10 Passive &amp; Friendly - no opp</fullName>
                     <default>false</default>
+                    <label>10 Passive &amp; Friendly - no opp</label>
                 </value>
                 <value>
                     <fullName>11 Archived &amp; Not Interested - hiring</fullName>
                     <default>false</default>
+                    <label>11 Archived &amp; Not Interested - hiring</label>
                 </value>
                 <value>
                     <fullName>12 Passive &amp; Friendly - existing client</fullName>
                     <default>false</default>
+                    <label>12 Passive &amp; Friendly - existing client</label>
                 </value>
                 <value>
                     <fullName>13 Archived &amp; Not Interested - Not a good fit / not what they expected</fullName>
                     <default>false</default>
+                    <label>13 Archived &amp; Not Interested - Not a good fit / not what they expected</label>
                 </value>
                 <value>
                     <fullName>14 Archived &amp; Not Interested - Competition</fullName>
                     <default>false</default>
+                    <label>14 Archived &amp; Not Interested - Competition</label>
                 </value>
                 <value>
                     <fullName>15 No-show</fullName>
                     <default>false</default>
+                    <label>15 No-show</label>
                 </value>
             </valueSetDefinition>
         </valueSet>
+    </fields>
+    <fields>
+        <fullName>Call_rating_notes__c</fullName>
+        <description>Call rating notes</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Call rating notes</inlineHelpText>
+        <label>Call rating - notes</label>
+        <required>false</required>
+        <type>TextArea</type>
     </fields>
     <fields>
         <fullName>Call_Rating__c</fullName>
@@ -206,159 +362,20 @@
                 <value>
                     <fullName>Good</fullName>
                     <default>false</default>
+                    <label>Good</label>
                 </value>
                 <value>
                     <fullName>Neutral</fullName>
                     <default>false</default>
+                    <label>Neutral</label>
                 </value>
                 <value>
                     <fullName>Bad</fullName>
                     <default>false</default>
+                    <label>Bad</label>
                 </value>
             </valueSetDefinition>
         </valueSet>
-    </fields>
-    <fields>
-        <fullName>Call_rating_notes__c</fullName>
-        <description>Call rating notes</description>
-        <externalId>false</externalId>
-        <inlineHelpText>Call rating notes</inlineHelpText>
-        <label>Call rating - notes</label>
-        <required>false</required>
-        <type>TextArea</type>
-    </fields>
-    <fields>
-        <fullName>Days_Overdue__c</fullName>
-        <description>The last modified date minus the completed date. Will be zero for uncompleted tasks, zero for tasks completed before or on time, and a positive number for the number of days last modified beyond the due date.</description>
-        <externalId>false</externalId>
-        <formula>ABS(DATEVALUE(LastModifiedDate) - ActivityDate)</formula>
-        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
-        <inlineHelpText>The last modified date minus the completed date. Will be blank for uncompleted tasks, zero for tasks completed before or on time, and a positive number for the number of days last modified beyond the due date.</inlineHelpText>
-        <label>Days Overdue</label>
-        <precision>18</precision>
-        <required>false</required>
-        <scale>0</scale>
-        <type>Number</type>
-        <unique>false</unique>
-    </fields>
-    <fields>
-        <fullName>Days_Since_Due_Date__c</fullName>
-        <externalId>false</externalId>
-        <formula>Today() - ActivityDate</formula>
-        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
-        <label>Days Since Due Date</label>
-        <precision>18</precision>
-        <required>false</required>
-        <scale>0</scale>
-        <type>Number</type>
-        <unique>false</unique>
-    </fields>
-    <fields>
-        <fullName>Meeting_Count__c</fullName>
-        <externalId>false</externalId>
-        <formula>IF(
-    OR(
-        CONTAINS(
-            LOWER(Subject),
-            &quot;call&quot;
-        ),
-        CONTAINS(
-            LOWER(Subject),
-            &quot;meeting&quot;
-        )
-    ),
-
-    1, 
-
-    NULL
-)</formula>
-        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
-        <label>Meeting Count</label>
-        <precision>18</precision>
-        <required>false</required>
-        <scale>2</scale>
-        <type>Number</type>
-        <unique>false</unique>
-    </fields>
-    <fields>
-        <fullName>ScheduleOnce__Cancel_reschedule_reason__c</fullName>
-        <deprecated>false</deprecated>
-        <description>The Cancel/reschedule reason field allows you to track the cancel/reschedule reason provided by the Customer when canceling or rescheduling an activity.</description>
-        <externalId>false</externalId>
-        <inlineHelpText>Cancellation or rescheduling reason provided by the Customer when canceling an activity.</inlineHelpText>
-        <label>Cancel/reschedule reason</label>
-        <required>false</required>
-        <type>TextArea</type>
-    </fields>
-    <fields>
-        <fullName>ScheduleOnce__Event_status__c</fullName>
-        <deprecated>false</deprecated>
-        <externalId>false</externalId>
-        <label>Event status</label>
-        <required>false</required>
-        <type>Picklist</type>
-        <valueSet>
-            <valueSetDefinition>
-                <sorted>false</sorted>
-                <value>
-                    <fullName>Canceled (rescheduled by Customer)</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>Canceled (reschedule requested by Owner)</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>Canceled by Customer</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>Canceled by Owner</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>Completed</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>No-show</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>Rescheduled by Customer</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>Rescheduled by Owner</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>Scheduled</fullName>
-                    <default>false</default>
-                </value>
-            </valueSetDefinition>
-        </valueSet>
-    </fields>
-    <fields>
-        <fullName>Snooze_Activity__c</fullName>
-        <description>Equals today&apos;s date</description>
-        <externalId>false</externalId>
-        <formula>Today()</formula>
-        <label>Snooze Activity</label>
-        <required>false</required>
-        <type>Date</type>
-    </fields>
-    <fields>
-        <fullName>activitycount__c</fullName>
-        <externalId>false</externalId>
-        <formula>1</formula>
-        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
-        <label>activitycount</label>
-        <precision>18</precision>
-        <required>false</required>
-        <scale>0</scale>
-        <type>Number</type>
-        <unique>false</unique>
     </fields>
     <fields>
         <fullName>cirrusadv__Created_by_Cirrus_Insight__c</fullName>
@@ -443,6 +460,15 @@
         <scale>0</scale>
         <type>Number</type>
         <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>cirrusadv__isTracked__c</fullName>
+        <defaultValue>false</defaultValue>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>Indicates that opens of this email will be tracked and reported by Cirrus Insight.</inlineHelpText>
+        <label>Tracked</label>
+        <type>Checkbox</type>
     </fields>
     <fields>
         <fullName>cirrusadv__Last_Clicked__c</fullName>
@@ -564,13 +590,30 @@
         <unique>false</unique>
     </fields>
     <fields>
-        <fullName>cirrusadv__isTracked__c</fullName>
-        <defaultValue>false</defaultValue>
-        <deprecated>false</deprecated>
+        <fullName>Days_Overdue__c</fullName>
+        <description>The last modified date minus the completed date. Will be zero for uncompleted tasks, zero for tasks completed before or on time, and a positive number for the number of days last modified beyond the due date.</description>
         <externalId>false</externalId>
-        <inlineHelpText>Indicates that opens of this email will be tracked and reported by Cirrus Insight.</inlineHelpText>
-        <label>Tracked</label>
-        <type>Checkbox</type>
+        <formula>ABS(DATEVALUE(LastModifiedDate) - ActivityDate)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <inlineHelpText>The last modified date minus the completed date. Will be blank for uncompleted tasks, zero for tasks completed before or on time, and a positive number for the number of days last modified beyond the due date.</inlineHelpText>
+        <label>Days Overdue</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Days_Since_Due_Date__c</fullName>
+        <externalId>false</externalId>
+        <formula>Today() - ActivityDate</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Days Since Due Date</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <type>Number</type>
+        <unique>false</unique>
     </fields>
     <fields>
         <fullName>is_exploratory_call__c</fullName>
@@ -583,6 +626,33 @@
         <precision>18</precision>
         <required>false</required>
         <scale>0</scale>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Meeting_Count__c</fullName>
+        <externalId>false</externalId>
+        <formula>IF(
+    OR(
+        CONTAINS(
+            LOWER(Subject),
+            &quot;call&quot;
+        ),
+        CONTAINS(
+            LOWER(Subject),
+            &quot;meeting&quot;
+        )
+    ),
+
+    1, 
+
+    NULL
+)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Meeting Count</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
         <type>Number</type>
         <unique>false</unique>
     </fields>
@@ -600,11 +670,83 @@
         <type>Number</type>
         <unique>false</unique>
     </fields>
-    <listViews>
-        <fullName>MyActivities</fullName>
-        <filterScope>Mine</filterScope>
-        <label>My Activities</label>
-    </listViews>
+    <fields>
+        <fullName>ScheduleOnce__Cancel_reschedule_reason__c</fullName>
+        <deprecated>false</deprecated>
+        <description>The Cancel/reschedule reason field allows you to track the cancel/reschedule reason provided by the Customer when canceling or rescheduling an activity.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Cancellation or rescheduling reason provided by the Customer when canceling an activity.</inlineHelpText>
+        <label>Cancel/reschedule reason</label>
+        <required>false</required>
+        <type>TextArea</type>
+    </fields>
+    <fields>
+        <fullName>ScheduleOnce__Event_status__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>Event status</label>
+        <required>false</required>
+        <type>Picklist</type>
+        <valueSet>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>Canceled (rescheduled by Customer)</fullName>
+                    <default>false</default>
+                    <label>Canceled (rescheduled by Customer)</label>
+                </value>
+                <value>
+                    <fullName>Canceled (reschedule requested by Owner)</fullName>
+                    <default>false</default>
+                    <label>Canceled (reschedule requested by Owner)</label>
+                </value>
+                <value>
+                    <fullName>Canceled by Customer</fullName>
+                    <default>false</default>
+                    <label>Canceled by Customer</label>
+                </value>
+                <value>
+                    <fullName>Canceled by Owner</fullName>
+                    <default>false</default>
+                    <label>Canceled by Owner</label>
+                </value>
+                <value>
+                    <fullName>Completed</fullName>
+                    <default>false</default>
+                    <label>Completed</label>
+                </value>
+                <value>
+                    <fullName>No-show</fullName>
+                    <default>false</default>
+                    <label>No-show</label>
+                </value>
+                <value>
+                    <fullName>Rescheduled by Customer</fullName>
+                    <default>false</default>
+                    <label>Rescheduled by Customer</label>
+                </value>
+                <value>
+                    <fullName>Rescheduled by Owner</fullName>
+                    <default>false</default>
+                    <label>Rescheduled by Owner</label>
+                </value>
+                <value>
+                    <fullName>Scheduled</fullName>
+                    <default>false</default>
+                    <label>Scheduled</label>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+    <fields>
+        <fullName>Snooze_Activity__c</fullName>
+        <description>Equals today&apos;s date</description>
+        <externalId>false</externalId>
+        <formula>Today()</formula>
+        <label>Snooze Activity</label>
+        <required>false</required>
+        <type>Date</type>
+    </fields>
     <listViews>
         <fullName>MyDelegatedActivities</fullName>
         <filterScope>Delegated</filterScope>
@@ -650,12 +792,4 @@
         </filters>
         <label>Upcoming Events</label>
     </listViews>
-    <searchLayouts>
-        <searchResultsAdditionalFields>TASK.SUBJECT</searchResultsAdditionalFields>
-        <searchResultsAdditionalFields>TASK.WHO_NAME</searchResultsAdditionalFields>
-        <searchResultsAdditionalFields>TASK.WHAT_NAME</searchResultsAdditionalFields>
-        <searchResultsAdditionalFields>TASK.DUE_DATE</searchResultsAdditionalFields>
-        <searchResultsAdditionalFields>CORE.USERS.ALIAS</searchResultsAdditionalFields>
-    </searchLayouts>
-    <sharingModel>ControlledByParent</sharingModel>
 </CustomObject>

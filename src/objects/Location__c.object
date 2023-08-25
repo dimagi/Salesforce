@@ -5,7 +5,27 @@
         <type>Default</type>
     </actionOverrides>
     <actionOverrides>
+        <actionName>Accept</actionName>
+        <formFactor>Large</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Accept</actionName>
+        <formFactor>Small</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
         <actionName>CancelEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>CancelEdit</actionName>
+        <formFactor>Large</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>CancelEdit</actionName>
+        <formFactor>Small</formFactor>
         <type>Default</type>
     </actionOverrides>
     <actionOverrides>
@@ -13,7 +33,27 @@
         <type>Default</type>
     </actionOverrides>
     <actionOverrides>
+        <actionName>Clone</actionName>
+        <formFactor>Large</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Clone</actionName>
+        <formFactor>Small</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
         <actionName>Delete</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Delete</actionName>
+        <formFactor>Large</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Delete</actionName>
+        <formFactor>Small</formFactor>
         <type>Default</type>
     </actionOverrides>
     <actionOverrides>
@@ -21,7 +61,27 @@
         <type>Default</type>
     </actionOverrides>
     <actionOverrides>
+        <actionName>Edit</actionName>
+        <formFactor>Large</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Edit</actionName>
+        <formFactor>Small</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
         <actionName>List</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>List</actionName>
+        <formFactor>Large</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>List</actionName>
+        <formFactor>Small</formFactor>
         <type>Default</type>
     </actionOverrides>
     <actionOverrides>
@@ -29,7 +89,27 @@
         <type>Default</type>
     </actionOverrides>
     <actionOverrides>
+        <actionName>New</actionName>
+        <formFactor>Large</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>New</actionName>
+        <formFactor>Small</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
         <actionName>SaveEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>SaveEdit</actionName>
+        <formFactor>Large</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>SaveEdit</actionName>
+        <formFactor>Small</formFactor>
         <type>Default</type>
     </actionOverrides>
     <actionOverrides>
@@ -37,7 +117,27 @@
         <type>Default</type>
     </actionOverrides>
     <actionOverrides>
+        <actionName>Tab</actionName>
+        <formFactor>Large</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Tab</actionName>
+        <formFactor>Small</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
         <actionName>View</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>View</actionName>
+        <formFactor>Large</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>View</actionName>
+        <formFactor>Small</formFactor>
         <type>Default</type>
     </actionOverrides>
     <allowInChatterGroups>false</allowInChatterGroups>
@@ -49,10 +149,38 @@
     <enableEnhancedLookup>true</enableEnhancedLookup>
     <enableFeeds>false</enableFeeds>
     <enableHistory>true</enableHistory>
+    <enableLicensing>false</enableLicensing>
     <enableReports>true</enableReports>
     <enableSearch>true</enableSearch>
     <enableSharing>true</enableSharing>
     <enableStreamingApi>true</enableStreamingApi>
+    <label>Location</label>
+    <nameField>
+        <label>Location Name</label>
+        <trackHistory>false</trackHistory>
+        <type>Text</type>
+    </nameField>
+    <pluralLabel>Locations</pluralLabel>
+    <searchLayouts>
+        <lookupDialogsAdditionalFields>Country__c</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>State__c</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>Sub_Location_1__c</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>Sub_Location_2__c</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>Geopoint__Latitude__s</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>Geopoint__Longitude__s</lookupDialogsAdditionalFields>
+        <lookupFilterFields>NAME</lookupFilterFields>
+        <lookupFilterFields>Country__c</lookupFilterFields>
+        <lookupFilterFields>State__c</lookupFilterFields>
+        <lookupFilterFields>Sub_Location_1__c</lookupFilterFields>
+        <lookupFilterFields>Sub_Location_2__c</lookupFilterFields>
+        <searchFilterFields>NAME</searchFilterFields>
+        <searchFilterFields>Country__c</searchFilterFields>
+        <searchFilterFields>State__c</searchFilterFields>
+        <searchFilterFields>Sub_Location_1__c</searchFilterFields>
+        <searchFilterFields>Sub_Location_2__c</searchFilterFields>
+    </searchLayouts>
+    <sharingModel>ReadWrite</sharingModel>
+    <visibility>Public</visibility>
     <fields>
         <fullName>CommCare_ID__c</fullName>
         <caseSensitive>false</caseSensitive>
@@ -92,6 +220,16 @@
         <type>Location</type>
     </fields>
     <fields>
+        <fullName>hidden_project__c</fullName>
+        <description>Used to pass the project value to the New Location window when creating a location from the project.</description>
+        <externalId>false</externalId>
+        <label>Hidden Project Reference</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>TextArea</type>
+    </fields>
+    <fields>
         <fullName>State__c</fullName>
         <externalId>false</externalId>
         <inlineHelpText>This will be converted to a pick-list hopefully.</inlineHelpText>
@@ -121,17 +259,6 @@
         <trackTrending>false</trackTrending>
         <type>TextArea</type>
     </fields>
-    <fields>
-        <fullName>hidden_project__c</fullName>
-        <description>Used to pass the project value to the New Location window when creating a location from the project.</description>
-        <externalId>false</externalId>
-        <label>Hidden Project Reference</label>
-        <required>false</required>
-        <trackHistory>false</trackHistory>
-        <trackTrending>false</trackTrending>
-        <type>TextArea</type>
-    </fields>
-    <label>Location</label>
     <listViews>
         <fullName>All</fullName>
         <columns>NAME</columns>
@@ -140,29 +267,4 @@
         <filterScope>Everything</filterScope>
         <label>All</label>
     </listViews>
-    <nameField>
-        <label>Location Name</label>
-        <trackHistory>false</trackHistory>
-        <type>Text</type>
-    </nameField>
-    <pluralLabel>Locations</pluralLabel>
-    <searchLayouts>
-        <lookupDialogsAdditionalFields>Country__c</lookupDialogsAdditionalFields>
-        <lookupDialogsAdditionalFields>State__c</lookupDialogsAdditionalFields>
-        <lookupDialogsAdditionalFields>Sub_Location_1__c</lookupDialogsAdditionalFields>
-        <lookupDialogsAdditionalFields>Sub_Location_2__c</lookupDialogsAdditionalFields>
-        <lookupDialogsAdditionalFields>0BCb00000008OPp</lookupDialogsAdditionalFields>
-        <lookupDialogsAdditionalFields>0BCb00000008OPq</lookupDialogsAdditionalFields>
-        <lookupFilterFields>NAME</lookupFilterFields>
-        <lookupFilterFields>Country__c</lookupFilterFields>
-        <lookupFilterFields>State__c</lookupFilterFields>
-        <lookupFilterFields>Sub_Location_1__c</lookupFilterFields>
-        <lookupFilterFields>Sub_Location_2__c</lookupFilterFields>
-        <searchFilterFields>NAME</searchFilterFields>
-        <searchFilterFields>Country__c</searchFilterFields>
-        <searchFilterFields>State__c</searchFilterFields>
-        <searchFilterFields>Sub_Location_1__c</searchFilterFields>
-        <searchFilterFields>Sub_Location_2__c</searchFilterFields>
-    </searchLayouts>
-    <sharingModel>ReadWrite</sharingModel>
 </CustomObject>

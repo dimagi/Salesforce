@@ -58,6 +58,7 @@
                     <apex:column headerValue="Contact Name">
                         <apex:outputlink value="/{!cont.id}" >{!cont.Name}</apex:outputlink>
                     </apex:column>
+                    <apex:column headerValue="Last Activity Date" value="{!cont.LastActivityDate}"/>
                     <apex:column headerValue="Email" value="{!cont.Email}"/>
                     <apex:column headerValue="Title" value="{!cont.Title}"/>
                     <apex:column headerValue="Country" value="{!cont.Country__c}"/>

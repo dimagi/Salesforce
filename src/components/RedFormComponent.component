@@ -37,11 +37,13 @@
         <apex:pageBlockSection title="Emergency Contacts" columns="1">
             <div>
                 <span>
-                    <i>Please provide details of two people that can be contacted in the event of an emergency
-                    (they may be your 'Next of Kin')</i>
+                    <i>Please provide details of two people that can be contacted in the event of an emergency. If possible, please add at least one contact who can make decisions about your care in the event that you are unable to do so. For more detail see the
+                        <apex:outputLink target="_blank" value="https://confluence.dimagi.com/login.action?os_destination=%2Fpages%2Fviewpage.action%3FspaceKey%3Dinternal%26title%3DRecord%2Bof%2BEmergency%2BData%2B%2528RED%2529%2BForm&permissionViolation=true">
+                            <i>RED Form Wiki.</i>
+                        </apex:outputLink></i>
                 </span>
             </div>
-            <apex:pageBlockSection title="Emergency Contact" columns="1" collapsible="false">
+            <apex:pageBlockSection title="Primary Emergency Contact" columns="1" collapsible="false">
                 <apex:inputField value="{!redForm.Emergency_Contact__c}"/>
                 <apex:inputField value="{!redForm.Emergency_Contact_Relationship__c}"/>
                 <apex:inputField value="{!redForm.Emergency_Contact_Phone__c}"/>
@@ -51,11 +53,11 @@
                     <apex:inputField id="em_contact_residence_1" value="{!redForm.Emergency_Contact_Country_of_Residence__c}"/>
                 </apex:pageBlockSectionItem>
                 <apex:pageBlockSectionItem >
-                    <apex:outputLabel value="Is this your next of kin?" for="em_contact_kin_1" />
+                    <apex:outputLabel value="Can this person make medical and safety decisions on your behalf if necessary?" for="em_contact_kin_1" />
                     <apex:inputField id="em_contact_kin_1" value="{!redForm.Emergency_Contact_next_of_kin__c}" />
                 </apex:pageBlockSectionItem>
             </apex:pageBlockSection>
-            <apex:pageBlockSection title="Local Emergency Contact" columns="1" collapsible="false">
+            <apex:pageBlockSection title="Secondary Emergency Contact" columns="1" collapsible="false">
                 <apex:pageBlockSectionItem >
                     <apex:outputLabel value="Emergency Contact" for="em_contact_name_2" />
                     <apex:inputField id="em_contact_name_2" value="{!redForm.Local_Emergency_Contact__c}"/>
@@ -77,7 +79,7 @@
                     <apex:inputField id="em_contact_residence_2" value="{!redForm.Local_Emerg_Cont_Country_of_Residence__c}"/>
                 </apex:pageBlockSectionItem>
                 <apex:pageBlockSectionItem >
-                    <apex:outputLabel value="Is this your next of kin?" for="em_contact_kin_2" />
+                    <apex:outputLabel value="Can this person make medical and safety decisions on your behalf if necessary?" for="em_contact_kin_2" />
                     <apex:inputField id="em_contact_kin_2" value="{!redForm.Local_Emergency_Contact_next_of_kin__c}" />
                 </apex:pageBlockSectionItem>
             </apex:pageBlockSection>

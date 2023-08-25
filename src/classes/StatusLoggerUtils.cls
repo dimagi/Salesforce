@@ -21,7 +21,8 @@ public class StatusLoggerUtils {
     public static final String AEE_LOGGER = 'AGGREGATE_EXECUTION_EFFICIENCY_LOGGER';
     public static final String CASE_CREATE_LOGGER = 'SF_FB_CASE_LOGGER';
     public static final String FOGBUGZ_SYNC_LOGGER = 'FOGBUGZ_SYNC_LOGGER';
-
+    public static final String CONTRACT_ALL_TIME_INCOME_LOGGER = 'CONTRACT_ALL_TIME_INCOME_LOGGER';
+    public static final String CLOCKIFY_LOGGER = 'CLOCKIFY_LOGGER';
     /**
      * Logs INFO row for given log name.
      */

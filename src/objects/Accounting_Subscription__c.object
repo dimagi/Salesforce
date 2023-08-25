@@ -5,7 +5,27 @@
         <type>Default</type>
     </actionOverrides>
     <actionOverrides>
+        <actionName>Accept</actionName>
+        <formFactor>Large</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Accept</actionName>
+        <formFactor>Small</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
         <actionName>CancelEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>CancelEdit</actionName>
+        <formFactor>Large</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>CancelEdit</actionName>
+        <formFactor>Small</formFactor>
         <type>Default</type>
     </actionOverrides>
     <actionOverrides>
@@ -13,7 +33,27 @@
         <type>Default</type>
     </actionOverrides>
     <actionOverrides>
+        <actionName>Clone</actionName>
+        <formFactor>Large</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Clone</actionName>
+        <formFactor>Small</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
         <actionName>Delete</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Delete</actionName>
+        <formFactor>Large</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Delete</actionName>
+        <formFactor>Small</formFactor>
         <type>Default</type>
     </actionOverrides>
     <actionOverrides>
@@ -21,7 +61,27 @@
         <type>Default</type>
     </actionOverrides>
     <actionOverrides>
+        <actionName>Edit</actionName>
+        <formFactor>Large</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Edit</actionName>
+        <formFactor>Small</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
         <actionName>List</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>List</actionName>
+        <formFactor>Large</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>List</actionName>
+        <formFactor>Small</formFactor>
         <type>Default</type>
     </actionOverrides>
     <actionOverrides>
@@ -29,7 +89,27 @@
         <type>Default</type>
     </actionOverrides>
     <actionOverrides>
+        <actionName>New</actionName>
+        <formFactor>Large</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>New</actionName>
+        <formFactor>Small</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
         <actionName>SaveEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>SaveEdit</actionName>
+        <formFactor>Large</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>SaveEdit</actionName>
+        <formFactor>Small</formFactor>
         <type>Default</type>
     </actionOverrides>
     <actionOverrides>
@@ -37,7 +117,27 @@
         <type>Default</type>
     </actionOverrides>
     <actionOverrides>
+        <actionName>Tab</actionName>
+        <formFactor>Large</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Tab</actionName>
+        <formFactor>Small</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
         <actionName>View</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>View</actionName>
+        <formFactor>Large</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>View</actionName>
+        <formFactor>Small</formFactor>
         <type>Default</type>
     </actionOverrides>
     <allowInChatterGroups>false</allowInChatterGroups>
@@ -47,10 +147,60 @@
     <enableBulkApi>true</enableBulkApi>
     <enableFeeds>false</enableFeeds>
     <enableHistory>true</enableHistory>
+    <enableLicensing>false</enableLicensing>
     <enableReports>true</enableReports>
     <enableSearch>true</enableSearch>
     <enableSharing>true</enableSharing>
     <enableStreamingApi>true</enableStreamingApi>
+    <label>Accounting Subscription</label>
+    <nameField>
+        <displayFormat>AS-{00000}</displayFormat>
+        <label>Accounting Subscription Name</label>
+        <trackHistory>false</trackHistory>
+        <type>AutoNumber</type>
+    </nameField>
+    <pluralLabel>Accounting Subscriptions</pluralLabel>
+    <searchLayouts></searchLayouts>
+    <sharingModel>ReadWrite</sharingModel>
+    <visibility>Public</visibility>
+    <fields>
+        <fullName>accounting_softwareplan_name__c</fullName>
+        <externalId>false</externalId>
+        <formula>plan_version__r.Accounting_SoftwarePlan__r.Name</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Software Plan Name</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>accounting_software_monthly_fee__c</fullName>
+        <externalId>false</externalId>
+        <formula>plan_version__r.Software_Product_Rate__r.monthly_fee__c</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Monthly fee</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>Accounting_subscriber_domain__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <externalId>false</externalId>
+        <label>Domain</label>
+        <referenceTo>Domain__c</referenceTo>
+        <relationshipLabel>Accounting Subscriptions</relationshipLabel>
+        <relationshipName>Accounting_Subscriptions</relationshipName>
+        <required>false</required>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
     <fields>
         <fullName>Accounting_Subscriber__c</fullName>
         <deleteConstraint>SetNull</deleteConstraint>
@@ -65,11 +215,11 @@
         <type>Lookup</type>
     </fields>
     <fields>
-        <fullName>Accounting_subscriber_domain__c</fullName>
+        <fullName>account__c</fullName>
         <deleteConstraint>SetNull</deleteConstraint>
         <externalId>false</externalId>
-        <label>Domain</label>
-        <referenceTo>Domain__c</referenceTo>
+        <label>account</label>
+        <referenceTo>Accounting_BillingAccount__c</referenceTo>
         <relationshipLabel>Accounting Subscriptions</relationshipLabel>
         <relationshipName>Accounting_Subscriptions</relationshipName>
         <required>false</required>
@@ -78,15 +228,25 @@
         <type>Lookup</type>
     </fields>
     <fields>
-        <fullName>Churn_risk__c</fullName>
+        <fullName>auto_generate_credits__c</fullName>
         <defaultValue>false</defaultValue>
-        <description>Tick that box if you already know that this accounting subscription is likely going to churn in coming months. Please qualify the churn risk in text box below</description>
         <externalId>false</externalId>
-        <inlineHelpText>Tick that box if you already know that this accounting subscription is likely going to churn in coming months. Please qualify the churn risk in text box below</inlineHelpText>
-        <label>Churn risk</label>
+        <label>auto_generate_credits</label>
         <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Billing_Account_Name__c</fullName>
+        <externalId>false</externalId>
+        <formula>account__r.Name</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Billing Account Name</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
     </fields>
     <fields>
         <fullName>Churn_risk_explanation__c</fullName>
@@ -100,10 +260,85 @@
         <type>TextArea</type>
     </fields>
     <fields>
+        <fullName>Churn_risk__c</fullName>
+        <defaultValue>false</defaultValue>
+        <description>Tick that box if you already know that this accounting subscription is likely going to churn in coming months. Please qualify the churn risk in text box below</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Tick that box if you already know that this accounting subscription is likely going to churn in coming months. Please qualify the churn risk in text box below</inlineHelpText>
+        <label>Churn risk</label>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Client_Contact_Email__c</fullName>
+        <description>Billing Contact from associated Billing Account</description>
+        <externalId>false</externalId>
+        <formula>account__r.BillingContact__r.emails__c</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <inlineHelpText>Billing Contact from associated Billing Account</inlineHelpText>
+        <label>Client Contact Email</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
         <fullName>Created_By__c</fullName>
         <externalId>false</externalId>
         <label>Created By</label>
         <length>255</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>date_created__c</fullName>
+        <externalId>false</externalId>
+        <label>date_created</label>
+        <required>false</required>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>DateTime</type>
+    </fields>
+    <fields>
+        <fullName>date_delay_invoicing__c</fullName>
+        <externalId>false</externalId>
+        <label>date_delay_invoicing</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>date_end__c</fullName>
+        <externalId>false</externalId>
+        <label>date_end</label>
+        <required>false</required>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>date_start__c</fullName>
+        <externalId>false</externalId>
+        <label>date_start</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>Dimagi_Contact_Email__c</fullName>
+        <description>Dimagi Contact from associated Billing Account</description>
+        <externalId>false</externalId>
+        <formula>Dimagi_Contact__c</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <inlineHelpText>Dimagi Contact from associated Billing Account</inlineHelpText>
+        <label>Dimagi Contact Email</label>
         <required>false</required>
         <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
@@ -122,10 +357,103 @@
         <unique>false</unique>
     </fields>
     <fields>
+        <fullName>do_not_invoice__c</fullName>
+        <defaultValue>false</defaultValue>
+        <externalId>false</externalId>
+        <label>do_not_invoice</label>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Exclude_from_downgrade_report__c</fullName>
+        <defaultValue>false</defaultValue>
+        <description>A field that is marked to exclude any paused subscriptions from the project space downgrade report in case the project space dowgnraded, reupgraded, downgraded again and created duplicate pause records.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>CS/ Sales-- tick this box if this paused subscription is not the correct one to show on the project space downgrade report.</inlineHelpText>
+        <label>Exclude from downgrade report</label>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>funding_source__c</fullName>
+        <externalId>false</externalId>
+        <label>Funding source</label>
+        <length>255</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>id__c</fullName>
+        <externalId>true</externalId>
+        <label>id</label>
+        <length>255</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>is_active__c</fullName>
+        <defaultValue>false</defaultValue>
+        <externalId>false</externalId>
+        <label>is_active</label>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>is_hidden_to_ops__c</fullName>
+        <defaultValue>false</defaultValue>
+        <externalId>false</externalId>
+        <label>Is hidden to ops</label>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Is_Key_Account__c</fullName>
+        <description>Lookup of whether the associated SF Account is a key account</description>
+        <externalId>false</externalId>
+        <formula>Accounting_subscriber_domain__r.Is_SF_Account_Key_Account__c</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <inlineHelpText>Is the associated SF Account a Key Account?</inlineHelpText>
+        <label>Is Key Account?</label>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>is_trial__c</fullName>
+        <defaultValue>false</defaultValue>
+        <externalId>false</externalId>
+        <label>is_trial</label>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
         <fullName>Justify_why_Skip_Auto_Downgrade__c</fullName>
         <externalId>false</externalId>
         <label>Justify why &quot;Skip Auto Downgrade&quot;</label>
         <length>255</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Key_Account_Manager__c</fullName>
+        <externalId>false</externalId>
+        <formula>Accounting_subscriber_domain__r.Account__r.Key_Account_Manager__r.Name</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Key Account Manager</label>
         <required>false</required>
         <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
@@ -192,17 +520,44 @@
                 <value>
                     <fullName>Yes</fullName>
                     <default>false</default>
+                    <label>Yes</label>
                 </value>
                 <value>
                     <fullName>No</fullName>
                     <default>false</default>
+                    <label>No</label>
                 </value>
                 <value>
                     <fullName>Unsure</fullName>
                     <default>false</default>
+                    <label>Unsure</label>
                 </value>
             </valueSetDefinition>
         </valueSet>
+    </fields>
+    <fields>
+        <fullName>plan_version__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <externalId>false</externalId>
+        <label>plan_version</label>
+        <referenceTo>Accounting_SoftwarePlanVersion__c</referenceTo>
+        <relationshipLabel>Accounting Subscriptions</relationshipLabel>
+        <relationshipName>Accounting_Subscriptions</relationshipName>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>pro_bono_status__c</fullName>
+        <externalId>false</externalId>
+        <label>pro_bono_status</label>
+        <length>255</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
     </fields>
     <fields>
         <fullName>Real_Active_or_Paying__c</fullName>
@@ -224,6 +579,17 @@
         <type>Checkbox</type>
     </fields>
     <fields>
+        <fullName>salesforce_contract_id__c</fullName>
+        <externalId>false</externalId>
+        <label>salesforce_contract_id</label>
+        <length>255</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
         <fullName>Server_Name__c</fullName>
         <externalId>false</externalId>
         <label>Server Name</label>
@@ -237,13 +603,49 @@
                 <value>
                     <fullName>CommCareHQ</fullName>
                     <default>true</default>
+                    <label>CommCareHQ</label>
                 </value>
                 <value>
                     <fullName>CommCareHQ India</fullName>
                     <default>false</default>
+                    <label>CommCareHQ India</label>
                 </value>
             </valueSetDefinition>
         </valueSet>
+    </fields>
+    <fields>
+        <fullName>service_type__c</fullName>
+        <externalId>false</externalId>
+        <label>service_type</label>
+        <length>255</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>SF_Account__c</fullName>
+        <description>Name of associated SF Account</description>
+        <externalId>false</externalId>
+        <formula>Accounting_subscriber_domain__r.Account__r.Name</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <inlineHelpText>Name of associated SF Account based on domain</inlineHelpText>
+        <label>SF Account</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>skip_auto_downgrade__c</fullName>
+        <defaultValue>false</defaultValue>
+        <externalId>false</externalId>
+        <label>skip_auto_downgrade</label>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
     </fields>
     <fields>
         <fullName>Software_Plan_Edition__c</fullName>
@@ -272,210 +674,13 @@
         <type>Number</type>
         <unique>false</unique>
     </fields>
-    <fields>
-        <fullName>account__c</fullName>
-        <deleteConstraint>SetNull</deleteConstraint>
-        <externalId>false</externalId>
-        <label>account</label>
-        <referenceTo>Accounting_BillingAccount__c</referenceTo>
-        <relationshipLabel>Accounting Subscriptions</relationshipLabel>
-        <relationshipName>Accounting_Subscriptions</relationshipName>
-        <required>false</required>
-        <trackHistory>false</trackHistory>
-        <trackTrending>false</trackTrending>
-        <type>Lookup</type>
-    </fields>
-    <fields>
-        <fullName>accounting_software_monthly_fee__c</fullName>
-        <externalId>false</externalId>
-        <formula>plan_version__r.Software_Product_Rate__r.monthly_fee__c</formula>
-        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
-        <label>Monthly fee</label>
-        <precision>18</precision>
-        <required>false</required>
-        <scale>2</scale>
-        <trackHistory>false</trackHistory>
-        <trackTrending>false</trackTrending>
-        <type>Currency</type>
-    </fields>
-    <fields>
-        <fullName>accounting_softwareplan_name__c</fullName>
-        <externalId>false</externalId>
-        <formula>plan_version__r.Accounting_SoftwarePlan__r.Name</formula>
-        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
-        <label>Software Plan Name</label>
-        <required>false</required>
-        <trackHistory>false</trackHistory>
-        <trackTrending>false</trackTrending>
-        <type>Text</type>
-        <unique>false</unique>
-    </fields>
-    <fields>
-        <fullName>auto_generate_credits__c</fullName>
-        <defaultValue>false</defaultValue>
-        <externalId>false</externalId>
-        <label>auto_generate_credits</label>
-        <trackHistory>false</trackHistory>
-        <trackTrending>false</trackTrending>
-        <type>Checkbox</type>
-    </fields>
-    <fields>
-        <fullName>date_created__c</fullName>
-        <externalId>false</externalId>
-        <label>date_created</label>
-        <required>false</required>
-        <trackHistory>false</trackHistory>
-        <trackTrending>false</trackTrending>
-        <type>DateTime</type>
-    </fields>
-    <fields>
-        <fullName>date_delay_invoicing__c</fullName>
-        <externalId>false</externalId>
-        <label>date_delay_invoicing</label>
-        <required>false</required>
-        <trackHistory>false</trackHistory>
-        <trackTrending>false</trackTrending>
-        <type>Date</type>
-    </fields>
-    <fields>
-        <fullName>date_end__c</fullName>
-        <externalId>false</externalId>
-        <label>date_end</label>
-        <required>false</required>
-        <trackHistory>false</trackHistory>
-        <trackTrending>false</trackTrending>
-        <type>Date</type>
-    </fields>
-    <fields>
-        <fullName>date_start__c</fullName>
-        <externalId>false</externalId>
-        <label>date_start</label>
-        <required>false</required>
-        <trackHistory>false</trackHistory>
-        <trackTrending>false</trackTrending>
-        <type>Date</type>
-    </fields>
-    <fields>
-        <fullName>do_not_invoice__c</fullName>
-        <defaultValue>false</defaultValue>
-        <externalId>false</externalId>
-        <label>do_not_invoice</label>
-        <trackHistory>false</trackHistory>
-        <trackTrending>false</trackTrending>
-        <type>Checkbox</type>
-    </fields>
-    <fields>
-        <fullName>funding_source__c</fullName>
-        <externalId>false</externalId>
-        <label>Funding source</label>
-        <length>255</length>
-        <required>false</required>
-        <trackHistory>false</trackHistory>
-        <trackTrending>false</trackTrending>
-        <type>Text</type>
-        <unique>false</unique>
-    </fields>
-    <fields>
-        <fullName>id__c</fullName>
-        <externalId>true</externalId>
-        <label>id</label>
-        <length>255</length>
-        <required>false</required>
-        <trackHistory>false</trackHistory>
-        <trackTrending>false</trackTrending>
-        <type>Text</type>
-        <unique>false</unique>
-    </fields>
-    <fields>
-        <fullName>is_active__c</fullName>
-        <defaultValue>false</defaultValue>
-        <externalId>false</externalId>
-        <label>is_active</label>
-        <trackHistory>true</trackHistory>
-        <trackTrending>false</trackTrending>
-        <type>Checkbox</type>
-    </fields>
-    <fields>
-        <fullName>is_hidden_to_ops__c</fullName>
-        <defaultValue>false</defaultValue>
-        <externalId>false</externalId>
-        <label>Is hidden to ops</label>
-        <trackHistory>false</trackHistory>
-        <trackTrending>false</trackTrending>
-        <type>Checkbox</type>
-    </fields>
-    <fields>
-        <fullName>is_trial__c</fullName>
-        <defaultValue>false</defaultValue>
-        <externalId>false</externalId>
-        <label>is_trial</label>
-        <trackHistory>false</trackHistory>
-        <trackTrending>false</trackTrending>
-        <type>Checkbox</type>
-    </fields>
-    <fields>
-        <fullName>plan_version__c</fullName>
-        <deleteConstraint>SetNull</deleteConstraint>
-        <externalId>false</externalId>
-        <label>plan_version</label>
-        <referenceTo>Accounting_SoftwarePlanVersion__c</referenceTo>
-        <relationshipLabel>Accounting Subscriptions</relationshipLabel>
-        <relationshipName>Accounting_Subscriptions</relationshipName>
-        <required>false</required>
-        <trackHistory>false</trackHistory>
-        <trackTrending>false</trackTrending>
-        <type>Lookup</type>
-    </fields>
-    <fields>
-        <fullName>pro_bono_status__c</fullName>
-        <externalId>false</externalId>
-        <label>pro_bono_status</label>
-        <length>255</length>
-        <required>false</required>
-        <trackHistory>false</trackHistory>
-        <trackTrending>false</trackTrending>
-        <type>Text</type>
-        <unique>false</unique>
-    </fields>
-    <fields>
-        <fullName>salesforce_contract_id__c</fullName>
-        <externalId>false</externalId>
-        <label>salesforce_contract_id</label>
-        <length>255</length>
-        <required>false</required>
-        <trackHistory>false</trackHistory>
-        <trackTrending>false</trackTrending>
-        <type>Text</type>
-        <unique>false</unique>
-    </fields>
-    <fields>
-        <fullName>service_type__c</fullName>
-        <externalId>false</externalId>
-        <label>service_type</label>
-        <length>255</length>
-        <required>false</required>
-        <trackHistory>false</trackHistory>
-        <trackTrending>false</trackTrending>
-        <type>Text</type>
-        <unique>false</unique>
-    </fields>
-    <fields>
-        <fullName>skip_auto_downgrade__c</fullName>
-        <defaultValue>false</defaultValue>
-        <externalId>false</externalId>
-        <label>skip_auto_downgrade</label>
-        <trackHistory>false</trackHistory>
-        <trackTrending>false</trackTrending>
-        <type>Checkbox</type>
-    </fields>
-    <label>Accounting Subscription</label>
-    <nameField>
-        <displayFormat>AS-{00000}</displayFormat>
-        <label>Accounting Subscription Name</label>
-        <trackHistory>false</trackHistory>
-        <type>AutoNumber</type>
-    </nameField>
-    <pluralLabel>Accounting Subscriptions</pluralLabel>
-    <searchLayouts/>
-    <sharingModel>ReadWrite</sharingModel>
+    <listViews>
+        <fullName>All</fullName>
+        <columns>NAME</columns>
+        <columns>service_type__c</columns>
+        <columns>date_end__c</columns>
+        <columns>Accounting_subscriber_domain__c</columns>
+        <filterScope>Everything</filterScope>
+        <label>All</label>
+    </listViews>
 </CustomObject>

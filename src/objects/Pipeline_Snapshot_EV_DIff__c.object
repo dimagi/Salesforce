@@ -5,7 +5,27 @@
         <type>Default</type>
     </actionOverrides>
     <actionOverrides>
+        <actionName>Accept</actionName>
+        <formFactor>Large</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Accept</actionName>
+        <formFactor>Small</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
         <actionName>CancelEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>CancelEdit</actionName>
+        <formFactor>Large</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>CancelEdit</actionName>
+        <formFactor>Small</formFactor>
         <type>Default</type>
     </actionOverrides>
     <actionOverrides>
@@ -13,7 +33,27 @@
         <type>Default</type>
     </actionOverrides>
     <actionOverrides>
+        <actionName>Clone</actionName>
+        <formFactor>Large</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Clone</actionName>
+        <formFactor>Small</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
         <actionName>Delete</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Delete</actionName>
+        <formFactor>Large</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Delete</actionName>
+        <formFactor>Small</formFactor>
         <type>Default</type>
     </actionOverrides>
     <actionOverrides>
@@ -21,7 +61,27 @@
         <type>Default</type>
     </actionOverrides>
     <actionOverrides>
+        <actionName>Edit</actionName>
+        <formFactor>Large</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Edit</actionName>
+        <formFactor>Small</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
         <actionName>List</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>List</actionName>
+        <formFactor>Large</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>List</actionName>
+        <formFactor>Small</formFactor>
         <type>Default</type>
     </actionOverrides>
     <actionOverrides>
@@ -29,7 +89,27 @@
         <type>Default</type>
     </actionOverrides>
     <actionOverrides>
+        <actionName>New</actionName>
+        <formFactor>Large</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>New</actionName>
+        <formFactor>Small</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
         <actionName>SaveEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>SaveEdit</actionName>
+        <formFactor>Large</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>SaveEdit</actionName>
+        <formFactor>Small</formFactor>
         <type>Default</type>
     </actionOverrides>
     <actionOverrides>
@@ -37,7 +117,27 @@
         <type>Default</type>
     </actionOverrides>
     <actionOverrides>
+        <actionName>Tab</actionName>
+        <formFactor>Large</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Tab</actionName>
+        <formFactor>Small</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
         <actionName>View</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>View</actionName>
+        <formFactor>Large</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>View</actionName>
+        <formFactor>Small</formFactor>
         <type>Default</type>
     </actionOverrides>
     <allowInChatterGroups>false</allowInChatterGroups>
@@ -47,10 +147,65 @@
     <enableBulkApi>true</enableBulkApi>
     <enableFeeds>false</enableFeeds>
     <enableHistory>true</enableHistory>
+    <enableLicensing>false</enableLicensing>
     <enableReports>true</enableReports>
     <enableSearch>true</enableSearch>
     <enableSharing>true</enableSharing>
     <enableStreamingApi>true</enableStreamingApi>
+    <label>EV Diffs</label>
+    <nameField>
+        <label>Pipeline Snapshot EV DIff Name</label>
+        <trackHistory>false</trackHistory>
+        <type>Text</type>
+    </nameField>
+    <pluralLabel>EV Diffs</pluralLabel>
+    <searchLayouts></searchLayouts>
+    <sharingModel>ControlledByParent</sharingModel>
+    <visibility>Public</visibility>
+    <fields>
+        <fullName>Delta_Type__c</fullName>
+        <externalId>false</externalId>
+        <label>Delta Type</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+        <valueSet>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>No Change</fullName>
+                    <default>false</default>
+                    <label>No Change</label>
+                </value>
+                <value>
+                    <fullName>New Opp EV</fullName>
+                    <default>false</default>
+                    <label>New Opp EV</label>
+                </value>
+                <value>
+                    <fullName>Increased EV</fullName>
+                    <default>false</default>
+                    <label>Increased EV</label>
+                </value>
+                <value>
+                    <fullName>Decreased EV</fullName>
+                    <default>false</default>
+                    <label>Decreased EV</label>
+                </value>
+                <value>
+                    <fullName>Closed Opp - Lost / No Go</fullName>
+                    <default>false</default>
+                    <label>Closed Opp - Lost / No Go</label>
+                </value>
+                <value>
+                    <fullName>Closed Opp - Won</fullName>
+                    <default>false</default>
+                    <label>Closed Opp - Won</label>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
     <fields>
         <fullName>DIFF_12_Month_Cash_Minus_Expense_Income__c</fullName>
         <description>EV DIFF - 12 Month Cash Minus Expense Income (EV)</description>
@@ -100,56 +255,6 @@
         <type>Currency</type>
     </fields>
     <fields>
-        <fullName>DIFF_Expected_Value_Minus_Expense__c</fullName>
-        <description>EV DIFF - Expected Value Minus Expense</description>
-        <externalId>false</externalId>
-        <label>Net EV (All Time)</label>
-        <precision>18</precision>
-        <required>false</required>
-        <scale>0</scale>
-        <trackHistory>false</trackHistory>
-        <trackTrending>false</trackTrending>
-        <type>Currency</type>
-    </fields>
-    <fields>
-        <fullName>Delta_Type__c</fullName>
-        <externalId>false</externalId>
-        <label>Delta Type</label>
-        <required>false</required>
-        <trackHistory>false</trackHistory>
-        <trackTrending>false</trackTrending>
-        <type>Picklist</type>
-        <valueSet>
-            <valueSetDefinition>
-                <sorted>false</sorted>
-                <value>
-                    <fullName>No Change</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>New Opp EV</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>Increased EV</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>Decreased EV</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>Closed Opp - Lost / No Go</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>Closed Opp - Won</fullName>
-                    <default>false</default>
-                </value>
-            </valueSetDefinition>
-        </valueSet>
-    </fields>
-    <fields>
         <fullName>Diff_Buffer_EV__c</fullName>
         <externalId>false</externalId>
         <label>Net Buffer EV</label>
@@ -176,11 +281,34 @@
         <type>Currency</type>
     </fields>
     <fields>
+        <fullName>DIFF_Expected_Value_Minus_Expense__c</fullName>
+        <description>EV DIFF - Expected Value Minus Expense</description>
+        <externalId>false</externalId>
+        <label>Net EV (All Time)</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
         <fullName>Expected_Monthly_Recurring_Revenue_MRR__c</fullName>
         <description>Expected Monthly Recurring Revenue (MRR)</description>
         <externalId>false</externalId>
         <inlineHelpText>Expected Monthly Recurring Revenue (MRR)</inlineHelpText>
         <label>Expected MRR</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>Monthly_Recurring_Revenue_MRR__c</fullName>
+        <externalId>false</externalId>
+        <label>Monthly Recurring Revenue (MRR)</label>
         <precision>18</precision>
         <required>false</required>
         <scale>0</scale>
@@ -196,30 +324,6 @@
         <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Date</type>
-    </fields>
-    <fields>
-        <fullName>Monthly_Recurring_Revenue_MRR__c</fullName>
-        <externalId>false</externalId>
-        <label>Monthly Recurring Revenue (MRR)</label>
-        <precision>18</precision>
-        <required>false</required>
-        <scale>0</scale>
-        <trackHistory>false</trackHistory>
-        <trackTrending>false</trackTrending>
-        <type>Currency</type>
-    </fields>
-    <fields>
-        <fullName>Opp_Buffer_EV__c</fullName>
-        <description>Buffer EV Value copied from Opportunity when EV Batch job runs. It help us calculate Diff Buffer EV when opp was Closed Won</description>
-        <externalId>false</externalId>
-        <inlineHelpText>Buffer EV Value copied from Opportunity when EV Batch job runs. It help us calculate Diff Buffer EV when opp was Closed Won</inlineHelpText>
-        <label>Opp Buffer EV</label>
-        <precision>18</precision>
-        <required>false</required>
-        <scale>2</scale>
-        <trackHistory>false</trackHistory>
-        <trackTrending>false</trackTrending>
-        <type>Currency</type>
     </fields>
     <fields>
         <fullName>Opportunity_Name__c</fullName>
@@ -246,6 +350,19 @@
         <type>Lookup</type>
     </fields>
     <fields>
+        <fullName>Opp_Buffer_EV__c</fullName>
+        <description>Buffer EV Value copied from Opportunity when EV Batch job runs. It help us calculate Diff Buffer EV when opp was Closed Won</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Buffer EV Value copied from Opportunity when EV Batch job runs. It help us calculate Diff Buffer EV when opp was Closed Won</inlineHelpText>
+        <label>Opp Buffer EV</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
         <fullName>Pipeline_Snapshot__c</fullName>
         <externalId>false</externalId>
         <label>Pipeline Snapshot</label>
@@ -267,13 +384,4 @@
         <trackTrending>false</trackTrending>
         <type>Date</type>
     </fields>
-    <label>EV Diffs</label>
-    <nameField>
-        <label>Pipeline Snapshot EV DIff Name</label>
-        <trackHistory>false</trackHistory>
-        <type>Text</type>
-    </nameField>
-    <pluralLabel>EV Diffs</pluralLabel>
-    <searchLayouts/>
-    <sharingModel>ControlledByParent</sharingModel>
 </CustomObject>

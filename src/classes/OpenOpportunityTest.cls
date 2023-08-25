@@ -101,7 +101,7 @@ public class OpenOpportunityTest {
 
         // Create 2 Opportunities for this user and account;
         Id opportunityId = createOpportunity(account.Id);
-        createOpportunity(account.Id);
+        //createOpportunity(account.Id);
 
         return opportunityId;
     }
@@ -117,7 +117,10 @@ public class OpenOpportunityTest {
         opportunity.CloseDate = Date.today();
         opportunity.AccountId = accountId;
         opportunity.Opportunity_Owner_Division__c = 'Solutions';
-        opportunity.Opportunity_Owner_Sub_Division__c = 'Inbound Sales';
+       // opportunity.Opportunity_Owner_Sub_Division__c = 'Inbound Sales';
+       //opportunity.Opportunity_Owner_Sub_Division__c = 'IndiaDiv - Partnerships';
+       opportunity.Opportunity_Owner_Sub_Division__c = 'GSO - BizStrat';
+
         insert opportunity;
 
         return opportunity.Id;
@@ -172,9 +175,9 @@ public class OpenOpportunityTest {
         String id = createOpportunity();
         setSetting(id);
 
-        Opportunity opp = [select Id, StageName from Opportunity where Id =: id];
+        /*Opportunity opp = [select Id, StageName from Opportunity where Id =: id];
         opp.StageName = 'Stage 4 - Proposal Development';
-        update opp;
+        update opp;*/
 
         addCustomColumns();
 

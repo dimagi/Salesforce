@@ -3,16 +3,16 @@ public class LeadQualifyProcessTest {
 
     public static testMethod void triggerShouldntSetFailingProcessField() {
         Lead testLead1 = new Lead(FirstName = 'Tom', LastName = 'Smith', Company = 'Smith IT Company', Lead_Status_Reason__c = 'Working - Exploratory Call - Trying for',
-                                  Status = 'Working - Talking', Follow_up_calls_held__c = 1);
+                                  Status = 'Working - Talking', Follow_up_calls_held__c = 1, Opportunity_Owner_Division__c = 'Solutions', Opportunity_Owner_Sub_Division__c='Inbound Sales');
         insert testLead1;
         Lead testLead2 = new Lead(FirstName = 'Tom 1', LastName = 'Smith 1', Company = 'Smith IT Company 1', Lead_Status_Reason__c = 'Working - Exploratory Call - Trying for',
-                                  Status = 'Passive & Friendly', Follow_up_calls_held__c = 88);
+                                  Status = 'Passive & Friendly', Follow_up_calls_held__c = 88, Opportunity_Owner_Division__c = 'Solutions', Opportunity_Owner_Sub_Division__c='Inbound Sales');
         insert testLead2;
         Lead testLead3 = new Lead(FirstName = 'Tom 2', LastName = 'Smith 2 ', Company = 'Smith IT Company 2', Lead_Status_Reason__c = 'Working - Exploratory Call - Trying for',
-                                  Status = 'Working - Talking', Follow_up_calls_held__c = 6);
+                                  Status = 'Working - Talking', Follow_up_calls_held__c = 6, Opportunity_Owner_Division__c = 'Solutions', Opportunity_Owner_Sub_Division__c='Inbound Sales');
         insert testLead3;
         Lead testLead4 = new Lead(FirstName = 'Tom 3', LastName = 'Smith 3 ', Company = 'Smith IT Company 3', Lead_Status_Reason__c = 'Working - Exploratory Call - Trying for',
-                                  Status = 'Working - Talking', Follow_up_calls_held__c = 11);
+                                  Status = 'Working - Talking', Follow_up_calls_held__c = 11, Opportunity_Owner_Division__c = 'Solutions', Opportunity_Owner_Sub_Division__c='Inbound Sales');
         insert testLead4;
 
         testLead1.Company = 'New Company 1';
@@ -47,13 +47,13 @@ public class LeadQualifyProcessTest {
 
     public static testMethod void jobShouldSetFailingProcessField() {
         Lead testLead1 = new Lead(FirstName = 'Tom', LastName = 'Smith', Company = 'Smith IT Company', Lead_Status_Reason__c = 'Working - Exploratory Call - Trying for',
-                                  Status = 'Working - Talking', Follow_up_calls_held__c = 8);
+                                  Status = 'Working - Talking', Follow_up_calls_held__c = 8, Opportunity_Owner_Division__c = 'Solutions', Opportunity_Owner_Sub_Division__c='Inbound Sales');
         insert testLead1;
         Lead testLead2 = new Lead(FirstName = 'Tom 1', LastName = 'Smith 1', Company = 'Smith IT Company 1', Lead_Status_Reason__c = 'Working - Exploratory Call - Trying for',
-                                  Status = 'Working - Talking', Follow_up_calls_held__c = 88);
+                                  Status = 'Working - Talking', Follow_up_calls_held__c = 88, Opportunity_Owner_Division__c = 'Solutions', Opportunity_Owner_Sub_Division__c='Inbound Sales');
         insert testLead2;
         Lead testLead3 = new Lead(FirstName = 'Tom 2', LastName = 'Smith 2 ', Company = 'Smith IT Company 2', Lead_Status_Reason__c = 'Working - Exploratory Call - Trying for',
-                                  Status = 'Working - Talking', Follow_up_calls_held__c = 6);
+                                  Status = 'Working - Talking', Follow_up_calls_held__c = 6, Opportunity_Owner_Division__c = 'Solutions', Opportunity_Owner_Sub_Division__c='Inbound Sales');
         insert testLead3;
 
         testLead1.Company = 'New Company 1';
@@ -84,13 +84,13 @@ public class LeadQualifyProcessTest {
         insert setting;
 
         Lead testLead1 = new Lead(FirstName = 'Tom', LastName = 'Smith', Company = 'Smith IT Company', Lead_Status_Reason__c = 'Working - Exploratory Call - Trying for',
-                                  Status = 'Working - Talking', Follow_up_calls_held__c = 8);
+                                  Status = 'Working - Talking', Follow_up_calls_held__c = 8, Opportunity_Owner_Division__c = 'Solutions', Opportunity_Owner_Sub_Division__c='Inbound Sales');
         insert testLead1;
         Lead testLead2 = new Lead(FirstName = 'Tom 1', LastName = 'Smith 1', Company = 'Smith IT Company 1', Lead_Status_Reason__c = 'Working - Exploratory Call - Trying for',
-                                  Status = 'Working - Talking', Follow_up_calls_held__c = 3);
+                                  Status = 'Working - Talking', Follow_up_calls_held__c = 3, Opportunity_Owner_Division__c = 'Solutions', Opportunity_Owner_Sub_Division__c='Inbound Sales');
         insert testLead2;
         Lead testLead3 = new Lead(FirstName = 'Tom 2', LastName = 'Smith 2 ', Company = 'Smith IT Company 2', Lead_Status_Reason__c = 'Working - Exploratory Call - Trying for',
-                                  Status = 'Working - Talking', Follow_up_calls_held__c = 1);
+                                  Status = 'Working - Talking', Follow_up_calls_held__c = 1, Opportunity_Owner_Division__c = 'Solutions', Opportunity_Owner_Sub_Division__c='Inbound Sales');
         insert testLead3;
 
         testLead1.Company = 'New Company 1';

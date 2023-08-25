@@ -2,6 +2,8 @@
 <CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
     <customSettingsType>Hierarchy</customSettingsType>
     <enableFeeds>false</enableFeeds>
+    <label>Subscription Renewal Settings</label>
+    <visibility>Protected</visibility>
     <fields>
         <fullName>Advanced__c</fullName>
         <externalId>false</externalId>
@@ -34,36 +36,6 @@
         <unique>false</unique>
     </fields>
     <fields>
-        <fullName>Default_Opportunity_Owner_Impl__c</fullName>
-        <externalId>false</externalId>
-        <label>Default Opportunity Owner Impl</label>
-        <length>255</length>
-        <required>true</required>
-        <trackTrending>false</trackTrending>
-        <type>Text</type>
-        <unique>false</unique>
-    </fields>
-    <fields>
-        <fullName>Default_Opportunity_Owner_Prod__c</fullName>
-        <externalId>false</externalId>
-        <label>Default Opportunity Owner Prod</label>
-        <length>255</length>
-        <required>true</required>
-        <trackTrending>false</trackTrending>
-        <type>Text</type>
-        <unique>false</unique>
-    </fields>
-    <fields>
-        <fullName>Default_Opportunity_Owner__c</fullName>
-        <externalId>false</externalId>
-        <label>Default Opportunity Owner</label>
-        <length>255</length>
-        <required>false</required>
-        <trackTrending>false</trackTrending>
-        <type>Text</type>
-        <unique>false</unique>
-    </fields>
-    <fields>
         <fullName>Enterprise__c</fullName>
         <externalId>false</externalId>
         <label>Enterprise Sales Price</label>
@@ -84,6 +56,26 @@
         <unique>false</unique>
     </fields>
     <fields>
+        <fullName>Implementation_Enterprise_Owner__c</fullName>
+        <externalId>false</externalId>
+        <label>Implementation Enterprise Owner</label>
+        <length>255</length>
+        <required>true</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Implementation_non_Enterprise_Owner__c</fullName>
+        <externalId>false</externalId>
+        <label>Implementation non Enterprise Owner</label>
+        <length>255</length>
+        <required>true</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
         <fullName>Managed_Hosting__c</fullName>
         <externalId>false</externalId>
         <label>Managed Hosting</label>
@@ -92,6 +84,26 @@
         <scale>2</scale>
         <trackTrending>false</trackTrending>
         <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>Product_Enterprise_Owner__c</fullName>
+        <externalId>false</externalId>
+        <label>Product Enterprise Owner</label>
+        <length>255</length>
+        <required>true</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Product_non_Enterprise_Owner__c</fullName>
+        <externalId>false</externalId>
+        <label>Product non Enterprise Owner</label>
+        <length>255</length>
+        <required>true</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
     </fields>
     <fields>
         <fullName>Pro__c</fullName>
@@ -123,6 +135,4 @@
         <trackTrending>false</trackTrending>
         <type>Currency</type>
     </fields>
-    <label>Subscription Renewal Settings</label>
-    <visibility>Protected</visibility>
 </CustomObject>

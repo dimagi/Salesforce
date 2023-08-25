@@ -1,12 +1,25 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
     <enableFeeds>false</enableFeeds>
+    <sharingModel>ReadWrite</sharingModel>
+    <fields>
+        <fullName>ActionDefinition</fullName>
+    </fields>
+    <fields>
+        <fullName>ActionType</fullName>
+    </fields>
     <fields>
         <fullName>FlowDefinition</fullName>
     </fields>
     <fields>
         <fullName>FlowInterviewId</fullName>
         <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>IsMandatory</fullName>
+    </fields>
+    <fields>
+        <fullName>IsUiRemoveHidden</fullName>
     </fields>
     <fields>
         <fullName>Order</fullName>
@@ -21,5 +34,4 @@
     <fields>
         <fullName>Status</fullName>
     </fields>
-    <sharingModel>ReadWrite</sharingModel>
 </CustomObject>

@@ -24,11 +24,12 @@ public class OpportunityPipelineSnapshotBatch implements Database.Batchable<Oppo
         }
 
         return [SELECT Id, Name, AccountId, Amount, Amount_Minus_Expense_Income__c, Country_Text__c, Duration_months__c, Expected_Buffer__c,
-                    Funder_Account__c, Expense_Income__c, Opportunity_Owning_Entity__c, Probability, Product_Text__c,
-                    Channel_Response__c, StageName, CloseDate, OwnerId
+                    Funder_Account__c, Expense_Income__c, Opportunity_Owning_Entity__c, Probability, Product_Text__c,Opportunity_Owner_Division__c,
+                    Opportunity_Owner_Sub_Division__c,Channel_Response__c, StageName, CloseDate, OwnerId
                     FROM Opportunity
-                    WHERE StageName = 'Stage 3 - Prospect'
-                    OR StageName = 'Stage 4 - Proposal Development'
+                    WHERE 
+                    // StageName = 'Stage 3 - Prospect' OR 
+                     StageName = 'Stage 4 - Proposal Development'
                     OR StageName = 'Stage 5 - Submitted'
                     OR StageName = 'Stage 6 - In Negotiations'
                     OR StageName = 'Cash on Hand'
@@ -71,7 +72,9 @@ public class OpportunityPipelineSnapshotBatch implements Database.Batchable<Oppo
                     Products__c = opp.Product_Text__c,
                     RFP_Response__c = opp.Channel_Response__c,
                     Source_Type__c = 'Opportunity',
-                    Stage__c = opp.StageName
+                    Stage__c = opp.StageName,
+                    Division__c = opp.Opportunity_Owner_Division__c,
+                    Subdivision__c = opp.Opportunity_Owner_Sub_Division__c
                 );
 
             newPs.Submitted_this_month__c = isSubmittedThisMonth(newPs);

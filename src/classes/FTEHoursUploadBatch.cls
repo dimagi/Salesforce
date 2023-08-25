@@ -35,6 +35,7 @@ public without sharing class FTEHoursUploadBatch implements Database.Batchable<F
     public void execute(Database.BatchableContext BC, List<FTEUploadData> scope) {
 
         Integer csvYear = this.year;
+        decimal oldVal ;
         List<Fte_Work_Card__c> globalWorkCards = [Select Id, Employee__c, Contract__c, Month_1__c, Month_2__c, Month_3__c, Month_4__c, Month_5__c, Month_6__c, Month_7__c, 
                                                     Month_8__c, Month_9__c, Month_10__c, Month_11__c, Month_12__c, Total__c FROM Fte_Work_Card__c
                                                     WHERE Year__c =: csvYear
@@ -59,11 +60,15 @@ public without sharing class FTEHoursUploadBatch implements Database.Batchable<F
 
             List<Fte_Work_Card__c> workCards = new List<Fte_Work_Card__c>();
             for (Fte_Work_Card__c workcard : globalWorkCards) {
+               
                 if (workcard.Employee__c == fteDataRec.getEmployeeId()) {
                    // workcards.add(workcard);
+                   system.debug('@@' + fteDataRec.getEmployeeId());
                     for(Integer i=0; i<12; i++){
                         Integer month = i+1;
+                        system.debug('@@1 ----- >' +temp[i] );
 						temp[i] -= (Decimal) workcard.get('Month_'+ month + '__c');
+                        system.debug('@@2 ------>' +temp[i] );
             		}
                 }
             }
@@ -77,14 +82,17 @@ public without sharing class FTEHoursUploadBatch implements Database.Batchable<F
             this.employeesSet.add(employee.Id);
             for (Integer i = 0; i < 12; i++) {
                 Decimal monthDays = fteDataRec.getMonthTime(i+1);
+                system.debug('fteDataRec monthDays' + monthDays);
 
                 if (monthDays != null && monthDays >= 0) {
                     try {
                             Decimal missingTime = 0;
                             missingTime = temp[i] - monthDays;
-                            if(missingTime >= 0) {
-                                fteTimeManager.updateWorkcard(monthDays, i+1, fteDataRec.getContractId());
-                            }
+                            system.debug('temp[i]' +temp[i]);
+                            system.debug(temp[i] - monthDays);
+                          ////  if(missingTime >= 0) {
+                                fteTimeManager.updateWorkcard(temp[i], monthDays, i+1, fteDataRec, fteDataRec.getContractId(), true);
+                          //  }
 
                       /*
 
@@ -106,11 +114,11 @@ public without sharing class FTEHoursUploadBatch implements Database.Batchable<F
                             fteTimeManager.updateWorkcard((-1) *(timeDiff / 8), i, fteDataRec.getContractId());
                         }
                         */
-                        if (missingTime < 0) {
+                     /*   if(missingTime < 0){
                             Integer month = i+1;
                             insert new FTE_Data_Record_Status__c(Status__c = 'Insufficient hours', Status_Message__c = 'There was no enough hours to move from unassigned for month : ' + month + '. Contract: '
                                                                                + fteDataRec.getContractName() + ' Employee: ' + fteDataRec.getEmployeeName() + ' hours missing : ' + missingTime.setScale(2));
-                        }
+                        } */
                         
                     } catch (Exception e) {
                         insert new FTE_Data_Record_Status__c(Status__c = 'Other', Status_Message__c = e.getMessage()

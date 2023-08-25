@@ -92,7 +92,7 @@ public without sharing class RenewalSubscriptionsBatch implements Database.Batch
         for (Accounting_Subscription__c subscription : subs) {
             domainsSet.add(subscription.Accounting_subscriber_domain__c);
         }
-
+      
         Map<Id, Domain__c> domains = new Map<Id, Domain__c> ([SELECT Id, Name, Opportunity__c FROM Domain__c WHERE Id IN: domainsSet]);
         List<Domain__c> domainsToUpdate = new List<Domain__c>();
 
@@ -156,13 +156,13 @@ public without sharing class RenewalSubscriptionsBatch implements Database.Batch
                                                         Implementing_Business_Unit__c = this.incBusinessUnit.Id,
                                                         Opportunity_Source__c = oppSource,
                                                         Opportunity_Owner_Division__c = 'SaaS',
-                                                        Opportunity_Owner_Sub_Division__c = 'Inbound Sales'
+                                                        Opportunity_Owner_Sub_Division__c = 'USH - Tech'
                                                     );
 
                 PricebookEntry pbe = this.priceBookEntries.get(subscription.Software_Plan_Edition__c);
                 Decimal price = this.salesPrices.get(subscription.Software_Plan_Edition__c);
                 Domain__c domainToUpdate = domains.get(subscription.Accounting_subscriber_domain__c);
-
+                
                 Savepoint sp = Database.setSavepoint();
                 try {
                     insert newOpp;
@@ -194,27 +194,39 @@ public without sharing class RenewalSubscriptionsBatch implements Database.Batch
         Database.executeBatch(new CreateFBCasesBatch(), 5);
         StatusLoggerUtils.sendLog(StatusLoggerUtils.RENEWAL_LOGGER, BatchDefaultSettings__c.getOrgDefaults().Error_Emails__c.split(','));
     }
-
+    
     /**
      * Returns Subscriptions which ends after 60 days
      */
     public List<Accounting_Subscription__c> getFutureSubscriptions() {
+        List<String> service_type = new List<String>();
+
+        for (Accounting_Subscription_service_type__mdt record : [SELECT service_types__c FROM Accounting_Subscription_service_type__mdt]) {
+            String serviceType = record.service_types__c;
+            service_type.add(serviceType);
+        }
         return [SELECT Id, date_start__c, date_end__c, Accounting_subscriber_domain__r.Name FROM Accounting_Subscription__c
-                WHERE Accounting_subscriber_domain__r.Name != '' AND is_trial__c = false AND is_hidden_to_ops__c = false
+                WHERE service_type__c NOT IN :service_type AND Accounting_subscriber_domain__r.Name != '' AND is_trial__c = false AND is_hidden_to_ops__c = false
                 AND date_start__c >: this.currentDate
                 AND Server_Name__c = 'CommCareHQ'];
     }
-
+    
     /**
      * Returns Subscriptions which ends in 60 days for domains which dosen't contain subscriptions from future (which ends after 60 days).
      */
     public List<Accounting_Subscription__c> getSubscriptionsForRenewal(Set<String> domainsWithFutureSubscriptions) {
+        List<String> service_type = new List<String>();
+
+        for (Accounting_Subscription_service_type__mdt record : [SELECT service_types__c FROM Accounting_Subscription_service_type__mdt]) {
+            String serviceType = record.service_types__c;
+            service_type.add(serviceType);
+        }
         return [SELECT Id, Name, date_start__c, date_end__c, service_type__c, Accounting_subscriber_domain__c, Accounting_subscriber_domain__r.Name, Dimagi_Contact__c, Accounting_subscriber_domain__r.Account__r.Name,
                 Accounting_subscriber_domain__r.cpAllWebUsers__c, Software_Plan_Edition__c,
                 Accounting_subscriber_domain__r.Opportunity__r.CreatedDate, Accounting_subscriber_domain__r.Opportunity__c,
                 Accounting_subscriber_domain__r.Opportunity__r.CloseDate, Accounting_subscriber_domain__r.Opportunity__r.IsClosed
                 FROM Accounting_Subscription__c
-                WHERE Accounting_subscriber_domain__r.Name != '' AND date_end__c != null AND date_end__c <=: this.currentDate.addDays(90)
+                WHERE service_type__c NOT IN :service_type AND Accounting_subscriber_domain__r.Name != '' AND date_end__c != null AND date_end__c <=: this.currentDate.addDays(90)
                 AND date_end__c >=: this.currentDate AND Accounting_subscriber_domain__r.Name NOT IN: domainsWithFutureSubscriptions AND is_active__c = true
                 AND is_hidden_to_ops__c = false AND is_trial__c = false AND Server_Name__c = 'CommCareHQ' ORDER BY date_end__c DESC];
     }

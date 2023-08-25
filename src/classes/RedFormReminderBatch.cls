@@ -102,6 +102,7 @@ public without sharing class RedFormReminderBatch implements Database.Batchable<
         String emailContent = 'Hi '+ employeeName + ',' + '<br/><br/>';
         emailContent += redFormSettings.Quarter_Email_Part_1__c;
         emailContent += ' ' + redFormSettings.Quarter_Email_Part_2__c;
+        emailContent += ' ' + redFormSettings.Quarter_Email_Part_3__c;
         emailContent += '<br/><br/>';
         emailContent += 'Best,<br/>People Ops';
 
@@ -120,6 +121,8 @@ public without sharing class RedFormReminderBatch implements Database.Batchable<
         String emailContent = 'Hi '+ employeeName + ',' + '<br/><br/>';
         emailContent += redFormSettings.Remainder_Email_Part_1__c;
         emailContent += ' ' + redFormSettings.Remainder_Email_Part_2__c;
+        emailContent += ' ' + redFormSettings.Remainder_Email_Part_3__c;
+        emailContent += ' ' + redFormSettings.Remainder_Email_Part_4__c;
         emailContent += '<br/><br/>';
         emailContent += 'Best,<br/>Dimagi';
 
@@ -131,8 +134,10 @@ public without sharing class RedFormReminderBatch implements Database.Batchable<
         emailContent += redFormSettings.First_Email_Part_1__c;
         emailContent += ' ' + redFormSettings.First_Email_Part_2__c;
         emailContent += ' ' + redFormSettings.First_Email_Part_3__c;
+        emailContent += ' ' + redFormSettings.First_Email_Part_4__c;
+        emailContent += ' ' + redFormSettings.First_Email_Part_5__c;
         emailContent += '<br/><br/>';
-        emailContent += 'Record of Emergency data form - https://dimagi.secure.force.com/sftools';
+        emailContent += 'Record of Emergency data form - https://dimagi.my.salesforce-sites.com/sftools';
         emailContent += '<br/><br/>';
         emailContent += 'Looking forward to working with you!';
         emailContent += '<br/><br/>';

@@ -26,6 +26,12 @@ public with sharing class OpportunityContractController {
                                     of_Execution_budget_for_GS__c,
                                     Expected_Buffer__c,
                                     Implementation_Type__c,
+                            	    Contract_Clauses_for_PM__c,
+                             Flowdown_Clauses__c,
+                             Non_Standard_SaaS_Clauses__c,
+                             Key_Contractual_Clauses_for_SaaS__c,
+                             Digital_Adherence_Sector__c,
+                             DA_Region__c,
                                     X7_Long_term_partnership_or_one_off__c,
                                     X10_Major_component_risks__c,
                                     (SELECT Country__c FROM OpportunityCountries__r),
@@ -44,7 +50,7 @@ public with sharing class OpportunityContractController {
         contract.Prime_Contracting_Business_Unit__c = o.Implementing_Business_Unit__c;
         contract.Efficiency_Owner_BU__c = o.Implementing_Business_Unit__c;
         contract.Area__c = o.Area__c;
-        contract.Sub_Area__c = o.Sub_Area__c;
+        contract.Sub_Area__c = o.Sub_Area__c ;
         contract.Proposal_Dropbox_Location__c = o.Proposal_Dropbox_Location__c;
         contract.Long_term_partnership_or_one_off__c = o.X7_Long_term_partnership_or_one_off__c;
         contract.Major_Component_Risks__c = o.X10_Major_component_risks__c;
@@ -52,6 +58,13 @@ public with sharing class OpportunityContractController {
         contract.Implementation_Type__c = o.Implementation_Type__c;
         contract.Expected_Buffer__c = o.Expected_Buffer__c;
         contract.of_Services_budget_for_GS__c = o.of_Execution_budget_for_GS__c;
+        contract.Contract_Clauses_for_PM__c = o.Contract_Clauses_for_PM__c;
+        contract.Flowdown_Clauses__c = o.Flowdown_Clauses__c;
+        contract.Non_Standard_SaaS_Clauses__c = o.Non_Standard_SaaS_Clauses__c;
+        contract.Key_Contractual_Clauses_for_SaaS__c = o.Key_Contractual_Clauses_for_SaaS__c;
+        contract.Digital_Adherence_Sector__c = o.Digital_Adherence_Sector__c;
+        contract.DA_Region__c = o.DA_Region__c;
+
         insert contract;
 
         List<Contract_Country__c> contractCountries = new List<Contract_Country__c>();

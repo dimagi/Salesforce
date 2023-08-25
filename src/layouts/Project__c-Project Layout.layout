@@ -125,8 +125,8 @@
         <fields>Location__c.State__c</fields>
         <fields>Location__c.Sub_Location_1__c</fields>
         <fields>Location__c.Sub_Location_2__c</fields>
-        <fields>Location__c.Geopoint__c</fields>
-        <fields>Location__c.Geopoint__c</fields>
+        <fields>Location__c.Geopoint__Latitude__s</fields>
+        <fields>Location__c.Geopoint__Longitude__s</fields>
         <relatedList>Project_Location__c.Project__c</relatedList>
     </relatedLists>
     <relatedLists>

@@ -3,6 +3,8 @@
     <customSettingsType>Hierarchy</customSettingsType>
     <description>Settings for Contract Snapshot Job</description>
     <enableFeeds>false</enableFeeds>
+    <label>Contract Snapshot Settings</label>
+    <visibility>Protected</visibility>
     <fields>
         <fullName>Error_Email__c</fullName>
         <externalId>false</externalId>
@@ -13,6 +15,4 @@
         <type>Text</type>
         <unique>false</unique>
     </fields>
-    <label>Contract Snapshot Settings</label>
-    <visibility>Protected</visibility>
 </CustomObject>

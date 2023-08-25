@@ -9,6 +9,7 @@ LEFT(Deployment_Countries__c, 255), Deployment_Countries__c)</formula>
         <notifyAssignee>false</notifyAssignee>
         <operation>Formula</operation>
         <protected>false</protected>
+        <reevaluateOnChange>false</reevaluateOnChange>
     </fieldUpdates>
     <fieldUpdates>
         <fullName>Update_domain_date_created_wrapper</fullName>
@@ -18,6 +19,7 @@ LEFT(Deployment_Countries__c, 255), Deployment_Countries__c)</formula>
         <notifyAssignee>false</notifyAssignee>
         <operation>Formula</operation>
         <protected>false</protected>
+        <reevaluateOnChange>false</reevaluateOnChange>
     </fieldUpdates>
     <fieldUpdates>
         <fullName>Update_domain_first_form_sub_wrapper</fullName>
@@ -27,6 +29,7 @@ LEFT(Deployment_Countries__c, 255), Deployment_Countries__c)</formula>
         <notifyAssignee>false</notifyAssignee>
         <operation>Formula</operation>
         <protected>false</protected>
+        <reevaluateOnChange>false</reevaluateOnChange>
     </fieldUpdates>
     <fieldUpdates>
         <fullName>Update_domain_last_form_sub_wrapper</fullName>
@@ -36,6 +39,7 @@ LEFT(Deployment_Countries__c, 255), Deployment_Countries__c)</formula>
         <notifyAssignee>false</notifyAssignee>
         <operation>Formula</operation>
         <protected>false</protected>
+        <reevaluateOnChange>false</reevaluateOnChange>
     </fieldUpdates>
     <rules>
         <fullName>Wrap Countries to text%28255%29 in Domain</fullName>

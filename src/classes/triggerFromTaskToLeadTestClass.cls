@@ -5,7 +5,7 @@ private class triggerFromTaskToLeadTestClass {
     static void testTriggerFromTaskToLead() {
 
         // create lead
-        Lead l = new Lead(Lastname='TestPerson', Company='TestCompany', Status='Passive - Unqualified');
+        Lead l = new Lead(Lastname='TestPerson', Company='TestCompany', Status='Passive - Unqualified', Opportunity_Owner_Division__c = 'Solutions', Opportunity_Owner_Sub_Division__c='Inbound Sales');
         System.debug('Email count before adding a new email : ' + l.Individual_Email_Count__c);
 
         // Insert lead

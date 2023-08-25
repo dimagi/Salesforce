@@ -2,6 +2,8 @@
 <CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
     <customSettingsType>Hierarchy</customSettingsType>
     <enableFeeds>false</enableFeeds>
+    <label>FTE Tracker Settings</label>
+    <visibility>Protected</visibility>
     <fields>
         <fullName>FTE_Trigger__c</fullName>
         <defaultValue>false</defaultValue>
@@ -21,6 +23,4 @@
         <type>Number</type>
         <unique>false</unique>
     </fields>
-    <label>FTE Tracker Settings</label>
-    <visibility>Protected</visibility>
 </CustomObject>

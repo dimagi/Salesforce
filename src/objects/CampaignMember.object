@@ -5,7 +5,27 @@
         <type>Default</type>
     </actionOverrides>
     <actionOverrides>
+        <actionName>AddCampaign</actionName>
+        <formFactor>Large</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>AddCampaign</actionName>
+        <formFactor>Small</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
         <actionName>CancelEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>CancelEdit</actionName>
+        <formFactor>Large</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>CancelEdit</actionName>
+        <formFactor>Small</formFactor>
         <type>Default</type>
     </actionOverrides>
     <actionOverrides>
@@ -13,7 +33,27 @@
         <type>Default</type>
     </actionOverrides>
     <actionOverrides>
+        <actionName>Clone</actionName>
+        <formFactor>Large</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Clone</actionName>
+        <formFactor>Small</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
         <actionName>ConvertLead</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>ConvertLead</actionName>
+        <formFactor>Large</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>ConvertLead</actionName>
+        <formFactor>Small</formFactor>
         <type>Default</type>
     </actionOverrides>
     <actionOverrides>
@@ -21,7 +61,27 @@
         <type>Default</type>
     </actionOverrides>
     <actionOverrides>
+        <actionName>CreateOpportunity</actionName>
+        <formFactor>Large</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>CreateOpportunity</actionName>
+        <formFactor>Small</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
         <actionName>Delete</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Delete</actionName>
+        <formFactor>Large</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Delete</actionName>
+        <formFactor>Small</formFactor>
         <type>Default</type>
     </actionOverrides>
     <actionOverrides>
@@ -29,15 +89,46 @@
         <type>Default</type>
     </actionOverrides>
     <actionOverrides>
+        <actionName>Edit</actionName>
+        <formFactor>Large</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Edit</actionName>
+        <formFactor>Small</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
         <actionName>SaveEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>SaveEdit</actionName>
+        <formFactor>Large</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>SaveEdit</actionName>
+        <formFactor>Small</formFactor>
         <type>Default</type>
     </actionOverrides>
     <actionOverrides>
         <actionName>View</actionName>
         <type>Default</type>
     </actionOverrides>
+    <actionOverrides>
+        <actionName>View</actionName>
+        <formFactor>Large</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>View</actionName>
+        <formFactor>Small</formFactor>
+        <type>Default</type>
+    </actionOverrides>
     <compactLayoutAssignment>SYSTEM</compactLayoutAssignment>
     <enableFeeds>false</enableFeeds>
+    <sharingModel>ControlledByCampaign</sharingModel>
     <fields>
         <fullName>Bounces__c</fullName>
         <description>Bounces</description>
@@ -54,6 +145,15 @@
         <type>Lookup</type>
     </fields>
     <fields>
+        <fullName>Campaign_Notes__c</fullName>
+        <description>Enter notes related to the lead or contact that associated with this campaign. For example, any conversation notes that happened at a booth or session, interest expressed for additional information, etc.</description>
+        <externalId>false</externalId>
+        <label>Campaign Notes</label>
+        <length>50000</length>
+        <type>Html</type>
+        <visibleLines>25</visibleLines>
+    </fields>
+    <fields>
         <fullName>CazoomiId__c</fullName>
         <description>CazoomiId</description>
         <externalId>true</externalId>
@@ -61,6 +161,171 @@
         <length>255</length>
         <required>false</required>
         <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>cirrusadv__Created_by_Cirrus_Insight__c</fullName>
+        <defaultValue>false</defaultValue>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>Created by Cirrus Insight</label>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>cirrusadv__Email_Opened__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <formula>cirrusadv__Num_of_Opens__c &gt; 0</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Email Opened</label>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>cirrusadv__First_Clicked__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>First time a link in this email was opened.</inlineHelpText>
+        <label>First Clicked</label>
+        <required>false</required>
+        <type>DateTime</type>
+    </fields>
+    <fields>
+        <fullName>cirrusadv__First_Opened__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>The date this email was first opened by one of the recipients.</inlineHelpText>
+        <label>First Opened</label>
+        <required>false</required>
+        <type>DateTime</type>
+    </fields>
+    <fields>
+        <fullName>cirrusadv__First_Reply__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>Date when first reply received.</inlineHelpText>
+        <label>First Reply</label>
+        <required>false</required>
+        <type>DateTime</type>
+    </fields>
+    <fields>
+        <fullName>cirrusadv__Hour_Sent__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <formula>FLOOR ( MOD( cirrusadv__Time_Sent__c - ($System.OriginDateTime),1) *24)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <inlineHelpText>The hour of the day that the email was sent. (in UTC)</inlineHelpText>
+        <label>Hour Sent (UTC)</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>cirrusadv__isTracked__c</fullName>
+        <defaultValue>false</defaultValue>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>Tracked</label>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>cirrusadv__Last_Clicked__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>Last time a link in this email was opened.</inlineHelpText>
+        <label>Last Clicked</label>
+        <required>false</required>
+        <type>DateTime</type>
+    </fields>
+    <fields>
+        <fullName>cirrusadv__Last_Opened__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>The date the email was most recently opened.</inlineHelpText>
+        <label>Last Opened</label>
+        <required>false</required>
+        <type>DateTime</type>
+    </fields>
+    <fields>
+        <fullName>cirrusadv__Last_Reply__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>Date of the most recent reply.</inlineHelpText>
+        <label>Last Reply</label>
+        <required>false</required>
+        <type>DateTime</type>
+    </fields>
+    <fields>
+        <fullName>cirrusadv__Links_Clicked__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <formula>cirrusadv__Num_of_Clicks__c &gt; 0</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <inlineHelpText>Whether or not any links in this email were opened by a recipient.</inlineHelpText>
+        <label>Links Clicked</label>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>cirrusadv__Num_of_Clicks__c</fullName>
+        <defaultValue>0</defaultValue>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>Number of times links in this email were opened.</inlineHelpText>
+        <label># of Clicks</label>
+        <precision>4</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>cirrusadv__Num_of_Opens__c</fullName>
+        <defaultValue>0</defaultValue>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>Number of times this tracked email has been opened. (Cirrus Insight)</inlineHelpText>
+        <label># of Opens</label>
+        <precision>4</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>cirrusadv__Num_of_Replies__c</fullName>
+        <defaultValue>0</defaultValue>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>Number of replies received</inlineHelpText>
+        <label># of Replies</label>
+        <precision>4</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>cirrusadv__Time_Sent__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>Time the email was sent</inlineHelpText>
+        <label>Time Sent</label>
+        <required>false</required>
+        <type>DateTime</type>
+    </fields>
+    <fields>
+        <fullName>cirrusadv__Time_to_Open__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <formula>(cirrusadv__First_Opened__c - cirrusadv__Time_Sent__c) * 24 * 60</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <inlineHelpText>How long did this email take to open? (in minutes)</inlineHelpText>
+        <label>Time to Open</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <type>Number</type>
         <unique>false</unique>
     </fields>
     <fields>
@@ -173,170 +438,4 @@
     <fields>
         <fullName>Title</fullName>
     </fields>
-    <fields>
-        <fullName>cirrusadv__Created_by_Cirrus_Insight__c</fullName>
-        <defaultValue>false</defaultValue>
-        <deprecated>false</deprecated>
-        <externalId>false</externalId>
-        <label>Created by Cirrus Insight</label>
-        <type>Checkbox</type>
-    </fields>
-    <fields>
-        <fullName>cirrusadv__Email_Opened__c</fullName>
-        <deprecated>false</deprecated>
-        <externalId>false</externalId>
-        <formula>cirrusadv__Num_of_Opens__c &gt; 0</formula>
-        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
-        <label>Email Opened</label>
-        <type>Checkbox</type>
-    </fields>
-    <fields>
-        <fullName>cirrusadv__First_Clicked__c</fullName>
-        <deprecated>false</deprecated>
-        <externalId>false</externalId>
-        <inlineHelpText>First time a link in this email was opened.</inlineHelpText>
-        <label>First Clicked</label>
-        <required>false</required>
-        <type>DateTime</type>
-    </fields>
-    <fields>
-        <fullName>cirrusadv__First_Opened__c</fullName>
-        <deprecated>false</deprecated>
-        <externalId>false</externalId>
-        <inlineHelpText>The date this email was first opened by one of the recipients.</inlineHelpText>
-        <label>First Opened</label>
-        <required>false</required>
-        <type>DateTime</type>
-    </fields>
-    <fields>
-        <fullName>cirrusadv__First_Reply__c</fullName>
-        <deprecated>false</deprecated>
-        <externalId>false</externalId>
-        <inlineHelpText>Date when first reply received.</inlineHelpText>
-        <label>First Reply</label>
-        <required>false</required>
-        <type>DateTime</type>
-    </fields>
-    <fields>
-        <fullName>cirrusadv__Hour_Sent__c</fullName>
-        <deprecated>false</deprecated>
-        <externalId>false</externalId>
-        <formula>FLOOR ( MOD( cirrusadv__Time_Sent__c - ($System.OriginDateTime),1) *24)</formula>
-        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
-        <inlineHelpText>The hour of the day that the email was sent. (in UTC)</inlineHelpText>
-        <label>Hour Sent (UTC)</label>
-        <precision>18</precision>
-        <required>false</required>
-        <scale>0</scale>
-        <type>Number</type>
-        <unique>false</unique>
-    </fields>
-    <fields>
-        <fullName>cirrusadv__Last_Clicked__c</fullName>
-        <deprecated>false</deprecated>
-        <externalId>false</externalId>
-        <inlineHelpText>Last time a link in this email was opened.</inlineHelpText>
-        <label>Last Clicked</label>
-        <required>false</required>
-        <type>DateTime</type>
-    </fields>
-    <fields>
-        <fullName>cirrusadv__Last_Opened__c</fullName>
-        <deprecated>false</deprecated>
-        <externalId>false</externalId>
-        <inlineHelpText>The date the email was most recently opened.</inlineHelpText>
-        <label>Last Opened</label>
-        <required>false</required>
-        <type>DateTime</type>
-    </fields>
-    <fields>
-        <fullName>cirrusadv__Last_Reply__c</fullName>
-        <deprecated>false</deprecated>
-        <externalId>false</externalId>
-        <inlineHelpText>Date of the most recent reply.</inlineHelpText>
-        <label>Last Reply</label>
-        <required>false</required>
-        <type>DateTime</type>
-    </fields>
-    <fields>
-        <fullName>cirrusadv__Links_Clicked__c</fullName>
-        <deprecated>false</deprecated>
-        <externalId>false</externalId>
-        <formula>cirrusadv__Num_of_Clicks__c &gt; 0</formula>
-        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
-        <inlineHelpText>Whether or not any links in this email were opened by a recipient.</inlineHelpText>
-        <label>Links Clicked</label>
-        <type>Checkbox</type>
-    </fields>
-    <fields>
-        <fullName>cirrusadv__Num_of_Clicks__c</fullName>
-        <defaultValue>0</defaultValue>
-        <deprecated>false</deprecated>
-        <externalId>false</externalId>
-        <inlineHelpText>Number of times links in this email were opened.</inlineHelpText>
-        <label># of Clicks</label>
-        <precision>4</precision>
-        <required>false</required>
-        <scale>0</scale>
-        <type>Number</type>
-        <unique>false</unique>
-    </fields>
-    <fields>
-        <fullName>cirrusadv__Num_of_Opens__c</fullName>
-        <defaultValue>0</defaultValue>
-        <deprecated>false</deprecated>
-        <externalId>false</externalId>
-        <inlineHelpText>Number of times this tracked email has been opened. (Cirrus Insight)</inlineHelpText>
-        <label># of Opens</label>
-        <precision>4</precision>
-        <required>false</required>
-        <scale>0</scale>
-        <type>Number</type>
-        <unique>false</unique>
-    </fields>
-    <fields>
-        <fullName>cirrusadv__Num_of_Replies__c</fullName>
-        <defaultValue>0</defaultValue>
-        <deprecated>false</deprecated>
-        <externalId>false</externalId>
-        <inlineHelpText>Number of replies received</inlineHelpText>
-        <label># of Replies</label>
-        <precision>4</precision>
-        <required>false</required>
-        <scale>0</scale>
-        <type>Number</type>
-        <unique>false</unique>
-    </fields>
-    <fields>
-        <fullName>cirrusadv__Time_Sent__c</fullName>
-        <deprecated>false</deprecated>
-        <externalId>false</externalId>
-        <inlineHelpText>Time the email was sent</inlineHelpText>
-        <label>Time Sent</label>
-        <required>false</required>
-        <type>DateTime</type>
-    </fields>
-    <fields>
-        <fullName>cirrusadv__Time_to_Open__c</fullName>
-        <deprecated>false</deprecated>
-        <externalId>false</externalId>
-        <formula>(cirrusadv__First_Opened__c - cirrusadv__Time_Sent__c) * 24 * 60</formula>
-        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
-        <inlineHelpText>How long did this email take to open? (in minutes)</inlineHelpText>
-        <label>Time to Open</label>
-        <precision>18</precision>
-        <required>false</required>
-        <scale>0</scale>
-        <type>Number</type>
-        <unique>false</unique>
-    </fields>
-    <fields>
-        <fullName>cirrusadv__isTracked__c</fullName>
-        <defaultValue>false</defaultValue>
-        <deprecated>false</deprecated>
-        <externalId>false</externalId>
-        <label>Tracked</label>
-        <type>Checkbox</type>
-    </fields>
-    <sharingModel>ControlledByCampaign</sharingModel>
 </CustomObject>

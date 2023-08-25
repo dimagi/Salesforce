@@ -5,7 +5,27 @@
         <type>Default</type>
     </actionOverrides>
     <actionOverrides>
+        <actionName>Accept</actionName>
+        <formFactor>Large</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Accept</actionName>
+        <formFactor>Small</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
         <actionName>CancelEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>CancelEdit</actionName>
+        <formFactor>Large</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>CancelEdit</actionName>
+        <formFactor>Small</formFactor>
         <type>Default</type>
     </actionOverrides>
     <actionOverrides>
@@ -13,7 +33,27 @@
         <type>Default</type>
     </actionOverrides>
     <actionOverrides>
+        <actionName>Clone</actionName>
+        <formFactor>Large</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Clone</actionName>
+        <formFactor>Small</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
         <actionName>Delete</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Delete</actionName>
+        <formFactor>Large</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Delete</actionName>
+        <formFactor>Small</formFactor>
         <type>Default</type>
     </actionOverrides>
     <actionOverrides>
@@ -21,7 +61,27 @@
         <type>Default</type>
     </actionOverrides>
     <actionOverrides>
+        <actionName>Edit</actionName>
+        <formFactor>Large</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Edit</actionName>
+        <formFactor>Small</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
         <actionName>List</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>List</actionName>
+        <formFactor>Large</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>List</actionName>
+        <formFactor>Small</formFactor>
         <type>Default</type>
     </actionOverrides>
     <actionOverrides>
@@ -29,7 +89,27 @@
         <type>Default</type>
     </actionOverrides>
     <actionOverrides>
+        <actionName>New</actionName>
+        <formFactor>Large</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>New</actionName>
+        <formFactor>Small</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
         <actionName>SaveEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>SaveEdit</actionName>
+        <formFactor>Large</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>SaveEdit</actionName>
+        <formFactor>Small</formFactor>
         <type>Default</type>
     </actionOverrides>
     <actionOverrides>
@@ -37,7 +117,27 @@
         <type>Default</type>
     </actionOverrides>
     <actionOverrides>
+        <actionName>Tab</actionName>
+        <formFactor>Large</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Tab</actionName>
+        <formFactor>Small</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
         <actionName>View</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>View</actionName>
+        <formFactor>Large</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>View</actionName>
+        <formFactor>Small</formFactor>
         <type>Default</type>
     </actionOverrides>
     <allowInChatterGroups>false</allowInChatterGroups>
@@ -49,10 +149,25 @@
     <enableEnhancedLookup>true</enableEnhancedLookup>
     <enableFeeds>false</enableFeeds>
     <enableHistory>false</enableHistory>
+    <enableLicensing>false</enableLicensing>
     <enableReports>false</enableReports>
     <enableSearch>true</enableSearch>
     <enableSharing>true</enableSharing>
     <enableStreamingApi>true</enableStreamingApi>
+    <label>Deployment</label>
+    <nameField>
+        <label>Deployment Name</label>
+        <type>Text</type>
+    </nameField>
+    <pluralLabel>Deployments</pluralLabel>
+    <searchLayouts>
+        <lookupDialogsAdditionalFields>Project_Manager__c</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>Status__c</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>Area__c</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>Sub_Area__c</lookupDialogsAdditionalFields>
+    </searchLayouts>
+    <sharingModel>ControlledByParent</sharingModel>
+    <visibility>Public</visibility>
     <fields>
         <fullName>Area_Text__c</fullName>
         <externalId>false</externalId>
@@ -75,46 +190,57 @@
                 <value>
                     <fullName>Agriculture and Food Security</fullName>
                     <default>false</default>
+                    <label>Agriculture and Food Security</label>
                 </value>
                 <value>
                     <fullName>Economic Development</fullName>
                     <default>false</default>
+                    <label>Economic Development</label>
                 </value>
                 <value>
                     <fullName>Education and Training</fullName>
                     <default>false</default>
+                    <label>Education and Training</label>
                 </value>
                 <value>
                     <fullName>Emergency Response</fullName>
                     <default>false</default>
+                    <label>Emergency Response</label>
                 </value>
                 <value>
                     <fullName>Financial Services for the Poor</fullName>
                     <default>false</default>
+                    <label>Financial Services for the Poor</label>
                 </value>
                 <value>
                     <fullName>Gender Equality and Women&apos;s Empowerment</fullName>
                     <default>false</default>
+                    <label>Gender Equality and Women&apos;s Empowerment</label>
                 </value>
                 <value>
                     <fullName>Governance and Accountability</fullName>
                     <default>false</default>
+                    <label>Governance and Accountability</label>
                 </value>
                 <value>
                     <fullName>Health</fullName>
                     <default>false</default>
+                    <label>Health</label>
                 </value>
                 <value>
                     <fullName>Logistics</fullName>
                     <default>false</default>
+                    <label>Logistics</label>
                 </value>
                 <value>
                     <fullName>Other</fullName>
                     <default>false</default>
+                    <label>Other</label>
                 </value>
                 <value>
                     <fullName>Water, Sanitation, &amp; Hygiene</fullName>
                     <default>false</default>
+                    <label>Water, Sanitation, &amp; Hygiene</label>
                 </value>
             </valueSetDefinition>
         </valueSet>
@@ -155,10 +281,12 @@
                 <value>
                     <fullName>Yes</fullName>
                     <default>false</default>
+                    <label>Yes</label>
                 </value>
                 <value>
                     <fullName>No</fullName>
                     <default>false</default>
+                    <label>No</label>
                 </value>
             </valueSetDefinition>
         </valueSet>
@@ -207,10 +335,12 @@
                 <value>
                     <fullName>No</fullName>
                     <default>false</default>
+                    <label>No</label>
                 </value>
                 <value>
                     <fullName>Yes</fullName>
                     <default>false</default>
+                    <label>Yes</label>
                 </value>
             </valueSetDefinition>
         </valueSet>
@@ -254,22 +384,27 @@
                 <value>
                     <fullName>Community</fullName>
                     <default>false</default>
+                    <label>Community</label>
                 </value>
                 <value>
                     <fullName>Standard</fullName>
                     <default>false</default>
+                    <label>Standard</label>
                 </value>
                 <value>
                     <fullName>Pro</fullName>
                     <default>false</default>
+                    <label>Pro</label>
                 </value>
                 <value>
                     <fullName>Advanced</fullName>
                     <default>false</default>
+                    <label>Advanced</label>
                 </value>
                 <value>
                     <fullName>Enterprise</fullName>
                     <default>false</default>
+                    <label>Enterprise</label>
                 </value>
             </valueSetDefinition>
         </valueSet>
@@ -364,14 +499,17 @@
                 <value>
                     <fullName>Implementation</fullName>
                     <default>true</default>
+                    <label>Implementation</label>
                 </value>
                 <value>
                     <fullName>Consulting</fullName>
                     <default>false</default>
+                    <label>Consulting</label>
                 </value>
                 <value>
                     <fullName>Core Software Development</fullName>
                     <default>false</default>
+                    <label>Core Software Development</label>
                 </value>
             </valueSetDefinition>
         </valueSet>
@@ -408,14 +546,17 @@
                 <value>
                     <fullName>Active</fullName>
                     <default>true</default>
+                    <label>Active</label>
                 </value>
                 <value>
                     <fullName>Complete</fullName>
                     <default>false</default>
+                    <label>Complete</label>
                 </value>
                 <value>
                     <fullName>Inactive</fullName>
                     <default>false</default>
+                    <label>Inactive</label>
                 </value>
             </valueSetDefinition>
         </valueSet>
@@ -443,234 +584,292 @@
                 <value>
                     <fullName>*** Agriculture and Food Security ***</fullName>
                     <default>false</default>
+                    <label>*** Agriculture and Food Security ***</label>
                 </value>
                 <value>
                     <fullName>Agriculture</fullName>
                     <default>false</default>
+                    <label>Agriculture</label>
                 </value>
                 <value>
                     <fullName>Food Security</fullName>
                     <default>false</default>
+                    <label>Food Security</label>
                 </value>
                 <value>
                     <fullName>*** Economic Development ***</fullName>
                     <default>false</default>
+                    <label>*** Economic Development ***</label>
                 </value>
                 <value>
                     <fullName>Rural Development</fullName>
                     <default>false</default>
+                    <label>Rural Development</label>
                 </value>
                 <value>
                     <fullName>Urban Development</fullName>
                     <default>false</default>
+                    <label>Urban Development</label>
                 </value>
                 <value>
                     <fullName>Safety &amp; Security</fullName>
                     <default>false</default>
+                    <label>Safety &amp; Security</label>
                 </value>
                 <value>
                     <fullName>*** Education and Training ***</fullName>
                     <default>false</default>
+                    <label>*** Education and Training ***</label>
                 </value>
                 <value>
                     <fullName>Adult Training</fullName>
                     <default>false</default>
+                    <label>Adult Training</label>
                 </value>
                 <value>
                     <fullName>Child Education</fullName>
                     <default>false</default>
+                    <label>Child Education</label>
                 </value>
                 <value>
                     <fullName>Early Childhood Development</fullName>
                     <default>false</default>
+                    <label>Early Childhood Development</label>
                 </value>
                 <value>
                     <fullName>*** Emergency Response ***</fullName>
                     <default>false</default>
+                    <label>*** Emergency Response ***</label>
                 </value>
                 <value>
                     <fullName>Emergency Response</fullName>
                     <default>false</default>
+                    <label>Emergency Response</label>
                 </value>
                 <value>
                     <fullName>*** Financial Services for the Poor ***</fullName>
                     <default>false</default>
+                    <label>*** Financial Services for the Poor ***</label>
                 </value>
                 <value>
                     <fullName>Conditional Cash Transfer</fullName>
                     <default>false</default>
+                    <label>Conditional Cash Transfer</label>
                 </value>
                 <value>
                     <fullName>Financial Services to the Poor</fullName>
                     <default>false</default>
+                    <label>Financial Services to the Poor</label>
                 </value>
                 <value>
                     <fullName>Mobile Banking</fullName>
                     <default>false</default>
+                    <label>Mobile Banking</label>
                 </value>
                 <value>
                     <fullName>*** Gender Equality and Women&apos;s Emp ***</fullName>
                     <default>false</default>
+                    <label>*** Gender Equality and Women&apos;s Emp ***</label>
                 </value>
                 <value>
                     <fullName>Gender Services</fullName>
                     <default>false</default>
+                    <label>Gender Services</label>
                 </value>
                 <value>
                     <fullName>Sex Workers</fullName>
                     <default>false</default>
+                    <label>Sex Workers</label>
                 </value>
                 <value>
                     <fullName>*** Governance and Accountability ***</fullName>
                     <default>false</default>
+                    <label>*** Governance and Accountability ***</label>
                 </value>
                 <value>
                     <fullName>Governence</fullName>
                     <default>false</default>
+                    <label>Governence</label>
                 </value>
                 <value>
                     <fullName>Social Accountability</fullName>
                     <default>false</default>
+                    <label>Social Accountability</label>
                 </value>
                 <value>
                     <fullName>*** Health ***</fullName>
                     <default>false</default>
+                    <label>*** Health ***</label>
                 </value>
                 <value>
                     <fullName>Cardiac Diseases</fullName>
                     <default>false</default>
+                    <label>Cardiac Diseases</label>
                 </value>
                 <value>
                     <fullName>Care coordination</fullName>
                     <default>false</default>
+                    <label>Care coordination</label>
                 </value>
                 <value>
                     <fullName>Cervical Cancer</fullName>
                     <default>false</default>
+                    <label>Cervical Cancer</label>
                 </value>
                 <value>
                     <fullName>Diagnostics</fullName>
                     <default>false</default>
+                    <label>Diagnostics</label>
                 </value>
                 <value>
                     <fullName>Diarrhea</fullName>
                     <default>false</default>
+                    <label>Diarrhea</label>
                 </value>
                 <value>
                     <fullName>Family Planning</fullName>
                     <default>false</default>
+                    <label>Family Planning</label>
                 </value>
                 <value>
                     <fullName>HIV/AIDS</fullName>
                     <default>false</default>
+                    <label>HIV/AIDS</label>
                 </value>
                 <value>
                     <fullName>Infectious Diseases</fullName>
                     <default>false</default>
+                    <label>Infectious Diseases</label>
                 </value>
                 <value>
                     <fullName>Informatics</fullName>
                     <default>false</default>
+                    <label>Informatics</label>
                 </value>
                 <value>
                     <fullName>Malaria</fullName>
                     <default>false</default>
+                    <label>Malaria</label>
                 </value>
                 <value>
                     <fullName>Maternal, Newborn, &amp; Child Health</fullName>
                     <default>false</default>
+                    <label>Maternal, Newborn, &amp; Child Health</label>
                 </value>
                 <value>
                     <fullName>Medication adherence</fullName>
                     <default>false</default>
+                    <label>Medication adherence</label>
                 </value>
                 <value>
                     <fullName>Mental Health</fullName>
                     <default>false</default>
+                    <label>Mental Health</label>
                 </value>
                 <value>
                     <fullName>Neglected Tropical Diseases</fullName>
                     <default>false</default>
+                    <label>Neglected Tropical Diseases</label>
                 </value>
                 <value>
                     <fullName>Non-Communicable Diseases</fullName>
                     <default>false</default>
+                    <label>Non-Communicable Diseases</label>
                 </value>
                 <value>
                     <fullName>Nutrition</fullName>
                     <default>false</default>
+                    <label>Nutrition</label>
                 </value>
                 <value>
                     <fullName>Other</fullName>
                     <default>false</default>
+                    <label>Other</label>
                 </value>
                 <value>
                     <fullName>Polio</fullName>
                     <default>false</default>
+                    <label>Polio</label>
                 </value>
                 <value>
                     <fullName>Primary Care</fullName>
                     <default>false</default>
+                    <label>Primary Care</label>
                 </value>
                 <value>
                     <fullName>Respiratory Diseases</fullName>
                     <default>false</default>
+                    <label>Respiratory Diseases</label>
                 </value>
                 <value>
                     <fullName>Surgery</fullName>
                     <default>false</default>
+                    <label>Surgery</label>
                 </value>
                 <value>
                     <fullName>Surveillance</fullName>
                     <default>false</default>
+                    <label>Surveillance</label>
                 </value>
                 <value>
                     <fullName>Telemedicine</fullName>
                     <default>false</default>
+                    <label>Telemedicine</label>
                 </value>
                 <value>
                     <fullName>Tuberculosis</fullName>
                     <default>false</default>
+                    <label>Tuberculosis</label>
                 </value>
                 <value>
                     <fullName>Vaccinations</fullName>
                     <default>false</default>
+                    <label>Vaccinations</label>
                 </value>
                 <value>
                     <fullName>*** Logistics ***</fullName>
                     <default>false</default>
+                    <label>*** Logistics ***</label>
                 </value>
                 <value>
                     <fullName>Commodity Tracking/Procurement</fullName>
                     <default>false</default>
+                    <label>Commodity Tracking/Procurement</label>
                 </value>
                 <value>
                     <fullName>Human Resources</fullName>
                     <default>false</default>
+                    <label>Human Resources</label>
                 </value>
                 <value>
                     <fullName>*** Other ***</fullName>
                     <default>false</default>
+                    <label>*** Other ***</label>
                 </value>
                 <value>
                     <fullName>Environment</fullName>
                     <default>false</default>
+                    <label>Environment</label>
                 </value>
                 <value>
                     <fullName>Orphans and Vulnerable Children</fullName>
                     <default>false</default>
+                    <label>Orphans and Vulnerable Children</label>
                 </value>
                 <value>
                     <fullName>Telecommunications</fullName>
                     <default>false</default>
+                    <label>Telecommunications</label>
                 </value>
                 <value>
                     <fullName>*** Water, Sanitation, &amp; Hygiene ***</fullName>
                     <default>false</default>
+                    <label>*** Water, Sanitation, &amp; Hygiene ***</label>
                 </value>
                 <value>
                     <fullName>Water, Sanitation, &amp; Hygiene</fullName>
                     <default>false</default>
+                    <label>Water, Sanitation, &amp; Hygiene</label>
                 </value>
             </valueSetDefinition>
         </valueSet>
@@ -686,22 +885,9 @@
         <type>LongTextArea</type>
         <visibleLines>3</visibleLines>
     </fields>
-    <label>Deployment</label>
     <listViews>
         <fullName>All</fullName>
         <filterScope>Everything</filterScope>
         <label>All</label>
     </listViews>
-    <nameField>
-        <label>Deployment Name</label>
-        <type>Text</type>
-    </nameField>
-    <pluralLabel>Deployments</pluralLabel>
-    <searchLayouts>
-        <lookupDialogsAdditionalFields>Project_Manager__c</lookupDialogsAdditionalFields>
-        <lookupDialogsAdditionalFields>Status__c</lookupDialogsAdditionalFields>
-        <lookupDialogsAdditionalFields>Area__c</lookupDialogsAdditionalFields>
-        <lookupDialogsAdditionalFields>Sub_Area__c</lookupDialogsAdditionalFields>
-    </searchLayouts>
-    <sharingModel>ControlledByParent</sharingModel>
 </CustomObject>

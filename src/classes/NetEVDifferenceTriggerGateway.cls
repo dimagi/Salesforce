@@ -62,6 +62,7 @@ public class NetEVDifferenceTriggerGateway {
                 snapShotsDiff = calculateDiff(snapShotsDiff, lastMonthSnapshot, priorMonthSnapShot);
                 snapShotsDiff.Delta_Type__c = getDeltaType(snapShotsDiff);
             } else {
+               // if(lastMonthSnapshot.Stage__c != 'Stage 3 - Prospect'){
                 snapShotsDiff.Delta_Type__c = NEW_OPP;
                 snapShotsDiff.DIFF_12_Month_Cash_Minus_Expense_Income__c = lastMonthSnapshot.X12_Month_Cash_Minus_Expense_Income_EV__c != null ? lastMonthSnapshot.X12_Month_Cash_Minus_Expense_Income_EV__c: 0;
                 snapShotsDiff.DIFF_18_Month_Cash_Minus_Expenses_Income__c = lastMonthSnapshot.X18_Month_Cash_Minus_Expenses_Income_EV__c != null ?  lastMonthSnapshot.X18_Month_Cash_Minus_Expenses_Income_EV__c: 0;
@@ -71,8 +72,8 @@ public class NetEVDifferenceTriggerGateway {
                 snapShotsDiff.Monthly_Recurring_Revenue_MRR__c = lastMonthSnapshot.Monthly_Recurring_Revenue_MRR__c != null ? lastMonthSnapshot.Monthly_Recurring_Revenue_MRR__c: 0;
                 snapShotsDiff.Expected_Monthly_Recurring_Revenue_MRR__c = lastMonthSnapshot.Expected_Monthly_Recurring_Revenue_MRR__c != null ? lastMonthSnapshot.Expected_Monthly_Recurring_Revenue_MRR__c: 0;
                 snapShotsDiff.Diff_Buffer_EV__c = lastMonthSnapshot.Buffer_EV__c;
+            // }
             }
-
             snapShotDiffs.add(snapShotsDiff);
         }
 
@@ -241,7 +242,7 @@ public class NetEVDifferenceTriggerGateway {
         if (snapShotDiffs.size() > 0) {
             insert snapShotDiffs;
             if (!Test.isRunningTest()) {
-                EmailHelper.sendEmail(BatchDefaultSettings__c.getOrgDefaults().Error_Emails__c.split(','), 'EV Diff Job - Clsoed', 'EV Net Diff Job with Closed status end for date : ' + executeDate);
+                EmailHelper.sendEmail(BatchDefaultSettings__c.getOrgDefaults().Error_Emails__c.split(','), 'EV Diff Job - Closed', 'EV Net Diff Job with Closed status end for date : ' + executeDate);
             }
         }
     }

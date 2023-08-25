@@ -16,6 +16,7 @@ public class PROFinancialComponentController {
     public String searchError { get; set; }
     public string seachProjectName { get; set; }
     public List<DContract__c> searchedProjects { get; set; }
+    public string myLightningHostname {get;set;}
     
     private String sfInstanceName;
     private Map<Id,List<DContract__c>> childcontractMap;
@@ -24,7 +25,9 @@ public class PROFinancialComponentController {
     public PROFinancialComponentController() {
         this.searchedProjects = new List<DContract__c>();
         this.seachProjectName = '';
-        this.sfInstanceName = ApexPages.currentPage().getHeaders().get('X-Salesforce-Forwarded-To');
+        this.sfInstanceName = ApexPages.currentPage().getHeaders().get('Host'); //ApexPages.currentPage().getHeaders().get('X-Salesforce-Forwarded-To');
+        system.debug('@@this.sfInstanceName' +this.sfInstanceName);
+        this.myLightningHostname = DomainCreator.getLightningHostname();
     }
     
     public List<DimagiToolsController.PROProject> getProjectsForFinancialTab() {
@@ -165,7 +168,7 @@ public class PROFinancialComponentController {
         this.proBudgetList = new List<DimagiToolsController.PROProjectBudget>();
         Map<Id, List<Time_Card__c>> contractIdTimeCardsMap = new Map<Id, List<Time_Card__c>>();
         if (this.contractMap.containsKey(this.financialContractId)) {
-            this.contractUrl = 'https://' + this.sfInstanceName + '/' + this.financialContractId;
+            this.contractUrl = 'https://' + this.myLightningHostname + '/' + this.financialContractId;
             Set<Id> parentAndChildContractIds = new Set<Id> {this.financialContractId};
                 DContract__c contractObj = this.contractMap.get(this.financialContractId);
             List<DContract__c> childContracts = this.childcontractMap.containsKey(this.financialContractId) ? this.childcontractMap.get(this.financialContractId) : null;

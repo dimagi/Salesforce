@@ -22,7 +22,7 @@ public class FTETimeManager {
         this.assignedMap = new Map<Id, FTEEmployeeTime>();
         this.unassignedMap = new Map<Id, FTEEmployeeTime>();
         this.unassigned = new FTEEmployeeTime('Unassigned', null, false); // Sum of all unassigned employee contracts       
-        this.assignedTimeMap = new Map<Id, FTEEmployeeTime>();
+        this.assignedTimeMap = new Map<Id, FTEEmployeeTime>();       
         this.unAssignedTimeMap = new FTEEmployeeTime('Un Assigned', null, true, this.fteYear); 
     }
 
@@ -320,7 +320,7 @@ public class FTETimeManager {
         return Math.mod(rand, upperLimit);
     }
     
-     public void updateWorkcard(Decimal days, Integer month, Id contractId){
+     public void updateWorkcard(Decimal remainDays, Decimal days, Integer month, FTEUploadData ftedataRec, Id contractId, Boolean assigned){
         List<FTE_Work_Card__c> workCardsFromDB = [SELECT Id, Contract__c, Month_1__c, Month_2__c, Month_3__c, Month_4__c, Month_5__c, Month_6__c, Month_7__c, Month_8__c, Month_9__c, Month_10__c, Month_11__c,
                                             Month_12__c, Total__c, Total_Hours__c FROM FTE_Work_Card__c WHERE Employee__c =:  this.employee.Id AND Contract__C =: contractId AND Year__c =: this.fteYear];
         List<FTE_Work_Card__c> workCards = [SELECT Id,Contract__C FROM FTE_Work_Card__c WHERE Employee__c =:  this.employee.Id AND Year__c =: this.fteYear];
@@ -337,7 +337,26 @@ public class FTETimeManager {
 
             workCard.put('Total__c', totalValue + days);
             workCard.put('Total_Hours__c', totalHoursValue + (days * 8));
-            workCard.put('Month_' + month + '__c', monthValue + days);
+            if(assigned == true){
+                 decimal missingtime =  remainDays + monthValue;
+                 decimal miss = missingtime - days;
+                if(missingtime < days){
+                    insert new FTE_Data_Record_Status__c(Status__c = 'Insufficient hours', Status_Message__c = 'There was no enough hours to move from unassigned for month : ' + month + '. Contract: '
+                                                         + fteDataRec.getContractName() + ' Employee: ' + fteDataRec.getEmployeeName() + ' hours missing : ' + miss.setScale(2));
+                }
+                else
+                {
+                    workCard.put('Month_' + month + '__c', days);
+                }
+                
+            }
+               
+            else
+            {
+                  workCard.put('Month_' + month + '__c', monthValue + days);
+            }
+              
+          //  monthValue + days
             if(workCard.Total__c == 0  && workCards.size() > 1){
                 delete workCard;
                 delete dayCardsFromDb;

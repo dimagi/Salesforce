@@ -5,7 +5,27 @@
         <type>Default</type>
     </actionOverrides>
     <actionOverrides>
+        <actionName>Accept</actionName>
+        <formFactor>Large</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Accept</actionName>
+        <formFactor>Small</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
         <actionName>CancelEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>CancelEdit</actionName>
+        <formFactor>Large</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>CancelEdit</actionName>
+        <formFactor>Small</formFactor>
         <type>Default</type>
     </actionOverrides>
     <actionOverrides>
@@ -13,7 +33,27 @@
         <type>Default</type>
     </actionOverrides>
     <actionOverrides>
+        <actionName>Clone</actionName>
+        <formFactor>Large</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Clone</actionName>
+        <formFactor>Small</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
         <actionName>Delete</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Delete</actionName>
+        <formFactor>Large</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Delete</actionName>
+        <formFactor>Small</formFactor>
         <type>Default</type>
     </actionOverrides>
     <actionOverrides>
@@ -21,7 +61,27 @@
         <type>Default</type>
     </actionOverrides>
     <actionOverrides>
+        <actionName>Edit</actionName>
+        <formFactor>Large</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Edit</actionName>
+        <formFactor>Small</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
         <actionName>List</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>List</actionName>
+        <formFactor>Large</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>List</actionName>
+        <formFactor>Small</formFactor>
         <type>Default</type>
     </actionOverrides>
     <actionOverrides>
@@ -29,7 +89,27 @@
         <type>Default</type>
     </actionOverrides>
     <actionOverrides>
+        <actionName>New</actionName>
+        <formFactor>Large</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>New</actionName>
+        <formFactor>Small</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
         <actionName>SaveEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>SaveEdit</actionName>
+        <formFactor>Large</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>SaveEdit</actionName>
+        <formFactor>Small</formFactor>
         <type>Default</type>
     </actionOverrides>
     <actionOverrides>
@@ -37,7 +117,27 @@
         <type>Default</type>
     </actionOverrides>
     <actionOverrides>
+        <actionName>Tab</actionName>
+        <formFactor>Large</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Tab</actionName>
+        <formFactor>Small</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
         <actionName>View</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>View</actionName>
+        <formFactor>Large</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>View</actionName>
+        <formFactor>Small</formFactor>
         <type>Default</type>
     </actionOverrides>
     <allowInChatterGroups>false</allowInChatterGroups>
@@ -47,10 +147,21 @@
     <enableBulkApi>true</enableBulkApi>
     <enableFeeds>false</enableFeeds>
     <enableHistory>true</enableHistory>
+    <enableLicensing>false</enableLicensing>
     <enableReports>true</enableReports>
     <enableSearch>true</enableSearch>
     <enableSharing>true</enableSharing>
     <enableStreamingApi>true</enableStreamingApi>
+    <label>Project Report Out</label>
+    <nameField>
+        <label>Project Report Out Name</label>
+        <trackHistory>false</trackHistory>
+        <type>Text</type>
+    </nameField>
+    <pluralLabel>Project Report Outs</pluralLabel>
+    <searchLayouts></searchLayouts>
+    <sharingModel>ControlledByParent</sharingModel>
+    <visibility>Public</visibility>
     <fields>
         <fullName>Ability_to_meet_Schedule__c</fullName>
         <externalId>false</externalId>
@@ -65,14 +176,17 @@
                 <value>
                     <fullName>Green</fullName>
                     <default>false</default>
+                    <label>Green</label>
                 </value>
                 <value>
                     <fullName>Yellow</fullName>
                     <default>false</default>
+                    <label>Yellow</label>
                 </value>
                 <value>
                     <fullName>Red</fullName>
                     <default>false</default>
+                    <label>Red</label>
                 </value>
             </valueSetDefinition>
         </valueSet>
@@ -91,14 +205,17 @@
                 <value>
                     <fullName>Green</fullName>
                     <default>false</default>
+                    <label>Green</label>
                 </value>
                 <value>
                     <fullName>Yellow</fullName>
                     <default>false</default>
+                    <label>Yellow</label>
                 </value>
                 <value>
                     <fullName>Red</fullName>
                     <default>false</default>
+                    <label>Red</label>
                 </value>
             </valueSetDefinition>
         </valueSet>
@@ -163,14 +280,17 @@
                 <value>
                     <fullName>Green</fullName>
                     <default>false</default>
+                    <label>Green</label>
                 </value>
                 <value>
                     <fullName>Yellow</fullName>
                     <default>false</default>
+                    <label>Yellow</label>
                 </value>
                 <value>
                     <fullName>Red</fullName>
                     <default>false</default>
+                    <label>Red</label>
                 </value>
             </valueSetDefinition>
         </valueSet>
@@ -243,16 +363,6 @@
         <unique>false</unique>
     </fields>
     <fields>
-        <fullName>PM_email__c</fullName>
-        <externalId>false</externalId>
-        <label>Project Manager Email</label>
-        <required>false</required>
-        <trackHistory>false</trackHistory>
-        <trackTrending>false</trackTrending>
-        <type>Email</type>
-        <unique>false</unique>
-    </fields>
-    <fields>
         <fullName>Partner_Relationship__c</fullName>
         <externalId>false</externalId>
         <label>Partner Relationship</label>
@@ -266,17 +376,30 @@
                 <value>
                     <fullName>Green</fullName>
                     <default>false</default>
+                    <label>Green</label>
                 </value>
                 <value>
                     <fullName>Yellow</fullName>
                     <default>false</default>
+                    <label>Yellow</label>
                 </value>
                 <value>
                     <fullName>Red</fullName>
                     <default>false</default>
+                    <label>Red</label>
                 </value>
             </valueSetDefinition>
         </valueSet>
+    </fields>
+    <fields>
+        <fullName>PM_email__c</fullName>
+        <externalId>false</externalId>
+        <label>Project Manager Email</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Email</type>
+        <unique>false</unique>
     </fields>
     <fields>
         <fullName>Project_Dashboard__c</fullName>
@@ -321,12 +444,14 @@
             <valueSetDefinition>
                 <sorted>false</sorted>
                 <value>
-                    <fullName>Has been updated</fullName>
+                    <fullName>Reviewed and no change needed</fullName>
                     <default>false</default>
+                    <label>Reviewed and no change needed</label>
                 </value>
                 <value>
-                    <fullName>Has been reviewed and did not need updating.</fullName>
+                    <fullName>Reviewed and updates requested</fullName>
                     <default>false</default>
+                    <label>Reviewed and updates requested</label>
                 </value>
             </valueSetDefinition>
         </valueSet>
@@ -359,16 +484,19 @@
                     <fullName>Green</fullName>
                     <color>#009900</color>
                     <default>false</default>
+                    <label>Green</label>
                 </value>
                 <value>
                     <fullName>Yellow</fullName>
                     <color>#F3D904</color>
                     <default>false</default>
+                    <label>Yellow</label>
                 </value>
                 <value>
                     <fullName>Red</fullName>
                     <color>#FF0000</color>
                     <default>false</default>
+                    <label>Red</label>
                 </value>
             </valueSetDefinition>
         </valueSet>
@@ -384,7 +512,6 @@
         <type>Text</type>
         <unique>false</unique>
     </fields>
-    <label>Project Report Out</label>
     <listViews>
         <fullName>All</fullName>
         <columns>NAME</columns>
@@ -393,6 +520,7 @@
         <columns>Key_Accomplishments_Last_Two_Weeks__c</columns>
         <columns>Key_Next_Steps_next_2_weeks__c</columns>
         <columns>Issues_Questions_Notables__c</columns>
+        <columns>CREATEDBY_USER</columns>
         <filterScope>Everything</filterScope>
         <label>All</label>
     </listViews>
@@ -408,16 +536,29 @@
         <columns>Key_Next_Steps_next_2_weeks__c</columns>
         <columns>Client_Facing__c</columns>
         <filterScope>Everything</filterScope>
+        <filters>
+            <field>NAME</field>
+            <operation>notContain</operation>
+            <value>Belize</value>
+        </filters>
         <label>All Report Outs</label>
     </listViews>
-    <nameField>
-        <label>Project Report Out Name</label>
-        <trackHistory>false</trackHistory>
-        <type>Text</type>
-    </nameField>
-    <pluralLabel>Project Report Outs</pluralLabel>
-    <searchLayouts/>
-    <sharingModel>ControlledByParent</sharingModel>
+    <listViews>
+        <fullName>Project_Report_Outs_Quick_Summary_View</fullName>
+        <columns>NAME</columns>
+        <columns>Contract__c</columns>
+        <columns>Report_Out_Date__c</columns>
+        <columns>Status__c</columns>
+        <columns>Deliverables_Completed__c</columns>
+        <columns>PM_email__c</columns>
+        <columns>Key_Accomplishments_Last_Two_Weeks__c</columns>
+        <columns>Key_Next_Steps_next_2_weeks__c</columns>
+        <columns>Partner_Relationship__c</columns>
+        <columns>Ability_to_meet_Schedule__c</columns>
+        <columns>Ability_to_stay_within_Scope__c</columns>
+        <filterScope>Everything</filterScope>
+        <label>Project Report Outs - Quick Summary View</label>
+    </listViews>
     <validationRules>
         <fullName>Must_be_2nd_or_4th_Thursday</fullName>
         <active>true</active>

@@ -5,7 +5,27 @@
         <type>Default</type>
     </actionOverrides>
     <actionOverrides>
+        <actionName>Accept</actionName>
+        <formFactor>Large</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Accept</actionName>
+        <formFactor>Small</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
         <actionName>CancelEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>CancelEdit</actionName>
+        <formFactor>Large</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>CancelEdit</actionName>
+        <formFactor>Small</formFactor>
         <type>Default</type>
     </actionOverrides>
     <actionOverrides>
@@ -13,7 +33,27 @@
         <type>Default</type>
     </actionOverrides>
     <actionOverrides>
+        <actionName>Clone</actionName>
+        <formFactor>Large</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Clone</actionName>
+        <formFactor>Small</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
         <actionName>Delete</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Delete</actionName>
+        <formFactor>Large</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Delete</actionName>
+        <formFactor>Small</formFactor>
         <type>Default</type>
     </actionOverrides>
     <actionOverrides>
@@ -21,7 +61,27 @@
         <type>Default</type>
     </actionOverrides>
     <actionOverrides>
+        <actionName>Edit</actionName>
+        <formFactor>Large</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Edit</actionName>
+        <formFactor>Small</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
         <actionName>List</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>List</actionName>
+        <formFactor>Large</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>List</actionName>
+        <formFactor>Small</formFactor>
         <type>Default</type>
     </actionOverrides>
     <actionOverrides>
@@ -29,7 +89,27 @@
         <type>Default</type>
     </actionOverrides>
     <actionOverrides>
+        <actionName>New</actionName>
+        <formFactor>Large</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>New</actionName>
+        <formFactor>Small</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
         <actionName>SaveEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>SaveEdit</actionName>
+        <formFactor>Large</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>SaveEdit</actionName>
+        <formFactor>Small</formFactor>
         <type>Default</type>
     </actionOverrides>
     <actionOverrides>
@@ -37,7 +117,27 @@
         <type>Default</type>
     </actionOverrides>
     <actionOverrides>
+        <actionName>Tab</actionName>
+        <formFactor>Large</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Tab</actionName>
+        <formFactor>Small</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
         <actionName>View</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>View</actionName>
+        <formFactor>Large</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>View</actionName>
+        <formFactor>Small</formFactor>
         <type>Default</type>
     </actionOverrides>
     <allowInChatterGroups>false</allowInChatterGroups>
@@ -47,24 +147,24 @@
     <enableBulkApi>true</enableBulkApi>
     <enableFeeds>false</enableFeeds>
     <enableHistory>false</enableHistory>
+    <enableLicensing>false</enableLicensing>
     <enableReports>true</enableReports>
     <enableSearch>true</enableSearch>
     <enableSharing>true</enableSharing>
     <enableStreamingApi>true</enableStreamingApi>
+    <label>PRO Contract Snapshot</label>
+    <nameField>
+        <label>PRO Contract Snapshot Name</label>
+        <type>Text</type>
+    </nameField>
+    <pluralLabel>PRO Contract Snapshot</pluralLabel>
+    <searchLayouts></searchLayouts>
+    <sharingModel>ReadWrite</sharingModel>
+    <visibility>Public</visibility>
     <fields>
         <fullName>Budget_Used__c</fullName>
         <externalId>false</externalId>
         <label>% Budget Used</label>
-        <precision>18</precision>
-        <required>false</required>
-        <scale>0</scale>
-        <trackTrending>false</trackTrending>
-        <type>Percent</type>
-    </fields>
-    <fields>
-        <fullName>Buffer_By_Deliverables_Complete__c</fullName>
-        <externalId>false</externalId>
-        <label>Buffer % by Deliverables Complete</label>
         <precision>18</precision>
         <required>false</required>
         <scale>0</scale>
@@ -80,6 +180,16 @@
         <precision>18</precision>
         <required>false</required>
         <scale>2</scale>
+        <trackTrending>false</trackTrending>
+        <type>Percent</type>
+    </fields>
+    <fields>
+        <fullName>Buffer_By_Deliverables_Complete__c</fullName>
+        <externalId>false</externalId>
+        <label>Buffer % by Deliverables Complete</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
         <trackTrending>false</trackTrending>
         <type>Percent</type>
     </fields>
@@ -156,9 +266,9 @@
         <type>Currency</type>
     </fields>
     <fields>
-        <fullName>GS_Net_Income_for_Period__c</fullName>
+        <fullName>GS_Net_Income_for_Period_by_Handover__c</fullName>
         <externalId>false</externalId>
-        <label>GS Net Income for Period</label>
+        <label>GS Net Income for Period by Handover</label>
         <precision>18</precision>
         <required>false</required>
         <scale>2</scale>
@@ -166,9 +276,9 @@
         <type>Currency</type>
     </fields>
     <fields>
-        <fullName>GS_Net_Income_for_Period_by_Handover__c</fullName>
+        <fullName>GS_Net_Income_for_Period__c</fullName>
         <externalId>false</externalId>
-        <label>GS Net Income for Period by Handover</label>
+        <label>GS Net Income for Period</label>
         <precision>18</precision>
         <required>false</required>
         <scale>2</scale>
@@ -230,6 +340,16 @@
         <type>Currency</type>
     </fields>
     <fields>
+        <fullName>GS_Services_Completed_for_Period__c</fullName>
+        <externalId>false</externalId>
+        <label>GS Services Completed for Period</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
         <fullName>GS_Services_Completed_Handover__c</fullName>
         <externalId>false</externalId>
         <label>GS Services Completed @ Handover</label>
@@ -243,16 +363,6 @@
         <fullName>GS_Services_Completed__c</fullName>
         <externalId>false</externalId>
         <label>GS Services Completed</label>
-        <precision>18</precision>
-        <required>false</required>
-        <scale>2</scale>
-        <trackTrending>false</trackTrending>
-        <type>Currency</type>
-    </fields>
-    <fields>
-        <fullName>GS_Services_Completed_for_Period__c</fullName>
-        <externalId>false</externalId>
-        <label>GS Services Completed for Period</label>
         <precision>18</precision>
         <required>false</required>
         <scale>2</scale>
@@ -310,6 +420,16 @@
         <type>Currency</type>
     </fields>
     <fields>
+        <fullName>Product_Spend_for_Period__c</fullName>
+        <externalId>false</externalId>
+        <label>Product Spend for Period</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
         <fullName>Product_Spend__c</fullName>
         <externalId>false</externalId>
         <inlineHelpText>Do not use this field, use Product Spend.</inlineHelpText>
@@ -321,29 +441,9 @@
         <type>Percent</type>
     </fields>
     <fields>
-        <fullName>Product_Spend_for_Period__c</fullName>
-        <externalId>false</externalId>
-        <label>Product Spend for Period</label>
-        <precision>18</precision>
-        <required>false</required>
-        <scale>2</scale>
-        <trackTrending>false</trackTrending>
-        <type>Currency</type>
-    </fields>
-    <fields>
         <fullName>Project_Quality_Overall_Status__c</fullName>
         <externalId>false</externalId>
         <label>Project Quality (Overall Status)</label>
-        <precision>18</precision>
-        <required>false</required>
-        <scale>2</scale>
-        <trackTrending>false</trackTrending>
-        <type>Currency</type>
-    </fields>
-    <fields>
-        <fullName>Services_Spend__c</fullName>
-        <externalId>false</externalId>
-        <label>Services Spend</label>
         <precision>18</precision>
         <required>false</required>
         <scale>2</scale>
@@ -361,6 +461,16 @@
         <type>Currency</type>
     </fields>
     <fields>
+        <fullName>Services_Spend__c</fullName>
+        <externalId>false</externalId>
+        <label>Services Spend</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
         <fullName>Snapshot_Date__c</fullName>
         <externalId>false</externalId>
         <label>Snapshot Date</label>
@@ -369,9 +479,9 @@
         <type>Date</type>
     </fields>
     <fields>
-        <fullName>Total_Calculated_Costs__c</fullName>
+        <fullName>Total_Calculated_Costs_for_Period__c</fullName>
         <externalId>false</externalId>
-        <label>Total Calculated Costs</label>
+        <label>Total Calculated Costs for Period</label>
         <precision>18</precision>
         <required>false</required>
         <scale>2</scale>
@@ -379,9 +489,9 @@
         <type>Currency</type>
     </fields>
     <fields>
-        <fullName>Total_Calculated_Costs_for_Period__c</fullName>
+        <fullName>Total_Calculated_Costs__c</fullName>
         <externalId>false</externalId>
-        <label>Total Calculated Costs for Period</label>
+        <label>Total Calculated Costs</label>
         <precision>18</precision>
         <required>false</required>
         <scale>2</scale>
@@ -398,7 +508,6 @@
         <trackTrending>false</trackTrending>
         <type>Percent</type>
     </fields>
-    <label>PRO Contract Snapshot</label>
     <listViews>
         <fullName>All</fullName>
         <columns>OBJECT_ID</columns>
@@ -408,11 +517,4 @@
         <filterScope>Everything</filterScope>
         <label>All</label>
     </listViews>
-    <nameField>
-        <label>PRO Contract Snapshot Name</label>
-        <type>Text</type>
-    </nameField>
-    <pluralLabel>PRO Contract Snapshot</pluralLabel>
-    <searchLayouts/>
-    <sharingModel>ReadWrite</sharingModel>
 </CustomObject>

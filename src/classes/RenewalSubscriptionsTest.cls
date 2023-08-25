@@ -53,9 +53,9 @@ public class RenewalSubscriptionsTest {
         insert domain4;
 
         Business_Unit__c bizUnit = new Business_Unit__c(Name = 'Test Business Unit 1');
-        Opportunity opp = new Opportunity(Name = 'AAA Opportunity 1', Business_Unit_Owner__c = bizUnit.Id, StageName = 'Stage 5 - Submitted',
+        Opportunity opp = new Opportunity(Name = 'AAA Opportunity 1', Business_Unit_Owner__c = bizUnit.Id, StageName = 'Stage 5 - Submitted',Expense_Income__c = 0,
                                                  CloseDate = date.today().addMonths(5), Probability = 30, Domain_Name__c = domain4.Id,
-                                                 Opportunity_Owner_Division__c = 'Solutions', Opportunity_Owner_Sub_Division__c = 'Inbound Sales');
+                                                 Opportunity_Owner_Division__c = 'Solutions', Opportunity_Owner_Sub_Division__c = 'USH - Tech',Country__c = 'a00b0000001AOufAAG');
         insert opp;
 
 
@@ -73,37 +73,37 @@ public class RenewalSubscriptionsTest {
         Accounting_SoftwarePlanVersion__c planVersion3 = new Accounting_SoftwarePlanVersion__c(Server_Name__c = 'CommCareHQ', Accounting_SoftwarePlan__c = softwarePlan3.Id);
         insert planVersion3;
 
-        Accounting_Subscription__c subscription1 = new Accounting_Subscription__c(Server_Name__c = 'CommCareHQ', is_trial__c = false, date_start__c = Date.newInstance(2016, 1, 1), date_end__c = Date.newInstance(2017, 1, 1), service_type__c = 'Implementation', is_active__c = true,
+        Accounting_Subscription__c subscription1 = new Accounting_Subscription__c(Server_Name__c = 'CommCareHQ', is_trial__c = false, date_start__c = Date.newInstance(2023, 1, 1), date_end__c = Date.newInstance(2023, 6, 14), service_type__c = 'Implementation', is_active__c = true,
                                                                                   account__c = billingAccount1.Id, Accounting_subscriber_domain__c = domain1.Id, plan_version__c = planVersion1.Id);
         insert subscription1; // should create
 
-        Accounting_Subscription__c subscription2 = new Accounting_Subscription__c(Server_Name__c = 'CommCareHQ', is_trial__c = false, date_start__c = Date.newInstance(2016, 1, 1), date_end__c = Date.newInstance(2016, 11, 2), service_type__c = 'Implementation', is_active__c = false,
+        Accounting_Subscription__c subscription2 = new Accounting_Subscription__c(Server_Name__c = 'CommCareHQ', is_trial__c = false, date_start__c = Date.newInstance(2023, 1, 1), date_end__c = Date.newInstance(2023, 5, 2), service_type__c = 'Implementation', is_active__c = false,
                                                                                   account__c = billingAccount2.Id, Accounting_subscriber_domain__c = domain2.Id, plan_version__c = planVersion2.Id);
         insert subscription2;
-        Accounting_Subscription__c subscription3 = new Accounting_Subscription__c(Server_Name__c = 'CommCareHQ', is_trial__c = false, date_start__c = Date.newInstance(2016, 6, 1), date_end__c = Date.newInstance(2016, 12, 3), service_type__c = 'Implementation', is_active__c = true,
+        Accounting_Subscription__c subscription3 = new Accounting_Subscription__c(Server_Name__c = 'CommCareHQ', is_trial__c = false, date_start__c = Date.newInstance(2023, 6, 1), date_end__c = Date.newInstance(2023, 6, 13), service_type__c = 'Implementation', is_active__c = true,
                                                                                   account__c = billingAccount3.Id, Accounting_subscriber_domain__c = domain2.Id, plan_version__c = planVersion2.Id);
         insert subscription3;
-        Accounting_Subscription__c subscription4 = new Accounting_Subscription__c(Server_Name__c = 'CommCareHQ', is_trial__c = false, date_start__c = Date.newInstance(2016, 12, 3), date_end__c = Date.newInstance(2017, 5, 20), service_type__c = 'Implementation', is_active__c = true,
+        Accounting_Subscription__c subscription4 = new Accounting_Subscription__c(Server_Name__c = 'CommCareHQ', is_trial__c = false, date_start__c = Date.newInstance(2023, 6, 13), date_end__c = Date.newInstance(2024, 8, 1), service_type__c = 'Implementation', is_active__c = true,
                                                                                   account__c = billingAccount4.Id, Accounting_subscriber_domain__c = domain2.Id, plan_version__c = planVersion2.Id);
         insert subscription4; // has future subscription no create
 
-        Accounting_Subscription__c subscription5 = new Accounting_Subscription__c(Server_Name__c = 'CommCareHQ', is_trial__c = false, date_start__c = Date.newInstance(2016, 1, 1), date_end__c = Date.newInstance(2017, 5, 1), service_type__c = 'Implementation', is_active__c = true,
+        Accounting_Subscription__c subscription5 = new Accounting_Subscription__c(Server_Name__c = 'CommCareHQ', is_trial__c = false, date_start__c = Date.newInstance(2023, 1, 1), date_end__c = Date.newInstance(2024, 6, 19), service_type__c = 'Implementation', is_active__c = true,
                                                                                   account__c = billingAccount5.Id, Accounting_subscriber_domain__c = domain3.Id, plan_version__c = planVersion3.Id);
         insert subscription5; // no create no 60 days
 
-        Accounting_Subscription__c subscription6 = new Accounting_Subscription__c(Server_Name__c = 'CommCareHQ', is_trial__c = false, date_start__c = Date.newInstance(2016, 1, 1), date_end__c = Date.newInstance(2017, 1, 1), service_type__c = 'Product', is_active__c = true,
+        Accounting_Subscription__c subscription6 = new Accounting_Subscription__c(Server_Name__c = 'CommCareHQ', is_trial__c = false, date_start__c = Date.newInstance(2023, 6, 1), date_end__c = Date.newInstance(2024, 7, 1), service_type__c = 'Product', is_active__c = true,
                                                                                   account__c = billingAccount5.Id, Accounting_subscriber_domain__c = domain4.Id, plan_version__c = planVersion3.Id);
         insert subscription6;
-        Accounting_Subscription__c subscription7 = new Accounting_Subscription__c(Server_Name__c = 'CommCareHQ', is_trial__c = false, date_start__c = Date.newInstance(2016, 1, 1), date_end__c = Date.newInstance(2017, 1, 12), service_type__c = 'Product', is_active__c = true,
+        Accounting_Subscription__c subscription7 = new Accounting_Subscription__c(Server_Name__c = 'CommCareHQ', is_trial__c = false, date_start__c = Date.newInstance(2023, 1, 1), date_end__c = Date.newInstance(2023, 6, 15), service_type__c = 'Product', is_active__c = true,
                                                                                   account__c = billingAccount5.Id, Accounting_subscriber_domain__c = domain4.Id, plan_version__c = planVersion3.Id);
         insert subscription7;// should created for the second one
 
         Test.startTest();
-        RenewalSubscriptionsBatch batchJob = new RenewalSubscriptionsBatch(Date.newInstance(2016, 12, 1));
+        RenewalSubscriptionsBatch batchJob = new RenewalSubscriptionsBatch(Date.newInstance(2023, 6, 11));
         List<Accounting_Subscription__c> futureList = batchJob.getFutureSubscriptions();
         System.assertEquals(1, futureList.size());
         List<Accounting_Subscription__c> renewalList = batchJob.getSubscriptionsForRenewal(new Set<String> { 'domain_2' });
-        System.assertEquals(3, renewalList.size());
+        System.assertEquals(2, renewalList.size());
         Database.executeBatch(batchJob, 50);
         Test.stopTest();
 
@@ -115,13 +115,13 @@ public class RenewalSubscriptionsTest {
         Opportunity opp1 = opps.get(0);
 
         System.assertEquals('contact_1@dimagi.com', opp1.Prior_Dimagi_contact__c);
-        System.assertEquals('Test Account-Pro-Implementation Renewal 12012016', opp1.Name);
+        System.assertEquals('Test Account-Pro-Implementation Renewal 06112023', opp1.Name);
         System.assertEquals(30, opp1.Subscriptions_web_users__c);
         System.assertEquals(30, opp1.Fogbugz_Probability__c);
         System.assertEquals(12, opp1.Duration_months__c);
         System.assertEquals(100, opp1.Expected_Buffer__c);
         System.assertEquals(0, opp1.of_Execution_budget_for_GS__c);
-        System.assertEquals(Date.newInstance(2017, 1, 1), opp1.CloseDate);
+        System.assertEquals(Date.newInstance(2023, 6, 14), opp1.CloseDate);
         System.assertEquals(domain1.Id, opp1.Domain_Name__c);
         System.assertEquals('Stage 3 - Prospect', opp1.StageName);
         System.assertEquals('Self Service', opp1.Implementation_Type__c);
@@ -144,13 +144,13 @@ public class RenewalSubscriptionsTest {
         Opportunity opp2 = opps.get(1);
 
         System.assertEquals('contact_1@dimagi.com', opp2.Prior_Dimagi_contact__c);
-        System.assertEquals('domain_4-Standard Renewal 12012016', opp2.Name);
+        System.assertEquals('domain_4-Standard Renewal 06112023', opp2.Name);
         System.assertEquals(111, opp2.Subscriptions_web_users__c);
         System.assertEquals(30, opp2.Fogbugz_Probability__c);
         System.assertEquals(12, opp2.Duration_months__c);
         System.assertEquals(100, opp2.Expected_Buffer__c);
         System.assertEquals(0, opp2.of_Execution_budget_for_GS__c);
-        System.assertEquals(Date.newInstance(2017, 1, 12), opp2.CloseDate);
+        System.assertEquals(Date.newInstance(2023, 6, 15), opp2.CloseDate);
         System.assertEquals(domain4.Id, opp2.Domain_Name__c);
         System.assertEquals('Stage 3 - Prospect', opp2.StageName);
         System.assertEquals('Self Service', opp2.Implementation_Type__c);
@@ -171,7 +171,7 @@ public class RenewalSubscriptionsTest {
         futureList = batchJob.getFutureSubscriptions();
         System.assertEquals(1, futureList.size());
         renewalList = batchJob.getSubscriptionsForRenewal(new Set<String> { 'domain_2' });
-        System.assertEquals(3, renewalList.size());
+        System.assertEquals(2, renewalList.size());
         batchJob.start(null);
         batchJob.execute(null, renewalList);
 
@@ -197,9 +197,9 @@ public class RenewalSubscriptionsTest {
         insert domain1;
 
         Business_Unit__c bizUnit = new Business_Unit__c(Name = 'Test Business Unit 1');
-        Opportunity opp = new Opportunity(Name = 'Old Renewal Opportunity', Business_Unit_Owner__c = bizUnit.Id, StageName = 'Closed',
+        Opportunity opp = new Opportunity(Name = 'Old Renewal Opportunity', Business_Unit_Owner__c = bizUnit.Id, StageName = 'Closed',Expense_Income__c = 0,
                                                  CloseDate = date.today().addDays(-1), Probability = 30, Domain_Name__c = domain1.Id,
-                                                 Opportunity_Owner_Division__c = 'Solutions', Opportunity_Owner_Sub_Division__c='Inbound Sales');
+                                                 Opportunity_Owner_Division__c = 'Solutions', Opportunity_Owner_Sub_Division__c = 'USH - Tech',Country__c = 'a00b0000001AOufAAG');
         insert opp;
         Test.setCreatedDate(opp.Id, DateTime.now().addDays(-200));
         update new Domain__c(Id = domain1.Id, Opportunity__c = opp.Id);

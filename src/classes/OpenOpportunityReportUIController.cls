@@ -25,7 +25,7 @@ public class OpenOpportunityReportUIController {
 
         this.channel = new String[] {};
         for (Selectoption so : getChannelPickListValues()) {
-            if (so.getValue() != 'Inside Sales' && so.getValue() != 'Pre-Bid') {
+            if (so.getValue() != 'Inside Sales' && so.getValue() != 'Large Competitive Bid') {
                 this.channel.add(so.getValue());
             }
         }
