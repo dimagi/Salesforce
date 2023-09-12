@@ -4,7 +4,7 @@ public class LeadConversionControllerTest {
     public static testMethod void shouldConvertLeadAndSetFields() {
         Test.startTest();
 
-        Lead testLead = new Lead(FirstName = 'Tom', LastName = 'Smith', Company = 'Smith IT Company');
+        Lead testLead = new Lead(FirstName = 'Tom', LastName = 'Smith', Company = 'Smith IT Company', Opportunity_Owner_Division__c = 'Solutions', Opportunity_Owner_Sub_Division__c='Inbound Sales');
         insert testLead;
         LeadConversionController convController = new LeadConversionController(testLead.Id);
         Business_Unit__c bu = new Business_Unit__c(Name = 'Inc');
@@ -36,7 +36,7 @@ public class LeadConversionControllerTest {
 
         Account acc = new Account(Name = 'Custom ACC');
         insert acc;
-        Lead testLead = new Lead(FirstName = 'Tom', LastName = 'Smith', Company = 'Smith IT Company', account_name__c = acc.Id);
+        Lead testLead = new Lead(FirstName = 'Tom', LastName = 'Smith', Company = 'Smith IT Company', account_name__c = acc.Id, Opportunity_Owner_Division__c = 'Solutions', Opportunity_Owner_Sub_Division__c='Inbound Sales');
         insert testLead;
         LeadConversionController convController = new LeadConversionController(testLead.Id);
         Business_Unit__c bu = new Business_Unit__c(Name = 'Inc');
@@ -71,7 +71,7 @@ public class LeadConversionControllerTest {
 
         Account acc = new Account(Name = 'Smith IT Company');
         insert acc;
-        Lead testLead = new Lead(FirstName = 'Tom', LastName = 'Smith', Company = 'Smith IT Company');
+        Lead testLead = new Lead(FirstName = 'Tom', LastName = 'Smith', Company = 'Smith IT Company', Opportunity_Owner_Division__c = 'Solutions', Opportunity_Owner_Sub_Division__c='Inbound Sales');
         insert testLead;
         LeadConversionController convController = new LeadConversionController(testLead.Id);
         Business_Unit__c bu = new Business_Unit__c(Name = 'Inc');
@@ -93,7 +93,7 @@ public class LeadConversionControllerTest {
     public static testMethod void testLeadConversionTrigger() {
         Test.startTest();
 
-        Lead testLead = new Lead(FirstName = 'Tom', LastName = 'Smith', Company = 'Smith IT Company');
+        Lead testLead = new Lead(FirstName = 'Tom', LastName = 'Smith', Company = 'Smith IT Company', Opportunity_Owner_Division__c = 'Solutions', Opportunity_Owner_Sub_Division__c='Inbound Sales');
         insert testLead;
 
         testLead.Status = 'Working - Talking';

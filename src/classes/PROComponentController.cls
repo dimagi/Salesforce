@@ -63,7 +63,7 @@ public class PROComponentController {
             this.pro.Client_Facing__c = prlist[0].Client_Facing__c;
             this.pro.Requires_Developer_Work__c = prlist[0].Requires_Developer_Work__c;
             this.pro.Project_Dashboard__c = prlist[0].Project_Dashboard__c;
-            this.pro.Resource_Planning__c = '----';
+            this.pro.Resource_Planning__c = 'Select Response';
             this.pro.Cap_planning_GDoc__c = prlist[0].Cap_planning_GDoc__c;
         } else {
             DContract__c contractObj = [SELECT Id, Requires_Developer_Work__c FROM DContract__c
@@ -82,7 +82,7 @@ public class PROComponentController {
             this.pro.Client_Facing__c = null;
             this.pro.Requires_Developer_Work__c = null;
             this.pro.Project_Dashboard__c = null;
-            this.pro.Resource_Planning__c = '----';
+            this.pro.Resource_Planning__c = 'Select Response';
             this.pro.Cap_planning_GDoc__c = null;
         }
     }
@@ -167,7 +167,7 @@ public class PROComponentController {
                                                                                        WHERE Contract__c =: this.reportContractId AND Report_Out_Date__c =: this.pro.Report_Out_Date__c LIMIT 1]);
 
                 Project_Report_Out__c proToUpdate = createPROToUpdate(proList.isEmpty() ? null : proList[0]);
-                DContract__c dcontract = [SELECT Id, Name, Last_Report_Out_Status__c, Percent_through_SOW_deliverables__c, Budget_Used__c, of_Services_budget_for_GS__c, Total_Costs__c, Services_Spend__c,
+                DContract__c dcontract = [SELECT Id, Name,Percent_through_SOW_deliverables__c, Budget_Used__c, of_Services_budget_for_GS__c, Total_Costs__c, Services_Spend__c,
                                           Execution_Efficiency__c, Expected_Buffer__c, Direct_Costs_Total_Expenses__c, Net_Income_based_on_SOW_Completed__c, Product_Spend__c,Buffer_by_SOW_Completed__c,
                                           GS_Execution_Budget__c, GS_Services_Completed__c, GS_Net_Income_to_Date__c, GS_Net_Income_to_Date_Handover__c, GS_Services_Completed_Handover__c,
                                           Project_Quality_Overall_Status__c, Customer_Satisfaction_of_services__c, GS_Project_Services_Budget_Handoff__c FROM DContract__c WHERE Id =: this.reportContractId];

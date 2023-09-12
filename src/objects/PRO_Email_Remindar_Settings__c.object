@@ -2,6 +2,8 @@
 <CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
     <customSettingsType>List</customSettingsType>
     <enableFeeds>false</enableFeeds>
+    <label>PRO Email Reminder Settings</label>
+    <visibility>Protected</visibility>
     <fields>
         <fullName>Dev_Work_Emails__c</fullName>
         <externalId>false</externalId>
@@ -93,6 +95,4 @@
         <type>Number</type>
         <unique>false</unique>
     </fields>
-    <label>PRO Email Reminder Settings</label>
-    <visibility>Protected</visibility>
 </CustomObject>

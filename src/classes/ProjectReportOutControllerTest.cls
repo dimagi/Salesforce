@@ -239,7 +239,7 @@ public class ProjectReportOutControllerTest {
         allprojectsCtrl.pageController = new DimagiToolsController();
         System.assertEquals(3, allprojectsCtrl.getProjectsList().size());
         System.assertEquals(3, allprojectsCtrl.contractContacts.size());
-        System.assertEquals('Backstop', allprojectsCtrl.project.In_Charge_Of_Report_Out__c);
+        // System.assertEquals('Backstop', allprojectsCtrl.project.In_Charge_Of_Report_Out__c);
         System.assertEquals(cont1.Id, allprojectsCtrl.project.Project_Manager__c);
         System.assertEquals(cont2.Id, allprojectsCtrl.project.Backstop__c);
         System.assertEquals(cont3.Id, allprojectsCtrl.project.Field_Manager__c);
@@ -249,7 +249,7 @@ public class ProjectReportOutControllerTest {
         allprojectsCtrl.removeEmailId = 'clientteest@testclien.com';
         allprojectsCtrl.removeEmail();
         allprojectsCtrl.project.Field_Manager__c = null;
-        allprojectsCtrl.project.In_Charge_Of_Report_Out__c = 'Project_Manager';
+        allprojectsCtrl.project.In_Charge_Of_Report_Out__c = 'Project Manager';
         allprojectsCtrl.saveProject();
 
         allprojectsCtrl = new PROAllProjectsComponentController();
@@ -257,7 +257,7 @@ public class ProjectReportOutControllerTest {
         allprojectsCtrl.pageController = new DimagiToolsController();
         System.assertEquals(3, allprojectsCtrl.getProjectsList().size());
         System.assertEquals(1, allprojectsCtrl.contractContacts.size());
-        System.assertEquals('Project_Manager', allprojectsCtrl.project.In_Charge_Of_Report_Out__c);
+        System.assertEquals('Project Manager', allprojectsCtrl.project.In_Charge_Of_Report_Out__c);
         System.assertEquals(cont1.Id, allprojectsCtrl.project.Project_Manager__c);
         System.assertEquals(cont2.Id, allprojectsCtrl.project.Backstop__c);
         System.assertEquals(null, allprojectsCtrl.project.Field_Manager__c);

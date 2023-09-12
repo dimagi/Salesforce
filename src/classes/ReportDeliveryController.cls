@@ -153,7 +153,7 @@ public with sharing class ReportDeliveryController {
         String salesforceHost;
         Organization org = [SELECT id,isSandbox FROM Organization limit 1];
         if (org.isSandbox) {
-            salesforceHost = 'https://dimagi--dsandbox.cs20.my.salesforce.com';
+            salesforceHost = 'https://dimagi--qasandbox.sandbox.my.salesforce.com';
         } else {
             salesforceHost = 'https://dimagi.my.salesforce.com';
         }

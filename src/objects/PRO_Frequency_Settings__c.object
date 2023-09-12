@@ -2,6 +2,8 @@
 <CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
     <customSettingsType>List</customSettingsType>
     <enableFeeds>false</enableFeeds>
+    <label>PRO Frequency Settings</label>
+    <visibility>Protected</visibility>
     <fields>
         <fullName>Frequency_In_Week__c</fullName>
         <externalId>false</externalId>
@@ -13,6 +15,4 @@
         <type>Number</type>
         <unique>false</unique>
     </fields>
-    <label>PRO Frequency Settings</label>
-    <visibility>Protected</visibility>
 </CustomObject>

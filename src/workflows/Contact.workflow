@@ -5,7 +5,7 @@
         <description>Email alert for contact due for follow-up</description>
         <protected>false</protected>
         <recipients>
-            <recipient>rhartford@dimagi.com</recipient>
+            <recipient>rrath@dimagi.com</recipient>
             <type>user</type>
         </recipients>
         <senderType>CurrentUser</senderType>

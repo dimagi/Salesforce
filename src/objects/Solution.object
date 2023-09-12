@@ -5,7 +5,27 @@
         <type>Default</type>
     </actionOverrides>
     <actionOverrides>
+        <actionName>CancelEdit</actionName>
+        <formFactor>Large</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>CancelEdit</actionName>
+        <formFactor>Small</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
         <actionName>Delete</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Delete</actionName>
+        <formFactor>Large</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Delete</actionName>
+        <formFactor>Small</formFactor>
         <type>Default</type>
     </actionOverrides>
     <actionOverrides>
@@ -13,7 +33,27 @@
         <type>Default</type>
     </actionOverrides>
     <actionOverrides>
+        <actionName>Edit</actionName>
+        <formFactor>Large</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Edit</actionName>
+        <formFactor>Small</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
         <actionName>List</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>List</actionName>
+        <formFactor>Large</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>List</actionName>
+        <formFactor>Small</formFactor>
         <type>Default</type>
     </actionOverrides>
     <actionOverrides>
@@ -21,7 +61,27 @@
         <type>Default</type>
     </actionOverrides>
     <actionOverrides>
+        <actionName>New</actionName>
+        <formFactor>Large</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>New</actionName>
+        <formFactor>Small</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
         <actionName>SaveEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>SaveEdit</actionName>
+        <formFactor>Large</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>SaveEdit</actionName>
+        <formFactor>Small</formFactor>
         <type>Default</type>
     </actionOverrides>
     <actionOverrides>
@@ -29,15 +89,61 @@
         <type>Default</type>
     </actionOverrides>
     <actionOverrides>
+        <actionName>SelfServSelect</actionName>
+        <formFactor>Large</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>SelfServSelect</actionName>
+        <formFactor>Small</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
         <actionName>Tab</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Tab</actionName>
+        <formFactor>Large</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Tab</actionName>
+        <formFactor>Small</formFactor>
         <type>Default</type>
     </actionOverrides>
     <actionOverrides>
         <actionName>View</actionName>
         <type>Default</type>
     </actionOverrides>
+    <actionOverrides>
+        <actionName>View</actionName>
+        <formFactor>Large</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>View</actionName>
+        <formFactor>Small</formFactor>
+        <type>Default</type>
+    </actionOverrides>
     <compactLayoutAssignment>SYSTEM</compactLayoutAssignment>
     <enableFeeds>false</enableFeeds>
+    <searchLayouts>
+        <customTabListAdditionalFields>SOLUTION.ISSUE</customTabListAdditionalFields>
+        <customTabListAdditionalFields>SOLUTION.SOLUTION_NUMBER</customTabListAdditionalFields>
+        <customTabListAdditionalFields>SOLUTION.STATUS</customTabListAdditionalFields>
+        <customTabListAdditionalFields>CORE.USERS.ALIAS</customTabListAdditionalFields>
+        <lookupDialogsAdditionalFields>SOLUTION.ISSUE</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>SOLUTION.SOLUTION_NUMBER</lookupDialogsAdditionalFields>
+        <lookupPhoneDialogsAdditionalFields>SOLUTION.ISSUE</lookupPhoneDialogsAdditionalFields>
+        <lookupPhoneDialogsAdditionalFields>SOLUTION.SOLUTION_NUMBER</lookupPhoneDialogsAdditionalFields>
+        <searchResultsAdditionalFields>SOLUTION.ISSUE</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>RELEVANCE</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>SOLUTION.STATUS</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>CORE.USERS.ALIAS</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>SOLUTION.TIMES_USED</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>SOLUTION.LAST_UPDATE</searchResultsAdditionalFields>
+    </searchLayouts>
     <fields>
         <fullName>IsPublished</fullName>
         <trackHistory>true</trackHistory>
@@ -79,20 +185,4 @@
         </filters>
         <label>All Unreviewed Solutions</label>
     </listViews>
-    <searchLayouts>
-        <customTabListAdditionalFields>SOLUTION.ISSUE</customTabListAdditionalFields>
-        <customTabListAdditionalFields>SOLUTION.SOLUTION_NUMBER</customTabListAdditionalFields>
-        <customTabListAdditionalFields>SOLUTION.STATUS</customTabListAdditionalFields>
-        <customTabListAdditionalFields>CORE.USERS.ALIAS</customTabListAdditionalFields>
-        <lookupDialogsAdditionalFields>SOLUTION.ISSUE</lookupDialogsAdditionalFields>
-        <lookupDialogsAdditionalFields>SOLUTION.SOLUTION_NUMBER</lookupDialogsAdditionalFields>
-        <lookupPhoneDialogsAdditionalFields>SOLUTION.ISSUE</lookupPhoneDialogsAdditionalFields>
-        <lookupPhoneDialogsAdditionalFields>SOLUTION.SOLUTION_NUMBER</lookupPhoneDialogsAdditionalFields>
-        <searchResultsAdditionalFields>SOLUTION.ISSUE</searchResultsAdditionalFields>
-        <searchResultsAdditionalFields>RELEVANCE</searchResultsAdditionalFields>
-        <searchResultsAdditionalFields>SOLUTION.STATUS</searchResultsAdditionalFields>
-        <searchResultsAdditionalFields>CORE.USERS.ALIAS</searchResultsAdditionalFields>
-        <searchResultsAdditionalFields>SOLUTION.TIMES_USED</searchResultsAdditionalFields>
-        <searchResultsAdditionalFields>SOLUTION.LAST_UPDATE</searchResultsAdditionalFields>
-    </searchLayouts>
 </CustomObject>

@@ -7,8 +7,8 @@ public class HQSyncDomainModel {
      * Domain Model wrapper.
      */
     public class DomanProjectSpaceWrapper {
-         public DomainModel domain_properties;
-         public CalculatedProperties calculated_properties;
+        public DomainModel domain_properties;
+        public CalculatedProperties calculated_properties;
     }
 
     /**
@@ -300,7 +300,7 @@ public class HQSyncDomainModel {
             domainObj.sms_conversation_length__c = this.sms_conversation_length;
             domainObj.total_downloads__c = this.total_downloads;
             domainObj.id__c = this.x_id;
-
+            
             domainObj.attribution_notes__c = this.attribution_notes;
             domainObj.author__c = this.author;
             domainObj.cloudcare_releases__c = this.cloudcare_releases;
@@ -312,7 +312,7 @@ public class HQSyncDomainModel {
             domainObj.default_sms_backend_id__c = this.default_sms_backend_id;
             domainObj.default_timezone__c = this.default_timezone;
             domainObj.description__c = this.description;
-
+            
             domainObj.hr_name__c = this.hr_name;
             domainObj.is_test__c = this.is_test;
             domainObj.license__c = this.license;
@@ -323,14 +323,12 @@ public class HQSyncDomainModel {
             }
             domainObj.name_of_publisher__c = this.name_of_publisher;
             domainObj.organization__c = this.organization;
-
             domainObj.project_type__c = this.project_type;
             domainObj.publisher__c = this.publisher;
             domainObj.short_description__c = this.short_description;
             domainObj.sms_case_registration_owner_id__c = this.sms_case_registration_owner_id;
             domainObj.sms_case_registration_type__c = this.sms_case_registration_type;
             domainObj.sms_case_registration_user_id__c = this.sms_case_registration_user_id;
-
             domainObj.title__c = this.title;
             domainobj.tags__c = String.join(this.tags,',');
             domainObj.billable_client__c = this.billable_client;
@@ -406,7 +404,6 @@ public class HQSyncDomainModel {
                 domainObj.cpFormsIn60Days__c = calculatedProperties.cp_n_forms_60_d;
                 domainObj.cpFormsIn90Days__c = calculatedProperties.cp_n_forms_90_d;
                 domainObj.cpHasApp__c = calculatedProperties.cp_has_app == null ? false : calculatedProperties.cp_has_app;
-
                 domainObj.Domain_cp_n_30_day_user_cases__c = calculatedProperties.cp_n_30_day_user_cases;
                 domainObj.Domain_cp_n_trivet_backends__c = calculatedProperties.cp_n_trivet_backends;
                 domainObj.Domain_cp_use_domain_security__c = calculatedProperties.cp_use_domain_security == null ? false : calculatedProperties.cp_use_domain_security;
@@ -426,7 +423,6 @@ public class HQSyncDomainModel {
                 domainObj.Domain_cp_n_apps_with_icon__c = calculatedProperties.cp_n_apps_with_icon;
                 domainObj.Domain_cp_n_apps__c = calculatedProperties.cp_n_apps;
                 domainObj.Domain_cp_n_apps_with_multi_lang__c = calculatedProperties.cp_n_apps_with_multi_lang;
-
                 domainObj.Domain_cp_n_downloads_custom_exports__c = calculatedProperties.cp_n_downloads_custom_exports;
                 domainObj.Domain_cp_n_viewed_ucr_reports__c = calculatedProperties.cp_n_viewed_ucr_reports;
                 domainObj.Domain_cp_n_viewed_non_ucr_reports__c = calculatedProperties.cp_n_viewed_non_ucr_reports;
@@ -436,12 +432,13 @@ public class HQSyncDomainModel {
                 domainObj.Domain_cp_n_click_app_deploy__c = calculatedProperties.cp_n_click_app_deploy;
                 domainObj.Domain_cp_n_saved_app_changes__c = calculatedProperties.cp_n_saved_app_changes;
                 domainObj.Domain_cp_n_form_builder_entered__c = calculatedProperties.cp_n_form_builder_entered;
-
                 domainObj.Cp_last_update__c = calculatedProperties.cp_last_update;
                 domainObj.Cp_n_users_submitted_form__c = calculatedProperties.cp_n_users_submitted_form;
-                domainObj.Has_J2ME_submission_in_past_90_days__c = calculatedProperties.cp_j2me_90_d_bool;
-                domainObj.Domain_cp_sms_30_d__c = calculatedProperties.cp_sms_30_d;
-                domainObj.Domain_cp_sms_ever__c = calculatedProperties.cp_sms_ever;
+               
+
+                domainObj.Has_J2ME_submission_in_past_90_days__c = calculatedProperties.cp_j2me_90_d_bool == null ? false : calculatedProperties.cp_j2me_90_d_bool;
+                domainObj.Domain_cp_sms_30_d__c = calculatedProperties.cp_sms_30_d == null ? false : calculatedProperties.cp_sms_30_d;
+                domainObj.Domain_cp_sms_ever__c = calculatedProperties.cp_sms_ever == null ? false : calculatedProperties.cp_sms_ever;
             }
             domainObj.Server_Name__c = serverName;
 

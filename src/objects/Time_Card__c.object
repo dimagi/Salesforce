@@ -5,7 +5,27 @@
         <type>Default</type>
     </actionOverrides>
     <actionOverrides>
+        <actionName>Accept</actionName>
+        <formFactor>Large</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Accept</actionName>
+        <formFactor>Small</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
         <actionName>CancelEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>CancelEdit</actionName>
+        <formFactor>Large</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>CancelEdit</actionName>
+        <formFactor>Small</formFactor>
         <type>Default</type>
     </actionOverrides>
     <actionOverrides>
@@ -13,7 +33,27 @@
         <type>Default</type>
     </actionOverrides>
     <actionOverrides>
+        <actionName>Clone</actionName>
+        <formFactor>Large</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Clone</actionName>
+        <formFactor>Small</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
         <actionName>Delete</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Delete</actionName>
+        <formFactor>Large</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Delete</actionName>
+        <formFactor>Small</formFactor>
         <type>Default</type>
     </actionOverrides>
     <actionOverrides>
@@ -21,7 +61,27 @@
         <type>Default</type>
     </actionOverrides>
     <actionOverrides>
+        <actionName>Edit</actionName>
+        <formFactor>Large</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Edit</actionName>
+        <formFactor>Small</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
         <actionName>List</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>List</actionName>
+        <formFactor>Large</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>List</actionName>
+        <formFactor>Small</formFactor>
         <type>Default</type>
     </actionOverrides>
     <actionOverrides>
@@ -29,7 +89,27 @@
         <type>Default</type>
     </actionOverrides>
     <actionOverrides>
+        <actionName>New</actionName>
+        <formFactor>Large</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>New</actionName>
+        <formFactor>Small</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
         <actionName>SaveEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>SaveEdit</actionName>
+        <formFactor>Large</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>SaveEdit</actionName>
+        <formFactor>Small</formFactor>
         <type>Default</type>
     </actionOverrides>
     <actionOverrides>
@@ -37,7 +117,27 @@
         <type>Default</type>
     </actionOverrides>
     <actionOverrides>
+        <actionName>Tab</actionName>
+        <formFactor>Large</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Tab</actionName>
+        <formFactor>Small</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
         <actionName>View</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>View</actionName>
+        <formFactor>Large</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>View</actionName>
+        <formFactor>Small</formFactor>
         <type>Default</type>
     </actionOverrides>
     <allowInChatterGroups>true</allowInChatterGroups>
@@ -47,10 +147,22 @@
     <enableBulkApi>true</enableBulkApi>
     <enableFeeds>false</enableFeeds>
     <enableHistory>true</enableHistory>
+    <enableLicensing>false</enableLicensing>
     <enableReports>true</enableReports>
     <enableSearch>true</enableSearch>
     <enableSharing>true</enableSharing>
     <enableStreamingApi>true</enableStreamingApi>
+    <label>Time Card</label>
+    <nameField>
+        <displayFormat>T-{0000}</displayFormat>
+        <label>Time Card Name</label>
+        <trackHistory>false</trackHistory>
+        <type>AutoNumber</type>
+    </nameField>
+    <pluralLabel>Time Cards</pluralLabel>
+    <searchLayouts></searchLayouts>
+    <sharingModel>ReadWrite</sharingModel>
+    <visibility>Public</visibility>
     <fields>
         <fullName>Area__c</fullName>
         <externalId>false</externalId>
@@ -152,8 +264,9 @@ IF(CONTAINS(Area__c ,&quot;Contract Negotiations&quot;),&quot;Opp Mgmt - Misc&qu
     <fields>
         <fullName>Case__c</fullName>
         <externalId>false</externalId>
+        <inlineHelpText>Task Description from Clockify</inlineHelpText>
         <label>Case</label>
-        <length>180</length>
+        <length>255</length>
         <required>false</required>
         <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
@@ -200,6 +313,7 @@ IF(CONTAINS(Client__r.Name,&quot;Product:&quot;),&quot;Product&quot;,
     <fields>
         <fullName>Date__c</fullName>
         <externalId>false</externalId>
+        <inlineHelpText>Date of the time card entry in Clockify.</inlineHelpText>
         <label>Date</label>
         <required>false</required>
         <trackHistory>false</trackHistory>
@@ -218,6 +332,18 @@ IF(CONTAINS(Client__r.Name,&quot;Product:&quot;),&quot;Product&quot;,
         <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>Fogbugz_Id__c</fullName>
+        <externalId>false</externalId>
+        <label>Fogbugz Id</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
     </fields>
     <fields>
         <fullName>FTE_Contract__c</fullName>
@@ -254,16 +380,18 @@ IF(CONTAINS(Client__r.Name,&quot;Product:&quot;),&quot;Product&quot;,
         <type>Checkbox</type>
     </fields>
     <fields>
-        <fullName>Fogbugz_Id__c</fullName>
+        <fullName>labor_cost__c</fullName>
+        <description>Total hours * employee daily loaded rate</description>
         <externalId>false</externalId>
-        <label>Fogbugz Id</label>
+        <formula>Total__c * Employee__r.Loaded_Daily_Rate__c / 8</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>labor cost</label>
         <precision>18</precision>
         <required>false</required>
         <scale>0</scale>
         <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
-        <type>Number</type>
-        <unique>false</unique>
+        <type>Currency</type>
     </fields>
     <fields>
         <fullName>Month__c</fullName>
@@ -300,6 +428,18 @@ IF(CONTAINS(Client__r.Name,&quot;Product:&quot;),&quot;Product&quot;,
         <unique>false</unique>
     </fields>
     <fields>
+        <fullName>Task_ID__c</fullName>
+        <description>Task Id is a field retrieved from clockify api and stored in this field</description>
+        <externalId>false</externalId>
+        <label>Task ID</label>
+        <length>100</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
         <fullName>Time_Card_Cost_Without_Rate__c</fullName>
         <externalId>false</externalId>
         <formula>Total__c * Time_Card_Salary__c</formula>
@@ -308,6 +448,17 @@ IF(CONTAINS(Client__r.Name,&quot;Product:&quot;),&quot;Product&quot;,
         <precision>18</precision>
         <required>false</required>
         <scale>10</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>Time_card_cost__c</fullName>
+        <externalId>false</externalId>
+        <label>Time card cost</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
         <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Currency</type>
@@ -337,15 +488,16 @@ IF(CONTAINS(Client__r.Name,&quot;Product:&quot;),&quot;Product&quot;,
         <type>Currency</type>
     </fields>
     <fields>
-        <fullName>Time_card_cost__c</fullName>
-        <externalId>false</externalId>
-        <label>Time card cost</label>
-        <precision>18</precision>
+        <fullName>Time_Entry_ID__c</fullName>
+        <description>Clockify Time Entry Id is stored in this field to map to Case_Number__c</description>
+        <externalId>true</externalId>
+        <label>Time Entry ID</label>
+        <length>150</length>
         <required>false</required>
-        <scale>2</scale>
         <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
-        <type>Currency</type>
+        <type>Text</type>
+        <unique>false</unique>
     </fields>
     <fields>
         <fullName>Total_Days__c</fullName>
@@ -376,27 +528,98 @@ IF(CONTAINS(Client__r.Name,&quot;Product:&quot;),&quot;Product&quot;,
         <unique>false</unique>
     </fields>
     <fields>
-        <fullName>labor_cost__c</fullName>
-        <description>Total hours * employee daily loaded rate</description>
+        <fullName>Uses_Contractor_Billing_Rate__c</fullName>
+        <defaultValue>false</defaultValue>
         <externalId>false</externalId>
-        <formula>Total__c * Employee__r.Loaded_Daily_Rate__c / 8</formula>
-        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
-        <label>labor cost</label>
-        <precision>18</precision>
-        <required>false</required>
-        <scale>0</scale>
+        <label>Uses Contractor Billing Rate</label>
         <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
-        <type>Currency</type>
+        <type>Checkbox</type>
     </fields>
-    <label>Time Card</label>
     <listViews>
         <fullName>All</fullName>
         <columns>OBJECT_ID</columns>
         <columns>Date__c</columns>
         <columns>Employee__c</columns>
+        <columns>NAME</columns>
         <filterScope>Everything</filterScope>
         <label>All</label>
+    </listViews>
+    <listViews>
+        <fullName>Copy_of_Mine</fullName>
+        <columns>NAME</columns>
+        <columns>Employee__c</columns>
+        <columns>Total__c</columns>
+        <columns>Total_Days__c</columns>
+        <columns>labor_cost__c</columns>
+        <columns>Date__c</columns>
+        <columns>Client__c</columns>
+        <columns>CREATED_DATE</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Employee__c</field>
+            <operation>equals</operation>
+            <value>Jeremy Wacksman</value>
+        </filters>
+        <filters>
+            <field>Date__c</field>
+            <operation>greaterThan</operation>
+            <value>5/1/2023</value>
+        </filters>
+        <label>Copy of Mine</label>
+    </listViews>
+    <listViews>
+        <fullName>Jeremy_Troubleshooting</fullName>
+        <columns>NAME</columns>
+        <columns>Date__c</columns>
+        <columns>labor_cost__c</columns>
+        <columns>Total__c</columns>
+        <columns>Total_Days__c</columns>
+        <columns>Project__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Employee__c</field>
+            <operation>equals</operation>
+            <value>Chantal Remillard</value>
+        </filters>
+        <label>Jeremy Troubleshooting</label>
+    </listViews>
+    <listViews>
+        <fullName>Time_Card_Example</fullName>
+        <columns>NAME</columns>
+        <columns>CREATED_DATE</columns>
+        <columns>Date__c</columns>
+        <columns>Client__c</columns>
+        <columns>Total__c</columns>
+        <columns>Project__c</columns>
+        <columns>Area__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Employee__c</field>
+            <operation>equals</operation>
+            <value>Jeremy Wacksman</value>
+        </filters>
+        <label>Time Card Example</label>
+    </listViews>
+    <listViews>
+        <fullName>Troubleshooting_Gayatri_Time_Card</fullName>
+        <columns>NAME</columns>
+        <columns>Date__c</columns>
+        <columns>labor_cost__c</columns>
+        <columns>Total__c</columns>
+        <columns>Client__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Employee__c</field>
+            <operation>equals</operation>
+            <value>Gayatri Jayal</value>
+        </filters>
+        <filters>
+            <field>Client__c</field>
+            <operation>contains</operation>
+            <value>Gates Foundation:Chatbots</value>
+        </filters>
+        <label>Troubleshooting Gayatri Time Card</label>
     </listViews>
     <listViews>
         <fullName>Tufts_Time_Cards</fullName>
@@ -415,13 +638,22 @@ IF(CONTAINS(Client__r.Name,&quot;Product:&quot;),&quot;Product&quot;,
         </filters>
         <label>Tufts Time Cards</label>
     </listViews>
-    <nameField>
-        <displayFormat>T-{0000}</displayFormat>
-        <label>Time Card Name</label>
-        <trackHistory>false</trackHistory>
-        <type>AutoNumber</type>
-    </nameField>
-    <pluralLabel>Time Cards</pluralLabel>
-    <searchLayouts/>
-    <sharingModel>ReadWrite</sharingModel>
+    <webLinks>
+        <fullName>Sync_All_With_Clockify</fullName>
+        <availability>online</availability>
+        <displayType>button</displayType>
+        <hasMenubar>false</hasMenubar>
+        <hasScrollbars>true</hasScrollbars>
+        <hasToolbar>false</hasToolbar>
+        <height>600</height>
+        <isResizable>true</isResizable>
+        <linkType>page</linkType>
+        <masterLabel>Sync All With Clockify</masterLabel>
+        <openType>newWindow</openType>
+        <page>ClockifyManualCallout</page>
+        <position>none</position>
+        <protected>false</protected>
+        <showsLocation>false</showsLocation>
+        <showsStatus>false</showsStatus>
+    </webLinks>
 </CustomObject>

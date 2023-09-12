@@ -3,6 +3,8 @@
     <customSettingsType>List</customSettingsType>
     <enableEnhancedLookup>false</enableEnhancedLookup>
     <enableFeeds>false</enableFeeds>
+    <label>Open Opportunity Fields</label>
+    <visibility>Public</visibility>
     <fields>
         <fullName>Label__c</fullName>
         <externalId>false</externalId>
@@ -34,6 +36,4 @@
         <type>Text</type>
         <unique>false</unique>
     </fields>
-    <label>Open Opportunity Fields</label>
-    <visibility>Public</visibility>
 </CustomObject>

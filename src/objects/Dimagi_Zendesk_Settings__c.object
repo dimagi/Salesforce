@@ -2,6 +2,8 @@
 <CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
     <customSettingsType>Hierarchy</customSettingsType>
     <enableFeeds>false</enableFeeds>
+    <label>Dimagi Zendesk Settings</label>
+    <visibility>Protected</visibility>
     <fields>
         <fullName>Password__c</fullName>
         <externalId>false</externalId>
@@ -42,6 +44,4 @@
         <type>Text</type>
         <unique>false</unique>
     </fields>
-    <label>Dimagi Zendesk Settings</label>
-    <visibility>Protected</visibility>
 </CustomObject>

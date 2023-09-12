@@ -58,6 +58,14 @@
                 <behavior>Edit</behavior>
                 <field>Prod_Server_Response_Time__c</field>
             </layoutItems>
+            <layoutItems>
+                <behavior>Edit</behavior>
+                <field>eNikshay_Server_Response_Time__c</field>
+            </layoutItems>
+            <layoutItems>
+                <behavior>Edit</behavior>
+                <field>eNikshay_Up_Time__c</field>
+            </layoutItems>
         </layoutColumns>
         <layoutColumns>
             <layoutItems>

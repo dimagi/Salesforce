@@ -2,6 +2,18 @@
 <CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
     <customSettingsType>Hierarchy</customSettingsType>
     <enableFeeds>false</enableFeeds>
+    <label>Corporate Dashboard Settings</label>
+    <visibility>Protected</visibility>
+    <fields>
+        <fullName>Emails__c</fullName>
+        <externalId>false</externalId>
+        <label>Emails</label>
+        <length>255</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
     <fields>
         <fullName>EV_Expected_Buffer_Target__c</fullName>
         <externalId>false</externalId>
@@ -23,27 +35,17 @@
         <type>Currency</type>
     </fields>
     <fields>
-        <fullName>Emails__c</fullName>
+        <fullName>Fiscal_year_End__c</fullName>
         <externalId>false</externalId>
-        <label>Emails</label>
-        <length>255</length>
-        <required>false</required>
-        <trackTrending>false</trackTrending>
-        <type>Text</type>
-        <unique>false</unique>
-    </fields>
-    <fields>
-        <fullName>Fiscal_Year_Start__c</fullName>
-        <externalId>false</externalId>
-        <label>Fiscal Year Start</label>
+        <label>Fiscal year End</label>
         <required>false</required>
         <trackTrending>false</trackTrending>
         <type>Date</type>
     </fields>
     <fields>
-        <fullName>Fiscal_year_End__c</fullName>
+        <fullName>Fiscal_Year_Start__c</fullName>
         <externalId>false</externalId>
-        <label>Fiscal year End</label>
+        <label>Fiscal Year Start</label>
         <required>false</required>
         <trackTrending>false</trackTrending>
         <type>Date</type>
@@ -102,6 +104,4 @@
         <type>Number</type>
         <unique>false</unique>
     </fields>
-    <label>Corporate Dashboard Settings</label>
-    <visibility>Protected</visibility>
 </CustomObject>

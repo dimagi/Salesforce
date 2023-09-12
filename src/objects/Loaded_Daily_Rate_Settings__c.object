@@ -3,6 +3,8 @@
     <customSettingsType>List</customSettingsType>
     <description>It contains constants for needed for calculate total cost of time cards</description>
     <enableFeeds>false</enableFeeds>
+    <label>Loaded Daily Rate Settings</label>
+    <visibility>Protected</visibility>
     <fields>
         <fullName>Fee__c</fullName>
         <externalId>false</externalId>
@@ -63,6 +65,4 @@
         <type>Number</type>
         <unique>false</unique>
     </fields>
-    <label>Loaded Daily Rate Settings</label>
-    <visibility>Protected</visibility>
 </CustomObject>

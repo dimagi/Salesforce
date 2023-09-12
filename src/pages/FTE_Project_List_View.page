@@ -16,6 +16,10 @@
         .leftMargin {
             margin-left: 10px;
         }
+        .fteFilters {
+            padding-left: 10px;
+            vertical-align: middle;
+        }
     </style>
 
     <apex:pageBlock title="List of Projects" id="projectListViewIBlock">
@@ -39,15 +43,29 @@
                         </div>
                     </apex:facet>
                 </apex:actionstatus>
-
-                <apex:pageBlockSection columns="1">
-                    <apex:pageBlockTable id="fteContractList" value="{!listToSubmit}" var="fteProject" styleClass="projectTable">
+                
+                
+              <!-- <div class="fteFilters">
+                    <apex:outputLabel value="Select year :" for="fteYearSelect" />
+                    <apex:selectList id="fteYearSelect" value="{!fteYear}" size="1">
+                        <apex:selectOptions value="{!ProjectYears}"/>
+                    </apex:selectList>
+                </div>  -->
+                <div class="fteFilters">
+                <apex:outputLabel value="Select year :" for="fteYearSelect" /> &nbsp;
+                <apex:inputField value="{!contract.Project_Years__c}" onchange="searchProjectJs()"/>
+                </div>
+                
+                <apex:pageBlockSection columns="1" id="ProjectPanel">
+                    <apex:pageBlockTable id="fteContractList" value="{!list_contracts}" var="fteProject" styleClass="projectTable">
                         <apex:column headerValue="FTE Project Name" value="{!fteProject.name}" styleClass="fteProjectCell" onclick="goToIndividualProjectView('{!fteProject.Id}');" />
                         <apex:column headerValue="Contract"><apex:outputLink target="_blank" value="../{!fteProject.Id}">{!fteProject.name}</apex:outputLink></apex:column>
-                        <apex:column headerValue="Project Manager" value="{!fteProject.Project_Manager__c}" />
+                        <apex:column headerValue="Project Manager" value="{!fteProject.Project_Manager__c}" /> 
+                        <apex:column headerValue="Start Date" value="{!fteProject.Contract_Start_Date__c}" />
                         <apex:column headerValue="End Date" value="{!fteProject.Contract_End_Date__c}" />
                     </apex:pageBlockTable>
                 </apex:pageBlockSection>
+                <apex:actionFunction action="{!ListToSubmit}" name="searchProjectJs" status="loadingDiv" reRender="ProjectPanel" />
 
                 <apex:actionFunction action="{!goToIndividualProjectView}" name="goToIndividualProjectView" reRender="projectList" >
                     <apex:param name="contractId" assignTo="{!contractId}" value=""/>
@@ -57,6 +75,8 @@
                     <apex:commandButton action="{!goToEmployeeListView}" value="Employee List" id="EmplListButton" />
                     <apex:commandButton action="{!goToProjectListView}" value="Project List" id="projListButton" disabled="true" />
                     <apex:commandButton action="{!goToCSVUploadView}" value="CSV File Upload" id="uploadButton" />
+                    <apex:commandButton action="{!export_projects_excel}" value="Export Excel" id="Export_excel"/>
+                    <apex:commandButton action="{!export_projects_pdf}" value="Export PDF" id="Export_PDF" />
                 </apex:outputPanel>
 
             </apex:outputPanel>

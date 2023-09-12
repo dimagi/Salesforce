@@ -1,6 +1,6 @@
 public class PROEmailTemplateHelper {
     String baseURL = '';
-    String PROURL = 'https://dimagi.secure.force.com/sftools';
+    String PROURL = 'https://dimagi.my.salesforce-sites.com/sftools';
     String SnoozePageURL = '';
 
     public PROEmailTemplateHelper() {

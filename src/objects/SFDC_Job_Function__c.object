@@ -5,7 +5,27 @@
         <type>Default</type>
     </actionOverrides>
     <actionOverrides>
+        <actionName>Accept</actionName>
+        <formFactor>Large</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Accept</actionName>
+        <formFactor>Small</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
         <actionName>CancelEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>CancelEdit</actionName>
+        <formFactor>Large</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>CancelEdit</actionName>
+        <formFactor>Small</formFactor>
         <type>Default</type>
     </actionOverrides>
     <actionOverrides>
@@ -13,7 +33,27 @@
         <type>Default</type>
     </actionOverrides>
     <actionOverrides>
+        <actionName>Clone</actionName>
+        <formFactor>Large</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Clone</actionName>
+        <formFactor>Small</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
         <actionName>Delete</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Delete</actionName>
+        <formFactor>Large</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Delete</actionName>
+        <formFactor>Small</formFactor>
         <type>Default</type>
     </actionOverrides>
     <actionOverrides>
@@ -21,7 +61,27 @@
         <type>Default</type>
     </actionOverrides>
     <actionOverrides>
+        <actionName>Edit</actionName>
+        <formFactor>Large</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Edit</actionName>
+        <formFactor>Small</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
         <actionName>List</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>List</actionName>
+        <formFactor>Large</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>List</actionName>
+        <formFactor>Small</formFactor>
         <type>Default</type>
     </actionOverrides>
     <actionOverrides>
@@ -29,7 +89,27 @@
         <type>Default</type>
     </actionOverrides>
     <actionOverrides>
+        <actionName>New</actionName>
+        <formFactor>Large</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>New</actionName>
+        <formFactor>Small</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
         <actionName>SaveEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>SaveEdit</actionName>
+        <formFactor>Large</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>SaveEdit</actionName>
+        <formFactor>Small</formFactor>
         <type>Default</type>
     </actionOverrides>
     <actionOverrides>
@@ -37,7 +117,27 @@
         <type>Default</type>
     </actionOverrides>
     <actionOverrides>
+        <actionName>Tab</actionName>
+        <formFactor>Large</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Tab</actionName>
+        <formFactor>Small</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
         <actionName>View</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>View</actionName>
+        <formFactor>Large</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>View</actionName>
+        <formFactor>Small</formFactor>
         <type>Default</type>
     </actionOverrides>
     <allowInChatterGroups>false</allowInChatterGroups>
@@ -47,10 +147,27 @@
     <enableBulkApi>true</enableBulkApi>
     <enableFeeds>false</enableFeeds>
     <enableHistory>false</enableHistory>
+    <enableLicensing>false</enableLicensing>
     <enableReports>true</enableReports>
     <enableSearch>true</enableSearch>
     <enableSharing>true</enableSharing>
     <enableStreamingApi>true</enableStreamingApi>
+    <label>Job Function</label>
+    <nameField>
+        <label>Job Function Name</label>
+        <type>Text</type>
+    </nameField>
+    <pluralLabel>Job Functions</pluralLabel>
+    <searchLayouts>
+        <customTabListAdditionalFields>Core_Location__c</customTabListAdditionalFields>
+        <customTabListAdditionalFields>Department__c</customTabListAdditionalFields>
+        <lookupDialogsAdditionalFields>Core_Location__c</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>Department__c</lookupDialogsAdditionalFields>
+        <searchResultsAdditionalFields>Core_Location__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>Department__c</searchResultsAdditionalFields>
+    </searchLayouts>
+    <sharingModel>ReadWrite</sharingModel>
+    <visibility>Public</visibility>
     <fields>
         <fullName>Benefit_Options__c</fullName>
         <externalId>false</externalId>
@@ -64,26 +181,32 @@
                 <value>
                     <fullName>Health</fullName>
                     <default>false</default>
+                    <label>Health</label>
                 </value>
                 <value>
                     <fullName>Dental</fullName>
                     <default>false</default>
+                    <label>Dental</label>
                 </value>
                 <value>
                     <fullName>Vision</fullName>
                     <default>false</default>
+                    <label>Vision</label>
                 </value>
                 <value>
                     <fullName>401k</fullName>
                     <default>false</default>
+                    <label>401k</label>
                 </value>
                 <value>
                     <fullName>Life</fullName>
                     <default>false</default>
+                    <label>Life</label>
                 </value>
                 <value>
                     <fullName>Other</fullName>
                     <default>false</default>
+                    <label>Other</label>
                 </value>
             </valueSetDefinition>
         </valueSet>
@@ -102,14 +225,17 @@
                 <value>
                     <fullName>Country Office</fullName>
                     <default>false</default>
+                    <label>Country Office</label>
                 </value>
                 <value>
                     <fullName>HQ/Corporate Office</fullName>
                     <default>false</default>
+                    <label>HQ/Corporate Office</label>
                 </value>
                 <value>
                     <fullName>Regional Office</fullName>
                     <default>false</default>
+                    <label>Regional Office</label>
                 </value>
             </valueSetDefinition>
         </valueSet>
@@ -127,30 +253,37 @@
                 <value>
                     <fullName>Business Development</fullName>
                     <default>false</default>
+                    <label>Business Development</label>
                 </value>
                 <value>
                     <fullName>Executive Committee</fullName>
                     <default>false</default>
+                    <label>Executive Committee</label>
                 </value>
                 <value>
                     <fullName>Finance</fullName>
                     <default>false</default>
+                    <label>Finance</label>
                 </value>
                 <value>
                     <fullName>HR &amp; Operations</fullName>
                     <default>false</default>
+                    <label>HR &amp; Operations</label>
                 </value>
                 <value>
                     <fullName>Marketing</fullName>
                     <default>false</default>
+                    <label>Marketing</label>
                 </value>
                 <value>
                     <fullName>Software Support</fullName>
                     <default>false</default>
+                    <label>Software Support</label>
                 </value>
                 <value>
                     <fullName>Services</fullName>
                     <default>false</default>
+                    <label>Services</label>
                 </value>
             </valueSetDefinition>
         </valueSet>
@@ -168,43 +301,34 @@
                 <value>
                     <fullName>$30,000-$45,000</fullName>
                     <default>false</default>
+                    <label>$30,000-$45,000</label>
                 </value>
                 <value>
                     <fullName>$46,000-$60,000</fullName>
                     <default>false</default>
+                    <label>$46,000-$60,000</label>
                 </value>
                 <value>
                     <fullName>$61,000-$85,000</fullName>
                     <default>false</default>
+                    <label>$61,000-$85,000</label>
                 </value>
                 <value>
                     <fullName>$86,000-$100,000</fullName>
                     <default>false</default>
+                    <label>$86,000-$100,000</label>
                 </value>
                 <value>
                     <fullName>$101,000-$150,000</fullName>
                     <default>false</default>
+                    <label>$101,000-$150,000</label>
                 </value>
                 <value>
                     <fullName>$150,000+</fullName>
                     <default>false</default>
+                    <label>$150,000+</label>
                 </value>
             </valueSetDefinition>
         </valueSet>
     </fields>
-    <label>Job Function</label>
-    <nameField>
-        <label>Job Function Name</label>
-        <type>Text</type>
-    </nameField>
-    <pluralLabel>Job Functions</pluralLabel>
-    <searchLayouts>
-        <customTabListAdditionalFields>Core_Location__c</customTabListAdditionalFields>
-        <customTabListAdditionalFields>Department__c</customTabListAdditionalFields>
-        <lookupDialogsAdditionalFields>Core_Location__c</lookupDialogsAdditionalFields>
-        <lookupDialogsAdditionalFields>Department__c</lookupDialogsAdditionalFields>
-        <searchResultsAdditionalFields>Core_Location__c</searchResultsAdditionalFields>
-        <searchResultsAdditionalFields>Department__c</searchResultsAdditionalFields>
-    </searchLayouts>
-    <sharingModel>ReadWrite</sharingModel>
 </CustomObject>

@@ -30,7 +30,7 @@
 
             <apex:pageBlockSection title="Useful Project Report Out Links" collapsible="false" columns="1">
                 <apex:pageBlockSectionItem >
-                    <apex:outputLink target="_blank" value="https://confluence.dimagi.com/display/internal/Project+Report+Outs">Project Report Out Instructions</apex:outputLink>
+                    <apex:outputLink target="_blank" value="https://confluence.dimagi.com/pages/viewpage.action?pageId=5899761">Project Report Out Instructions</apex:outputLink>
                 </apex:pageBlockSectionItem>
                 <apex:pageBlockSectionItem >
                     <apex:outputLink target="_blank" value="https://dimagi.my.salesforce.com/{!lastPROId}">Last Project Report Out</apex:outputLink>
@@ -80,8 +80,8 @@
                 </apex:pageBlockSectionItem>
 
                 <apex:pageBlockSectionItem >
-                    <apex:outputLabel >Update Resource Planning<br/>
-                        In &nbsp;<apex:outputLink target="_blank" value="https://docs.google.com/spreadsheets/d/1PSJCEOYE45QuUF1CNKCyBFbwpRDCga4RoxsZHlHJ1aM/edit?usp=sharing">Global Capacity Planner</apex:outputLink>
+                    <apex:outputLabel >Update Resource Planning in Capacity Planner<br/>
+                      <!--  In &nbsp;<apex:outputLink target="_blank" value="https://docs.google.com/spreadsheets/d/1PSJCEOYE45QuUF1CNKCyBFbwpRDCga4RoxsZHlHJ1aM/edit?usp=sharing">Global Capacity Planner</apex:outputLink> -->
                     </apex:outputLabel>
                     <apex:inputfield value="{!pro.Resource_Planning__c}"/>
                 </apex:pageBlockSectionItem>

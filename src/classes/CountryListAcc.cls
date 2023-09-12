@@ -38,6 +38,7 @@ public class CountryListAcc {
 
         String strX = ApexPages.currentPage().getParameters().get('q');
         String accountId = ApexPages.currentPage().getParameters().get('id');
+ 
 
         if(strX != null && strX != '' && strX != 'null') {
             this.searchString = strX;
@@ -85,6 +86,9 @@ public class CountryListAcc {
 
     public PageReference searchByAccountButtonAction() {
         String selectedAccountName = this.accountMap.get(this.selectedAccountId);
+        if(selectedAccountName.contains('\'')) {
+            selectedAccountName = String.escapeSingleQuotes(selectedAccountName);
+            }
         PageReference page = new PageReference('/apex/CountryList?q=' + selectedAccountName + '&id=' + this.selectedAccountId);
         page.setRedirect(true);
         return page;
@@ -106,7 +110,7 @@ public class CountryListAcc {
        //Get all children objects by account Id
 
        //Contacts
-        this.lstCon = [SELECT Id, Account.Name, Email, Title, Name, Country__c
+        this.lstCon = [SELECT Id, Account.Name, Email, Title, Name, Country__c, LastActivityDate
                         FROM Contact
                         WHERE AccountId =: this.selectedAccountId];
 
@@ -142,7 +146,7 @@ public class CountryListAcc {
         //Get all child objects by child accounts IDs
 
         //Contacts
-        List<Contact> lstConChild = [SELECT Id, Account.Name, Email, Title, Name, Country__c
+        List<Contact> lstConChild = [SELECT Id, Account.Name, Email, Title, Name, Country__c, LastActivityDate
                                         FROM Contact
                                         WHERE AccountId IN: childAccountIDs];
         this.lstCon.addAll(lstConChild);

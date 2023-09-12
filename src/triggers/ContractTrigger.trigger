@@ -20,7 +20,11 @@ trigger ContractTrigger on DContract__c (after insert, after update, before inse
                     } else {
                       cont.Workflow_Escalation_Enabled__c = false;
                     }
+                 
                 }
+                   
+                   cont.Direct_Costs_Total_Expenses__c =  (cont.Direct_Costs_Travel_Expenses__c != null ? cont.Direct_Costs_Travel_Expenses__c : 0) + (cont.Direct_Costs_Sub_contract_Expenses__c != null ? cont.Direct_Costs_Sub_contract_Expenses__c : 0) + (cont.Project_Other_Spent__c != null ? cont.Project_Other_Spent__c : 0); 
+               
             }
         }
     }

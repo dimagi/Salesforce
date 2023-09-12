@@ -2,6 +2,8 @@
 <CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
     <customSettingsType>Hierarchy</customSettingsType>
     <enableFeeds>false</enableFeeds>
+    <label>Pipeline Snapshot Settings</label>
+    <visibility>Protected</visibility>
     <fields>
         <fullName>Contract_PS_emails__c</fullName>
         <externalId>false</externalId>
@@ -10,6 +12,4 @@
         <trackTrending>false</trackTrending>
         <type>TextArea</type>
     </fields>
-    <label>Pipeline Snapshot Settings</label>
-    <visibility>Protected</visibility>
 </CustomObject>

@@ -12,6 +12,7 @@ public  class PROAllProjectsComponentController {
     public List<Project_Report_Out__c> LastRepotOuts { get; set; }
     public boolean enableAddButton{ get; set; }
     public String selectedProjectId { get; set; }
+    public String selectedInCharge {get;set;}
     private List<Contract_Contact__c> deleteContactList = new List<Contract_Contact__c>();
 
     public PROAllProjectsComponentController() {
@@ -64,7 +65,7 @@ public  class PROAllProjectsComponentController {
         if (contractList != null && contractList.size() > 0) {
             this.project = contractList[0];
         }
-
+        getselectedInCharge();
         this.contractContactsProject = [SELECT Id, Contact__c, Contract__c, Type__c, Email__c FROM Contract_Contact__c WHERE Contract__c =: selectedProjectId AND Type__c NOT in('Person','Email')];
         this.contractContacts = [SELECT Id, Contact__c, Contract__c, Type__c, Email__c  FROM Contract_Contact__c WHERE Contract__c =: selectedProjectId AND Type__C in ('Person', 'Email') ORDER BY Type__c DESC];
         this.lastRepotOuts = [SELECT id,Name,status__c,Contract__r.Name,Contract__r.Last_Report_Out_Date__c,Report_Out_Date__c  FROM Project_Report_Out__c
@@ -190,10 +191,18 @@ public  class PROAllProjectsComponentController {
         }
     }
 
+    public String getselectedInCharge() {
+        this.selectedInCharge = this.project.In_Charge_Of_Report_Out__c ;
+        return this.selectedInCharge;
+    }
+    public void setselectedInCharge(String incharge) {
+        this.selectedInCharge = incharge;
+    }
 
     private void saveProjectData() {
         if (validateProject()) {
             try {
+                this.project.In_Charge_Of_Report_Out__c = this.selectedInCharge;
                 update this.project;
             } catch (DmlException ex) {
                 ApexPages.addMessage(new ApexPages.message(ApexPages.severity.ERROR, ex.getDmlMessage(0)));

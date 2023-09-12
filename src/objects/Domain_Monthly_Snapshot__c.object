@@ -5,7 +5,27 @@
         <type>Default</type>
     </actionOverrides>
     <actionOverrides>
+        <actionName>Accept</actionName>
+        <formFactor>Large</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Accept</actionName>
+        <formFactor>Small</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
         <actionName>CancelEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>CancelEdit</actionName>
+        <formFactor>Large</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>CancelEdit</actionName>
+        <formFactor>Small</formFactor>
         <type>Default</type>
     </actionOverrides>
     <actionOverrides>
@@ -13,7 +33,27 @@
         <type>Default</type>
     </actionOverrides>
     <actionOverrides>
+        <actionName>Clone</actionName>
+        <formFactor>Large</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Clone</actionName>
+        <formFactor>Small</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
         <actionName>Delete</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Delete</actionName>
+        <formFactor>Large</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Delete</actionName>
+        <formFactor>Small</formFactor>
         <type>Default</type>
     </actionOverrides>
     <actionOverrides>
@@ -21,7 +61,27 @@
         <type>Default</type>
     </actionOverrides>
     <actionOverrides>
+        <actionName>Edit</actionName>
+        <formFactor>Large</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Edit</actionName>
+        <formFactor>Small</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
         <actionName>List</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>List</actionName>
+        <formFactor>Large</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>List</actionName>
+        <formFactor>Small</formFactor>
         <type>Default</type>
     </actionOverrides>
     <actionOverrides>
@@ -29,7 +89,27 @@
         <type>Default</type>
     </actionOverrides>
     <actionOverrides>
+        <actionName>New</actionName>
+        <formFactor>Large</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>New</actionName>
+        <formFactor>Small</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
         <actionName>SaveEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>SaveEdit</actionName>
+        <formFactor>Large</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>SaveEdit</actionName>
+        <formFactor>Small</formFactor>
         <type>Default</type>
     </actionOverrides>
     <actionOverrides>
@@ -37,7 +117,27 @@
         <type>Default</type>
     </actionOverrides>
     <actionOverrides>
+        <actionName>Tab</actionName>
+        <formFactor>Large</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Tab</actionName>
+        <formFactor>Small</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
         <actionName>View</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>View</actionName>
+        <formFactor>Large</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>View</actionName>
+        <formFactor>Small</formFactor>
         <type>Default</type>
     </actionOverrides>
     <allowInChatterGroups>false</allowInChatterGroups>
@@ -47,10 +147,45 @@
     <enableBulkApi>true</enableBulkApi>
     <enableFeeds>false</enableFeeds>
     <enableHistory>false</enableHistory>
+    <enableLicensing>false</enableLicensing>
     <enableReports>false</enableReports>
     <enableSearch>false</enableSearch>
     <enableSharing>true</enableSharing>
     <enableStreamingApi>true</enableStreamingApi>
+    <label>Domain Monthly Snapshot</label>
+    <nameField>
+        <label>Domain Monthly Snapshot Name</label>
+        <type>Text</type>
+    </nameField>
+    <pluralLabel>Domain Monthly Snapshots</pluralLabel>
+    <searchLayouts></searchLayouts>
+    <sharingModel>ReadWrite</sharingModel>
+    <visibility>Public</visibility>
+    <fields>
+        <fullName>Account_Lookup__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <externalId>false</externalId>
+        <label>Account Lookup</label>
+        <referenceTo>Account</referenceTo>
+        <relationshipLabel>Domain Monthly Snapshots</relationshipLabel>
+        <relationshipName>Domain_Monthly_Snapshots</relationshipName>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>Account__c</fullName>
+        <description>Name of the associated SF Account</description>
+        <externalId>false</externalId>
+        <formula>Domain__r.Account__r.Name</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <inlineHelpText>Name of the associated SF Account</inlineHelpText>
+        <label>Account</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
     <fields>
         <fullName>Active_Mobile_Users__c</fullName>
         <externalId>false</externalId>
@@ -61,6 +196,15 @@
         <trackTrending>false</trackTrending>
         <type>Number</type>
         <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Domain_is_active__c</fullName>
+        <externalId>false</externalId>
+        <formula>Domain__r.cpIsActive__c</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Domain is active</label>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
     </fields>
     <fields>
         <fullName>Domain__c</fullName>
@@ -75,9 +219,9 @@
         <type>Lookup</type>
     </fields>
     <fields>
-        <fullName>Forms__c</fullName>
+        <fullName>Forms_for_Period__c</fullName>
         <externalId>false</externalId>
-        <label>Forms</label>
+        <label>Forms for Period</label>
         <precision>18</precision>
         <required>false</required>
         <scale>0</scale>
@@ -86,9 +230,9 @@
         <unique>false</unique>
     </fields>
     <fields>
-        <fullName>Forms_for_Period__c</fullName>
+        <fullName>Forms__c</fullName>
         <externalId>false</externalId>
-        <label>Forms for Period</label>
+        <label>Forms</label>
         <precision>18</precision>
         <required>false</required>
         <scale>0</scale>
@@ -101,6 +245,17 @@
         <defaultValue>false</defaultValue>
         <externalId>false</externalId>
         <label>Is Inside Sales?</label>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Is_Key_Account__c</fullName>
+        <description>Is associated SF Account a Key Account? Lookup from SF Account associated with the domain</description>
+        <externalId>false</externalId>
+        <formula>Domain__r.Is_SF_Account_Key_Account__c</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <inlineHelpText>Is associated SF Account a Key Account?</inlineHelpText>
+        <label>Is Key Account?</label>
         <trackTrending>false</trackTrending>
         <type>Checkbox</type>
     </fields>
@@ -121,6 +276,34 @@
         <label>Likely Real</label>
         <trackTrending>false</trackTrending>
         <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Opps__c</fullName>
+        <description># of open opportunities associated with the account</description>
+        <externalId>false</externalId>
+        <formula>Domain__r.Account__r.Number_of_Open_Opps__c</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <inlineHelpText># of open opportunities associated with the account</inlineHelpText>
+        <label># Open Opps</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Parent_Account__c</fullName>
+        <description>Look up against name of parent account in SF associated with  the domain</description>
+        <externalId>false</externalId>
+        <formula>Domain__r.Account__r.Parent.Name</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <inlineHelpText>Name of the SF Parent Account of the associated SF Account</inlineHelpText>
+        <label>Parent Account</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
     </fields>
     <fields>
         <fullName>Scale_of_Programs__c</fullName>
@@ -147,6 +330,17 @@
         <externalId>false</externalId>
         <label>Server Name</label>
         <length>255</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>SF_Account__c</fullName>
+        <externalId>false</externalId>
+        <formula>Domain__r.Account__r.Name</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>SF Account</label>
         <required>false</required>
         <trackTrending>false</trackTrending>
         <type>Text</type>
@@ -183,26 +377,32 @@
                 <value>
                     <fullName>Advanced</fullName>
                     <default>false</default>
+                    <label>Advanced</label>
                 </value>
                 <value>
                     <fullName>Community</fullName>
                     <default>false</default>
+                    <label>Community</label>
                 </value>
                 <value>
                     <fullName>Enterprise</fullName>
                     <default>false</default>
+                    <label>Enterprise</label>
                 </value>
                 <value>
                     <fullName>Pro</fullName>
                     <default>false</default>
+                    <label>Pro</label>
                 </value>
                 <value>
                     <fullName>Standard</fullName>
                     <default>false</default>
+                    <label>Standard</label>
                 </value>
                 <value>
                     <fullName>Empty</fullName>
                     <default>false</default>
+                    <label>Empty</label>
                 </value>
             </valueSetDefinition>
         </valueSet>
@@ -236,12 +436,4 @@
         <type>Number</type>
         <unique>false</unique>
     </fields>
-    <label>Domain Monthly Snapshot</label>
-    <nameField>
-        <label>Domain Monthly Snapshot Name</label>
-        <type>Text</type>
-    </nameField>
-    <pluralLabel>Domain Monthly Snapshots</pluralLabel>
-    <searchLayouts/>
-    <sharingModel>ReadWrite</sharingModel>
 </CustomObject>

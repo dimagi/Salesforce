@@ -10,7 +10,7 @@ private class OpportunityContractControllerTest {
 
     static testMethod void testNewContract() {
         Account account = new Account();
-        account.Name = 'Test';
+        account.Name = 'Test 1';
         insert account;
 
         Business_Unit__c bunit = new Business_Unit__c();

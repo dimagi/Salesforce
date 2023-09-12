@@ -5,7 +5,27 @@
         <type>Default</type>
     </actionOverrides>
     <actionOverrides>
+        <actionName>Accept</actionName>
+        <formFactor>Large</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Accept</actionName>
+        <formFactor>Small</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
         <actionName>CancelEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>CancelEdit</actionName>
+        <formFactor>Large</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>CancelEdit</actionName>
+        <formFactor>Small</formFactor>
         <type>Default</type>
     </actionOverrides>
     <actionOverrides>
@@ -13,7 +33,27 @@
         <type>Default</type>
     </actionOverrides>
     <actionOverrides>
+        <actionName>Clone</actionName>
+        <formFactor>Large</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Clone</actionName>
+        <formFactor>Small</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
         <actionName>Delete</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Delete</actionName>
+        <formFactor>Large</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Delete</actionName>
+        <formFactor>Small</formFactor>
         <type>Default</type>
     </actionOverrides>
     <actionOverrides>
@@ -21,7 +61,27 @@
         <type>Default</type>
     </actionOverrides>
     <actionOverrides>
+        <actionName>Edit</actionName>
+        <formFactor>Large</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Edit</actionName>
+        <formFactor>Small</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
         <actionName>List</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>List</actionName>
+        <formFactor>Large</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>List</actionName>
+        <formFactor>Small</formFactor>
         <type>Default</type>
     </actionOverrides>
     <actionOverrides>
@@ -29,7 +89,27 @@
         <type>Default</type>
     </actionOverrides>
     <actionOverrides>
+        <actionName>New</actionName>
+        <formFactor>Large</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>New</actionName>
+        <formFactor>Small</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
         <actionName>SaveEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>SaveEdit</actionName>
+        <formFactor>Large</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>SaveEdit</actionName>
+        <formFactor>Small</formFactor>
         <type>Default</type>
     </actionOverrides>
     <actionOverrides>
@@ -37,7 +117,30 @@
         <type>Default</type>
     </actionOverrides>
     <actionOverrides>
+        <actionName>Tab</actionName>
+        <formFactor>Large</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Tab</actionName>
+        <formFactor>Small</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
         <actionName>View</actionName>
+        <comment>Action override created by Lightning App Builder during activation.</comment>
+        <content>Domain_Record_Page1</content>
+        <formFactor>Large</formFactor>
+        <skipRecordTypeSelect>false</skipRecordTypeSelect>
+        <type>Flexipage</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>View</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>View</actionName>
+        <formFactor>Small</formFactor>
         <type>Default</type>
     </actionOverrides>
     <allowInChatterGroups>false</allowInChatterGroups>
@@ -48,10 +151,27 @@
     <enableBulkApi>true</enableBulkApi>
     <enableFeeds>false</enableFeeds>
     <enableHistory>true</enableHistory>
+    <enableLicensing>false</enableLicensing>
     <enableReports>true</enableReports>
     <enableSearch>true</enableSearch>
     <enableSharing>true</enableSharing>
     <enableStreamingApi>true</enableStreamingApi>
+    <label>Domain</label>
+    <nameField>
+        <label>Domain Name</label>
+        <trackHistory>false</trackHistory>
+        <type>Text</type>
+    </nameField>
+    <pluralLabel>Domain</pluralLabel>
+    <searchLayouts>
+        <searchResultsAdditionalFields>Account__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>cpIsActive__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>cpAllMobileUsers__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>Lifetime_MRR__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>subscription_notes__c</searchResultsAdditionalFields>
+    </searchLayouts>
+    <sharingModel>ReadWrite</sharingModel>
+    <visibility>Public</visibility>
     <fields>
         <fullName>Account__c</fullName>
         <deleteConstraint>SetNull</deleteConstraint>
@@ -64,1168 +184,6 @@
         <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Lookup</type>
-    </fields>
-    <fields>
-        <fullName>Countries_Picklist__c</fullName>
-        <externalId>false</externalId>
-        <label>Countries Picklist</label>
-        <required>false</required>
-        <trackHistory>false</trackHistory>
-        <trackTrending>false</trackTrending>
-        <type>MultiselectPicklist</type>
-        <valueSet>
-            <valueSetDefinition>
-                <sorted>false</sorted>
-                <value>
-                    <fullName>NIGER</fullName>
-                    <default>false</default>
-                </value>
-            </valueSetDefinition>
-        </valueSet>
-        <visibleLines>4</visibleLines>
-    </fields>
-    <fields>
-        <fullName>Countries_Wrapper__c</fullName>
-        <description>Countires wrapper field, we want use aggregate queries on country list but it is A big text area (Deployment_Countries__c).</description>
-        <externalId>false</externalId>
-        <label>Countries Wrapper</label>
-        <length>255</length>
-        <required>false</required>
-        <trackHistory>false</trackHistory>
-        <trackTrending>false</trackTrending>
-        <type>Text</type>
-        <unique>false</unique>
-    </fields>
-    <fields>
-        <fullName>Country_of_deployment_salesforce__c</fullName>
-        <deleteConstraint>SetNull</deleteConstraint>
-        <description>This is the lookup for Country in Salesforce, not CommCareHQ</description>
-        <externalId>false</externalId>
-        <label>Country of deployment (salesforce)</label>
-        <referenceTo>Country__c</referenceTo>
-        <relationshipLabel>Domain</relationshipLabel>
-        <relationshipName>Domain</relationshipName>
-        <required>false</required>
-        <trackHistory>false</trackHistory>
-        <trackTrending>false</trackTrending>
-        <type>Lookup</type>
-    </fields>
-    <fields>
-        <fullName>Cp_last_update__c</fullName>
-        <externalId>false</externalId>
-        <label>Domain cp last update</label>
-        <required>false</required>
-        <trackHistory>false</trackHistory>
-        <trackTrending>false</trackTrending>
-        <type>DateTime</type>
-    </fields>
-    <fields>
-        <fullName>Cp_n_users_submitted_form__c</fullName>
-        <externalId>false</externalId>
-        <label>Domain cp n users submitted form</label>
-        <precision>18</precision>
-        <required>false</required>
-        <scale>0</scale>
-        <trackHistory>false</trackHistory>
-        <trackTrending>false</trackTrending>
-        <type>Number</type>
-        <unique>false</unique>
-    </fields>
-    <fields>
-        <fullName>Deployment_Countries__c</fullName>
-        <externalId>false</externalId>
-        <label>Countries</label>
-        <length>15000</length>
-        <trackHistory>false</trackHistory>
-        <trackTrending>false</trackTrending>
-        <type>LongTextArea</type>
-        <visibleLines>3</visibleLines>
-    </fields>
-    <fields>
-        <fullName>Deployment_city__c</fullName>
-        <externalId>false</externalId>
-        <label>Deployment city</label>
-        <length>255</length>
-        <required>false</required>
-        <trackHistory>false</trackHistory>
-        <trackTrending>false</trackTrending>
-        <type>Text</type>
-        <unique>false</unique>
-    </fields>
-    <fields>
-        <fullName>Deployment_country__c</fullName>
-        <externalId>false</externalId>
-        <label>Deployment country</label>
-        <length>255</length>
-        <required>false</required>
-        <trackHistory>false</trackHistory>
-        <trackTrending>false</trackTrending>
-        <type>Text</type>
-        <unique>false</unique>
-    </fields>
-    <fields>
-        <fullName>Deployment_date__c</fullName>
-        <externalId>false</externalId>
-        <label>Deployment date</label>
-        <required>false</required>
-        <trackHistory>false</trackHistory>
-        <trackTrending>false</trackTrending>
-        <type>DateTime</type>
-    </fields>
-    <fields>
-        <fullName>Deployment_description__c</fullName>
-        <externalId>false</externalId>
-        <label>Deployment description</label>
-        <length>15000</length>
-        <trackHistory>false</trackHistory>
-        <trackTrending>false</trackTrending>
-        <type>LongTextArea</type>
-        <visibleLines>3</visibleLines>
-    </fields>
-    <fields>
-        <fullName>Deployment_public__c</fullName>
-        <defaultValue>false</defaultValue>
-        <externalId>false</externalId>
-        <label>Deployment public</label>
-        <trackHistory>false</trackHistory>
-        <trackTrending>false</trackTrending>
-        <type>Checkbox</type>
-    </fields>
-    <fields>
-        <fullName>Deployment_region__c</fullName>
-        <externalId>false</externalId>
-        <label>Deployment region</label>
-        <length>255</length>
-        <required>false</required>
-        <trackHistory>false</trackHistory>
-        <trackTrending>false</trackTrending>
-        <type>Text</type>
-        <unique>false</unique>
-    </fields>
-    <fields>
-        <fullName>Domain_Deleted__c</fullName>
-        <defaultValue>false</defaultValue>
-        <description>If set to true it means that domain was marked as deleted in HQ. Do not update this field manually, it&apos;s automatically set by apex code.</description>
-        <externalId>false</externalId>
-        <inlineHelpText>If set to true it means that domain was marked as deleted in HQ. Do not update this field manually, it&apos;s automatically set by apex code.</inlineHelpText>
-        <label>Domain Deleted</label>
-        <trackHistory>false</trackHistory>
-        <trackTrending>false</trackTrending>
-        <type>Checkbox</type>
-    </fields>
-    <fields>
-        <fullName>Domain_cp_has_project_icon__c</fullName>
-        <defaultValue>false</defaultValue>
-        <externalId>false</externalId>
-        <label>Domain_cp_has_project_icon</label>
-        <trackHistory>false</trackHistory>
-        <trackTrending>false</trackTrending>
-        <type>Checkbox</type>
-    </fields>
-    <fields>
-        <fullName>Domain_cp_n_30_day_user_cases__c</fullName>
-        <externalId>false</externalId>
-        <label>Domain_cp_n_30_day_user_cases</label>
-        <precision>18</precision>
-        <required>false</required>
-        <scale>0</scale>
-        <trackHistory>false</trackHistory>
-        <trackTrending>false</trackTrending>
-        <type>Number</type>
-        <unique>false</unique>
-    </fields>
-    <fields>
-        <fullName>Domain_cp_n_apps__c</fullName>
-        <externalId>false</externalId>
-        <label>Domain_cp_n_apps</label>
-        <precision>18</precision>
-        <required>false</required>
-        <scale>0</scale>
-        <trackHistory>false</trackHistory>
-        <trackTrending>false</trackTrending>
-        <type>Number</type>
-        <unique>false</unique>
-    </fields>
-    <fields>
-        <fullName>Domain_cp_n_apps_with_icon__c</fullName>
-        <externalId>false</externalId>
-        <label>Domain_cp_n_apps_with_icon</label>
-        <precision>18</precision>
-        <required>false</required>
-        <scale>0</scale>
-        <trackHistory>false</trackHistory>
-        <trackTrending>false</trackTrending>
-        <type>Number</type>
-        <unique>false</unique>
-    </fields>
-    <fields>
-        <fullName>Domain_cp_n_apps_with_multi_lang__c</fullName>
-        <externalId>false</externalId>
-        <label>Domain_cp_n_apps_with_multi_lang</label>
-        <precision>18</precision>
-        <required>false</required>
-        <scale>0</scale>
-        <trackHistory>false</trackHistory>
-        <trackTrending>false</trackTrending>
-        <type>Number</type>
-        <unique>false</unique>
-    </fields>
-    <fields>
-        <fullName>Domain_cp_n_case_exports__c</fullName>
-        <externalId>false</externalId>
-        <label>Domain_cp_n_case_exports</label>
-        <precision>18</precision>
-        <required>false</required>
-        <scale>0</scale>
-        <trackHistory>false</trackHistory>
-        <trackTrending>false</trackTrending>
-        <type>Number</type>
-        <unique>false</unique>
-    </fields>
-    <fields>
-        <fullName>Domain_cp_n_case_sharing_groups__c</fullName>
-        <externalId>false</externalId>
-        <label>Domain_cp_n_case_sharing_groups</label>
-        <precision>18</precision>
-        <required>false</required>
-        <scale>0</scale>
-        <trackHistory>false</trackHistory>
-        <trackTrending>false</trackTrending>
-        <type>Number</type>
-        <unique>false</unique>
-    </fields>
-    <fields>
-        <fullName>Domain_cp_n_case_sharing_olevels__c</fullName>
-        <externalId>false</externalId>
-        <label>Domain_cp_n_case_sharing_olevels</label>
-        <precision>18</precision>
-        <required>false</required>
-        <scale>0</scale>
-        <trackHistory>false</trackHistory>
-        <trackTrending>false</trackTrending>
-        <type>Number</type>
-        <unique>false</unique>
-    </fields>
-    <fields>
-        <fullName>Domain_cp_n_click_app_deploy__c</fullName>
-        <externalId>false</externalId>
-        <label>Domain_cp_n_click_app_deploy</label>
-        <precision>18</precision>
-        <required>false</required>
-        <scale>0</scale>
-        <trackHistory>false</trackHistory>
-        <trackTrending>false</trackTrending>
-        <type>Number</type>
-        <unique>false</unique>
-    </fields>
-    <fields>
-        <fullName>Domain_cp_n_custom_roles__c</fullName>
-        <externalId>false</externalId>
-        <label>Domain_cp_n_custom_roles</label>
-        <precision>18</precision>
-        <required>false</required>
-        <scale>0</scale>
-        <trackHistory>false</trackHistory>
-        <trackTrending>false</trackTrending>
-        <type>Number</type>
-        <unique>false</unique>
-    </fields>
-    <fields>
-        <fullName>Domain_cp_n_deid_exports__c</fullName>
-        <externalId>false</externalId>
-        <label>Domain_cp_n_deid_exports</label>
-        <precision>18</precision>
-        <required>false</required>
-        <scale>0</scale>
-        <trackHistory>false</trackHistory>
-        <trackTrending>false</trackTrending>
-        <type>Number</type>
-        <unique>false</unique>
-    </fields>
-    <fields>
-        <fullName>Domain_cp_n_downloads_custom_exports__c</fullName>
-        <externalId>false</externalId>
-        <label>Domain_cp_n_downloads_custom_exports</label>
-        <precision>18</precision>
-        <required>false</required>
-        <scale>0</scale>
-        <trackHistory>false</trackHistory>
-        <trackTrending>false</trackTrending>
-        <type>Number</type>
-        <unique>false</unique>
-    </fields>
-    <fields>
-        <fullName>Domain_cp_n_form_builder_entered__c</fullName>
-        <externalId>false</externalId>
-        <label>Domain_cp_n_form_builder_entered</label>
-        <precision>18</precision>
-        <required>false</required>
-        <scale>0</scale>
-        <trackHistory>false</trackHistory>
-        <trackTrending>false</trackTrending>
-        <type>Number</type>
-        <unique>false</unique>
-    </fields>
-    <fields>
-        <fullName>Domain_cp_n_loc_restricted_roles__c</fullName>
-        <externalId>false</externalId>
-        <label>Domain_cp_n_loc_restricted_roles</label>
-        <precision>18</precision>
-        <required>false</required>
-        <scale>0</scale>
-        <trackHistory>false</trackHistory>
-        <trackTrending>false</trackTrending>
-        <type>Number</type>
-        <unique>false</unique>
-    </fields>
-    <fields>
-        <fullName>Domain_cp_n_lookup_tables__c</fullName>
-        <externalId>false</externalId>
-        <label>Domain_cp_n_lookup_tables</label>
-        <precision>18</precision>
-        <required>false</required>
-        <scale>0</scale>
-        <trackHistory>false</trackHistory>
-        <trackTrending>false</trackTrending>
-        <type>Number</type>
-        <unique>false</unique>
-    </fields>
-    <fields>
-        <fullName>Domain_cp_n_rb_reports__c</fullName>
-        <externalId>false</externalId>
-        <label>Domain_cp_n_rb_reports</label>
-        <precision>18</precision>
-        <required>false</required>
-        <scale>0</scale>
-        <trackHistory>false</trackHistory>
-        <trackTrending>false</trackTrending>
-        <type>Number</type>
-        <unique>false</unique>
-    </fields>
-    <fields>
-        <fullName>Domain_cp_n_repeaters__c</fullName>
-        <externalId>false</externalId>
-        <label>Domain_cp_n_repeaters</label>
-        <precision>18</precision>
-        <required>false</required>
-        <scale>0</scale>
-        <trackHistory>false</trackHistory>
-        <trackTrending>false</trackTrending>
-        <type>Number</type>
-        <unique>false</unique>
-    </fields>
-    <fields>
-        <fullName>Domain_cp_n_reports_created__c</fullName>
-        <externalId>false</externalId>
-        <label>Domain_cp_n_reports_created</label>
-        <precision>18</precision>
-        <required>false</required>
-        <scale>0</scale>
-        <trackHistory>false</trackHistory>
-        <trackTrending>false</trackTrending>
-        <type>Number</type>
-        <unique>false</unique>
-    </fields>
-    <fields>
-        <fullName>Domain_cp_n_reports_edited__c</fullName>
-        <externalId>false</externalId>
-        <label>Domain_cp_n_reports_edited</label>
-        <precision>18</precision>
-        <required>false</required>
-        <scale>0</scale>
-        <trackHistory>false</trackHistory>
-        <trackTrending>false</trackTrending>
-        <type>Number</type>
-        <unique>false</unique>
-    </fields>
-    <fields>
-        <fullName>Domain_cp_n_saved_app_changes__c</fullName>
-        <externalId>false</externalId>
-        <label>Domain_cp_n_saved_app_changes</label>
-        <precision>18</precision>
-        <required>false</required>
-        <scale>0</scale>
-        <trackHistory>false</trackHistory>
-        <trackTrending>false</trackTrending>
-        <type>Number</type>
-        <unique>false</unique>
-    </fields>
-    <fields>
-        <fullName>Domain_cp_n_saved_exports__c</fullName>
-        <externalId>false</externalId>
-        <label>Domain_cp_n_saved_exports</label>
-        <precision>18</precision>
-        <required>false</required>
-        <scale>0</scale>
-        <trackHistory>false</trackHistory>
-        <trackTrending>false</trackTrending>
-        <type>Number</type>
-        <unique>false</unique>
-    </fields>
-    <fields>
-        <fullName>Domain_cp_n_saved_scheduled_reports__c</fullName>
-        <externalId>false</externalId>
-        <label>Domain_cp_n_saved_scheduled_reports</label>
-        <precision>18</precision>
-        <required>false</required>
-        <scale>0</scale>
-        <trackHistory>false</trackHistory>
-        <trackTrending>false</trackTrending>
-        <type>Number</type>
-        <unique>false</unique>
-    </fields>
-    <fields>
-        <fullName>Domain_cp_n_trivet_backends__c</fullName>
-        <externalId>false</externalId>
-        <label>Domain_cp_n_trivet_backends</label>
-        <precision>18</precision>
-        <required>false</required>
-        <scale>0</scale>
-        <trackHistory>false</trackHistory>
-        <trackTrending>false</trackTrending>
-        <type>Number</type>
-        <unique>false</unique>
-    </fields>
-    <fields>
-        <fullName>Domain_cp_n_ucr_reports__c</fullName>
-        <externalId>false</externalId>
-        <label>Domain_cp_n_ucr_reports</label>
-        <precision>18</precision>
-        <required>false</required>
-        <scale>0</scale>
-        <trackHistory>false</trackHistory>
-        <trackTrending>false</trackTrending>
-        <type>Number</type>
-        <unique>false</unique>
-    </fields>
-    <fields>
-        <fullName>Domain_cp_n_viewed_non_ucr_reports__c</fullName>
-        <externalId>false</externalId>
-        <label>Domain_cp_n_viewed_non_ucr_reports</label>
-        <precision>18</precision>
-        <required>false</required>
-        <scale>0</scale>
-        <trackHistory>false</trackHistory>
-        <trackTrending>false</trackTrending>
-        <type>Number</type>
-        <unique>false</unique>
-    </fields>
-    <fields>
-        <fullName>Domain_cp_n_viewed_ucr_reports__c</fullName>
-        <externalId>false</externalId>
-        <label>Domain_cp_n_viewed_ucr_reports</label>
-        <precision>18</precision>
-        <required>false</required>
-        <scale>0</scale>
-        <trackHistory>false</trackHistory>
-        <trackTrending>false</trackTrending>
-        <type>Number</type>
-        <unique>false</unique>
-    </fields>
-    <fields>
-        <fullName>Domain_cp_sms_30_d__c</fullName>
-        <defaultValue>false</defaultValue>
-        <externalId>false</externalId>
-        <label>Domain_cp_sms_30_d</label>
-        <trackHistory>false</trackHistory>
-        <trackTrending>false</trackTrending>
-        <type>Checkbox</type>
-    </fields>
-    <fields>
-        <fullName>Domain_cp_sms_ever__c</fullName>
-        <defaultValue>false</defaultValue>
-        <externalId>false</externalId>
-        <label>Domain_cp_sms_ever</label>
-        <trackHistory>false</trackHistory>
-        <trackTrending>false</trackTrending>
-        <type>Checkbox</type>
-    </fields>
-    <fields>
-        <fullName>Domain_cp_use_domain_security__c</fullName>
-        <defaultValue>false</defaultValue>
-        <externalId>false</externalId>
-        <label>Domain_cp_use_domain_security</label>
-        <trackHistory>false</trackHistory>
-        <trackTrending>false</trackTrending>
-        <type>Checkbox</type>
-    </fields>
-    <fields>
-        <fullName>Domain_cp_using_locations__c</fullName>
-        <defaultValue>false</defaultValue>
-        <externalId>false</externalId>
-        <label>Domain_cp_using_locations</label>
-        <trackHistory>false</trackHistory>
-        <trackTrending>false</trackTrending>
-        <type>Checkbox</type>
-    </fields>
-    <fields>
-        <fullName>Domain_date_created_date_wrapper__c</fullName>
-        <description>Wraps date created from Date/Time to Date. User for purpose of group by in SOQL query</description>
-        <externalId>false</externalId>
-        <label>Domain date created date wrapper</label>
-        <required>false</required>
-        <trackHistory>false</trackHistory>
-        <trackTrending>false</trackTrending>
-        <type>Date</type>
-    </fields>
-    <fields>
-        <fullName>Domain_first_form_sub_date_wrapper__c</fullName>
-        <description>Wraps date first form submission from Date/Time to Date. User for purpose of group by in SOQL query</description>
-        <externalId>false</externalId>
-        <label>Domain first form sub date wrapper</label>
-        <required>false</required>
-        <trackHistory>false</trackHistory>
-        <trackTrending>false</trackTrending>
-        <type>Date</type>
-    </fields>
-    <fields>
-        <fullName>Domain_has_used_features__c</fullName>
-        <defaultValue>false</defaultValue>
-        <description>Experimental from Gillian - do not use. Marks which domains have used features at any point in time.</description>
-        <externalId>false</externalId>
-        <label>[Experimental] Domain_has_used_features</label>
-        <trackHistory>false</trackHistory>
-        <trackTrending>false</trackTrending>
-        <type>Checkbox</type>
-    </fields>
-    <fields>
-        <fullName>Domain_last_form_sub_date_wrapper__c</fullName>
-        <description>Wraps last form submission from Date/Time to Date. User for purpose of group by in SOQL query</description>
-        <externalId>false</externalId>
-        <label>Domain last form sub date wrapper</label>
-        <required>false</required>
-        <trackHistory>false</trackHistory>
-        <trackTrending>false</trackTrending>
-        <type>Date</type>
-    </fields>
-    <fields>
-        <fullName>Downgrade_notes__c</fullName>
-        <description>This field is meant to capture any anecdotal notes we have about why a project space chose to downgrade</description>
-        <externalId>false</externalId>
-        <inlineHelpText>CS/ Sales-- enter any relevant information you have about why this domain downgraded their plan</inlineHelpText>
-        <label>Downgrade notes</label>
-        <length>32768</length>
-        <trackHistory>true</trackHistory>
-        <trackTrending>false</trackTrending>
-        <type>LongTextArea</type>
-        <visibleLines>3</visibleLines>
-    </fields>
-    <fields>
-        <fullName>Email__c</fullName>
-        <externalId>false</externalId>
-        <formula>creating_user__c</formula>
-        <label>Contact: Email</label>
-        <required>false</required>
-        <trackHistory>false</trackHistory>
-        <trackTrending>false</trackTrending>
-        <type>Text</type>
-        <unique>false</unique>
-    </fields>
-    <fields>
-        <fullName>Enterprise_Project_Space__c</fullName>
-        <defaultValue>false</defaultValue>
-        <externalId>false</externalId>
-        <label>Enterprise Project Space</label>
-        <trackHistory>false</trackHistory>
-        <trackTrending>false</trackTrending>
-        <type>Checkbox</type>
-    </fields>
-    <fields>
-        <fullName>Forms_for_Period_TMP__c</fullName>
-        <externalId>false</externalId>
-        <label>Forms for Period TMP</label>
-        <precision>18</precision>
-        <required>false</required>
-        <scale>0</scale>
-        <trackHistory>false</trackHistory>
-        <trackTrending>false</trackTrending>
-        <type>Number</type>
-        <unique>false</unique>
-    </fields>
-    <fields>
-        <fullName>Forms_for_Period__c</fullName>
-        <externalId>false</externalId>
-        <label>Forms for Period</label>
-        <precision>18</precision>
-        <required>false</required>
-        <scale>0</scale>
-        <trackHistory>true</trackHistory>
-        <trackTrending>false</trackTrending>
-        <type>Number</type>
-        <unique>false</unique>
-    </fields>
-    <fields>
-        <fullName>Has_J2ME_submission_in_past_90_days__c</fullName>
-        <defaultValue>false</defaultValue>
-        <externalId>false</externalId>
-        <label>Has J2ME submission in past 90 days</label>
-        <trackHistory>false</trackHistory>
-        <trackTrending>false</trackTrending>
-        <type>Checkbox</type>
-    </fields>
-    <fields>
-        <fullName>InternalProp_Business_Unit__c</fullName>
-        <externalId>false</externalId>
-        <formula>Internal_Properties__r.InternalProp_Business_Unit__c</formula>
-        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
-        <label>ProjectSpace_Business Unit</label>
-        <required>false</required>
-        <trackHistory>false</trackHistory>
-        <trackTrending>false</trackTrending>
-        <type>Text</type>
-        <unique>false</unique>
-    </fields>
-    <fields>
-        <fullName>InternalProp_area__c</fullName>
-        <externalId>false</externalId>
-        <formula>Internal_Properties__r.area__c</formula>
-        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
-        <label>InternalProp_area</label>
-        <required>false</required>
-        <trackHistory>false</trackHistory>
-        <trackTrending>false</trackTrending>
-        <type>Text</type>
-        <unique>false</unique>
-    </fields>
-    <fields>
-        <fullName>InternalProp_can_use_data__c</fullName>
-        <externalId>false</externalId>
-        <formula>Internal_Properties__r.can_use_data__c</formula>
-        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
-        <label>Can_use_data</label>
-        <trackHistory>false</trackHistory>
-        <trackTrending>false</trackTrending>
-        <type>Checkbox</type>
-    </fields>
-    <fields>
-        <fullName>InternalProp_commcare_edition__c</fullName>
-        <externalId>false</externalId>
-        <formula>Internal_Properties__r.commcare_edition__c</formula>
-        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
-        <label>InternalProp_commcare_edition</label>
-        <required>false</required>
-        <trackHistory>false</trackHistory>
-        <trackTrending>false</trackTrending>
-        <type>Text</type>
-        <unique>false</unique>
-    </fields>
-    <fields>
-        <fullName>InternalProp_commtrack_domain__c</fullName>
-        <externalId>false</externalId>
-        <formula>Internal_Properties__r.commtrack_domain__c</formula>
-        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
-        <label>InternalProp_commtrack_domain</label>
-        <trackHistory>false</trackHistory>
-        <trackTrending>false</trackTrending>
-        <type>Checkbox</type>
-    </fields>
-    <fields>
-        <fullName>InternalProp_custom_eula__c</fullName>
-        <externalId>false</externalId>
-        <formula>Internal_Properties__r.custom_eula__c</formula>
-        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
-        <label>Custom_EULA</label>
-        <trackHistory>false</trackHistory>
-        <trackTrending>false</trackTrending>
-        <type>Checkbox</type>
-    </fields>
-    <fields>
-        <fullName>InternalProp_goal_followup_rate__c</fullName>
-        <externalId>false</externalId>
-        <formula>Internal_Properties__r.goal_followup_rate__c</formula>
-        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
-        <label>InternalProp_goal_followup_rate</label>
-        <precision>18</precision>
-        <required>false</required>
-        <scale>2</scale>
-        <trackHistory>false</trackHistory>
-        <trackTrending>false</trackTrending>
-        <type>Number</type>
-        <unique>false</unique>
-    </fields>
-    <fields>
-        <fullName>InternalProp_goal_time_period__c</fullName>
-        <externalId>false</externalId>
-        <formula>Internal_Properties__r.goal_time_period__c</formula>
-        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
-        <label>InternalProp_goal_time_period</label>
-        <precision>18</precision>
-        <required>false</required>
-        <scale>2</scale>
-        <trackHistory>false</trackHistory>
-        <trackTrending>false</trackTrending>
-        <type>Number</type>
-        <unique>false</unique>
-    </fields>
-    <fields>
-        <fullName>InternalProp_initiative__c</fullName>
-        <externalId>false</externalId>
-        <formula>Internal_Properties__r.initiative__c</formula>
-        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
-        <label>InternalProp_initiative</label>
-        <required>false</required>
-        <trackHistory>false</trackHistory>
-        <trackTrending>false</trackTrending>
-        <type>Text</type>
-        <unique>false</unique>
-    </fields>
-    <fields>
-        <fullName>InternalProp_organization_name__c</fullName>
-        <externalId>false</externalId>
-        <formula>Internal_Properties__r.organization_name__c</formula>
-        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
-        <label>InternalProp_organization_name</label>
-        <required>false</required>
-        <trackHistory>false</trackHistory>
-        <trackTrending>false</trackTrending>
-        <type>Text</type>
-        <unique>false</unique>
-    </fields>
-    <fields>
-        <fullName>InternalProp_phone_model__c</fullName>
-        <externalId>false</externalId>
-        <formula>Internal_Properties__r.phone_model__c</formula>
-        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
-        <label>InternalProp_phone_model</label>
-        <required>false</required>
-        <trackHistory>false</trackHistory>
-        <trackTrending>false</trackTrending>
-        <type>Text</type>
-        <unique>false</unique>
-    </fields>
-    <fields>
-        <fullName>InternalProp_platform__c</fullName>
-        <externalId>false</externalId>
-        <formula>Internal_Properties__r.platform__c</formula>
-        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
-        <label>InternalProp_platform</label>
-        <required>false</required>
-        <trackHistory>false</trackHistory>
-        <trackTrending>false</trackTrending>
-        <type>Text</type>
-        <unique>false</unique>
-    </fields>
-    <fields>
-        <fullName>InternalProp_project_manager__c</fullName>
-        <externalId>false</externalId>
-        <formula>Internal_Properties__r.project_manager__c</formula>
-        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
-        <label>InternalProp_project_manager</label>
-        <required>false</required>
-        <trackHistory>false</trackHistory>
-        <trackTrending>false</trackTrending>
-        <type>Text</type>
-        <unique>false</unique>
-    </fields>
-    <fields>
-        <fullName>InternalProp_project_state__c</fullName>
-        <externalId>false</externalId>
-        <formula>Internal_Properties__r.project_state__c</formula>
-        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
-        <label>InternalProp_project_state</label>
-        <required>false</required>
-        <trackHistory>false</trackHistory>
-        <trackTrending>false</trackTrending>
-        <type>Text</type>
-        <unique>false</unique>
-    </fields>
-    <fields>
-        <fullName>InternalProp_self_started__c</fullName>
-        <externalId>false</externalId>
-        <formula>Internal_Properties__r.self_started__c</formula>
-        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
-        <label>InternalProp_self_started</label>
-        <trackHistory>false</trackHistory>
-        <trackTrending>false</trackTrending>
-        <type>Checkbox</type>
-    </fields>
-    <fields>
-        <fullName>InternalProp_services__c</fullName>
-        <externalId>false</externalId>
-        <formula>Internal_Properties__r.services__c</formula>
-        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
-        <label>InternalProp_services</label>
-        <required>false</required>
-        <trackHistory>false</trackHistory>
-        <trackTrending>false</trackTrending>
-        <type>Text</type>
-        <unique>false</unique>
-    </fields>
-    <fields>
-        <fullName>InternalProp_sf_account_id__c</fullName>
-        <externalId>false</externalId>
-        <formula>Internal_Properties__r.sf_account_id__c</formula>
-        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
-        <label>InternalProp_sf_account_id</label>
-        <required>false</required>
-        <trackHistory>false</trackHistory>
-        <trackTrending>false</trackTrending>
-        <type>Text</type>
-        <unique>false</unique>
-    </fields>
-    <fields>
-        <fullName>InternalProp_sf_contract_id__c</fullName>
-        <externalId>false</externalId>
-        <formula>Internal_Properties__r.sf_contract_id__c</formula>
-        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
-        <label>InternalProp_sf_contract_id</label>
-        <required>false</required>
-        <trackHistory>false</trackHistory>
-        <trackTrending>false</trackTrending>
-        <type>Text</type>
-        <unique>false</unique>
-    </fields>
-    <fields>
-        <fullName>InternalProp_sub_area__c</fullName>
-        <externalId>false</externalId>
-        <formula>Internal_Properties__r.sub_area__c</formula>
-        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
-        <label>InternalProp_sub_area</label>
-        <required>false</required>
-        <trackHistory>false</trackHistory>
-        <trackTrending>false</trackTrending>
-        <type>Text</type>
-        <unique>false</unique>
-    </fields>
-    <fields>
-        <fullName>InternalProp_using_adm__c</fullName>
-        <externalId>false</externalId>
-        <formula>Internal_Properties__r.using_adm__c</formula>
-        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
-        <label>InternalProp_using_adm</label>
-        <trackHistory>false</trackHistory>
-        <trackTrending>false</trackTrending>
-        <type>Checkbox</type>
-    </fields>
-    <fields>
-        <fullName>InternalProp_using_call_center__c</fullName>
-        <externalId>false</externalId>
-        <formula>Internal_Properties__r.using_call_center__c</formula>
-        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
-        <label>InternalProp_using_call_center</label>
-        <trackHistory>false</trackHistory>
-        <trackTrending>false</trackTrending>
-        <type>Checkbox</type>
-    </fields>
-    <fields>
-        <fullName>InternalProp_workshop_region__c</fullName>
-        <externalId>false</externalId>
-        <formula>Internal_Properties__r.workshop_region__c</formula>
-        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
-        <label>InternalProp_workshop_region</label>
-        <required>false</required>
-        <trackHistory>false</trackHistory>
-        <trackTrending>false</trackTrending>
-        <type>Text</type>
-        <unique>false</unique>
-    </fields>
-    <fields>
-        <fullName>Internal_Properties__c</fullName>
-        <deleteConstraint>SetNull</deleteConstraint>
-        <externalId>false</externalId>
-        <label>Internal Properties</label>
-        <referenceTo>Internal_Properties__c</referenceTo>
-        <relationshipLabel>Domain</relationshipLabel>
-        <relationshipName>Domain</relationshipName>
-        <required>false</required>
-        <trackHistory>false</trackHistory>
-        <trackTrending>false</trackTrending>
-        <type>Lookup</type>
-    </fields>
-    <fields>
-        <fullName>Is_Inside_Sales__c</fullName>
-        <defaultValue>false</defaultValue>
-        <description>Check if went through the inside sales process</description>
-        <externalId>false</externalId>
-        <inlineHelpText>Check if went through the inside sales process</inlineHelpText>
-        <label>Is Inside Sales?</label>
-        <trackHistory>false</trackHistory>
-        <trackTrending>false</trackTrending>
-        <type>Checkbox</type>
-    </fields>
-    <fields>
-        <fullName>Lead__c</fullName>
-        <deleteConstraint>SetNull</deleteConstraint>
-        <externalId>false</externalId>
-        <label>Lead</label>
-        <referenceTo>Lead</referenceTo>
-        <relationshipLabel>Domain</relationshipLabel>
-        <relationshipName>Domain</relationshipName>
-        <required>false</required>
-        <trackHistory>false</trackHistory>
-        <trackTrending>false</trackTrending>
-        <type>Lookup</type>
-    </fields>
-    <fields>
-        <fullName>Lifetime_MRR__c</fullName>
-        <externalId>false</externalId>
-        <label>Lifetime MRR</label>
-        <precision>18</precision>
-        <required>false</required>
-        <scale>2</scale>
-        <trackHistory>false</trackHistory>
-        <trackTrending>false</trackTrending>
-        <type>Currency</type>
-    </fields>
-    <fields>
-        <fullName>Likely_Real__c</fullName>
-        <description>over 300 forms</description>
-        <externalId>false</externalId>
-        <formula>cpAllForms__c &gt;= 300</formula>
-        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
-        <label>Likely Real</label>
-        <trackHistory>false</trackHistory>
-        <trackTrending>false</trackTrending>
-        <type>Checkbox</type>
-    </fields>
-    <fields>
-        <fullName>Months_since_created__c</fullName>
-        <externalId>false</externalId>
-        <formula>(TODAY() -   DATEVALUE(CreatedDate) )  / 30.1</formula>
-        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
-        <label>Months since created</label>
-        <precision>18</precision>
-        <required>false</required>
-        <scale>0</scale>
-        <trackHistory>false</trackHistory>
-        <trackTrending>false</trackTrending>
-        <type>Number</type>
-        <unique>false</unique>
-    </fields>
-    <fields>
-        <fullName>Not_Billable__c</fullName>
-        <defaultValue>false</defaultValue>
-        <description>Check this to exclude the domain from showing up in this report: https://dimagi.my.salesforce.com/00Ob0000004eeG6</description>
-        <externalId>false</externalId>
-        <label>Not Billable</label>
-        <trackHistory>false</trackHistory>
-        <trackTrending>false</trackTrending>
-        <type>Checkbox</type>
-    </fields>
-    <fields>
-        <fullName>Onboarding_package__c</fullName>
-        <description>Has this domain purchased an onboarding package (executed by Customer Success team)?</description>
-        <externalId>false</externalId>
-        <inlineHelpText>Has this domain purchased an onboarding package (executed by Customer Success team)?</inlineHelpText>
-        <label>Onboarding package</label>
-        <required>false</required>
-        <trackHistory>false</trackHistory>
-        <trackTrending>false</trackTrending>
-        <type>Picklist</type>
-        <valueSet>
-            <valueSetDefinition>
-                <sorted>false</sorted>
-                <value>
-                    <fullName>Introductory (~4 hours)</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>Quick-start (~ 6 hrs)</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>Advanced onboarding (~15 hrs)</fullName>
-                    <default>false</default>
-                </value>
-            </valueSetDefinition>
-        </valueSet>
-    </fields>
-    <fields>
-        <fullName>Opportunity__c</fullName>
-        <deleteConstraint>SetNull</deleteConstraint>
-        <externalId>false</externalId>
-        <label>Opportunity</label>
-        <referenceTo>Opportunity</referenceTo>
-        <relationshipLabel>Domain</relationshipLabel>
-        <relationshipName>Domain</relationshipName>
-        <required>false</required>
-        <trackHistory>false</trackHistory>
-        <trackTrending>false</trackTrending>
-        <type>Lookup</type>
-    </fields>
-    <fields>
-        <fullName>Origin_of_project_space__c</fullName>
-        <externalId>false</externalId>
-        <label>Origin of project space</label>
-        <required>false</required>
-        <trackHistory>false</trackHistory>
-        <trackTrending>false</trackTrending>
-        <type>Picklist</type>
-        <valueSet>
-            <restricted>true</restricted>
-            <valueSetDefinition>
-                <sorted>false</sorted>
-                <value>
-                    <fullName>Indirect Inside Sales (Sales team connection but no opp)</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>Organic growth of Inside Sales customer (New project space)</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>Organic Growth of non inside sales customer</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>Organic growth of GS clients</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>BD team</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>Other Dimagi Referral (mostly GS team)</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>Partner Program</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>Unknown/ Likely real self-start</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>Other</fullName>
-                    <default>false</default>
-                </value>
-            </valueSetDefinition>
-        </valueSet>
-    </fields>
-    <fields>
-        <fullName>Partner_Program_Organization__c</fullName>
-        <description>Used to identify the Partner Program organization name</description>
-        <externalId>false</externalId>
-        <inlineHelpText>Select the Partner Program organization from the dropdown menu</inlineHelpText>
-        <label>Partner Program Organization</label>
-        <required>false</required>
-        <trackHistory>false</trackHistory>
-        <trackTrending>false</trackTrending>
-        <type>Picklist</type>
-        <valueSet>
-            <restricted>true</restricted>
-            <valueSetDefinition>
-                <sorted>false</sorted>
-                <value>
-                    <fullName>AgImpact</fullName>
-                    <default>false</default>
-                </value>
-            </valueSetDefinition>
-        </valueSet>
-    </fields>
-    <fields>
-        <fullName>Partner_Program__c</fullName>
-        <defaultValue>false</defaultValue>
-        <description>Used to identify domains in the Partner Program</description>
-        <externalId>false</externalId>
-        <inlineHelpText>Check box if domain is part of the Partner Program</inlineHelpText>
-        <label>Partner Program</label>
-        <trackHistory>false</trackHistory>
-        <trackTrending>false</trackTrending>
-        <type>Checkbox</type>
-    </fields>
-    <fields>
-        <fullName>Primary_Contact__c</fullName>
-        <deleteConstraint>SetNull</deleteConstraint>
-        <externalId>false</externalId>
-        <label>Primary Contact</label>
-        <referenceTo>Contact</referenceTo>
-        <relationshipLabel>Domain</relationshipLabel>
-        <relationshipName>Domain</relationshipName>
-        <required>false</required>
-        <trackHistory>false</trackHistory>
-        <trackTrending>false</trackTrending>
-        <type>Lookup</type>
-    </fields>
-    <fields>
-        <fullName>Proactive_CS_Support__c</fullName>
-        <defaultValue>false</defaultValue>
-        <description>True/False based on whether or not CS has reached out proactively to help this user.</description>
-        <externalId>false</externalId>
-        <inlineHelpText>Check if we have reached out proactively to give CS support to this partner.</inlineHelpText>
-        <label>Proactive CS Support Given</label>
-        <trackHistory>false</trackHistory>
-        <trackTrending>false</trackTrending>
-        <type>Checkbox</type>
-    </fields>
-    <fields>
-        <fullName>Project_Length__c</fullName>
-        <description>Project length in days (first to last form submission)</description>
-        <externalId>false</externalId>
-        <formula>cpLastFormSubmissionDate__c -  cpFirstFormSubmissionDate__c</formula>
-        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
-        <inlineHelpText>Project length in days (first to last form submission)</inlineHelpText>
-        <label>Project Length</label>
-        <precision>18</precision>
-        <required>false</required>
-        <scale>2</scale>
-        <trackHistory>false</trackHistory>
-        <trackTrending>false</trackTrending>
-        <type>Number</type>
-        <unique>false</unique>
-    </fields>
-    <fields>
-        <fullName>Server_Name__c</fullName>
-        <externalId>false</externalId>
-        <label>Server Name</label>
-        <required>false</required>
-        <trackHistory>false</trackHistory>
-        <trackTrending>false</trackTrending>
-        <type>Picklist</type>
-        <valueSet>
-            <valueSetDefinition>
-                <sorted>false</sorted>
-                <value>
-                    <fullName>CommCareHQ</fullName>
-                    <default>true</default>
-                </value>
-                <value>
-                    <fullName>CommCareHQ India</fullName>
-                    <default>false</default>
-                </value>
-            </valueSetDefinition>
-        </valueSet>
-    </fields>
-    <fields>
-        <fullName>View_Project_Space_Settings_in_HQ__c</fullName>
-        <externalId>false</externalId>
-        <formula>IF(TEXT(Server_Name__c) = &quot;CommCareHQ&quot;, 
-HYPERLINK(&quot;https://www.commcarehq.org/a/&quot;&amp; Name &amp;&quot;/settings/project/basic/&quot;, &quot;View Project Space Settings HQ&quot;, &quot;_self&quot;),
-HYPERLINK(&quot;https://india.commcarehq.org/a/&quot;&amp; Name &amp;&quot;/settings/project/basic/&quot;, &quot;View Project Space Settings HQ&quot;, &quot;_self&quot;))</formula>
-        <label>View Project Space Settings in HQ</label>
-        <required>false</required>
-        <trackHistory>false</trackHistory>
-        <trackTrending>false</trackTrending>
-        <type>Text</type>
-        <unique>false</unique>
-    </fields>
-    <fields>
-        <fullName>Wam_TMP__c</fullName>
-        <description>Field used for backed calculations, do not use it</description>
-        <externalId>false</externalId>
-        <inlineHelpText>Field used for backed calculations, do not use it</inlineHelpText>
-        <label>Wam TMP</label>
-        <precision>18</precision>
-        <required>false</required>
-        <scale>0</scale>
-        <trackHistory>false</trackHistory>
-        <trackTrending>false</trackTrending>
-        <type>Number</type>
-        <unique>false</unique>
-    </fields>
-    <fields>
-        <fullName>Wam__c</fullName>
-        <externalId>false</externalId>
-        <label>Wam</label>
-        <precision>18</precision>
-        <required>false</required>
-        <scale>0</scale>
-        <trackHistory>true</trackHistory>
-        <trackTrending>false</trackTrending>
-        <type>Number</type>
-        <unique>false</unique>
     </fields>
     <fields>
         <fullName>attribution_notes__c</fullName>
@@ -1461,6 +419,53 @@ HYPERLINK(&quot;https://india.commcarehq.org/a/&quot;&amp; Name &amp;&quot;/sett
         <type>Checkbox</type>
     </fields>
     <fields>
+        <fullName>Countries_Picklist__c</fullName>
+        <externalId>false</externalId>
+        <label>Countries Picklist</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>MultiselectPicklist</type>
+        <valueSet>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>NIGER</fullName>
+                    <default>false</default>
+                    <label>NIGER</label>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+        <visibleLines>4</visibleLines>
+    </fields>
+    <fields>
+        <fullName>Countries_Wrapper__c</fullName>
+        <description>Countires wrapper field, we want use aggregate queries on country list but it is A big text area (Deployment_Countries__c).</description>
+        <externalId>false</externalId>
+        <label>Countries Wrapper</label>
+        <length>255</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Country_of_deployment_salesforce__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <description>This is the lookup for Country in Salesforce, not CommCareHQ</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Used to indicate the primary country where CommCare is being used. If multiple, please select Global.</inlineHelpText>
+        <label>Country of deployment (salesforce)</label>
+        <referenceTo>Country__c</referenceTo>
+        <relationshipLabel>Domain</relationshipLabel>
+        <relationshipName>Domain</relationshipName>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
         <fullName>count_messages_as_read_by_anyone__c</fullName>
         <defaultValue>false</defaultValue>
         <externalId>false</externalId>
@@ -1468,6 +473,1046 @@ HYPERLINK(&quot;https://india.commcarehq.org/a/&quot;&amp; Name &amp;&quot;/sett
         <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>COVID_19_Deployment_Countries__c</fullName>
+        <externalId>false</externalId>
+        <label>COVID-19 Deployment Countries</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>MultiselectPicklist</type>
+        <valueSet>
+            <restricted>true</restricted>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>Albania</fullName>
+                    <default>false</default>
+                    <label>Albania</label>
+                </value>
+                <value>
+                    <fullName>Algeria</fullName>
+                    <default>false</default>
+                    <label>Algeria</label>
+                </value>
+                <value>
+                    <fullName>Andorra</fullName>
+                    <default>false</default>
+                    <label>Andorra</label>
+                </value>
+                <value>
+                    <fullName>Angola</fullName>
+                    <default>false</default>
+                    <label>Angola</label>
+                </value>
+                <value>
+                    <fullName>Antigua and Barbuda</fullName>
+                    <default>false</default>
+                    <label>Antigua and Barbuda</label>
+                </value>
+                <value>
+                    <fullName>Argentina</fullName>
+                    <default>false</default>
+                    <label>Argentina</label>
+                </value>
+                <value>
+                    <fullName>Armenia</fullName>
+                    <default>false</default>
+                    <label>Armenia</label>
+                </value>
+                <value>
+                    <fullName>Australia</fullName>
+                    <default>false</default>
+                    <label>Australia</label>
+                </value>
+                <value>
+                    <fullName>Austria</fullName>
+                    <default>false</default>
+                    <label>Austria</label>
+                </value>
+                <value>
+                    <fullName>Azerbaijan</fullName>
+                    <default>false</default>
+                    <label>Azerbaijan</label>
+                </value>
+                <value>
+                    <fullName>Bahamas</fullName>
+                    <default>false</default>
+                    <label>Bahamas</label>
+                </value>
+                <value>
+                    <fullName>Bahrain</fullName>
+                    <default>false</default>
+                    <label>Bahrain</label>
+                </value>
+                <value>
+                    <fullName>Bangladesh</fullName>
+                    <default>false</default>
+                    <label>Bangladesh</label>
+                </value>
+                <value>
+                    <fullName>Barbados</fullName>
+                    <default>false</default>
+                    <label>Barbados</label>
+                </value>
+                <value>
+                    <fullName>Belarus</fullName>
+                    <default>false</default>
+                    <label>Belarus</label>
+                </value>
+                <value>
+                    <fullName>Belgium</fullName>
+                    <default>false</default>
+                    <label>Belgium</label>
+                </value>
+                <value>
+                    <fullName>Belize</fullName>
+                    <default>false</default>
+                    <label>Belize</label>
+                </value>
+                <value>
+                    <fullName>Benin</fullName>
+                    <default>false</default>
+                    <label>Benin</label>
+                </value>
+                <value>
+                    <fullName>Bhutan</fullName>
+                    <default>false</default>
+                    <label>Bhutan</label>
+                </value>
+                <value>
+                    <fullName>Bolivia</fullName>
+                    <default>false</default>
+                    <label>Bolivia</label>
+                </value>
+                <value>
+                    <fullName>Bosnia and Herzegovina</fullName>
+                    <default>false</default>
+                    <label>Bosnia and Herzegovina</label>
+                </value>
+                <value>
+                    <fullName>Botswana</fullName>
+                    <default>false</default>
+                    <label>Botswana</label>
+                </value>
+                <value>
+                    <fullName>Brazil</fullName>
+                    <default>false</default>
+                    <label>Brazil</label>
+                </value>
+                <value>
+                    <fullName>Brunei</fullName>
+                    <default>false</default>
+                    <label>Brunei</label>
+                </value>
+                <value>
+                    <fullName>Bulgaria</fullName>
+                    <default>false</default>
+                    <label>Bulgaria</label>
+                </value>
+                <value>
+                    <fullName>Burkina Faso</fullName>
+                    <default>false</default>
+                    <label>Burkina Faso</label>
+                </value>
+                <value>
+                    <fullName>Burundi</fullName>
+                    <default>false</default>
+                    <label>Burundi</label>
+                </value>
+                <value>
+                    <fullName>Cabo Verde</fullName>
+                    <default>false</default>
+                    <label>Cabo Verde</label>
+                </value>
+                <value>
+                    <fullName>Cambodia</fullName>
+                    <default>false</default>
+                    <label>Cambodia</label>
+                </value>
+                <value>
+                    <fullName>Cameroon</fullName>
+                    <default>false</default>
+                    <label>Cameroon</label>
+                </value>
+                <value>
+                    <fullName>Canada</fullName>
+                    <default>false</default>
+                    <label>Canada</label>
+                </value>
+                <value>
+                    <fullName>Central African Republic</fullName>
+                    <default>false</default>
+                    <label>Central African Republic</label>
+                </value>
+                <value>
+                    <fullName>Chad</fullName>
+                    <default>false</default>
+                    <label>Chad</label>
+                </value>
+                <value>
+                    <fullName>Chile</fullName>
+                    <default>false</default>
+                    <label>Chile</label>
+                </value>
+                <value>
+                    <fullName>China</fullName>
+                    <default>false</default>
+                    <label>China</label>
+                </value>
+                <value>
+                    <fullName>Colombia</fullName>
+                    <default>false</default>
+                    <label>Colombia</label>
+                </value>
+                <value>
+                    <fullName>Comoros</fullName>
+                    <default>false</default>
+                    <label>Comoros</label>
+                </value>
+                <value>
+                    <fullName>Congo (Congo-Brazzaville)</fullName>
+                    <default>false</default>
+                    <label>Congo (Congo-Brazzaville)</label>
+                </value>
+                <value>
+                    <fullName>Costa Rica</fullName>
+                    <default>false</default>
+                    <label>Costa Rica</label>
+                </value>
+                <value>
+                    <fullName>Côte d&apos;Ivoire</fullName>
+                    <default>false</default>
+                    <label>Côte d&apos;Ivoire</label>
+                </value>
+                <value>
+                    <fullName>Croatia</fullName>
+                    <default>false</default>
+                    <label>Croatia</label>
+                </value>
+                <value>
+                    <fullName>Cuba</fullName>
+                    <default>false</default>
+                    <label>Cuba</label>
+                </value>
+                <value>
+                    <fullName>Cyprus</fullName>
+                    <default>false</default>
+                    <label>Cyprus</label>
+                </value>
+                <value>
+                    <fullName>Czechia (Czech Republic)</fullName>
+                    <default>false</default>
+                    <label>Czechia (Czech Republic)</label>
+                </value>
+                <value>
+                    <fullName>Democratic Republic of the Congo</fullName>
+                    <default>false</default>
+                    <label>Democratic Republic of the Congo</label>
+                </value>
+                <value>
+                    <fullName>Denmark</fullName>
+                    <default>false</default>
+                    <label>Denmark</label>
+                </value>
+                <value>
+                    <fullName>Djibouti</fullName>
+                    <default>false</default>
+                    <label>Djibouti</label>
+                </value>
+                <value>
+                    <fullName>Dominica</fullName>
+                    <default>false</default>
+                    <label>Dominica</label>
+                </value>
+                <value>
+                    <fullName>Dominican Republic</fullName>
+                    <default>false</default>
+                    <label>Dominican Republic</label>
+                </value>
+                <value>
+                    <fullName>Ecuador</fullName>
+                    <default>false</default>
+                    <label>Ecuador</label>
+                </value>
+                <value>
+                    <fullName>Egypt</fullName>
+                    <default>false</default>
+                    <label>Egypt</label>
+                </value>
+                <value>
+                    <fullName>El Salvador</fullName>
+                    <default>false</default>
+                    <label>El Salvador</label>
+                </value>
+                <value>
+                    <fullName>Equatorial Guinea</fullName>
+                    <default>false</default>
+                    <label>Equatorial Guinea</label>
+                </value>
+                <value>
+                    <fullName>Eritrea</fullName>
+                    <default>false</default>
+                    <label>Eritrea</label>
+                </value>
+                <value>
+                    <fullName>Estonia</fullName>
+                    <default>false</default>
+                    <label>Estonia</label>
+                </value>
+                <value>
+                    <fullName>Eswatini (fmr. &quot;Swaziland&quot;)</fullName>
+                    <default>false</default>
+                    <label>Eswatini (fmr. &quot;Swaziland&quot;)</label>
+                </value>
+                <value>
+                    <fullName>Ethiopia</fullName>
+                    <default>false</default>
+                    <label>Ethiopia</label>
+                </value>
+                <value>
+                    <fullName>Fiji</fullName>
+                    <default>false</default>
+                    <label>Fiji</label>
+                </value>
+                <value>
+                    <fullName>Finland</fullName>
+                    <default>false</default>
+                    <label>Finland</label>
+                </value>
+                <value>
+                    <fullName>France</fullName>
+                    <default>false</default>
+                    <label>France</label>
+                </value>
+                <value>
+                    <fullName>Gabon</fullName>
+                    <default>false</default>
+                    <label>Gabon</label>
+                </value>
+                <value>
+                    <fullName>Gambia</fullName>
+                    <default>false</default>
+                    <label>Gambia</label>
+                </value>
+                <value>
+                    <fullName>Georgia</fullName>
+                    <default>false</default>
+                    <label>Georgia</label>
+                </value>
+                <value>
+                    <fullName>Germany</fullName>
+                    <default>false</default>
+                    <label>Germany</label>
+                </value>
+                <value>
+                    <fullName>Ghana</fullName>
+                    <default>false</default>
+                    <label>Ghana</label>
+                </value>
+                <value>
+                    <fullName>Greece</fullName>
+                    <default>false</default>
+                    <label>Greece</label>
+                </value>
+                <value>
+                    <fullName>Grenada</fullName>
+                    <default>false</default>
+                    <label>Grenada</label>
+                </value>
+                <value>
+                    <fullName>Guatemala</fullName>
+                    <default>false</default>
+                    <label>Guatemala</label>
+                </value>
+                <value>
+                    <fullName>Guinea</fullName>
+                    <default>false</default>
+                    <label>Guinea</label>
+                </value>
+                <value>
+                    <fullName>Guinea-Bissau</fullName>
+                    <default>false</default>
+                    <label>Guinea-Bissau</label>
+                </value>
+                <value>
+                    <fullName>Guyana</fullName>
+                    <default>false</default>
+                    <label>Guyana</label>
+                </value>
+                <value>
+                    <fullName>Haiti</fullName>
+                    <default>false</default>
+                    <label>Haiti</label>
+                </value>
+                <value>
+                    <fullName>Holy See</fullName>
+                    <default>false</default>
+                    <label>Holy See</label>
+                </value>
+                <value>
+                    <fullName>Honduras</fullName>
+                    <default>false</default>
+                    <label>Honduras</label>
+                </value>
+                <value>
+                    <fullName>Hungary</fullName>
+                    <default>false</default>
+                    <label>Hungary</label>
+                </value>
+                <value>
+                    <fullName>Iceland</fullName>
+                    <default>false</default>
+                    <label>Iceland</label>
+                </value>
+                <value>
+                    <fullName>India</fullName>
+                    <default>false</default>
+                    <label>India</label>
+                </value>
+                <value>
+                    <fullName>Indonesia</fullName>
+                    <default>false</default>
+                    <label>Indonesia</label>
+                </value>
+                <value>
+                    <fullName>Iran</fullName>
+                    <default>false</default>
+                    <label>Iran</label>
+                </value>
+                <value>
+                    <fullName>Iraq</fullName>
+                    <default>false</default>
+                    <label>Iraq</label>
+                </value>
+                <value>
+                    <fullName>Ireland</fullName>
+                    <default>false</default>
+                    <label>Ireland</label>
+                </value>
+                <value>
+                    <fullName>Israel</fullName>
+                    <default>false</default>
+                    <label>Israel</label>
+                </value>
+                <value>
+                    <fullName>Italy</fullName>
+                    <default>false</default>
+                    <label>Italy</label>
+                </value>
+                <value>
+                    <fullName>Jamaica</fullName>
+                    <default>false</default>
+                    <label>Jamaica</label>
+                </value>
+                <value>
+                    <fullName>Japan</fullName>
+                    <default>false</default>
+                    <label>Japan</label>
+                </value>
+                <value>
+                    <fullName>Jordan</fullName>
+                    <default>false</default>
+                    <label>Jordan</label>
+                </value>
+                <value>
+                    <fullName>Kazakhstan</fullName>
+                    <default>false</default>
+                    <label>Kazakhstan</label>
+                </value>
+                <value>
+                    <fullName>Kenya</fullName>
+                    <default>false</default>
+                    <label>Kenya</label>
+                </value>
+                <value>
+                    <fullName>Kiribati</fullName>
+                    <default>false</default>
+                    <label>Kiribati</label>
+                </value>
+                <value>
+                    <fullName>Kuwait</fullName>
+                    <default>false</default>
+                    <label>Kuwait</label>
+                </value>
+                <value>
+                    <fullName>Kyrgyzstan</fullName>
+                    <default>false</default>
+                    <label>Kyrgyzstan</label>
+                </value>
+                <value>
+                    <fullName>Laos</fullName>
+                    <default>false</default>
+                    <label>Laos</label>
+                </value>
+                <value>
+                    <fullName>Latvia</fullName>
+                    <default>false</default>
+                    <label>Latvia</label>
+                </value>
+                <value>
+                    <fullName>Lebanon</fullName>
+                    <default>false</default>
+                    <label>Lebanon</label>
+                </value>
+                <value>
+                    <fullName>Lesotho</fullName>
+                    <default>false</default>
+                    <label>Lesotho</label>
+                </value>
+                <value>
+                    <fullName>Liberia</fullName>
+                    <default>false</default>
+                    <label>Liberia</label>
+                </value>
+                <value>
+                    <fullName>Libya</fullName>
+                    <default>false</default>
+                    <label>Libya</label>
+                </value>
+                <value>
+                    <fullName>Liechtenstein</fullName>
+                    <default>false</default>
+                    <label>Liechtenstein</label>
+                </value>
+                <value>
+                    <fullName>Lithuania</fullName>
+                    <default>false</default>
+                    <label>Lithuania</label>
+                </value>
+                <value>
+                    <fullName>Luxembourg</fullName>
+                    <default>false</default>
+                    <label>Luxembourg</label>
+                </value>
+                <value>
+                    <fullName>Madagascar</fullName>
+                    <default>false</default>
+                    <label>Madagascar</label>
+                </value>
+                <value>
+                    <fullName>Malawi</fullName>
+                    <default>false</default>
+                    <label>Malawi</label>
+                </value>
+                <value>
+                    <fullName>Malaysia</fullName>
+                    <default>false</default>
+                    <label>Malaysia</label>
+                </value>
+                <value>
+                    <fullName>Maldives</fullName>
+                    <default>false</default>
+                    <label>Maldives</label>
+                </value>
+                <value>
+                    <fullName>Mali</fullName>
+                    <default>false</default>
+                    <label>Mali</label>
+                </value>
+                <value>
+                    <fullName>Malta</fullName>
+                    <default>false</default>
+                    <label>Malta</label>
+                </value>
+                <value>
+                    <fullName>Marshall Islands</fullName>
+                    <default>false</default>
+                    <label>Marshall Islands</label>
+                </value>
+                <value>
+                    <fullName>Mauritania</fullName>
+                    <default>false</default>
+                    <label>Mauritania</label>
+                </value>
+                <value>
+                    <fullName>Mauritius</fullName>
+                    <default>false</default>
+                    <label>Mauritius</label>
+                </value>
+                <value>
+                    <fullName>Mexico</fullName>
+                    <default>false</default>
+                    <label>Mexico</label>
+                </value>
+                <value>
+                    <fullName>Micronesia</fullName>
+                    <default>false</default>
+                    <label>Micronesia</label>
+                </value>
+                <value>
+                    <fullName>Moldova</fullName>
+                    <default>false</default>
+                    <label>Moldova</label>
+                </value>
+                <value>
+                    <fullName>Monaco</fullName>
+                    <default>false</default>
+                    <label>Monaco</label>
+                </value>
+                <value>
+                    <fullName>Mongolia</fullName>
+                    <default>false</default>
+                    <label>Mongolia</label>
+                </value>
+                <value>
+                    <fullName>Montenegro</fullName>
+                    <default>false</default>
+                    <label>Montenegro</label>
+                </value>
+                <value>
+                    <fullName>Morocco</fullName>
+                    <default>false</default>
+                    <label>Morocco</label>
+                </value>
+                <value>
+                    <fullName>Mozambique</fullName>
+                    <default>false</default>
+                    <label>Mozambique</label>
+                </value>
+                <value>
+                    <fullName>Myanmar (formerly Burma)</fullName>
+                    <default>false</default>
+                    <label>Myanmar (formerly Burma)</label>
+                </value>
+                <value>
+                    <fullName>Namibia</fullName>
+                    <default>false</default>
+                    <label>Namibia</label>
+                </value>
+                <value>
+                    <fullName>Nauru</fullName>
+                    <default>false</default>
+                    <label>Nauru</label>
+                </value>
+                <value>
+                    <fullName>Nepal</fullName>
+                    <default>false</default>
+                    <label>Nepal</label>
+                </value>
+                <value>
+                    <fullName>Netherlands</fullName>
+                    <default>false</default>
+                    <label>Netherlands</label>
+                </value>
+                <value>
+                    <fullName>New Zealand</fullName>
+                    <default>false</default>
+                    <label>New Zealand</label>
+                </value>
+                <value>
+                    <fullName>Nicaragua</fullName>
+                    <default>false</default>
+                    <label>Nicaragua</label>
+                </value>
+                <value>
+                    <fullName>Niger</fullName>
+                    <default>false</default>
+                    <label>Niger</label>
+                </value>
+                <value>
+                    <fullName>Nigeria</fullName>
+                    <default>false</default>
+                    <label>Nigeria</label>
+                </value>
+                <value>
+                    <fullName>North Korea</fullName>
+                    <default>false</default>
+                    <label>North Korea</label>
+                </value>
+                <value>
+                    <fullName>North Macedonia</fullName>
+                    <default>false</default>
+                    <label>North Macedonia</label>
+                </value>
+                <value>
+                    <fullName>Norway</fullName>
+                    <default>false</default>
+                    <label>Norway</label>
+                </value>
+                <value>
+                    <fullName>Oman</fullName>
+                    <default>false</default>
+                    <label>Oman</label>
+                </value>
+                <value>
+                    <fullName>Pakistan</fullName>
+                    <default>false</default>
+                    <label>Pakistan</label>
+                </value>
+                <value>
+                    <fullName>Palau</fullName>
+                    <default>false</default>
+                    <label>Palau</label>
+                </value>
+                <value>
+                    <fullName>Palestine State</fullName>
+                    <default>false</default>
+                    <label>Palestine State</label>
+                </value>
+                <value>
+                    <fullName>Panama</fullName>
+                    <default>false</default>
+                    <label>Panama</label>
+                </value>
+                <value>
+                    <fullName>Papua New Guinea</fullName>
+                    <default>false</default>
+                    <label>Papua New Guinea</label>
+                </value>
+                <value>
+                    <fullName>Paraguay</fullName>
+                    <default>false</default>
+                    <label>Paraguay</label>
+                </value>
+                <value>
+                    <fullName>Peru</fullName>
+                    <default>false</default>
+                    <label>Peru</label>
+                </value>
+                <value>
+                    <fullName>Philippines</fullName>
+                    <default>false</default>
+                    <label>Philippines</label>
+                </value>
+                <value>
+                    <fullName>Poland</fullName>
+                    <default>false</default>
+                    <label>Poland</label>
+                </value>
+                <value>
+                    <fullName>Portugal</fullName>
+                    <default>false</default>
+                    <label>Portugal</label>
+                </value>
+                <value>
+                    <fullName>Qatar</fullName>
+                    <default>false</default>
+                    <label>Qatar</label>
+                </value>
+                <value>
+                    <fullName>Romania</fullName>
+                    <default>false</default>
+                    <label>Romania</label>
+                </value>
+                <value>
+                    <fullName>Russia</fullName>
+                    <default>false</default>
+                    <label>Russia</label>
+                </value>
+                <value>
+                    <fullName>Rwanda</fullName>
+                    <default>false</default>
+                    <label>Rwanda</label>
+                </value>
+                <value>
+                    <fullName>Saint Kitts and Nevis</fullName>
+                    <default>false</default>
+                    <label>Saint Kitts and Nevis</label>
+                </value>
+                <value>
+                    <fullName>Saint Lucia</fullName>
+                    <default>false</default>
+                    <label>Saint Lucia</label>
+                </value>
+                <value>
+                    <fullName>Saint Vincent and the Grenadines</fullName>
+                    <default>false</default>
+                    <label>Saint Vincent and the Grenadines</label>
+                </value>
+                <value>
+                    <fullName>Samoa</fullName>
+                    <default>false</default>
+                    <label>Samoa</label>
+                </value>
+                <value>
+                    <fullName>San Marino</fullName>
+                    <default>false</default>
+                    <label>San Marino</label>
+                </value>
+                <value>
+                    <fullName>Sao Tome and Principe</fullName>
+                    <default>false</default>
+                    <label>Sao Tome and Principe</label>
+                </value>
+                <value>
+                    <fullName>Saudi Arabia</fullName>
+                    <default>false</default>
+                    <label>Saudi Arabia</label>
+                </value>
+                <value>
+                    <fullName>Senegal</fullName>
+                    <default>false</default>
+                    <label>Senegal</label>
+                </value>
+                <value>
+                    <fullName>Serbia</fullName>
+                    <default>false</default>
+                    <label>Serbia</label>
+                </value>
+                <value>
+                    <fullName>Seychelles</fullName>
+                    <default>false</default>
+                    <label>Seychelles</label>
+                </value>
+                <value>
+                    <fullName>Sierra Leone</fullName>
+                    <default>false</default>
+                    <label>Sierra Leone</label>
+                </value>
+                <value>
+                    <fullName>Singapore</fullName>
+                    <default>false</default>
+                    <label>Singapore</label>
+                </value>
+                <value>
+                    <fullName>Slovakia</fullName>
+                    <default>false</default>
+                    <label>Slovakia</label>
+                </value>
+                <value>
+                    <fullName>Slovenia</fullName>
+                    <default>false</default>
+                    <label>Slovenia</label>
+                </value>
+                <value>
+                    <fullName>Solomon Islands</fullName>
+                    <default>false</default>
+                    <label>Solomon Islands</label>
+                </value>
+                <value>
+                    <fullName>Somalia</fullName>
+                    <default>false</default>
+                    <label>Somalia</label>
+                </value>
+                <value>
+                    <fullName>South Africa</fullName>
+                    <default>false</default>
+                    <label>South Africa</label>
+                </value>
+                <value>
+                    <fullName>South Korea</fullName>
+                    <default>false</default>
+                    <label>South Korea</label>
+                </value>
+                <value>
+                    <fullName>South Sudan</fullName>
+                    <default>false</default>
+                    <label>South Sudan</label>
+                </value>
+                <value>
+                    <fullName>Spain</fullName>
+                    <default>false</default>
+                    <label>Spain</label>
+                </value>
+                <value>
+                    <fullName>Sri Lanka</fullName>
+                    <default>false</default>
+                    <label>Sri Lanka</label>
+                </value>
+                <value>
+                    <fullName>Sudan</fullName>
+                    <default>false</default>
+                    <label>Sudan</label>
+                </value>
+                <value>
+                    <fullName>Suriname</fullName>
+                    <default>false</default>
+                    <label>Suriname</label>
+                </value>
+                <value>
+                    <fullName>Sweden</fullName>
+                    <default>false</default>
+                    <label>Sweden</label>
+                </value>
+                <value>
+                    <fullName>Switzerland</fullName>
+                    <default>false</default>
+                    <label>Switzerland</label>
+                </value>
+                <value>
+                    <fullName>Syria</fullName>
+                    <default>false</default>
+                    <label>Syria</label>
+                </value>
+                <value>
+                    <fullName>Tajikistan</fullName>
+                    <default>false</default>
+                    <label>Tajikistan</label>
+                </value>
+                <value>
+                    <fullName>Tanzania</fullName>
+                    <default>false</default>
+                    <label>Tanzania</label>
+                </value>
+                <value>
+                    <fullName>Thailand</fullName>
+                    <default>false</default>
+                    <label>Thailand</label>
+                </value>
+                <value>
+                    <fullName>Timor-Leste</fullName>
+                    <default>false</default>
+                    <label>Timor-Leste</label>
+                </value>
+                <value>
+                    <fullName>Togo</fullName>
+                    <default>false</default>
+                    <label>Togo</label>
+                </value>
+                <value>
+                    <fullName>Tonga</fullName>
+                    <default>false</default>
+                    <label>Tonga</label>
+                </value>
+                <value>
+                    <fullName>Trinidad and Tobago</fullName>
+                    <default>false</default>
+                    <label>Trinidad and Tobago</label>
+                </value>
+                <value>
+                    <fullName>Tunisia</fullName>
+                    <default>false</default>
+                    <label>Tunisia</label>
+                </value>
+                <value>
+                    <fullName>Turkey</fullName>
+                    <default>false</default>
+                    <label>Turkey</label>
+                </value>
+                <value>
+                    <fullName>Turkmenistan</fullName>
+                    <default>false</default>
+                    <label>Turkmenistan</label>
+                </value>
+                <value>
+                    <fullName>Tuvalu</fullName>
+                    <default>false</default>
+                    <label>Tuvalu</label>
+                </value>
+                <value>
+                    <fullName>Uganda</fullName>
+                    <default>false</default>
+                    <label>Uganda</label>
+                </value>
+                <value>
+                    <fullName>Ukraine</fullName>
+                    <default>false</default>
+                    <label>Ukraine</label>
+                </value>
+                <value>
+                    <fullName>United Arab Emirates</fullName>
+                    <default>false</default>
+                    <label>United Arab Emirates</label>
+                </value>
+                <value>
+                    <fullName>United Kingdom</fullName>
+                    <default>false</default>
+                    <label>United Kingdom</label>
+                </value>
+                <value>
+                    <fullName>United States of America</fullName>
+                    <default>false</default>
+                    <label>United States of America</label>
+                </value>
+                <value>
+                    <fullName>Uruguay</fullName>
+                    <default>false</default>
+                    <label>Uruguay</label>
+                </value>
+                <value>
+                    <fullName>Uzbekistan</fullName>
+                    <default>false</default>
+                    <label>Uzbekistan</label>
+                </value>
+                <value>
+                    <fullName>Vanuatu</fullName>
+                    <default>false</default>
+                    <label>Vanuatu</label>
+                </value>
+                <value>
+                    <fullName>Venezuela</fullName>
+                    <default>false</default>
+                    <label>Venezuela</label>
+                </value>
+                <value>
+                    <fullName>Vietnam</fullName>
+                    <default>false</default>
+                    <label>Vietnam</label>
+                </value>
+                <value>
+                    <fullName>Yemen</fullName>
+                    <default>false</default>
+                    <label>Yemen</label>
+                </value>
+                <value>
+                    <fullName>Zambia</fullName>
+                    <default>false</default>
+                    <label>Zambia</label>
+                </value>
+                <value>
+                    <fullName>Zimbabwe</fullName>
+                    <default>false</default>
+                    <label>Zimbabwe</label>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+        <visibleLines>4</visibleLines>
+    </fields>
+    <fields>
+        <fullName>COVID_19_Notes__c</fullName>
+        <externalId>false</externalId>
+        <label>COVID-19 Notes</label>
+        <length>32768</length>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Html</type>
+        <visibleLines>25</visibleLines>
+    </fields>
+    <fields>
+        <fullName>COVID_19_Project_Type__c</fullName>
+        <externalId>false</externalId>
+        <label>COVID-19 Project Type</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+        <valueSet>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>In-Kind Funding: Dimagi Implementation</fullName>
+                    <default>false</default>
+                    <label>In-Kind Funding: Dimagi Implementation</label>
+                </value>
+                <value>
+                    <fullName>In-Kind Funding: Partner Implementation</fullName>
+                    <default>false</default>
+                    <label>In-Kind Funding: Partner Implementation</label>
+                </value>
+                <value>
+                    <fullName>Project Funding: Dimagi Implementation</fullName>
+                    <default>false</default>
+                    <label>Project Funding: Dimagi Implementation</label>
+                </value>
+                <value>
+                    <fullName>Project Funding: Partner Implementation</fullName>
+                    <default>false</default>
+                    <label>Project Funding: Partner Implementation</label>
+                </value>
+                <value>
+                    <fullName>SaaS Projects</fullName>
+                    <default>false</default>
+                    <label>SaaS Projects</label>
+                </value>
+                <value>
+                    <fullName>Test // Duplicate</fullName>
+                    <default>false</default>
+                    <label>Test // Duplicate</label>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
     </fields>
     <fields>
         <fullName>cp300thFormSubmission__c</fullName>
@@ -1815,6 +1860,27 @@ HYPERLINK(&quot;https://india.commcarehq.org/a/&quot;&amp; Name &amp;&quot;/sett
         <unique>false</unique>
     </fields>
     <fields>
+        <fullName>Cp_last_update__c</fullName>
+        <externalId>false</externalId>
+        <label>Domain cp last update</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>DateTime</type>
+    </fields>
+    <fields>
+        <fullName>Cp_n_users_submitted_form__c</fullName>
+        <externalId>false</externalId>
+        <label>Domain cp n users submitted form</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
         <fullName>creating_user__c</fullName>
         <externalId>false</externalId>
         <label>Domain_creating_user</label>
@@ -1851,6 +1917,32 @@ HYPERLINK(&quot;https://india.commcarehq.org/a/&quot;&amp; Name &amp;&quot;/sett
         <unique>false</unique>
     </fields>
     <fields>
+        <fullName>Current_Division__c</fullName>
+        <description>The division that is currently responsible for the activity generated on this domain.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>The division that is currently responsible for the activity generated on this domain.</inlineHelpText>
+        <label>Current Division</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+        <valueSet>
+            <restricted>true</restricted>
+            <valueSetName>Divisions</valueSetName>
+        </valueSet>
+    </fields>
+    <fields>
+        <fullName>customer_type__c</fullName>
+        <externalId>false</externalId>
+        <label>Domain_customer_type</label>
+        <length>255</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
         <fullName>custom_case_username__c</fullName>
         <externalId>false</externalId>
         <label>Domain_custom_case_username</label>
@@ -1865,17 +1957,6 @@ HYPERLINK(&quot;https://india.commcarehq.org/a/&quot;&amp; Name &amp;&quot;/sett
         <fullName>custom_chat_template__c</fullName>
         <externalId>false</externalId>
         <label>Domain_custom_chat_template</label>
-        <length>255</length>
-        <required>false</required>
-        <trackHistory>false</trackHistory>
-        <trackTrending>false</trackTrending>
-        <type>Text</type>
-        <unique>false</unique>
-    </fields>
-    <fields>
-        <fullName>customer_type__c</fullName>
-        <externalId>false</externalId>
-        <label>Domain_customer_type</label>
         <length>255</length>
         <required>false</required>
         <trackHistory>false</trackHistory>
@@ -1936,6 +2017,77 @@ HYPERLINK(&quot;https://india.commcarehq.org/a/&quot;&amp; Name &amp;&quot;/sett
         <unique>false</unique>
     </fields>
     <fields>
+        <fullName>Deployment_city__c</fullName>
+        <externalId>false</externalId>
+        <label>Deployment city</label>
+        <length>255</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Deployment_Countries__c</fullName>
+        <externalId>false</externalId>
+        <label>Countries</label>
+        <length>15000</length>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>LongTextArea</type>
+        <visibleLines>3</visibleLines>
+    </fields>
+    <fields>
+        <fullName>Deployment_country__c</fullName>
+        <externalId>false</externalId>
+        <label>Deployment country</label>
+        <length>255</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Deployment_date__c</fullName>
+        <externalId>false</externalId>
+        <label>Deployment date</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>DateTime</type>
+    </fields>
+    <fields>
+        <fullName>Deployment_description__c</fullName>
+        <externalId>false</externalId>
+        <label>Deployment description</label>
+        <length>15000</length>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>LongTextArea</type>
+        <visibleLines>3</visibleLines>
+    </fields>
+    <fields>
+        <fullName>Deployment_public__c</fullName>
+        <defaultValue>false</defaultValue>
+        <externalId>false</externalId>
+        <label>Deployment public</label>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Deployment_region__c</fullName>
+        <externalId>false</externalId>
+        <label>Deployment region</label>
+        <length>255</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
         <fullName>description__c</fullName>
         <externalId>false</externalId>
         <label>Domain_description</label>
@@ -1944,6 +2096,402 @@ HYPERLINK(&quot;https://india.commcarehq.org/a/&quot;&amp; Name &amp;&quot;/sett
         <trackTrending>false</trackTrending>
         <type>LongTextArea</type>
         <visibleLines>3</visibleLines>
+    </fields>
+    <fields>
+        <fullName>Domain_cp_has_project_icon__c</fullName>
+        <defaultValue>false</defaultValue>
+        <externalId>false</externalId>
+        <label>Domain_cp_has_project_icon</label>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Domain_cp_n_30_day_user_cases__c</fullName>
+        <externalId>false</externalId>
+        <label>Domain_cp_n_30_day_user_cases</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Domain_cp_n_apps_with_icon__c</fullName>
+        <externalId>false</externalId>
+        <label>Domain_cp_n_apps_with_icon</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Domain_cp_n_apps_with_multi_lang__c</fullName>
+        <externalId>false</externalId>
+        <label>Domain_cp_n_apps_with_multi_lang</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Domain_cp_n_apps__c</fullName>
+        <externalId>false</externalId>
+        <label>Domain_cp_n_apps</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Domain_cp_n_case_exports__c</fullName>
+        <externalId>false</externalId>
+        <label>Domain_cp_n_case_exports</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Domain_cp_n_case_sharing_groups__c</fullName>
+        <externalId>false</externalId>
+        <label>Domain_cp_n_case_sharing_groups</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Domain_cp_n_case_sharing_olevels__c</fullName>
+        <externalId>false</externalId>
+        <label>Domain_cp_n_case_sharing_olevels</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Domain_cp_n_click_app_deploy__c</fullName>
+        <externalId>false</externalId>
+        <label>Domain_cp_n_click_app_deploy</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Domain_cp_n_custom_roles__c</fullName>
+        <externalId>false</externalId>
+        <label>Domain_cp_n_custom_roles</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Domain_cp_n_deid_exports__c</fullName>
+        <externalId>false</externalId>
+        <label>Domain_cp_n_deid_exports</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Domain_cp_n_downloads_custom_exports__c</fullName>
+        <externalId>false</externalId>
+        <label>Domain_cp_n_downloads_custom_exports</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Domain_cp_n_form_builder_entered__c</fullName>
+        <externalId>false</externalId>
+        <label>Domain_cp_n_form_builder_entered</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Domain_cp_n_loc_restricted_roles__c</fullName>
+        <externalId>false</externalId>
+        <label>Domain_cp_n_loc_restricted_roles</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Domain_cp_n_lookup_tables__c</fullName>
+        <externalId>false</externalId>
+        <label>Domain_cp_n_lookup_tables</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Domain_cp_n_rb_reports__c</fullName>
+        <externalId>false</externalId>
+        <label>Domain_cp_n_rb_reports</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Domain_cp_n_repeaters__c</fullName>
+        <externalId>false</externalId>
+        <label>Domain_cp_n_repeaters</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Domain_cp_n_reports_created__c</fullName>
+        <externalId>false</externalId>
+        <label>Domain_cp_n_reports_created</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Domain_cp_n_reports_edited__c</fullName>
+        <externalId>false</externalId>
+        <label>Domain_cp_n_reports_edited</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Domain_cp_n_saved_app_changes__c</fullName>
+        <externalId>false</externalId>
+        <label>Domain_cp_n_saved_app_changes</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Domain_cp_n_saved_exports__c</fullName>
+        <externalId>false</externalId>
+        <label>Domain_cp_n_saved_exports</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Domain_cp_n_saved_scheduled_reports__c</fullName>
+        <externalId>false</externalId>
+        <label>Domain_cp_n_saved_scheduled_reports</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Domain_cp_n_trivet_backends__c</fullName>
+        <externalId>false</externalId>
+        <label>Domain_cp_n_trivet_backends</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Domain_cp_n_ucr_reports__c</fullName>
+        <externalId>false</externalId>
+        <label>Domain_cp_n_ucr_reports</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Domain_cp_n_viewed_non_ucr_reports__c</fullName>
+        <externalId>false</externalId>
+        <label>Domain_cp_n_viewed_non_ucr_reports</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Domain_cp_n_viewed_ucr_reports__c</fullName>
+        <externalId>false</externalId>
+        <label>Domain_cp_n_viewed_ucr_reports</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Domain_cp_sms_30_d__c</fullName>
+        <defaultValue>false</defaultValue>
+        <externalId>false</externalId>
+        <label>Domain_cp_sms_30_d</label>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Domain_cp_sms_ever__c</fullName>
+        <defaultValue>false</defaultValue>
+        <externalId>false</externalId>
+        <label>Domain_cp_sms_ever</label>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Domain_cp_use_domain_security__c</fullName>
+        <defaultValue>false</defaultValue>
+        <externalId>false</externalId>
+        <label>Domain_cp_use_domain_security</label>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Domain_cp_using_locations__c</fullName>
+        <defaultValue>false</defaultValue>
+        <externalId>false</externalId>
+        <label>Domain_cp_using_locations</label>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Domain_date_created_date_wrapper__c</fullName>
+        <description>Wraps date created from Date/Time to Date. User for purpose of group by in SOQL query</description>
+        <externalId>false</externalId>
+        <label>Domain date created date wrapper</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>Domain_Deleted__c</fullName>
+        <defaultValue>false</defaultValue>
+        <description>If set to true it means that domain was marked as deleted in HQ. Do not update this field manually, it&apos;s automatically set by apex code.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>If set to true it means that domain was marked as deleted in HQ. Do not update this field manually, it&apos;s automatically set by apex code.</inlineHelpText>
+        <label>Domain Deleted</label>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Domain_first_form_sub_date_wrapper__c</fullName>
+        <description>Wraps date first form submission from Date/Time to Date. User for purpose of group by in SOQL query</description>
+        <externalId>false</externalId>
+        <label>Domain first form sub date wrapper</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>Domain_has_used_features__c</fullName>
+        <defaultValue>false</defaultValue>
+        <description>Experimental from Gillian - do not use. Marks which domains have used features at any point in time.</description>
+        <externalId>false</externalId>
+        <label>[Experimental] Domain_has_used_features</label>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Domain_last_form_sub_date_wrapper__c</fullName>
+        <description>Wraps last form submission from Date/Time to Date. User for purpose of group by in SOQL query</description>
+        <externalId>false</externalId>
+        <label>Domain last form sub date wrapper</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Date</type>
     </fields>
     <fields>
         <fullName>domain_type1__c</fullName>
@@ -1955,6 +2503,112 @@ HYPERLINK(&quot;https://india.commcarehq.org/a/&quot;&amp; Name &amp;&quot;/sett
         <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Downgrade_notes__c</fullName>
+        <businessStatus>Active</businessStatus>
+        <description>This field is meant to capture any anecdotal notes we have about why a project space chose to downgrade</description>
+        <externalId>false</externalId>
+        <inlineHelpText>CS/ Sales-- enter any relevant information you have about why this domain downgraded their plan [please input your initials and the date of filling]</inlineHelpText>
+        <label>Downgrade notes</label>
+        <length>32768</length>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>LongTextArea</type>
+        <visibleLines>3</visibleLines>
+    </fields>
+    <fields>
+        <fullName>Downgrade_other_tool__c</fullName>
+        <description>if a customer says they are switching to another tool, list the tool they are using</description>
+        <externalId>false</externalId>
+        <inlineHelpText>if a customer says they are switching to another tool, list the tool they are using</inlineHelpText>
+        <label>Downgrade-- other tool</label>
+        <length>255</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Downgrade_Project_Restarting__c</fullName>
+        <defaultValue>false</defaultValue>
+        <description>Likelihood of their project restarting at a later date</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Likelihood of their project restarting at a later date</inlineHelpText>
+        <label>Downgrade - Project Restarting?</label>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Downgrade_Reason__c</fullName>
+        <description>Why a customer paused their subscription</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Why a customer paused their subscription</inlineHelpText>
+        <label>Downgrade - Reason</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+        <valueSet>
+            <restricted>true</restricted>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>Project ended</fullName>
+                    <default>false</default>
+                    <label>Project ended</label>
+                </value>
+                <value>
+                    <fullName>Funding ended</fullName>
+                    <default>false</default>
+                    <label>Funding ended</label>
+                </value>
+                <value>
+                    <fullName>Features</fullName>
+                    <default>false</default>
+                    <label>Features</label>
+                </value>
+                <value>
+                    <fullName>Autodowngrade</fullName>
+                    <default>false</default>
+                    <label>Autodowngrade</label>
+                </value>
+                <value>
+                    <fullName>Implementation Switchover</fullName>
+                    <default>false</default>
+                    <label>Implementation Switchover</label>
+                </value>
+                <value>
+                    <fullName>Unknown</fullName>
+                    <default>false</default>
+                    <label>Unknown</label>
+                </value>
+                <value>
+                    <fullName>COVID-19</fullName>
+                    <default>false</default>
+                    <label>COVID-19</label>
+                </value>
+                <value>
+                    <fullName>Other</fullName>
+                    <default>false</default>
+                    <label>Other</label>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+    <fields>
+        <fullName>downloads__c</fullName>
+        <externalId>false</externalId>
+        <label>Domain_downloads</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
         <unique>false</unique>
     </fields>
     <fields>
@@ -1970,16 +2624,24 @@ HYPERLINK(&quot;https://india.commcarehq.org/a/&quot;&amp; Name &amp;&quot;/sett
         <unique>false</unique>
     </fields>
     <fields>
-        <fullName>downloads__c</fullName>
+        <fullName>Email__c</fullName>
         <externalId>false</externalId>
-        <label>Domain_downloads</label>
-        <precision>18</precision>
+        <formula>creating_user__c</formula>
+        <label>Contact: Email</label>
         <required>false</required>
-        <scale>0</scale>
         <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
-        <type>Number</type>
+        <type>Text</type>
         <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Enterprise_Project_Space__c</fullName>
+        <defaultValue>false</defaultValue>
+        <externalId>false</externalId>
+        <label>Enterprise Project Space</label>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
     </fields>
     <fields>
         <fullName>filter_surveys_from_chat__c</fullName>
@@ -1989,6 +2651,30 @@ HYPERLINK(&quot;https://india.commcarehq.org/a/&quot;&amp; Name &amp;&quot;/sett
         <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Forms_for_Period_TMP__c</fullName>
+        <externalId>false</externalId>
+        <label>Forms for Period TMP</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Forms_for_Period__c</fullName>
+        <externalId>false</externalId>
+        <label>Forms for Period</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
     </fields>
     <fields>
         <fullName>full_downloads__c</fullName>
@@ -2016,6 +2702,15 @@ HYPERLINK(&quot;https://india.commcarehq.org/a/&quot;&amp; Name &amp;&quot;/sett
         <defaultValue>false</defaultValue>
         <externalId>false</externalId>
         <label>Domain_has_custom_logo</label>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Has_J2ME_submission_in_past_90_days__c</fullName>
+        <defaultValue>false</defaultValue>
+        <externalId>false</externalId>
+        <label>Has J2ME submission in past 90 days</label>
         <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Checkbox</type>
@@ -2052,6 +2747,302 @@ HYPERLINK(&quot;https://india.commcarehq.org/a/&quot;&amp; Name &amp;&quot;/sett
         <unique>false</unique>
     </fields>
     <fields>
+        <fullName>Include_in_MAU_Reporting__c</fullName>
+        <description>Whether or not this domain should be included in MAU tracking reports.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Whether or not this domain should be included in MAU tracking reports.</inlineHelpText>
+        <label>Include in MAU Reporting</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+        <valueSet>
+            <restricted>true</restricted>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>Yes</fullName>
+                    <default>false</default>
+                    <label>Yes</label>
+                </value>
+                <value>
+                    <fullName>No</fullName>
+                    <default>false</default>
+                    <label>No</label>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+    <fields>
+        <fullName>InternalProp_area__c</fullName>
+        <externalId>false</externalId>
+        <formula>Internal_Properties__r.area__c</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>InternalProp_area</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>InternalProp_Business_Unit__c</fullName>
+        <externalId>false</externalId>
+        <formula>Internal_Properties__r.InternalProp_Business_Unit__c</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>ProjectSpace_Business Unit</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>InternalProp_can_use_data__c</fullName>
+        <externalId>false</externalId>
+        <formula>Internal_Properties__r.can_use_data__c</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Can_use_data</label>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>InternalProp_commcare_edition__c</fullName>
+        <externalId>false</externalId>
+        <formula>Internal_Properties__r.commcare_edition__c</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>InternalProp_commcare_edition</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>InternalProp_commtrack_domain__c</fullName>
+        <externalId>false</externalId>
+        <formula>Internal_Properties__r.commtrack_domain__c</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>InternalProp_commtrack_domain</label>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>InternalProp_custom_eula__c</fullName>
+        <externalId>false</externalId>
+        <formula>Internal_Properties__r.custom_eula__c</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Custom_terms</label>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>InternalProp_goal_followup_rate__c</fullName>
+        <externalId>false</externalId>
+        <formula>Internal_Properties__r.goal_followup_rate__c</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>InternalProp_goal_followup_rate</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>InternalProp_goal_time_period__c</fullName>
+        <externalId>false</externalId>
+        <formula>Internal_Properties__r.goal_time_period__c</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>InternalProp_goal_time_period</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>InternalProp_initiative__c</fullName>
+        <externalId>false</externalId>
+        <formula>Internal_Properties__r.initiative__c</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>InternalProp_initiative</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>InternalProp_organization_name__c</fullName>
+        <externalId>false</externalId>
+        <formula>Internal_Properties__r.organization_name__c</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>InternalProp_organization_name</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>InternalProp_phone_model__c</fullName>
+        <externalId>false</externalId>
+        <formula>Internal_Properties__r.phone_model__c</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>InternalProp_phone_model</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>InternalProp_platform__c</fullName>
+        <externalId>false</externalId>
+        <formula>Internal_Properties__r.platform__c</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>InternalProp_platform</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>InternalProp_project_manager__c</fullName>
+        <externalId>false</externalId>
+        <formula>Internal_Properties__r.project_manager__c</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>InternalProp_project_manager</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>InternalProp_project_state__c</fullName>
+        <externalId>false</externalId>
+        <formula>Internal_Properties__r.project_state__c</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>InternalProp_project_state</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>InternalProp_self_started__c</fullName>
+        <externalId>false</externalId>
+        <formula>Internal_Properties__r.self_started__c</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>InternalProp_self_started</label>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>InternalProp_services__c</fullName>
+        <externalId>false</externalId>
+        <formula>Internal_Properties__r.services__c</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>InternalProp_services</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>InternalProp_sf_account_id__c</fullName>
+        <externalId>false</externalId>
+        <formula>Internal_Properties__r.sf_account_id__c</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>InternalProp_sf_account_id</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>InternalProp_sf_contract_id__c</fullName>
+        <externalId>false</externalId>
+        <formula>Internal_Properties__r.sf_contract_id__c</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>InternalProp_sf_contract_id</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>InternalProp_sub_area__c</fullName>
+        <externalId>false</externalId>
+        <formula>Internal_Properties__r.sub_area__c</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>InternalProp_sub_area</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>InternalProp_using_adm__c</fullName>
+        <externalId>false</externalId>
+        <formula>Internal_Properties__r.using_adm__c</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>InternalProp_using_adm</label>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>InternalProp_using_call_center__c</fullName>
+        <externalId>false</externalId>
+        <formula>Internal_Properties__r.using_call_center__c</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>InternalProp_using_call_center</label>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>InternalProp_workshop_region__c</fullName>
+        <externalId>false</externalId>
+        <formula>Internal_Properties__r.workshop_region__c</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>InternalProp_workshop_region</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Internal_Properties__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <externalId>false</externalId>
+        <label>Internal Properties</label>
+        <referenceTo>Internal_Properties__c</referenceTo>
+        <relationshipLabel>Domain</relationshipLabel>
+        <relationshipName>Domain</relationshipName>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
         <fullName>is_active__c</fullName>
         <defaultValue>false</defaultValue>
         <externalId>false</externalId>
@@ -2070,10 +3061,45 @@ HYPERLINK(&quot;https://india.commcarehq.org/a/&quot;&amp; Name &amp;&quot;/sett
         <type>Checkbox</type>
     </fields>
     <fields>
+        <fullName>Is_Inside_Sales__c</fullName>
+        <defaultValue>false</defaultValue>
+        <description>Check if went through the inside sales process</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Check if went through the inside sales process</inlineHelpText>
+        <label>Is Inside Sales?</label>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
         <fullName>is_public__c</fullName>
         <defaultValue>false</defaultValue>
         <externalId>false</externalId>
         <label>Domain_is_public</label>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Is_SF_Account_Key_Account__c</fullName>
+        <description>Is the SF Account a Key Account</description>
+        <externalId>false</externalId>
+        <formula>Account__r.Is_Key_Account__c</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <inlineHelpText>Pulls from the associated SF Account object</inlineHelpText>
+        <label>Is SF Account Key Account</label>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Is_SF_Account__c</fullName>
+        <description>Is Parent SF Account a Key Account?</description>
+        <externalId>false</externalId>
+        <formula>Account__r.Parent.Is_Key_Account__c</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <inlineHelpText>Is Parent SF Account a Key Account?</inlineHelpText>
+        <label>Is SF Parent Account Key Account</label>
         <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Checkbox</type>
@@ -2117,6 +3143,18 @@ HYPERLINK(&quot;https://india.commcarehq.org/a/&quot;&amp; Name &amp;&quot;/sett
         <unique>false</unique>
     </fields>
     <fields>
+        <fullName>Key_Account_Manager__c</fullName>
+        <externalId>false</externalId>
+        <formula>Account__r.Key_Account_Manager__r.Name</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Key Account Manager</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
         <fullName>launch_date__c</fullName>
         <externalId>false</externalId>
         <label>Domain_launch_date</label>
@@ -2124,6 +3162,19 @@ HYPERLINK(&quot;https://india.commcarehq.org/a/&quot;&amp; Name &amp;&quot;/sett
         <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>DateTime</type>
+    </fields>
+    <fields>
+        <fullName>Lead__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <externalId>false</externalId>
+        <label>Lead</label>
+        <referenceTo>Lead</referenceTo>
+        <relationshipLabel>Domain</relationshipLabel>
+        <relationshipName>Domain</relationshipName>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
     </fields>
     <fields>
         <fullName>license__c</fullName>
@@ -2137,10 +3188,28 @@ HYPERLINK(&quot;https://india.commcarehq.org/a/&quot;&amp; Name &amp;&quot;/sett
         <unique>false</unique>
     </fields>
     <fields>
-        <fullName>location_restriction_for_users__c</fullName>
-        <defaultValue>false</defaultValue>
+        <fullName>Lifetime_MRR__c</fullName>
+        <description>Domain object Lifetime MRR comes from the Accounting Subscription object&apos;s Lifetime MRR and is calculated through a job.
+Domain is the parent of Accounting Subscription records.
+Ex: If a Domain has 10 Subscriptions,
+Domain&apos;s Lifetime MRR = Sum of 10 Accounting Subscription&apos;s Lifetime MRR.</description>
         <externalId>false</externalId>
-        <label>Domain_location_restriction_for_users</label>
+        <inlineHelpText>Sum of the Lifetime MRR for all Accounting Subscriptions associated with a Domain.</inlineHelpText>
+        <label>Lifetime MRR</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>Likely_Real__c</fullName>
+        <description>over 300 forms</description>
+        <externalId>false</externalId>
+        <formula>cpAllForms__c &gt;= 300</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Likely Real</label>
         <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Checkbox</type>
@@ -2153,6 +3222,42 @@ HYPERLINK(&quot;https://india.commcarehq.org/a/&quot;&amp; Name &amp;&quot;/sett
         <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>location_restriction_for_users__c</fullName>
+        <defaultValue>false</defaultValue>
+        <externalId>false</externalId>
+        <label>Domain_location_restriction_for_users</label>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Months_since_created__c</fullName>
+        <externalId>false</externalId>
+        <formula>(TODAY() -   DATEVALUE(CreatedDate) )  / 30.1</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Months since created</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>MRR_Before_Pause__c</fullName>
+        <description>The paid plan MRR amount before the project space paused (fill in based on previous accounting subscription)</description>
+        <externalId>false</externalId>
+        <inlineHelpText>The paid plan MRR amount before the project space paused (fill in based on previous accounting subscription)</inlineHelpText>
+        <label>MRR Before Pause</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
     </fields>
     <fields>
         <fullName>multimedia_included__c</fullName>
@@ -2175,6 +3280,16 @@ HYPERLINK(&quot;https://india.commcarehq.org/a/&quot;&amp; Name &amp;&quot;/sett
         <unique>false</unique>
     </fields>
     <fields>
+        <fullName>Not_Billable__c</fullName>
+        <defaultValue>false</defaultValue>
+        <description>Check this to exclude the domain from showing up in this report: https://dimagi.my.salesforce.com/00Ob0000004eeG6</description>
+        <externalId>false</externalId>
+        <label>Not Billable</label>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
         <fullName>offset__c</fullName>
         <externalId>false</externalId>
         <label>offset (internal use)</label>
@@ -2185,6 +3300,50 @@ HYPERLINK(&quot;https://india.commcarehq.org/a/&quot;&amp; Name &amp;&quot;/sett
         <trackTrending>false</trackTrending>
         <type>Number</type>
         <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Onboarding_package__c</fullName>
+        <description>Has this domain purchased an onboarding package (executed by Customer Success team)?</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Has this domain purchased an onboarding package (executed by Customer Success team)?</inlineHelpText>
+        <label>Onboarding package</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+        <valueSet>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>Introductory (~4 hours)</fullName>
+                    <default>false</default>
+                    <label>Introductory (~4 hours)</label>
+                </value>
+                <value>
+                    <fullName>Quick-start (~ 6 hrs)</fullName>
+                    <default>false</default>
+                    <label>Quick-start (~ 6 hrs)</label>
+                </value>
+                <value>
+                    <fullName>Advanced onboarding (~15 hrs)</fullName>
+                    <default>false</default>
+                    <label>Advanced onboarding (~15 hrs)</label>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+    <fields>
+        <fullName>Opportunity__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <externalId>false</externalId>
+        <label>Opportunity</label>
+        <referenceTo>Opportunity</referenceTo>
+        <relationshipLabel>Domain</relationshipLabel>
+        <relationshipName>Domain</relationshipName>
+        <required>false</required>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
     </fields>
     <fields>
         <fullName>organization__c</fullName>
@@ -2198,6 +3357,114 @@ HYPERLINK(&quot;https://india.commcarehq.org/a/&quot;&amp; Name &amp;&quot;/sett
         <unique>false</unique>
     </fields>
     <fields>
+        <fullName>Original_Division__c</fullName>
+        <description>The division that was originally responsible for the activity generated on this domain.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>The division that was originally responsible for the activity generated on this domain.</inlineHelpText>
+        <label>Original Division</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+        <valueSet>
+            <restricted>true</restricted>
+            <valueSetName>Divisions</valueSetName>
+        </valueSet>
+    </fields>
+    <fields>
+        <fullName>Origin_of_project_space__c</fullName>
+        <externalId>false</externalId>
+        <label>Origin of project space</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+        <valueSet>
+            <restricted>true</restricted>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>Indirect Inside Sales (Sales team connection but no opp)</fullName>
+                    <default>false</default>
+                    <label>Indirect Inside Sales (Sales team connection but no opp)</label>
+                </value>
+                <value>
+                    <fullName>Organic growth of Inside Sales customer (New project space)</fullName>
+                    <default>false</default>
+                    <label>Organic growth of Inside Sales customer (New project space)</label>
+                </value>
+                <value>
+                    <fullName>Organic Growth of non inside sales customer</fullName>
+                    <default>false</default>
+                    <label>Organic Growth of non inside sales customer</label>
+                </value>
+                <value>
+                    <fullName>Organic growth of GS clients</fullName>
+                    <default>false</default>
+                    <label>Organic growth of GS clients</label>
+                </value>
+                <value>
+                    <fullName>BD team</fullName>
+                    <default>false</default>
+                    <label>BD team</label>
+                </value>
+                <value>
+                    <fullName>Other Dimagi Referral (mostly GS team)</fullName>
+                    <default>false</default>
+                    <label>Other Dimagi Referral (mostly GS team)</label>
+                </value>
+                <value>
+                    <fullName>Partner Program</fullName>
+                    <default>false</default>
+                    <label>Partner Program</label>
+                </value>
+                <value>
+                    <fullName>Unknown/ Likely real self-start</fullName>
+                    <default>false</default>
+                    <label>Unknown/ Likely real self-start</label>
+                </value>
+                <value>
+                    <fullName>Other</fullName>
+                    <default>false</default>
+                    <label>Other</label>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+    <fields>
+        <fullName>Partner_Program_Organization__c</fullName>
+        <description>Used to identify the Partner Program organization name</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Select the Partner Program organization from the dropdown menu</inlineHelpText>
+        <label>Partner Program Organization</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+        <valueSet>
+            <restricted>true</restricted>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>AgImpact</fullName>
+                    <default>false</default>
+                    <label>AgImpact</label>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+    <fields>
+        <fullName>Partner_Program__c</fullName>
+        <defaultValue>false</defaultValue>
+        <description>Used to identify domains in the Partner Program</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Check box if domain is part of the Partner Program</inlineHelpText>
+        <label>Partner Program</label>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
         <fullName>power_of_one__c</fullName>
         <externalId>false</externalId>
         <formula>1</formula>
@@ -2206,6 +3473,46 @@ HYPERLINK(&quot;https://india.commcarehq.org/a/&quot;&amp; Name &amp;&quot;/sett
         <precision>18</precision>
         <required>false</required>
         <scale>0</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Primary_Contact__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <externalId>false</externalId>
+        <label>Primary Contact</label>
+        <referenceTo>Contact</referenceTo>
+        <relationshipLabel>Domain</relationshipLabel>
+        <relationshipName>Domain</relationshipName>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>Proactive_CS_Support__c</fullName>
+        <defaultValue>false</defaultValue>
+        <description>True/False based on whether or not CS has reached out proactively to help this user.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Check if we have reached out proactively to give CS support to this partner.</inlineHelpText>
+        <label>Proactive CS Support Given</label>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Project_Length__c</fullName>
+        <description>Project length in days (first to last form submission)</description>
+        <externalId>false</externalId>
+        <formula>cpLastFormSubmissionDate__c -  cpFirstFormSubmissionDate__c</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <inlineHelpText>Project length in days (first to last form submission)</inlineHelpText>
+        <label>Project Length</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
         <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Number</type>
@@ -2268,6 +3575,56 @@ HYPERLINK(&quot;https://india.commcarehq.org/a/&quot;&amp; Name &amp;&quot;/sett
         <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Server_Name__c</fullName>
+        <externalId>false</externalId>
+        <label>Server Name</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+        <valueSet>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>CommCareHQ</fullName>
+                    <default>true</default>
+                    <label>CommCareHQ</label>
+                </value>
+                <value>
+                    <fullName>CommCareHQ India</fullName>
+                    <default>false</default>
+                    <label>CommCareHQ India</label>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+    <fields>
+        <fullName>Service_Type__c</fullName>
+        <externalId>false</externalId>
+        <formula>Account__r.Accounting_BillingAccount__r.account_type__c</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Service Type</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>SF_Parent_Account__c</fullName>
+        <description>SF Parent Account</description>
+        <externalId>false</externalId>
+        <formula>Account__r.Parent.Name</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <inlineHelpText>Parent account of SF Account, if any</inlineHelpText>
+        <label>SF Parent Account</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
     </fields>
     <fields>
         <fullName>short_description__c</fullName>
@@ -2462,12 +3819,52 @@ HYPERLINK(&quot;https://india.commcarehq.org/a/&quot;&amp; Name &amp;&quot;/sett
         <trackTrending>false</trackTrending>
         <type>Checkbox</type>
     </fields>
-    <label>Domain</label>
+    <fields>
+        <fullName>View_Project_Space_Settings_in_HQ__c</fullName>
+        <externalId>false</externalId>
+        <formula>IF(TEXT(Server_Name__c) = &quot;CommCareHQ&quot;, 
+HYPERLINK(&quot;https://www.commcarehq.org/a/&quot;&amp; Name &amp;&quot;/settings/project/basic/&quot;, &quot;View Project Space Settings HQ&quot;, &quot;_self&quot;),
+HYPERLINK(&quot;https://india.commcarehq.org/a/&quot;&amp; Name &amp;&quot;/settings/project/basic/&quot;, &quot;View Project Space Settings HQ&quot;, &quot;_self&quot;))</formula>
+        <label>View Project Space Settings in HQ</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Wam_TMP__c</fullName>
+        <description>Field used for backed calculations, do not use it</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Field used for backed calculations, do not use it</inlineHelpText>
+        <label>Wam TMP</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Wam__c</fullName>
+        <externalId>false</externalId>
+        <label>Wam</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
     <listViews>
         <fullName>All</fullName>
         <columns>NAME</columns>
         <columns>date_created__c</columns>
         <columns>is_active__c</columns>
+        <columns>Account__c</columns>
+        <columns>Opportunity__c</columns>
         <filterScope>Everything</filterScope>
         <label>All</label>
     </listViews>
@@ -2492,30 +3889,6 @@ HYPERLINK(&quot;https://india.commcarehq.org/a/&quot;&amp; Name &amp;&quot;/sett
             <value>@crs.org</value>
         </filters>
         <label>CRS Test</label>
-    </listViews>
-    <listViews>
-        <fullName>Domain_info_CJ</fullName>
-        <booleanFilter>1 AND 2 AND (3 or 4)</booleanFilter>
-        <columns>NAME</columns>
-        <columns>Email__c</columns>
-        <columns>Account__c</columns>
-        <columns>Country_of_deployment_salesforce__c</columns>
-        <columns>Deployment_Countries__c</columns>
-        <columns>organization__c</columns>
-        <columns>Primary_Contact__c</columns>
-        <columns>Lead__c</columns>
-        <filterScope>Everything</filterScope>
-        <filters>
-            <field>Likely_Real__c</field>
-            <operation>equals</operation>
-            <value>1</value>
-        </filters>
-        <filters>
-            <field>is_test__c</field>
-            <operation>notEqual</operation>
-            <value>True</value>
-        </filters>
-        <label>Domain info CJ</label>
     </listViews>
     <listViews>
         <fullName>Domains_Missing_Accounts</fullName>
@@ -2562,6 +3935,82 @@ HYPERLINK(&quot;https://india.commcarehq.org/a/&quot;&amp; Name &amp;&quot;/sett
             <value>0</value>
         </filters>
         <label>Domains missing accounts - 2nd phase</label>
+    </listViews>
+    <listViews>
+        <fullName>domains_missing_accounts_ryan_2019</fullName>
+        <columns>NAME</columns>
+        <columns>Account__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Account__c</field>
+            <operation>equals</operation>
+        </filters>
+        <filters>
+            <field>Email__c</field>
+            <operation>contains</operation>
+            <value>internationalmedicalcorps.org</value>
+        </filters>
+        <label>domains missing accounts ryan 2019</label>
+    </listViews>
+    <listViews>
+        <fullName>Domains_RR</fullName>
+        <columns>Account__c</columns>
+        <columns>NAME</columns>
+        <columns>Country_of_deployment_salesforce__c</columns>
+        <columns>date_created__c</columns>
+        <columns>is_active__c</columns>
+        <columns>Primary_Contact__c</columns>
+        <columns>Email__c</columns>
+        <columns>creating_user__c</columns>
+        <columns>cpHasApp__c</columns>
+        <columns>cpIsActive__c</columns>
+        <columns>Lifetime_MRR__c</columns>
+        <columns>InternalProp_commcare_edition__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Email__c</field>
+            <operation>contains</operation>
+            <value>@mercy</value>
+        </filters>
+        <label>Domains - RR</label>
+    </listViews>
+    <listViews>
+        <fullName>Domain_info_CJ</fullName>
+        <booleanFilter>1 AND 2 AND (3 or 4)</booleanFilter>
+        <columns>NAME</columns>
+        <columns>Email__c</columns>
+        <columns>Account__c</columns>
+        <columns>Country_of_deployment_salesforce__c</columns>
+        <columns>Deployment_Countries__c</columns>
+        <columns>organization__c</columns>
+        <columns>Primary_Contact__c</columns>
+        <columns>Lead__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Likely_Real__c</field>
+            <operation>equals</operation>
+            <value>1</value>
+        </filters>
+        <filters>
+            <field>is_test__c</field>
+            <operation>notEqual</operation>
+            <value>True</value>
+        </filters>
+        <label>Domain info CJ</label>
+    </listViews>
+    <listViews>
+        <fullName>DRC_Domains</fullName>
+        <columns>NAME</columns>
+        <columns>Email__c</columns>
+        <columns>CREATEDBY_USER</columns>
+        <columns>Primary_Contact__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Email__c</field>
+            <operation>contains</operation>
+            <value>drc.ngo</value>
+        </filters>
+        <label>DRC Domains</label>
     </listViews>
     <listViews>
         <fullName>IRC_Test</fullName>
@@ -2645,18 +4094,4 @@ HYPERLINK(&quot;https://india.commcarehq.org/a/&quot;&amp; Name &amp;&quot;/sett
         </filters>
         <label>RTI Test</label>
     </listViews>
-    <nameField>
-        <label>Domain Name</label>
-        <trackHistory>false</trackHistory>
-        <type>Text</type>
-    </nameField>
-    <pluralLabel>Domain</pluralLabel>
-    <searchLayouts>
-        <searchResultsAdditionalFields>subscription_notes__c</searchResultsAdditionalFields>
-        <searchResultsAdditionalFields>Is_Inside_Sales__c</searchResultsAdditionalFields>
-        <searchResultsAdditionalFields>cpIsActive__c</searchResultsAdditionalFields>
-        <searchResultsAdditionalFields>cpLastFormSubmissionDate__c</searchResultsAdditionalFields>
-        <searchResultsAdditionalFields>Lifetime_MRR__c</searchResultsAdditionalFields>
-    </searchLayouts>
-    <sharingModel>ReadWrite</sharingModel>
 </CustomObject>

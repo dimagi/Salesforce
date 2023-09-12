@@ -5,7 +5,27 @@
         <type>Default</type>
     </actionOverrides>
     <actionOverrides>
+        <actionName>AddCampaign</actionName>
+        <formFactor>Large</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>AddCampaign</actionName>
+        <formFactor>Small</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
         <actionName>AddToCampaign</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>AddToCampaign</actionName>
+        <formFactor>Large</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>AddToCampaign</actionName>
+        <formFactor>Small</formFactor>
         <type>Default</type>
     </actionOverrides>
     <actionOverrides>
@@ -13,7 +33,27 @@
         <type>Default</type>
     </actionOverrides>
     <actionOverrides>
+        <actionName>CallHighlightAction</actionName>
+        <formFactor>Large</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>CallHighlightAction</actionName>
+        <formFactor>Small</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
         <actionName>CancelEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>CancelEdit</actionName>
+        <formFactor>Large</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>CancelEdit</actionName>
+        <formFactor>Small</formFactor>
         <type>Default</type>
     </actionOverrides>
     <actionOverrides>
@@ -21,7 +61,27 @@
         <type>Default</type>
     </actionOverrides>
     <actionOverrides>
+        <actionName>Clone</actionName>
+        <formFactor>Large</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Clone</actionName>
+        <formFactor>Small</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
         <actionName>Delete</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Delete</actionName>
+        <formFactor>Large</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Delete</actionName>
+        <formFactor>Small</formFactor>
         <type>Default</type>
     </actionOverrides>
     <actionOverrides>
@@ -29,7 +89,27 @@
         <type>Default</type>
     </actionOverrides>
     <actionOverrides>
+        <actionName>Edit</actionName>
+        <formFactor>Large</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Edit</actionName>
+        <formFactor>Small</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
         <actionName>EmailHighlightAction</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>EmailHighlightAction</actionName>
+        <formFactor>Large</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>EmailHighlightAction</actionName>
+        <formFactor>Small</formFactor>
         <type>Default</type>
     </actionOverrides>
     <actionOverrides>
@@ -37,7 +117,27 @@
         <type>Default</type>
     </actionOverrides>
     <actionOverrides>
+        <actionName>EnableCustomerPortal</actionName>
+        <formFactor>Large</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>EnableCustomerPortal</actionName>
+        <formFactor>Small</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
         <actionName>EnablePartnerPortalUser</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>EnablePartnerPortalUser</actionName>
+        <formFactor>Large</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>EnablePartnerPortalUser</actionName>
+        <formFactor>Small</formFactor>
         <type>Default</type>
     </actionOverrides>
     <actionOverrides>
@@ -45,7 +145,27 @@
         <type>Default</type>
     </actionOverrides>
     <actionOverrides>
+        <actionName>EnableSelfService</actionName>
+        <formFactor>Large</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>EnableSelfService</actionName>
+        <formFactor>Small</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
         <actionName>List</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>List</actionName>
+        <formFactor>Large</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>List</actionName>
+        <formFactor>Small</formFactor>
         <type>Default</type>
     </actionOverrides>
     <actionOverrides>
@@ -53,7 +173,27 @@
         <type>Default</type>
     </actionOverrides>
     <actionOverrides>
+        <actionName>ListClean</actionName>
+        <formFactor>Large</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>ListClean</actionName>
+        <formFactor>Small</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
         <actionName>Merge</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Merge</actionName>
+        <formFactor>Large</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Merge</actionName>
+        <formFactor>Small</formFactor>
         <type>Default</type>
     </actionOverrides>
     <actionOverrides>
@@ -61,7 +201,27 @@
         <type>Default</type>
     </actionOverrides>
     <actionOverrides>
+        <actionName>NewContact</actionName>
+        <formFactor>Large</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>NewContact</actionName>
+        <formFactor>Small</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
         <actionName>RequestUpdate</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>RequestUpdate</actionName>
+        <formFactor>Large</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>RequestUpdate</actionName>
+        <formFactor>Small</formFactor>
         <type>Default</type>
     </actionOverrides>
     <actionOverrides>
@@ -69,7 +229,27 @@
         <type>Default</type>
     </actionOverrides>
     <actionOverrides>
+        <actionName>SaveEdit</actionName>
+        <formFactor>Large</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>SaveEdit</actionName>
+        <formFactor>Small</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
         <actionName>SmsHighlightAction</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>SmsHighlightAction</actionName>
+        <formFactor>Large</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>SmsHighlightAction</actionName>
+        <formFactor>Small</formFactor>
         <type>Default</type>
     </actionOverrides>
     <actionOverrides>
@@ -77,7 +257,27 @@
         <type>Default</type>
     </actionOverrides>
     <actionOverrides>
+        <actionName>Tab</actionName>
+        <formFactor>Large</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Tab</actionName>
+        <formFactor>Small</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
         <actionName>View</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>View</actionName>
+        <formFactor>Large</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>View</actionName>
+        <formFactor>Small</formFactor>
         <type>Default</type>
     </actionOverrides>
     <actionOverrides>
@@ -85,17 +285,73 @@
         <type>Default</type>
     </actionOverrides>
     <actionOverrides>
+        <actionName>ViewCustomerPortal</actionName>
+        <formFactor>Large</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>ViewCustomerPortal</actionName>
+        <formFactor>Small</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
         <actionName>ViewPartnerPortalUser</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>ViewPartnerPortalUser</actionName>
+        <formFactor>Large</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>ViewPartnerPortalUser</actionName>
+        <formFactor>Small</formFactor>
         <type>Default</type>
     </actionOverrides>
     <actionOverrides>
         <actionName>ViewSelfService</actionName>
         <type>Default</type>
     </actionOverrides>
+    <actionOverrides>
+        <actionName>ViewSelfService</actionName>
+        <formFactor>Large</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>ViewSelfService</actionName>
+        <formFactor>Small</formFactor>
+        <type>Default</type>
+    </actionOverrides>
     <compactLayoutAssignment>SYSTEM</compactLayoutAssignment>
-    <enableEnhancedLookup>true</enableEnhancedLookup>
+    <enableEnhancedLookup>false</enableEnhancedLookup>
     <enableFeeds>true</enableFeeds>
     <enableHistory>true</enableHistory>
+    <searchLayouts>
+        <customTabListAdditionalFields>FULL_NAME</customTabListAdditionalFields>
+        <customTabListAdditionalFields>ACCOUNT.NAME</customTabListAdditionalFields>
+        <customTabListAdditionalFields>CONTACT.PHONE1</customTabListAdditionalFields>
+        <lookupDialogsAdditionalFields>FULL_NAME</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>ACCOUNT.NAME</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>ACCOUNT.SITE</lookupDialogsAdditionalFields>
+        <lookupPhoneDialogsAdditionalFields>FULL_NAME</lookupPhoneDialogsAdditionalFields>
+        <lookupPhoneDialogsAdditionalFields>ACCOUNT.NAME</lookupPhoneDialogsAdditionalFields>
+        <lookupPhoneDialogsAdditionalFields>ACCOUNT.SITE</lookupPhoneDialogsAdditionalFields>
+        <lookupPhoneDialogsAdditionalFields>CONTACT.PHONE1</lookupPhoneDialogsAdditionalFields>
+        <lookupPhoneDialogsAdditionalFields>CONTACT.PHONE3</lookupPhoneDialogsAdditionalFields>
+        <lookupPhoneDialogsAdditionalFields>CONTACT.PHONE4</lookupPhoneDialogsAdditionalFields>
+        <lookupPhoneDialogsAdditionalFields>CONTACT.PHONE5</lookupPhoneDialogsAdditionalFields>
+        <lookupPhoneDialogsAdditionalFields>CONTACT.PHONE6</lookupPhoneDialogsAdditionalFields>
+        <lookupPhoneDialogsAdditionalFields>ACCOUNT.PHONE1</lookupPhoneDialogsAdditionalFields>
+        <searchFilterFields>ACCOUNT.NAME</searchFilterFields>
+        <searchFilterFields>CONTACT.EMAIL</searchFilterFields>
+        <searchResultsAdditionalFields>FULL_NAME</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>ACCOUNT.NAME</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>ACCOUNT.SITE</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>CONTACT.PHONE1</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>CONTACT.EMAIL</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>CORE.USERS.ALIAS</searchResultsAdditionalFields>
+    </searchLayouts>
+    <sharingModel>ReadWrite</sharingModel>
     <fields>
         <fullName>AccountId</fullName>
         <trackFeedHistory>true</trackFeedHistory>
@@ -118,6 +374,18 @@
         <formula>Account.OwnerId</formula>
         <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
         <label>Account Owner</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Account_Status__c</fullName>
+        <description>Draws from &quot;Account Status (Enterprise Relationship)&quot; in Accounts</description>
+        <externalId>false</externalId>
+        <formula>TEXT(Account.Enterprise_Relationship__c)</formula>
+        <inlineHelpText>Identifies whether Contact&apos;s Account is an Enterprise Relationship</inlineHelpText>
+        <label>Account Status (Enterprise Only)</label>
         <required>false</required>
         <trackHistory>false</trackHistory>
         <type>Text</type>
@@ -150,6 +418,15 @@
         <fullName>AssistantPhone</fullName>
         <trackFeedHistory>false</trackFeedHistory>
         <trackHistory>false</trackHistory>
+    </fields>
+    <fields>
+        <fullName>Became_an_Opportunity_Date__c</fullName>
+        <externalId>false</externalId>
+        <label>Became an Opportunity Date</label>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <type>Date</type>
     </fields>
     <fields>
         <fullName>Became_a_Customer_Date__c</fullName>
@@ -197,15 +474,6 @@
         <type>Date</type>
     </fields>
     <fields>
-        <fullName>Became_an_Opportunity_Date__c</fullName>
-        <externalId>false</externalId>
-        <label>Became an Opportunity Date</label>
-        <required>false</required>
-        <trackFeedHistory>false</trackFeedHistory>
-        <trackHistory>false</trackHistory>
-        <type>Date</type>
-    </fields>
-    <fields>
         <fullName>Birthdate</fullName>
         <trackFeedHistory>false</trackFeedHistory>
         <trackHistory>false</trackHistory>
@@ -219,6 +487,17 @@
         <trackHistory>false</trackHistory>
         <type>Text</type>
         <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>cirrusadv__Created_by_Cirrus_Insight__c</fullName>
+        <defaultValue>false</defaultValue>
+        <deprecated>false</deprecated>
+        <description>Indicates that this record was created by Cirrus Insight. This checkbox does not have to be included on the page layout, except with Contact Manager, Group, and Professional Edition organizations.</description>
+        <externalId>false</externalId>
+        <label>Created by Cirrus Insight</label>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>true</trackHistory>
+        <type>Checkbox</type>
     </fields>
     <fields>
         <fullName>City_Object__c</fullName>
@@ -257,1050 +536,1312 @@
                 <value>
                     <fullName>Abidjan</fullName>
                     <default>false</default>
+                    <label>Abidjan</label>
                 </value>
                 <value>
                     <fullName>Abu Dhabi</fullName>
                     <default>false</default>
+                    <label>Abu Dhabi</label>
                 </value>
                 <value>
                     <fullName>Abuja</fullName>
                     <default>false</default>
+                    <label>Abuja</label>
                 </value>
                 <value>
                     <fullName>Accra</fullName>
                     <default>false</default>
+                    <label>Accra</label>
                 </value>
                 <value>
                     <fullName>Adamstown</fullName>
                     <default>false</default>
+                    <label>Adamstown</label>
                 </value>
                 <value>
                     <fullName>Addis Ababa</fullName>
                     <default>false</default>
+                    <label>Addis Ababa</label>
                 </value>
                 <value>
                     <fullName>Adorra la Vella</fullName>
                     <default>false</default>
+                    <label>Adorra la Vella</label>
                 </value>
                 <value>
                     <fullName>Algiers</fullName>
                     <default>false</default>
+                    <label>Algiers</label>
                 </value>
                 <value>
                     <fullName>Alofi</fullName>
                     <default>false</default>
+                    <label>Alofi</label>
                 </value>
                 <value>
                     <fullName>Amman</fullName>
                     <default>false</default>
+                    <label>Amman</label>
                 </value>
                 <value>
                     <fullName>Amsterdam</fullName>
                     <default>false</default>
+                    <label>Amsterdam</label>
                 </value>
                 <value>
                     <fullName>Ankara</fullName>
                     <default>false</default>
+                    <label>Ankara</label>
                 </value>
                 <value>
                     <fullName>Antananarivo</fullName>
                     <default>false</default>
+                    <label>Antananarivo</label>
                 </value>
                 <value>
                     <fullName>Antigua, Guatemala</fullName>
                     <default>false</default>
+                    <label>Antigua, Guatemala</label>
                 </value>
                 <value>
                     <fullName>Apia</fullName>
                     <default>false</default>
+                    <label>Apia</label>
                 </value>
                 <value>
                     <fullName>Ashgabat</fullName>
                     <default>false</default>
+                    <label>Ashgabat</label>
                 </value>
                 <value>
                     <fullName>Asmara</fullName>
                     <default>false</default>
+                    <label>Asmara</label>
                 </value>
                 <value>
                     <fullName>Astana</fullName>
                     <default>false</default>
+                    <label>Astana</label>
                 </value>
                 <value>
                     <fullName>Asuncion</fullName>
                     <default>false</default>
+                    <label>Asuncion</label>
                 </value>
                 <value>
                     <fullName>Athens</fullName>
                     <default>false</default>
+                    <label>Athens</label>
                 </value>
                 <value>
                     <fullName>Atlanta</fullName>
                     <default>false</default>
+                    <label>Atlanta</label>
                 </value>
                 <value>
                     <fullName>Austin</fullName>
                     <default>false</default>
+                    <label>Austin</label>
                 </value>
                 <value>
                     <fullName>Avarua</fullName>
                     <default>false</default>
+                    <label>Avarua</label>
                 </value>
                 <value>
                     <fullName>Baghdad</fullName>
                     <default>false</default>
+                    <label>Baghdad</label>
                 </value>
                 <value>
                     <fullName>Baku</fullName>
                     <default>false</default>
+                    <label>Baku</label>
                 </value>
                 <value>
                     <fullName>Baltimore</fullName>
                     <default>false</default>
+                    <label>Baltimore</label>
                 </value>
                 <value>
                     <fullName>Bamako</fullName>
                     <default>false</default>
+                    <label>Bamako</label>
                 </value>
                 <value>
                     <fullName>Bandar Seri Begawan</fullName>
                     <default>false</default>
+                    <label>Bandar Seri Begawan</label>
                 </value>
                 <value>
                     <fullName>Bangkok</fullName>
                     <default>false</default>
+                    <label>Bangkok</label>
                 </value>
                 <value>
                     <fullName>Bangui</fullName>
                     <default>false</default>
+                    <label>Bangui</label>
                 </value>
                 <value>
                     <fullName>Banjul</fullName>
                     <default>false</default>
+                    <label>Banjul</label>
                 </value>
                 <value>
                     <fullName>Basseterre</fullName>
                     <default>false</default>
+                    <label>Basseterre</label>
                 </value>
                 <value>
                     <fullName>Beijing</fullName>
                     <default>false</default>
+                    <label>Beijing</label>
                 </value>
                 <value>
                     <fullName>Beirut</fullName>
                     <default>false</default>
+                    <label>Beirut</label>
                 </value>
                 <value>
                     <fullName>Belgrade</fullName>
                     <default>false</default>
+                    <label>Belgrade</label>
                 </value>
                 <value>
                     <fullName>Belmopan</fullName>
                     <default>false</default>
+                    <label>Belmopan</label>
                 </value>
                 <value>
                     <fullName>Berlin</fullName>
                     <default>false</default>
+                    <label>Berlin</label>
                 </value>
                 <value>
                     <fullName>Bern</fullName>
                     <default>false</default>
+                    <label>Bern</label>
                 </value>
                 <value>
                     <fullName>Bishkek</fullName>
                     <default>false</default>
+                    <label>Bishkek</label>
                 </value>
                 <value>
                     <fullName>Bissau</fullName>
                     <default>false</default>
+                    <label>Bissau</label>
                 </value>
                 <value>
                     <fullName>Bogota</fullName>
                     <default>false</default>
+                    <label>Bogota</label>
                 </value>
                 <value>
                     <fullName>Boston</fullName>
                     <default>false</default>
+                    <label>Boston</label>
                 </value>
                 <value>
                     <fullName>Brasilia</fullName>
                     <default>false</default>
+                    <label>Brasilia</label>
                 </value>
                 <value>
                     <fullName>Bratislava</fullName>
                     <default>false</default>
+                    <label>Bratislava</label>
                 </value>
                 <value>
                     <fullName>Brazzaville</fullName>
                     <default>false</default>
+                    <label>Brazzaville</label>
                 </value>
                 <value>
                     <fullName>Bridgetown</fullName>
                     <default>false</default>
+                    <label>Bridgetown</label>
                 </value>
                 <value>
                     <fullName>Brussels</fullName>
                     <default>false</default>
+                    <label>Brussels</label>
                 </value>
                 <value>
                     <fullName>Bucharest</fullName>
                     <default>false</default>
+                    <label>Bucharest</label>
                 </value>
                 <value>
                     <fullName>Budapest</fullName>
                     <default>false</default>
+                    <label>Budapest</label>
                 </value>
                 <value>
                     <fullName>Buenos Aires</fullName>
                     <default>false</default>
+                    <label>Buenos Aires</label>
                 </value>
                 <value>
                     <fullName>Bujumbura</fullName>
                     <default>false</default>
+                    <label>Bujumbura</label>
                 </value>
                 <value>
                     <fullName>Cairo</fullName>
                     <default>false</default>
+                    <label>Cairo</label>
                 </value>
                 <value>
                     <fullName>Cali</fullName>
                     <default>false</default>
+                    <label>Cali</label>
                 </value>
                 <value>
                     <fullName>Canberra</fullName>
                     <default>false</default>
+                    <label>Canberra</label>
                 </value>
                 <value>
                     <fullName>Cape Town</fullName>
                     <default>false</default>
+                    <label>Cape Town</label>
                 </value>
                 <value>
                     <fullName>Cap Hatien</fullName>
                     <default>false</default>
+                    <label>Cap Hatien</label>
                 </value>
                 <value>
                     <fullName>Caracas</fullName>
                     <default>false</default>
+                    <label>Caracas</label>
                 </value>
                 <value>
                     <fullName>Castries</fullName>
                     <default>false</default>
+                    <label>Castries</label>
                 </value>
                 <value>
                     <fullName>Cayenne</fullName>
                     <default>false</default>
+                    <label>Cayenne</label>
                 </value>
                 <value>
                     <fullName>Charlotte Amalie</fullName>
                     <default>false</default>
+                    <label>Charlotte Amalie</label>
                 </value>
                 <value>
                     <fullName>Chicago</fullName>
                     <default>false</default>
+                    <label>Chicago</label>
                 </value>
                 <value>
                     <fullName>Chisinau</fullName>
                     <default>false</default>
+                    <label>Chisinau</label>
                 </value>
                 <value>
                     <fullName>Coban</fullName>
                     <default>false</default>
+                    <label>Coban</label>
                 </value>
                 <value>
                     <fullName>Cockburn Town</fullName>
                     <default>false</default>
+                    <label>Cockburn Town</label>
                 </value>
                 <value>
                     <fullName>Colombo</fullName>
                     <default>false</default>
+                    <label>Colombo</label>
                 </value>
                 <value>
                     <fullName>Conakry</fullName>
                     <default>false</default>
+                    <label>Conakry</label>
                 </value>
                 <value>
                     <fullName>Copenhagen</fullName>
                     <default>false</default>
+                    <label>Copenhagen</label>
                 </value>
                 <value>
                     <fullName>Cusco</fullName>
                     <default>false</default>
+                    <label>Cusco</label>
                 </value>
                 <value>
                     <fullName>Dakar</fullName>
                     <default>false</default>
+                    <label>Dakar</label>
                 </value>
                 <value>
                     <fullName>Dallas</fullName>
                     <default>false</default>
+                    <label>Dallas</label>
                 </value>
                 <value>
                     <fullName>Damascus</fullName>
                     <default>false</default>
+                    <label>Damascus</label>
                 </value>
                 <value>
                     <fullName>Dhaka</fullName>
                     <default>false</default>
+                    <label>Dhaka</label>
                 </value>
                 <value>
                     <fullName>Dili</fullName>
                     <default>false</default>
+                    <label>Dili</label>
                 </value>
                 <value>
                     <fullName>Djibouti</fullName>
                     <default>false</default>
+                    <label>Djibouti</label>
                 </value>
                 <value>
                     <fullName>Dodoma</fullName>
                     <default>false</default>
+                    <label>Dodoma</label>
                 </value>
                 <value>
                     <fullName>Doja</fullName>
                     <default>false</default>
+                    <label>Doja</label>
                 </value>
                 <value>
                     <fullName>Douglas</fullName>
                     <default>false</default>
+                    <label>Douglas</label>
                 </value>
                 <value>
                     <fullName>Dublin</fullName>
                     <default>false</default>
+                    <label>Dublin</label>
                 </value>
                 <value>
                     <fullName>Dushanbe</fullName>
                     <default>false</default>
+                    <label>Dushanbe</label>
                 </value>
                 <value>
                     <fullName>East Jerusalem</fullName>
                     <default>false</default>
+                    <label>East Jerusalem</label>
                 </value>
                 <value>
                     <fullName>Edinburgh of Seven Seas</fullName>
                     <default>false</default>
+                    <label>Edinburgh of Seven Seas</label>
                 </value>
                 <value>
                     <fullName>El Aaiun</fullName>
                     <default>false</default>
+                    <label>El Aaiun</label>
                 </value>
                 <value>
                     <fullName>Episkopi Cantonment</fullName>
                     <default>false</default>
+                    <label>Episkopi Cantonment</label>
                 </value>
                 <value>
                     <fullName>Flying Fish Cove</fullName>
                     <default>false</default>
+                    <label>Flying Fish Cove</label>
                 </value>
                 <value>
                     <fullName>Freetown</fullName>
                     <default>false</default>
+                    <label>Freetown</label>
                 </value>
                 <value>
                     <fullName>Funafuti</fullName>
                     <default>false</default>
+                    <label>Funafuti</label>
                 </value>
                 <value>
                     <fullName>Gaborone</fullName>
                     <default>false</default>
+                    <label>Gaborone</label>
                 </value>
                 <value>
                     <fullName>Georgetown</fullName>
                     <default>false</default>
+                    <label>Georgetown</label>
                 </value>
                 <value>
                     <fullName>George Town</fullName>
                     <default>false</default>
+                    <label>George Town</label>
                 </value>
                 <value>
                     <fullName>Gibraltar</fullName>
                     <default>false</default>
+                    <label>Gibraltar</label>
                 </value>
                 <value>
                     <fullName>Guatemala City</fullName>
                     <default>false</default>
+                    <label>Guatemala City</label>
                 </value>
                 <value>
                     <fullName>Gustavia</fullName>
                     <default>false</default>
+                    <label>Gustavia</label>
                 </value>
                 <value>
                     <fullName>Hagatna</fullName>
                     <default>false</default>
+                    <label>Hagatna</label>
                 </value>
                 <value>
                     <fullName>Hamilton</fullName>
                     <default>false</default>
+                    <label>Hamilton</label>
                 </value>
                 <value>
                     <fullName>Hanga Roa</fullName>
                     <default>false</default>
+                    <label>Hanga Roa</label>
                 </value>
                 <value>
                     <fullName>Hanoi</fullName>
                     <default>false</default>
+                    <label>Hanoi</label>
                 </value>
                 <value>
                     <fullName>Harare</fullName>
                     <default>false</default>
+                    <label>Harare</label>
                 </value>
                 <value>
                     <fullName>Hargeisa</fullName>
                     <default>false</default>
+                    <label>Hargeisa</label>
                 </value>
                 <value>
                     <fullName>Havana</fullName>
                     <default>false</default>
+                    <label>Havana</label>
                 </value>
                 <value>
                     <fullName>Helsinki</fullName>
                     <default>false</default>
+                    <label>Helsinki</label>
                 </value>
                 <value>
                     <fullName>Honiara</fullName>
                     <default>false</default>
+                    <label>Honiara</label>
                 </value>
                 <value>
                     <fullName>Houston</fullName>
                     <default>false</default>
+                    <label>Houston</label>
                 </value>
                 <value>
                     <fullName>Islamabad</fullName>
                     <default>false</default>
+                    <label>Islamabad</label>
                 </value>
                 <value>
                     <fullName>Jakarta</fullName>
                     <default>false</default>
+                    <label>Jakarta</label>
                 </value>
                 <value>
                     <fullName>Jamestown</fullName>
                     <default>false</default>
+                    <label>Jamestown</label>
                 </value>
                 <value>
                     <fullName>Jerusalem</fullName>
                     <default>false</default>
+                    <label>Jerusalem</label>
                 </value>
                 <value>
                     <fullName>Johannesburg</fullName>
                     <default>false</default>
+                    <label>Johannesburg</label>
                 </value>
                 <value>
                     <fullName>Juba</fullName>
                     <default>false</default>
+                    <label>Juba</label>
                 </value>
                 <value>
                     <fullName>Kabul</fullName>
                     <default>false</default>
+                    <label>Kabul</label>
                 </value>
                 <value>
                     <fullName>Kampala</fullName>
                     <default>false</default>
+                    <label>Kampala</label>
                 </value>
                 <value>
                     <fullName>Kathmandu</fullName>
                     <default>false</default>
+                    <label>Kathmandu</label>
                 </value>
                 <value>
                     <fullName>Khartoum</fullName>
                     <default>false</default>
+                    <label>Khartoum</label>
                 </value>
                 <value>
                     <fullName>Kiev</fullName>
                     <default>false</default>
+                    <label>Kiev</label>
                 </value>
                 <value>
                     <fullName>Kigali</fullName>
                     <default>false</default>
+                    <label>Kigali</label>
                 </value>
                 <value>
                     <fullName>King Edward Point</fullName>
                     <default>false</default>
+                    <label>King Edward Point</label>
                 </value>
                 <value>
                     <fullName>Kingston</fullName>
                     <default>false</default>
+                    <label>Kingston</label>
                 </value>
                 <value>
                     <fullName>Kingstown</fullName>
                     <default>false</default>
+                    <label>Kingstown</label>
                 </value>
                 <value>
                     <fullName>Kinshasa</fullName>
                     <default>false</default>
+                    <label>Kinshasa</label>
                 </value>
                 <value>
                     <fullName>Kuala Lumpur</fullName>
                     <default>false</default>
+                    <label>Kuala Lumpur</label>
                 </value>
                 <value>
                     <fullName>Kuwait City</fullName>
                     <default>false</default>
+                    <label>Kuwait City</label>
                 </value>
                 <value>
                     <fullName>La Paz</fullName>
                     <default>false</default>
+                    <label>La Paz</label>
                 </value>
                 <value>
                     <fullName>Libreville</fullName>
                     <default>false</default>
+                    <label>Libreville</label>
                 </value>
                 <value>
                     <fullName>Lilongwe</fullName>
                     <default>false</default>
+                    <label>Lilongwe</label>
                 </value>
                 <value>
                     <fullName>Lima</fullName>
                     <default>false</default>
+                    <label>Lima</label>
                 </value>
                 <value>
                     <fullName>Lisbon</fullName>
                     <default>false</default>
+                    <label>Lisbon</label>
                 </value>
                 <value>
                     <fullName>Ljubljana</fullName>
                     <default>false</default>
+                    <label>Ljubljana</label>
                 </value>
                 <value>
                     <fullName>Lome</fullName>
                     <default>false</default>
+                    <label>Lome</label>
                 </value>
                 <value>
                     <fullName>London</fullName>
                     <default>false</default>
+                    <label>London</label>
                 </value>
                 <value>
                     <fullName>Los Angeles</fullName>
                     <default>false</default>
+                    <label>Los Angeles</label>
                 </value>
                 <value>
                     <fullName>Luanda</fullName>
                     <default>false</default>
+                    <label>Luanda</label>
                 </value>
                 <value>
                     <fullName>Lusaka</fullName>
                     <default>false</default>
+                    <label>Lusaka</label>
                 </value>
                 <value>
                     <fullName>Luxembourg</fullName>
                     <default>false</default>
+                    <label>Luxembourg</label>
                 </value>
                 <value>
                     <fullName>Madrid</fullName>
                     <default>false</default>
+                    <label>Madrid</label>
                 </value>
                 <value>
                     <fullName>Majuro</fullName>
                     <default>false</default>
+                    <label>Majuro</label>
                 </value>
                 <value>
                     <fullName>Malabo</fullName>
                     <default>false</default>
+                    <label>Malabo</label>
                 </value>
                 <value>
                     <fullName>Male</fullName>
                     <default>false</default>
+                    <label>Male</label>
                 </value>
                 <value>
                     <fullName>Managua</fullName>
                     <default>false</default>
+                    <label>Managua</label>
                 </value>
                 <value>
                     <fullName>Manama</fullName>
                     <default>false</default>
+                    <label>Manama</label>
                 </value>
                 <value>
                     <fullName>Manila</fullName>
                     <default>false</default>
+                    <label>Manila</label>
                 </value>
                 <value>
                     <fullName>Maputo</fullName>
                     <default>false</default>
+                    <label>Maputo</label>
                 </value>
                 <value>
                     <fullName>Marigot</fullName>
                     <default>false</default>
+                    <label>Marigot</label>
                 </value>
                 <value>
                     <fullName>Maseru</fullName>
                     <default>false</default>
+                    <label>Maseru</label>
                 </value>
                 <value>
                     <fullName>Mata-Utu</fullName>
                     <default>false</default>
+                    <label>Mata-Utu</label>
                 </value>
                 <value>
                     <fullName>Mbabane</fullName>
                     <default>false</default>
+                    <label>Mbabane</label>
                 </value>
                 <value>
                     <fullName>Medellin</fullName>
                     <default>false</default>
+                    <label>Medellin</label>
                 </value>
                 <value>
                     <fullName>Mexico City</fullName>
                     <default>false</default>
+                    <label>Mexico City</label>
                 </value>
                 <value>
                     <fullName>Miamey</fullName>
                     <default>false</default>
+                    <label>Miamey</label>
                 </value>
                 <value>
                     <fullName>Miami</fullName>
                     <default>false</default>
+                    <label>Miami</label>
                 </value>
                 <value>
                     <fullName>Minsk</fullName>
                     <default>false</default>
+                    <label>Minsk</label>
                 </value>
                 <value>
                     <fullName>Mogadishu</fullName>
                     <default>false</default>
+                    <label>Mogadishu</label>
                 </value>
                 <value>
                     <fullName>Monaco</fullName>
                     <default>false</default>
+                    <label>Monaco</label>
                 </value>
                 <value>
                     <fullName>Monrovia</fullName>
                     <default>false</default>
+                    <label>Monrovia</label>
                 </value>
                 <value>
                     <fullName>Montevideo</fullName>
                     <default>false</default>
+                    <label>Montevideo</label>
                 </value>
                 <value>
                     <fullName>Montreal</fullName>
                     <default>false</default>
+                    <label>Montreal</label>
                 </value>
                 <value>
                     <fullName>Moroni</fullName>
                     <default>false</default>
+                    <label>Moroni</label>
                 </value>
                 <value>
                     <fullName>Moscow</fullName>
                     <default>false</default>
+                    <label>Moscow</label>
                 </value>
                 <value>
                     <fullName>Muscat</fullName>
                     <default>false</default>
+                    <label>Muscat</label>
                 </value>
                 <value>
                     <fullName>N&apos;Djamena</fullName>
                     <default>false</default>
+                    <label>N&apos;Djamena</label>
                 </value>
                 <value>
                     <fullName>Nairobi</fullName>
                     <default>false</default>
+                    <label>Nairobi</label>
                 </value>
                 <value>
                     <fullName>Napyidaw</fullName>
                     <default>false</default>
+                    <label>Napyidaw</label>
                 </value>
                 <value>
                     <fullName>Nassau</fullName>
                     <default>false</default>
+                    <label>Nassau</label>
                 </value>
                 <value>
                     <fullName>Newark</fullName>
                     <default>false</default>
+                    <label>Newark</label>
                 </value>
                 <value>
                     <fullName>New Delhi</fullName>
                     <default>false</default>
+                    <label>New Delhi</label>
                 </value>
                 <value>
                     <fullName>New York</fullName>
                     <default>false</default>
+                    <label>New York</label>
                 </value>
                 <value>
                     <fullName>Ngerulmud</fullName>
                     <default>false</default>
+                    <label>Ngerulmud</label>
                 </value>
                 <value>
                     <fullName>Nicosia</fullName>
                     <default>false</default>
+                    <label>Nicosia</label>
                 </value>
                 <value>
                     <fullName>Nouakchott</fullName>
                     <default>false</default>
+                    <label>Nouakchott</label>
                 </value>
                 <value>
                     <fullName>Noumea</fullName>
                     <default>false</default>
+                    <label>Noumea</label>
                 </value>
                 <value>
                     <fullName>Nuku&apos;alofa</fullName>
                     <default>false</default>
+                    <label>Nuku&apos;alofa</label>
                 </value>
                 <value>
                     <fullName>Nuuk</fullName>
                     <default>false</default>
+                    <label>Nuuk</label>
                 </value>
                 <value>
                     <fullName>Oranjestad</fullName>
                     <default>false</default>
+                    <label>Oranjestad</label>
                 </value>
                 <value>
                     <fullName>Oslo</fullName>
                     <default>false</default>
+                    <label>Oslo</label>
                 </value>
                 <value>
                     <fullName>Other</fullName>
                     <default>false</default>
+                    <label>Other</label>
                 </value>
                 <value>
                     <fullName>Ottawa</fullName>
                     <default>false</default>
+                    <label>Ottawa</label>
                 </value>
                 <value>
                     <fullName>Ougadougou</fullName>
                     <default>false</default>
+                    <label>Ougadougou</label>
                 </value>
                 <value>
                     <fullName>Pago Pago</fullName>
                     <default>false</default>
+                    <label>Pago Pago</label>
                 </value>
                 <value>
                     <fullName>Palikir</fullName>
                     <default>false</default>
+                    <label>Palikir</label>
                 </value>
                 <value>
                     <fullName>Panama City</fullName>
                     <default>false</default>
+                    <label>Panama City</label>
                 </value>
                 <value>
                     <fullName>Papeete</fullName>
                     <default>false</default>
+                    <label>Papeete</label>
                 </value>
                 <value>
                     <fullName>Paramarimbo</fullName>
                     <default>false</default>
+                    <label>Paramarimbo</label>
                 </value>
                 <value>
                     <fullName>Paris</fullName>
                     <default>false</default>
+                    <label>Paris</label>
                 </value>
                 <value>
                     <fullName>Philipsburg</fullName>
                     <default>false</default>
+                    <label>Philipsburg</label>
                 </value>
                 <value>
                     <fullName>Phnom Penh</fullName>
                     <default>false</default>
+                    <label>Phnom Penh</label>
                 </value>
                 <value>
                     <fullName>Plymouth</fullName>
                     <default>false</default>
+                    <label>Plymouth</label>
                 </value>
                 <value>
                     <fullName>Poirt of Spain</fullName>
                     <default>false</default>
+                    <label>Poirt of Spain</label>
                 </value>
                 <value>
                     <fullName>Port Louis</fullName>
                     <default>false</default>
+                    <label>Port Louis</label>
                 </value>
                 <value>
                     <fullName>Port Moresby</fullName>
                     <default>false</default>
+                    <label>Port Moresby</label>
                 </value>
                 <value>
                     <fullName>Porto-Novo</fullName>
                     <default>false</default>
+                    <label>Porto-Novo</label>
                 </value>
                 <value>
                     <fullName>Port Vila</fullName>
                     <default>false</default>
+                    <label>Port Vila</label>
                 </value>
                 <value>
                     <fullName>Pourt-au-Prince</fullName>
                     <default>false</default>
+                    <label>Pourt-au-Prince</label>
                 </value>
                 <value>
                     <fullName>Prague</fullName>
                     <default>false</default>
+                    <label>Prague</label>
                 </value>
                 <value>
                     <fullName>Praia</fullName>
                     <default>false</default>
+                    <label>Praia</label>
                 </value>
                 <value>
                     <fullName>Pretoria</fullName>
                     <default>false</default>
+                    <label>Pretoria</label>
                 </value>
                 <value>
                     <fullName>Pristina</fullName>
                     <default>false</default>
+                    <label>Pristina</label>
                 </value>
                 <value>
                     <fullName>Pyongyang</fullName>
                     <default>false</default>
+                    <label>Pyongyang</label>
                 </value>
                 <value>
                     <fullName>Quito</fullName>
                     <default>false</default>
+                    <label>Quito</label>
                 </value>
                 <value>
                     <fullName>Rabat</fullName>
                     <default>false</default>
+                    <label>Rabat</label>
                 </value>
                 <value>
                     <fullName>Reykjavik</fullName>
                     <default>false</default>
+                    <label>Reykjavik</label>
                 </value>
                 <value>
                     <fullName>Riga</fullName>
                     <default>false</default>
+                    <label>Riga</label>
                 </value>
                 <value>
                     <fullName>Riyadh</fullName>
                     <default>false</default>
+                    <label>Riyadh</label>
                 </value>
                 <value>
                     <fullName>Road Town</fullName>
                     <default>false</default>
+                    <label>Road Town</label>
                 </value>
                 <value>
                     <fullName>Rome</fullName>
                     <default>false</default>
+                    <label>Rome</label>
                 </value>
                 <value>
                     <fullName>Roseau</fullName>
                     <default>false</default>
+                    <label>Roseau</label>
                 </value>
                 <value>
                     <fullName>Saipan</fullName>
                     <default>false</default>
+                    <label>Saipan</label>
                 </value>
                 <value>
                     <fullName>Sana&apos;a</fullName>
                     <default>false</default>
+                    <label>Sana&apos;a</label>
                 </value>
                 <value>
                     <fullName>San Francisco</fullName>
                     <default>false</default>
+                    <label>San Francisco</label>
                 </value>
                 <value>
                     <fullName>San Jose</fullName>
                     <default>false</default>
+                    <label>San Jose</label>
                 </value>
                 <value>
                     <fullName>San Juan, Puerto Rico</fullName>
                     <default>false</default>
+                    <label>San Juan, Puerto Rico</label>
                 </value>
                 <value>
                     <fullName>San Salvador</fullName>
                     <default>false</default>
+                    <label>San Salvador</label>
                 </value>
                 <value>
                     <fullName>Santiago</fullName>
                     <default>false</default>
+                    <label>Santiago</label>
                 </value>
                 <value>
                     <fullName>Santo Domingo</fullName>
                     <default>false</default>
+                    <label>Santo Domingo</label>
                 </value>
                 <value>
                     <fullName>Sao Tome</fullName>
                     <default>false</default>
+                    <label>Sao Tome</label>
                 </value>
                 <value>
                     <fullName>Sarajevo</fullName>
                     <default>false</default>
+                    <label>Sarajevo</label>
                 </value>
                 <value>
                     <fullName>Seattle</fullName>
                     <default>false</default>
+                    <label>Seattle</label>
                 </value>
                 <value>
                     <fullName>Seol</fullName>
                     <default>false</default>
+                    <label>Seol</label>
                 </value>
                 <value>
                     <fullName>Singapore</fullName>
                     <default>false</default>
+                    <label>Singapore</label>
                 </value>
                 <value>
                     <fullName>Skopje</fullName>
                     <default>false</default>
+                    <label>Skopje</label>
                 </value>
                 <value>
                     <fullName>Sofia</fullName>
                     <default>false</default>
+                    <label>Sofia</label>
                 </value>
                 <value>
                     <fullName>St. George&apos;s</fullName>
                     <default>false</default>
+                    <label>St. George&apos;s</label>
                 </value>
                 <value>
                     <fullName>St. Helier</fullName>
                     <default>false</default>
+                    <label>St. Helier</label>
                 </value>
                 <value>
                     <fullName>St. John&apos;s</fullName>
                     <default>false</default>
+                    <label>St. John&apos;s</label>
                 </value>
                 <value>
                     <fullName>St. Peter Port</fullName>
                     <default>false</default>
+                    <label>St. Peter Port</label>
                 </value>
                 <value>
                     <fullName>Stanley</fullName>
                     <default>false</default>
+                    <label>Stanley</label>
                 </value>
                 <value>
                     <fullName>Stepanakert</fullName>
                     <default>false</default>
+                    <label>Stepanakert</label>
                 </value>
                 <value>
                     <fullName>Stockholm</fullName>
                     <default>false</default>
+                    <label>Stockholm</label>
                 </value>
                 <value>
                     <fullName>Sucre</fullName>
                     <default>false</default>
+                    <label>Sucre</label>
                 </value>
                 <value>
                     <fullName>Sukhumi</fullName>
                     <default>false</default>
+                    <label>Sukhumi</label>
                 </value>
                 <value>
                     <fullName>Suva</fullName>
                     <default>false</default>
+                    <label>Suva</label>
                 </value>
                 <value>
                     <fullName>Taipei</fullName>
                     <default>false</default>
+                    <label>Taipei</label>
                 </value>
                 <value>
                     <fullName>Tallinn</fullName>
                     <default>false</default>
+                    <label>Tallinn</label>
                 </value>
                 <value>
                     <fullName>Tarawa Atoll</fullName>
                     <default>false</default>
+                    <label>Tarawa Atoll</label>
                 </value>
                 <value>
                     <fullName>Tashkent</fullName>
                     <default>false</default>
+                    <label>Tashkent</label>
                 </value>
                 <value>
                     <fullName>Tbilisi</fullName>
                     <default>false</default>
+                    <label>Tbilisi</label>
                 </value>
                 <value>
                     <fullName>Tegucigalpa</fullName>
                     <default>false</default>
+                    <label>Tegucigalpa</label>
                 </value>
                 <value>
                     <fullName>Tehran</fullName>
                     <default>false</default>
+                    <label>Tehran</label>
                 </value>
                 <value>
                     <fullName>The Valley</fullName>
                     <default>false</default>
+                    <label>The Valley</label>
                 </value>
                 <value>
                     <fullName>Thimphu</fullName>
                     <default>false</default>
+                    <label>Thimphu</label>
                 </value>
                 <value>
                     <fullName>Tirana</fullName>
                     <default>false</default>
+                    <label>Tirana</label>
                 </value>
                 <value>
                     <fullName>Tiraspol</fullName>
                     <default>false</default>
+                    <label>Tiraspol</label>
                 </value>
                 <value>
                     <fullName>Tokyo</fullName>
                     <default>false</default>
+                    <label>Tokyo</label>
                 </value>
                 <value>
                     <fullName>Toronto</fullName>
                     <default>false</default>
+                    <label>Toronto</label>
                 </value>
                 <value>
                     <fullName>Tripoli</fullName>
                     <default>false</default>
+                    <label>Tripoli</label>
                 </value>
                 <value>
                     <fullName>Tunis</fullName>
                     <default>false</default>
+                    <label>Tunis</label>
                 </value>
                 <value>
                     <fullName>Ulaanbaatar</fullName>
                     <default>false</default>
+                    <label>Ulaanbaatar</label>
                 </value>
                 <value>
                     <fullName>Vaduz</fullName>
                     <default>false</default>
+                    <label>Vaduz</label>
                 </value>
                 <value>
                     <fullName>Valletta</fullName>
                     <default>false</default>
+                    <label>Valletta</label>
                 </value>
                 <value>
                     <fullName>Vatican City</fullName>
                     <default>false</default>
+                    <label>Vatican City</label>
                 </value>
                 <value>
                     <fullName>Victoria</fullName>
                     <default>false</default>
+                    <label>Victoria</label>
                 </value>
                 <value>
                     <fullName>Victoria City, HK</fullName>
                     <default>false</default>
+                    <label>Victoria City, HK</label>
                 </value>
                 <value>
                     <fullName>Vienna</fullName>
                     <default>false</default>
+                    <label>Vienna</label>
                 </value>
                 <value>
                     <fullName>Vientiane</fullName>
                     <default>false</default>
+                    <label>Vientiane</label>
                 </value>
                 <value>
                     <fullName>Vilnius</fullName>
                     <default>false</default>
+                    <label>Vilnius</label>
                 </value>
                 <value>
                     <fullName>Warsaw</fullName>
                     <default>false</default>
+                    <label>Warsaw</label>
                 </value>
                 <value>
                     <fullName>Washington, DC</fullName>
                     <default>false</default>
+                    <label>Washington, DC</label>
                 </value>
                 <value>
                     <fullName>Wellington</fullName>
                     <default>false</default>
+                    <label>Wellington</label>
                 </value>
                 <value>
                     <fullName>West Island</fullName>
                     <default>false</default>
+                    <label>West Island</label>
                 </value>
                 <value>
                     <fullName>Widhoek</fullName>
                     <default>false</default>
+                    <label>Widhoek</label>
                 </value>
                 <value>
                     <fullName>Willemstad</fullName>
                     <default>false</default>
+                    <label>Willemstad</label>
                 </value>
                 <value>
                     <fullName>Yaounde</fullName>
                     <default>false</default>
+                    <label>Yaounde</label>
                 </value>
                 <value>
                     <fullName>Yaren</fullName>
                     <default>false</default>
+                    <label>Yaren</label>
                 </value>
                 <value>
                     <fullName>Yerevan</fullName>
                     <default>false</default>
+                    <label>Yerevan</label>
                 </value>
                 <value>
                     <fullName>Zagreb</fullName>
                     <default>false</default>
+                    <label>Zagreb</label>
                 </value>
             </valueSetDefinition>
         </valueSet>
@@ -1459,14 +2000,17 @@
                 <value>
                     <fullName>Internal referral (within the same organization)</fullName>
                     <default>false</default>
+                    <label>Internal referral (within the same organization)</label>
                 </value>
                 <value>
                     <fullName>External referral (to a different organization)</fullName>
                     <default>false</default>
+                    <label>External referral (to a different organization)</label>
                 </value>
                 <value>
                     <fullName>Dimagi referral (someone from Dimagi referred this lead)</fullName>
                     <default>false</default>
+                    <label>Dimagi referral (someone from Dimagi referred this lead)</label>
                 </value>
             </valueSetDefinition>
         </valueSet>
@@ -1488,38 +2032,52 @@
                 <value>
                     <fullName>Recruiting / Hiring</fullName>
                     <default>false</default>
+                    <label>Recruiting / Hiring</label>
                 </value>
                 <value>
                     <fullName>Stopped responding</fullName>
                     <default>false</default>
+                    <label>Stopped responding</label>
                 </value>
                 <value>
                     <fullName>Timeline &gt; 6 months out</fullName>
                     <default>false</default>
+                    <label>Timeline &gt; 6 months out</label>
                 </value>
                 <value>
                     <fullName>Existing client / project</fullName>
                     <default>false</default>
+                    <label>Existing client / project</label>
                 </value>
                 <value>
                     <fullName>No response</fullName>
                     <default>false</default>
+                    <label>No response</label>
                 </value>
                 <value>
                     <fullName>Email opt-out</fullName>
                     <default>false</default>
+                    <label>Email opt-out</label>
                 </value>
                 <value>
                     <fullName>Spam</fullName>
                     <default>false</default>
+                    <label>Spam</label>
                 </value>
                 <value>
                     <fullName>Competitor</fullName>
                     <default>false</default>
+                    <label>Competitor</label>
                 </value>
                 <value>
                     <fullName>Partner program</fullName>
                     <default>false</default>
+                    <label>Partner program</label>
+                </value>
+                <value>
+                    <fullName>Left the organization</fullName>
+                    <default>false</default>
+                    <label>Left the organization</label>
                 </value>
             </valueSetDefinition>
             <valueSettings>
@@ -1643,46 +2201,57 @@
                 <value>
                     <fullName>Academia</fullName>
                     <default>false</default>
+                    <label>Academia</label>
                 </value>
                 <value>
                     <fullName>Evaluation (M&amp;E / MEAL / MERL)</fullName>
                     <default>false</default>
+                    <label>Evaluation (M&amp;E / MEAL / MERL)</label>
                 </value>
                 <value>
                     <fullName>ICT / IT / Technical</fullName>
                     <default>false</default>
+                    <label>ICT / IT / Technical</label>
                 </value>
                 <value>
                     <fullName>Logistics / Supply Chain</fullName>
                     <default>false</default>
+                    <label>Logistics / Supply Chain</label>
                 </value>
                 <value>
                     <fullName>Management</fullName>
                     <default>false</default>
+                    <label>Management</label>
                 </value>
                 <value>
                     <fullName>Medical</fullName>
                     <default>false</default>
+                    <label>Medical</label>
                 </value>
                 <value>
                     <fullName>Operations / Biz Dev</fullName>
                     <default>false</default>
+                    <label>Operations / Biz Dev</label>
                 </value>
                 <value>
                     <fullName>Procurement / Finance</fullName>
                     <default>false</default>
+                    <label>Procurement / Finance</label>
                 </value>
                 <value>
                     <fullName>Programmatic / Projects</fullName>
                     <default>false</default>
+                    <label>Programmatic / Projects</label>
                 </value>
                 <value>
                     <fullName>Regional</fullName>
                     <default>false</default>
+                    <label>Regional</label>
                 </value>
                 <value>
                     <fullName>Research / Data</fullName>
                     <default>false</default>
+                    <label>Research / Data</label>
                 </value>
             </valueSetDefinition>
         </valueSet>
@@ -1774,13 +2343,10 @@
         <unique>false</unique>
     </fields>
     <fields>
-        <fullName>HS_Became_a_Sales_Qualified_Lead_Date__c</fullName>
-        <externalId>false</externalId>
-        <label>HS -Became a Sales Qualified Lead Date</label>
-        <required>false</required>
+        <fullName>GenderIdentity</fullName>
         <trackFeedHistory>false</trackFeedHistory>
         <trackHistory>false</trackHistory>
-        <type>Date</type>
+        <type>Picklist</type>
     </fields>
     <fields>
         <fullName>HasOptedOutOfEmail</fullName>
@@ -1798,15 +2364,13 @@
         <trackHistory>false</trackHistory>
     </fields>
     <fields>
-        <fullName>HubSpot_A_B_Variable_Deploy__c</fullName>
+        <fullName>HS_Became_a_Sales_Qualified_Lead_Date__c</fullName>
         <externalId>false</externalId>
-        <label>HubSpot - A/B Variable Deploy</label>
-        <length>255</length>
+        <label>HS -Became a Sales Qualified Lead Date</label>
         <required>false</required>
         <trackFeedHistory>false</trackFeedHistory>
         <trackHistory>false</trackHistory>
-        <type>Text</type>
-        <unique>false</unique>
+        <type>Date</type>
     </fields>
     <fields>
         <fullName>HubSpot_Attended_event_Meetup__c</fullName>
@@ -1822,18 +2386,22 @@
                 <value>
                     <fullName>1</fullName>
                     <default>false</default>
+                    <label>1</label>
                 </value>
                 <value>
                     <fullName>2</fullName>
                     <default>false</default>
+                    <label>2</label>
                 </value>
                 <value>
                     <fullName>3</fullName>
                     <default>false</default>
+                    <label>3</label>
                 </value>
                 <value>
                     <fullName>4</fullName>
                     <default>false</default>
+                    <label>4</label>
                 </value>
             </valueSetDefinition>
         </valueSet>
@@ -1852,18 +2420,22 @@
                 <value>
                     <fullName>1</fullName>
                     <default>false</default>
+                    <label>1</label>
                 </value>
                 <value>
                     <fullName>2</fullName>
                     <default>false</default>
+                    <label>2</label>
                 </value>
                 <value>
                     <fullName>3</fullName>
                     <default>false</default>
+                    <label>3</label>
                 </value>
                 <value>
                     <fullName>4</fullName>
                     <default>false</default>
+                    <label>4</label>
                 </value>
             </valueSetDefinition>
         </valueSet>
@@ -1882,21 +2454,36 @@
                 <value>
                     <fullName>1</fullName>
                     <default>false</default>
+                    <label>1</label>
                 </value>
                 <value>
                     <fullName>2</fullName>
                     <default>false</default>
+                    <label>2</label>
                 </value>
                 <value>
                     <fullName>3</fullName>
                     <default>false</default>
+                    <label>3</label>
                 </value>
                 <value>
                     <fullName>4</fullName>
                     <default>false</default>
+                    <label>4</label>
                 </value>
             </valueSetDefinition>
         </valueSet>
+    </fields>
+    <fields>
+        <fullName>HubSpot_A_B_Variable_Deploy__c</fullName>
+        <externalId>false</externalId>
+        <label>HubSpot - A/B Variable Deploy</label>
+        <length>255</length>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <type>Text</type>
+        <unique>false</unique>
     </fields>
     <fields>
         <fullName>HubSpot_Blog_Subscriber__c</fullName>
@@ -1912,6 +2499,7 @@
                 <value>
                     <fullName>Yes</fullName>
                     <default>false</default>
+                    <label>Yes</label>
                 </value>
             </valueSetDefinition>
         </valueSet>
@@ -1941,69 +2529,96 @@
                 <value>
                     <fullName>Yes</fullName>
                     <default>false</default>
+                    <label>Yes</label>
                 </value>
                 <value>
                     <fullName>Yes - but need to call back</fullName>
                     <default>false</default>
+                    <label>Yes - but need to call back</label>
                 </value>
                 <value>
                     <fullName>Yes - but preferred email communication</fullName>
                     <default>false</default>
+                    <label>Yes - but preferred email communication</label>
                 </value>
                 <value>
                     <fullName>Yes - but no longer considering CommCare</fullName>
                     <default>false</default>
+                    <label>Yes - but no longer considering CommCare</label>
                 </value>
                 <value>
                     <fullName>Yes - asked to talk via Skype</fullName>
                     <default>false</default>
+                    <label>Yes - asked to talk via Skype</label>
                 </value>
                 <value>
                     <fullName>Yes - but did not want to hear from us</fullName>
                     <default>false</default>
+                    <label>Yes - but did not want to hear from us</label>
                 </value>
                 <value>
                     <fullName>Yes - but didn&apos;t speak same language</fullName>
                     <default>false</default>
+                    <label>Yes - but didn&apos;t speak same language</label>
                 </value>
                 <value>
                     <fullName>Yes - part of existing project</fullName>
                     <default>false</default>
+                    <label>Yes - part of existing project</label>
                 </value>
                 <value>
                     <fullName>Yes - but just exploring</fullName>
                     <default>false</default>
+                    <label>Yes - but just exploring</label>
                 </value>
                 <value>
                     <fullName>Yes - but careers</fullName>
                     <default>false</default>
+                    <label>Yes - but careers</label>
                 </value>
                 <value>
                     <fullName>No - good number, but couldn&apos;t reach after 6 tries</fullName>
                     <default>false</default>
+                    <label>No - good number, but couldn&apos;t reach after 6 tries</label>
                 </value>
                 <value>
                     <fullName>No - bad number</fullName>
                     <default>false</default>
+                    <label>No - bad number</label>
                 </value>
                 <value>
                     <fullName>No - timezone was too hard to connect</fullName>
                     <default>false</default>
+                    <label>No - timezone was too hard to connect</label>
                 </value>
                 <value>
                     <fullName>No - talking to co-worker or existing relationship</fullName>
                     <default>false</default>
+                    <label>No - talking to co-worker or existing relationship</label>
                 </value>
                 <value>
                     <fullName>No - became ineligible or didn&apos;t mark</fullName>
                     <default>false</default>
+                    <label>No - became ineligible or didn&apos;t mark</label>
                 </value>
                 <value>
                     <fullName>No - Dimagi Employee or Internal Test</fullName>
                     <default>false</default>
+                    <label>No - Dimagi Employee or Internal Test</label>
                 </value>
             </valueSetDefinition>
         </valueSet>
+    </fields>
+    <fields>
+        <fullName>Hubspot_Create_Date__c</fullName>
+        <description>The date that a contact entered the system</description>
+        <externalId>false</externalId>
+        <inlineHelpText>The date that a contact entered the system</inlineHelpText>
+        <label>Hubspot - Create Date</label>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <type>DateTime</type>
     </fields>
     <fields>
         <fullName>HubSpot_Date_Created_in_CCHQ__c</fullName>
@@ -2017,27 +2632,18 @@
         <unique>false</unique>
     </fields>
     <fields>
-        <fullName>HubSpot_Date_of_HQ_Sign_up_new__c</fullName>
-        <externalId>false</externalId>
-        <label>HubSpot - Date of HQ Sign-up (new)</label>
-        <required>false</required>
-        <trackFeedHistory>false</trackFeedHistory>
-        <trackHistory>false</trackHistory>
-        <type>Date</type>
-    </fields>
-    <fields>
-        <fullName>HubSpot_Date_of_Proactive_Call__c</fullName>
-        <externalId>false</externalId>
-        <label>HubSpot - Date of Proactive Call</label>
-        <required>false</required>
-        <trackFeedHistory>false</trackFeedHistory>
-        <trackHistory>false</trackHistory>
-        <type>Date</type>
-    </fields>
-    <fields>
         <fullName>HubSpot_Date_of_blog_subscription__c</fullName>
         <externalId>false</externalId>
         <label>HubSpot - Date of blog subscription</label>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>HubSpot_Date_of_first_blog_visit__c</fullName>
+        <externalId>false</externalId>
+        <label>HubSpot - Date of first blog visit</label>
         <required>false</required>
         <trackFeedHistory>false</trackFeedHistory>
         <trackHistory>false</trackHistory>
@@ -2062,20 +2668,20 @@
         <type>Date</type>
     </fields>
     <fields>
-        <fullName>HubSpot_Date_of_first_blog_visit__c</fullName>
+        <fullName>HubSpot_Date_of_first_time_reaching_10__c</fullName>
+        <description>HubSpot - Date of first time reaching 10 HQ forms</description>
         <externalId>false</externalId>
-        <label>HubSpot - Date of first blog visit</label>
+        <inlineHelpText>HubSpot - Date of first time reaching 10 HQ forms</inlineHelpText>
+        <label>HubSpot - Date reaching 10 HQ forms</label>
         <required>false</required>
         <trackFeedHistory>false</trackFeedHistory>
         <trackHistory>false</trackHistory>
         <type>Date</type>
     </fields>
     <fields>
-        <fullName>HubSpot_Date_of_first_time_reaching_10__c</fullName>
-        <description>HubSpot - Date of first time reaching 10 HQ forms</description>
+        <fullName>HubSpot_Date_of_HQ_Sign_up_new__c</fullName>
         <externalId>false</externalId>
-        <inlineHelpText>HubSpot - Date of first time reaching 10 HQ forms</inlineHelpText>
-        <label>HubSpot - Date reaching 10 HQ forms</label>
+        <label>HubSpot - Date of HQ Sign-up (new)</label>
         <required>false</required>
         <trackFeedHistory>false</trackFeedHistory>
         <trackHistory>false</trackHistory>
@@ -2091,11 +2697,31 @@
         <type>Date</type>
     </fields>
     <fields>
+        <fullName>Hubspot_Date_of_last_HQ_login__c</fullName>
+        <description>Date of last login to CCHQ</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Date of last login to CCHQ</inlineHelpText>
+        <label>Hubspot - Date of last HQ login</label>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <type>Date</type>
+    </fields>
+    <fields>
         <fullName>HubSpot_Date_of_most_recent_HQ_activit__c</fullName>
         <description>HubSpot - Date of most recent HQ activity (form builder, click deploy or new project)</description>
         <externalId>false</externalId>
         <inlineHelpText>HubSpot - Date of most recent HQ activity (form builder, click deploy or new project)</inlineHelpText>
         <label>HubSpot - Date of most recent HQ activit</label>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>HubSpot_Date_of_Proactive_Call__c</fullName>
+        <externalId>false</externalId>
+        <label>HubSpot - Date of Proactive Call</label>
         <required>false</required>
         <trackFeedHistory>false</trackFeedHistory>
         <trackHistory>false</trackHistory>
@@ -2148,18 +2774,22 @@
                 <value>
                     <fullName>instant</fullName>
                     <default>false</default>
+                    <label>instant</label>
                 </value>
                 <value>
                     <fullName>daily</fullName>
                     <default>false</default>
+                    <label>daily</label>
                 </value>
                 <value>
                     <fullName>weekly</fullName>
                     <default>false</default>
+                    <label>weekly</label>
                 </value>
                 <value>
                     <fullName>monthly</fullName>
                     <default>false</default>
+                    <label>monthly</label>
                 </value>
             </valueSetDefinition>
         </valueSet>
@@ -2173,53 +2803,6 @@
         <trackHistory>false</trackHistory>
         <type>LongTextArea</type>
         <visibleLines>3</visibleLines>
-    </fields>
-    <fields>
-        <fullName>HubSpot_Email_Opt_Out__c</fullName>
-        <defaultValue>false</defaultValue>
-        <externalId>false</externalId>
-        <label>HubSpot - Email Opt Out</label>
-        <trackFeedHistory>false</trackFeedHistory>
-        <trackHistory>false</trackHistory>
-        <type>Checkbox</type>
-    </fields>
-    <fields>
-        <fullName>HubSpot_Email_Subscriptions__c</fullName>
-        <externalId>false</externalId>
-        <label>HubSpot - Email Subscriptions</label>
-        <required>false</required>
-        <trackFeedHistory>false</trackFeedHistory>
-        <trackHistory>false</trackHistory>
-        <type>MultiselectPicklist</type>
-        <valueSet>
-            <valueSetDefinition>
-                <sorted>false</sorted>
-                <value>
-                    <fullName>Webinars</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>Blog Updates</fullName>
-                    <default>false</default>
-                </value>
-            </valueSetDefinition>
-        </valueSet>
-        <visibleLines>4</visibleLines>
-    </fields>
-    <fields>
-        <fullName>HubSpot_Email_is_generic__c</fullName>
-        <defaultValue>false</defaultValue>
-        <description>&quot;Yes&quot; means a generic email address like Hotmail, yahoo, gmail, etc. 
-
-&quot;No&quot; means a non-generic email address, as far as we can tell.</description>
-        <externalId>false</externalId>
-        <inlineHelpText>&quot;Yes&quot; means a generic email address like Hotmail, yahoo, gmail, etc. 
-
-&quot;No&quot; means a non-generic email address, as far as we can tell.</inlineHelpText>
-        <label>HubSpot - Email is generic</label>
-        <trackFeedHistory>false</trackFeedHistory>
-        <trackHistory>false</trackHistory>
-        <type>Checkbox</type>
     </fields>
     <fields>
         <fullName>HubSpot_Emails_Bounced__c</fullName>
@@ -2261,200 +2844,53 @@
         <unique>false</unique>
     </fields>
     <fields>
-        <fullName>HubSpot_Had_a_proactive_call__c</fullName>
+        <fullName>HubSpot_Email_is_generic__c</fullName>
         <defaultValue>false</defaultValue>
+        <description>&quot;Yes&quot; means a generic email address like Hotmail, yahoo, gmail, etc. 
+
+&quot;No&quot; means a non-generic email address, as far as we can tell.</description>
         <externalId>false</externalId>
-        <label>HubSpot - Had a proactive call?</label>
+        <inlineHelpText>&quot;Yes&quot; means a generic email address like Hotmail, yahoo, gmail, etc. 
+
+&quot;No&quot; means a non-generic email address, as far as we can tell.</inlineHelpText>
+        <label>HubSpot - Email is generic</label>
         <trackFeedHistory>false</trackFeedHistory>
         <trackHistory>false</trackHistory>
         <type>Checkbox</type>
     </fields>
     <fields>
-        <fullName>HubSpot_India_Date_Created_in_CCHQ__c</fullName>
-        <externalId>false</externalId>
-        <label>HubSpot - India Date Created in CCHQ</label>
-        <length>255</length>
-        <required>false</required>
-        <trackFeedHistory>false</trackFeedHistory>
-        <trackHistory>false</trackHistory>
-        <type>Text</type>
-        <unique>false</unique>
-    </fields>
-    <fields>
-        <fullName>HubSpot_Last_Contacted__c</fullName>
-        <externalId>false</externalId>
-        <label>HubSpot - Last Contacted</label>
-        <required>false</required>
-        <trackFeedHistory>false</trackFeedHistory>
-        <trackHistory>false</trackHistory>
-        <type>DateTime</type>
-    </fields>
-    <fields>
-        <fullName>HubSpot_Number_of_project_spaces__c</fullName>
-        <externalId>false</externalId>
-        <label>HubSpot - Number of project spaces</label>
-        <precision>18</precision>
-        <required>false</required>
-        <scale>0</scale>
-        <trackFeedHistory>false</trackFeedHistory>
-        <trackHistory>false</trackHistory>
-        <type>Number</type>
-        <unique>false</unique>
-    </fields>
-    <fields>
-        <fullName>HubSpot_Opt_Into_Emails__c</fullName>
+        <fullName>HubSpot_Email_Opt_Out__c</fullName>
         <defaultValue>false</defaultValue>
-        <description>Did the user select: Opt into emails about new features and other CommCare updates.</description>
         <externalId>false</externalId>
-        <inlineHelpText>Did the user select: Opt into emails about new features and other CommCare updates.</inlineHelpText>
-        <label>HubSpot - Opt Into Emails</label>
+        <label>HubSpot - Email Opt Out</label>
         <trackFeedHistory>false</trackFeedHistory>
         <trackHistory>false</trackHistory>
         <type>Checkbox</type>
     </fields>
     <fields>
-        <fullName>HubSpot_Persona__c</fullName>
-        <description>A contact&apos;s persona</description>
+        <fullName>HubSpot_Email_Subscriptions__c</fullName>
         <externalId>false</externalId>
-        <inlineHelpText>A contact&apos;s persona</inlineHelpText>
-        <label>HubSpot - Persona</label>
+        <label>HubSpot - Email Subscriptions</label>
         <required>false</required>
         <trackFeedHistory>false</trackFeedHistory>
         <trackHistory>false</trackHistory>
-        <type>Picklist</type>
+        <type>MultiselectPicklist</type>
         <valueSet>
             <valueSetDefinition>
                 <sorted>false</sorted>
                 <value>
-                    <fullName>persona_1</fullName>
+                    <fullName>Webinars</fullName>
                     <default>false</default>
+                    <label>Webinars</label>
                 </value>
                 <value>
-                    <fullName>persona_3</fullName>
+                    <fullName>Blog Updates</fullName>
                     <default>false</default>
-                </value>
-                <value>
-                    <fullName>persona_5</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>persona_6</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>persona_8</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>persona_9</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>persona_10</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>persona_11</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>persona_12</fullName>
-                    <default>false</default>
+                    <label>Blog Updates</label>
                 </value>
             </valueSetDefinition>
         </valueSet>
-    </fields>
-    <fields>
-        <fullName>HubSpot_Recent_Conversion_Date__c</fullName>
-        <description>The date this contact last submitted a form</description>
-        <externalId>false</externalId>
-        <inlineHelpText>The date this contact last submitted a form</inlineHelpText>
-        <label>HubSpot - Recent Conversion Date</label>
-        <required>false</required>
-        <trackFeedHistory>false</trackFeedHistory>
-        <trackHistory>false</trackHistory>
-        <type>DateTime</type>
-    </fields>
-    <fields>
-        <fullName>HubSpot_Sends_Since_Last_Engagement__c</fullName>
-        <externalId>false</externalId>
-        <label>HubSpot - Sends Since Last Engagement</label>
-        <length>255</length>
-        <required>false</required>
-        <trackFeedHistory>false</trackFeedHistory>
-        <trackHistory>false</trackHistory>
-        <type>Text</type>
-        <unique>false</unique>
-    </fields>
-    <fields>
-        <fullName>HubSpot_UTM_Campaign__c</fullName>
-        <externalId>false</externalId>
-        <label>HubSpot - UTM_Campaign</label>
-        <length>2000</length>
-        <trackFeedHistory>false</trackFeedHistory>
-        <trackHistory>false</trackHistory>
-        <type>LongTextArea</type>
-        <visibleLines>3</visibleLines>
-    </fields>
-    <fields>
-        <fullName>HubSpot_of_times_called_Phone_Test__c</fullName>
-        <externalId>false</externalId>
-        <label>HubSpot - # of times called - Phone Test</label>
-        <required>false</required>
-        <trackFeedHistory>false</trackFeedHistory>
-        <trackHistory>false</trackHistory>
-        <type>Picklist</type>
-        <valueSet>
-            <valueSetDefinition>
-                <sorted>false</sorted>
-                <value>
-                    <fullName>1</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>2</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>3</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>4</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>5</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>6</fullName>
-                    <default>false</default>
-                </value>
-            </valueSetDefinition>
-        </valueSet>
-    </fields>
-    <fields>
-        <fullName>Hubspot_Create_Date__c</fullName>
-        <description>The date that a contact entered the system</description>
-        <externalId>false</externalId>
-        <inlineHelpText>The date that a contact entered the system</inlineHelpText>
-        <label>Hubspot - Create Date</label>
-        <required>false</required>
-        <trackFeedHistory>false</trackFeedHistory>
-        <trackHistory>false</trackHistory>
-        <type>DateTime</type>
-    </fields>
-    <fields>
-        <fullName>Hubspot_Date_of_last_HQ_login__c</fullName>
-        <description>Date of last login to CCHQ</description>
-        <externalId>false</externalId>
-        <inlineHelpText>Date of last login to CCHQ</inlineHelpText>
-        <label>Hubspot - Date of last HQ login</label>
-        <required>false</required>
-        <trackFeedHistory>false</trackFeedHistory>
-        <trackHistory>false</trackHistory>
-        <type>Date</type>
+        <visibleLines>4</visibleLines>
     </fields>
     <fields>
         <fullName>Hubspot_First_Conversion_Clustered__c</fullName>
@@ -2482,6 +2918,15 @@
         <visibleLines>3</visibleLines>
     </fields>
     <fields>
+        <fullName>HubSpot_Had_a_proactive_call__c</fullName>
+        <defaultValue>false</defaultValue>
+        <externalId>false</externalId>
+        <label>HubSpot - Had a proactive call?</label>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
         <fullName>Hubspot_HQ_created_account_date__c</fullName>
         <description>Date on which this contact first created an account on HQ</description>
         <externalId>false</externalId>
@@ -2505,6 +2950,26 @@
         <trackHistory>false</trackHistory>
         <type>Number</type>
         <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>HubSpot_India_Date_Created_in_CCHQ__c</fullName>
+        <externalId>false</externalId>
+        <label>HubSpot - India Date Created in CCHQ</label>
+        <length>255</length>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>HubSpot_Last_Contacted__c</fullName>
+        <externalId>false</externalId>
+        <label>HubSpot - Last Contacted</label>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <type>DateTime</type>
     </fields>
     <fields>
         <fullName>Hubspot_Lead_Score_bucketed__c</fullName>
@@ -2538,34 +3003,42 @@ If (Hubspot_Hubspot_Score_Converted_Cont__c&gt;=-50, &quot;5-Very low&quot;,
                 <value>
                     <fullName>Subscriber</fullName>
                     <default>false</default>
+                    <label>Subscriber</label>
                 </value>
                 <value>
                     <fullName>Lead</fullName>
                     <default>false</default>
+                    <label>Lead</label>
                 </value>
                 <value>
                     <fullName>Marketing Qualified Lead</fullName>
                     <default>false</default>
+                    <label>Marketing Qualified Lead</label>
                 </value>
                 <value>
                     <fullName>Sales Qualified Lead</fullName>
                     <default>false</default>
+                    <label>Sales Qualified Lead</label>
                 </value>
                 <value>
                     <fullName>Opportunity</fullName>
                     <default>false</default>
+                    <label>Opportunity</label>
                 </value>
                 <value>
                     <fullName>Customer</fullName>
                     <default>false</default>
+                    <label>Customer</label>
                 </value>
                 <value>
                     <fullName>Evangelist</fullName>
                     <default>false</default>
+                    <label>Evangelist</label>
                 </value>
                 <value>
                     <fullName>Other</fullName>
                     <default>false</default>
+                    <label>Other</label>
                 </value>
             </valueSetDefinition>
         </valueSet>
@@ -2596,6 +3069,148 @@ If (Hubspot_Hubspot_Score_Converted_Cont__c&gt;=-50, &quot;5-Very low&quot;,
         <type>Date</type>
     </fields>
     <fields>
+        <fullName>HubSpot_Number_of_project_spaces__c</fullName>
+        <externalId>false</externalId>
+        <label>HubSpot - Number of project spaces</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Hubspot_of_Hubspot_forms_submitted__c</fullName>
+        <description>Automatically filled in by Hubspot. Indicates the number of Hubspot forms (eg form to get access a case study) that got submitted. All the key &quot;action buttons&quot; in HQ are set up as Hubspot forms so it gives a sense of the activity of the contact in CCHQ too (eg enter the form builder, click deploy, click preview, etc.)</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Automatically filled by Hubspot. Indicates # Hubspot forms submitted (eg form to get access a case study)  All the key &quot;action buttons&quot; in HQ are set up as Hubspot forms so it gives a sense of the activity of the contact in HQ (eg enter the form builder)</inlineHelpText>
+        <label>Hubspot - # of Hubspot forms submitted</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>HubSpot_of_times_called_Phone_Test__c</fullName>
+        <externalId>false</externalId>
+        <label>HubSpot - # of times called - Phone Test</label>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <type>Picklist</type>
+        <valueSet>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>1</fullName>
+                    <default>false</default>
+                    <label>1</label>
+                </value>
+                <value>
+                    <fullName>2</fullName>
+                    <default>false</default>
+                    <label>2</label>
+                </value>
+                <value>
+                    <fullName>3</fullName>
+                    <default>false</default>
+                    <label>3</label>
+                </value>
+                <value>
+                    <fullName>4</fullName>
+                    <default>false</default>
+                    <label>4</label>
+                </value>
+                <value>
+                    <fullName>5</fullName>
+                    <default>false</default>
+                    <label>5</label>
+                </value>
+                <value>
+                    <fullName>6</fullName>
+                    <default>false</default>
+                    <label>6</label>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+    <fields>
+        <fullName>HubSpot_Opt_Into_Emails__c</fullName>
+        <defaultValue>false</defaultValue>
+        <description>Did the user select: Opt into emails about new features and other CommCare updates.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Did the user select: Opt into emails about new features and other CommCare updates.</inlineHelpText>
+        <label>HubSpot - Opt Into Emails</label>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>HubSpot_Persona__c</fullName>
+        <description>A contact&apos;s persona</description>
+        <externalId>false</externalId>
+        <inlineHelpText>A contact&apos;s persona</inlineHelpText>
+        <label>HubSpot - Persona</label>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <type>Picklist</type>
+        <valueSet>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>persona_1</fullName>
+                    <default>false</default>
+                    <label>persona_1</label>
+                </value>
+                <value>
+                    <fullName>persona_3</fullName>
+                    <default>false</default>
+                    <label>persona_3</label>
+                </value>
+                <value>
+                    <fullName>persona_5</fullName>
+                    <default>false</default>
+                    <label>persona_5</label>
+                </value>
+                <value>
+                    <fullName>persona_6</fullName>
+                    <default>false</default>
+                    <label>persona_6</label>
+                </value>
+                <value>
+                    <fullName>persona_8</fullName>
+                    <default>false</default>
+                    <label>persona_8</label>
+                </value>
+                <value>
+                    <fullName>persona_9</fullName>
+                    <default>false</default>
+                    <label>persona_9</label>
+                </value>
+                <value>
+                    <fullName>persona_10</fullName>
+                    <default>false</default>
+                    <label>persona_10</label>
+                </value>
+                <value>
+                    <fullName>persona_11</fullName>
+                    <default>false</default>
+                    <label>persona_11</label>
+                </value>
+                <value>
+                    <fullName>persona_12</fullName>
+                    <default>false</default>
+                    <label>persona_12</label>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+    <fields>
         <fullName>Hubspot_Project_Spaces_List__c</fullName>
         <description>This should get automatically populated by Hubspot --&gt; to the Lead and then to the contact when the lead gets converted to a contact</description>
         <externalId>false</externalId>
@@ -2606,6 +3221,28 @@ If (Hubspot_Hubspot_Score_Converted_Cont__c&gt;=-50, &quot;5-Very low&quot;,
         <trackHistory>false</trackHistory>
         <type>LongTextArea</type>
         <visibleLines>3</visibleLines>
+    </fields>
+    <fields>
+        <fullName>HubSpot_Recent_Conversion_Date__c</fullName>
+        <description>The date this contact last submitted a form</description>
+        <externalId>false</externalId>
+        <inlineHelpText>The date this contact last submitted a form</inlineHelpText>
+        <label>HubSpot - Recent Conversion Date</label>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <type>DateTime</type>
+    </fields>
+    <fields>
+        <fullName>HubSpot_Sends_Since_Last_Engagement__c</fullName>
+        <externalId>false</externalId>
+        <label>HubSpot - Sends Since Last Engagement</label>
+        <length>255</length>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <type>Text</type>
+        <unique>false</unique>
     </fields>
     <fields>
         <fullName>Hubspot_SQL_reason__c</fullName>
@@ -2633,38 +3270,47 @@ If (Hubspot_Hubspot_Score_Converted_Cont__c&gt;=-50, &quot;5-Very low&quot;,
                 <value>
                     <fullName>&lt; 30 minutes</fullName>
                     <default>false</default>
+                    <label>&lt; 30 minutes</label>
                 </value>
                 <value>
                     <fullName>&lt; 1 hour</fullName>
                     <default>false</default>
+                    <label>&lt; 1 hour</label>
                 </value>
                 <value>
                     <fullName>&lt; 2 hours</fullName>
                     <default>false</default>
+                    <label>&lt; 2 hours</label>
                 </value>
                 <value>
                     <fullName>&lt; 5 hours</fullName>
                     <default>false</default>
+                    <label>&lt; 5 hours</label>
                 </value>
                 <value>
                     <fullName>&lt;12 hours</fullName>
                     <default>false</default>
+                    <label>&lt;12 hours</label>
                 </value>
                 <value>
                     <fullName>1 day</fullName>
                     <default>false</default>
+                    <label>1 day</label>
                 </value>
                 <value>
                     <fullName>2 day</fullName>
                     <default>false</default>
+                    <label>2 day</label>
                 </value>
                 <value>
                     <fullName>1 week</fullName>
                     <default>false</default>
+                    <label>1 week</label>
                 </value>
                 <value>
                     <fullName>2 weeks</fullName>
                     <default>false</default>
+                    <label>2 weeks</label>
                 </value>
             </valueSetDefinition>
         </valueSet>
@@ -2681,18 +3327,14 @@ If (Hubspot_Hubspot_Score_Converted_Cont__c&gt;=-50, &quot;5-Very low&quot;,
         <unique>false</unique>
     </fields>
     <fields>
-        <fullName>Hubspot_of_Hubspot_forms_submitted__c</fullName>
-        <description>Automatically filled in by Hubspot. Indicates the number of Hubspot forms (eg form to get access a case study) that got submitted. All the key &quot;action buttons&quot; in HQ are set up as Hubspot forms so it gives a sense of the activity of the contact in CCHQ too (eg enter the form builder, click deploy, click preview, etc.)</description>
+        <fullName>HubSpot_UTM_Campaign__c</fullName>
         <externalId>false</externalId>
-        <inlineHelpText>Automatically filled by Hubspot. Indicates # Hubspot forms submitted (eg form to get access a case study)  All the key &quot;action buttons&quot; in HQ are set up as Hubspot forms so it gives a sense of the activity of the contact in HQ (eg enter the form builder)</inlineHelpText>
-        <label>Hubspot - # of Hubspot forms submitted</label>
-        <precision>18</precision>
-        <required>false</required>
-        <scale>0</scale>
+        <label>HubSpot - UTM_Campaign</label>
+        <length>2000</length>
         <trackFeedHistory>false</trackFeedHistory>
         <trackHistory>false</trackHistory>
-        <type>Number</type>
-        <unique>false</unique>
+        <type>LongTextArea</type>
+        <visibleLines>3</visibleLines>
     </fields>
     <fields>
         <fullName>India_Owner__c</fullName>
@@ -2705,6 +3347,12 @@ If (Hubspot_Hubspot_Score_Converted_Cont__c&gt;=-50, &quot;5-Very low&quot;,
         <trackHistory>false</trackHistory>
         <type>Text</type>
         <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>IndividualId</fullName>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <type>Lookup</type>
     </fields>
     <fields>
         <fullName>Is_a_CommCare_Evangelist__c</fullName>
@@ -2750,13 +3398,27 @@ If (Hubspot_Hubspot_Score_Converted_Cont__c&gt;=-50, &quot;5-Very low&quot;,
                 <value>
                     <fullName>No</fullName>
                     <default>false</default>
+                    <label>No</label>
                 </value>
                 <value>
                     <fullName>Yes</fullName>
                     <default>false</default>
+                    <label>Yes</label>
                 </value>
             </valueSetDefinition>
         </valueSet>
+    </fields>
+    <fields>
+        <fullName>Key_Account_Manager__c</fullName>
+        <externalId>false</externalId>
+        <formula>Account.Key_Account_Manager__c</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <inlineHelpText>Pulls in the SaaS Key Account Manager from the Account object</inlineHelpText>
+        <label>Key Account Manager</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <type>Text</type>
+        <unique>false</unique>
     </fields>
     <fields>
         <fullName>Language__c</fullName>
@@ -2773,18 +3435,22 @@ If (Hubspot_Hubspot_Score_Converted_Cont__c&gt;=-50, &quot;5-Very low&quot;,
                 <value>
                     <fullName>English</fullName>
                     <default>true</default>
+                    <label>English</label>
                 </value>
                 <value>
                     <fullName>French</fullName>
                     <default>false</default>
+                    <label>French</label>
                 </value>
                 <value>
                     <fullName>Portuguese</fullName>
                     <default>false</default>
+                    <label>Portuguese</label>
                 </value>
                 <value>
                     <fullName>Spanish</fullName>
                     <default>false</default>
+                    <label>Spanish</label>
                 </value>
             </valueSetDefinition>
         </valueSet>
@@ -2794,6 +3460,19 @@ If (Hubspot_Hubspot_Score_Converted_Cont__c&gt;=-50, &quot;5-Very low&quot;,
     </fields>
     <fields>
         <fullName>LastCUUpdateDate</fullName>
+    </fields>
+    <fields>
+        <fullName>last_activity_description__c</fullName>
+        <description>Last Activity Description (used by strategic fundraising)</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Last Activity Description (used by strategic fundraising)</inlineHelpText>
+        <label>Last Activity: Description</label>
+        <length>200</length>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <type>Text</type>
+        <unique>false</unique>
     </fields>
     <fields>
         <fullName>Latest_day_opps_sales_process_failed__c</fullName>
@@ -2829,22 +3508,27 @@ If (Hubspot_Hubspot_Score_Converted_Cont__c&gt;=-50, &quot;5-Very low&quot;,
                 <value>
                     <fullName>Inbound - Found us through Google Search</fullName>
                     <default>false</default>
+                    <label>Inbound - Found us through Google Search</label>
                 </value>
                 <value>
                     <fullName>Inbound - Found us on Social Media</fullName>
                     <default>false</default>
+                    <label>Inbound - Found us on Social Media</label>
                 </value>
                 <value>
                     <fullName>Inbound - Learnt about us on another website</fullName>
                     <default>false</default>
+                    <label>Inbound - Learnt about us on another website</label>
                 </value>
                 <value>
                     <fullName>Inbound - Learnt about us through an article</fullName>
                     <default>false</default>
+                    <label>Inbound - Learnt about us through an article</label>
                 </value>
                 <value>
                     <fullName>Inbound - Contacted us after seeing us at a conference</fullName>
                     <default>false</default>
+                    <label>Inbound - Contacted us after seeing us at a conference</label>
                 </value>
             </valueSetDefinition>
             <valueSettings>
@@ -2932,6 +3616,17 @@ If (Hubspot_Hubspot_Score_Converted_Cont__c&gt;=-50, &quot;5-Very low&quot;,
         <type>Checkbox</type>
     </fields>
     <fields>
+        <fullName>Next_Step__c</fullName>
+        <description>Next step to take with the contact (created for strategic fundraising)</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Next step to take with the contact (created for strategic fundraising)</inlineHelpText>
+        <label>Next Step</label>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <type>TextArea</type>
+    </fields>
+    <fields>
         <fullName>OtherAddress</fullName>
         <trackFeedHistory>false</trackFeedHistory>
         <trackHistory>false</trackHistory>
@@ -2974,6 +3669,7 @@ If (Hubspot_Hubspot_Score_Converted_Cont__c&gt;=-50, &quot;5-Very low&quot;,
                 <value>
                     <fullName>Yes</fullName>
                     <default>false</default>
+                    <label>Yes</label>
                 </value>
             </valueSetDefinition>
         </valueSet>
@@ -2982,6 +3678,21 @@ If (Hubspot_Hubspot_Score_Converted_Cont__c&gt;=-50, &quot;5-Very low&quot;,
         <fullName>Phone</fullName>
         <trackFeedHistory>false</trackFeedHistory>
         <trackHistory>false</trackHistory>
+    </fields>
+    <fields>
+        <fullName>Project_Space_created_by_Sales__c</fullName>
+        <defaultValue>false</defaultValue>
+        <externalId>false</externalId>
+        <label>Project Space created by Sales?</label>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Pronouns</fullName>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <type>Picklist</type>
     </fields>
     <fields>
         <fullName>Publication_Title__c</fullName>
@@ -3004,30 +3715,14 @@ If (Hubspot_Hubspot_Score_Converted_Cont__c&gt;=-50, &quot;5-Very low&quot;,
         <type>Url</type>
     </fields>
     <fields>
-        <fullName>RFP_Cycle__c</fullName>
+        <fullName>Qualifying_Authority_c__c</fullName>
+        <defaultValue>false</defaultValue>
+        <description>This box was checked if the lead had a clear authority for a sale.</description>
         <externalId>false</externalId>
-        <label>RFP Cycle</label>
-        <required>false</required>
+        <label>Qualifying - Authority</label>
         <trackFeedHistory>false</trackFeedHistory>
-        <trackHistory>true</trackHistory>
-        <type>Picklist</type>
-        <valueSet>
-            <valueSetDefinition>
-                <sorted>false</sorted>
-                <value>
-                    <fullName>Cycle 1</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>Cycle 2</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>Cycle 3</fullName>
-                    <default>false</default>
-                </value>
-            </valueSetDefinition>
-        </valueSet>
+        <trackHistory>false</trackHistory>
+        <type>Checkbox</type>
     </fields>
     <fields>
         <fullName>Relationship_Strength__c</fullName>
@@ -3043,14 +3738,17 @@ If (Hubspot_Hubspot_Score_Converted_Cont__c&gt;=-50, &quot;5-Very low&quot;,
                 <value>
                     <fullName>Strong</fullName>
                     <default>false</default>
+                    <label>Strong</label>
                 </value>
                 <value>
                     <fullName>Medium</fullName>
                     <default>false</default>
+                    <label>Medium</label>
                 </value>
                 <value>
                     <fullName>Weak</fullName>
                     <default>false</default>
+                    <label>Weak</label>
                 </value>
             </valueSetDefinition>
         </valueSet>
@@ -3062,274 +3760,9 @@ If (Hubspot_Hubspot_Score_Converted_Cont__c&gt;=-50, &quot;5-Very low&quot;,
         <type>Lookup</type>
     </fields>
     <fields>
-        <fullName>SFSSDupeCatcher__Override_DupeCatcher__c</fullName>
-        <defaultValue>false</defaultValue>
-        <deprecated>false</deprecated>
+        <fullName>RFP_Cycle__c</fullName>
         <externalId>false</externalId>
-        <label>Contact Override DupeCatcher</label>
-        <trackFeedHistory>false</trackFeedHistory>
-        <trackHistory>false</trackHistory>
-        <type>Checkbox</type>
-    </fields>
-    <fields>
-        <fullName>Sales_Outbound_outreach__c</fullName>
-        <description>Select Yes if Inside Sales team is contacting this contact as part of an outbound outreach. Leave blank otherwise</description>
-        <externalId>false</externalId>
-        <inlineHelpText>Select Yes if Inside Sales team is contacting this contact as part of an outbound outreach. Leave blank otherwise</inlineHelpText>
-        <label>Sales Outbound outreach</label>
-        <required>false</required>
-        <trackFeedHistory>false</trackFeedHistory>
-        <trackHistory>false</trackHistory>
-        <type>Picklist</type>
-        <valueSet>
-            <restricted>true</restricted>
-            <valueSetDefinition>
-                <sorted>false</sorted>
-                <value>
-                    <fullName>Yes</fullName>
-                    <default>false</default>
-                </value>
-            </valueSetDefinition>
-        </valueSet>
-    </fields>
-    <fields>
-        <fullName>Skype__c</fullName>
-        <externalId>false</externalId>
-        <label>Skype</label>
-        <length>50</length>
-        <required>false</required>
-        <trackFeedHistory>false</trackFeedHistory>
-        <trackHistory>false</trackHistory>
-        <type>Text</type>
-        <unique>false</unique>
-    </fields>
-    <fields>
-        <fullName>State__c</fullName>
-        <description>US State Abbreviations (plus DC and Puerto Rico)</description>
-        <externalId>false</externalId>
-        <label>State</label>
-        <required>false</required>
-        <trackFeedHistory>false</trackFeedHistory>
-        <trackHistory>false</trackHistory>
-        <type>Picklist</type>
-        <valueSet>
-            <valueSetDefinition>
-                <sorted>false</sorted>
-                <value>
-                    <fullName>AK</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>AL</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>AR</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>AZ</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>CA</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>CO</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>CT</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>DC</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>DE</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>FL</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>GA</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>HI</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>IA</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>ID</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>IL</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>IN</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>KS</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>KY</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>LA</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>MA</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>MD</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>ME</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>MI</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>MN</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>MO</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>MS</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>MT</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>NC</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>ND</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>NE</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>NH</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>NJ</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>NM</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>NV</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>NY</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>OH</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>OK</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>OR</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>PA</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>PR</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>RI</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>SC</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>SD</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>TN</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>TX</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>UT</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>VA</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>VT</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>WA</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>WI</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>WV</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>WY</fullName>
-                    <default>false</default>
-                </value>
-            </valueSetDefinition>
-        </valueSet>
-    </fields>
-    <fields>
-        <fullName>Status__c</fullName>
-        <externalId>false</externalId>
-        <label>Contact Status</label>
+        <label>RFP Cycle</label>
         <required>false</required>
         <trackFeedHistory>false</trackFeedHistory>
         <trackHistory>true</trackHistory>
@@ -3338,153 +3771,22 @@ If (Hubspot_Hubspot_Score_Converted_Cont__c&gt;=-50, &quot;5-Very low&quot;,
             <valueSetDefinition>
                 <sorted>false</sorted>
                 <value>
-                    <fullName>1- Working - Active Opp Development</fullName>
+                    <fullName>Cycle 1</fullName>
                     <default>false</default>
+                    <label>Cycle 1</label>
                 </value>
                 <value>
-                    <fullName>2- Working - Talking</fullName>
+                    <fullName>Cycle 2</fullName>
                     <default>false</default>
+                    <label>Cycle 2</label>
                 </value>
                 <value>
-                    <fullName>3- Working - Contacted</fullName>
+                    <fullName>Cycle 3</fullName>
                     <default>false</default>
-                </value>
-                <value>
-                    <fullName>4- Strategic Partner</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>5- Active Project Team Member</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>6- Active Self Start</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>7- Passive &amp; Friendly</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>8- Passive &amp; Unfriendly</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>9-HOLD Not mine/move</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>10-Dimagi Staff</fullName>
-                    <default>false</default>
+                    <label>Cycle 3</label>
                 </value>
             </valueSetDefinition>
         </valueSet>
-    </fields>
-    <fields>
-        <fullName>Tag__c</fullName>
-        <externalId>false</externalId>
-        <inlineHelpText>Our own tag field because Salesforce tags suck.  Don&apos;t delete other people&apos;s tags.</inlineHelpText>
-        <label>Tag</label>
-        <length>255</length>
-        <required>false</required>
-        <trackFeedHistory>false</trackFeedHistory>
-        <trackHistory>false</trackHistory>
-        <type>Text</type>
-        <unique>false</unique>
-    </fields>
-    <fields>
-        <fullName>Time_btw_opp_creation_1st_call_schedul__c</fullName>
-        <externalId>false</externalId>
-        <formula>IF(Date_1st_Next_activity_date_set_for_opps__c &gt;CreatedDate,(Date_1st_Next_activity_date_set_for_opps__c -CreatedDate),0)</formula>
-        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
-        <label>Time btw opp creation &amp; 1st call schedul</label>
-        <precision>18</precision>
-        <required>false</required>
-        <scale>0</scale>
-        <trackHistory>false</trackHistory>
-        <type>Number</type>
-        <unique>false</unique>
-    </fields>
-    <fields>
-        <fullName>Title</fullName>
-        <trackFeedHistory>false</trackFeedHistory>
-        <trackHistory>false</trackHistory>
-    </fields>
-    <fields>
-        <fullName>Title_Bucket__c</fullName>
-        <description>Created by Gillian - ask if you have questions</description>
-        <externalId>false</externalId>
-        <label>Title Bucket</label>
-        <required>false</required>
-        <trackFeedHistory>false</trackFeedHistory>
-        <trackHistory>false</trackHistory>
-        <type>Picklist</type>
-        <valueSet>
-            <restricted>true</restricted>
-            <valueSetDefinition>
-                <sorted>false</sorted>
-                <value>
-                    <fullName>C-Suite / Co-Founder</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>VP / Director</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>Manager / Coordinator</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>Officer / Advisor</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>Consultant</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>Assistant / Analyst / Associate</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>Intern / Fellow / Student / Volunteer</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>Other</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>Unknown</fullName>
-                    <default>false</default>
-                </value>
-            </valueSetDefinition>
-        </valueSet>
-    </fields>
-    <fields>
-        <fullName>Year_and_Month_Date_created_in_CCHQ__c</fullName>
-        <description>Year and Month this user signed up for the first time to CCHQ (Text field syncing from CCHQ)</description>
-        <externalId>false</externalId>
-        <formula>LEFT( HubSpot_Date_Created_in_CCHQ__c, 7)</formula>
-        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
-        <inlineHelpText>Year and Month this user signed up for the first time to CCHQ (Text field syncing from CCHQ)</inlineHelpText>
-        <label>Year and Month Date created in CCHQ</label>
-        <required>false</required>
-        <trackHistory>false</trackHistory>
-        <type>Text</type>
-        <unique>false</unique>
-    </fields>
-    <fields>
-        <fullName>cirrusadv__Created_by_Cirrus_Insight__c</fullName>
-        <defaultValue>false</defaultValue>
-        <deprecated>false</deprecated>
-        <description>Indicates that this record was created by Cirrus Insight. This checkbox does not have to be included on the page layout, except with Contact Manager, Group, and Professional Edition organizations.</description>
-        <externalId>false</externalId>
-        <label>Created by Cirrus Insight</label>
-        <trackFeedHistory>false</trackFeedHistory>
-        <trackHistory>true</trackHistory>
-        <type>Checkbox</type>
     </fields>
     <fields>
         <fullName>rh2__Currency_Test__c</fullName>
@@ -3540,16 +3842,424 @@ If (Hubspot_Hubspot_Score_Converted_Cont__c&gt;=-50, &quot;5-Very low&quot;,
         <unique>false</unique>
     </fields>
     <fields>
+        <fullName>Sales_Outbound_outreach__c</fullName>
+        <description>Select Yes if Inside Sales team is contacting this contact as part of an outbound outreach. Leave blank otherwise</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Select Yes if Inside Sales team is contacting this contact as part of an outbound outreach. Leave blank otherwise</inlineHelpText>
+        <label>Sales Outbound outreach</label>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <type>Picklist</type>
+        <valueSet>
+            <restricted>true</restricted>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>Yes</fullName>
+                    <default>false</default>
+                    <label>Yes</label>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+    <fields>
         <fullName>secondary_email__c</fullName>
+        <caseSensitive>true</caseSensitive>
         <description>if someone has used another email address to correspond, sign up for an event/webinar, etc</description>
         <externalId>false</externalId>
         <inlineHelpText>only add this if the contact has provided 2 (if manually entering)</inlineHelpText>
         <label>secondary email</label>
         <required>false</required>
         <trackFeedHistory>false</trackFeedHistory>
-        <trackHistory>false</trackHistory>
+        <trackHistory>true</trackHistory>
         <type>Email</type>
         <unique>true</unique>
+    </fields>
+    <fields>
+        <fullName>SFSSDupeCatcher__Override_DupeCatcher__c</fullName>
+        <defaultValue>false</defaultValue>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>Contact Override DupeCatcher</label>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Skype__c</fullName>
+        <externalId>false</externalId>
+        <label>Skype</label>
+        <length>50</length>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>State__c</fullName>
+        <description>US State Abbreviations (plus DC and Puerto Rico)</description>
+        <externalId>false</externalId>
+        <label>State</label>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <type>Picklist</type>
+        <valueSet>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>AK</fullName>
+                    <default>false</default>
+                    <label>AK</label>
+                </value>
+                <value>
+                    <fullName>AL</fullName>
+                    <default>false</default>
+                    <label>AL</label>
+                </value>
+                <value>
+                    <fullName>AR</fullName>
+                    <default>false</default>
+                    <label>AR</label>
+                </value>
+                <value>
+                    <fullName>AZ</fullName>
+                    <default>false</default>
+                    <label>AZ</label>
+                </value>
+                <value>
+                    <fullName>CA</fullName>
+                    <default>false</default>
+                    <label>CA</label>
+                </value>
+                <value>
+                    <fullName>CO</fullName>
+                    <default>false</default>
+                    <label>CO</label>
+                </value>
+                <value>
+                    <fullName>CT</fullName>
+                    <default>false</default>
+                    <label>CT</label>
+                </value>
+                <value>
+                    <fullName>DC</fullName>
+                    <default>false</default>
+                    <label>DC</label>
+                </value>
+                <value>
+                    <fullName>DE</fullName>
+                    <default>false</default>
+                    <label>DE</label>
+                </value>
+                <value>
+                    <fullName>FL</fullName>
+                    <default>false</default>
+                    <label>FL</label>
+                </value>
+                <value>
+                    <fullName>GA</fullName>
+                    <default>false</default>
+                    <label>GA</label>
+                </value>
+                <value>
+                    <fullName>HI</fullName>
+                    <default>false</default>
+                    <label>HI</label>
+                </value>
+                <value>
+                    <fullName>IA</fullName>
+                    <default>false</default>
+                    <label>IA</label>
+                </value>
+                <value>
+                    <fullName>ID</fullName>
+                    <default>false</default>
+                    <label>ID</label>
+                </value>
+                <value>
+                    <fullName>IL</fullName>
+                    <default>false</default>
+                    <label>IL</label>
+                </value>
+                <value>
+                    <fullName>IN</fullName>
+                    <default>false</default>
+                    <label>IN</label>
+                </value>
+                <value>
+                    <fullName>KS</fullName>
+                    <default>false</default>
+                    <label>KS</label>
+                </value>
+                <value>
+                    <fullName>KY</fullName>
+                    <default>false</default>
+                    <label>KY</label>
+                </value>
+                <value>
+                    <fullName>LA</fullName>
+                    <default>false</default>
+                    <label>LA</label>
+                </value>
+                <value>
+                    <fullName>MA</fullName>
+                    <default>false</default>
+                    <label>MA</label>
+                </value>
+                <value>
+                    <fullName>MD</fullName>
+                    <default>false</default>
+                    <label>MD</label>
+                </value>
+                <value>
+                    <fullName>ME</fullName>
+                    <default>false</default>
+                    <label>ME</label>
+                </value>
+                <value>
+                    <fullName>MI</fullName>
+                    <default>false</default>
+                    <label>MI</label>
+                </value>
+                <value>
+                    <fullName>MN</fullName>
+                    <default>false</default>
+                    <label>MN</label>
+                </value>
+                <value>
+                    <fullName>MO</fullName>
+                    <default>false</default>
+                    <label>MO</label>
+                </value>
+                <value>
+                    <fullName>MS</fullName>
+                    <default>false</default>
+                    <label>MS</label>
+                </value>
+                <value>
+                    <fullName>MT</fullName>
+                    <default>false</default>
+                    <label>MT</label>
+                </value>
+                <value>
+                    <fullName>NC</fullName>
+                    <default>false</default>
+                    <label>NC</label>
+                </value>
+                <value>
+                    <fullName>ND</fullName>
+                    <default>false</default>
+                    <label>ND</label>
+                </value>
+                <value>
+                    <fullName>NE</fullName>
+                    <default>false</default>
+                    <label>NE</label>
+                </value>
+                <value>
+                    <fullName>NH</fullName>
+                    <default>false</default>
+                    <label>NH</label>
+                </value>
+                <value>
+                    <fullName>NJ</fullName>
+                    <default>false</default>
+                    <label>NJ</label>
+                </value>
+                <value>
+                    <fullName>NM</fullName>
+                    <default>false</default>
+                    <label>NM</label>
+                </value>
+                <value>
+                    <fullName>NV</fullName>
+                    <default>false</default>
+                    <label>NV</label>
+                </value>
+                <value>
+                    <fullName>NY</fullName>
+                    <default>false</default>
+                    <label>NY</label>
+                </value>
+                <value>
+                    <fullName>OH</fullName>
+                    <default>false</default>
+                    <label>OH</label>
+                </value>
+                <value>
+                    <fullName>OK</fullName>
+                    <default>false</default>
+                    <label>OK</label>
+                </value>
+                <value>
+                    <fullName>OR</fullName>
+                    <default>false</default>
+                    <label>OR</label>
+                </value>
+                <value>
+                    <fullName>PA</fullName>
+                    <default>false</default>
+                    <label>PA</label>
+                </value>
+                <value>
+                    <fullName>PR</fullName>
+                    <default>false</default>
+                    <label>PR</label>
+                </value>
+                <value>
+                    <fullName>RI</fullName>
+                    <default>false</default>
+                    <label>RI</label>
+                </value>
+                <value>
+                    <fullName>SC</fullName>
+                    <default>false</default>
+                    <label>SC</label>
+                </value>
+                <value>
+                    <fullName>SD</fullName>
+                    <default>false</default>
+                    <label>SD</label>
+                </value>
+                <value>
+                    <fullName>TN</fullName>
+                    <default>false</default>
+                    <label>TN</label>
+                </value>
+                <value>
+                    <fullName>TX</fullName>
+                    <default>false</default>
+                    <label>TX</label>
+                </value>
+                <value>
+                    <fullName>UT</fullName>
+                    <default>false</default>
+                    <label>UT</label>
+                </value>
+                <value>
+                    <fullName>VA</fullName>
+                    <default>false</default>
+                    <label>VA</label>
+                </value>
+                <value>
+                    <fullName>VT</fullName>
+                    <default>false</default>
+                    <label>VT</label>
+                </value>
+                <value>
+                    <fullName>WA</fullName>
+                    <default>false</default>
+                    <label>WA</label>
+                </value>
+                <value>
+                    <fullName>WI</fullName>
+                    <default>false</default>
+                    <label>WI</label>
+                </value>
+                <value>
+                    <fullName>WV</fullName>
+                    <default>false</default>
+                    <label>WV</label>
+                </value>
+                <value>
+                    <fullName>WY</fullName>
+                    <default>false</default>
+                    <label>WY</label>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+    <fields>
+        <fullName>Status__c</fullName>
+        <externalId>false</externalId>
+        <label>Contact Status</label>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>true</trackHistory>
+        <type>Picklist</type>
+        <valueSet>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>1- Working - Active Opp Development</fullName>
+                    <default>false</default>
+                    <label>1- Working - Active Opp Development</label>
+                </value>
+                <value>
+                    <fullName>2- Working - Talking</fullName>
+                    <default>false</default>
+                    <label>2- Working - Talking</label>
+                </value>
+                <value>
+                    <fullName>3- Working - Contacted</fullName>
+                    <default>false</default>
+                    <label>3- Working - Contacted</label>
+                </value>
+                <value>
+                    <fullName>4- Strategic Partner</fullName>
+                    <default>false</default>
+                    <label>4- Strategic Partner</label>
+                </value>
+                <value>
+                    <fullName>5- Active Project Team Member</fullName>
+                    <default>false</default>
+                    <label>5- Active Project Team Member</label>
+                </value>
+                <value>
+                    <fullName>6- Active Self Start</fullName>
+                    <default>false</default>
+                    <label>6- Active Self Start</label>
+                </value>
+                <value>
+                    <fullName>7- Passive &amp; Friendly</fullName>
+                    <default>false</default>
+                    <label>7- Passive &amp; Friendly</label>
+                </value>
+                <value>
+                    <fullName>8- Passive &amp; Unfriendly</fullName>
+                    <default>false</default>
+                    <label>8- Passive &amp; Unfriendly</label>
+                </value>
+                <value>
+                    <fullName>9-HOLD Not mine/move</fullName>
+                    <default>false</default>
+                    <label>9-HOLD Not mine/move</label>
+                </value>
+                <value>
+                    <fullName>10-Dimagi Staff</fullName>
+                    <default>false</default>
+                    <label>10-Dimagi Staff</label>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+    <fields>
+        <fullName>Tag__c</fullName>
+        <externalId>false</externalId>
+        <inlineHelpText>Our own tag field because Salesforce tags suck.  Don&apos;t delete other people&apos;s tags.</inlineHelpText>
+        <label>Tag</label>
+        <length>255</length>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Time_btw_opp_creation_1st_call_schedul__c</fullName>
+        <externalId>false</externalId>
+        <formula>IF(Date_1st_Next_activity_date_set_for_opps__c &gt;CreatedDate,(Date_1st_Next_activity_date_set_for_opps__c -CreatedDate),0)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Time btw opp creation &amp; 1st call schedul</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackHistory>false</trackHistory>
+        <type>Number</type>
+        <unique>false</unique>
     </fields>
     <fields>
         <fullName>time_contact_failed_Sales_Opp_process__c</fullName>
@@ -3561,6 +4271,85 @@ If (Hubspot_Hubspot_Score_Converted_Cont__c&gt;=-50, &quot;5-Very low&quot;,
         <trackFeedHistory>false</trackFeedHistory>
         <trackHistory>false</trackHistory>
         <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Title</fullName>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>true</trackHistory>
+    </fields>
+    <fields>
+        <fullName>Title_Bucket__c</fullName>
+        <description>Created by Gillian - ask if you have questions</description>
+        <externalId>false</externalId>
+        <label>Title Bucket</label>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <type>Picklist</type>
+        <valueSet>
+            <restricted>true</restricted>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>C-Suite / Co-Founder</fullName>
+                    <default>false</default>
+                    <label>C-Suite / Co-Founder</label>
+                </value>
+                <value>
+                    <fullName>VP / Director</fullName>
+                    <default>false</default>
+                    <label>VP / Director</label>
+                </value>
+                <value>
+                    <fullName>Manager / Coordinator</fullName>
+                    <default>false</default>
+                    <label>Manager / Coordinator</label>
+                </value>
+                <value>
+                    <fullName>Officer / Advisor</fullName>
+                    <default>false</default>
+                    <label>Officer / Advisor</label>
+                </value>
+                <value>
+                    <fullName>Consultant</fullName>
+                    <default>false</default>
+                    <label>Consultant</label>
+                </value>
+                <value>
+                    <fullName>Assistant / Analyst / Associate</fullName>
+                    <default>false</default>
+                    <label>Assistant / Analyst / Associate</label>
+                </value>
+                <value>
+                    <fullName>Intern / Fellow / Student / Volunteer</fullName>
+                    <default>false</default>
+                    <label>Intern / Fellow / Student / Volunteer</label>
+                </value>
+                <value>
+                    <fullName>Other</fullName>
+                    <default>false</default>
+                    <label>Other</label>
+                </value>
+                <value>
+                    <fullName>Unknown</fullName>
+                    <default>false</default>
+                    <label>Unknown</label>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+    <fields>
+        <fullName>Year_and_Month_Date_created_in_CCHQ__c</fullName>
+        <description>Year and Month this user signed up for the first time to CCHQ (Text field syncing from CCHQ)</description>
+        <externalId>false</externalId>
+        <formula>LEFT( HubSpot_Date_Created_in_CCHQ__c, 7)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <inlineHelpText>Year and Month this user signed up for the first time to CCHQ (Text field syncing from CCHQ)</inlineHelpText>
+        <label>Year and Month Date created in CCHQ</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <type>Text</type>
         <unique>false</unique>
     </fields>
     <listViews>
@@ -3605,22 +4394,6 @@ If (Hubspot_Hubspot_Score_Converted_Cont__c&gt;=-50, &quot;5-Very low&quot;,
         <label>Contacts Senegal CJ KN</label>
     </listViews>
     <listViews>
-        <fullName>BR_TSP_contacts</fullName>
-        <columns>FULL_NAME</columns>
-        <columns>ACCOUNT.NAME</columns>
-        <columns>CONTACT.TITLE</columns>
-        <columns>CONTACT.PHONE1</columns>
-        <columns>CONTACT.EMAIL</columns>
-        <columns>CORE.USERS.ALIAS</columns>
-        <filterScope>Everything</filterScope>
-        <filters>
-            <field>Tag__c</field>
-            <operation>equals</operation>
-            <value>#BR-TSP</value>
-        </filters>
-        <label>BR - TSP contacts</label>
-    </listViews>
-    <listViews>
         <fullName>BirthdaysThisMonth</fullName>
         <columns>FULL_NAME</columns>
         <columns>ACCOUNT.NAME</columns>
@@ -3638,41 +4411,38 @@ If (Hubspot_Hubspot_Score_Converted_Cont__c&gt;=-50, &quot;5-Very low&quot;,
         <label>Birthdays This Month</label>
     </listViews>
     <listViews>
-        <fullName>CJ_Contacts_Working_List</fullName>
+        <fullName>BR_TSP_contacts</fullName>
         <columns>FULL_NAME</columns>
         <columns>ACCOUNT.NAME</columns>
         <columns>CONTACT.TITLE</columns>
-        <columns>Status__c</columns>
-        <columns>CONTACT.LAST_ACTIVITY</columns>
-        <columns>City_Object__c</columns>
-        <columns>Country__c</columns>
+        <columns>CONTACT.PHONE1</columns>
         <columns>CONTACT.EMAIL</columns>
-        <columns>Relationship_Strength__c</columns>
-        <columns>Days_w_o_Activity__c</columns>
-        <columns>Tag__c</columns>
+        <columns>CORE.USERS.ALIAS</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Tag__c</field>
+            <operation>equals</operation>
+            <value>#BR-TSP</value>
+        </filters>
+        <label>BR - TSP contacts</label>
+    </listViews>
+    <listViews>
+        <fullName>contacts_dimagi_user</fullName>
+        <columns>FULL_NAME</columns>
+        <columns>ACCOUNT.NAME</columns>
+        <columns>CONTACT.TITLE</columns>
+        <columns>CONTACT.PHONE1</columns>
+        <columns>CONTACT.EMAIL</columns>
+        <columns>CORE.USERS.ALIAS</columns>
+        <columns>CORE.USERS.FIRST_NAME</columns>
+        <columns>CORE.USERS.LAST_NAME</columns>
         <filterScope>Everything</filterScope>
         <filters>
             <field>CORE.USERS.FIRST_NAME</field>
-            <operation>equals</operation>
-            <value>Christina</value>
+            <operation>contains</operation>
+            <value>Dimagi</value>
         </filters>
-        <label>CJ Contacts Working List</label>
-    </listViews>
-    <listViews>
-        <fullName>CJ_Contacts_in_Open_Opp_Development</fullName>
-        <columns>FULL_NAME</columns>
-        <columns>Status__c</columns>
-        <columns>ACCOUNT.NAME</columns>
-        <columns>CONTACT.LAST_ACTIVITY</columns>
-        <columns>CONTACT.EMAIL</columns>
-        <columns>CORE.USERS.ALIAS</columns>
-        <filterScope>Mine</filterScope>
-        <filters>
-            <field>Status__c</field>
-            <operation>equals</operation>
-            <value>Working - Active Opp Development</value>
-        </filters>
-        <label>CJ Contacts in Open Opp Development</label>
+        <label>contacts dimagi user</label>
     </listViews>
     <listViews>
         <fullName>Contacts_missing_Account</fullName>
@@ -3683,12 +4453,42 @@ If (Hubspot_Hubspot_Score_Converted_Cont__c&gt;=-50, &quot;5-Very low&quot;,
         <columns>CONTACT.EMAIL</columns>
         <columns>CORE.USERS.ALIAS</columns>
         <columns>CONTACT.LAST_ACTIVITY</columns>
-        <filterScope>Mine</filterScope>
+        <filterScope>Everything</filterScope>
         <filters>
             <field>ACCOUNT.NAME</field>
             <operation>equals</operation>
         </filters>
+        <filters>
+            <field>CORE.USERS.FIRST_NAME</field>
+            <operation>equals</operation>
+            <value>mckenna</value>
+        </filters>
+        <filters>
+            <field>Account.Owner_Business_Unit_Name__c</field>
+            <operation>equals</operation>
+            <value>digital</value>
+        </filters>
         <label>Contacts missing Account</label>
+    </listViews>
+    <listViews>
+        <fullName>contacts_missing_status</fullName>
+        <columns>FULL_NAME</columns>
+        <columns>ACCOUNT.NAME</columns>
+        <columns>CONTACT.TITLE</columns>
+        <columns>Status__c</columns>
+        <columns>CONTACT.LAST_ACTIVITY</columns>
+        <columns>Days_w_o_Activity__c</columns>
+        <columns>Country__c</columns>
+        <columns>CONTACT.LAST_UPDATE</columns>
+        <columns>UPDATEDBY_USER.ALIAS</columns>
+        <columns>CONTACT.EMAIL</columns>
+        <columns>State__c</columns>
+        <filterScope>Mine</filterScope>
+        <filters>
+            <field>Status__c</field>
+            <operation>equals</operation>
+        </filters>
+        <label>contacts missing status</label>
     </listViews>
     <listViews>
         <fullName>Contacts_with_Follow_Up_Date_this_Week</fullName>
@@ -3758,6 +4558,60 @@ If (Hubspot_Hubspot_Score_Converted_Cont__c&gt;=-50, &quot;5-Very low&quot;,
         <label>Contacts with No Account Association-rh</label>
     </listViews>
     <listViews>
+        <fullName>contact_status_add_and_update_BD_July15</fullName>
+        <booleanFilter>1 OR 2</booleanFilter>
+        <columns>FULL_NAME</columns>
+        <columns>Status__c</columns>
+        <columns>ACCOUNT.NAME</columns>
+        <columns>CONTACT.EMAIL</columns>
+        <columns>CONTACT.LAST_ACTIVITY</columns>
+        <columns>CORE.USERS.FIRST_NAME</columns>
+        <columns>Country__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Status__c</field>
+            <operation>equals</operation>
+            <value>Trying to Warm,Actively Building</value>
+        </filters>
+        <filters>
+            <field>Status__c</field>
+            <operation>equals</operation>
+        </filters>
+        <label>contact status add and update BD July15</label>
+    </listViews>
+    <listViews>
+        <fullName>contact_test_rr</fullName>
+        <columns>FULL_NAME</columns>
+        <columns>CONTACT.TITLE</columns>
+        <columns>CONTACT.EMAIL</columns>
+        <columns>Country__c</columns>
+        <columns>ACCOUNT.NAME</columns>
+        <columns>PARENT.NAME</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Key_Account_Manager__c</field>
+            <operation>equals</operation>
+            <value>Rishabh Rath POD A</value>
+        </filters>
+        <label>contact test rr</label>
+    </listViews>
+    <listViews>
+        <fullName>Dimagi_Contacts_Partner_Program</fullName>
+        <columns>FULL_NAME</columns>
+        <columns>ACCOUNT.NAME</columns>
+        <columns>CONTACT.TITLE</columns>
+        <columns>CONTACT.PHONE1</columns>
+        <columns>CONTACT.EMAIL</columns>
+        <columns>CORE.USERS.ALIAS</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Contact_Status_Reason__c</field>
+            <operation>equals</operation>
+            <value>Partner program</value>
+        </filters>
+        <label>Dimagi - Contacts - Partner Program</label>
+    </listViews>
+    <listViews>
         <fullName>DLAC_Webinars</fullName>
         <columns>FULL_NAME</columns>
         <columns>ACCOUNT.NAME</columns>
@@ -3816,7 +4670,8 @@ If (Hubspot_Hubspot_Score_Converted_Cont__c&gt;=-50, &quot;5-Very low&quot;,
         </sharedTo>
     </listViews>
     <listViews>
-        <fullName>Dimagi_Contacts_Partner_Program</fullName>
+        <fullName>england</fullName>
+        <booleanFilter>1 OR 2 OR 3</booleanFilter>
         <columns>FULL_NAME</columns>
         <columns>ACCOUNT.NAME</columns>
         <columns>CONTACT.TITLE</columns>
@@ -3825,27 +4680,38 @@ If (Hubspot_Hubspot_Score_Converted_Cont__c&gt;=-50, &quot;5-Very low&quot;,
         <columns>CORE.USERS.ALIAS</columns>
         <filterScope>Everything</filterScope>
         <filters>
-            <field>Contact_Status_Reason__c</field>
+            <field>Country__c</field>
             <operation>equals</operation>
-            <value>Partner program</value>
+            <value>United Kingdom</value>
         </filters>
-        <label>Dimagi - Contacts - Partner Program</label>
+        <filters>
+            <field>CONTACT.ADDRESS2_COUNTRY</field>
+            <operation>equals</operation>
+            <value>United Kingdom</value>
+        </filters>
+        <filters>
+            <field>CONTACT.ADDRESS1_COUNTRY</field>
+            <operation>equals</operation>
+            <value>United Kingdom</value>
+        </filters>
+        <label>england</label>
     </listViews>
     <listViews>
-        <fullName>GJ_contacts</fullName>
-        <columns>FULL_NAME</columns>
+        <fullName>Gates_Foundation</fullName>
         <columns>ACCOUNT.NAME</columns>
+        <columns>FULL_NAME</columns>
         <columns>CONTACT.TITLE</columns>
-        <columns>CONTACT.PHONE1</columns>
+        <columns>CONTACT.DEPARTMENT</columns>
         <columns>CONTACT.EMAIL</columns>
         <columns>CORE.USERS.ALIAS</columns>
+        <columns>CONTACT.LAST_ACTIVITY</columns>
         <filterScope>Everything</filterScope>
         <filters>
-            <field>CORE.USERS.FIRST_NAME</field>
+            <field>ACCOUNT.NAME</field>
             <operation>equals</operation>
-            <value>Gillian</value>
+            <value>Bill &amp; Melinda Gates Foundation - HQ</value>
         </filters>
-        <label>GJ contacts</label>
+        <label>Gates Foundation Contacts</label>
     </listViews>
     <listViews>
         <fullName>Geneva_Contacts</fullName>
@@ -3862,6 +4728,22 @@ If (Hubspot_Hubspot_Score_Converted_Cont__c&gt;=-50, &quot;5-Very low&quot;,
             <value>Geneva</value>
         </filters>
         <label>Geneva Contacts</label>
+    </listViews>
+    <listViews>
+        <fullName>GJ_contacts</fullName>
+        <columns>FULL_NAME</columns>
+        <columns>ACCOUNT.NAME</columns>
+        <columns>CONTACT.TITLE</columns>
+        <columns>CONTACT.PHONE1</columns>
+        <columns>CONTACT.EMAIL</columns>
+        <columns>CORE.USERS.ALIAS</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>CORE.USERS.FIRST_NAME</field>
+            <operation>equals</operation>
+            <value>Gillian</value>
+        </filters>
+        <label>GJ contacts</label>
     </listViews>
     <listViews>
         <fullName>Guatemala_Contacts_MS</fullName>
@@ -3895,6 +4777,21 @@ If (Hubspot_Hubspot_Score_Converted_Cont__c&gt;=-50, &quot;5-Very low&quot;,
         <label>Guatemala Workshop</label>
     </listViews>
     <listViews>
+        <fullName>Indian_Contacts</fullName>
+        <columns>FULL_NAME</columns>
+        <columns>ACCOUNT.NAME</columns>
+        <columns>CONTACT.EMAIL</columns>
+        <columns>CORE.USERS.ALIAS</columns>
+        <columns>CONTACT.LAST_ACTIVITY</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Country__c</field>
+            <operation>equals</operation>
+            <value>India</value>
+        </filters>
+        <label>Indian Contacts</label>
+    </listViews>
+    <listViews>
         <fullName>India_Uploads</fullName>
         <columns>FULL_NAME</columns>
         <columns>ACCOUNT.NAME</columns>
@@ -3913,19 +4810,26 @@ If (Hubspot_Hubspot_Score_Converted_Cont__c&gt;=-50, &quot;5-Very low&quot;,
         <label>India Uploads</label>
     </listViews>
     <listViews>
-        <fullName>Indian_Contacts</fullName>
+        <fullName>info_and_unknown</fullName>
+        <booleanFilter>1 OR 2</booleanFilter>
         <columns>FULL_NAME</columns>
         <columns>ACCOUNT.NAME</columns>
+        <columns>CONTACT.TITLE</columns>
+        <columns>CONTACT.PHONE1</columns>
         <columns>CONTACT.EMAIL</columns>
         <columns>CORE.USERS.ALIAS</columns>
-        <columns>CONTACT.LAST_ACTIVITY</columns>
         <filterScope>Everything</filterScope>
         <filters>
-            <field>Country__c</field>
-            <operation>equals</operation>
-            <value>India</value>
+            <field>CONTACT.EMAIL</field>
+            <operation>contains</operation>
+            <value>unknown</value>
         </filters>
-        <label>Indian Contacts</label>
+        <filters>
+            <field>CONTACT.FIRST_NAME</field>
+            <operation>contains</operation>
+            <value>info</value>
+        </filters>
+        <label>Info and Unknown Contacts</label>
     </listViews>
     <listViews>
         <fullName>Ireland</fullName>
@@ -3997,23 +4901,6 @@ If (Hubspot_Hubspot_Score_Converted_Cont__c&gt;=-50, &quot;5-Very low&quot;,
         <label>Latin America Caribbean Contacts</label>
     </listViews>
     <listViews>
-        <fullName>MS_Contacts</fullName>
-        <columns>FULL_NAME</columns>
-        <columns>ACCOUNT.NAME</columns>
-        <columns>CONTACT.TITLE</columns>
-        <columns>CONTACT.LAST_ACTIVITY</columns>
-        <columns>CONTACT.PHONE1</columns>
-        <columns>CONTACT.EMAIL</columns>
-        <columns>CORE.USERS.ALIAS</columns>
-        <filterScope>Everything</filterScope>
-        <filters>
-            <field>CORE.USERS.FIRST_NAME</field>
-            <operation>equals</operation>
-            <value>Michelle</value>
-        </filters>
-        <label>MS Contacts</label>
-    </listViews>
-    <listViews>
         <fullName>Marco_Contact_View</fullName>
         <booleanFilter>1 AND (2 OR 3 OR 4)</booleanFilter>
         <columns>FULL_NAME</columns>
@@ -4047,21 +4934,65 @@ If (Hubspot_Hubspot_Score_Converted_Cont__c&gt;=-50, &quot;5-Very low&quot;,
         <label>Marco Contact View</label>
     </listViews>
     <listViews>
-        <fullName>Michelle_Contacts_View_for_BD_2016</fullName>
+        <fullName>MS_Contacts</fullName>
         <columns>FULL_NAME</columns>
         <columns>ACCOUNT.NAME</columns>
-        <columns>Country__c</columns>
+        <columns>CONTACT.TITLE</columns>
+        <columns>CONTACT.LAST_ACTIVITY</columns>
         <columns>CONTACT.PHONE1</columns>
         <columns>CONTACT.EMAIL</columns>
-        <columns>CORE.USERS.FIRST_NAME</columns>
-        <columns>CORE.USERS.LAST_NAME</columns>
+        <columns>CORE.USERS.ALIAS</columns>
         <filterScope>Everything</filterScope>
         <filters>
-            <field>CORE.USERS.LAST_NAME</field>
+            <field>CORE.USERS.FIRST_NAME</field>
             <operation>equals</operation>
-            <value>Sultan</value>
+            <value>Michelle</value>
         </filters>
-        <label>Michelle Contacts View for BD 2016</label>
+        <label>MS Contacts</label>
+    </listViews>
+    <listViews>
+        <fullName>Myanmar</fullName>
+        <columns>FULL_NAME</columns>
+        <columns>ACCOUNT.NAME</columns>
+        <columns>CONTACT.TITLE</columns>
+        <columns>CONTACT.PHONE1</columns>
+        <columns>CONTACT.EMAIL</columns>
+        <columns>CORE.USERS.ALIAS</columns>
+        <columns>CONTACT.LAST_ACTIVITY</columns>
+        <columns>Country__c</columns>
+        <columns>Account_Contact__c</columns>
+        <columns>Account_Owner__c</columns>
+        <columns>Full_Name__c</columns>
+        <columns>CONTACT.CREATED_DATE</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Country__c</field>
+            <operation>equals</operation>
+            <value>Myanmar</value>
+        </filters>
+        <label>Myanmar</label>
+        <sharedTo>
+            <group>All_Dimagi</group>
+        </sharedTo>
+    </listViews>
+    <listViews>
+        <fullName>my_contacts</fullName>
+        <columns>FULL_NAME</columns>
+        <columns>ACCOUNT.NAME</columns>
+        <columns>CONTACT.EMAIL</columns>
+        <columns>Status__c</columns>
+        <columns>CORE.USERS.ALIAS</columns>
+        <columns>Days_w_o_Activity__c</columns>
+        <columns>CONTACT.LAST_ACTIVITY</columns>
+        <columns>CONTACT.LAST_UPDATE</columns>
+        <columns>CONTACT.REPORTS_TO.FIRST_NAME</columns>
+        <columns>CONTACT.REPORTS_TO.LAST_NAME</columns>
+        <filterScope>Mine</filterScope>
+        <filters>
+            <field>ACCOUNT.NAME</field>
+            <operation>equals</operation>
+        </filters>
+        <label>my contacts missing account</label>
     </listViews>
     <listViews>
         <fullName>My_Contacts1</fullName>
@@ -4082,6 +5013,24 @@ If (Hubspot_Hubspot_Score_Converted_Cont__c&gt;=-50, &quot;5-Very low&quot;,
         <label>My Contacts</label>
     </listViews>
     <listViews>
+        <fullName>my_contacts_last_touch</fullName>
+        <columns>FULL_NAME</columns>
+        <columns>ACCOUNT.NAME</columns>
+        <columns>CONTACT.LAST_ACTIVITY</columns>
+        <columns>CONTACT.LAST_UPDATE</columns>
+        <filterScope>Mine</filterScope>
+        <label>my contacts last touch</label>
+    </listViews>
+    <listViews>
+        <fullName>my_contacts_last_touch1</fullName>
+        <columns>FULL_NAME</columns>
+        <columns>ACCOUNT.NAME</columns>
+        <columns>CONTACT.LAST_ACTIVITY</columns>
+        <columns>CONTACT.LAST_UPDATE</columns>
+        <filterScope>Mine</filterScope>
+        <label>my contacts last touch</label>
+    </listViews>
+    <listViews>
         <fullName>NewThisWeek</fullName>
         <columns>FULL_NAME</columns>
         <columns>ACCOUNT.NAME</columns>
@@ -4092,11 +5041,31 @@ If (Hubspot_Hubspot_Score_Converted_Cont__c&gt;=-50, &quot;5-Very low&quot;,
         <columns>Keep_Warm__c</columns>
         <filterScope>Everything</filterScope>
         <filters>
-            <field>CONTACT.CREATED_DATE</field>
+            <field>CORE.USERS.LAST_NAME</field>
             <operation>equals</operation>
-            <value>THIS_WEEK</value>
+            <value>olson</value>
         </filters>
         <label>New This Week</label>
+    </listViews>
+    <listViews>
+        <fullName>no_account_by_neal</fullName>
+        <columns>FULL_NAME</columns>
+        <columns>ACCOUNT.NAME</columns>
+        <columns>CONTACT.TITLE</columns>
+        <columns>CONTACT.PHONE1</columns>
+        <columns>CONTACT.EMAIL</columns>
+        <columns>CORE.USERS.ALIAS</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>ACCOUNT.NAME</field>
+            <operation>equals</operation>
+        </filters>
+        <filters>
+            <field>CORE.USERS.FIRST_NAME</field>
+            <operation>equals</operation>
+            <value>neal</value>
+        </filters>
+        <label>no_account_by_neal</label>
     </listViews>
     <listViews>
         <fullName>Overdue_Strategic_Contacts_90_Days</fullName>
@@ -4190,24 +5159,6 @@ If (Hubspot_Hubspot_Score_Converted_Cont__c&gt;=-50, &quot;5-Very low&quot;,
         <label>Passive and Friendly Not Touched in 6mos</label>
     </listViews>
     <listViews>
-        <fullName>SA_blitz_2018</fullName>
-        <columns>FULL_NAME</columns>
-        <columns>ACCOUNT.NAME</columns>
-        <columns>CONTACT.TITLE</columns>
-        <columns>CONTACT.PHONE1</columns>
-        <columns>CONTACT.EMAIL</columns>
-        <columns>CORE.USERS.ALIAS</columns>
-        <columns>CONTACT.ADDRESS2_CITY</columns>
-        <columns>CONTACT.LAST_UPDATE</columns>
-        <filterScope>Everything</filterScope>
-        <filters>
-            <field>Country__c</field>
-            <operation>equals</operation>
-            <value>South Africa</value>
-        </filters>
-        <label>SA blitz 2018</label>
-    </listViews>
-    <listViews>
         <fullName>South_Africa_Contacts</fullName>
         <columns>FULL_NAME</columns>
         <columns>ACCOUNT.NAME</columns>
@@ -4224,23 +5175,27 @@ If (Hubspot_Hubspot_Score_Converted_Cont__c&gt;=-50, &quot;5-Very low&quot;,
         <label>South Africa Contacts</label>
     </listViews>
     <listViews>
-        <fullName>South_Africa_blitz_2018</fullName>
-        <columns>FULL_NAME</columns>
+        <fullName>Strategic_Fundraising_KAM_Contacts</fullName>
+        <columns>Key_Account_Manager__c</columns>
+        <columns>Account_Status__c</columns>
         <columns>ACCOUNT.NAME</columns>
+        <columns>FULL_NAME</columns>
         <columns>CONTACT.TITLE</columns>
-        <columns>CONTACT.PHONE1</columns>
-        <columns>CONTACT.EMAIL</columns>
+        <columns>Status__c</columns>
         <columns>CORE.USERS.ALIAS</columns>
-        <columns>CONTACT.ADDRESS2_CITY</columns>
-        <columns>City_Object__c</columns>
-        <columns>CONTACT.LAST_UPDATE</columns>
+        <columns>CONTACT.LAST_ACTIVITY</columns>
+        <columns>Days_w_o_Activity__c</columns>
+        <columns>last_activity_description__c</columns>
+        <columns>Follow_up_Date__c</columns>
+        <columns>Next_Step__c</columns>
+        <columns>CONTACT.EMAIL</columns>
         <filterScope>Everything</filterScope>
         <filters>
-            <field>Country__c</field>
+            <field>Key_Account_Manager__c</field>
             <operation>equals</operation>
-            <value>South Africa</value>
+            <value>StratFund - Tier 1</value>
         </filters>
-        <label>South Africa blitz 2018</label>
+        <label>Strategic Fundraising - Tier 1 Contacts</label>
     </listViews>
     <listViews>
         <fullName>West_Africa_Workshop</fullName>
@@ -4258,232 +5213,30 @@ If (Hubspot_Hubspot_Score_Converted_Cont__c&gt;=-50, &quot;5-Very low&quot;,
         <filterScope>Everything</filterScope>
         <label>West Africa RFA Members</label>
     </listViews>
-    <listViews>
-        <fullName>christinas_stage_2_contacts</fullName>
-        <columns>FULL_NAME</columns>
-        <columns>ACCOUNT.NAME</columns>
-        <columns>CONTACT.EMAIL</columns>
-        <columns>CONTACT.LAST_ACTIVITY</columns>
-        <columns>City_Object__c</columns>
-        <columns>Status__c</columns>
-        <columns>Country__c</columns>
-        <filterScope>Mine</filterScope>
-        <filters>
-            <field>Status__c</field>
-            <operation>equals</operation>
-            <value>Trying to Warm,Actively Building,Working- Active Opp Development</value>
-        </filters>
-        <label>christinas stage 2 contacts</label>
-    </listViews>
-    <listViews>
-        <fullName>contact_status_add_and_update_BD_July15</fullName>
-        <booleanFilter>1 OR 2</booleanFilter>
-        <columns>FULL_NAME</columns>
-        <columns>Status__c</columns>
-        <columns>ACCOUNT.NAME</columns>
-        <columns>CONTACT.EMAIL</columns>
-        <columns>CONTACT.LAST_ACTIVITY</columns>
-        <columns>CORE.USERS.FIRST_NAME</columns>
-        <columns>Country__c</columns>
-        <filterScope>Everything</filterScope>
-        <filters>
-            <field>Status__c</field>
-            <operation>equals</operation>
-            <value>Trying to Warm,Actively Building</value>
-        </filters>
-        <filters>
-            <field>Status__c</field>
-            <operation>equals</operation>
-        </filters>
-        <label>contact status add and update BD July15</label>
-    </listViews>
-    <listViews>
-        <fullName>contacts_dimagi_user</fullName>
-        <columns>FULL_NAME</columns>
-        <columns>ACCOUNT.NAME</columns>
-        <columns>CONTACT.TITLE</columns>
-        <columns>CONTACT.PHONE1</columns>
-        <columns>CONTACT.EMAIL</columns>
-        <columns>CORE.USERS.ALIAS</columns>
-        <columns>CORE.USERS.FIRST_NAME</columns>
-        <columns>CORE.USERS.LAST_NAME</columns>
-        <filterScope>Everything</filterScope>
-        <filters>
-            <field>CORE.USERS.FIRST_NAME</field>
-            <operation>contains</operation>
-            <value>Dimagi</value>
-        </filters>
-        <label>contacts dimagi user</label>
-    </listViews>
-    <listViews>
-        <fullName>contacts_missing_status</fullName>
-        <columns>FULL_NAME</columns>
-        <columns>ACCOUNT.NAME</columns>
-        <columns>CONTACT.TITLE</columns>
-        <columns>Status__c</columns>
-        <columns>CONTACT.LAST_ACTIVITY</columns>
-        <columns>Days_w_o_Activity__c</columns>
-        <columns>Country__c</columns>
-        <columns>CONTACT.LAST_UPDATE</columns>
-        <columns>UPDATEDBY_USER.ALIAS</columns>
-        <columns>CONTACT.EMAIL</columns>
-        <columns>State__c</columns>
-        <filterScope>Mine</filterScope>
-        <filters>
-            <field>Status__c</field>
-            <operation>equals</operation>
-        </filters>
-        <label>contacts missing status</label>
-    </listViews>
-    <listViews>
-        <fullName>england</fullName>
-        <booleanFilter>1 OR 2 OR 3</booleanFilter>
-        <columns>FULL_NAME</columns>
-        <columns>ACCOUNT.NAME</columns>
-        <columns>CONTACT.TITLE</columns>
-        <columns>CONTACT.PHONE1</columns>
-        <columns>CONTACT.EMAIL</columns>
-        <columns>CORE.USERS.ALIAS</columns>
-        <filterScope>Everything</filterScope>
-        <filters>
-            <field>Country__c</field>
-            <operation>equals</operation>
-            <value>United Kingdom</value>
-        </filters>
-        <filters>
-            <field>CONTACT.ADDRESS2_COUNTRY</field>
-            <operation>equals</operation>
-            <value>United Kingdom</value>
-        </filters>
-        <filters>
-            <field>CONTACT.ADDRESS1_COUNTRY</field>
-            <operation>equals</operation>
-            <value>United Kingdom</value>
-        </filters>
-        <label>england</label>
-    </listViews>
-    <listViews>
-        <fullName>info_and_unknown</fullName>
-        <booleanFilter>1 OR 2</booleanFilter>
-        <columns>FULL_NAME</columns>
-        <columns>ACCOUNT.NAME</columns>
-        <columns>CONTACT.TITLE</columns>
-        <columns>CONTACT.PHONE1</columns>
-        <columns>CONTACT.EMAIL</columns>
-        <columns>CORE.USERS.ALIAS</columns>
-        <filterScope>Everything</filterScope>
-        <filters>
-            <field>CONTACT.EMAIL</field>
-            <operation>contains</operation>
-            <value>unknown</value>
-        </filters>
-        <filters>
-            <field>CONTACT.FIRST_NAME</field>
-            <operation>contains</operation>
-            <value>info</value>
-        </filters>
-        <label>Info and Unknown Contacts</label>
-    </listViews>
-    <listViews>
-        <fullName>my_contacts</fullName>
-        <columns>FULL_NAME</columns>
-        <columns>ACCOUNT.NAME</columns>
-        <columns>CONTACT.EMAIL</columns>
-        <columns>Status__c</columns>
-        <columns>CORE.USERS.ALIAS</columns>
-        <columns>Days_w_o_Activity__c</columns>
-        <columns>CONTACT.LAST_ACTIVITY</columns>
-        <columns>CONTACT.LAST_UPDATE</columns>
-        <columns>CONTACT.REPORTS_TO.FIRST_NAME</columns>
-        <columns>CONTACT.REPORTS_TO.LAST_NAME</columns>
-        <filterScope>Mine</filterScope>
-        <filters>
-            <field>ACCOUNT.NAME</field>
-            <operation>equals</operation>
-        </filters>
-        <label>my contacts missing account</label>
-    </listViews>
-    <listViews>
-        <fullName>my_contacts_last_touch</fullName>
-        <columns>FULL_NAME</columns>
-        <columns>ACCOUNT.NAME</columns>
-        <columns>CONTACT.LAST_ACTIVITY</columns>
-        <columns>CONTACT.LAST_UPDATE</columns>
-        <filterScope>Mine</filterScope>
-        <label>my contacts last touch</label>
-    </listViews>
-    <listViews>
-        <fullName>my_contacts_last_touch1</fullName>
-        <columns>FULL_NAME</columns>
-        <columns>ACCOUNT.NAME</columns>
-        <columns>CONTACT.LAST_ACTIVITY</columns>
-        <columns>CONTACT.LAST_UPDATE</columns>
-        <filterScope>Mine</filterScope>
-        <label>my contacts last touch</label>
-    </listViews>
-    <listViews>
-        <fullName>no_account_by_neal</fullName>
-        <columns>FULL_NAME</columns>
-        <columns>ACCOUNT.NAME</columns>
-        <columns>CONTACT.TITLE</columns>
-        <columns>CONTACT.PHONE1</columns>
-        <columns>CONTACT.EMAIL</columns>
-        <columns>CORE.USERS.ALIAS</columns>
-        <filterScope>Everything</filterScope>
-        <filters>
-            <field>ACCOUNT.NAME</field>
-            <operation>equals</operation>
-        </filters>
-        <filters>
-            <field>CORE.USERS.FIRST_NAME</field>
-            <operation>equals</operation>
-            <value>neal</value>
-        </filters>
-        <label>no_account_by_neal</label>
-    </listViews>
-    <listViews>
-        <fullName>strategic_partner_activity_CJ</fullName>
-        <columns>FULL_NAME</columns>
-        <columns>ACCOUNT.NAME</columns>
-        <columns>CONTACT.EMAIL</columns>
-        <columns>CONTACT.LAST_ACTIVITY</columns>
-        <columns>CONTACT.LAST_UPDATE</columns>
-        <columns>Status__c</columns>
-        <columns>Country__c</columns>
-        <columns>CORE.USERS.FIRST_NAME</columns>
-        <filterScope>Everything</filterScope>
-        <filters>
-            <field>Status__c</field>
-            <operation>equals</operation>
-            <value>Strategic Partner</value>
-        </filters>
-        <label># strategic partner activity CJ</label>
-    </listViews>
-    <searchLayouts>
-        <customTabListAdditionalFields>FULL_NAME</customTabListAdditionalFields>
-        <customTabListAdditionalFields>ACCOUNT.NAME</customTabListAdditionalFields>
-        <customTabListAdditionalFields>CONTACT.PHONE1</customTabListAdditionalFields>
-        <lookupDialogsAdditionalFields>FULL_NAME</lookupDialogsAdditionalFields>
-        <lookupDialogsAdditionalFields>ACCOUNT.NAME</lookupDialogsAdditionalFields>
-        <lookupDialogsAdditionalFields>ACCOUNT.SITE</lookupDialogsAdditionalFields>
-        <lookupPhoneDialogsAdditionalFields>FULL_NAME</lookupPhoneDialogsAdditionalFields>
-        <lookupPhoneDialogsAdditionalFields>ACCOUNT.NAME</lookupPhoneDialogsAdditionalFields>
-        <lookupPhoneDialogsAdditionalFields>ACCOUNT.SITE</lookupPhoneDialogsAdditionalFields>
-        <lookupPhoneDialogsAdditionalFields>CONTACT.PHONE1</lookupPhoneDialogsAdditionalFields>
-        <lookupPhoneDialogsAdditionalFields>CONTACT.PHONE3</lookupPhoneDialogsAdditionalFields>
-        <lookupPhoneDialogsAdditionalFields>CONTACT.PHONE4</lookupPhoneDialogsAdditionalFields>
-        <lookupPhoneDialogsAdditionalFields>CONTACT.PHONE5</lookupPhoneDialogsAdditionalFields>
-        <lookupPhoneDialogsAdditionalFields>CONTACT.PHONE6</lookupPhoneDialogsAdditionalFields>
-        <searchFilterFields>ACCOUNT.NAME</searchFilterFields>
-        <searchFilterFields>CONTACT.EMAIL</searchFilterFields>
-        <searchResultsAdditionalFields>FULL_NAME</searchResultsAdditionalFields>
-        <searchResultsAdditionalFields>ACCOUNT.NAME</searchResultsAdditionalFields>
-        <searchResultsAdditionalFields>ACCOUNT.SITE</searchResultsAdditionalFields>
-        <searchResultsAdditionalFields>CONTACT.PHONE1</searchResultsAdditionalFields>
-        <searchResultsAdditionalFields>CONTACT.EMAIL</searchResultsAdditionalFields>
-        <searchResultsAdditionalFields>CORE.USERS.ALIAS</searchResultsAdditionalFields>
-    </searchLayouts>
-    <sharingModel>ReadWrite</sharingModel>
+    <webLinks>
+        <fullName>cirrusadv__Start_Flights</fullName>
+        <availability>online</availability>
+        <displayType>button</displayType>
+        <encodingKey>UTF-8</encodingKey>
+        <height>600</height>
+        <linkType>url</linkType>
+        <masterLabel>Start Flights</masterLabel>
+        <openType>sidebar</openType>
+        <protected>false</protected>
+        <url>/apex/cirrusadv__ContactFlights?ids={!Contact.Id}</url>
+    </webLinks>
+    <webLinks>
+        <fullName>cirrusadv__Start_Flights_List</fullName>
+        <availability>online</availability>
+        <displayType>massActionButton</displayType>
+        <height>600</height>
+        <linkType>page</linkType>
+        <masterLabel>Start Flights</masterLabel>
+        <openType>sidebar</openType>
+        <page>cirrusadv__ContactFlights</page>
+        <protected>false</protected>
+        <requireRowSelection>true</requireRowSelection>
+    </webLinks>
     <webLinks>
         <fullName>GoogleMaps</fullName>
         <availability>online</availability>
@@ -4521,6 +5274,38 @@ If (Hubspot_Hubspot_Score_Converted_Cont__c&gt;=-50, &quot;5-Very low&quot;,
         <showsLocation>false</showsLocation>
         <showsStatus>false</showsStatus>
         <url>http://www.google.com/search?q={!Contact_FirstName} {!Contact_LastName}</url>
+    </webLinks>
+    <webLinks>
+        <fullName>salesvisual__Map_Contacts</fullName>
+        <availability>online</availability>
+        <displayType>massActionButton</displayType>
+        <linkType>javascript</linkType>
+        <masterLabel>Map Contacts</masterLabel>
+        <openType>onClickJavaScript</openType>
+        <protected>false</protected>
+        <requireRowSelection>true</requireRowSelection>
+        <url>{!requireScript(&quot;/soap/ajax/24.0/connection.js&quot;)}
+{!requireScript(&quot;/soap/ajax/24.0/apex.js&quot;)}
+idArray = {!GETRECORDIDS($ObjectType.Contact)};
+
+if(idArray.length == 0)
+{
+     alert(&quot;Please select at least one contact to map&quot;);
+}
+else if(idArray.length &gt; 20)
+{
+     alert(&quot;Please select no more than 20 contacts to map&quot;);
+}
+else
+{
+   // try the namespace first
+   var pageUrl = sforce.apex.execute(&quot;salesvisual.ContactMap&quot;, &quot;getPageUrl&quot;, {ids: idArray.toString()});
+   if (pageUrl == null)
+   {
+      var pageUrl = sforce.apex.execute(&quot;ContactMap&quot;, &quot;getPageUrl&quot;,  {ids: idArray.toString()});
+   }
+   window.location.href = pageUrl;
+}</url>
     </webLinks>
     <webLinks>
         <fullName>SendGmail</fullName>
@@ -4589,61 +5374,5 @@ If (Hubspot_Hubspot_Score_Converted_Cont__c&gt;=-50, &quot;5-Very low&quot;,
         <showsLocation>false</showsLocation>
         <showsStatus>false</showsStatus>
         <url>http://weather.yahoo.com/search/weather2?p={!Contact_MailingPostalCode}</url>
-    </webLinks>
-    <webLinks>
-        <fullName>cirrusadv__Start_Flights</fullName>
-        <availability>online</availability>
-        <displayType>button</displayType>
-        <encodingKey>UTF-8</encodingKey>
-        <height>600</height>
-        <linkType>url</linkType>
-        <masterLabel>Start Flights</masterLabel>
-        <openType>sidebar</openType>
-        <protected>false</protected>
-        <url>/apex/cirrusadv__ContactFlights?ids={!Contact.Id}</url>
-    </webLinks>
-    <webLinks>
-        <fullName>cirrusadv__Start_Flights_List</fullName>
-        <availability>online</availability>
-        <displayType>massActionButton</displayType>
-        <height>600</height>
-        <linkType>page</linkType>
-        <masterLabel>Start Flights</masterLabel>
-        <openType>sidebar</openType>
-        <page>cirrusadv__ContactFlights</page>
-        <protected>false</protected>
-        <requireRowSelection>true</requireRowSelection>
-    </webLinks>
-    <webLinks>
-        <fullName>salesvisual__Map_Contacts</fullName>
-        <availability>online</availability>
-        <displayType>massActionButton</displayType>
-        <linkType>javascript</linkType>
-        <masterLabel>Map Contacts</masterLabel>
-        <openType>onClickJavaScript</openType>
-        <protected>false</protected>
-        <requireRowSelection>true</requireRowSelection>
-        <url>{!requireScript(&quot;/soap/ajax/24.0/connection.js&quot;)}
-{!requireScript(&quot;/soap/ajax/24.0/apex.js&quot;)}
-idArray = {!GETRECORDIDS($ObjectType.Contact)};
-
-if(idArray.length == 0)
-{
-     alert(&quot;Please select at least one contact to map&quot;);
-}
-else if(idArray.length &gt; 20)
-{
-     alert(&quot;Please select no more than 20 contacts to map&quot;);
-}
-else
-{
-   // try the namespace first
-   var pageUrl = sforce.apex.execute(&quot;salesvisual.ContactMap&quot;, &quot;getPageUrl&quot;, {ids: idArray.toString()});
-   if (pageUrl == null)
-   {
-      var pageUrl = sforce.apex.execute(&quot;ContactMap&quot;, &quot;getPageUrl&quot;,  {ids: idArray.toString()});
-   }
-   window.location.href = pageUrl;
-}</url>
     </webLinks>
 </CustomObject>

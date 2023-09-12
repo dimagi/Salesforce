@@ -4,6 +4,8 @@
     <description>Open Opportunity Settings</description>
     <enableEnhancedLookup>false</enableEnhancedLookup>
     <enableFeeds>false</enableFeeds>
+    <label>Open Opportunity Settings</label>
+    <visibility>Public</visibility>
     <fields>
         <fullName>Biz_Dev_Daily_Report_Emails__c</fullName>
         <externalId>false</externalId>
@@ -67,6 +69,4 @@ Applies for Stages 3 +</inlineHelpText>
         <type>Email</type>
         <unique>false</unique>
     </fields>
-    <label>Open Opportunity Settings</label>
-    <visibility>Public</visibility>
 </CustomObject>

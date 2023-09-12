@@ -31,6 +31,10 @@
                 <behavior>Edit</behavior>
                 <field>Status</field>
             </layoutItems>
+            <layoutItems>
+                <behavior>Edit</behavior>
+                <field>Type</field>
+            </layoutItems>
         </layoutColumns>
         <style>TwoColumnsTopToBottom</style>
     </layoutSections>
@@ -62,7 +66,16 @@
                 <field>EndDate</field>
             </layoutItems>
         </layoutColumns>
-        <layoutColumns/>
+        <layoutColumns>
+            <layoutItems>
+                <behavior>Edit</behavior>
+                <field>BudgetedCost</field>
+            </layoutItems>
+            <layoutItems>
+                <behavior>Edit</behavior>
+                <field>ActualCost</field>
+            </layoutItems>
+        </layoutColumns>
         <style>TwoColumnsLeftToRight</style>
     </layoutSections>
     <layoutSections>
@@ -74,17 +87,6 @@
             <layoutItems>
                 <behavior>Readonly</behavior>
                 <field>NumberOfResponses</field>
-            </layoutItems>
-            <layoutItems>
-                <reportChartComponent>
-                    <cacheData>true</cacheData>
-                    <contextFilterableField>CAMPAIGN_ID</contextFilterableField>
-                    <hideOnError>false</hideOnError>
-                    <includeContext>true</includeContext>
-                    <reportName>Campaign_Response_rate</reportName>
-                    <showTitle>false</showTitle>
-                    <size>SMALL</size>
-                </reportChartComponent>
             </layoutItems>
             <layoutItems>
                 <behavior>Readonly</behavior>
@@ -176,6 +178,9 @@
         <label>Custom Links</label>
         <layoutColumns>
             <layoutItems>
+                <customLink>View_all_Campaign_Members</customLink>
+            </layoutItems>
+            <layoutItems>
                 <customLink>ViewAllCampaignMembers</customLink>
             </layoutItems>
             <layoutItems>
@@ -213,16 +218,26 @@
         </relatedContentItems>
     </relatedContent>
     <relatedLists>
+        <fields>LABEL</fields>
+        <fields>ISDEFAULT</fields>
+        <fields>HASRESPONDED</fields>
+        <fields>LASTMODIFIEDDATE</fields>
+        <fields>LASTMODIFIEDBY</fields>
+        <relatedList>RelatedCampaignMemberStatusList</relatedList>
+    </relatedLists>
+    <relatedLists>
         <fields>MEMBER_TYPE</fields>
         <fields>STATUS</fields>
         <fields>FIRST_NAME</fields>
         <fields>LAST_NAME</fields>
         <fields>EMAIL</fields>
+        <fields>TITLE</fields>
         <fields>COMPANY</fields>
-        <fields>Opens__c</fields>
-        <fields>Forwards__c</fields>
+        <fields>LC_OWNER.ALIAS</fields>
         <fields>EMAIL_OPT_OUT</fields>
         <relatedList>RelatedCampaignMemberList</relatedList>
+        <sortField>FIRST_NAME</sortField>
+        <sortOrder>Asc</sortOrder>
     </relatedLists>
     <relatedLists>
         <fields>OPPORTUNITY.NAME</fields>
@@ -230,6 +245,19 @@
         <fields>OPPORTUNITY.AMOUNT</fields>
         <fields>OPPORTUNITY.CLOSE_DATE</fields>
         <relatedList>RelatedOpportunityList</relatedList>
+    </relatedLists>
+    <relatedLists>
+        <fields>CAMPAIGN.NAME</fields>
+        <fields>CAMPAIGN.TOTAL_NUM_LEADS</fields>
+        <fields>CAMPAIGN.TOT_CONVERTED_LEADS</fields>
+        <fields>CAMPAIGN.TOT_CONTACTS</fields>
+        <fields>CAMPAIGN.TOT_OPPORTUNITIES</fields>
+        <fields>CAMPAIGN.TOT_WON_OPPORTUNITIES</fields>
+        <fields>TOT_AMOUNT_WON</fields>
+        <fields>TOT_EXP_REVENUE</fields>
+        <relatedList>RelatedCampaignHierarchyList</relatedList>
+        <sortField>CAMPAIGN.NAME</sortField>
+        <sortOrder>Asc</sortOrder>
     </relatedLists>
     <relatedLists>
         <fields>TASK.SUBJECT</fields>
@@ -241,6 +269,16 @@
         <relatedList>RelatedHistoryList</relatedList>
     </relatedLists>
     <relatedLists>
+        <fields>TASK.SUBJECT</fields>
+        <fields>TASK.WHO_NAME</fields>
+        <fields>ACTIVITY.TASK</fields>
+        <fields>TASK.DUE_DATE</fields>
+        <fields>TASK.STATUS</fields>
+        <fields>TASK.PRIORITY</fields>
+        <fields>CORE.USERS.FULL_NAME</fields>
+        <relatedList>RelatedActivityList</relatedList>
+    </relatedLists>
+    <relatedLists>
         <relatedList>RelatedAttachmentList</relatedList>
     </relatedLists>
     <showEmailCheckbox>false</showEmailCheckbox>
@@ -248,4 +286,10 @@
     <showInteractionLogPanel>false</showInteractionLogPanel>
     <showRunAssignmentRulesCheckbox>false</showRunAssignmentRulesCheckbox>
     <showSubmitAndAttachButton>false</showSubmitAndAttachButton>
+    <summaryLayout>
+        <masterLabel>00hb0000000WyzL</masterLabel>
+        <sizeX>4</sizeX>
+        <sizeY>0</sizeY>
+        <summaryLayoutStyle>Default</summaryLayoutStyle>
+    </summaryLayout>
 </Layout>

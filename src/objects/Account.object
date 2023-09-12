@@ -5,7 +5,27 @@
         <type>Default</type>
     </actionOverrides>
     <actionOverrides>
+        <actionName>CallHighlightAction</actionName>
+        <formFactor>Large</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>CallHighlightAction</actionName>
+        <formFactor>Small</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
         <actionName>CancelEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>CancelEdit</actionName>
+        <formFactor>Large</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>CancelEdit</actionName>
+        <formFactor>Small</formFactor>
         <type>Default</type>
     </actionOverrides>
     <actionOverrides>
@@ -13,7 +33,27 @@
         <type>Default</type>
     </actionOverrides>
     <actionOverrides>
+        <actionName>Delete</actionName>
+        <formFactor>Large</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Delete</actionName>
+        <formFactor>Small</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
         <actionName>Edit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Edit</actionName>
+        <formFactor>Large</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Edit</actionName>
+        <formFactor>Small</formFactor>
         <type>Default</type>
     </actionOverrides>
     <actionOverrides>
@@ -21,7 +61,27 @@
         <type>Default</type>
     </actionOverrides>
     <actionOverrides>
+        <actionName>EmailHighlightAction</actionName>
+        <formFactor>Large</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>EmailHighlightAction</actionName>
+        <formFactor>Small</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
         <actionName>EnableCustomerPortalUser</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>EnableCustomerPortalUser</actionName>
+        <formFactor>Large</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>EnableCustomerPortalUser</actionName>
+        <formFactor>Small</formFactor>
         <type>Default</type>
     </actionOverrides>
     <actionOverrides>
@@ -29,7 +89,27 @@
         <type>Default</type>
     </actionOverrides>
     <actionOverrides>
+        <actionName>List</actionName>
+        <formFactor>Large</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>List</actionName>
+        <formFactor>Small</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
         <actionName>ListClean</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>ListClean</actionName>
+        <formFactor>Large</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>ListClean</actionName>
+        <formFactor>Small</formFactor>
         <type>Default</type>
     </actionOverrides>
     <actionOverrides>
@@ -37,7 +117,27 @@
         <type>Default</type>
     </actionOverrides>
     <actionOverrides>
+        <actionName>New</actionName>
+        <formFactor>Large</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>New</actionName>
+        <formFactor>Small</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
         <actionName>RequestUpdate</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>RequestUpdate</actionName>
+        <formFactor>Large</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>RequestUpdate</actionName>
+        <formFactor>Small</formFactor>
         <type>Default</type>
     </actionOverrides>
     <actionOverrides>
@@ -45,11 +145,41 @@
         <type>Default</type>
     </actionOverrides>
     <actionOverrides>
+        <actionName>SaveEdit</actionName>
+        <formFactor>Large</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>SaveEdit</actionName>
+        <formFactor>Small</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
         <actionName>SmsHighlightAction</actionName>
         <type>Default</type>
     </actionOverrides>
     <actionOverrides>
+        <actionName>SmsHighlightAction</actionName>
+        <formFactor>Large</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>SmsHighlightAction</actionName>
+        <formFactor>Small</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
         <actionName>Tab</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Tab</actionName>
+        <formFactor>Large</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Tab</actionName>
+        <formFactor>Small</formFactor>
         <type>Default</type>
     </actionOverrides>
     <actionOverrides>
@@ -61,14 +191,79 @@
         <type>Flexipage</type>
     </actionOverrides>
     <actionOverrides>
+        <actionName>View</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>View</actionName>
+        <formFactor>Small</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
         <actionName>ViewCustomerPortalUser</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>ViewCustomerPortalUser</actionName>
+        <formFactor>Large</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>ViewCustomerPortalUser</actionName>
+        <formFactor>Small</formFactor>
         <type>Default</type>
     </actionOverrides>
     <actionOverrides>
         <actionName>WebsiteHighlightAction</actionName>
         <type>Default</type>
     </actionOverrides>
+    <actionOverrides>
+        <actionName>WebsiteHighlightAction</actionName>
+        <formFactor>Large</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>WebsiteHighlightAction</actionName>
+        <formFactor>Small</formFactor>
+        <type>Default</type>
+    </actionOverrides>
     <compactLayoutAssignment>Compact_Layout_1</compactLayoutAssignment>
+    <enableEnhancedLookup>true</enableEnhancedLookup>
+    <enableFeeds>true</enableFeeds>
+    <enableHistory>true</enableHistory>
+    <searchLayouts>
+        <customTabListAdditionalFields>ACCOUNT.NAME</customTabListAdditionalFields>
+        <customTabListAdditionalFields>Country__c</customTabListAdditionalFields>
+        <customTabListAdditionalFields>Status__c</customTabListAdditionalFields>
+        <customTabListAdditionalFields>CORE.USERS.ALIAS</customTabListAdditionalFields>
+        <customTabListAdditionalFields>ACCOUNT.LAST_UPDATE</customTabListAdditionalFields>
+        <customTabListAdditionalFields>PARENT_NAME</customTabListAdditionalFields>
+        <lookupDialogsAdditionalFields>ACCOUNT.NAME</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>Country__c</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>Status__c</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>CORE.USERS.ALIAS</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>ACCOUNT.LAST_UPDATE</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>PARENT_NAME</lookupDialogsAdditionalFields>
+        <lookupPhoneDialogsAdditionalFields>ACCOUNT.NAME</lookupPhoneDialogsAdditionalFields>
+        <lookupPhoneDialogsAdditionalFields>Country__c</lookupPhoneDialogsAdditionalFields>
+        <lookupPhoneDialogsAdditionalFields>Status__c</lookupPhoneDialogsAdditionalFields>
+        <lookupPhoneDialogsAdditionalFields>CORE.USERS.ALIAS</lookupPhoneDialogsAdditionalFields>
+        <lookupPhoneDialogsAdditionalFields>ACCOUNT.LAST_UPDATE</lookupPhoneDialogsAdditionalFields>
+        <lookupPhoneDialogsAdditionalFields>PARENT_NAME</lookupPhoneDialogsAdditionalFields>
+        <searchFilterFields>ACCOUNT.NAME</searchFilterFields>
+        <searchFilterFields>Country__c</searchFilterFields>
+        <searchFilterFields>Status__c</searchFilterFields>
+        <searchFilterFields>CORE.USERS.ALIAS</searchFilterFields>
+        <searchFilterFields>ACCOUNT.LAST_UPDATE</searchFilterFields>
+        <searchFilterFields>PARENT_NAME</searchFilterFields>
+        <searchResultsAdditionalFields>ACCOUNT.NAME</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>Country__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>Status__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>CORE.USERS.ALIAS</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>ACCOUNT.LAST_UPDATE</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>PARENT_NAME</searchResultsAdditionalFields>
+    </searchLayouts>
+    <sharingModel>ReadWrite</sharingModel>
     <compactLayouts>
         <fullName>Compact_Layout_1</fullName>
         <fields>Name</fields>
@@ -78,9 +273,21 @@
         <fields>Type</fields>
         <label>Compact Layout 1</label>
     </compactLayouts>
-    <enableEnhancedLookup>true</enableEnhancedLookup>
-    <enableFeeds>true</enableFeeds>
-    <enableHistory>true</enableHistory>
+    <fields>
+        <fullName>Accounting_BillingAccount__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <description>primary HQ Billing Account associated with the Account</description>
+        <externalId>false</externalId>
+        <inlineHelpText>primary HQ Billing Account associated with the Account</inlineHelpText>
+        <label>Accounting BillingAccount</label>
+        <referenceTo>Accounting_BillingAccount__c</referenceTo>
+        <relationshipLabel>Accounts</relationshipLabel>
+        <relationshipName>Accounts</relationshipName>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <type>Lookup</type>
+    </fields>
     <fields>
         <fullName>AccountNumber</fullName>
         <trackFeedHistory>false</trackFeedHistory>
@@ -161,34 +368,42 @@
                 <value>
                     <fullName>&lt;5,000,000</fullName>
                     <default>false</default>
+                    <label>&lt;5,000,000</label>
                 </value>
                 <value>
                     <fullName>5,000,000 - 10,000,000</fullName>
                     <default>false</default>
+                    <label>5,000,000 - 10,000,000</label>
                 </value>
                 <value>
                     <fullName>10,000,000 - 25,000,000</fullName>
                     <default>false</default>
+                    <label>10,000,000 - 25,000,000</label>
                 </value>
                 <value>
                     <fullName>25,000,000 - 50,000,000</fullName>
                     <default>false</default>
+                    <label>25,000,000 - 50,000,000</label>
                 </value>
                 <value>
                     <fullName>50,000,000 - 100,000,000</fullName>
                     <default>false</default>
+                    <label>50,000,000 - 100,000,000</label>
                 </value>
                 <value>
                     <fullName>100,000,000 - 250,000,000</fullName>
                     <default>false</default>
+                    <label>100,000,000 - 250,000,000</label>
                 </value>
                 <value>
                     <fullName>250,000,000 - 500,000,000</fullName>
                     <default>false</default>
+                    <label>250,000,000 - 500,000,000</label>
                 </value>
                 <value>
                     <fullName>500,000,000+</fullName>
                     <default>false</default>
+                    <label>500,000,000+</label>
                 </value>
             </valueSetDefinition>
         </valueSet>
@@ -220,59 +435,93 @@
                 <value>
                     <fullName>Agriculture and Food Security</fullName>
                     <default>false</default>
+                    <label>Agriculture and Food Security</label>
                 </value>
                 <value>
                     <fullName>Economic Development</fullName>
                     <default>false</default>
+                    <label>Economic Development</label>
                 </value>
                 <value>
                     <fullName>Education and Training</fullName>
                     <default>false</default>
+                    <label>Education and Training</label>
                 </value>
                 <value>
                     <fullName>Emergency Response</fullName>
                     <default>false</default>
+                    <label>Emergency Response</label>
                 </value>
                 <value>
                     <fullName>Financial Services for the Poor</fullName>
                     <default>false</default>
+                    <label>Financial Services for the Poor</label>
                 </value>
                 <value>
                     <fullName>Gender Equality and Women&apos;s Empowerment</fullName>
                     <default>false</default>
+                    <label>Gender Equality and Women&apos;s Empowerment</label>
                 </value>
                 <value>
                     <fullName>Governance and Accountability</fullName>
                     <default>false</default>
+                    <label>Governance and Accountability</label>
                 </value>
                 <value>
                     <fullName>Health</fullName>
                     <default>false</default>
+                    <label>Health</label>
                 </value>
                 <value>
                     <fullName>Logistics</fullName>
                     <default>false</default>
+                    <label>Logistics</label>
                 </value>
                 <value>
                     <fullName>Other</fullName>
                     <default>false</default>
+                    <label>Other</label>
                 </value>
                 <value>
                     <fullName>Water, Sanitation, &amp; Hygiene</fullName>
                     <default>false</default>
+                    <label>Water, Sanitation, &amp; Hygiene</label>
                 </value>
                 <value>
                     <fullName>Legal, Human Rights</fullName>
                     <default>false</default>
+                    <label>Legal, Human Rights</label>
                 </value>
             </valueSetDefinition>
         </valueSet>
         <visibleLines>4</visibleLines>
     </fields>
     <fields>
+        <fullName>BAA_and_DPA_File_Paths__c</fullName>
+        <description>file path to BAA</description>
+        <externalId>false</externalId>
+        <label>BAA and DPA File Paths</label>
+        <length>1000</length>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <type>LongTextArea</type>
+        <visibleLines>5</visibleLines>
+    </fields>
+    <fields>
         <fullName>BillingAddress</fullName>
         <trackFeedHistory>false</trackFeedHistory>
         <trackHistory>false</trackHistory>
+    </fields>
+    <fields>
+        <fullName>cirrusadv__Created_by_Cirrus_Insight__c</fullName>
+        <defaultValue>false</defaultValue>
+        <deprecated>false</deprecated>
+        <description>Indicates that this record was created by Cirrus Insight. This checkbox does not have to be included on the page layout, except with Contact Manager, Group, and Professional Edition organizations.</description>
+        <externalId>false</externalId>
+        <label>Created by Cirrus Insight</label>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>true</trackHistory>
+        <type>Checkbox</type>
     </fields>
     <fields>
         <fullName>City_Object__c</fullName>
@@ -476,6 +725,57 @@
         <trackHistory>false</trackHistory>
     </fields>
     <fields>
+        <fullName>Division_Owner__c</fullName>
+        <externalId>false</externalId>
+        <label>Division Owner</label>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <type>Picklist</type>
+        <valueSet>
+            <restricted>true</restricted>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>Solutions</fullName>
+                    <default>false</default>
+                    <label>Solutions</label>
+                </value>
+                <value>
+                    <fullName>SaaS</fullName>
+                    <default>false</default>
+                    <label>SaaS</label>
+                </value>
+                <value>
+                    <fullName>GSO</fullName>
+                    <default>false</default>
+                    <label>GSO</label>
+                </value>
+                <value>
+                    <fullName>GTD</fullName>
+                    <default>false</default>
+                    <label>GTD</label>
+                </value>
+                <value>
+                    <fullName>India Division</fullName>
+                    <default>false</default>
+                    <label>India Division</label>
+                </value>
+                <value>
+                    <fullName>USH</fullName>
+                    <default>false</default>
+                    <label>USH</label>
+                </value>
+                <value>
+                    <fullName>ICDS-CAS</fullName>
+                    <default>false</default>
+                    <isActive>false</isActive>
+                    <label>ICDS-CAS</label>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+    <fields>
         <fullName>Email_Address__c</fullName>
         <externalId>false</externalId>
         <inlineHelpText>Should be a generic info email if applicable.</inlineHelpText>
@@ -502,30 +802,37 @@
                 <value>
                     <fullName>Strategic Partner</fullName>
                     <default>false</default>
+                    <label>Strategic Partner</label>
                 </value>
                 <value>
                     <fullName>Actively Building</fullName>
                     <default>false</default>
+                    <label>Actively Building</label>
                 </value>
                 <value>
                     <fullName>Trying to Warm</fullName>
                     <default>false</default>
+                    <label>Trying to Warm</label>
                 </value>
                 <value>
                     <fullName>Passive and Friendly</fullName>
                     <default>false</default>
+                    <label>Passive and Friendly</label>
                 </value>
                 <value>
                     <fullName>Trying for First Contact</fullName>
                     <default>false</default>
+                    <label>Trying for First Contact</label>
                 </value>
                 <value>
                     <fullName>Passive and Not Friendly</fullName>
                     <default>false</default>
+                    <label>Passive and Not Friendly</label>
                 </value>
                 <value>
                     <fullName>Inactive / Not a Fit</fullName>
                     <default>false</default>
+                    <label>Inactive / Not a Fit</label>
                 </value>
             </valueSetDefinition>
         </valueSet>
@@ -542,12 +849,39 @@
             <valueSetDefinition>
                 <sorted>false</sorted>
                 <value>
-                    <fullName>No</fullName>
-                    <default>true</default>
+                    <fullName>Entity as Business Associate</fullName>
+                    <default>false</default>
+                    <label>Entity is Business Associate</label>
                 </value>
                 <value>
-                    <fullName>Yes</fullName>
+                    <fullName>Entity as Covered Entity</fullName>
                     <default>false</default>
+                    <label>Entity is Covered Entity</label>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+    <fields>
+        <fullName>Entity_DPA__c</fullName>
+        <externalId>false</externalId>
+        <label>Entity DPA</label>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <type>Picklist</type>
+        <valueSet>
+            <restricted>true</restricted>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>Entity is Controller</fullName>
+                    <default>false</default>
+                    <label>Entity is Controller</label>
+                </value>
+                <value>
+                    <fullName>Entity is Processor</fullName>
+                    <default>false</default>
+                    <label>Entity is Processor</label>
                 </value>
             </valueSetDefinition>
         </valueSet>
@@ -609,6 +943,16 @@ Parent.Parent.Parent.Parent.Parent.ParentId
         <type>Picklist</type>
     </fields>
     <fields>
+        <fullName>Is_Key_Account__c</fullName>
+        <defaultValue>false</defaultValue>
+        <externalId>false</externalId>
+        <inlineHelpText>Is this a KAM target as defined by SaaS here: https://docs.google.com/spreadsheets/d/1qRPlQhbjJLpzV1566CXqmFNI5Hvpx0laT8QAz3z1xyk/edit#gid=1337479259 ?</inlineHelpText>
+        <label>Is Key Account?</label>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
         <fullName>Jigsaw</fullName>
         <trackFeedHistory>false</trackFeedHistory>
         <trackHistory>false</trackHistory>
@@ -634,6 +978,59 @@ Parent.Parent.Parent.Parent.Parent.ParentId
         <type>Checkbox</type>
     </fields>
     <fields>
+        <fullName>Key_Account_Manager__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <description>SaaS Account Manager</description>
+        <externalId>false</externalId>
+        <label>Key Account Manager</label>
+        <lookupFilter>
+            <active>true</active>
+            <filterItems>
+                <field>SFDC_Employee__c.Division__c</field>
+                <operation>equals</operation>
+                <value>SaaS</value>
+            </filterItems>
+            <filterItems>
+                <field>SFDC_Employee__c.Sub_Division__c</field>
+                <operation>equals</operation>
+                <value>SaaS - Sales</value>
+            </filterItems>
+            <isOptional>false</isOptional>
+        </lookupFilter>
+        <referenceTo>SFDC_Employee__c</referenceTo>
+        <relationshipLabel>Accounts</relationshipLabel>
+        <relationshipName>Accounts</relationshipName>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>Key_Account_Team__c</fullName>
+        <externalId>false</externalId>
+        <label>Key Account Team</label>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <type>Picklist</type>
+        <valueSet>
+            <restricted>true</restricted>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>SaaS</fullName>
+                    <default>false</default>
+                    <label>SaaS</label>
+                </value>
+                <value>
+                    <fullName>Office of the CEO - GSP</fullName>
+                    <default>false</default>
+                    <label>Office of the CEO - GSP</label>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+    <fields>
         <fullName>Last_Opportunity_Update__c</fullName>
         <externalId>false</externalId>
         <inlineHelpText>The last time an opportunity for this account was updated.</inlineHelpText>
@@ -643,26 +1040,6 @@ Parent.Parent.Parent.Parent.Parent.ParentId
         <summaryOperation>max</summaryOperation>
         <trackHistory>false</trackHistory>
         <type>Summary</type>
-    </fields>
-    <fields>
-        <fullName>MSA_End_Date__c</fullName>
-        <externalId>false</externalId>
-        <inlineHelpText>End date of MSA</inlineHelpText>
-        <label>MSA End Date</label>
-        <required>false</required>
-        <trackFeedHistory>false</trackFeedHistory>
-        <trackHistory>false</trackHistory>
-        <type>Date</type>
-    </fields>
-    <fields>
-        <fullName>MSA__c</fullName>
-        <defaultValue>false</defaultValue>
-        <externalId>false</externalId>
-        <inlineHelpText>Do we have an MSA with this account?</inlineHelpText>
-        <label>MSA</label>
-        <trackFeedHistory>false</trackFeedHistory>
-        <trackHistory>false</trackHistory>
-        <type>Checkbox</type>
     </fields>
     <fields>
         <fullName>Memberships__c</fullName>
@@ -679,14 +1056,49 @@ Parent.Parent.Parent.Parent.Parent.ParentId
                 <value>
                     <fullName>Core Group</fullName>
                     <default>false</default>
+                    <label>Core Group</label>
                 </value>
                 <value>
                     <fullName>NetHope</fullName>
                     <default>false</default>
+                    <label>NetHope</label>
                 </value>
             </valueSetDefinition>
         </valueSet>
         <visibleLines>4</visibleLines>
+    </fields>
+    <fields>
+        <fullName>MSA_DropBox_Path__c</fullName>
+        <description>This field is to provide the DB path a MSA agreement</description>
+        <externalId>false</externalId>
+        <inlineHelpText>This field is to provide the DB path a MSA agreement</inlineHelpText>
+        <label>MSA DropBox Path</label>
+        <length>250</length>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>MSA_End_Date__c</fullName>
+        <externalId>false</externalId>
+        <inlineHelpText>End date of MSA</inlineHelpText>
+        <label>MSA End Date</label>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>MSA__c</fullName>
+        <defaultValue>false</defaultValue>
+        <externalId>false</externalId>
+        <inlineHelpText>Do we have an MSA with this account?</inlineHelpText>
+        <label>Client MSA</label>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <type>Checkbox</type>
     </fields>
     <fields>
         <fullName>Name</fullName>
@@ -718,594 +1130,742 @@ Parent.Parent.Parent.Parent.Parent.ParentId
                 <value>
                     <fullName>Burkina Faso</fullName>
                     <default>false</default>
+                    <label>Burkina Faso</label>
                 </value>
                 <value>
                     <fullName>Guatemala</fullName>
                     <default>false</default>
+                    <label>Guatemala</label>
                 </value>
                 <value>
                     <fullName>India</fullName>
                     <default>false</default>
+                    <label>India</label>
                 </value>
                 <value>
                     <fullName>Kenya</fullName>
                     <default>false</default>
+                    <label>Kenya</label>
                 </value>
                 <value>
                     <fullName>Mozambique</fullName>
                     <default>false</default>
+                    <label>Mozambique</label>
                 </value>
                 <value>
                     <fullName>Senegal</fullName>
                     <default>false</default>
+                    <label>Senegal</label>
                 </value>
                 <value>
                     <fullName>South Africa</fullName>
                     <default>false</default>
+                    <label>South Africa</label>
                 </value>
                 <value>
                     <fullName>Swaziland</fullName>
                     <default>false</default>
+                    <label>Swaziland</label>
                 </value>
                 <value>
                     <fullName>Zambia</fullName>
                     <default>false</default>
+                    <label>Zambia</label>
                 </value>
                 <value>
                     <fullName>Iraq</fullName>
                     <default>false</default>
+                    <label>Iraq</label>
                 </value>
                 <value>
                     <fullName>Bangladesh</fullName>
                     <default>false</default>
+                    <label>Bangladesh</label>
                 </value>
                 <value>
                     <fullName>Sudan (North)</fullName>
                     <default>false</default>
+                    <label>Sudan (North)</label>
                 </value>
                 <value>
                     <fullName>Belgium</fullName>
                     <default>false</default>
+                    <label>Belgium</label>
                 </value>
                 <value>
                     <fullName>Bolivia</fullName>
                     <default>false</default>
+                    <label>Bolivia</label>
                 </value>
                 <value>
                     <fullName>Burundi</fullName>
                     <default>false</default>
+                    <label>Burundi</label>
                 </value>
                 <value>
                     <fullName>Georgia</fullName>
                     <default>false</default>
+                    <label>Georgia</label>
                 </value>
                 <value>
                     <fullName>Papua New Guinea</fullName>
                     <default>false</default>
+                    <label>Papua New Guinea</label>
                 </value>
                 <value>
                     <fullName>Paraguay</fullName>
                     <default>false</default>
+                    <label>Paraguay</label>
                 </value>
                 <value>
                     <fullName>Serbia</fullName>
                     <default>false</default>
+                    <label>Serbia</label>
                 </value>
                 <value>
                     <fullName>Somalia</fullName>
                     <default>false</default>
+                    <label>Somalia</label>
                 </value>
                 <value>
                     <fullName>Sweden</fullName>
                     <default>false</default>
+                    <label>Sweden</label>
                 </value>
                 <value>
                     <fullName>United Kingdom</fullName>
                     <default>false</default>
+                    <label>United Kingdom</label>
                 </value>
                 <value>
                     <fullName>Yemen</fullName>
                     <default>false</default>
+                    <label>Yemen</label>
                 </value>
                 <value>
                     <fullName>Austria</fullName>
                     <default>false</default>
+                    <label>Austria</label>
                 </value>
                 <value>
                     <fullName>Vietnam</fullName>
                     <default>false</default>
+                    <label>Vietnam</label>
                 </value>
                 <value>
                     <fullName>Iran</fullName>
                     <default>false</default>
+                    <label>Iran</label>
                 </value>
                 <value>
                     <fullName>Australia</fullName>
                     <default>false</default>
+                    <label>Australia</label>
                 </value>
                 <value>
                     <fullName>Bosnia</fullName>
                     <default>false</default>
+                    <label>Bosnia</label>
                 </value>
                 <value>
                     <fullName>Madagascar</fullName>
                     <default>false</default>
+                    <label>Madagascar</label>
                 </value>
                 <value>
                     <fullName>Botswana</fullName>
                     <default>false</default>
+                    <label>Botswana</label>
                 </value>
                 <value>
                     <fullName>China</fullName>
                     <default>false</default>
+                    <label>China</label>
                 </value>
                 <value>
                     <fullName>Brazil</fullName>
                     <default>false</default>
+                    <label>Brazil</label>
                 </value>
                 <value>
                     <fullName>Egypt</fullName>
                     <default>false</default>
+                    <label>Egypt</label>
                 </value>
                 <value>
                     <fullName>Hong Kong</fullName>
                     <default>false</default>
+                    <label>Hong Kong</label>
                 </value>
                 <value>
                     <fullName>Luxembourg</fullName>
                     <default>false</default>
+                    <label>Luxembourg</label>
                 </value>
                 <value>
                     <fullName>New Zealand</fullName>
                     <default>false</default>
+                    <label>New Zealand</label>
                 </value>
                 <value>
                     <fullName>Pakistan</fullName>
                     <default>false</default>
+                    <label>Pakistan</label>
                 </value>
                 <value>
                     <fullName>Taiwan</fullName>
                     <default>false</default>
+                    <label>Taiwan</label>
                 </value>
                 <value>
                     <fullName>Uzbekistan</fullName>
                     <default>false</default>
+                    <label>Uzbekistan</label>
                 </value>
                 <value>
                     <fullName>Afghanistan</fullName>
                     <default>false</default>
+                    <label>Afghanistan</label>
                 </value>
                 <value>
                     <fullName>Argentina</fullName>
                     <default>false</default>
+                    <label>Argentina</label>
                 </value>
                 <value>
                     <fullName>Libya</fullName>
                     <default>false</default>
+                    <label>Libya</label>
                 </value>
                 <value>
                     <fullName>Tajikistan</fullName>
                     <default>false</default>
+                    <label>Tajikistan</label>
                 </value>
                 <value>
                     <fullName>Vanuatu</fullName>
                     <default>false</default>
+                    <label>Vanuatu</label>
                 </value>
                 <value>
                     <fullName>Ivory Coast</fullName>
                     <default>false</default>
+                    <label>Ivory Coast</label>
                 </value>
                 <value>
                     <fullName>Dominican Republic</fullName>
                     <default>false</default>
+                    <label>Dominican Republic</label>
                 </value>
                 <value>
                     <fullName>Germany</fullName>
                     <default>false</default>
+                    <label>Germany</label>
                 </value>
                 <value>
                     <fullName>HQ</fullName>
                     <default>false</default>
+                    <label>HQ</label>
                 </value>
                 <value>
                     <fullName>Armenia</fullName>
                     <default>false</default>
+                    <label>Armenia</label>
                 </value>
                 <value>
                     <fullName>Azerbaijan</fullName>
                     <default>false</default>
+                    <label>Azerbaijan</label>
                 </value>
                 <value>
                     <fullName>Belize</fullName>
                     <default>false</default>
+                    <label>Belize</label>
                 </value>
                 <value>
                     <fullName>Central African Republic</fullName>
                     <default>false</default>
+                    <label>Central African Republic</label>
                 </value>
                 <value>
                     <fullName>Colombia</fullName>
                     <default>false</default>
+                    <label>Colombia</label>
                 </value>
                 <value>
                     <fullName>Ethiopia</fullName>
                     <default>false</default>
+                    <label>Ethiopia</label>
                 </value>
                 <value>
                     <fullName>Finland</fullName>
                     <default>false</default>
+                    <label>Finland</label>
                 </value>
                 <value>
                     <fullName>France</fullName>
                     <default>false</default>
+                    <label>France</label>
                 </value>
                 <value>
                     <fullName>Ghana</fullName>
                     <default>false</default>
+                    <label>Ghana</label>
                 </value>
                 <value>
                     <fullName>Guyana</fullName>
                     <default>false</default>
+                    <label>Guyana</label>
                 </value>
                 <value>
                     <fullName>Hungary</fullName>
                     <default>false</default>
+                    <label>Hungary</label>
                 </value>
                 <value>
                     <fullName>Nigeria</fullName>
                     <default>false</default>
+                    <label>Nigeria</label>
                 </value>
                 <value>
                     <fullName>Timor-Leste</fullName>
                     <default>false</default>
+                    <label>Timor-Leste</label>
                 </value>
                 <value>
                     <fullName>Chad</fullName>
                     <default>false</default>
+                    <label>Chad</label>
                 </value>
                 <value>
                     <fullName>Cyprus</fullName>
                     <default>false</default>
+                    <label>Cyprus</label>
                 </value>
                 <value>
                     <fullName>Ireland</fullName>
                     <default>false</default>
+                    <label>Ireland</label>
                 </value>
                 <value>
                     <fullName>Italy</fullName>
                     <default>false</default>
+                    <label>Italy</label>
                 </value>
                 <value>
                     <fullName>Japan</fullName>
                     <default>false</default>
+                    <label>Japan</label>
                 </value>
                 <value>
                     <fullName>Haiti</fullName>
                     <default>false</default>
+                    <label>Haiti</label>
                 </value>
                 <value>
                     <fullName>Canada</fullName>
                     <default>false</default>
+                    <label>Canada</label>
                 </value>
                 <value>
                     <fullName>Jordan</fullName>
                     <default>false</default>
+                    <label>Jordan</label>
                 </value>
                 <value>
                     <fullName>Kyrgyzstan</fullName>
                     <default>false</default>
+                    <label>Kyrgyzstan</label>
                 </value>
                 <value>
                     <fullName>Laos</fullName>
                     <default>false</default>
+                    <label>Laos</label>
                 </value>
                 <value>
                     <fullName>Malaysia</fullName>
                     <default>false</default>
+                    <label>Malaysia</label>
                 </value>
                 <value>
                     <fullName>Netherlands</fullName>
                     <default>false</default>
+                    <label>Netherlands</label>
                 </value>
                 <value>
                     <fullName>Norway</fullName>
                     <default>false</default>
+                    <label>Norway</label>
                 </value>
                 <value>
                     <fullName>Albania</fullName>
                     <default>false</default>
+                    <label>Albania</label>
                 </value>
                 <value>
                     <fullName>Romania</fullName>
                     <default>false</default>
+                    <label>Romania</label>
                 </value>
                 <value>
                     <fullName>Rwanda</fullName>
                     <default>false</default>
+                    <label>Rwanda</label>
                 </value>
                 <value>
                     <fullName>Singapore</fullName>
                     <default>false</default>
+                    <label>Singapore</label>
                 </value>
                 <value>
                     <fullName>Solomon Islands</fullName>
                     <default>false</default>
+                    <label>Solomon Islands</label>
                 </value>
                 <value>
                     <fullName>Cambodia</fullName>
                     <default>false</default>
+                    <label>Cambodia</label>
                 </value>
                 <value>
                     <fullName>Benin</fullName>
                     <default>false</default>
+                    <label>Benin</label>
                 </value>
                 <value>
                     <fullName>Mauritania</fullName>
                     <default>false</default>
+                    <label>Mauritania</label>
                 </value>
                 <value>
                     <fullName>Peru</fullName>
                     <default>false</default>
+                    <label>Peru</label>
                 </value>
                 <value>
                     <fullName>Honduras</fullName>
                     <default>false</default>
+                    <label>Honduras</label>
                 </value>
                 <value>
                     <fullName>Chile</fullName>
                     <default>false</default>
+                    <label>Chile</label>
                 </value>
                 <value>
                     <fullName>Herzegovina</fullName>
                     <default>false</default>
+                    <label>Herzegovina</label>
                 </value>
                 <value>
                     <fullName>Indonesia</fullName>
                     <default>false</default>
+                    <label>Indonesia</label>
                 </value>
                 <value>
                     <fullName>Kosovo</fullName>
                     <default>false</default>
+                    <label>Kosovo</label>
                 </value>
                 <value>
                     <fullName>Nepal</fullName>
                     <default>false</default>
+                    <label>Nepal</label>
                 </value>
                 <value>
                     <fullName>Sri Lanka</fullName>
                     <default>false</default>
+                    <label>Sri Lanka</label>
                 </value>
                 <value>
                     <fullName>Togo</fullName>
                     <default>false</default>
+                    <label>Togo</label>
                 </value>
                 <value>
                     <fullName>West Indies</fullName>
                     <default>false</default>
+                    <label>West Indies</label>
                 </value>
                 <value>
                     <fullName>Zimbabwe</fullName>
                     <default>false</default>
+                    <label>Zimbabwe</label>
                 </value>
                 <value>
                     <fullName>Greece</fullName>
                     <default>false</default>
+                    <label>Greece</label>
                 </value>
                 <value>
                     <fullName>Angola</fullName>
                     <default>false</default>
+                    <label>Angola</label>
                 </value>
                 <value>
                     <fullName>Kazakhstan</fullName>
                     <default>false</default>
+                    <label>Kazakhstan</label>
                 </value>
                 <value>
                     <fullName>Nicaragua</fullName>
                     <default>false</default>
+                    <label>Nicaragua</label>
                 </value>
                 <value>
                     <fullName>South Sudan</fullName>
                     <default>false</default>
+                    <label>South Sudan</label>
                 </value>
                 <value>
                     <fullName>North Korea</fullName>
                     <default>false</default>
+                    <label>North Korea</label>
                 </value>
                 <value>
                     <fullName>Phillipines</fullName>
                     <default>false</default>
+                    <label>Phillipines</label>
                 </value>
                 <value>
                     <fullName>Congo (DRC)</fullName>
                     <default>false</default>
+                    <label>Congo (DRC)</label>
                 </value>
                 <value>
                     <fullName>Denmark</fullName>
                     <default>false</default>
+                    <label>Denmark</label>
                 </value>
                 <value>
                     <fullName>Namibia</fullName>
                     <default>false</default>
+                    <label>Namibia</label>
                 </value>
                 <value>
                     <fullName>Palestine</fullName>
                     <default>false</default>
+                    <label>Palestine</label>
                 </value>
                 <value>
                     <fullName>United Arab Emirates</fullName>
                     <default>false</default>
+                    <label>United Arab Emirates</label>
                 </value>
                 <value>
                     <fullName>West Africa</fullName>
                     <default>false</default>
+                    <label>West Africa</label>
                 </value>
                 <value>
                     <fullName>Lesotho</fullName>
                     <default>false</default>
+                    <label>Lesotho</label>
                 </value>
                 <value>
                     <fullName>Czech Republic</fullName>
                     <default>false</default>
+                    <label>Czech Republic</label>
                 </value>
                 <value>
                     <fullName>Russia</fullName>
                     <default>false</default>
+                    <label>Russia</label>
                 </value>
                 <value>
                     <fullName>Spain</fullName>
                     <default>false</default>
+                    <label>Spain</label>
                 </value>
                 <value>
                     <fullName>Mexico</fullName>
                     <default>false</default>
+                    <label>Mexico</label>
                 </value>
                 <value>
                     <fullName>Tanzania</fullName>
                     <default>false</default>
+                    <label>Tanzania</label>
                 </value>
                 <value>
                     <fullName>Lebanon</fullName>
                     <default>false</default>
+                    <label>Lebanon</label>
                 </value>
                 <value>
                     <fullName>Liberia</fullName>
                     <default>false</default>
+                    <label>Liberia</label>
                 </value>
                 <value>
                     <fullName>Montenegro</fullName>
                     <default>false</default>
+                    <label>Montenegro</label>
                 </value>
                 <value>
                     <fullName>Niger</fullName>
                     <default>false</default>
+                    <label>Niger</label>
                 </value>
                 <value>
                     <fullName>Switzerland</fullName>
                     <default>false</default>
+                    <label>Switzerland</label>
                 </value>
                 <value>
                     <fullName>Uganda</fullName>
                     <default>false</default>
+                    <label>Uganda</label>
                 </value>
                 <value>
                     <fullName>South Korea</fullName>
                     <default>false</default>
+                    <label>South Korea</label>
                 </value>
                 <value>
                     <fullName>Cameroon</fullName>
                     <default>false</default>
+                    <label>Cameroon</label>
                 </value>
                 <value>
                     <fullName>Mali</fullName>
                     <default>false</default>
+                    <label>Mali</label>
                 </value>
                 <value>
                     <fullName>Myanmar</fullName>
                     <default>false</default>
+                    <label>Myanmar</label>
                 </value>
                 <value>
                     <fullName>Panama</fullName>
                     <default>false</default>
+                    <label>Panama</label>
                 </value>
                 <value>
                     <fullName>El Salvador</fullName>
                     <default>false</default>
+                    <label>El Salvador</label>
                 </value>
                 <value>
                     <fullName>Sierra Leone</fullName>
                     <default>false</default>
+                    <label>Sierra Leone</label>
                 </value>
                 <value>
                     <fullName>Thailand</fullName>
                     <default>false</default>
+                    <label>Thailand</label>
                 </value>
                 <value>
                     <fullName>Malawi</fullName>
                     <default>false</default>
+                    <label>Malawi</label>
                 </value>
                 <value>
                     <fullName>Holland</fullName>
                     <default>false</default>
+                    <label>Holland</label>
                 </value>
                 <value>
                     <fullName>United States</fullName>
                     <default>false</default>
+                    <label>United States</label>
                 </value>
                 <value>
                     <fullName>Costa Rica</fullName>
                     <default>false</default>
+                    <label>Costa Rica</label>
                 </value>
                 <value>
                     <fullName>Ecuador</fullName>
                     <default>false</default>
+                    <label>Ecuador</label>
                 </value>
                 <value>
                     <fullName>Guinea</fullName>
                     <default>false</default>
+                    <label>Guinea</label>
                 </value>
                 <value>
                     <fullName>Mongolia</fullName>
                     <default>false</default>
+                    <label>Mongolia</label>
                 </value>
                 <value>
                     <fullName>Gambia</fullName>
                     <default>false</default>
+                    <label>Gambia</label>
                 </value>
                 <value>
                     <fullName>Gabon</fullName>
                     <default>false</default>
+                    <label>Gabon</label>
                 </value>
                 <value>
                     <fullName>Philippines</fullName>
                     <default>false</default>
+                    <label>Philippines</label>
                 </value>
                 <value>
                     <fullName>Israel</fullName>
                     <default>false</default>
+                    <label>Israel</label>
                 </value>
                 <value>
                     <fullName>Global</fullName>
                     <default>false</default>
+                    <label>Global</label>
                 </value>
                 <value>
                     <fullName>Seychelles</fullName>
                     <default>false</default>
+                    <label>Seychelles</label>
                 </value>
                 <value>
                     <fullName>Sint Maarten (Dutch Part)</fullName>
                     <default>false</default>
+                    <label>Sint Maarten (Dutch Part)</label>
                 </value>
                 <value>
                     <fullName>Slovakia</fullName>
                     <default>false</default>
+                    <label>Slovakia</label>
                 </value>
                 <value>
                     <fullName>Slovenia</fullName>
                     <default>false</default>
+                    <label>Slovenia</label>
                 </value>
                 <value>
                     <fullName>South Georgia</fullName>
                     <default>false</default>
+                    <label>South Georgia</label>
                 </value>
                 <value>
                     <fullName>Suriname</fullName>
                     <default>false</default>
+                    <label>Suriname</label>
                 </value>
                 <value>
                     <fullName>Svalbard and Jan Mayen</fullName>
                     <default>false</default>
+                    <label>Svalbard and Jan Mayen</label>
                 </value>
                 <value>
                     <fullName>Syrian Arab Republic</fullName>
                     <default>false</default>
+                    <label>Syrian Arab Republic</label>
                 </value>
                 <value>
                     <fullName>Tokelau</fullName>
                     <default>false</default>
+                    <label>Tokelau</label>
                 </value>
                 <value>
                     <fullName>Tonga</fullName>
                     <default>false</default>
+                    <label>Tonga</label>
                 </value>
             </valueSetDefinition>
         </valueSet>
@@ -1342,20 +1902,6 @@ Parent.Parent.Parent.Parent.Parent.ParentId
         <type>Summary</type>
     </fields>
     <fields>
-        <fullName>Number_of_Open_Opps__c</fullName>
-        <externalId>false</externalId>
-        <label>Number of Open Opps</label>
-        <summaryFilterItems>
-            <field>Opportunity.IsClosed</field>
-            <operation>equals</operation>
-            <value>false</value>
-        </summaryFilterItems>
-        <summaryForeignKey>Opportunity.AccountId</summaryForeignKey>
-        <summaryOperation>count</summaryOperation>
-        <trackHistory>false</trackHistory>
-        <type>Summary</type>
-    </fields>
-    <fields>
         <fullName>Number_of_non_Active_Deployments__c</fullName>
         <externalId>false</externalId>
         <inlineHelpText>Includes both Completed and Inactive deployments.</inlineHelpText>
@@ -1366,6 +1912,20 @@ Parent.Parent.Parent.Parent.Parent.ParentId
             <value>Active</value>
         </summaryFilterItems>
         <summaryForeignKey>Project__c.Implementing_Account__c</summaryForeignKey>
+        <summaryOperation>count</summaryOperation>
+        <trackHistory>false</trackHistory>
+        <type>Summary</type>
+    </fields>
+    <fields>
+        <fullName>Number_of_Open_Opps__c</fullName>
+        <externalId>false</externalId>
+        <label>Number of Open Opps</label>
+        <summaryFilterItems>
+            <field>Opportunity.IsClosed</field>
+            <operation>equals</operation>
+            <value>false</value>
+        </summaryFilterItems>
+        <summaryForeignKey>Opportunity.AccountId</summaryForeignKey>
         <summaryOperation>count</summaryOperation>
         <trackHistory>false</trackHistory>
         <type>Summary</type>
@@ -1385,14 +1945,17 @@ Parent.Parent.Parent.Parent.Parent.ParentId
                 <value>
                     <fullName>Country Office</fullName>
                     <default>true</default>
+                    <label>Country Office</label>
                 </value>
                 <value>
                     <fullName>HQ</fullName>
                     <default>false</default>
+                    <label>HQ</label>
                 </value>
                 <value>
                     <fullName>Regional</fullName>
                     <default>false</default>
+                    <label>Regional</label>
                 </value>
             </valueSetDefinition>
         </valueSet>
@@ -1404,6 +1967,12 @@ Parent.Parent.Parent.Parent.Parent.ParentId
         <type>Lookup</type>
     </fields>
     <fields>
+        <fullName>Ownership</fullName>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <type>Picklist</type>
+    </fields>
+    <fields>
         <fullName>Owner_Business_Unit_Name__c</fullName>
         <externalId>false</externalId>
         <formula>Owner.Business_Unit_Name__c</formula>
@@ -1412,12 +1981,6 @@ Parent.Parent.Parent.Parent.Parent.ParentId
         <trackHistory>false</trackHistory>
         <type>Text</type>
         <unique>false</unique>
-    </fields>
-    <fields>
-        <fullName>Ownership</fullName>
-        <trackFeedHistory>false</trackFeedHistory>
-        <trackHistory>false</trackHistory>
-        <type>Picklist</type>
     </fields>
     <fields>
         <fullName>ParentId</fullName>
@@ -1476,6 +2039,7 @@ TEXT(Parent.Parent.Parent.Parent.Parent.Parent.Enterprise_Relationship__c)
                 <value>
                     <fullName>Yes</fullName>
                     <default>false</default>
+                    <label>Yes</label>
                 </value>
             </valueSetDefinition>
         </valueSet>
@@ -1486,20 +2050,50 @@ TEXT(Parent.Parent.Parent.Parent.Parent.Parent.Enterprise_Relationship__c)
         <trackHistory>false</trackHistory>
     </fields>
     <fields>
+        <fullName>power_of_one__c</fullName>
+        <description>Counter field https://success.salesforce.com/answers?id=9063000000048RbAAI</description>
+        <externalId>false</externalId>
+        <formula>1</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>power of one</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackHistory>false</trackHistory>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
         <fullName>Rating</fullName>
         <trackFeedHistory>false</trackFeedHistory>
         <trackHistory>false</trackHistory>
         <type>Picklist</type>
     </fields>
     <fields>
-        <fullName>SFSSDupeCatcher__Override_DupeCatcher__c</fullName>
-        <defaultValue>false</defaultValue>
+        <fullName>rh2__Describe__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
         <deprecated>false</deprecated>
         <externalId>false</externalId>
-        <label>Account Override DupeCatcher</label>
+        <label>Describe</label>
+        <referenceTo>rh2__PS_Describe__c</referenceTo>
+        <relationshipLabel>Accounts</relationshipLabel>
+        <relationshipName>Accounts</relationshipName>
+        <required>false</required>
         <trackFeedHistory>false</trackFeedHistory>
         <trackHistory>false</trackHistory>
-        <type>Checkbox</type>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>rh2__testCurrency__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>Currency Test</label>
+        <precision>16</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <type>Currency</type>
     </fields>
     <fields>
         <fullName>Salesforce_Account_ID__c</fullName>
@@ -1510,6 +2104,16 @@ TEXT(Parent.Parent.Parent.Parent.Parent.Parent.Enterprise_Relationship__c)
         <trackHistory>false</trackHistory>
         <type>Text</type>
         <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>SFSSDupeCatcher__Override_DupeCatcher__c</fullName>
+        <defaultValue>false</defaultValue>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>Account Override DupeCatcher</label>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <type>Checkbox</type>
     </fields>
     <fields>
         <fullName>ShippingAddress</fullName>
@@ -1549,18 +2153,22 @@ Passive = remind every 3 months.</inlineHelpText>
                 <value>
                     <fullName>Validate</fullName>
                     <default>true</default>
+                    <label>Validate</label>
                 </value>
                 <value>
                     <fullName>Connect</fullName>
                     <default>false</default>
+                    <label>Connect</label>
                 </value>
                 <value>
                     <fullName>Active</fullName>
                     <default>false</default>
+                    <label>Active</label>
                 </value>
                 <value>
                     <fullName>Passive</fullName>
                     <default>false</default>
+                    <label>Passive</label>
                 </value>
             </valueSetDefinition>
         </valueSet>
@@ -1579,242 +2187,302 @@ Passive = remind every 3 months.</inlineHelpText>
                 <value>
                     <fullName>*** Agriculture and Food Security ***</fullName>
                     <default>false</default>
+                    <label>*** Agriculture and Food Security ***</label>
                 </value>
                 <value>
                     <fullName>Agriculture</fullName>
                     <default>false</default>
+                    <label>Agriculture</label>
                 </value>
                 <value>
                     <fullName>Food Security</fullName>
                     <default>false</default>
+                    <label>Food Security</label>
                 </value>
                 <value>
                     <fullName>*** Economic Development ***</fullName>
                     <default>false</default>
+                    <label>*** Economic Development ***</label>
                 </value>
                 <value>
                     <fullName>Rural Development</fullName>
                     <default>false</default>
+                    <label>Rural Development</label>
                 </value>
                 <value>
                     <fullName>Safety &amp; Security</fullName>
                     <default>false</default>
+                    <label>Safety &amp; Security</label>
                 </value>
                 <value>
                     <fullName>Urban Development</fullName>
                     <default>false</default>
+                    <label>Urban Development</label>
                 </value>
                 <value>
                     <fullName>*** Education and Training ***</fullName>
                     <default>false</default>
+                    <label>*** Education and Training ***</label>
                 </value>
                 <value>
                     <fullName>Adult Training</fullName>
                     <default>false</default>
+                    <label>Adult Training</label>
                 </value>
                 <value>
                     <fullName>Child Education</fullName>
                     <default>false</default>
+                    <label>Child Education</label>
                 </value>
                 <value>
                     <fullName>Early Childhood Development</fullName>
                     <default>false</default>
+                    <label>Early Childhood Development</label>
                 </value>
                 <value>
                     <fullName>*** Emergency Response ***</fullName>
                     <default>false</default>
+                    <label>*** Emergency Response ***</label>
                 </value>
                 <value>
                     <fullName>Emergency Response</fullName>
                     <default>false</default>
+                    <label>Emergency Response</label>
                 </value>
                 <value>
                     <fullName>*** Financial Services for the Poor ***</fullName>
                     <default>false</default>
+                    <label>*** Financial Services for the Poor ***</label>
                 </value>
                 <value>
                     <fullName>Conditional Cash Transfer</fullName>
                     <default>false</default>
+                    <label>Conditional Cash Transfer</label>
                 </value>
                 <value>
                     <fullName>Financial Services to the Poor</fullName>
                     <default>false</default>
+                    <label>Financial Services to the Poor</label>
                 </value>
                 <value>
                     <fullName>Mobile Banking</fullName>
                     <default>false</default>
+                    <label>Mobile Banking</label>
                 </value>
                 <value>
                     <fullName>*** Gender Equality and Women&apos;s Emp ***</fullName>
                     <default>false</default>
+                    <label>*** Gender Equality and Women&apos;s Emp ***</label>
                 </value>
                 <value>
                     <fullName>Gender Services</fullName>
                     <default>false</default>
+                    <label>Gender Services</label>
                 </value>
                 <value>
                     <fullName>Sex Workers</fullName>
                     <default>false</default>
+                    <label>Sex Workers</label>
                 </value>
                 <value>
                     <fullName>*** Governance and Accountability ***</fullName>
                     <default>false</default>
+                    <label>*** Governance and Accountability ***</label>
                 </value>
                 <value>
                     <fullName>Governance</fullName>
                     <default>false</default>
+                    <label>Governance</label>
                 </value>
                 <value>
                     <fullName>Social Accountability</fullName>
                     <default>false</default>
+                    <label>Social Accountability</label>
                 </value>
                 <value>
                     <fullName>*** Health ***</fullName>
                     <default>false</default>
+                    <label>*** Health ***</label>
                 </value>
                 <value>
                     <fullName>Cardiac Diseases</fullName>
                     <default>false</default>
+                    <label>Cardiac Diseases</label>
                 </value>
                 <value>
                     <fullName>Care coordination</fullName>
                     <default>false</default>
+                    <label>Care coordination</label>
                 </value>
                 <value>
                     <fullName>Cervical Cancer</fullName>
                     <default>false</default>
+                    <label>Cervical Cancer</label>
                 </value>
                 <value>
                     <fullName>Diagnostics</fullName>
                     <default>false</default>
+                    <label>Diagnostics</label>
                 </value>
                 <value>
                     <fullName>Diarrhea</fullName>
                     <default>false</default>
+                    <label>Diarrhea</label>
                 </value>
                 <value>
                     <fullName>Family Planning</fullName>
                     <default>false</default>
+                    <label>Family Planning</label>
                 </value>
                 <value>
                     <fullName>HIV/AIDS</fullName>
                     <default>false</default>
+                    <label>HIV/AIDS</label>
                 </value>
                 <value>
                     <fullName>Infectious Diseases</fullName>
                     <default>false</default>
+                    <label>Infectious Diseases</label>
                 </value>
                 <value>
                     <fullName>Informatics</fullName>
                     <default>false</default>
+                    <label>Informatics</label>
                 </value>
                 <value>
                     <fullName>Malaria</fullName>
                     <default>false</default>
+                    <label>Malaria</label>
                 </value>
                 <value>
                     <fullName>Maternal, Newborn, &amp; Child Health</fullName>
                     <default>false</default>
+                    <label>Maternal, Newborn, &amp; Child Health</label>
                 </value>
                 <value>
                     <fullName>Medication adherence</fullName>
                     <default>false</default>
+                    <label>Medication adherence</label>
                 </value>
                 <value>
                     <fullName>Mental Health</fullName>
                     <default>false</default>
+                    <label>Mental Health</label>
                 </value>
                 <value>
                     <fullName>Neglected Tropical Diseases</fullName>
                     <default>false</default>
+                    <label>Neglected Tropical Diseases</label>
                 </value>
                 <value>
                     <fullName>Non-Communicable Diseases</fullName>
                     <default>false</default>
+                    <label>Non-Communicable Diseases</label>
                 </value>
                 <value>
                     <fullName>Nutrition</fullName>
                     <default>false</default>
+                    <label>Nutrition</label>
                 </value>
                 <value>
                     <fullName>Polio</fullName>
                     <default>false</default>
+                    <label>Polio</label>
                 </value>
                 <value>
                     <fullName>Primary Care</fullName>
                     <default>false</default>
+                    <label>Primary Care</label>
                 </value>
                 <value>
                     <fullName>Respiratory Diseases</fullName>
                     <default>false</default>
+                    <label>Respiratory Diseases</label>
                 </value>
                 <value>
                     <fullName>Surgery</fullName>
                     <default>false</default>
+                    <label>Surgery</label>
                 </value>
                 <value>
                     <fullName>Surveillance</fullName>
                     <default>false</default>
+                    <label>Surveillance</label>
                 </value>
                 <value>
                     <fullName>Telemedicine</fullName>
                     <default>false</default>
+                    <label>Telemedicine</label>
                 </value>
                 <value>
                     <fullName>Tuberculosis</fullName>
                     <default>false</default>
+                    <label>Tuberculosis</label>
                 </value>
                 <value>
                     <fullName>Vaccinations</fullName>
                     <default>false</default>
+                    <label>Vaccinations</label>
                 </value>
                 <value>
                     <fullName>*** Logistics ***</fullName>
                     <default>false</default>
+                    <label>*** Logistics ***</label>
                 </value>
                 <value>
                     <fullName>Commodity Tracking/Procurement</fullName>
                     <default>false</default>
+                    <label>Commodity Tracking/Procurement</label>
                 </value>
                 <value>
                     <fullName>Human Resources</fullName>
                     <default>false</default>
+                    <label>Human Resources</label>
                 </value>
                 <value>
                     <fullName>*** Other ***</fullName>
                     <default>false</default>
+                    <label>*** Other ***</label>
                 </value>
                 <value>
                     <fullName>Environment</fullName>
                     <default>false</default>
+                    <label>Environment</label>
                 </value>
                 <value>
                     <fullName>Orphans and Vulnerable Children</fullName>
                     <default>false</default>
+                    <label>Orphans and Vulnerable Children</label>
                 </value>
                 <value>
                     <fullName>Telecommunications</fullName>
                     <default>false</default>
+                    <label>Telecommunications</label>
                 </value>
                 <value>
                     <fullName>*** Water, Sanitation, &amp; Hygiene ***</fullName>
                     <default>false</default>
+                    <label>*** Water, Sanitation, &amp; Hygiene ***</label>
                 </value>
                 <value>
                     <fullName>Water, Sanitation, &amp; Hygiene</fullName>
                     <default>false</default>
+                    <label>Water, Sanitation, &amp; Hygiene</label>
                 </value>
                 <value>
                     <fullName>*** Poverty and Economic Development ***</fullName>
                     <default>false</default>
+                    <label>*** Poverty and Economic Development ***</label>
                 </value>
                 <value>
                     <fullName>*** Natural Resource Management ***</fullName>
                     <default>false</default>
+                    <label>*** Natural Resource Management ***</label>
                 </value>
                 <value>
                     <fullName>*** Training &amp; Education Services ***</fullName>
                     <default>false</default>
+                    <label>*** Training &amp; Education Services ***</label>
                 </value>
             </valueSetDefinition>
         </valueSet>
@@ -1838,114 +2506,62 @@ Passive = remind every 3 months.</inlineHelpText>
         <trackHistory>false</trackHistory>
     </fields>
     <fields>
+        <fullName>Tier</fullName>
+    </fields>
+    <fields>
         <fullName>Type</fullName>
         <trackFeedHistory>false</trackFeedHistory>
         <trackHistory>false</trackHistory>
         <type>Picklist</type>
     </fields>
     <fields>
+        <fullName>Vendor_MSA__c</fullName>
+        <defaultValue>false</defaultValue>
+        <externalId>false</externalId>
+        <label>Vendor MSA</label>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
         <fullName>Website</fullName>
         <trackFeedHistory>false</trackFeedHistory>
         <trackHistory>false</trackHistory>
     </fields>
-    <fields>
-        <fullName>cirrusadv__Created_by_Cirrus_Insight__c</fullName>
-        <defaultValue>false</defaultValue>
-        <deprecated>false</deprecated>
-        <description>Indicates that this record was created by Cirrus Insight. This checkbox does not have to be included on the page layout, except with Contact Manager, Group, and Professional Edition organizations.</description>
-        <externalId>false</externalId>
-        <label>Created by Cirrus Insight</label>
-        <trackFeedHistory>false</trackFeedHistory>
-        <trackHistory>true</trackHistory>
-        <type>Checkbox</type>
-    </fields>
-    <fields>
-        <fullName>power_of_one__c</fullName>
-        <description>Counter field https://success.salesforce.com/answers?id=9063000000048RbAAI</description>
-        <externalId>false</externalId>
-        <formula>1</formula>
-        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
-        <label>power of one</label>
-        <precision>18</precision>
-        <required>false</required>
-        <scale>0</scale>
-        <trackHistory>false</trackHistory>
-        <type>Number</type>
-        <unique>false</unique>
-    </fields>
     <listViews>
-        <fullName>Account_Country_Clean_Up</fullName>
+        <fullName>academic</fullName>
+        <booleanFilter>1 OR 2</booleanFilter>
         <columns>ACCOUNT.NAME</columns>
-        <columns>Country__c</columns>
         <columns>ACCOUNT.TYPE</columns>
-        <columns>Office_Type__c</columns>
-        <columns>PARENT_NAME</columns>
         <columns>CORE.USERS.ALIAS</columns>
-        <columns>Account_Status__c</columns>
-        <columns>Area__c</columns>
         <columns>Tag__c</columns>
-        <filterScope>Mine</filterScope>
-        <filters>
-            <field>Country__c</field>
-            <operation>equals</operation>
-        </filters>
-        <label>Account Country Clean Up</label>
-    </listViews>
-    <listViews>
-        <fullName>Account_Country_equals_HQ</fullName>
-        <columns>ACCOUNT.NAME</columns>
-        <columns>Country__c</columns>
+        <columns>Area__c</columns>
+        <columns>SFSSDupeCatcher__Override_DupeCatcher__c</columns>
         <columns>City_Object__c</columns>
-        <columns>ACCOUNT.ADDRESS1_STATE</columns>
-        <columns>ACCOUNT.PHONE1</columns>
-        <columns>Tag__c</columns>
-        <columns>Area__c</columns>
-        <columns>ACCOUNT.TYPE</columns>
-        <columns>CORE.USERS.ALIAS</columns>
+        <columns>Country__c</columns>
         <filterScope>Everything</filterScope>
         <filters>
-            <field>Country__c</field>
+            <field>ACCOUNT.TYPE</field>
             <operation>equals</operation>
-            <value>HQ</value>
+            <value>Academic</value>
         </filters>
-        <label>Account Country equals HQ</label>
+        <filters>
+            <field>ACCOUNT.TYPE</field>
+            <operation>equals</operation>
+        </filters>
+        <label>academics</label>
     </listViews>
     <listViews>
-        <fullName>Account_Management_DS</fullName>
+        <fullName>Academic_Accounts</fullName>
         <columns>ACCOUNT.NAME</columns>
-        <columns>Enterprise_Relationship__c</columns>
-        <columns>CORE.USERS.FIRST_NAME</columns>
-        <columns>CORE.USERS.LAST_NAME</columns>
-        <columns>Account_Owning_Entity__c</columns>
-        <columns>ACCOUNT.TYPE</columns>
-        <columns>Account_Status__c</columns>
-        <columns>Country__c</columns>
-        <columns>ACCOUNT.LAST_UPDATE</columns>
-        <columns>Number_of_Open_Opps__c</columns>
+        <columns>ACCOUNT.LAST_ACTIVITY</columns>
         <filterScope>Everything</filterScope>
         <filters>
-            <field>CORE.USERS.FIRST_NAME</field>
+            <field>ACCOUNT.TYPE</field>
             <operation>equals</operation>
-            <value>Devika</value>
+            <value>Academic</value>
         </filters>
-        <label>Accounts Management - DS</label>
-    </listViews>
-    <listViews>
-        <fullName>Account_Status_Connect</fullName>
-        <columns>ACCOUNT.NAME</columns>
-        <columns>Status__c</columns>
-        <columns>CORE.USERS.ALIAS</columns>
-        <columns>CORE.USERS.LAST_NAME</columns>
-        <columns>Country__c</columns>
-        <columns>ACCOUNT.LAST_UPDATE</columns>
-        <columns>PARENT_NAME</columns>
-        <filterScope>Mine</filterScope>
-        <filters>
-            <field>Status__c</field>
-            <operation>equals</operation>
-            <value>Connect</value>
-        </filters>
-        <label>My Accounts: Connect</label>
+        <label>Academic Accounts</label>
     </listViews>
     <listViews>
         <fullName>Accounts_60_days</fullName>
@@ -1961,6 +2577,23 @@ Passive = remind every 3 months.</inlineHelpText>
             <value>LAST_N_DAYS:60</value>
         </filters>
         <label>Accounts &gt; 60 days</label>
+    </listViews>
+    <listViews>
+        <fullName>Accounts_in_Moz</fullName>
+        <columns>Country__c</columns>
+        <columns>City_Object__c</columns>
+        <columns>ACCOUNT.NAME</columns>
+        <columns>ACCOUNT.TYPE</columns>
+        <columns>Account_Status__c</columns>
+        <columns>ACCOUNT.LAST_ACTIVITY</columns>
+        <columns>Tag__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Country__c</field>
+            <operation>equals</operation>
+            <value>Mozambique</value>
+        </filters>
+        <label>Accounts in Moz</label>
     </listViews>
     <listViews>
         <fullName>Accounts_Management_CP</fullName>
@@ -1983,6 +2616,26 @@ Passive = remind every 3 months.</inlineHelpText>
         <label>Accounts Management - CP</label>
     </listViews>
     <listViews>
+        <fullName>Accounts_Management_DP</fullName>
+        <columns>ACCOUNT.NAME</columns>
+        <columns>PARENT_NAME</columns>
+        <columns>Is_Key_Account__c</columns>
+        <columns>Country__c</columns>
+        <columns>CORE.USERS.FIRST_NAME</columns>
+        <columns>CORE.USERS.LAST_NAME</columns>
+        <columns>ACCOUNT.TYPE</columns>
+        <columns>Account_Status__c</columns>
+        <columns>ACCOUNT.LAST_UPDATE</columns>
+        <columns>Number_of_Open_Opps__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>ACCOUNT.NAME</field>
+            <operation>startsWith</operation>
+            <value>P</value>
+        </filters>
+        <label>Accounts Management - DP</label>
+    </listViews>
+    <listViews>
         <fullName>Accounts_Management_JJ</fullName>
         <columns>Enterprise_Relationship__c</columns>
         <columns>ACCOUNT.NAME</columns>
@@ -2001,26 +2654,6 @@ Passive = remind every 3 months.</inlineHelpText>
             <value>Jonathan</value>
         </filters>
         <label>Accounts Management - JJ</label>
-    </listViews>
-    <listViews>
-        <fullName>Accounts_Management_KSS</fullName>
-        <columns>ACCOUNT.NAME</columns>
-        <columns>Enterprise_Relationship__c</columns>
-        <columns>CORE.USERS.FIRST_NAME</columns>
-        <columns>CORE.USERS.LAST_NAME</columns>
-        <columns>Account_Owning_Entity__c</columns>
-        <columns>ACCOUNT.TYPE</columns>
-        <columns>Account_Status__c</columns>
-        <columns>Country__c</columns>
-        <columns>ACCOUNT.LAST_UPDATE</columns>
-        <columns>Number_of_Open_Opps__c</columns>
-        <filterScope>Everything</filterScope>
-        <filters>
-            <field>CORE.USERS.FIRST_NAME</field>
-            <operation>equals</operation>
-            <value>Kieran</value>
-        </filters>
-        <label>Accounts Management - KSS</label>
     </listViews>
     <listViews>
         <fullName>Accounts_Management_MH</fullName>
@@ -2093,26 +2726,6 @@ Passive = remind every 3 months.</inlineHelpText>
             <value>Neal</value>
         </filters>
         <label>Accounts Management - NL</label>
-    </listViews>
-    <listViews>
-        <fullName>Accounts_Management_NN</fullName>
-        <columns>Enterprise_Relationship__c</columns>
-        <columns>ACCOUNT.NAME</columns>
-        <columns>CORE.USERS.FIRST_NAME</columns>
-        <columns>CORE.USERS.LAST_NAME</columns>
-        <columns>Account_Owning_Entity__c</columns>
-        <columns>ACCOUNT.TYPE</columns>
-        <columns>Account_Status__c</columns>
-        <columns>Country__c</columns>
-        <columns>ACCOUNT.LAST_UPDATE</columns>
-        <columns>Number_of_Open_Opps__c</columns>
-        <filterScope>Everything</filterScope>
-        <filters>
-            <field>CORE.USERS.FIRST_NAME</field>
-            <operation>equals</operation>
-            <value>Nick</value>
-        </filters>
-        <label>Accounts Management - NN</label>
     </listViews>
     <listViews>
         <fullName>Accounts_Management_RL</fullName>
@@ -2222,21 +2835,31 @@ Passive = remind every 3 months.</inlineHelpText>
         <label>Accounts Missing Relationship Status</label>
     </listViews>
     <listViews>
-        <fullName>Accounts_in_Moz</fullName>
-        <columns>Country__c</columns>
-        <columns>City_Object__c</columns>
+        <fullName>accounts_review_for_abs</fullName>
         <columns>ACCOUNT.NAME</columns>
-        <columns>ACCOUNT.TYPE</columns>
-        <columns>Account_Status__c</columns>
         <columns>ACCOUNT.LAST_ACTIVITY</columns>
+        <columns>ACCOUNT.CREATED_DATE</columns>
+        <columns>CORE.USERS.FIRST_NAME</columns>
+        <columns>CORE.USERS.LAST_NAME</columns>
+        <columns>ACCOUNT.LAST_UPDATE</columns>
+        <columns>PARENT_NAME</columns>
         <columns>Tag__c</columns>
+        <columns>ACCOUNT.ADDRESS1_STATE</columns>
+        <columns>ACCOUNT.PHONE1</columns>
+        <columns>ACCOUNT.TYPE</columns>
+        <columns>CORE.USERS.ALIAS</columns>
+        <columns>Office_Type__c</columns>
         <filterScope>Everything</filterScope>
         <filters>
-            <field>Country__c</field>
+            <field>PARENT_NAME</field>
             <operation>equals</operation>
-            <value>Mozambique</value>
         </filters>
-        <label>Accounts in Moz</label>
+        <filters>
+            <field>Days_w_o_Activity__c</field>
+            <operation>lessThan</operation>
+            <value>365</value>
+        </filters>
+        <label>accounts review for abs</label>
     </listViews>
     <listViews>
         <fullName>Accounts_with_no_parent_account</fullName>
@@ -2259,6 +2882,80 @@ Passive = remind every 3 months.</inlineHelpText>
             <operation>equals</operation>
         </filters>
         <label>Accounts with no parent account</label>
+    </listViews>
+    <listViews>
+        <fullName>Account_Country_Clean_Up</fullName>
+        <columns>ACCOUNT.NAME</columns>
+        <columns>Country__c</columns>
+        <columns>ACCOUNT.TYPE</columns>
+        <columns>Office_Type__c</columns>
+        <columns>PARENT_NAME</columns>
+        <columns>CORE.USERS.ALIAS</columns>
+        <columns>Account_Status__c</columns>
+        <columns>Area__c</columns>
+        <columns>Tag__c</columns>
+        <filterScope>Mine</filterScope>
+        <filters>
+            <field>Country__c</field>
+            <operation>equals</operation>
+        </filters>
+        <label>Account Country Clean Up</label>
+    </listViews>
+    <listViews>
+        <fullName>Account_Country_equals_HQ</fullName>
+        <columns>ACCOUNT.NAME</columns>
+        <columns>Country__c</columns>
+        <columns>City_Object__c</columns>
+        <columns>ACCOUNT.ADDRESS1_STATE</columns>
+        <columns>ACCOUNT.PHONE1</columns>
+        <columns>Tag__c</columns>
+        <columns>Area__c</columns>
+        <columns>ACCOUNT.TYPE</columns>
+        <columns>CORE.USERS.ALIAS</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Country__c</field>
+            <operation>equals</operation>
+            <value>HQ</value>
+        </filters>
+        <label>Account Country equals HQ</label>
+    </listViews>
+    <listViews>
+        <fullName>Account_Management_DS</fullName>
+        <columns>ACCOUNT.NAME</columns>
+        <columns>Enterprise_Relationship__c</columns>
+        <columns>CORE.USERS.FIRST_NAME</columns>
+        <columns>CORE.USERS.LAST_NAME</columns>
+        <columns>Account_Owning_Entity__c</columns>
+        <columns>ACCOUNT.TYPE</columns>
+        <columns>Account_Status__c</columns>
+        <columns>Country__c</columns>
+        <columns>ACCOUNT.LAST_UPDATE</columns>
+        <columns>Number_of_Open_Opps__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>CORE.USERS.FIRST_NAME</field>
+            <operation>equals</operation>
+            <value>Devika</value>
+        </filters>
+        <label>Accounts Management - DS</label>
+    </listViews>
+    <listViews>
+        <fullName>Account_Status_Connect</fullName>
+        <columns>ACCOUNT.NAME</columns>
+        <columns>Status__c</columns>
+        <columns>CORE.USERS.ALIAS</columns>
+        <columns>CORE.USERS.LAST_NAME</columns>
+        <columns>Country__c</columns>
+        <columns>ACCOUNT.LAST_UPDATE</columns>
+        <columns>PARENT_NAME</columns>
+        <filterScope>Mine</filterScope>
+        <filters>
+            <field>Status__c</field>
+            <operation>equals</operation>
+            <value>Connect</value>
+        </filters>
+        <label>My Accounts: Connect</label>
     </listViews>
     <listViews>
         <fullName>Accts_INC</fullName>
@@ -2322,19 +3019,97 @@ Passive = remind every 3 months.</inlineHelpText>
         <label>Accts DWA</label>
     </listViews>
     <listViews>
-        <fullName>Ag_Push_South_Africa</fullName>
+        <fullName>acct_clean_up</fullName>
+        <booleanFilter>1 OR 2 OR 3 OR 4 OR 5 OR 6</booleanFilter>
         <columns>ACCOUNT.NAME</columns>
+        <columns>Country__c</columns>
+        <columns>City__c</columns>
         <columns>ACCOUNT.ADDRESS1_STATE</columns>
         <columns>ACCOUNT.PHONE1</columns>
         <columns>ACCOUNT.TYPE</columns>
         <columns>CORE.USERS.ALIAS</columns>
+        <columns>PARENT_NAME</columns>
+        <columns>Area__c</columns>
+        <columns>Sub_Area__c</columns>
+        <filterScope>Mine</filterScope>
+        <filters>
+            <field>Country__c</field>
+            <operation>equals</operation>
+            <value>United States</value>
+        </filters>
+        <filters>
+            <field>Country__c</field>
+            <operation>equals</operation>
+            <value>Guatemala</value>
+        </filters>
+        <filters>
+            <field>Country__c</field>
+            <operation>equals</operation>
+            <value>Ecuador</value>
+        </filters>
+        <filters>
+            <field>Country__c</field>
+            <operation>equals</operation>
+            <value>Mexico</value>
+        </filters>
+        <filters>
+            <field>Country__c</field>
+            <operation>equals</operation>
+            <value>Colombia</value>
+        </filters>
+        <filters>
+            <field>Account_Owning_Entity__c</field>
+            <operation>equals</operation>
+            <value>Inc</value>
+        </filters>
+        <label>acct clean up</label>
+    </listViews>
+    <listViews>
+        <fullName>ACTED</fullName>
+        <columns>ACCOUNT.NAME</columns>
+        <columns>Is_Key_Account__c</columns>
         <filterScope>Everything</filterScope>
         <filters>
-            <field>Tag__c</field>
-            <operation>equals</operation>
-            <value>DSA Ag</value>
+            <field>ACCOUNT.NAME</field>
+            <operation>contains</operation>
+            <value>ACTED</value>
         </filters>
-        <label>Ag Push South Africa</label>
+        <label>ACTED</label>
+    </listViews>
+    <listViews>
+        <fullName>Action_Contre_la_Faim</fullName>
+        <booleanFilter>1 OR 2 OR 3</booleanFilter>
+        <columns>ACCOUNT.NAME</columns>
+        <columns>Is_Key_Account__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>ACCOUNT.NAME</field>
+            <operation>contains</operation>
+            <value>ACF</value>
+        </filters>
+        <filters>
+            <field>ACCOUNT.NAME</field>
+            <operation>contains</operation>
+            <value>Action Against Hunger</value>
+        </filters>
+        <filters>
+            <field>ACCOUNT.NAME</field>
+            <operation>contains</operation>
+            <value>Action contre la Faim</value>
+        </filters>
+        <label>Action Contre la Faim</label>
+    </listViews>
+    <listViews>
+        <fullName>Africare</fullName>
+        <columns>ACCOUNT.NAME</columns>
+        <columns>Is_Key_Account__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>ACCOUNT.NAME</field>
+            <operation>contains</operation>
+            <value>Africare</value>
+        </filters>
+        <label>Africare</label>
     </listViews>
     <listViews>
         <fullName>Agencies_and_Alliances</fullName>
@@ -2354,6 +3129,32 @@ Passive = remind every 3 months.</inlineHelpText>
         <label>Agencies and Alliances</label>
     </listViews>
     <listViews>
+        <fullName>Ag_Push_South_Africa</fullName>
+        <columns>ACCOUNT.NAME</columns>
+        <columns>ACCOUNT.ADDRESS1_STATE</columns>
+        <columns>ACCOUNT.PHONE1</columns>
+        <columns>ACCOUNT.TYPE</columns>
+        <columns>CORE.USERS.ALIAS</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Tag__c</field>
+            <operation>equals</operation>
+            <value>DSA Ag</value>
+        </filters>
+        <label>Ag Push South Africa</label>
+    </listViews>
+    <listViews>
+        <fullName>all_accounts</fullName>
+        <columns>ACCOUNT.NAME</columns>
+        <columns>ACCOUNT.ADDRESS1_STATE</columns>
+        <columns>ACCOUNT.PHONE1</columns>
+        <columns>ACCOUNT.TYPE</columns>
+        <columns>CORE.USERS.ALIAS</columns>
+        <columns>Office_Type__c</columns>
+        <filterScope>Everything</filterScope>
+        <label>all_accounts_by_type</label>
+    </listViews>
+    <listViews>
         <fullName>All_Ag_Accounts</fullName>
         <columns>ACCOUNT.NAME</columns>
         <columns>Country__c</columns>
@@ -2362,12 +3163,105 @@ Passive = remind every 3 months.</inlineHelpText>
         <columns>Tag__c</columns>
         <columns>CORE.USERS.ALIAS</columns>
         <filterScope>Everything</filterScope>
-        <filters>
-            <field>Area__c</field>
-            <operation>equals</operation>
-            <value>Agriculture and Food Security</value>
-        </filters>
         <label>All: Ag Accounts</label>
+    </listViews>
+    <listViews>
+        <fullName>Caritas</fullName>
+        <columns>ACCOUNT.NAME</columns>
+        <columns>Is_Key_Account__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>ACCOUNT.NAME</field>
+            <operation>contains</operation>
+            <value>Caritas</value>
+        </filters>
+        <label>Caritas</label>
+    </listViews>
+    <listViews>
+        <fullName>Certified_Providers</fullName>
+        <columns>ACCOUNT.NAME</columns>
+        <columns>ACCOUNT.PHONE1</columns>
+        <columns>ACCOUNT.TYPE</columns>
+        <columns>CORE.USERS.ALIAS</columns>
+        <columns>CREATEDBY_USER.ALIAS</columns>
+        <columns>Key_Account_Manager__c</columns>
+        <columns>Country__c</columns>
+        <columns>Enterprise_Relationship__c</columns>
+        <columns>ACCOUNT.LAST_UPDATE</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>ACCOUNT.TYPE</field>
+            <operation>equals</operation>
+            <value>Deployment Partner (Reseller),Technology Partner (Reseller)</value>
+        </filters>
+        <filters>
+            <field>Country__c</field>
+            <operation>notEqual</operation>
+            <value>France,United States</value>
+        </filters>
+        <label>Certified Providers</label>
+    </listViews>
+    <listViews>
+        <fullName>Certified_Providers_Africa</fullName>
+        <columns>ACCOUNT.NAME</columns>
+        <columns>ACCOUNT.PHONE1</columns>
+        <columns>ACCOUNT.TYPE</columns>
+        <columns>CORE.USERS.ALIAS</columns>
+        <columns>CREATEDBY_USER.ALIAS</columns>
+        <columns>Key_Account_Manager__c</columns>
+        <columns>Country__c</columns>
+        <columns>Enterprise_Relationship__c</columns>
+        <columns>ACCOUNT.LAST_UPDATE</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>ACCOUNT.TYPE</field>
+            <operation>equals</operation>
+            <value>Deployment Partner (Reseller),Technology Partner (Reseller)</value>
+        </filters>
+        <filters>
+            <field>Country__c</field>
+            <operation>notEqual</operation>
+            <value>France,United States</value>
+        </filters>
+        <filters>
+            <field>Enterprise_Relationship__c</field>
+            <operation>notEqual</operation>
+            <value>Inactive / Not a Fit</value>
+        </filters>
+        <label>Qualified Leads - CommCare Providers</label>
+    </listViews>
+    <listViews>
+        <fullName>Concern</fullName>
+        <columns>ACCOUNT.NAME</columns>
+        <columns>Is_Key_Account__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>ACCOUNT.NAME</field>
+            <operation>contains</operation>
+            <value>Concern Worldwide</value>
+        </filters>
+        <label>Concern</label>
+    </listViews>
+    <listViews>
+        <fullName>Copy_of_Accounts_Management_SO</fullName>
+        <columns>ACCOUNT.NAME</columns>
+        <columns>Salesforce_Account_ID__c</columns>
+        <columns>PARENT_NAME</columns>
+        <columns>Is_Key_Account__c</columns>
+        <columns>Country__c</columns>
+        <columns>CORE.USERS.FIRST_NAME</columns>
+        <columns>CORE.USERS.LAST_NAME</columns>
+        <columns>ACCOUNT.TYPE</columns>
+        <columns>Account_Status__c</columns>
+        <columns>ACCOUNT.LAST_UPDATE</columns>
+        <columns>Number_of_Open_Opps__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>ACCOUNT.NAME</field>
+            <operation>startsWith</operation>
+            <value>EGPAF</value>
+        </filters>
+        <label>Accounts Management - SO</label>
     </listViews>
     <listViews>
         <fullName>Core_Group_Orgs</fullName>
@@ -2452,6 +3346,18 @@ Passive = remind every 3 months.</inlineHelpText>
         <label>Country: Zambia</label>
     </listViews>
     <listViews>
+        <fullName>Danish_Refugee_Council</fullName>
+        <columns>ACCOUNT.NAME</columns>
+        <columns>Is_Key_Account__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>ACCOUNT.NAME</field>
+            <operation>contains</operation>
+            <value>Danish</value>
+        </filters>
+        <label>Danish Refugee Council</label>
+    </listViews>
+    <listViews>
         <fullName>DC_Accounts</fullName>
         <columns>City__c</columns>
         <columns>ACCOUNT.NAME</columns>
@@ -2473,27 +3379,27 @@ Passive = remind every 3 months.</inlineHelpText>
         <label>DC_Accounts</label>
     </listViews>
     <listViews>
-        <fullName>DLAC_Accounts</fullName>
-        <booleanFilter>1 OR 2</booleanFilter>
+        <fullName>Delphine_POD_D</fullName>
         <columns>ACCOUNT.NAME</columns>
-        <columns>Enterprise_Relationship__c</columns>
-        <columns>PARENT_NAME</columns>
-        <columns>Country__c</columns>
-        <columns>Account_Owning_Entity__c</columns>
+        <columns>ACCOUNT.ADDRESS1_STATE</columns>
+        <columns>ACCOUNT.PHONE1</columns>
         <columns>ACCOUNT.TYPE</columns>
         <columns>CORE.USERS.ALIAS</columns>
         <filterScope>Everything</filterScope>
+        <label>Delphine POD D</label>
+    </listViews>
+    <listViews>
+        <fullName>Delphine_POD_D_Accounts</fullName>
+        <columns>ACCOUNT.NAME</columns>
+        <columns>Country__c</columns>
+        <columns>Is_Key_Account__c</columns>
+        <filterScope>Everything</filterScope>
         <filters>
-            <field>Account_Owning_Entity__c</field>
-            <operation>equals</operation>
-            <value>DLAC</value>
+            <field>ACCOUNT.NAME</field>
+            <operation>contains</operation>
+            <value>Plan</value>
         </filters>
-        <filters>
-            <field>CORE.USERS.ALIAS</field>
-            <operation>equals</operation>
-            <value>cjeffrey</value>
-        </filters>
-        <label>DLAC Accounts</label>
+        <label>Delphine POD D Accounts</label>
     </listViews>
     <listViews>
         <fullName>DSA_Ag_accounts</fullName>
@@ -2648,6 +3554,18 @@ Passive = remind every 3 months.</inlineHelpText>
         <label>Guatemala Accounts w HQ</label>
     </listViews>
     <listViews>
+        <fullName>Handicap_International</fullName>
+        <columns>ACCOUNT.NAME</columns>
+        <columns>Is_Key_Account__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>ACCOUNT.NAME</field>
+            <operation>contains</operation>
+            <value>Handicap</value>
+        </filters>
+        <label>Handicap International</label>
+    </listViews>
+    <listViews>
         <fullName>HQ_Account_Management_NL</fullName>
         <columns>ACCOUNT.NAME</columns>
         <columns>Office_Type__c</columns>
@@ -2682,28 +3600,27 @@ Passive = remind every 3 months.</inlineHelpText>
         <label>HQ Account Management - Neal Lesh</label>
     </listViews>
     <listViews>
-        <fullName>HQ_Account_Management_Steve_Snyder</fullName>
+        <fullName>ICRC</fullName>
+        <booleanFilter>1 OR 2 OR 3</booleanFilter>
         <columns>ACCOUNT.NAME</columns>
-        <columns>Salesforce_Account_ID__c</columns>
-        <columns>Country__c</columns>
-        <columns>Annual_Budget__c</columns>
-        <columns>Annual_Budget_Range__c</columns>
-        <columns>ACCOUNT.URL</columns>
-        <columns>ACCOUNT.TYPE</columns>
-        <columns>CORE.USERS.FIRST_NAME</columns>
-        <columns>CORE.USERS.LAST_NAME</columns>
+        <columns>Is_Key_Account__c</columns>
         <filterScope>Everything</filterScope>
         <filters>
-            <field>Office_Type__c</field>
-            <operation>equals</operation>
-            <value>HQ</value>
+            <field>ACCOUNT.NAME</field>
+            <operation>contains</operation>
+            <value>ICRC</value>
         </filters>
         <filters>
-            <field>ACCOUNT.TYPE</field>
-            <operation>equals</operation>
-            <value>Implementer - International</value>
+            <field>ACCOUNT.NAME</field>
+            <operation>contains</operation>
+            <value>Red Cross</value>
         </filters>
-        <label>HQ Account Management - Steve Snyder</label>
+        <filters>
+            <field>ACCOUNT.NAME</field>
+            <operation>contains</operation>
+            <value>Red Crescent</value>
+        </filters>
+        <label>ICRC</label>
     </listViews>
     <listViews>
         <fullName>Implementer_Internaional</fullName>
@@ -2855,6 +3772,32 @@ Passive = remind every 3 months.</inlineHelpText>
         <label>Malawi Accounts</label>
     </listViews>
     <listViews>
+        <fullName>mHealth_Summit</fullName>
+        <booleanFilter>1 OR 2 or 3</booleanFilter>
+        <columns>ACCOUNT.NAME</columns>
+        <columns>Enterprise_Relationship__c</columns>
+        <columns>ACCOUNT.ADDRESS1_STATE</columns>
+        <columns>ACCOUNT.PHONE1</columns>
+        <columns>ACCOUNT.TYPE</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Enterprise_Relationship__c</field>
+            <operation>equals</operation>
+            <value>Strategic Partner</value>
+        </filters>
+        <filters>
+            <field>Enterprise_Relationship__c</field>
+            <operation>equals</operation>
+            <value>Actively Building</value>
+        </filters>
+        <filters>
+            <field>Enterprise_Relationship__c</field>
+            <operation>equals</operation>
+            <value>Trying to Warm</value>
+        </filters>
+        <label>mHealth Summit</label>
+    </listViews>
+    <listViews>
         <fullName>Mozambique_Accounts</fullName>
         <columns>ACCOUNT.NAME</columns>
         <columns>Enterprise_Relationship__c</columns>
@@ -2870,6 +3813,34 @@ Passive = remind every 3 months.</inlineHelpText>
             <value>Mozambique</value>
         </filters>
         <label>Country: Mozambique</label>
+    </listViews>
+    <listViews>
+        <fullName>MSF</fullName>
+        <booleanFilter>1 OR 2 OR 3 OR 4</booleanFilter>
+        <columns>ACCOUNT.NAME</columns>
+        <columns>Is_Key_Account__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>ACCOUNT.NAME</field>
+            <operation>contains</operation>
+            <value>MSF</value>
+        </filters>
+        <filters>
+            <field>ACCOUNT.NAME</field>
+            <operation>contains</operation>
+            <value>Médecins sans Frontières</value>
+        </filters>
+        <filters>
+            <field>ACCOUNT.NAME</field>
+            <operation>contains</operation>
+            <value>Medecins sans Frontieres</value>
+        </filters>
+        <filters>
+            <field>ACCOUNT.NAME</field>
+            <operation>contains</operation>
+            <value>Medecins sans Frontieres</value>
+        </filters>
+        <label>MSF</label>
     </listViews>
     <listViews>
         <fullName>My_Accounts_Active</fullName>
@@ -2914,6 +3885,56 @@ Passive = remind every 3 months.</inlineHelpText>
         <label>My Accounts: Validate</label>
     </listViews>
     <listViews>
+        <fullName>M_decins_du_Monde</fullName>
+        <booleanFilter>1 OR 2 OR 3 OR 4</booleanFilter>
+        <columns>ACCOUNT.NAME</columns>
+        <columns>Is_Key_Account__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>ACCOUNT.NAME</field>
+            <operation>contains</operation>
+            <value>MDM</value>
+        </filters>
+        <filters>
+            <field>ACCOUNT.NAME</field>
+            <operation>contains</operation>
+            <value>Medecins du Monde</value>
+        </filters>
+        <filters>
+            <field>ACCOUNT.NAME</field>
+            <operation>contains</operation>
+            <value>Médecins du Monde</value>
+        </filters>
+        <filters>
+            <field>ACCOUNT.NAME</field>
+            <operation>contains</operation>
+            <value>Doctors of the World</value>
+        </filters>
+        <label>Médecins du Monde</label>
+    </listViews>
+    <listViews>
+        <fullName>need_parent</fullName>
+        <columns>ACCOUNT.NAME</columns>
+        <columns>Country__c</columns>
+        <columns>Office_Type__c</columns>
+        <columns>ACCOUNT.TYPE</columns>
+        <columns>PARENT_NAME</columns>
+        <columns>Account_Status__c</columns>
+        <columns>CORE.USERS.ALIAS</columns>
+        <columns>ACCOUNT_SOURCE</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Office_Type__c</field>
+            <operation>notEqual</operation>
+            <value>HQ</value>
+        </filters>
+        <filters>
+            <field>PARENT_NAME</field>
+            <operation>equals</operation>
+        </filters>
+        <label>Accounts Needing Parent Accounts</label>
+    </listViews>
+    <listViews>
         <fullName>NetHope_Orgs</fullName>
         <columns>ACCOUNT.NAME</columns>
         <columns>Memberships__c</columns>
@@ -2949,6 +3970,28 @@ Passive = remind every 3 months.</inlineHelpText>
         <label>New This Week</label>
     </listViews>
     <listViews>
+        <fullName>not_validate_tops</fullName>
+        <columns>ACCOUNT.NAME</columns>
+        <columns>ACCOUNT.PHONE1</columns>
+        <columns>ACCOUNT.TYPE</columns>
+        <columns>CORE.USERS.ALIAS</columns>
+        <columns>Status__c</columns>
+        <columns>Office_Type__c</columns>
+        <columns>Country__c</columns>
+        <columns>Email_Address__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Status__c</field>
+            <operation>notEqual</operation>
+            <value>Validate</value>
+        </filters>
+        <filters>
+            <field>PARENT_NAME</field>
+            <operation>equals</operation>
+        </filters>
+        <label>not validate_tops</label>
+    </listViews>
+    <listViews>
         <fullName>Org_Account_Hierarchy</fullName>
         <columns>ACCOUNT.NAME</columns>
         <columns>Last_Opportunity_Update__c</columns>
@@ -2958,6 +4001,79 @@ Passive = remind every 3 months.</inlineHelpText>
         <columns>CORE.USERS.FIRST_NAME</columns>
         <filterScope>Everything</filterScope>
         <label>Org_Account_Hierarchy</label>
+    </listViews>
+    <listViews>
+        <fullName>Plan_International</fullName>
+        <columns>ACCOUNT.NAME</columns>
+        <columns>ACCOUNT.ADDRESS1_STATE</columns>
+        <columns>ACCOUNT.PHONE1</columns>
+        <columns>ACCOUNT.TYPE</columns>
+        <columns>CORE.USERS.ALIAS</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>ACCOUNT.NAME</field>
+            <operation>contains</operation>
+            <value>Plan</value>
+        </filters>
+        <label>Plan International</label>
+    </listViews>
+    <listViews>
+        <fullName>Plan_international1</fullName>
+        <columns>ACCOUNT.NAME</columns>
+        <columns>Is_Key_Account__c</columns>
+        <filterScope>Everything</filterScope>
+        <label>Plan international</label>
+    </listViews>
+    <listViews>
+        <fullName>PUI</fullName>
+        <booleanFilter>1 OR 2 OR 3</booleanFilter>
+        <columns>ACCOUNT.NAME</columns>
+        <columns>Is_Key_Account__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>ACCOUNT.NAME</field>
+            <operation>contains</operation>
+            <value>PUI</value>
+        </filters>
+        <filters>
+            <field>ACCOUNT.NAME</field>
+            <operation>contains</operation>
+            <value>Premiere Urgence International</value>
+        </filters>
+        <filters>
+            <field>ACCOUNT.NAME</field>
+            <operation>contains</operation>
+            <value>Première Urgence International</value>
+        </filters>
+        <label>PUI</label>
+    </listViews>
+    <listViews>
+        <fullName>regional_account_intro_campaign</fullName>
+        <booleanFilter>1 AND 2 AND 3</booleanFilter>
+        <columns>ACCOUNT.NAME</columns>
+        <columns>PARENT_NAME</columns>
+        <columns>ACCOUNT.TYPE</columns>
+        <columns>CORE.USERS.ALIAS</columns>
+        <columns>Country__c</columns>
+        <columns>Account_Owning_Entity__c</columns>
+        <columns>City_Object__c</columns>
+        <columns>Office_Type__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>ACCOUNT.LAST_UPDATE</field>
+            <operation>equals</operation>
+            <value>6/29/2015 12:00 AM</value>
+        </filters>
+        <filters>
+            <field>CORE.USERS.ALIAS</field>
+            <operation>equals</operation>
+            <value>cjeffrey</value>
+        </filters>
+        <filters>
+            <field>Country__c</field>
+            <operation>equals</operation>
+        </filters>
+        <label>regional account intro campaign</label>
     </listViews>
     <listViews>
         <fullName>Resellers_by_Country</fullName>
@@ -3008,6 +4124,56 @@ Passive = remind every 3 months.</inlineHelpText>
         <label>South Africa Accounts</label>
     </listViews>
     <listViews>
+        <fullName>Strategic_Fundraising</fullName>
+        <columns>ACCOUNT.NAME</columns>
+        <columns>Enterprise_Relationship__c</columns>
+        <columns>CORE.USERS.ALIAS</columns>
+        <columns>ACCOUNT.TYPE</columns>
+        <columns>ACCOUNT.LAST_ACTIVITY</columns>
+        <columns>Days_w_o_Activity__c</columns>
+        <columns>Number_of_Open_Opps__c</columns>
+        <columns>Last_Opportunity_Update__c</columns>
+        <filterScope>Everything</filterScope>
+        <label>Strategic Fundraising</label>
+    </listViews>
+    <listViews>
+        <fullName>Strategic_Fundraising_T2ccounts</fullName>
+        <columns>Enterprise_Relationship__c</columns>
+        <columns>ACCOUNT.NAME</columns>
+        <columns>CORE.USERS.ALIAS</columns>
+        <columns>ACCOUNT.LAST_ACTIVITY</columns>
+        <columns>Days_w_o_Activity__c</columns>
+        <columns>Number_of_Open_Opps__c</columns>
+        <filterScope>Everything</filterScope>
+        <label>Strategic Fundraising - T2</label>
+    </listViews>
+    <listViews>
+        <fullName>Strategic_Fundraising_Tier_2_Accounts</fullName>
+        <columns>Enterprise_Relationship__c</columns>
+        <columns>ACCOUNT.NAME</columns>
+        <columns>CORE.USERS.ALIAS</columns>
+        <columns>ACCOUNT.TYPE</columns>
+        <columns>ACCOUNT.LAST_ACTIVITY</columns>
+        <columns>Days_w_o_Activity__c</columns>
+        <columns>Number_of_Open_Opps__c</columns>
+        <columns>Last_Opportunity_Update__c</columns>
+        <filterScope>Everything</filterScope>
+        <label>Strategic Fundraising - Tier 2 Accounts</label>
+    </listViews>
+    <listViews>
+        <fullName>Strategic_Fundraising_Tier_3</fullName>
+        <columns>Enterprise_Relationship__c</columns>
+        <columns>CORE.USERS.ALIAS</columns>
+        <columns>ACCOUNT.NAME</columns>
+        <columns>ACCOUNT.TYPE</columns>
+        <columns>ACCOUNT.LAST_ACTIVITY</columns>
+        <columns>Days_w_o_Activity__c</columns>
+        <columns>Number_of_Open_Opps__c</columns>
+        <columns>Last_Opportunity_Update__c</columns>
+        <filterScope>Everything</filterScope>
+        <label>Strategic Fundraising - Tier 3</label>
+    </listViews>
+    <listViews>
         <fullName>Tanzania_Accounts</fullName>
         <columns>ACCOUNT.NAME</columns>
         <columns>ACCOUNT.ADDRESS1_STATE</columns>
@@ -3030,42 +4196,27 @@ Passive = remind every 3 months.</inlineHelpText>
         <label>Tanzania Accounts</label>
     </listViews>
     <listViews>
-        <fullName>Top_Level_Accounts1</fullName>
+        <fullName>Terre_des_Hommes</fullName>
+        <booleanFilter>1 OR 2 OR 3</booleanFilter>
         <columns>ACCOUNT.NAME</columns>
-        <columns>ACCOUNT_SOURCE</columns>
-        <columns>Enterprise_Relationship__c</columns>
-        <columns>Country__c</columns>
-        <columns>ACCOUNT.TYPE</columns>
-        <columns>Status__c</columns>
-        <columns>Memberships__c</columns>
-        <columns>CORE.USERS.ALIAS</columns>
+        <columns>Is_Key_Account__c</columns>
         <filterScope>Everything</filterScope>
         <filters>
-            <field>PARENT_NAME</field>
-            <operation>equals</operation>
+            <field>ACCOUNT.NAME</field>
+            <operation>contains</operation>
+            <value>TDH</value>
         </filters>
         <filters>
-            <field>ACCOUNT.TYPE</field>
-            <operation>equals</operation>
-            <value>Implementer - Multinational</value>
+            <field>ACCOUNT.NAME</field>
+            <operation>contains</operation>
+            <value>Terre des Hommes</value>
         </filters>
-        <label>Top Level Accounts_multinational</label>
-    </listViews>
-    <listViews>
-        <fullName>UK_Accounts</fullName>
-        <columns>ACCOUNT.NAME</columns>
-        <columns>Office_Type__c</columns>
-        <columns>ACCOUNT.PHONE1</columns>
-        <columns>ACCOUNT.TYPE</columns>
-        <columns>CORE.USERS.ALIAS</columns>
-        <columns>Country__c</columns>
-        <filterScope>Everything</filterScope>
         <filters>
-            <field>Country__c</field>
-            <operation>equals</operation>
-            <value>United Kingdom</value>
+            <field>ACCOUNT.NAME</field>
+            <operation>contains</operation>
+            <value>TdH</value>
         </filters>
-        <label>UK Accounts</label>
+        <label>Terre des Hommes</label>
     </listViews>
     <listViews>
         <fullName>Uganda_Accounts</fullName>
@@ -3087,263 +4238,21 @@ Passive = remind every 3 months.</inlineHelpText>
         <label>Uganda Accounts</label>
     </listViews>
     <listViews>
-        <fullName>academic</fullName>
-        <booleanFilter>1 OR 2</booleanFilter>
+        <fullName>UK_Accounts</fullName>
         <columns>ACCOUNT.NAME</columns>
+        <columns>Office_Type__c</columns>
+        <columns>ACCOUNT.PHONE1</columns>
         <columns>ACCOUNT.TYPE</columns>
         <columns>CORE.USERS.ALIAS</columns>
-        <columns>Tag__c</columns>
-        <columns>Area__c</columns>
-        <columns>SFSSDupeCatcher__Override_DupeCatcher__c</columns>
-        <columns>City_Object__c</columns>
         <columns>Country__c</columns>
         <filterScope>Everything</filterScope>
         <filters>
-            <field>ACCOUNT.TYPE</field>
-            <operation>equals</operation>
-            <value>Academic</value>
-        </filters>
-        <filters>
-            <field>ACCOUNT.TYPE</field>
-            <operation>equals</operation>
-        </filters>
-        <label>academics</label>
-    </listViews>
-    <listViews>
-        <fullName>accounts_review_for_abs</fullName>
-        <columns>ACCOUNT.NAME</columns>
-        <columns>ACCOUNT.LAST_ACTIVITY</columns>
-        <columns>ACCOUNT.CREATED_DATE</columns>
-        <columns>CORE.USERS.FIRST_NAME</columns>
-        <columns>CORE.USERS.LAST_NAME</columns>
-        <columns>ACCOUNT.LAST_UPDATE</columns>
-        <columns>PARENT_NAME</columns>
-        <columns>Tag__c</columns>
-        <columns>ACCOUNT.ADDRESS1_STATE</columns>
-        <columns>ACCOUNT.PHONE1</columns>
-        <columns>ACCOUNT.TYPE</columns>
-        <columns>CORE.USERS.ALIAS</columns>
-        <columns>Office_Type__c</columns>
-        <filterScope>Everything</filterScope>
-        <filters>
-            <field>PARENT_NAME</field>
-            <operation>equals</operation>
-        </filters>
-        <filters>
-            <field>Days_w_o_Activity__c</field>
-            <operation>lessThan</operation>
-            <value>365</value>
-        </filters>
-        <label>accounts review for abs</label>
-    </listViews>
-    <listViews>
-        <fullName>acct_clean_up</fullName>
-        <booleanFilter>1 OR 2 OR 3 OR 4 OR 5 OR 6</booleanFilter>
-        <columns>ACCOUNT.NAME</columns>
-        <columns>Country__c</columns>
-        <columns>City__c</columns>
-        <columns>ACCOUNT.ADDRESS1_STATE</columns>
-        <columns>ACCOUNT.PHONE1</columns>
-        <columns>ACCOUNT.TYPE</columns>
-        <columns>CORE.USERS.ALIAS</columns>
-        <columns>PARENT_NAME</columns>
-        <columns>Area__c</columns>
-        <columns>Sub_Area__c</columns>
-        <filterScope>Mine</filterScope>
-        <filters>
             <field>Country__c</field>
             <operation>equals</operation>
-            <value>United States</value>
+            <value>United Kingdom</value>
         </filters>
-        <filters>
-            <field>Country__c</field>
-            <operation>equals</operation>
-            <value>Guatemala</value>
-        </filters>
-        <filters>
-            <field>Country__c</field>
-            <operation>equals</operation>
-            <value>Ecuador</value>
-        </filters>
-        <filters>
-            <field>Country__c</field>
-            <operation>equals</operation>
-            <value>Mexico</value>
-        </filters>
-        <filters>
-            <field>Country__c</field>
-            <operation>equals</operation>
-            <value>Colombia</value>
-        </filters>
-        <filters>
-            <field>Account_Owning_Entity__c</field>
-            <operation>equals</operation>
-            <value>Inc</value>
-        </filters>
-        <label>acct clean up</label>
+        <label>UK Accounts</label>
     </listViews>
-    <listViews>
-        <fullName>all_accounts</fullName>
-        <columns>ACCOUNT.NAME</columns>
-        <columns>ACCOUNT.ADDRESS1_STATE</columns>
-        <columns>ACCOUNT.PHONE1</columns>
-        <columns>ACCOUNT.TYPE</columns>
-        <columns>CORE.USERS.ALIAS</columns>
-        <columns>Office_Type__c</columns>
-        <filterScope>Everything</filterScope>
-        <label>all_accounts_by_type</label>
-    </listViews>
-    <listViews>
-        <fullName>mHealth_Summit</fullName>
-        <booleanFilter>1 OR 2 or 3</booleanFilter>
-        <columns>ACCOUNT.NAME</columns>
-        <columns>Enterprise_Relationship__c</columns>
-        <columns>ACCOUNT.ADDRESS1_STATE</columns>
-        <columns>ACCOUNT.PHONE1</columns>
-        <columns>ACCOUNT.TYPE</columns>
-        <filterScope>Everything</filterScope>
-        <filters>
-            <field>Enterprise_Relationship__c</field>
-            <operation>equals</operation>
-            <value>Strategic Partner</value>
-        </filters>
-        <filters>
-            <field>Enterprise_Relationship__c</field>
-            <operation>equals</operation>
-            <value>Actively Building</value>
-        </filters>
-        <filters>
-            <field>Enterprise_Relationship__c</field>
-            <operation>equals</operation>
-            <value>Trying to Warm</value>
-        </filters>
-        <label>mHealth Summit</label>
-    </listViews>
-    <listViews>
-        <fullName>need_parent</fullName>
-        <columns>ACCOUNT.NAME</columns>
-        <columns>Country__c</columns>
-        <columns>Office_Type__c</columns>
-        <columns>ACCOUNT.TYPE</columns>
-        <columns>PARENT_NAME</columns>
-        <columns>Account_Status__c</columns>
-        <columns>CORE.USERS.ALIAS</columns>
-        <columns>ACCOUNT_SOURCE</columns>
-        <filterScope>Everything</filterScope>
-        <filters>
-            <field>Office_Type__c</field>
-            <operation>notEqual</operation>
-            <value>HQ</value>
-        </filters>
-        <filters>
-            <field>PARENT_NAME</field>
-            <operation>equals</operation>
-        </filters>
-        <label>Accounts Needing Parent Accounts</label>
-    </listViews>
-    <listViews>
-        <fullName>nnenna_accounts</fullName>
-        <columns>ACCOUNT.NAME</columns>
-        <columns>ACCOUNT.ADDRESS1_STATE</columns>
-        <columns>ACCOUNT.PHONE1</columns>
-        <columns>ACCOUNT.TYPE</columns>
-        <columns>CORE.USERS.ALIAS</columns>
-        <filterScope>Everything</filterScope>
-        <filters>
-            <field>CORE.USERS.FIRST_NAME</field>
-            <operation>equals</operation>
-            <value>Nnenna</value>
-        </filters>
-        <filters>
-            <field>ACCOUNT.TYPE</field>
-            <operation>notEqual</operation>
-            <value>Funder - Government Agency,Funder - Multilateral,Funder - Foundation</value>
-        </filters>
-        <label>nnenna accounts</label>
-    </listViews>
-    <listViews>
-        <fullName>not_validate_tops</fullName>
-        <columns>ACCOUNT.NAME</columns>
-        <columns>ACCOUNT.PHONE1</columns>
-        <columns>ACCOUNT.TYPE</columns>
-        <columns>CORE.USERS.ALIAS</columns>
-        <columns>Status__c</columns>
-        <columns>Office_Type__c</columns>
-        <columns>Country__c</columns>
-        <columns>Email_Address__c</columns>
-        <filterScope>Everything</filterScope>
-        <filters>
-            <field>Status__c</field>
-            <operation>notEqual</operation>
-            <value>Validate</value>
-        </filters>
-        <filters>
-            <field>PARENT_NAME</field>
-            <operation>equals</operation>
-        </filters>
-        <label>not validate_tops</label>
-    </listViews>
-    <listViews>
-        <fullName>regional_account_intro_campaign</fullName>
-        <booleanFilter>1 AND 2 AND 3</booleanFilter>
-        <columns>ACCOUNT.NAME</columns>
-        <columns>PARENT_NAME</columns>
-        <columns>ACCOUNT.TYPE</columns>
-        <columns>CORE.USERS.ALIAS</columns>
-        <columns>Country__c</columns>
-        <columns>Account_Owning_Entity__c</columns>
-        <columns>City_Object__c</columns>
-        <columns>Office_Type__c</columns>
-        <filterScope>Everything</filterScope>
-        <filters>
-            <field>ACCOUNT.LAST_UPDATE</field>
-            <operation>equals</operation>
-            <value>6/29/2015 12:00 AM</value>
-        </filters>
-        <filters>
-            <field>CORE.USERS.ALIAS</field>
-            <operation>equals</operation>
-            <value>cjeffrey</value>
-        </filters>
-        <filters>
-            <field>Country__c</field>
-            <operation>equals</operation>
-        </filters>
-        <label>regional account intro campaign</label>
-    </listViews>
-    <searchLayouts>
-        <customTabListAdditionalFields>ACCOUNT.NAME</customTabListAdditionalFields>
-        <customTabListAdditionalFields>Country__c</customTabListAdditionalFields>
-        <customTabListAdditionalFields>Status__c</customTabListAdditionalFields>
-        <customTabListAdditionalFields>CORE.USERS.ALIAS</customTabListAdditionalFields>
-        <customTabListAdditionalFields>ACCOUNT.LAST_UPDATE</customTabListAdditionalFields>
-        <customTabListAdditionalFields>PARENT_NAME</customTabListAdditionalFields>
-        <lookupDialogsAdditionalFields>ACCOUNT.NAME</lookupDialogsAdditionalFields>
-        <lookupDialogsAdditionalFields>Country__c</lookupDialogsAdditionalFields>
-        <lookupDialogsAdditionalFields>Status__c</lookupDialogsAdditionalFields>
-        <lookupDialogsAdditionalFields>CORE.USERS.ALIAS</lookupDialogsAdditionalFields>
-        <lookupDialogsAdditionalFields>ACCOUNT.LAST_UPDATE</lookupDialogsAdditionalFields>
-        <lookupDialogsAdditionalFields>PARENT_NAME</lookupDialogsAdditionalFields>
-        <lookupPhoneDialogsAdditionalFields>ACCOUNT.NAME</lookupPhoneDialogsAdditionalFields>
-        <lookupPhoneDialogsAdditionalFields>Country__c</lookupPhoneDialogsAdditionalFields>
-        <lookupPhoneDialogsAdditionalFields>Status__c</lookupPhoneDialogsAdditionalFields>
-        <lookupPhoneDialogsAdditionalFields>CORE.USERS.ALIAS</lookupPhoneDialogsAdditionalFields>
-        <lookupPhoneDialogsAdditionalFields>ACCOUNT.LAST_UPDATE</lookupPhoneDialogsAdditionalFields>
-        <lookupPhoneDialogsAdditionalFields>PARENT_NAME</lookupPhoneDialogsAdditionalFields>
-        <searchFilterFields>ACCOUNT.NAME</searchFilterFields>
-        <searchFilterFields>Country__c</searchFilterFields>
-        <searchFilterFields>Status__c</searchFilterFields>
-        <searchFilterFields>CORE.USERS.ALIAS</searchFilterFields>
-        <searchFilterFields>ACCOUNT.LAST_UPDATE</searchFilterFields>
-        <searchFilterFields>PARENT_NAME</searchFilterFields>
-        <searchResultsAdditionalFields>ACCOUNT.NAME</searchResultsAdditionalFields>
-        <searchResultsAdditionalFields>Country__c</searchResultsAdditionalFields>
-        <searchResultsAdditionalFields>Status__c</searchResultsAdditionalFields>
-        <searchResultsAdditionalFields>CORE.USERS.ALIAS</searchResultsAdditionalFields>
-        <searchResultsAdditionalFields>ACCOUNT.LAST_UPDATE</searchResultsAdditionalFields>
-        <searchResultsAdditionalFields>PARENT_NAME</searchResultsAdditionalFields>
-    </searchLayouts>
-    <sharingModel>ReadWrite</sharingModel>
     <validationRules>
         <fullName>Account_Add_Parents_Account</fullName>
         <active>false</active>
@@ -3447,25 +4356,6 @@ Passive = remind every 3 months.</inlineHelpText>
         <url>http://search.hoovers.com/cgi-bin/hol_search?which=company&amp;query_string={!Account_Name}</url>
     </webLinks>
     <webLinks>
-        <fullName>YahooMaps</fullName>
-        <availability>online</availability>
-        <displayType>link</displayType>
-        <encodingKey>UTF-8</encodingKey>
-        <hasMenubar>true</hasMenubar>
-        <hasScrollbars>true</hasScrollbars>
-        <hasToolbar>true</hasToolbar>
-        <height>600</height>
-        <isResizable>true</isResizable>
-        <linkType>url</linkType>
-        <masterLabel>Yahoo Maps</masterLabel>
-        <openType>newWindow</openType>
-        <position>none</position>
-        <protected>false</protected>
-        <showsLocation>true</showsLocation>
-        <showsStatus>true</showsStatus>
-        <url>http://maps.yahoo.com/py/maps.py?cn={!Account_BillingCountry}&amp;csz={!Account_BillingCity}+{!Account_BillingState}+{!Account_BillingPostalCode}+&amp;addr={!Account_BillingAddress}</url>
-    </webLinks>
-    <webLinks>
         <fullName>salesvisual__Map_Accounts</fullName>
         <availability>online</availability>
         <displayType>massActionButton</displayType>
@@ -3496,5 +4386,24 @@ else
    }
    window.location.href = pageUrl;
 }</url>
+    </webLinks>
+    <webLinks>
+        <fullName>YahooMaps</fullName>
+        <availability>online</availability>
+        <displayType>link</displayType>
+        <encodingKey>UTF-8</encodingKey>
+        <hasMenubar>true</hasMenubar>
+        <hasScrollbars>true</hasScrollbars>
+        <hasToolbar>true</hasToolbar>
+        <height>600</height>
+        <isResizable>true</isResizable>
+        <linkType>url</linkType>
+        <masterLabel>Yahoo Maps</masterLabel>
+        <openType>newWindow</openType>
+        <position>none</position>
+        <protected>false</protected>
+        <showsLocation>true</showsLocation>
+        <showsStatus>true</showsStatus>
+        <url>http://maps.yahoo.com/py/maps.py?cn={!Account_BillingCountry}&amp;csz={!Account_BillingCity}+{!Account_BillingState}+{!Account_BillingPostalCode}+&amp;addr={!Account_BillingAddress}</url>
     </webLinks>
 </CustomObject>

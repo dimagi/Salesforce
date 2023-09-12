@@ -197,9 +197,9 @@ public class DomainTriggerControllerTest {
                                               new Contract_Domain__c(Contract__c = contract2.Id, DOmain__c = d2.Id) };
 
         Lead l1 = new Lead(FirstName = 'Tom', LastName = 'Smith', Company = 'Smith IT Company', Lead_Status_Reason__c = 'Working - Exploratory Call - Trying for',
-                                  Status = 'Working - Talking', Follow_up_calls_held__c = 1);
+                                  Status = 'Working - Talking', Follow_up_calls_held__c = 1, Opportunity_Owner_Division__c = 'Solutions', Opportunity_Owner_Sub_Division__c='Inbound Sales');
         Lead l2 = new Lead(FirstName = 'Tom 1', LastName = 'Smith 1', Company = 'Smith IT Company 1', Lead_Status_Reason__c = 'Working - Exploratory Call - Trying for',
-                                  Status = 'Passive & Friendly', Follow_up_calls_held__c = 88);
+                                  Status = 'Passive & Friendly', Follow_up_calls_held__c = 88, Opportunity_Owner_Division__c = 'Solutions', Opportunity_Owner_Sub_Division__c='Inbound Sales');
         insert new List<Lead> { l1, l2 };
 
         Database.LeadConvert lc = new Database.LeadConvert();

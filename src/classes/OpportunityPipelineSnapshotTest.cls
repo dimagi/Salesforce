@@ -8,11 +8,11 @@ public class OpportunityPipelineSnapshotTest {
         Opportunity opp1 = new Opportunity(Name = 'Test Opportunity 1', StageName = 'Stage 5 - Submitted', Channel_Response__c = 'Inside Sales', Amount = 50000,
                                                 Expense_Income__c = 15000, Expected_Buffer__c = 50, Duration_months__c = 18, Country_Text__c = 'Sample text 1 test',
                                                 Product_Text__c = 'Product test 1', CloseDate = date.today().addMonths(5), Probability = 30, AccountId = snapShotAccount.Id,
-                                                Opportunity_Owner_Division__c = 'Solutions', Opportunity_Owner_Sub_Division__c = 'Inbound Sales');
+                                                Opportunity_Owner_Division__c = 'Solutions', Opportunity_Owner_Sub_Division__c = 'USH - Tech',Country__c = 'a00b0000001AOufAAG');
         Opportunity opp2 = new Opportunity(Name = 'Test Opportunity 2', StageName = 'Stage 5 - Submitted', Channel_Response__c = 'Inside Sales', Amount = 70000,
                                                 Expense_Income__c = 23000, Expected_Buffer__c = 40, Duration_months__c = 24, Country_Text__c = 'Sample text 2 test',
                                                 Product_Text__c = 'Product test 2', CloseDate = date.today().addMonths(6), Probability = 40, AccountId = snapShotAccount.Id,
-                                                Opportunity_Owner_Division__c = 'Solutions', Opportunity_Owner_Sub_Division__c = 'Inbound Sales');
+                                                Opportunity_Owner_Division__c = 'Solutions', Opportunity_Owner_Sub_Division__c = 'USH - Tech',Country__c = 'a00b0000001AOufAAG');
         insert opp1;
         insert opp2;
     }
@@ -25,11 +25,11 @@ public class OpportunityPipelineSnapshotTest {
         Opportunity opp3 = new Opportunity(Name = 'Test Opportunity 3', StageName = 'Stage 5 - Submitted', Channel_Response__c = 'Inside Sales', Amount = 50000,
                                                 Expense_Income__c = 15000, Expected_Buffer__c = 50, Duration_months__c = 18, Country_Text__c = 'Sample text 1 test',
                                                 Product_Text__c = 'Product test 1', CloseDate = date.today().addMonths(5), Probability = 30, AccountId = snapShotAccount.Id,
-                                                Opportunity_Owner_Division__c = 'Solutions', Opportunity_Owner_Sub_Division__c = 'Inbound Sales');
+                                                Opportunity_Owner_Division__c = 'Solutions', Opportunity_Owner_Sub_Division__c = 'USH - Tech',Country__c = 'a00b0000001AOufAAG');
         Opportunity opp4 = new Opportunity(Name = 'Test Opportunity 4', StageName = 'Stage 5 - Submitted', Channel_Response__c = 'Inside Sales', Amount = 50000,
                                                 Expense_Income__c = 15000, Expected_Buffer__c = 50, Duration_months__c = 18, Country_Text__c = 'Sample text 1 test',
                                                 Product_Text__c = 'Product test 1', CloseDate = date.today().addMonths(5), Probability = 30, AccountId = snapShotAccount.Id,
-                                                Opportunity_Owner_Division__c = 'Solutions', Opportunity_Owner_Sub_Division__c = 'Inbound Sales');
+                                                Opportunity_Owner_Division__c = 'Solutions', Opportunity_Owner_Sub_Division__c = 'USH - Tech',Country__c = 'a00b0000001AOufAAG');
         insert opp3;
         insert opp4;
 
@@ -87,10 +87,10 @@ public class OpportunityPipelineSnapshotTest {
         Opportunity opp1 = [SELECT Id FROM Opportunity WHERE Name = 'Test Opportunity 1'];
         Opportunity opp2 = [SELECT Id FROM Opportunity WHERE Name = 'Test Opportunity 2'];
         Account snapShotAccount = [SELECT Id FROM Account WHERE Name = 'Test Account'];
-        Opportunity opp3 = new Opportunity(Name = 'Test Opportunity 3', StageName = 'Stage 3 - Prospect', Channel_Response__c = 'Inside Sales', Amount = 40000,
+        Opportunity opp3 = new Opportunity(Name = 'Test Opportunity 3', StageName = 'Stage 4 - Proposal Development', Channel_Response__c = 'Inside Sales', Amount = 40000,
                                                 Expense_Income__c = 23000, Expected_Buffer__c = 40, Duration_months__c = 24, Country_Text__c = 'Sample text 3 test',
                                                 Product_Text__c = 'Product test 3', CloseDate = date.today().addMonths(6), Probability = 35, AccountId = snapShotAccount.Id,
-                                           		Opportunity_Owner_Division__c = 'Solutions', Opportunity_Owner_Sub_Division__c='Inbound Sales');
+                                           		Opportunity_Owner_Division__c = 'Solutions', Opportunity_Owner_Sub_Division__c = 'USH - Tech',Country__c = 'a00b0000001AOufAAG');
         insert opp3;
 
         Test.startTest();
@@ -221,14 +221,14 @@ public class OpportunityPipelineSnapshotTest {
 
     @isTest
     public static void testEvDiffForSingleRecord() {
-        Account snapShotAccount = new Account(Name = 'Test Account');
+        Account snapShotAccount = new Account(Name = 'Test Account for single rec');
         insert snapShotAccount;
         Account funderAccount = new Account(Name = 'Test Funder Account');
         insert funderAccount;
         Business_Unit__c bizUnit = new Business_Unit__c(Name = 'Test Business Unit 1');
         Opportunity currentOpp = new Opportunity(Name = 'Test Opportunity 1', Business_Unit_Owner__c = bizUnit.Id, StageName = 'Stage 5 - Submitted',
                                                  CloseDate = date.today().addMonths(5), Probability = 30,
-                                                 Opportunity_Owner_Division__c = 'Solutions', Opportunity_Owner_Sub_Division__c = 'Inbound Sales');
+                                                 Opportunity_Owner_Division__c = 'Solutions', Opportunity_Owner_Sub_Division__c = 'USH - Tech',Country__c = 'a00b0000001AOufAAG',Expense_Income__c=0);
         insert currentOpp;
 
         Pipeline_Snapshot__c snapShot1 = new Pipeline_Snapshot__c(Opportunity__c = currentOpp.Id, Opportunity_Amount_Minus_Expense_Income__c = 2000,
@@ -288,37 +288,37 @@ public class OpportunityPipelineSnapshotTest {
 
     @isTest
     public static void testEvDiffForMultipleRecords() {
-        Account snapShotAccount = new Account(Name = 'Test Account');
-        insert snapShotAccount;
-        Account funderAccount = new Account(Name = 'Test Funder Account');
+        Account testSnapShotAccount = new Account(Name = 'Testing Multiple');
+        insert testSnapShotAccount;
+        Account funderAccount = new Account(Name = 'Test Funder Account2');
         insert funderAccount;
         Business_Unit__c bizUnit = new Business_Unit__c(Name = 'Test Business Unit 1');
         Opportunity currentOpp1 = new Opportunity(Name = 'Test Opportunity 1', Business_Unit_Owner__c = bizUnit.Id, StageName = 'Stage 5 - Submitted',
                                                  CloseDate = date.today().addMonths(5), Probability = 30,
-                                                 Opportunity_Owner_Division__c = 'Solutions', Opportunity_Owner_Sub_Division__c = 'Inbound Sales');
+                                                 Opportunity_Owner_Division__c = 'Solutions', Opportunity_Owner_Sub_Division__c = 'USH - Tech',Country__c = 'a00b0000001AOufAAG',Expense_Income__c=0);
         Opportunity currentOpp2 = new Opportunity(Name = 'Test Opportunity 2', Business_Unit_Owner__c = bizUnit.Id, StageName = 'Stage 5 - Submitted',
                                                  CloseDate = date.today().addMonths(5), Probability = 30,
-                                                 Opportunity_Owner_Division__c = 'Solutions', Opportunity_Owner_Sub_Division__c = 'Inbound Sales');
+                                                 Opportunity_Owner_Division__c = 'Solutions', Opportunity_Owner_Sub_Division__c = 'USH - Tech',Country__c = 'a00b0000001AOufAAG',Expense_Income__c=0);
         Opportunity currentOpp3 = new Opportunity(Name = 'Test Opportunity 3', Business_Unit_Owner__c = bizUnit.Id, StageName = 'Stage 5 - Submitted',
                                                  CloseDate = date.today().addMonths(5), Probability = 30,
-                                                 Opportunity_Owner_Division__c = 'Solutions', Opportunity_Owner_Sub_Division__c = 'Inbound Sales');
+                                                 Opportunity_Owner_Division__c = 'Solutions', Opportunity_Owner_Sub_Division__c = 'USH - Tech',Country__c = 'a00b0000001AOufAAG',Expense_Income__c=0);
         insert currentOpp1;
         insert currentOpp2;
         insert currentOpp3;
 
         Pipeline_Snapshot__c snapShot1_1 = new Pipeline_Snapshot__c(Opportunity__c = currentOpp1.Id, Opportunity_Amount_Minus_Expense_Income__c = 2200,
                                                                                 Amount_Minus_Expense_Income__c = 2000, Probability__c = 100, Opportunity_Amount__c = 2000,
-                                                                                Amount__c = 2000, Account__c = snapShotAccount.Id, Country__c = 'Test Country', Duration_months__c = 4,
+                                                                                Amount__c = 2000, Account__c = testSnapShotAccount.Id, Country__c = 'Test Country', Duration_months__c = 4,
                                                                                 Funder_Account__c = funderAccount.Id, Month_Date__c = Date.newInstance(2016, 1, 12), Source_Type__c = 'Opportunity',
                                                                                 Name = 'Test PS for date  ' + Date.newInstance(2016, 1, 31));
         Pipeline_Snapshot__c snapShot1_2 = new Pipeline_Snapshot__c(Opportunity__c = currentOpp2.Id, Opportunity_Amount_Minus_Expense_Income__c = 2200,
                                                                                 Amount_Minus_Expense_Income__c = 2000, Probability__c = 100, Opportunity_Amount__c = 2000,
-                                                                                Amount__c = 2000, Account__c = snapShotAccount.Id, Country__c = 'Test Country', Duration_months__c = 4,
+                                                                                Amount__c = 2000, Account__c = testSnapShotAccount.Id, Country__c = 'Test Country', Duration_months__c = 4,
                                                                                 Funder_Account__c = funderAccount.Id, Month_Date__c = Date.newInstance(2016, 1, 12), Source_Type__c = 'Opportunity',
                                                                                 Name = 'Test PS for date  ' + Date.newInstance(2016, 1, 22));
         Pipeline_Snapshot__c snapShot1_3 = new Pipeline_Snapshot__c(Opportunity__c = currentOpp3.Id, Opportunity_Amount_Minus_Expense_Income__c = 2200,
                                                                                 Amount_Minus_Expense_Income__c = 2000, Probability__c = 100, Opportunity_Amount__c = 2000,
-                                                                                Amount__c = 2000, Account__c = snapShotAccount.Id, Country__c = 'Test Country', Duration_months__c = 4,
+                                                                                Amount__c = 2000, Account__c = testSnapShotAccount.Id, Country__c = 'Test Country', Duration_months__c = 4,
                                                                                 Funder_Account__c = funderAccount.Id, Month_Date__c = Date.newInstance(2016, 1, 12), Source_Type__c = 'Opportunity',
                                                                                 Name = 'Test PS for date  ' + Date.newInstance(2016, 1, 11));
 
@@ -330,17 +330,17 @@ public class OpportunityPipelineSnapshotTest {
 
         Pipeline_Snapshot__c snapShot2_1 = new Pipeline_Snapshot__c(Opportunity__c = currentOpp1.Id, Opportunity_Amount_Minus_Expense_Income__c = 1000,
                                                                                 Amount_Minus_Expense_Income__c = 2000, Probability__c = 45, Opportunity_Amount__c = 2000,
-                                                                                Amount__c = 2000, Account__c = snapShotAccount.Id, Country__c = 'Test Country', Duration_months__c = 4,
+                                                                                Amount__c = 2000, Account__c = testSnapShotAccount.Id, Country__c = 'Test Country', Duration_months__c = 4,
                                                                                 Funder_Account__c = funderAccount.Id, Month_Date__c = Date.newInstance(2016, 2, 10), Source_Type__c = 'Opportunity',
                                                                                 Name = 'Test PS for date  ' + Date.newInstance(2016, 2, 10));
         Pipeline_Snapshot__c snapShot2_2 = new Pipeline_Snapshot__c(Opportunity__c = currentOpp2.Id, Opportunity_Amount_Minus_Expense_Income__c = 2200,
                                                                                 Amount_Minus_Expense_Income__c = 2000, Probability__c = 100, Opportunity_Amount__c = 2000,
-                                                                                Amount__c = 2000, Account__c = snapShotAccount.Id, Country__c = 'Test Country', Duration_months__c = 4,
+                                                                                Amount__c = 2000, Account__c = testSnapShotAccount.Id, Country__c = 'Test Country', Duration_months__c = 4,
                                                                                 Funder_Account__c = funderAccount.Id, Month_Date__c = Date.newInstance(2016, 2, 10), Source_Type__c = 'Opportunity',
                                                                                 Name = 'Test PS for date  ' + Date.newInstance(2016, 2, 10));
         Pipeline_Snapshot__c snapShot2_3 = new Pipeline_Snapshot__c(Opportunity__c = currentOpp3.Id, Opportunity_Amount_Minus_Expense_Income__c = 2400,
                                                                                 Amount_Minus_Expense_Income__c = 4000, Probability__c = 100, Opportunity_Amount__c = 2000,
-                                                                                Amount__c = 2000, Account__c = snapShotAccount.Id, Country__c = 'Test Country', Duration_months__c = 4,
+                                                                                Amount__c = 2000, Account__c = testSnapShotAccount.Id, Country__c = 'Test Country', Duration_months__c = 4,
                                                                                 Funder_Account__c = funderAccount.Id, Month_Date__c = Date.newInstance(2016, 2, 10), Source_Type__c = 'Opportunity',
                                                                                 Name = 'Test PS for date  ' + Date.newInstance(2016, 2, 10));
 
@@ -419,13 +419,13 @@ public class OpportunityPipelineSnapshotTest {
     public static void shouldCalculateIsSubmittedThisMonth() {
         Opportunity opp1 = new Opportunity(Name = 'Test Opportunity 1', StageName = 'Stage 5 - Submitted',
                                                  CloseDate = date.today().addMonths(5), Probability = 30,
-                                                 Opportunity_Owner_Division__c = 'Solutions', Opportunity_Owner_Sub_Division__c = 'Inbound Sales');
+                                                 Opportunity_Owner_Division__c = 'Solutions', Opportunity_Owner_Sub_Division__c = 'USH - Tech',Country__c = 'a00b0000001AOufAAG',Expense_Income__c=0);
         Opportunity opp2 = new Opportunity(Name = 'Test Opportunity 2', StageName = 'Stage 5 - Submitted',
                                                  CloseDate = date.today().addMonths(5), Probability = 30,
-                                                 Opportunity_Owner_Division__c = 'Solutions', Opportunity_Owner_Sub_Division__c = 'Inbound Sales');
+                                                 Opportunity_Owner_Division__c = 'Solutions', Opportunity_Owner_Sub_Division__c = 'USH - Tech',Country__c = 'a00b0000001AOufAAG',Expense_Income__c=0);
         Opportunity opp3 = new Opportunity(Name = 'Test Opportunity 3', StageName = 'Stage 5 - Submitted',
                                                  CloseDate = date.today().addMonths(5), Probability = 30,
-                                                 Opportunity_Owner_Division__c = 'Solutions', Opportunity_Owner_Sub_Division__c = 'Inbound Sales');
+                                                 Opportunity_Owner_Division__c = 'Solutions', Opportunity_Owner_Sub_Division__c = 'USH - Tech',Country__c = 'a00b0000001AOufAAG',Expense_Income__c=0);
         insert new List<Opportunity> { opp1, opp2, opp3 };
 
         Integer testYear = Date.today().year() - 1;
@@ -538,4 +538,49 @@ public class OpportunityPipelineSnapshotTest {
         System.assertEquals(expectedProduct, psToTest.Products__c);
         System.assertEquals(expectedChannel, psToTest.RFP_Response__c);
     }
+  
+    @IsTest
+   public static void testProcessPriorMonthSnapshotsWithClosedStatusHistory() {
+        Opportunity opp1 = [SELECT Id FROM Opportunity WHERE Name = 'Test Opportunity 1'];
+ Date currentDate = Date.today().addMonths(-1);
+        Integer numberOfDays = Date.daysInMonth(currentDate.year(), currentDate.month());
+        Date testDate = Date.newInstance(currentDate.year(), currentDate.month(), numberOfDays);
+        Pipeline_Snapshot__c snapShot1 = new Pipeline_Snapshot__c(Opportunity__c = opp1.Id, Opportunity_Amount_Minus_Expense_Income__c = 2000,
+                                                                                Amount_Minus_Expense_Income__c = 2000, Probability__c = 100, Opportunity_Amount__c = 2000,
+                                                                                Amount__c = 2000,  Country__c = 'Test Country', Duration_months__c = 4,
+                                                                                 Month_Date__c = testDate, Source_Type__c = 'Opportunity',
+                                                                                Name = 'Test PS for date  ' + testDate);
+        insert snapShot1;
+
+        // Call the method to be tested
+        Test.startTest();
+        NetEVDifferenceTriggerGateway.processPriorMonthSnapshotsWithClosedStatusHistory(Date.today());
+        Test.stopTest();
+
+        // Verify the results
+        List<Pipeline_Snapshot_EV_DIff__c> diffs = [
+            SELECT Name, Opportunity_Name__c, Opportunity__c, Month_Date__c,
+                Pipeline_Snapshot__c, Prior_Snapshot_date__c, Delta_Type__c,
+                DIFF_Expected_Value_Minus_Expense__c, Expected_Monthly_Recurring_Revenue_MRR__c,
+                Diff_Buffer_EV__c, DIFF_Amount_Minus_Expense_Income__c, Monthly_Recurring_Revenue_MRR__c,
+                DIFF_12_Month_Cash_Minus_Expense_Income__c, DIFF_18_Month_Cash_Minus_Expenses_Income__c,
+                DIFF_24_Month_Cash_Minus_Expense_Income__c
+            FROM Pipeline_Snapshot_EV_DIff__c
+        ];
+
+        System.assertEquals(1, diffs.size());
+        Pipeline_Snapshot_EV_DIff__c diff = diffs[0];
+
+        System.assertEquals('Test Opportunity 1', diff.Opportunity_Name__c);
+        System.assertEquals('Closed Opp - Lost / No Go', diff.Delta_Type__c);
+        System.assertEquals(-2000, diff.DIFF_Expected_Value_Minus_Expense__c);
+        System.assertEquals(0, diff.Expected_Monthly_Recurring_Revenue_MRR__c);
+        System.assertEquals(0, diff.Diff_Buffer_EV__c);
+        System.assertEquals(33000, diff.DIFF_Amount_Minus_Expense_Income__c);
+        System.assertEquals(0, diff.Monthly_Recurring_Revenue_MRR__c);
+        System.assertEquals(0, diff.DIFF_12_Month_Cash_Minus_Expense_Income__c);
+        System.assertEquals(0, diff.DIFF_18_Month_Cash_Minus_Expenses_Income__c);
+        System.assertEquals(0, diff.DIFF_24_Month_Cash_Minus_Expense_Income__c);
+    }
+
 }

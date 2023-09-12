@@ -43,12 +43,23 @@
         <template>Dimagi_Emails/Opportunity_11_Questions</template>
     </alerts>
     <fieldUpdates>
+        <fullName>Close_Date_is_Today</fullName>
+        <field>CloseDate</field>
+        <formula>TODAY()</formula>
+        <name>Close Date is Today</name>
+        <notifyAssignee>false</notifyAssignee>
+        <operation>Formula</operation>
+        <protected>false</protected>
+        <reevaluateOnChange>false</reevaluateOnChange>
+    </fieldUpdates>
+    <fieldUpdates>
         <fullName>Fill_in_onboarding_questions</fullName>
         <field>Onboarding_package_sold__c</field>
         <name>Fill-in onboarding questions</name>
         <notifyAssignee>false</notifyAssignee>
         <operation>Literal</operation>
         <protected>false</protected>
+        <reevaluateOnChange>false</reevaluateOnChange>
     </fieldUpdates>
     <fieldUpdates>
         <fullName>Fill_in_onboarding_survey</fullName>
@@ -58,6 +69,7 @@
         <notifyAssignee>false</notifyAssignee>
         <operation>Literal</operation>
         <protected>false</protected>
+        <reevaluateOnChange>false</reevaluateOnChange>
     </fieldUpdates>
     <fieldUpdates>
         <fullName>Opportunity_Clear_Update_Field</fullName>
@@ -66,14 +78,15 @@
         <notifyAssignee>false</notifyAssignee>
         <operation>Null</operation>
         <protected>false</protected>
+        <reevaluateOnChange>false</reevaluateOnChange>
     </fieldUpdates>
     <fieldUpdates>
         <fullName>Opportunity_FB_Assigned_to_Opp_Owner</fullName>
         <description>Sets the Opportunity Owner based on who the FB Assigned To is</description>
         <field>OwnerId</field>
-        <lookupValue>rhartford@dimagi.com</lookupValue>
+        <lookupValue>rrath@dimagi.com</lookupValue>
         <lookupValueType>User</lookupValueType>
-        <name>Opportunity: Set RyanH as Owner</name>
+        <name>Opportunity: Set Rishabh as Owner</name>
         <notifyAssignee>false</notifyAssignee>
         <operation>LookupValue</operation>
         <protected>false</protected>
@@ -88,6 +101,7 @@
         <notifyAssignee>false</notifyAssignee>
         <operation>Formula</operation>
         <protected>false</protected>
+        <reevaluateOnChange>false</reevaluateOnChange>
     </fieldUpdates>
     <fieldUpdates>
         <fullName>Set_Christina_as_Owner</fullName>
@@ -99,6 +113,7 @@
         <notifyAssignee>true</notifyAssignee>
         <operation>LookupValue</operation>
         <protected>false</protected>
+        <reevaluateOnChange>false</reevaluateOnChange>
     </fieldUpdates>
     <fieldUpdates>
         <fullName>Set_Close_Date</fullName>
@@ -109,6 +124,7 @@
         <notifyAssignee>false</notifyAssignee>
         <operation>Formula</operation>
         <protected>false</protected>
+        <reevaluateOnChange>false</reevaluateOnChange>
     </fieldUpdates>
     <fieldUpdates>
         <fullName>Set_Kieran_as_Owner</fullName>
@@ -142,6 +158,7 @@
         <notifyAssignee>false</notifyAssignee>
         <operation>Formula</operation>
         <protected>false</protected>
+        <reevaluateOnChange>false</reevaluateOnChange>
     </fieldUpdates>
     <fieldUpdates>
         <fullName>Set_Opportunity_to_Closed</fullName>
@@ -163,6 +180,7 @@
         <notifyAssignee>false</notifyAssignee>
         <operation>Literal</operation>
         <protected>false</protected>
+        <reevaluateOnChange>false</reevaluateOnChange>
     </fieldUpdates>
     <fieldUpdates>
         <fullName>Set_Status_Active</fullName>
@@ -173,6 +191,7 @@
         <notifyAssignee>false</notifyAssignee>
         <operation>Literal</operation>
         <protected>false</protected>
+        <reevaluateOnChange>false</reevaluateOnChange>
         <targetObject>AccountId</targetObject>
     </fieldUpdates>
     <fieldUpdates>
@@ -184,6 +203,7 @@
         <notifyAssignee>false</notifyAssignee>
         <operation>Literal</operation>
         <protected>false</protected>
+        <reevaluateOnChange>false</reevaluateOnChange>
     </fieldUpdates>
     <rules>
         <fullName>Opp Close Date Changes</fullName>
@@ -341,7 +361,7 @@
         <triggerType>onAllChanges</triggerType>
     </rules>
     <rules>
-        <fullName>Set RyanH as Owner</fullName>
+        <fullName>Set Rishabh as Owner</fullName>
         <actions>
             <name>Opportunity_FB_Assigned_to_Opp_Owner</name>
             <type>FieldUpdate</type>
@@ -355,9 +375,23 @@
         <criteriaItems>
             <field>Opportunity.Fogbugz_Owner_Mapping__c</field>
             <operation>equals</operation>
-            <value>Ryan Hartford</value>
+            <value>Rishabh Rath</value>
         </criteriaItems>
-        <description>Sets Ryan as owner of an opportunity created by a non-mapped person in FB.</description>
+        <description>Sets Rishabh Rath as owner of an opportunity created by a non-mapped person in FB.</description>
         <triggerType>onAllChanges</triggerType>
+    </rules>
+    <rules>
+        <fullName>When Closed-Won%2C Close Date is today</fullName>
+        <actions>
+            <name>Close_Date_is_Today</name>
+            <type>FieldUpdate</type>
+        </actions>
+        <active>true</active>
+        <criteriaItems>
+            <field>Opportunity.StageName</field>
+            <operation>equals</operation>
+            <value>Closed - Won</value>
+        </criteriaItems>
+        <triggerType>onCreateOrTriggeringUpdate</triggerType>
     </rules>
 </Workflow>

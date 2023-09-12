@@ -129,7 +129,13 @@
 
         function setExportMonth() {
             var monthNum = $j('#monthList').val();
-            setExportMonthData(monthNum);
+            var YearData = $j('#YearList').val();
+            setExportMonthData(monthNum, YearData);
+        }
+    
+       function setExportYear() {
+            var YearData = $j('#YearList').val();
+            setExportyearData(YearData);
         }
 
         function loadModalData(month, contractId) {
@@ -355,7 +361,13 @@
                 </div>
 
                 <apex:actionFunction action="{!goToTimeCardView}" name="setExportMonthData" reRender="employeeHours">
-                    <apex:param name="exportMonth" assignTo="{!exportMonth}" value=""/>
+                   <apex:param name="exportMonth" assignTo="{!exportMonth}" value=""/>
+                   <apex:param name="exportYear" assignTo="{!exportYear}" value=""/>
+                    
+                </apex:actionFunction>
+                
+                <apex:actionFunction name="setExportyearData" reRender="employeeHours">
+                    <apex:param name="exportYear" assignTo="{!exportYear}" value=""/>
                 </apex:actionFunction>
 
                 <!-- Time Card Generator Modal -->
@@ -377,6 +389,22 @@
                             <option value="12">December</option>
                         </select>
                     </div>
+                    <div style="float:left">
+                        <label for="YearList">Select a Year : </label>
+                        <select name="YearList" id="YearList">
+                            <option value="2025">2025</option>
+                            <option value="2024">2024</option>
+                            <option value="2023" selected="selected">2023</option>
+                            <option value="2022">2022</option>
+                        </select>
+                    </div>
+                  <!--   <div class="fteFilters">
+                            <apex:outputLabel value="Select a year :" for="fteYearSelect" />
+                            <apex:selectList id="fteYearSelect" value="{!exportYear}" size="1">
+                                <apex:selectOptions value="{!yearsData}"/>
+                            </apex:selectList>
+                        </div> -->
+                       
                     <button id="chooseMonthButton" class="ui-button ui-widget ui-corner-all" onclick="setExportMonth();" >
                         Generate Time Cards
                     </button>

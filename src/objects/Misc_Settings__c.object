@@ -3,6 +3,8 @@
     <customSettingsType>Hierarchy</customSettingsType>
     <enableEnhancedLookup>false</enableEnhancedLookup>
     <enableFeeds>false</enableFeeds>
+    <label>Misc Settings</label>
+    <visibility>Public</visibility>
     <fields>
         <fullName>Project_Report_Out_Password__c</fullName>
         <externalId>false</externalId>
@@ -13,6 +15,4 @@
         <type>Text</type>
         <unique>false</unique>
     </fields>
-    <label>Misc Settings</label>
-    <visibility>Public</visibility>
 </CustomObject>

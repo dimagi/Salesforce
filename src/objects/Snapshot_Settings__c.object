@@ -3,6 +3,8 @@
     <customSettingsType>Hierarchy</customSettingsType>
     <description>Used when taking Pipeline Snapshots.  Sets the date of the snapshot. Update this before running the snapshot reports.</description>
     <enableFeeds>false</enableFeeds>
+    <label>Snapshot Settings</label>
+    <visibility>Public</visibility>
     <fields>
         <fullName>Snapshot_Date__c</fullName>
         <externalId>false</externalId>
@@ -12,6 +14,4 @@
         <trackTrending>false</trackTrending>
         <type>Date</type>
     </fields>
-    <label>Snapshot Settings</label>
-    <visibility>Public</visibility>
 </CustomObject>

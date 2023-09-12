@@ -96,12 +96,14 @@
         <fields>OPPORTUNITY.NAME</fields>
         <fields>ACCOUNT.NAME</fields>
         <fields>OPPORTUNITY.CLOSE_DATE</fields>
+        <fields>Short_Description__c</fields>
         <relatedList>Opportunity.Opportunity_Owning_Entity__c</relatedList>
     </relatedLists>
     <relatedLists>
         <fields>OPPORTUNITY.NAME</fields>
         <fields>ACCOUNT.NAME</fields>
         <fields>OPPORTUNITY.CLOSE_DATE</fields>
+        <fields>Short_Description__c</fields>
         <relatedList>Opportunity.Implementing_Business_Unit__c</relatedList>
     </relatedLists>
     <relatedLists>
@@ -120,6 +122,7 @@
         <fields>OPPORTUNITY.NAME</fields>
         <fields>ACCOUNT.NAME</fields>
         <fields>OPPORTUNITY.CLOSE_DATE</fields>
+        <fields>Short_Description__c</fields>
         <relatedList>Opportunity.Contract_Owner_BU__c</relatedList>
     </relatedLists>
     <relatedLists>
@@ -137,6 +140,10 @@
     <relatedLists>
         <fields>NAME</fields>
         <relatedList>DContract__c.Parent_Contract_Execution_Owner__c</relatedList>
+    </relatedLists>
+    <relatedLists>
+        <fields>NAME</fields>
+        <relatedList>DContract__c.Efficiency_Owner_BU__c</relatedList>
     </relatedLists>
     <showEmailCheckbox>false</showEmailCheckbox>
     <showHighlightsPanel>false</showHighlightsPanel>

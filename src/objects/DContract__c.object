@@ -5,7 +5,27 @@
         <type>Default</type>
     </actionOverrides>
     <actionOverrides>
+        <actionName>Accept</actionName>
+        <formFactor>Large</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Accept</actionName>
+        <formFactor>Small</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
         <actionName>CancelEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>CancelEdit</actionName>
+        <formFactor>Large</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>CancelEdit</actionName>
+        <formFactor>Small</formFactor>
         <type>Default</type>
     </actionOverrides>
     <actionOverrides>
@@ -13,7 +33,27 @@
         <type>Default</type>
     </actionOverrides>
     <actionOverrides>
+        <actionName>Clone</actionName>
+        <formFactor>Large</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Clone</actionName>
+        <formFactor>Small</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
         <actionName>Delete</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Delete</actionName>
+        <formFactor>Large</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Delete</actionName>
+        <formFactor>Small</formFactor>
         <type>Default</type>
     </actionOverrides>
     <actionOverrides>
@@ -21,7 +61,27 @@
         <type>Default</type>
     </actionOverrides>
     <actionOverrides>
+        <actionName>Edit</actionName>
+        <formFactor>Large</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Edit</actionName>
+        <formFactor>Small</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
         <actionName>List</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>List</actionName>
+        <formFactor>Large</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>List</actionName>
+        <formFactor>Small</formFactor>
         <type>Default</type>
     </actionOverrides>
     <actionOverrides>
@@ -29,7 +89,27 @@
         <type>Default</type>
     </actionOverrides>
     <actionOverrides>
+        <actionName>New</actionName>
+        <formFactor>Large</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>New</actionName>
+        <formFactor>Small</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
         <actionName>SaveEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>SaveEdit</actionName>
+        <formFactor>Large</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>SaveEdit</actionName>
+        <formFactor>Small</formFactor>
         <type>Default</type>
     </actionOverrides>
     <actionOverrides>
@@ -37,7 +117,27 @@
         <type>Default</type>
     </actionOverrides>
     <actionOverrides>
+        <actionName>Tab</actionName>
+        <formFactor>Large</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Tab</actionName>
+        <formFactor>Small</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
         <actionName>View</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>View</actionName>
+        <formFactor>Large</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>View</actionName>
+        <formFactor>Small</formFactor>
         <type>Default</type>
     </actionOverrides>
     <allowInChatterGroups>false</allowInChatterGroups>
@@ -48,48 +148,35 @@
     <enableBulkApi>true</enableBulkApi>
     <enableFeeds>false</enableFeeds>
     <enableHistory>true</enableHistory>
+    <enableLicensing>false</enableLicensing>
     <enableReports>true</enableReports>
     <enableSearch>true</enableSearch>
     <enableSharing>true</enableSharing>
     <enableStreamingApi>true</enableStreamingApi>
-    <fields>
-        <fullName>ALL_TIME_Income__c</fullName>
-        <description>Updated monthly by Jason doing the Intacct data upload. Total Income invoiced on the project to date.</description>
-        <externalId>false</externalId>
-        <inlineHelpText>Updated monthly by Jason doing the Intacct data upload. Total Income invoiced on the project to date.</inlineHelpText>
-        <label>ALL TIME Income</label>
-        <precision>16</precision>
-        <required>false</required>
-        <scale>2</scale>
-        <trackHistory>true</trackHistory>
-        <trackTrending>false</trackTrending>
-        <type>Currency</type>
-    </fields>
-    <fields>
-        <fullName>A_133_Project__c</fullName>
-        <description>This field is to signify if a project is a federal award T&amp;M project that is included in the annual A-133 audit.</description>
-        <externalId>false</externalId>
-        <inlineHelpText>This field is to signify if a project is a federal award T&amp;M project that is included in the annual A-133 audit.</inlineHelpText>
-        <label>A-133 Project</label>
-        <required>false</required>
+    <label>Contract</label>
+    <nameField>
+        <label>Contract Name</label>
         <trackHistory>false</trackHistory>
-        <trackTrending>false</trackTrending>
-        <type>Picklist</type>
-        <valueSet>
-            <restricted>true</restricted>
-            <valueSetDefinition>
-                <sorted>false</sorted>
-                <value>
-                    <fullName>No</fullName>
-                    <default>true</default>
-                </value>
-                <value>
-                    <fullName>Yes</fullName>
-                    <default>false</default>
-                </value>
-            </valueSetDefinition>
-        </valueSet>
-    </fields>
+        <type>Text</type>
+    </nameField>
+    <pluralLabel>Contracts</pluralLabel>
+    <searchLayouts>
+        <searchFilterFields>NAME</searchFilterFields>
+        <searchFilterFields>Status__c</searchFilterFields>
+        <searchFilterFields>Total_Amount_REMAINING__c</searchFilterFields>
+        <searchFilterFields>Project_Manager__c</searchFilterFields>
+        <searchFilterFields>Percent_through_SOW_deliverables__c</searchFilterFields>
+        <searchResultsAdditionalFields>Status__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>Channel__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>Country_Text__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>Percent_through_SOW_deliverables__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>Project_Manager__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>Total_Amount_REMAINING__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>Total_Amount_of_Contract__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>Summary_Overview__c</searchResultsAdditionalFields>
+    </searchLayouts>
+    <sharingModel>ReadWrite</sharingModel>
+    <visibility>Public</visibility>
     <fields>
         <fullName>Account_ID__c</fullName>
         <externalId>false</externalId>
@@ -116,6 +203,17 @@
         <type>Lookup</type>
     </fields>
     <fields>
+        <fullName>Agreement_End_Date__c</fullName>
+        <description>Date that the Agreement comes to an end. For multiyear projects this is the end date of the entire project, and is often later than the funding end date</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Date that the Agreement comes to an end. For multiyear projects this is the end date of the entire project, and is often later than the funding end date</inlineHelpText>
+        <label>Agreement End Date</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Date</type>
+    </fields>
+    <fields>
         <fullName>All_Intacct_Income__c</fullName>
         <description>This field is income from 1/1/14 to Date</description>
         <externalId>false</externalId>
@@ -125,6 +223,19 @@
         <required>false</required>
         <scale>0</scale>
         <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>ALL_TIME_Income__c</fullName>
+        <description>Updated monthly by Jason doing the Intacct data upload. Total Income invoiced on the project to date.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Updated monthly by Jason doing the Intacct data upload. Total Income invoiced on the project to date.</inlineHelpText>
+        <label>ALL TIME Income</label>
+        <precision>16</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackHistory>true</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Currency</type>
     </fields>
@@ -143,50 +254,88 @@
                 <value>
                     <fullName>Agriculture and Food Security</fullName>
                     <default>false</default>
+                    <label>Agriculture and Food Security</label>
                 </value>
                 <value>
                     <fullName>Economic Development</fullName>
                     <default>false</default>
+                    <label>Economic Development</label>
                 </value>
                 <value>
                     <fullName>Education and Training</fullName>
                     <default>false</default>
+                    <label>Education and Training</label>
                 </value>
                 <value>
                     <fullName>Emergency Response</fullName>
                     <default>false</default>
+                    <label>Emergency Response</label>
                 </value>
                 <value>
                     <fullName>Financial Services for the Poor</fullName>
                     <default>false</default>
+                    <label>Financial Services for the Poor</label>
                 </value>
                 <value>
                     <fullName>Gender Equality and Women&apos;s Empowerment</fullName>
                     <default>false</default>
+                    <label>Gender Equality and Women&apos;s Empowerment</label>
                 </value>
                 <value>
                     <fullName>Governance and Accountability</fullName>
                     <default>false</default>
+                    <label>Governance and Accountability</label>
                 </value>
                 <value>
                     <fullName>Health</fullName>
                     <default>true</default>
+                    <label>Health</label>
                 </value>
                 <value>
                     <fullName>Logistics</fullName>
                     <default>false</default>
+                    <label>Logistics</label>
                 </value>
                 <value>
                     <fullName>Other</fullName>
                     <default>false</default>
+                    <label>Other</label>
                 </value>
                 <value>
                     <fullName>Water, Sanitation, &amp; Hygiene</fullName>
                     <default>false</default>
+                    <label>Water, Sanitation, &amp; Hygiene</label>
                 </value>
             </valueSetDefinition>
         </valueSet>
         <visibleLines>6</visibleLines>
+    </fields>
+    <fields>
+        <fullName>A_133_Project__c</fullName>
+        <description>This field is to signify if a project is a federal award T&amp;M project that is included in the annual A-133 audit.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>This field is to signify if a project is a federal award T&amp;M project that is included in the annual A-133 audit.</inlineHelpText>
+        <label>A-133 Project</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+        <valueSet>
+            <restricted>true</restricted>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>No</fullName>
+                    <default>true</default>
+                    <label>No</label>
+                </value>
+                <value>
+                    <fullName>Yes</fullName>
+                    <default>false</default>
+                    <label>Yes</label>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
     </fields>
     <fields>
         <fullName>BAA__c</fullName>
@@ -204,29 +353,37 @@
                 <value>
                     <fullName>BAA</fullName>
                     <default>false</default>
+                    <label>BAA</label>
                 </value>
                 <value>
                     <fullName>DTA</fullName>
                     <default>false</default>
+                    <label>DTA</label>
                 </value>
             </valueSetDefinition>
         </valueSet>
     </fields>
     <fields>
+        <fullName>Backstop_Email__c</fullName>
+        <description>Requested by Finance to more clearly prominently present the Backstop&apos;s Email address</description>
+        <externalId>false</externalId>
+        <formula>Backstop__r.Email</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <inlineHelpText>The email address associated with the Backstop.</inlineHelpText>
+        <label>Backstop Email</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
         <fullName>Backstop__c</fullName>
+        <businessStatus>Active</businessStatus>
         <deleteConstraint>SetNull</deleteConstraint>
         <externalId>false</externalId>
         <inlineHelpText>Who to escalate to for issues.</inlineHelpText>
         <label>Backstop</label>
-        <lookupFilter>
-            <active>true</active>
-            <filterItems>
-                <field>Contact.Email</field>
-                <operation>contains</operation>
-                <value>@dimagi.com</value>
-            </filterItems>
-            <isOptional>false</isOptional>
-        </lookupFilter>
         <referenceTo>Contact</referenceTo>
         <relationshipLabel>Backstop</relationshipLabel>
         <relationshipName>Backstop</relationshipName>
@@ -260,21 +417,28 @@
                 <value>
                     <fullName>Yes</fullName>
                     <default>false</default>
+                    <label>Yes</label>
                 </value>
                 <value>
                     <fullName>No</fullName>
                     <default>false</default>
+                    <label>No</label>
                 </value>
             </valueSetDefinition>
         </valueSet>
     </fields>
     <fields>
         <fullName>Billing_Deficit__c</fullName>
-        <description>The amount remaining that based on percent of work completed we expected to bill client at this point. Positive number is the amount we believe we have under billed, so we are further along in the project then we&apos;ve invoiced.  Equation: Total Amount Remaining*(1-Billing Efficiency %)</description>
+        <description>The amount remaining that based on percent of work completed we expected to bill client at this point. Positive number is the amount we believe we have under billed, so we are further along in the project then we&apos;ve invoiced. Equation: Total Amount Remaining*(1-Billing Efficiency %)
+
+This field was changed on 20 March 2023 by request from the BizStrat Team.
+
+Prior Description: The amount remaining that based on percent of work completed we expected to bill client at this point. Positive number is the amount we believe we have under billed, so we are further along in the project then we&apos;ve invoiced.  Equation: Total Amount Remaining*(1-Billing Efficiency %)
+
+Prior Logic: IF( Billing_efficiency__c =0, Total_Amount_REMAINING__c * Percent_through_SOW_deliverables__c ,IF( Invoiced__c &gt; Percent_through_SOW_deliverables__c , ((Total_Amount_of_Contract__c * Percent_through_SOW_deliverables__c )- ALL_TIME_Income__c) ,Total_Amount_REMAINING__c *(1- Billing_efficiency__c )))</description>
         <externalId>false</externalId>
-        <formula>IF( Billing_efficiency__c =0, Total_Amount_REMAINING__c *  Percent_through_SOW_deliverables__c ,IF(  Invoiced__c &gt; Percent_through_SOW_deliverables__c ,0,Total_Amount_REMAINING__c  *(1- Billing_efficiency__c )))</formula>
-        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
-        <inlineHelpText>Amount remaining that based on % of work completed we expected to bill client at this point. Positive number is the amount we believe we have under billed, so haven&apos;t billed enough.  Equation: Total Amount Remaining*(1-Billing Efficiency %)</inlineHelpText>
+        <formula>IF(ISBLANK(Percent_through_SOW_deliverables__c), 0.00,((Percent_through_SOW_deliverables__c  -  Invoiced__c) *  Total_Amount_of_Contract__c))</formula>
+        <inlineHelpText>Amount remaining that, based on % of work completed, we would have expected to invoice the client for at this point. Positive number is the amount we believe we have under billed. If there is a negative value, then our invoicing is ahead our % work completion. If the % work complete field has never been updated, then Billing Deficit is $0.</inlineHelpText>
         <label>Billing Deficit</label>
         <precision>18</precision>
         <required>false</required>
@@ -397,43 +561,78 @@ See https://confluence.dimagi.com/display/BD/BD+Channels</inlineHelpText>
                 <value>
                     <fullName>Inside Sales</fullName>
                     <default>false</default>
+                    <label>Inside Sales</label>
                 </value>
                 <value>
                     <fullName>B2B - Standard</fullName>
                     <default>false</default>
+                    <label>B2B - Standard</label>
                 </value>
                 <value>
                     <fullName>B2B - Enterprise</fullName>
                     <default>false</default>
+                    <label>B2B - Enterprise</label>
                 </value>
                 <value>
-                    <fullName>Pre-Bid</fullName>
+                    <fullName>Large Competitive Bid</fullName>
                     <default>false</default>
+                    <label>Large Competitive Bid</label>
                 </value>
                 <value>
                     <fullName>Other Competitive Bid</fullName>
                     <default>false</default>
+                    <label>Other Competitive Bid</label>
                 </value>
                 <value>
                     <fullName>NIH Grant</fullName>
                     <default>false</default>
+                    <label>NIH Grant</label>
                 </value>
                 <value>
                     <fullName>CORE Funding (Gates)</fullName>
                     <default>false</default>
+                    <label>CORE Funding (Gates)</label>
                 </value>
                 <value>
                     <fullName>Gates Enterprise</fullName>
                     <default>false</default>
+                    <label>Gates Enterprise</label>
                 </value>
             </valueSetDefinition>
         </valueSet>
     </fields>
     <fields>
+        <fullName>Contracting_Business_Unit__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <externalId>false</externalId>
+        <inlineHelpText>The Entity (Dimagi Subsidiary or entity) that signed the contract with the partner.</inlineHelpText>
+        <label>Contract Owner (Entity)</label>
+        <referenceTo>Business_Unit__c</referenceTo>
+        <relationshipLabel>Contracts (Contracting Business Unit)</relationshipLabel>
+        <relationshipName>Implementing_Contracts</relationshipName>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>Contract_Clauses_for_PM__c</fullName>
+        <description>Requested by Corporate Ops, April 2023.
+Intended as a place for Corporate Ops to document any key clauses such that Project Managers can view them.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Captures the key contract clauses that the Project Manager needs to be aware of; populated by Corporate Operations</inlineHelpText>
+        <label>Contract Clauses for PM</label>
+        <length>32768</length>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>LongTextArea</type>
+        <visibleLines>3</visibleLines>
+    </fields>
+    <fields>
         <fullName>Contract_End_Date__c</fullName>
         <description>Date that the obligated budget period comes to an end</description>
         <externalId>false</externalId>
-        <inlineHelpText>When the project budget period ends.</inlineHelpText>
+        <inlineHelpText>Date that the obligated budget period comes to an end</inlineHelpText>
         <label>Funding End Date</label>
         <required>false</required>
         <trackHistory>false</trackHistory>
@@ -490,31 +689,20 @@ See https://confluence.dimagi.com/display/BD/BD+Channels</inlineHelpText>
                 <value>
                     <fullName>FFP</fullName>
                     <default>false</default>
+                    <label>FFP</label>
                 </value>
                 <value>
                     <fullName>T&amp;M</fullName>
                     <default>false</default>
+                    <label>T&amp;M</label>
                 </value>
                 <value>
                     <fullName>Cost Plus</fullName>
                     <default>false</default>
+                    <label>Cost Plus</label>
                 </value>
             </valueSetDefinition>
         </valueSet>
-    </fields>
-    <fields>
-        <fullName>Contracting_Business_Unit__c</fullName>
-        <deleteConstraint>SetNull</deleteConstraint>
-        <externalId>false</externalId>
-        <inlineHelpText>The Business Unit that signed the contract with the customer (DSA, DSI, Inc).</inlineHelpText>
-        <label>Contract Owner (BU)</label>
-        <referenceTo>Business_Unit__c</referenceTo>
-        <relationshipLabel>Contracts (Contracting Business Unit)</relationshipLabel>
-        <relationshipName>Implementing_Contracts</relationshipName>
-        <required>false</required>
-        <trackHistory>false</trackHistory>
-        <trackTrending>false</trackTrending>
-        <type>Lookup</type>
     </fields>
     <fields>
         <fullName>Cost_Share__c</fullName>
@@ -533,10 +721,12 @@ See https://confluence.dimagi.com/display/BD/BD+Channels</inlineHelpText>
                 <value>
                     <fullName>No</fullName>
                     <default>true</default>
+                    <label>No</label>
                 </value>
                 <value>
                     <fullName>Yes</fullName>
                     <default>false</default>
+                    <label>Yes</label>
                 </value>
             </valueSetDefinition>
         </valueSet>
@@ -562,6 +752,40 @@ See https://confluence.dimagi.com/display/BD/BD+Channels</inlineHelpText>
         <type>Currency</type>
     </fields>
     <fields>
+        <fullName>Date_of_Contract_Execution__c</fullName>
+        <externalId>false</externalId>
+        <label>Date of Contract Execution</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>DA_Region__c</fullName>
+        <externalId>false</externalId>
+        <label>DA - Region</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+        <valueSet>
+            <restricted>true</restricted>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>US</fullName>
+                    <default>false</default>
+                    <label>US</label>
+                </value>
+                <value>
+                    <fullName>International</fullName>
+                    <default>false</default>
+                    <label>International</label>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+    <fields>
         <fullName>DBA_Insurance_Required__c</fullName>
         <defaultValue>false</defaultValue>
         <description>Whether Defense Based Act (DBA) insurance is required</description>
@@ -571,6 +795,101 @@ See https://confluence.dimagi.com/display/BD/BD+Channels</inlineHelpText>
         <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Digital_Adherence_Sector__c</fullName>
+        <externalId>false</externalId>
+        <label>Digital Adherence Sector</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+        <valueSet>
+            <restricted>true</restricted>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>TB</fullName>
+                    <default>false</default>
+                    <label>TB</label>
+                </value>
+                <value>
+                    <fullName>Clinical Trials</fullName>
+                    <default>false</default>
+                    <label>Clinical Trials</label>
+                </value>
+                <value>
+                    <fullName>Behavioral Health</fullName>
+                    <default>false</default>
+                    <label>Behavioral Health</label>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+    <fields>
+        <fullName>Direct_Costs_Sub_Contract_BUDGET__c</fullName>
+        <description>Subcontract budget from Contract that is going to external parties (not Dimagi budget)</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Subcontract budget from Contract that is going to external parties (not Dimagi budget)</inlineHelpText>
+        <label>External Sub-contract BUDGET</label>
+        <precision>16</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>Direct_Costs_Sub_contract_Expenses__c</fullName>
+        <description>External Subcontract spend on external parties</description>
+        <externalId>false</externalId>
+        <inlineHelpText>External Subcontract spend on external parties</inlineHelpText>
+        <label>External Sub-contract Spend</label>
+        <precision>16</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>Direct_Costs_Total_Expenses__c</fullName>
+        <description>Calculated (updated monthly): Project Travel Spend + External Sub-contract Spend + Project Other Spend</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Calculated (updated monthly): Project Travel Spend + External Sub-contract Spend + Project Other Spend</inlineHelpText>
+        <label>Expense &amp; Travel Spend</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>Direct_Costs_Travel_BUDGET__c</fullName>
+        <description>Travel budget from the contract</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Travel budget from the contract</inlineHelpText>
+        <label>Project Travel BUDGET</label>
+        <precision>16</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>Direct_Costs_Travel_Expenses__c</fullName>
+        <description>Spend to date on Travel Expenses from Intacct Financial records.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Spend to date on Travel Expenses from Intacct Financial records.</inlineHelpText>
+        <label>Project Travel Spend</label>
+        <precision>16</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
     </fields>
     <fields>
         <fullName>DLAC_Custom_Services_income__c</fullName>
@@ -749,6 +1068,22 @@ See https://confluence.dimagi.com/display/BD/BD+Channels</inlineHelpText>
         <type>Percent</type>
     </fields>
     <fields>
+        <fullName>Duration_months__c</fullName>
+        <description>Calculated based on start and end dates in the contract object</description>
+        <externalId>false</externalId>
+        <formula>MONTH( Contract_End_Date__c ) + (YEAR( Contract_End_Date__c )*12) - MONTH( Contract_Start_Date__c ) - (YEAR( Contract_Start_Date__c )*12)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <inlineHelpText>Calculated based on start and end dates in the contract object</inlineHelpText>
+        <label>Duration (months)</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
         <fullName>DWA_Custom_Services_income__c</fullName>
         <externalId>false</externalId>
         <label>DWA Custom Services income %</label>
@@ -793,94 +1128,19 @@ See https://confluence.dimagi.com/display/BD/BD+Channels</inlineHelpText>
         <type>Percent</type>
     </fields>
     <fields>
-        <fullName>Date_of_Contract_Execution__c</fullName>
+        <fullName>Efficiency_Owner_BU__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <description>This field is used in specific SalesForce reports on Aggregate Execution Efficiency. Sometimes the &quot;Execution Owner (BU)&quot; field doesn&apos;t represent the correct BU for evaluating Execution Efficiency, so we update this field for exceptions.</description>
         <externalId>false</externalId>
-        <label>Date of Contract Execution</label>
+        <inlineHelpText>This field is used in specific SalesForce reports on Aggregate Execution Efficiency. Sometimes the &quot;Execution Owner (BU)&quot; field doesn&apos;t represent the correct BU for evaluating Execution Efficiency, so we update this field for exceptions.</inlineHelpText>
+        <label>Efficiency Owner (BU)</label>
+        <referenceTo>Business_Unit__c</referenceTo>
+        <relationshipLabel>Contracts (Execution Owner)</relationshipLabel>
+        <relationshipName>Contracts2</relationshipName>
         <required>false</required>
         <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
-        <type>Date</type>
-    </fields>
-    <fields>
-        <fullName>Direct_Costs_Sub_Contract_BUDGET__c</fullName>
-        <description>Subcontract budget from Contract that is going to external parties (not Dimagi budget)</description>
-        <externalId>false</externalId>
-        <inlineHelpText>Subcontract budget from Contract that is going to external parties (not Dimagi budget)</inlineHelpText>
-        <label>External Sub-contract BUDGET</label>
-        <precision>16</precision>
-        <required>false</required>
-        <scale>2</scale>
-        <trackHistory>false</trackHistory>
-        <trackTrending>false</trackTrending>
-        <type>Currency</type>
-    </fields>
-    <fields>
-        <fullName>Direct_Costs_Sub_contract_Expenses__c</fullName>
-        <description>External Subcontract spend on external parties</description>
-        <externalId>false</externalId>
-        <inlineHelpText>External Subcontract spend on external parties</inlineHelpText>
-        <label>External Sub-contract Spend</label>
-        <precision>16</precision>
-        <required>false</required>
-        <scale>2</scale>
-        <trackHistory>true</trackHistory>
-        <trackTrending>false</trackTrending>
-        <type>Currency</type>
-    </fields>
-    <fields>
-        <fullName>Direct_Costs_Total_Expenses__c</fullName>
-        <description>Calculated (updated monthly): Project Travel Spend + External Sub-contract Spend + Project Other Spend</description>
-        <externalId>false</externalId>
-        <inlineHelpText>Calculated (updated monthly): Project Travel Spend + External Sub-contract Spend + Project Other Spend</inlineHelpText>
-        <label>Expense &amp; Travel Spend</label>
-        <precision>18</precision>
-        <required>false</required>
-        <scale>2</scale>
-        <trackHistory>true</trackHistory>
-        <trackTrending>false</trackTrending>
-        <type>Currency</type>
-    </fields>
-    <fields>
-        <fullName>Direct_Costs_Travel_BUDGET__c</fullName>
-        <description>Travel budget from the contract</description>
-        <externalId>false</externalId>
-        <inlineHelpText>Travel budget from the contract</inlineHelpText>
-        <label>Project Travel BUDGET</label>
-        <precision>16</precision>
-        <required>false</required>
-        <scale>2</scale>
-        <trackHistory>false</trackHistory>
-        <trackTrending>false</trackTrending>
-        <type>Currency</type>
-    </fields>
-    <fields>
-        <fullName>Direct_Costs_Travel_Expenses__c</fullName>
-        <description>Spend to date on Travel Expenses from Intacct Financial records.</description>
-        <externalId>false</externalId>
-        <inlineHelpText>Spend to date on Travel Expenses from Intacct Financial records.</inlineHelpText>
-        <label>Project Travel Spend</label>
-        <precision>16</precision>
-        <required>false</required>
-        <scale>2</scale>
-        <trackHistory>true</trackHistory>
-        <trackTrending>false</trackTrending>
-        <type>Currency</type>
-    </fields>
-    <fields>
-        <fullName>Duration_months__c</fullName>
-        <description>Calculated based on start and end dates in the contract object</description>
-        <externalId>false</externalId>
-        <formula>MONTH( Contract_End_Date__c ) + (YEAR( Contract_End_Date__c )*12) - MONTH( Contract_Start_Date__c ) - (YEAR( Contract_Start_Date__c )*12)</formula>
-        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
-        <inlineHelpText>Calculated based on start and end dates in the contract object</inlineHelpText>
-        <label>Duration (months)</label>
-        <precision>18</precision>
-        <required>false</required>
-        <scale>0</scale>
-        <trackHistory>false</trackHistory>
-        <trackTrending>false</trackTrending>
-        <type>Number</type>
-        <unique>false</unique>
+        <type>Lookup</type>
     </fields>
     <fields>
         <fullName>EV_Date_1_Minus_Expense_Income__c</fullName>
@@ -913,19 +1173,15 @@ See https://confluence.dimagi.com/display/BD/BD+Channels</inlineHelpText>
         <type>Currency</type>
     </fields>
     <fields>
-        <fullName>Efficiency_Owner_BU__c</fullName>
-        <deleteConstraint>SetNull</deleteConstraint>
-        <description>This field is used in specific SalesForce reports on Aggregate Execution Efficiency. Sometimes the &quot;Execution Owner (BU)&quot; field doesn&apos;t represent the correct BU for evaluating Execution Efficiency, so we update this field for exceptions.</description>
+        <fullName>Exclude_from_Email_Script__c</fullName>
+        <defaultValue>false</defaultValue>
+        <description>This checkbox is for T&amp;M projects that should be excluded from the monthly expense email script</description>
         <externalId>false</externalId>
-        <inlineHelpText>This field is used in specific SalesForce reports on Aggregate Execution Efficiency. Sometimes the &quot;Execution Owner (BU)&quot; field doesn&apos;t represent the correct BU for evaluating Execution Efficiency, so we update this field for exceptions.</inlineHelpText>
-        <label>Efficiency Owner (BU)</label>
-        <referenceTo>Business_Unit__c</referenceTo>
-        <relationshipLabel>Contracts (Execution Owner)</relationshipLabel>
-        <relationshipName>Contracts2</relationshipName>
-        <required>false</required>
+        <inlineHelpText>This checkbox is for T&amp;M projects that should be excluded from the monthly expense email script</inlineHelpText>
+        <label>Exclude from Email Script</label>
         <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
-        <type>Lookup</type>
+        <type>Checkbox</type>
     </fields>
     <fields>
         <fullName>Exclude_from_Monthly_Upload__c</fullName>
@@ -985,6 +1241,495 @@ If any blanks in variables, it&apos;s set to 100%.</inlineHelpText>
         <unique>false</unique>
     </fields>
     <fields>
+        <fullName>Execution_Owner_Division__c</fullName>
+        <description>This fields describes which division this contract is part of.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>This fields describes which division this contract is part of.</inlineHelpText>
+        <label>Execution Owner (Division)</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+        <valueSet>
+            <restricted>true</restricted>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>Solutions</fullName>
+                    <default>false</default>
+                    <label>Solutions</label>
+                </value>
+                <value>
+                    <fullName>SaaS</fullName>
+                    <default>false</default>
+                    <label>SaaS</label>
+                </value>
+                <value>
+                    <fullName>GSO</fullName>
+                    <default>false</default>
+                    <label>GSO</label>
+                </value>
+                <value>
+                    <fullName>GTD</fullName>
+                    <default>false</default>
+                    <label>GTD</label>
+                </value>
+                <value>
+                    <fullName>India Division</fullName>
+                    <default>false</default>
+                    <label>India Division</label>
+                </value>
+                <value>
+                    <fullName>USH</fullName>
+                    <default>false</default>
+                    <label>USH</label>
+                </value>
+                <value>
+                    <fullName>ICDS-CAS</fullName>
+                    <default>false</default>
+                    <isActive>false</isActive>
+                    <label>ICDS-CAS</label>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+    <fields>
+        <fullName>Execution_Owner_SubDivision__c</fullName>
+        <description>These are all sub divisions that can currently be an execution owner of a contract.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>These are all sub divisions that can currently be an execution owner of a contract.</inlineHelpText>
+        <label>Execution Owner (Sub-Division)</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+        <valueSet>
+            <restricted>true</restricted>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>GSO - Marketing</fullName>
+                    <default>false</default>
+                    <label>GSO - Marketing</label>
+                </value>
+                <value>
+                    <fullName>GSO - BizOps</fullName>
+                    <default>false</default>
+                    <label>GSO - BizOps</label>
+                </value>
+                <value>
+                    <fullName>GSO - BizStrat</fullName>
+                    <default>false</default>
+                    <label>GSO - BizStrat</label>
+                </value>
+                <value>
+                    <fullName>GSO - Leadership</fullName>
+                    <default>false</default>
+                    <label>GSO - Leadership</label>
+                </value>
+                <value>
+                    <fullName>GSO - POps</fullName>
+                    <default>false</default>
+                    <label>GSO - POps</label>
+                </value>
+                <value>
+                    <fullName>GSO - RAD</fullName>
+                    <default>false</default>
+                    <label>GSO - RAD</label>
+                </value>
+                <value>
+                    <fullName>GTD - Leadership</fullName>
+                    <default>false</default>
+                    <label>GTD - Leadership</label>
+                </value>
+                <value>
+                    <fullName>GTD - QA</fullName>
+                    <default>false</default>
+                    <label>GTD - QA</label>
+                </value>
+                <value>
+                    <fullName>GTD - Team</fullName>
+                    <default>false</default>
+                    <label>GTD - Team</label>
+                </value>
+                <value>
+                    <fullName>SaaS - Management</fullName>
+                    <default>false</default>
+                    <label>SaaS - Management</label>
+                </value>
+                <value>
+                    <fullName>SaaS - Marketing</fullName>
+                    <default>false</default>
+                    <label>SaaS - Marketing</label>
+                </value>
+                <value>
+                    <fullName>SaaS - Operations</fullName>
+                    <default>false</default>
+                    <label>SaaS - Operations</label>
+                </value>
+                <value>
+                    <fullName>SaaS - Platform</fullName>
+                    <default>false</default>
+                    <label>SaaS - Platform</label>
+                </value>
+                <value>
+                    <fullName>SaaS - Product</fullName>
+                    <default>false</default>
+                    <label>SaaS - Product</label>
+                </value>
+                <value>
+                    <fullName>SaaS - Sales</fullName>
+                    <default>false</default>
+                    <label>SaaS - Sales</label>
+                </value>
+                <value>
+                    <fullName>SaaS - Support</fullName>
+                    <default>false</default>
+                    <label>SaaS - Support</label>
+                </value>
+                <value>
+                    <fullName>USH - Delivery</fullName>
+                    <default>false</default>
+                    <label>USH - Delivery</label>
+                </value>
+                <value>
+                    <fullName>USH - Leadership</fullName>
+                    <default>false</default>
+                    <label>USH - Leadership</label>
+                </value>
+                <value>
+                    <fullName>USH - Partnerships</fullName>
+                    <default>false</default>
+                    <label>USH - Partnerships</label>
+                </value>
+                <value>
+                    <fullName>USH - Tech</fullName>
+                    <default>false</default>
+                    <label>USH - Tech</label>
+                </value>
+                <value>
+                    <fullName>GSO - OoCEO</fullName>
+                    <default>false</default>
+                    <label>GSO - OoCEO</label>
+                </value>
+                <value>
+                    <fullName>GTD - Eng Management</fullName>
+                    <default>false</default>
+                    <label>GTD - Eng Management</label>
+                </value>
+                <value>
+                    <fullName>India - Delivery</fullName>
+                    <default>false</default>
+                    <label>India - Delivery</label>
+                </value>
+                <value>
+                    <fullName>India - Leadership</fullName>
+                    <default>false</default>
+                    <label>India - Leadership</label>
+                </value>
+                <value>
+                    <fullName>India - Partnerships</fullName>
+                    <default>false</default>
+                    <label>India - Partnerships</label>
+                </value>
+                <value>
+                    <fullName>India - Tech</fullName>
+                    <default>false</default>
+                    <label>India - Tech</label>
+                </value>
+                <value>
+                    <fullName>SaaS - CS</fullName>
+                    <default>false</default>
+                    <label>SaaS - CS</label>
+                </value>
+                <value>
+                    <fullName>Sol - Partnerships</fullName>
+                    <default>false</default>
+                    <label>Sol - Partnerships</label>
+                </value>
+                <value>
+                    <fullName>Sol - Delivery</fullName>
+                    <default>false</default>
+                    <label>Sol - Delivery</label>
+                </value>
+                <value>
+                    <fullName>Sol - Leadership</fullName>
+                    <default>false</default>
+                    <label>Sol - Leadership</label>
+                </value>
+                <value>
+                    <fullName>Sol - Tech</fullName>
+                    <default>false</default>
+                    <label>Sol - Tech</label>
+                </value>
+                <value>
+                    <fullName>GSO - CC Connect</fullName>
+                    <default>false</default>
+                    <label>GSO - CC Connect</label>
+                </value>
+                <value>
+                    <fullName>GSO - Dgtl Adherence</fullName>
+                    <default>false</default>
+                    <label>GSO - Dgtl Adherence</label>
+                </value>
+                <value>
+                    <fullName>CAS-Program Mgmt and Leadership</fullName>
+                    <default>false</default>
+                    <isActive>false</isActive>
+                    <label>CAS-Program Mgmt and Leadership</label>
+                </value>
+                <value>
+                    <fullName>CCP</fullName>
+                    <default>false</default>
+                    <isActive>false</isActive>
+                    <label>CCP</label>
+                </value>
+                <value>
+                    <fullName>CS</fullName>
+                    <default>false</default>
+                    <isActive>false</isActive>
+                    <label>CS</label>
+                </value>
+                <value>
+                    <fullName>CommCare Connect</fullName>
+                    <default>false</default>
+                    <isActive>false</isActive>
+                    <label>CommCare Connect</label>
+                </value>
+                <value>
+                    <fullName>Customer Success</fullName>
+                    <default>false</default>
+                    <isActive>false</isActive>
+                    <label>Customer Success</label>
+                </value>
+                <value>
+                    <fullName>Digital Adherence</fullName>
+                    <default>false</default>
+                    <isActive>false</isActive>
+                    <label>Digital Adherence</label>
+                </value>
+                <value>
+                    <fullName>GP</fullName>
+                    <default>false</default>
+                    <isActive>false</isActive>
+                    <label>GP</label>
+                </value>
+                <value>
+                    <fullName>GSO - CommCare Connect</fullName>
+                    <default>false</default>
+                    <isActive>false</isActive>
+                    <label>GSO - CommCare Connect</label>
+                </value>
+                <value>
+                    <fullName>GSO - Digital Adherence</fullName>
+                    <default>false</default>
+                    <isActive>false</isActive>
+                    <label>GSO - Digital Adherence</label>
+                </value>
+                <value>
+                    <fullName>GSO - Office of the CEO</fullName>
+                    <default>false</default>
+                    <isActive>false</isActive>
+                    <label>GSO - Office of the CEO</label>
+                </value>
+                <value>
+                    <fullName>GTD - Engineering Management</fullName>
+                    <default>false</default>
+                    <isActive>false</isActive>
+                    <label>GTD - Engineering Management</label>
+                </value>
+                <value>
+                    <fullName>GTD leadership</fullName>
+                    <default>false</default>
+                    <isActive>false</isActive>
+                    <label>GTD leadership</label>
+                </value>
+                <value>
+                    <fullName>HRI</fullName>
+                    <default>false</default>
+                    <isActive>false</isActive>
+                    <label>HRI</label>
+                </value>
+                <value>
+                    <fullName>India Practice</fullName>
+                    <default>false</default>
+                    <isActive>false</isActive>
+                    <label>India Practice</label>
+                </value>
+                <value>
+                    <fullName>IndiaDiv - Delivery</fullName>
+                    <default>false</default>
+                    <isActive>false</isActive>
+                    <label>IndiaDiv - Delivery</label>
+                </value>
+                <value>
+                    <fullName>IndiaDiv - Leadership</fullName>
+                    <default>false</default>
+                    <isActive>false</isActive>
+                    <label>IndiaDiv - Leadership</label>
+                </value>
+                <value>
+                    <fullName>IndiaDiv - Partnerships</fullName>
+                    <default>false</default>
+                    <isActive>false</isActive>
+                    <label>IndiaDiv - Partnerships</label>
+                </value>
+                <value>
+                    <fullName>IndiaDiv - Tech</fullName>
+                    <default>false</default>
+                    <isActive>false</isActive>
+                    <label>IndiaDiv - Tech</label>
+                </value>
+                <value>
+                    <fullName>IndiaDiv-Delivery</fullName>
+                    <default>false</default>
+                    <isActive>false</isActive>
+                    <label>IndiaDiv-Delivery</label>
+                </value>
+                <value>
+                    <fullName>IndiaDiv-Leadership</fullName>
+                    <default>false</default>
+                    <isActive>false</isActive>
+                    <label>IndiaDiv-Leadership</label>
+                </value>
+                <value>
+                    <fullName>IndiaDiv-Partnerships</fullName>
+                    <default>false</default>
+                    <isActive>false</isActive>
+                    <label>IndiaDiv-Partnerships</label>
+                </value>
+                <value>
+                    <fullName>IndiaDiv-Tech</fullName>
+                    <default>false</default>
+                    <isActive>false</isActive>
+                    <label>IndiaDiv-Tech</label>
+                </value>
+                <value>
+                    <fullName>New Biz</fullName>
+                    <default>false</default>
+                    <isActive>false</isActive>
+                    <label>New Biz</label>
+                </value>
+                <value>
+                    <fullName>Office of the CEO</fullName>
+                    <default>false</default>
+                    <isActive>false</isActive>
+                    <label>Office of the CEO</label>
+                </value>
+                <value>
+                    <fullName>Data Science</fullName>
+                    <default>false</default>
+                    <isActive>false</isActive>
+                    <label>RAD</label>
+                </value>
+                <value>
+                    <fullName>SaaS - Customer Success</fullName>
+                    <default>false</default>
+                    <isActive>false</isActive>
+                    <label>SaaS - Customer Success</label>
+                </value>
+                <value>
+                    <fullName>SaaS Operations</fullName>
+                    <default>false</default>
+                    <isActive>false</isActive>
+                    <label>SaaS Operations</label>
+                </value>
+                <value>
+                    <fullName>SaaS Product</fullName>
+                    <default>false</default>
+                    <isActive>false</isActive>
+                    <label>SaaS Product</label>
+                </value>
+                <value>
+                    <fullName>Saas Ops</fullName>
+                    <default>false</default>
+                    <isActive>false</isActive>
+                    <label>Saas Ops</label>
+                </value>
+                <value>
+                    <fullName>Solutions - Delivery</fullName>
+                    <default>false</default>
+                    <isActive>false</isActive>
+                    <label>Solutions - Delivery</label>
+                </value>
+                <value>
+                    <fullName>Solutions - Leadership</fullName>
+                    <default>false</default>
+                    <isActive>false</isActive>
+                    <label>Solutions - Leadership</label>
+                </value>
+                <value>
+                    <fullName>Solutions - Partnerships</fullName>
+                    <default>false</default>
+                    <isActive>false</isActive>
+                    <label>Solutions - Partnerships</label>
+                </value>
+                <value>
+                    <fullName>Solutions - Tech</fullName>
+                    <default>false</default>
+                    <isActive>false</isActive>
+                    <label>Solutions - Tech</label>
+                </value>
+                <value>
+                    <fullName>Solutions Delivery</fullName>
+                    <default>false</default>
+                    <isActive>false</isActive>
+                    <label>Solutions Delivery</label>
+                </value>
+                <value>
+                    <fullName>Solutions Tech</fullName>
+                    <default>false</default>
+                    <isActive>false</isActive>
+                    <label>Solutions Tech</label>
+                </value>
+                <value>
+                    <fullName>USH</fullName>
+                    <default>false</default>
+                    <isActive>false</isActive>
+                    <label>USH</label>
+                </value>
+                <value>
+                    <fullName>USH Delivery</fullName>
+                    <default>false</default>
+                    <isActive>false</isActive>
+                    <label>USH Delivery</label>
+                </value>
+                <value>
+                    <fullName>USH Leadership</fullName>
+                    <default>false</default>
+                    <isActive>false</isActive>
+                    <label>USH Leadership</label>
+                </value>
+                <value>
+                    <fullName>USH Partnerships</fullName>
+                    <default>false</default>
+                    <isActive>false</isActive>
+                    <label>USH Partnerships</label>
+                </value>
+                <value>
+                    <fullName>USH Tech</fullName>
+                    <default>false</default>
+                    <isActive>false</isActive>
+                    <label>USH Tech</label>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+    <fields>
+        <fullName>executive_sponsor__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <externalId>false</externalId>
+        <inlineHelpText>If this opportunity has innovation or strategic value not well captured through other impact, team, or profit metrics, it requires an executive sponsor.</inlineHelpText>
+        <label>Executive Sponsor</label>
+        <referenceTo>SFDC_Employee__c</referenceTo>
+        <relationshipLabel>Contracts</relationshipLabel>
+        <relationshipName>custom_contract_sponsor</relationshipName>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
         <fullName>Expected_Buffer__c</fullName>
         <description>Percent of the Total Contract minus Expenses that will not be directly allocated via Fogbugz or Intacct data, and is expected to fund other core activities.This should be the same as &apos;Buffer % at GS-BD Handover&apos; at the start of the contract. If this needs to be revised during the course of the project, it should only be updated after consultation with the project backstop.</description>
         <externalId>false</externalId>
@@ -1038,29 +1783,6 @@ If any blanks in variables, it&apos;s set to 100%.</inlineHelpText>
         <unique>false</unique>
     </fields>
     <fields>
-        <fullName>FTE_Tracker__c</fullName>
-        <externalId>false</externalId>
-        <label>FTE Tracker</label>
-        <required>false</required>
-        <trackHistory>false</trackHistory>
-        <trackTrending>false</trackTrending>
-        <type>Picklist</type>
-        <valueSet>
-            <restricted>true</restricted>
-            <valueSetDefinition>
-                <sorted>false</sorted>
-                <value>
-                    <fullName>No</fullName>
-                    <default>true</default>
-                </value>
-                <value>
-                    <fullName>Yes</fullName>
-                    <default>false</default>
-                </value>
-            </valueSetDefinition>
-        </valueSet>
-    </fields>
-    <fields>
         <fullName>Field_Manager__c</fullName>
         <deleteConstraint>SetNull</deleteConstraint>
         <externalId>false</externalId>
@@ -1072,7 +1794,7 @@ If any blanks in variables, it&apos;s set to 100%.</inlineHelpText>
                 <operation>contains</operation>
                 <value>@dimagi.com</value>
             </filterItems>
-            <isOptional>false</isOptional>
+            <isOptional>true</isOptional>
         </lookupFilter>
         <referenceTo>Contact</referenceTo>
         <relationshipLabel>Contracts (Field Manager)</relationshipLabel>
@@ -1103,6 +1825,18 @@ If any blanks in variables, it&apos;s set to 100%.</inlineHelpText>
         <type>Date</type>
     </fields>
     <fields>
+        <fullName>Flowdown_Clauses__c</fullName>
+        <description>Field to capture flow-down clauses for contracts - requested by Corporate Ops in June 2023</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Captures the key flow-down clauses that need to be passed down to subcontractors</inlineHelpText>
+        <label>Flow-down Clauses</label>
+        <length>32768</length>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>LongTextArea</type>
+        <visibleLines>3</visibleLines>
+    </fields>
+    <fields>
         <fullName>Fly_America_Project__c</fullName>
         <defaultValue>false</defaultValue>
         <description>Certain contracts require that ALL travel be booked through American owned enterprises, where possible. If this contract is checked it requires first checking for US carriers and making sure you have justification if not going through a US carrier.</description>
@@ -1121,6 +1855,31 @@ If any blanks in variables, it&apos;s set to 100%.</inlineHelpText>
         <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>FTE_Tracker__c</fullName>
+        <externalId>false</externalId>
+        <label>FTE Tracker</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+        <valueSet>
+            <restricted>true</restricted>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>No</fullName>
+                    <default>true</default>
+                    <label>No</label>
+                </value>
+                <value>
+                    <fullName>Yes</fullName>
+                    <default>false</default>
+                    <label>Yes</label>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
     </fields>
     <fields>
         <fullName>Funder_Account__c</fullName>
@@ -1179,6 +1938,20 @@ If any blanks in variables, it&apos;s set to 100%.</inlineHelpText>
         <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>GS_of_Non_Expense_Budget__c</fullName>
+        <description>GS Services Budget /  Total_Non_Expense_Income_BUDGET</description>
+        <externalId>false</externalId>
+        <formula>GS_Execution_Budget__c /  Total_Non_Expense_Income_BUDGET__c</formula>
+        <inlineHelpText>GS Services Budget /  Total_Non_Expense_Income_BUDGET</inlineHelpText>
+        <label>% GS of Non-Expense Budget</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Percent</type>
     </fields>
     <fields>
         <fullName>GS_Project_Services_Budget_Handoff__c</fullName>
@@ -1352,18 +2125,1589 @@ Total_Services_Work_Remaining__c * (9 / (MONTH(Contract_End_Date__c) + 12*YEAR(C
         <type>Currency</type>
     </fields>
     <fields>
-        <fullName>GS_of_Non_Expense_Budget__c</fullName>
-        <description>GS Services Budget /  Total_Non_Expense_Income_BUDGET</description>
+        <fullName>ID_Parent_Contract_Division__c</fullName>
+        <description>This is the Interdivisional Parent Contract Execution Owner Division</description>
         <externalId>false</externalId>
-        <formula>GS_Execution_Budget__c /  Total_Non_Expense_Income_BUDGET__c</formula>
-        <inlineHelpText>GS Services Budget /  Total_Non_Expense_Income_BUDGET</inlineHelpText>
-        <label>% GS of Non-Expense Budget</label>
-        <precision>18</precision>
+        <inlineHelpText>This is the Interdivisional Parent Contract Execution Owner Division</inlineHelpText>
+        <label>ID Parent Contract Division</label>
         <required>false</required>
-        <scale>0</scale>
         <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
-        <type>Percent</type>
+        <type>Picklist</type>
+        <valueSet>
+            <restricted>true</restricted>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>Solutions</fullName>
+                    <default>false</default>
+                    <label>Solutions</label>
+                </value>
+                <value>
+                    <fullName>SAAS</fullName>
+                    <default>false</default>
+                    <label>SAAS</label>
+                </value>
+                <value>
+                    <fullName>GSO</fullName>
+                    <default>false</default>
+                    <label>GSO</label>
+                </value>
+                <value>
+                    <fullName>GTD</fullName>
+                    <default>false</default>
+                    <label>GTD</label>
+                </value>
+                <value>
+                    <fullName>India Division</fullName>
+                    <default>false</default>
+                    <label>India Division</label>
+                </value>
+                <value>
+                    <fullName>USH</fullName>
+                    <default>false</default>
+                    <label>USH</label>
+                </value>
+                <value>
+                    <fullName>ICDS-CAS</fullName>
+                    <default>false</default>
+                    <isActive>false</isActive>
+                    <label>ICDS-CAS</label>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+    <fields>
+        <fullName>ID_Parent_Contract_Sub_Division__c</fullName>
+        <externalId>false</externalId>
+        <label>ID Parent Contract Sub-Division</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+        <valueSet>
+            <restricted>true</restricted>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>GSO - Marketing</fullName>
+                    <default>false</default>
+                    <label>GSO - Marketing</label>
+                </value>
+                <value>
+                    <fullName>GSO - BizOps</fullName>
+                    <default>false</default>
+                    <label>GSO - BizOps</label>
+                </value>
+                <value>
+                    <fullName>GSO - BizStrat</fullName>
+                    <default>false</default>
+                    <label>GSO - BizStrat</label>
+                </value>
+                <value>
+                    <fullName>GSO - Leadership</fullName>
+                    <default>false</default>
+                    <label>GSO - Leadership</label>
+                </value>
+                <value>
+                    <fullName>GSO - POps</fullName>
+                    <default>false</default>
+                    <label>GSO - POps</label>
+                </value>
+                <value>
+                    <fullName>GSO - RAD</fullName>
+                    <default>false</default>
+                    <label>GSO - RAD</label>
+                </value>
+                <value>
+                    <fullName>GTD - Leadership</fullName>
+                    <default>false</default>
+                    <label>GTD - Leadership</label>
+                </value>
+                <value>
+                    <fullName>GTD - QA</fullName>
+                    <default>false</default>
+                    <label>GTD - QA</label>
+                </value>
+                <value>
+                    <fullName>GTD - Team</fullName>
+                    <default>false</default>
+                    <label>GTD - Team</label>
+                </value>
+                <value>
+                    <fullName>SaaS - Management</fullName>
+                    <default>false</default>
+                    <label>SaaS - Management</label>
+                </value>
+                <value>
+                    <fullName>SaaS - Marketing</fullName>
+                    <default>false</default>
+                    <label>SaaS - Marketing</label>
+                </value>
+                <value>
+                    <fullName>SaaS - Operations</fullName>
+                    <default>false</default>
+                    <label>SaaS - Operations</label>
+                </value>
+                <value>
+                    <fullName>SaaS - Platform</fullName>
+                    <default>false</default>
+                    <label>SaaS - Platform</label>
+                </value>
+                <value>
+                    <fullName>SaaS - Product</fullName>
+                    <default>false</default>
+                    <label>SaaS - Product</label>
+                </value>
+                <value>
+                    <fullName>SaaS - Sales</fullName>
+                    <default>false</default>
+                    <label>SaaS - Sales</label>
+                </value>
+                <value>
+                    <fullName>SaaS - Support</fullName>
+                    <default>false</default>
+                    <label>SaaS - Support</label>
+                </value>
+                <value>
+                    <fullName>USH - Delivery</fullName>
+                    <default>false</default>
+                    <label>USH - Delivery</label>
+                </value>
+                <value>
+                    <fullName>USH - Leadership</fullName>
+                    <default>false</default>
+                    <label>USH - Leadership</label>
+                </value>
+                <value>
+                    <fullName>USH - Partnerships</fullName>
+                    <default>false</default>
+                    <label>USH - Partnerships</label>
+                </value>
+                <value>
+                    <fullName>USH - Tech</fullName>
+                    <default>false</default>
+                    <label>USH - Tech</label>
+                </value>
+                <value>
+                    <fullName>GSO - OoCEO</fullName>
+                    <default>false</default>
+                    <label>GSO - OoCEO</label>
+                </value>
+                <value>
+                    <fullName>GTD - Eng Management</fullName>
+                    <default>false</default>
+                    <label>GTD - Eng Management</label>
+                </value>
+                <value>
+                    <fullName>India - Delivery</fullName>
+                    <default>false</default>
+                    <label>India - Delivery</label>
+                </value>
+                <value>
+                    <fullName>India - Leadership</fullName>
+                    <default>false</default>
+                    <label>India - Leadership</label>
+                </value>
+                <value>
+                    <fullName>India - Partnerships</fullName>
+                    <default>false</default>
+                    <label>India - Partnerships</label>
+                </value>
+                <value>
+                    <fullName>India - Tech</fullName>
+                    <default>false</default>
+                    <label>India - Tech</label>
+                </value>
+                <value>
+                    <fullName>SaaS - CS</fullName>
+                    <default>false</default>
+                    <label>SaaS - CS</label>
+                </value>
+                <value>
+                    <fullName>Sol - Partnerships</fullName>
+                    <default>false</default>
+                    <label>Sol - Partnerships</label>
+                </value>
+                <value>
+                    <fullName>Sol - Delivery</fullName>
+                    <default>false</default>
+                    <label>Sol - Delivery</label>
+                </value>
+                <value>
+                    <fullName>Sol - Leadership</fullName>
+                    <default>false</default>
+                    <label>Sol - Leadership</label>
+                </value>
+                <value>
+                    <fullName>Sol - Tech</fullName>
+                    <default>false</default>
+                    <label>Sol - Tech</label>
+                </value>
+                <value>
+                    <fullName>GSO - CC Connect</fullName>
+                    <default>false</default>
+                    <label>GSO - CC Connect</label>
+                </value>
+                <value>
+                    <fullName>GSO - Dgtl Adherence</fullName>
+                    <default>false</default>
+                    <label>GSO - Dgtl Adherence</label>
+                </value>
+                <value>
+                    <fullName>CAS-Program Mgmt and Leadership</fullName>
+                    <default>false</default>
+                    <isActive>false</isActive>
+                    <label>CAS-Program Mgmt and Leadership</label>
+                </value>
+                <value>
+                    <fullName>CCP</fullName>
+                    <default>false</default>
+                    <isActive>false</isActive>
+                    <label>CCP</label>
+                </value>
+                <value>
+                    <fullName>CS</fullName>
+                    <default>false</default>
+                    <isActive>false</isActive>
+                    <label>CS</label>
+                </value>
+                <value>
+                    <fullName>Digital Adherence</fullName>
+                    <default>false</default>
+                    <isActive>false</isActive>
+                    <label>Digital Adherence</label>
+                </value>
+                <value>
+                    <fullName>GP</fullName>
+                    <default>false</default>
+                    <isActive>false</isActive>
+                    <label>GP</label>
+                </value>
+                <value>
+                    <fullName>GSO - CommCare Connect</fullName>
+                    <default>false</default>
+                    <isActive>false</isActive>
+                    <label>GSO - CommCare Connect</label>
+                </value>
+                <value>
+                    <fullName>GSO - Digital Adherence</fullName>
+                    <default>false</default>
+                    <isActive>false</isActive>
+                    <label>GSO - Digital Adherence</label>
+                </value>
+                <value>
+                    <fullName>GSO - Office of the CEO</fullName>
+                    <default>false</default>
+                    <isActive>false</isActive>
+                    <label>GSO - Office of the CEO</label>
+                </value>
+                <value>
+                    <fullName>GTD</fullName>
+                    <default>false</default>
+                    <isActive>false</isActive>
+                    <label>GTD</label>
+                </value>
+                <value>
+                    <fullName>GTD - Engineering Management</fullName>
+                    <default>false</default>
+                    <isActive>false</isActive>
+                    <label>GTD - Engineering Management</label>
+                </value>
+                <value>
+                    <fullName>GTD Leadership</fullName>
+                    <default>false</default>
+                    <isActive>false</isActive>
+                    <label>GTD Leadership</label>
+                </value>
+                <value>
+                    <fullName>India Practice</fullName>
+                    <default>false</default>
+                    <isActive>false</isActive>
+                    <label>India Practice</label>
+                </value>
+                <value>
+                    <fullName>IndiaDiv - Delivery</fullName>
+                    <default>false</default>
+                    <isActive>false</isActive>
+                    <label>IndiaDiv - Delivery</label>
+                </value>
+                <value>
+                    <fullName>IndiaDiv - Leadership</fullName>
+                    <default>false</default>
+                    <isActive>false</isActive>
+                    <label>IndiaDiv - Leadership</label>
+                </value>
+                <value>
+                    <fullName>IndiaDiv - Partnerships</fullName>
+                    <default>false</default>
+                    <isActive>false</isActive>
+                    <label>IndiaDiv - Partnerships</label>
+                </value>
+                <value>
+                    <fullName>IndiaDiv - Tech</fullName>
+                    <default>false</default>
+                    <isActive>false</isActive>
+                    <label>IndiaDiv - Tech</label>
+                </value>
+                <value>
+                    <fullName>IndiaDiv-Delivery</fullName>
+                    <default>false</default>
+                    <isActive>false</isActive>
+                    <label>IndiaDiv-Delivery</label>
+                </value>
+                <value>
+                    <fullName>IndiaDiv-Leadership</fullName>
+                    <default>false</default>
+                    <isActive>false</isActive>
+                    <label>IndiaDiv-Leadership</label>
+                </value>
+                <value>
+                    <fullName>IndiaDiv-Partnerships</fullName>
+                    <default>false</default>
+                    <isActive>false</isActive>
+                    <label>IndiaDiv-Partnerships</label>
+                </value>
+                <value>
+                    <fullName>IndiaDiv-Tech</fullName>
+                    <default>false</default>
+                    <isActive>false</isActive>
+                    <label>IndiaDiv-Tech</label>
+                </value>
+                <value>
+                    <fullName>New Biz</fullName>
+                    <default>false</default>
+                    <isActive>false</isActive>
+                    <label>New Biz</label>
+                </value>
+                <value>
+                    <fullName>Office of the CEO</fullName>
+                    <default>false</default>
+                    <isActive>false</isActive>
+                    <label>Office of the CEO</label>
+                </value>
+                <value>
+                    <fullName>RAD</fullName>
+                    <default>false</default>
+                    <isActive>false</isActive>
+                    <label>RAD</label>
+                </value>
+                <value>
+                    <fullName>SaaS - Customer Success</fullName>
+                    <default>false</default>
+                    <isActive>false</isActive>
+                    <label>SaaS - Customer Success</label>
+                </value>
+                <value>
+                    <fullName>SaaS Operations</fullName>
+                    <default>false</default>
+                    <isActive>false</isActive>
+                    <label>SaaS Operations</label>
+                </value>
+                <value>
+                    <fullName>SaaS Ops</fullName>
+                    <default>false</default>
+                    <isActive>false</isActive>
+                    <label>SaaS Ops</label>
+                </value>
+                <value>
+                    <fullName>SaaS Product</fullName>
+                    <default>false</default>
+                    <isActive>false</isActive>
+                    <label>SaaS Product</label>
+                </value>
+                <value>
+                    <fullName>Solutions - Delivery</fullName>
+                    <default>false</default>
+                    <isActive>false</isActive>
+                    <label>Solutions - Delivery</label>
+                </value>
+                <value>
+                    <fullName>Solutions - Leadership</fullName>
+                    <default>false</default>
+                    <isActive>false</isActive>
+                    <label>Solutions - Leadership</label>
+                </value>
+                <value>
+                    <fullName>Solutions - Partnerships</fullName>
+                    <default>false</default>
+                    <isActive>false</isActive>
+                    <label>Solutions - Partnerships</label>
+                </value>
+                <value>
+                    <fullName>Solutions - Tech</fullName>
+                    <default>false</default>
+                    <isActive>false</isActive>
+                    <label>Solutions - Tech</label>
+                </value>
+                <value>
+                    <fullName>Solutions Delivery</fullName>
+                    <default>false</default>
+                    <isActive>false</isActive>
+                    <label>Solutions Delivery</label>
+                </value>
+                <value>
+                    <fullName>Solutions Tech</fullName>
+                    <default>false</default>
+                    <isActive>false</isActive>
+                    <label>Solutions Tech</label>
+                </value>
+                <value>
+                    <fullName>USH</fullName>
+                    <default>false</default>
+                    <isActive>false</isActive>
+                    <label>USH</label>
+                </value>
+                <value>
+                    <fullName>USH Delivery</fullName>
+                    <default>false</default>
+                    <isActive>false</isActive>
+                    <label>USH Delivery</label>
+                </value>
+                <value>
+                    <fullName>USH Leadership</fullName>
+                    <default>false</default>
+                    <isActive>false</isActive>
+                    <label>USH Leadership</label>
+                </value>
+                <value>
+                    <fullName>USH Partnerships</fullName>
+                    <default>false</default>
+                    <isActive>false</isActive>
+                    <label>USH Partnerships</label>
+                </value>
+                <value>
+                    <fullName>USH Tech</fullName>
+                    <default>false</default>
+                    <isActive>false</isActive>
+                    <label>USH Tech</label>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+    <fields>
+        <fullName>ID_Subcontract_1_Budget_Total__c</fullName>
+        <externalId>false</externalId>
+        <label>ID Subcontract 1 Budget Total</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>ID_Subcontract_1_Expense_Budget__c</fullName>
+        <externalId>false</externalId>
+        <formula>IF(TEXT(ID_Subcontract_1_Type__c) &lt;&gt; &quot;LOE&quot;, ID_Subcontract_1_Budget_Total__c ,0)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>ID Subcontract 1 Expense Budget</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>ID_Subcontract_1_Type__c</fullName>
+        <externalId>false</externalId>
+        <label>ID Subcontract 1 Type</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+        <valueSet>
+            <restricted>true</restricted>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>LOE</fullName>
+                    <default>false</default>
+                    <label>LOE</label>
+                </value>
+                <value>
+                    <fullName>Deliverables</fullName>
+                    <default>false</default>
+                    <label>Deliverables</label>
+                </value>
+                <value>
+                    <fullName>Handover</fullName>
+                    <default>false</default>
+                    <label>Handover</label>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+    <fields>
+        <fullName>ID_Subcontract_2_Budget_Total__c</fullName>
+        <externalId>false</externalId>
+        <label>ID Subcontract 2 Budget Total</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>ID_Subcontract_2_Expense_Budget__c</fullName>
+        <externalId>false</externalId>
+        <formula>IF(TEXT( ID_Subcontract_2_Type__c ) &lt;&gt; &quot;LOE&quot;,  ID_Subcontract_2_Budget_Total__c  ,0)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>ID Subcontract 2 Expense Budget</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>ID_Subcontract_2_Spend__c</fullName>
+        <description>The total Interdivisional Subcontract 2 spend to date</description>
+        <externalId>false</externalId>
+        <inlineHelpText>The total Interdivisional Subcontract 2 spend to date</inlineHelpText>
+        <label>ID Subcontract 2 Spend</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>ID_Subcontract_2_Type__c</fullName>
+        <externalId>false</externalId>
+        <label>ID Subcontract 2 Type</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+        <valueSet>
+            <restricted>true</restricted>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>LOE</fullName>
+                    <default>false</default>
+                    <label>LOE</label>
+                </value>
+                <value>
+                    <fullName>Deliverables</fullName>
+                    <default>false</default>
+                    <label>Deliverables</label>
+                </value>
+                <value>
+                    <fullName>Handover</fullName>
+                    <default>false</default>
+                    <label>Handover</label>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+    <fields>
+        <fullName>ID_Subcontract_Expense_Spend__c</fullName>
+        <externalId>false</externalId>
+        <formula>IF(TEXT(ID_Subcontract_1_Type__c) &lt;&gt; &quot;LOE&quot;,  ID_Subcontract_Spend__c  ,0) + IF(TEXT( ID_Subcontract_2_Type__c ) &lt;&gt; &quot;LOE&quot;,   ID_Subcontract_2_Spend__c   ,0)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>ID Subcontract Expense Spend</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>ID_Subcontract_Owner_1_Division__c</fullName>
+        <externalId>false</externalId>
+        <label>ID Subcontract Owner 1 (Division)</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+        <valueSet>
+            <restricted>true</restricted>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>Solutions</fullName>
+                    <default>false</default>
+                    <label>Solutions</label>
+                </value>
+                <value>
+                    <fullName>SAAS</fullName>
+                    <default>false</default>
+                    <label>SAAS</label>
+                </value>
+                <value>
+                    <fullName>GSO</fullName>
+                    <default>false</default>
+                    <label>GSO</label>
+                </value>
+                <value>
+                    <fullName>GTD</fullName>
+                    <default>false</default>
+                    <label>GTD</label>
+                </value>
+                <value>
+                    <fullName>India Division</fullName>
+                    <default>false</default>
+                    <label>India Division</label>
+                </value>
+                <value>
+                    <fullName>USH</fullName>
+                    <default>false</default>
+                    <label>USH</label>
+                </value>
+                <value>
+                    <fullName>ICDS-CAS</fullName>
+                    <default>false</default>
+                    <isActive>false</isActive>
+                    <label>ICDS-CAS</label>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+    <fields>
+        <fullName>ID_Subcontract_Owner_1_SubDivision__c</fullName>
+        <externalId>false</externalId>
+        <label>ID Subcontract Owner 1 (SubDivision)</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+        <valueSet>
+            <restricted>true</restricted>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>GSO - BizOps</fullName>
+                    <default>false</default>
+                    <label>GSO - BizOps</label>
+                </value>
+                <value>
+                    <fullName>GSO - BizStrat</fullName>
+                    <default>false</default>
+                    <label>GSO - BizStrat</label>
+                </value>
+                <value>
+                    <fullName>GSO - CC Connect</fullName>
+                    <default>false</default>
+                    <label>GSO - CC Connect</label>
+                </value>
+                <value>
+                    <fullName>GSO - Dgtl Adherence</fullName>
+                    <default>false</default>
+                    <label>GSO - Dgtl Adherence</label>
+                </value>
+                <value>
+                    <fullName>GSO - Leadership</fullName>
+                    <default>false</default>
+                    <label>GSO - Leadership</label>
+                </value>
+                <value>
+                    <fullName>GSO - Marketing</fullName>
+                    <default>false</default>
+                    <label>GSO - Marketing</label>
+                </value>
+                <value>
+                    <fullName>GSO - OoCEO</fullName>
+                    <default>false</default>
+                    <label>GSO - OoCEO</label>
+                </value>
+                <value>
+                    <fullName>GSO - POps</fullName>
+                    <default>false</default>
+                    <label>GSO - POps</label>
+                </value>
+                <value>
+                    <fullName>GSO - RAD</fullName>
+                    <default>false</default>
+                    <label>GSO - RAD</label>
+                </value>
+                <value>
+                    <fullName>GTD - Eng Management</fullName>
+                    <default>false</default>
+                    <label>GTD - Eng Management</label>
+                </value>
+                <value>
+                    <fullName>GTD - Leadership</fullName>
+                    <default>false</default>
+                    <label>GTD - Leadership</label>
+                </value>
+                <value>
+                    <fullName>GTD - QA</fullName>
+                    <default>false</default>
+                    <label>GTD - QA</label>
+                </value>
+                <value>
+                    <fullName>GTD - Team</fullName>
+                    <default>false</default>
+                    <label>GTD - Team</label>
+                </value>
+                <value>
+                    <fullName>India - Delivery</fullName>
+                    <default>false</default>
+                    <label>India - Delivery</label>
+                </value>
+                <value>
+                    <fullName>India - Leadership</fullName>
+                    <default>false</default>
+                    <label>India - Leadership</label>
+                </value>
+                <value>
+                    <fullName>India - Partnerships</fullName>
+                    <default>false</default>
+                    <label>India - Partnerships</label>
+                </value>
+                <value>
+                    <fullName>India - Tech</fullName>
+                    <default>false</default>
+                    <label>India - Tech</label>
+                </value>
+                <value>
+                    <fullName>SaaS - CS</fullName>
+                    <default>false</default>
+                    <label>SaaS - CS</label>
+                </value>
+                <value>
+                    <fullName>SaaS - Management</fullName>
+                    <default>false</default>
+                    <label>SaaS - Management</label>
+                </value>
+                <value>
+                    <fullName>SaaS - Marketing</fullName>
+                    <default>false</default>
+                    <label>SaaS - Marketing</label>
+                </value>
+                <value>
+                    <fullName>SaaS - Operations</fullName>
+                    <default>false</default>
+                    <label>SaaS - Operations</label>
+                </value>
+                <value>
+                    <fullName>SaaS - Platform</fullName>
+                    <default>false</default>
+                    <label>SaaS - Platform</label>
+                </value>
+                <value>
+                    <fullName>SaaS - Product</fullName>
+                    <default>false</default>
+                    <label>SaaS - Product</label>
+                </value>
+                <value>
+                    <fullName>SaaS - Sales</fullName>
+                    <default>false</default>
+                    <label>SaaS - Sales</label>
+                </value>
+                <value>
+                    <fullName>SaaS - Support</fullName>
+                    <default>false</default>
+                    <label>SaaS - Support</label>
+                </value>
+                <value>
+                    <fullName>Sol - Delivery</fullName>
+                    <default>false</default>
+                    <label>Sol - Delivery</label>
+                </value>
+                <value>
+                    <fullName>Sol - Leadership</fullName>
+                    <default>false</default>
+                    <label>Sol - Leadership</label>
+                </value>
+                <value>
+                    <fullName>Sol - Partnerships</fullName>
+                    <default>false</default>
+                    <label>Sol - Partnerships</label>
+                </value>
+                <value>
+                    <fullName>Sol - Tech</fullName>
+                    <default>false</default>
+                    <label>Sol - Tech</label>
+                </value>
+                <value>
+                    <fullName>USH - Delivery</fullName>
+                    <default>false</default>
+                    <label>USH - Delivery</label>
+                </value>
+                <value>
+                    <fullName>USH - Leadership</fullName>
+                    <default>false</default>
+                    <label>USH - Leadership</label>
+                </value>
+                <value>
+                    <fullName>USH - Partnerships</fullName>
+                    <default>false</default>
+                    <label>USH - Partnerships</label>
+                </value>
+                <value>
+                    <fullName>USH - Tech</fullName>
+                    <default>false</default>
+                    <label>USH - Tech</label>
+                </value>
+                <value>
+                    <fullName>CAS-Program Mgmt and Leadership</fullName>
+                    <default>false</default>
+                    <isActive>false</isActive>
+                    <label>CAS-Program Mgmt and Leadership</label>
+                </value>
+                <value>
+                    <fullName>CCP</fullName>
+                    <default>false</default>
+                    <isActive>false</isActive>
+                    <label>CCP</label>
+                </value>
+                <value>
+                    <fullName>CS</fullName>
+                    <default>false</default>
+                    <isActive>false</isActive>
+                    <label>CS</label>
+                </value>
+                <value>
+                    <fullName>Customer Success</fullName>
+                    <default>false</default>
+                    <isActive>false</isActive>
+                    <label>Customer Success</label>
+                </value>
+                <value>
+                    <fullName>Data Science</fullName>
+                    <default>false</default>
+                    <isActive>false</isActive>
+                    <label>Data Science</label>
+                </value>
+                <value>
+                    <fullName>Digital Adherence</fullName>
+                    <default>false</default>
+                    <isActive>false</isActive>
+                    <label>Digital Adherence</label>
+                </value>
+                <value>
+                    <fullName>GP</fullName>
+                    <default>false</default>
+                    <isActive>false</isActive>
+                    <label>GP</label>
+                </value>
+                <value>
+                    <fullName>GSO - CommCare Connect</fullName>
+                    <default>false</default>
+                    <isActive>false</isActive>
+                    <label>GSO - CommCare Connect</label>
+                </value>
+                <value>
+                    <fullName>GSO - Digital Adherence</fullName>
+                    <default>false</default>
+                    <isActive>false</isActive>
+                    <label>GSO - Digital Adherence</label>
+                </value>
+                <value>
+                    <fullName>GSO - Office of the CEO</fullName>
+                    <default>false</default>
+                    <isActive>false</isActive>
+                    <label>GSO - Office of the CEO</label>
+                </value>
+                <value>
+                    <fullName>GTD - Engineering Management</fullName>
+                    <default>false</default>
+                    <isActive>false</isActive>
+                    <label>GTD - Engineering Management</label>
+                </value>
+                <value>
+                    <fullName>GTD Leadership</fullName>
+                    <default>false</default>
+                    <isActive>false</isActive>
+                    <label>GTD Leadership</label>
+                </value>
+                <value>
+                    <fullName>India Practice</fullName>
+                    <default>false</default>
+                    <isActive>false</isActive>
+                    <label>India Practice</label>
+                </value>
+                <value>
+                    <fullName>IndiaDiv - Delivery</fullName>
+                    <default>false</default>
+                    <isActive>false</isActive>
+                    <label>IndiaDiv - Delivery</label>
+                </value>
+                <value>
+                    <fullName>IndiaDiv - Leadership</fullName>
+                    <default>false</default>
+                    <isActive>false</isActive>
+                    <label>IndiaDiv - Leadership</label>
+                </value>
+                <value>
+                    <fullName>IndiaDiv - Partnerships</fullName>
+                    <default>false</default>
+                    <isActive>false</isActive>
+                    <label>IndiaDiv - Partnerships</label>
+                </value>
+                <value>
+                    <fullName>IndiaDiv - Tech</fullName>
+                    <default>false</default>
+                    <isActive>false</isActive>
+                    <label>IndiaDiv - Tech</label>
+                </value>
+                <value>
+                    <fullName>IndiaDiv-Delivery</fullName>
+                    <default>false</default>
+                    <isActive>false</isActive>
+                    <label>IndiaDiv-Delivery</label>
+                </value>
+                <value>
+                    <fullName>IndiaDiv-Leadership</fullName>
+                    <default>false</default>
+                    <isActive>false</isActive>
+                    <label>IndiaDiv-Leadership</label>
+                </value>
+                <value>
+                    <fullName>IndiaDiv-Partnerships</fullName>
+                    <default>false</default>
+                    <isActive>false</isActive>
+                    <label>IndiaDiv-Partnerships</label>
+                </value>
+                <value>
+                    <fullName>IndiaDiv-Tech</fullName>
+                    <default>false</default>
+                    <isActive>false</isActive>
+                    <label>IndiaDiv-Tech</label>
+                </value>
+                <value>
+                    <fullName>New Biz</fullName>
+                    <default>false</default>
+                    <isActive>false</isActive>
+                    <label>New Biz</label>
+                </value>
+                <value>
+                    <fullName>Office of the CEO</fullName>
+                    <default>false</default>
+                    <isActive>false</isActive>
+                    <label>Office of the CEO</label>
+                </value>
+                <value>
+                    <fullName>SaaS - Customer Success</fullName>
+                    <default>false</default>
+                    <isActive>false</isActive>
+                    <label>SaaS - Customer Success</label>
+                </value>
+                <value>
+                    <fullName>SaaS Operations</fullName>
+                    <default>false</default>
+                    <isActive>false</isActive>
+                    <label>SaaS Operations</label>
+                </value>
+                <value>
+                    <fullName>SaaS Product</fullName>
+                    <default>false</default>
+                    <isActive>false</isActive>
+                    <label>SaaS Product</label>
+                </value>
+                <value>
+                    <fullName>Saas Ops</fullName>
+                    <default>false</default>
+                    <isActive>false</isActive>
+                    <label>Saas Ops</label>
+                </value>
+                <value>
+                    <fullName>Solutions - Delivery</fullName>
+                    <default>false</default>
+                    <isActive>false</isActive>
+                    <label>Solutions - Delivery</label>
+                </value>
+                <value>
+                    <fullName>Solutions - Leadership</fullName>
+                    <default>false</default>
+                    <isActive>false</isActive>
+                    <label>Solutions - Leadership</label>
+                </value>
+                <value>
+                    <fullName>Solutions - Partnerships</fullName>
+                    <default>false</default>
+                    <isActive>false</isActive>
+                    <label>Solutions - Partnerships</label>
+                </value>
+                <value>
+                    <fullName>Solutions - Tech</fullName>
+                    <default>false</default>
+                    <isActive>false</isActive>
+                    <label>Solutions - Tech</label>
+                </value>
+                <value>
+                    <fullName>Solutions Delivery</fullName>
+                    <default>false</default>
+                    <isActive>false</isActive>
+                    <label>Solutions Delivery</label>
+                </value>
+                <value>
+                    <fullName>Solutions Tech</fullName>
+                    <default>false</default>
+                    <isActive>false</isActive>
+                    <label>Solutions Tech</label>
+                </value>
+                <value>
+                    <fullName>USH Delivery</fullName>
+                    <default>false</default>
+                    <isActive>false</isActive>
+                    <label>USH Delivery</label>
+                </value>
+                <value>
+                    <fullName>USH Leadership</fullName>
+                    <default>false</default>
+                    <isActive>false</isActive>
+                    <label>USH Leadership</label>
+                </value>
+                <value>
+                    <fullName>USH Partnerships</fullName>
+                    <default>false</default>
+                    <isActive>false</isActive>
+                    <label>USH Partnerships</label>
+                </value>
+                <value>
+                    <fullName>USH Tech</fullName>
+                    <default>false</default>
+                    <isActive>false</isActive>
+                    <label>USH Tech</label>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+    <fields>
+        <fullName>ID_Subcontract_Owner_2_Division__c</fullName>
+        <externalId>false</externalId>
+        <label>ID Subcontract Owner 2 (Division)</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+        <valueSet>
+            <restricted>true</restricted>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>Solutions</fullName>
+                    <default>false</default>
+                    <label>Solutions</label>
+                </value>
+                <value>
+                    <fullName>SAAS</fullName>
+                    <default>false</default>
+                    <label>SAAS</label>
+                </value>
+                <value>
+                    <fullName>GSO</fullName>
+                    <default>false</default>
+                    <label>GSO</label>
+                </value>
+                <value>
+                    <fullName>GTD</fullName>
+                    <default>false</default>
+                    <label>GTD</label>
+                </value>
+                <value>
+                    <fullName>India Division</fullName>
+                    <default>false</default>
+                    <label>India Division</label>
+                </value>
+                <value>
+                    <fullName>USH</fullName>
+                    <default>false</default>
+                    <label>USH</label>
+                </value>
+                <value>
+                    <fullName>ICDS-CAS</fullName>
+                    <default>false</default>
+                    <isActive>false</isActive>
+                    <label>ICDS-CAS</label>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+    <fields>
+        <fullName>ID_Subcontract_Owner_2_SubDivision__c</fullName>
+        <externalId>false</externalId>
+        <label>ID Subcontract Owner 2 (SubDivision)</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+        <valueSet>
+            <restricted>true</restricted>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>GSO - BizOps</fullName>
+                    <default>false</default>
+                    <label>GSO - BizOps</label>
+                </value>
+                <value>
+                    <fullName>GSO - BizStrat</fullName>
+                    <default>false</default>
+                    <label>GSO - BizStrat</label>
+                </value>
+                <value>
+                    <fullName>GSO - CC Connect</fullName>
+                    <default>false</default>
+                    <label>GSO - CC Connect</label>
+                </value>
+                <value>
+                    <fullName>GSO - Dgtl Adherence</fullName>
+                    <default>false</default>
+                    <label>GSO - Dgtl Adherence</label>
+                </value>
+                <value>
+                    <fullName>GSO - Leadership</fullName>
+                    <default>false</default>
+                    <label>GSO - Leadership</label>
+                </value>
+                <value>
+                    <fullName>GSO - Marketing</fullName>
+                    <default>false</default>
+                    <label>GSO - Marketing</label>
+                </value>
+                <value>
+                    <fullName>GSO - OoCEO</fullName>
+                    <default>false</default>
+                    <label>GSO - OoCEO</label>
+                </value>
+                <value>
+                    <fullName>GSO - POps</fullName>
+                    <default>false</default>
+                    <label>GSO - POps</label>
+                </value>
+                <value>
+                    <fullName>GSO - RAD</fullName>
+                    <default>false</default>
+                    <label>GSO - RAD</label>
+                </value>
+                <value>
+                    <fullName>GTD - Eng Management</fullName>
+                    <default>false</default>
+                    <label>GTD - Eng Management</label>
+                </value>
+                <value>
+                    <fullName>GTD - Leadership</fullName>
+                    <default>false</default>
+                    <label>GTD - Leadership</label>
+                </value>
+                <value>
+                    <fullName>GTD - QA</fullName>
+                    <default>false</default>
+                    <label>GTD - QA</label>
+                </value>
+                <value>
+                    <fullName>GTD - Team</fullName>
+                    <default>false</default>
+                    <label>GTD - Team</label>
+                </value>
+                <value>
+                    <fullName>India - Delivery</fullName>
+                    <default>false</default>
+                    <label>India - Delivery</label>
+                </value>
+                <value>
+                    <fullName>India - Leadership</fullName>
+                    <default>false</default>
+                    <label>India - Leadership</label>
+                </value>
+                <value>
+                    <fullName>India - Partnerships</fullName>
+                    <default>false</default>
+                    <label>India - Partnerships</label>
+                </value>
+                <value>
+                    <fullName>India - Tech</fullName>
+                    <default>false</default>
+                    <label>India - Tech</label>
+                </value>
+                <value>
+                    <fullName>SaaS - CS</fullName>
+                    <default>false</default>
+                    <label>SaaS - CS</label>
+                </value>
+                <value>
+                    <fullName>SaaS - Management</fullName>
+                    <default>false</default>
+                    <label>SaaS - Management</label>
+                </value>
+                <value>
+                    <fullName>SaaS - Marketing</fullName>
+                    <default>false</default>
+                    <label>SaaS - Marketing</label>
+                </value>
+                <value>
+                    <fullName>SaaS - Operations</fullName>
+                    <default>false</default>
+                    <label>SaaS - Operations</label>
+                </value>
+                <value>
+                    <fullName>SaaS - Platform</fullName>
+                    <default>false</default>
+                    <label>SaaS - Platform</label>
+                </value>
+                <value>
+                    <fullName>SaaS - Product</fullName>
+                    <default>false</default>
+                    <label>SaaS - Product</label>
+                </value>
+                <value>
+                    <fullName>SaaS - Sales</fullName>
+                    <default>false</default>
+                    <label>SaaS - Sales</label>
+                </value>
+                <value>
+                    <fullName>SaaS - Support</fullName>
+                    <default>false</default>
+                    <label>SaaS - Support</label>
+                </value>
+                <value>
+                    <fullName>Sol - Delivery</fullName>
+                    <default>false</default>
+                    <label>Sol - Delivery</label>
+                </value>
+                <value>
+                    <fullName>Sol - Leadership</fullName>
+                    <default>false</default>
+                    <label>Sol - Leadership</label>
+                </value>
+                <value>
+                    <fullName>Sol - Partnerships</fullName>
+                    <default>false</default>
+                    <label>Sol - Partnerships</label>
+                </value>
+                <value>
+                    <fullName>Sol - Tech</fullName>
+                    <default>false</default>
+                    <label>Sol - Tech</label>
+                </value>
+                <value>
+                    <fullName>USH - Delivery</fullName>
+                    <default>false</default>
+                    <label>USH - Delivery</label>
+                </value>
+                <value>
+                    <fullName>USH - Leadership</fullName>
+                    <default>false</default>
+                    <label>USH - Leadership</label>
+                </value>
+                <value>
+                    <fullName>USH - Partnerships</fullName>
+                    <default>false</default>
+                    <label>USH - Partnerships</label>
+                </value>
+                <value>
+                    <fullName>USH - Tech</fullName>
+                    <default>false</default>
+                    <label>USH - Tech</label>
+                </value>
+                <value>
+                    <fullName>CAS-Program Mgmt and Leadership</fullName>
+                    <default>false</default>
+                    <isActive>false</isActive>
+                    <label>CAS-Program Mgmt and Leadership</label>
+                </value>
+                <value>
+                    <fullName>CCP</fullName>
+                    <default>false</default>
+                    <isActive>false</isActive>
+                    <label>CCP</label>
+                </value>
+                <value>
+                    <fullName>CS</fullName>
+                    <default>false</default>
+                    <isActive>false</isActive>
+                    <label>CS</label>
+                </value>
+                <value>
+                    <fullName>Customer Success</fullName>
+                    <default>false</default>
+                    <isActive>false</isActive>
+                    <label>Customer Success</label>
+                </value>
+                <value>
+                    <fullName>Data Science</fullName>
+                    <default>false</default>
+                    <isActive>false</isActive>
+                    <label>Data Science</label>
+                </value>
+                <value>
+                    <fullName>Digital Adherence</fullName>
+                    <default>false</default>
+                    <isActive>false</isActive>
+                    <label>Digital Adherence</label>
+                </value>
+                <value>
+                    <fullName>GP</fullName>
+                    <default>false</default>
+                    <isActive>false</isActive>
+                    <label>GP</label>
+                </value>
+                <value>
+                    <fullName>GSO - CommCare Connect</fullName>
+                    <default>false</default>
+                    <isActive>false</isActive>
+                    <label>GSO - CommCare Connect</label>
+                </value>
+                <value>
+                    <fullName>GSO - Digital Adherence</fullName>
+                    <default>false</default>
+                    <isActive>false</isActive>
+                    <label>GSO - Digital Adherence</label>
+                </value>
+                <value>
+                    <fullName>GSO - Office of the CEO</fullName>
+                    <default>false</default>
+                    <isActive>false</isActive>
+                    <label>GSO - Office of the CEO</label>
+                </value>
+                <value>
+                    <fullName>GTD - Engineering Management</fullName>
+                    <default>false</default>
+                    <isActive>false</isActive>
+                    <label>GTD - Engineering Management</label>
+                </value>
+                <value>
+                    <fullName>GTD Leadership</fullName>
+                    <default>false</default>
+                    <isActive>false</isActive>
+                    <label>GTD Leadership</label>
+                </value>
+                <value>
+                    <fullName>India Practice</fullName>
+                    <default>false</default>
+                    <isActive>false</isActive>
+                    <label>India Practice</label>
+                </value>
+                <value>
+                    <fullName>IndiaDiv - Delivery</fullName>
+                    <default>false</default>
+                    <isActive>false</isActive>
+                    <label>IndiaDiv - Delivery</label>
+                </value>
+                <value>
+                    <fullName>IndiaDiv - Leadership</fullName>
+                    <default>false</default>
+                    <isActive>false</isActive>
+                    <label>IndiaDiv - Leadership</label>
+                </value>
+                <value>
+                    <fullName>IndiaDiv - Partnerships</fullName>
+                    <default>false</default>
+                    <isActive>false</isActive>
+                    <label>IndiaDiv - Partnerships</label>
+                </value>
+                <value>
+                    <fullName>IndiaDiv - Tech</fullName>
+                    <default>false</default>
+                    <isActive>false</isActive>
+                    <label>IndiaDiv - Tech</label>
+                </value>
+                <value>
+                    <fullName>IndiaDiv-Delivery</fullName>
+                    <default>false</default>
+                    <isActive>false</isActive>
+                    <label>IndiaDiv-Delivery</label>
+                </value>
+                <value>
+                    <fullName>IndiaDiv-Leadership</fullName>
+                    <default>false</default>
+                    <isActive>false</isActive>
+                    <label>IndiaDiv-Leadership</label>
+                </value>
+                <value>
+                    <fullName>IndiaDiv-Partnerships</fullName>
+                    <default>false</default>
+                    <isActive>false</isActive>
+                    <label>IndiaDiv-Partnerships</label>
+                </value>
+                <value>
+                    <fullName>IndiaDiv-Tech</fullName>
+                    <default>false</default>
+                    <isActive>false</isActive>
+                    <label>IndiaDiv-Tech</label>
+                </value>
+                <value>
+                    <fullName>New Biz</fullName>
+                    <default>false</default>
+                    <isActive>false</isActive>
+                    <label>New Biz</label>
+                </value>
+                <value>
+                    <fullName>Office of the CEO</fullName>
+                    <default>false</default>
+                    <isActive>false</isActive>
+                    <label>Office of the CEO</label>
+                </value>
+                <value>
+                    <fullName>SaaS - Customer Success</fullName>
+                    <default>false</default>
+                    <isActive>false</isActive>
+                    <label>SaaS - Customer Success</label>
+                </value>
+                <value>
+                    <fullName>SaaS Operations</fullName>
+                    <default>false</default>
+                    <isActive>false</isActive>
+                    <label>SaaS Operations</label>
+                </value>
+                <value>
+                    <fullName>SaaS Product</fullName>
+                    <default>false</default>
+                    <isActive>false</isActive>
+                    <label>SaaS Product</label>
+                </value>
+                <value>
+                    <fullName>Saas Ops</fullName>
+                    <default>false</default>
+                    <isActive>false</isActive>
+                    <label>Saas Ops</label>
+                </value>
+                <value>
+                    <fullName>Solutions - Delivery</fullName>
+                    <default>false</default>
+                    <isActive>false</isActive>
+                    <label>Solutions - Delivery</label>
+                </value>
+                <value>
+                    <fullName>Solutions - Leadership</fullName>
+                    <default>false</default>
+                    <isActive>false</isActive>
+                    <label>Solutions - Leadership</label>
+                </value>
+                <value>
+                    <fullName>Solutions - Partnerships</fullName>
+                    <default>false</default>
+                    <isActive>false</isActive>
+                    <label>Solutions - Partnerships</label>
+                </value>
+                <value>
+                    <fullName>Solutions - Tech</fullName>
+                    <default>false</default>
+                    <isActive>false</isActive>
+                    <label>Solutions - Tech</label>
+                </value>
+                <value>
+                    <fullName>Solutions Delivery</fullName>
+                    <default>false</default>
+                    <isActive>false</isActive>
+                    <label>Solutions Delivery</label>
+                </value>
+                <value>
+                    <fullName>Solutions Tech</fullName>
+                    <default>false</default>
+                    <isActive>false</isActive>
+                    <label>Solutions Tech</label>
+                </value>
+                <value>
+                    <fullName>USH Delivery</fullName>
+                    <default>false</default>
+                    <isActive>false</isActive>
+                    <label>USH Delivery</label>
+                </value>
+                <value>
+                    <fullName>USH Leadership</fullName>
+                    <default>false</default>
+                    <isActive>false</isActive>
+                    <label>USH Leadership</label>
+                </value>
+                <value>
+                    <fullName>USH Partnerships</fullName>
+                    <default>false</default>
+                    <isActive>false</isActive>
+                    <label>USH Partnerships</label>
+                </value>
+                <value>
+                    <fullName>USH Tech</fullName>
+                    <default>false</default>
+                    <isActive>false</isActive>
+                    <label>USH Tech</label>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+    <fields>
+        <fullName>ID_Subcontract_Spend__c</fullName>
+        <description>The total Interdivisional Subcontract 1 spend to date</description>
+        <externalId>false</externalId>
+        <inlineHelpText>The total Interdivisional Subcontract 1 spend to date</inlineHelpText>
+        <label>ID Subcontract 1 Spend</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>ID_Sub_contract_Total_Amount_Remaining__c</fullName>
+        <externalId>false</externalId>
+        <formula>(ID_Subcontract_1_Budget_Total__c + ID_Subcontract_2_Budget_Total__c)- (ID_Subcontract_Spend__c + ID_Subcontract_2_Spend__c )</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>ID Sub-contract Total Amount Remaining</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>ID_Support_Services_Contract__c</fullName>
+        <defaultValue>false</defaultValue>
+        <externalId>false</externalId>
+        <label>ID Support Services Contract</label>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Implementation_Type__c</fullName>
+        <description>Set to Self Service, Bundles (Standard), Enterprise (custom, non-standard), or Innovation (grant with non-implementation work). For more information see: https://confluence.dimagi.com/display/BD/Implementation+Types</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Set to Self Service, Bundles (Standard), Enterprise (custom, non-standard), or Innovation (grant with non-implementation work). For more information see: https://confluence.dimagi.com/display/BD/Implementation+Types</inlineHelpText>
+        <label>Implementation Type</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+        <valueSet>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>Self Service</fullName>
+                    <default>false</default>
+                    <label>Self Service</label>
+                </value>
+                <value>
+                    <fullName>Bundles and Services</fullName>
+                    <default>true</default>
+                    <label>Bundles and Services</label>
+                </value>
+                <value>
+                    <fullName>Enterprise</fullName>
+                    <default>false</default>
+                    <label>Enterprise</label>
+                </value>
+                <value>
+                    <fullName>Innovation Grant</fullName>
+                    <default>false</default>
+                    <label>Innovation Grant</label>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+    <fields>
+        <fullName>Implementing_Account__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <externalId>false</externalId>
+        <inlineHelpText>Which organization is implementing the contract.</inlineHelpText>
+        <label>Implementing Account</label>
+        <referenceTo>Account</referenceTo>
+        <relationshipName>Implement_Contracts</relationshipName>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
     </fields>
     <fields>
         <fullName>INC_Custom_Services_Income__c</fullName>
@@ -1410,75 +3754,68 @@ Total_Services_Work_Remaining__c * (9 / (MONTH(Contract_End_Date__c) + 12*YEAR(C
         <type>Percent</type>
     </fields>
     <fields>
-        <fullName>Implementation_Type__c</fullName>
-        <description>Set to Self Service, Bundles (Standard), Enterprise (custom, non-standard), or Innovation (grant with non-implementation work). For more information see: https://confluence.dimagi.com/display/BD/Implementation+Types</description>
+        <fullName>Interdivisional_Subcontract__c</fullName>
         <externalId>false</externalId>
-        <inlineHelpText>Set to Self Service, Bundles (Standard), Enterprise (custom, non-standard), or Innovation (grant with non-implementation work). For more information see: https://confluence.dimagi.com/display/BD/Implementation+Types</inlineHelpText>
-        <label>Implementation Type</label>
+        <label>Interdivisional Subcontract</label>
         <required>false</required>
         <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Picklist</type>
         <valueSet>
+            <restricted>true</restricted>
             <valueSetDefinition>
                 <sorted>false</sorted>
                 <value>
-                    <fullName>Self Service</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>Bundles and Services</fullName>
+                    <fullName>No</fullName>
                     <default>true</default>
+                    <label>No</label>
                 </value>
                 <value>
-                    <fullName>Enterprise</fullName>
+                    <fullName>Yes</fullName>
                     <default>false</default>
-                </value>
-                <value>
-                    <fullName>Innovation Grant</fullName>
-                    <default>false</default>
+                    <label>Yes</label>
                 </value>
             </valueSetDefinition>
         </valueSet>
     </fields>
     <fields>
-        <fullName>Implementing_Account__c</fullName>
+        <fullName>Interdivision_Child_Contract_1__c</fullName>
         <deleteConstraint>SetNull</deleteConstraint>
         <externalId>false</externalId>
-        <inlineHelpText>Which organization is implementing the contract.</inlineHelpText>
-        <label>Implementing Account</label>
-        <referenceTo>Account</referenceTo>
-        <relationshipName>Implement_Contracts</relationshipName>
+        <label>Interdivision Child Contract 1</label>
+        <referenceTo>DContract__c</referenceTo>
+        <relationshipLabel>Contracts (Interdivision Child Contract)</relationshipLabel>
+        <relationshipName>Contracts1</relationshipName>
         <required>false</required>
         <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Lookup</type>
     </fields>
     <fields>
-        <fullName>In_Charge_Of_Report_Out__c</fullName>
+        <fullName>Interdivision_Child_Contract_2__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
         <externalId>false</externalId>
-        <label>In Charge Of Report Out</label>
+        <label>Interdivision Child Contract 2</label>
+        <referenceTo>DContract__c</referenceTo>
+        <relationshipLabel>Contracts (Interdivision Child Contract 2)</relationshipLabel>
+        <relationshipName>Contracts3</relationshipName>
         <required>false</required>
         <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
-        <type>Picklist</type>
-        <valueSet>
-            <valueSetDefinition>
-                <sorted>false</sorted>
-                <value>
-                    <fullName>Project Manager</fullName>
-                    <default>true</default>
-                </value>
-                <value>
-                    <fullName>Field Manager</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>Backstop</fullName>
-                    <default>false</default>
-                </value>
-            </valueSetDefinition>
-        </valueSet>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>Interdivision_Parent_Contract__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <externalId>false</externalId>
+        <label>Interdivision Parent Contract</label>
+        <referenceTo>DContract__c</referenceTo>
+        <relationshipLabel>Contracts (Interdivision Parent Contract)</relationshipLabel>
+        <relationshipName>Contracts2</relationshipName>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
     </fields>
     <fields>
         <fullName>Internal_Contract__c</fullName>
@@ -1497,10 +3834,12 @@ Total_Services_Work_Remaining__c * (9 / (MONTH(Contract_End_Date__c) + 12*YEAR(C
                 <value>
                     <fullName>No</fullName>
                     <default>false</default>
+                    <label>No</label>
                 </value>
                 <value>
                     <fullName>Yes</fullName>
                     <default>false</default>
+                    <label>Yes</label>
                 </value>
             </valueSetDefinition>
         </valueSet>
@@ -1546,10 +3885,12 @@ Total_Services_Work_Remaining__c * (9 / (MONTH(Contract_End_Date__c) + 12*YEAR(C
                 <value>
                     <fullName>No</fullName>
                     <default>false</default>
+                    <label>No</label>
                 </value>
                 <value>
                     <fullName>Yes</fullName>
                     <default>false</default>
+                    <label>Yes</label>
                 </value>
             </valueSetDefinition>
         </valueSet>
@@ -1570,6 +3911,47 @@ Total_Services_Work_Remaining__c * (9 / (MONTH(Contract_End_Date__c) + 12*YEAR(C
         <type>Percent</type>
     </fields>
     <fields>
+        <fullName>In_Charge_Of_Report_Out__c</fullName>
+        <externalId>false</externalId>
+        <label>In Charge Of Report Out</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+        <valueSet>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>Project Manager</fullName>
+                    <default>true</default>
+                    <label>Project Manager</label>
+                </value>
+                <value>
+                    <fullName>Field Manager</fullName>
+                    <default>false</default>
+                    <label>Field Manager</label>
+                </value>
+                <value>
+                    <fullName>Backstop</fullName>
+                    <default>false</default>
+                    <label>Backstop</label>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+    <fields>
+        <fullName>Is_child_contract__c</fullName>
+        <description>Returns true if this is a child contract. Field used for services spend calculations.</description>
+        <externalId>false</externalId>
+        <formula>IF(Parent_Contract__c == null, false, true)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <inlineHelpText>Returns true if this is a child contract. Field used for services spend calculations.</inlineHelpText>
+        <label>Is child contract</label>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
         <fullName>Is_First_Nag_Sent__c</fullName>
         <defaultValue>false</defaultValue>
         <externalId>false</externalId>
@@ -1588,16 +3970,31 @@ Total_Services_Work_Remaining__c * (9 / (MONTH(Contract_End_Date__c) + 12*YEAR(C
         <type>Checkbox</type>
     </fields>
     <fields>
-        <fullName>Is_child_contract__c</fullName>
-        <description>Returns true if this is a child contract. Field used for services spend calculations.</description>
+        <fullName>Key_Contractual_Clauses_for_SaaS__c</fullName>
+        <description>Requested by Corporate Operations in April 2023. Intended as a place where Corporate Operations can document the details of clauses that deviate from Dimagi Terms.</description>
         <externalId>false</externalId>
-        <formula>IF(Parent_Contract__c == null, false, true)</formula>
-        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
-        <inlineHelpText>Returns true if this is a child contract. Field used for services spend calculations.</inlineHelpText>
-        <label>Is child contract</label>
+        <inlineHelpText>If the contract has clauses that deviate from our standard Dimagi Terms, the details are populated here by Corporate Ops</inlineHelpText>
+        <label>Key Contractual Clauses for SaaS</label>
+        <length>32768</length>
         <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
-        <type>Checkbox</type>
+        <type>LongTextArea</type>
+        <visibleLines>3</visibleLines>
+    </fields>
+    <fields>
+        <fullName>Last_Project_Report_Out__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <description>Pro with the latest date</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Pro with the latest date</inlineHelpText>
+        <label>Last PRO</label>
+        <referenceTo>Project_Report_Out__c</referenceTo>
+        <relationshipLabel>Contracts</relationshipLabel>
+        <relationshipName>Contracts</relationshipName>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
     </fields>
     <fields>
         <fullName>Last_PRO_Ability_to_meet_schedule__c</fullName>
@@ -1716,21 +4113,6 @@ Total_Services_Work_Remaining__c * (9 / (MONTH(Contract_End_Date__c) + 12*YEAR(C
         <unique>false</unique>
     </fields>
     <fields>
-        <fullName>Last_Project_Report_Out__c</fullName>
-        <deleteConstraint>SetNull</deleteConstraint>
-        <description>Pro with the latest date</description>
-        <externalId>false</externalId>
-        <inlineHelpText>Pro with the latest date</inlineHelpText>
-        <label>Last PRO</label>
-        <referenceTo>Project_Report_Out__c</referenceTo>
-        <relationshipLabel>Contracts</relationshipLabel>
-        <relationshipName>Contracts</relationshipName>
-        <required>false</required>
-        <trackHistory>false</trackHistory>
-        <trackTrending>false</trackTrending>
-        <type>Lookup</type>
-    </fields>
-    <fields>
         <fullName>Last_Report_Out_Created_Date__c</fullName>
         <externalId>false</externalId>
         <label>Last PRO-Created Date</label>
@@ -1794,6 +4176,16 @@ Total_Services_Work_Remaining__c * (9 / (MONTH(Contract_End_Date__c) + 12*YEAR(C
         <type>Lookup</type>
     </fields>
     <fields>
+        <fullName>Long_term_partnership_or_one_off__c</fullName>
+        <externalId>false</externalId>
+        <label>Long term partnership or one-off</label>
+        <length>32768</length>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>LongTextArea</type>
+        <visibleLines>3</visibleLines>
+    </fields>
+    <fields>
         <fullName>Long_Term_Relationship_with_Partner__c</fullName>
         <description>How is the long term relationship with the partner with respect to how this project went, with 1 being a poor relationship and low likelihood of partnering again and 5 being very strong relationship and a high likelihood of partnering again.</description>
         <externalId>false</externalId>
@@ -1809,35 +4201,30 @@ Total_Services_Work_Remaining__c * (9 / (MONTH(Contract_End_Date__c) + 12*YEAR(C
                 <value>
                     <fullName>1</fullName>
                     <default>false</default>
+                    <label>1</label>
                 </value>
                 <value>
                     <fullName>2</fullName>
                     <default>false</default>
+                    <label>2</label>
                 </value>
                 <value>
                     <fullName>3</fullName>
                     <default>false</default>
+                    <label>3</label>
                 </value>
                 <value>
                     <fullName>4</fullName>
                     <default>false</default>
+                    <label>4</label>
                 </value>
                 <value>
                     <fullName>5</fullName>
                     <default>false</default>
+                    <label>5</label>
                 </value>
             </valueSetDefinition>
         </valueSet>
-    </fields>
-    <fields>
-        <fullName>Long_term_partnership_or_one_off__c</fullName>
-        <externalId>false</externalId>
-        <label>Long term partnership or one-off</label>
-        <length>32768</length>
-        <trackHistory>false</trackHistory>
-        <trackTrending>false</trackTrending>
-        <type>LongTextArea</type>
-        <visibleLines>3</visibleLines>
     </fields>
     <fields>
         <fullName>Major_Component_Risks__c</fullName>
@@ -1892,14 +4279,17 @@ Total_Services_Work_Remaining__c * (9 / (MONTH(Contract_End_Date__c) + 12*YEAR(C
                 <value>
                     <fullName>Not Updated</fullName>
                     <default>true</default>
+                    <label>Not Updated</label>
                 </value>
                 <value>
                     <fullName>Yes</fullName>
                     <default>false</default>
+                    <label>Yes</label>
                 </value>
                 <value>
                     <fullName>No</fullName>
                     <default>false</default>
+                    <label>No</label>
                 </value>
             </valueSetDefinition>
         </valueSet>
@@ -1920,6 +4310,18 @@ Total_Services_Work_Remaining__c * (9 / (MONTH(Contract_End_Date__c) + 12*YEAR(C
         <type>Currency</type>
     </fields>
     <fields>
+        <fullName>Non_Standard_SaaS_Clauses__c</fullName>
+        <defaultValue>false</defaultValue>
+        <description>Requested by Corporate Operations in April 2023.
+Intended to capture if the contact has clauses which deviate from standard Dimagi Terms</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Indicates if the contract has clauses that deviate from our standard Dimagi Terms; populated by Corporate Ops</inlineHelpText>
+        <label>Non-Standard SaaS Clauses</label>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
         <fullName>Number_of_Users__c</fullName>
         <externalId>false</externalId>
         <label>Number of Users</label>
@@ -1930,6 +4332,20 @@ Total_Services_Work_Remaining__c * (9 / (MONTH(Contract_End_Date__c) + 12*YEAR(C
         <trackTrending>false</trackTrending>
         <type>Number</type>
         <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>of_Services_budget_for_GS__c</fullName>
+        <defaultValue>1</defaultValue>
+        <description>This is the % of the Project Services Budget that is planned for GS work.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>This is the % of the Project Services Budget that is planned for GS work.</inlineHelpText>
+        <label>% Services budget for GS</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Percent</type>
     </fields>
     <fields>
         <fullName>Parent_Contract_Execution_Owner__c</fullName>
@@ -2109,26 +4525,32 @@ Total_Services_Work_Remaining__c * (9 / (MONTH(Contract_End_Date__c) + 12*YEAR(C
                 <value>
                     <fullName>INC</fullName>
                     <default>false</default>
+                    <label>INC</label>
                 </value>
                 <value>
                     <fullName>DSI</fullName>
                     <default>false</default>
+                    <label>DSI</label>
                 </value>
                 <value>
                     <fullName>DSA</fullName>
                     <default>false</default>
+                    <label>DSA</label>
                 </value>
                 <value>
                     <fullName>DWA</fullName>
                     <default>false</default>
+                    <label>DWA</label>
                 </value>
                 <value>
                     <fullName>DMoz</fullName>
                     <default>false</default>
+                    <label>DMoz</label>
                 </value>
                 <value>
                     <fullName>DLAC</fullName>
                     <default>false</default>
+                    <label>DLAC</label>
                 </value>
             </valueSetDefinition>
         </valueSet>
@@ -2194,7 +4616,7 @@ Total_Services_Work_Remaining__c * (9 / (MONTH(Contract_End_Date__c) + 12*YEAR(C
         <defaultValue>false</defaultValue>
         <externalId>false</externalId>
         <label>Project Billing Rate Updated</label>
-        <trackHistory>false</trackHistory>
+        <trackHistory>true</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Checkbox</type>
     </fields>
@@ -2203,7 +4625,7 @@ Total_Services_Work_Remaining__c * (9 / (MONTH(Contract_End_Date__c) + 12*YEAR(C
         <externalId>false</externalId>
         <label>Project Billing Rate</label>
         <required>false</required>
-        <trackHistory>false</trackHistory>
+        <trackHistory>true</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Picklist</type>
         <valueSet>
@@ -2212,14 +4634,17 @@ Total_Services_Work_Remaining__c * (9 / (MONTH(Contract_End_Date__c) + 12*YEAR(C
                 <value>
                     <fullName>Loaded Daily Rate</fullName>
                     <default>true</default>
+                    <label>Loaded Daily Rate</label>
                 </value>
                 <value>
                     <fullName>Fringe Loaded Daily Rate</fullName>
                     <default>false</default>
+                    <label>Fringe Loaded Daily Rate</label>
                 </value>
                 <value>
                     <fullName>Unloaded Daily Rate</fullName>
                     <default>false</default>
+                    <label>Unloaded Daily Rate</label>
                 </value>
             </valueSetDefinition>
         </valueSet>
@@ -2250,10 +4675,12 @@ Total_Services_Work_Remaining__c * (9 / (MONTH(Contract_End_Date__c) + 12*YEAR(C
                 <value>
                     <fullName>Actuals</fullName>
                     <default>false</default>
+                    <label>Actuals</label>
                 </value>
                 <value>
                     <fullName>Per diem</fullName>
                     <default>false</default>
+                    <label>Per diem</label>
                 </value>
             </valueSetDefinition>
         </valueSet>
@@ -2274,25 +4701,44 @@ Total_Services_Work_Remaining__c * (9 / (MONTH(Contract_End_Date__c) + 12*YEAR(C
                 <value>
                     <fullName>1</fullName>
                     <default>false</default>
+                    <label>1</label>
                 </value>
                 <value>
                     <fullName>2</fullName>
                     <default>false</default>
+                    <label>2</label>
                 </value>
                 <value>
                     <fullName>3</fullName>
                     <default>false</default>
+                    <label>3</label>
                 </value>
                 <value>
                     <fullName>4</fullName>
                     <default>false</default>
+                    <label>4</label>
                 </value>
                 <value>
                     <fullName>5</fullName>
                     <default>false</default>
+                    <label>5</label>
                 </value>
             </valueSetDefinition>
         </valueSet>
+    </fields>
+    <fields>
+        <fullName>Project_Manager_Email__c</fullName>
+        <description>Requested by Finance to more clearly prominently present the Project Manager&apos;s Email address</description>
+        <externalId>false</externalId>
+        <formula>Project_Manager__r.Email</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <inlineHelpText>The email address associated with the Project Manager.</inlineHelpText>
+        <label>Project Manager Email</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
     </fields>
     <fields>
         <fullName>Project_Manager__c</fullName>
@@ -2307,7 +4753,7 @@ Total_Services_Work_Remaining__c * (9 / (MONTH(Contract_End_Date__c) + 12*YEAR(C
                 <operation>contains</operation>
                 <value>@dimagi.com</value>
             </filterItems>
-            <isOptional>false</isOptional>
+            <isOptional>true</isOptional>
         </lookupFilter>
         <referenceTo>Contact</referenceTo>
         <relationshipLabel>Contracts (Project Manager)</relationshipLabel>
@@ -2369,6 +4815,116 @@ Total_Services_Work_Remaining__c * (9 / (MONTH(Contract_End_Date__c) + 12*YEAR(C
         <type>Url</type>
     </fields>
     <fields>
+        <fullName>Project_Years__c</fullName>
+        <externalId>false</externalId>
+        <label>Project Years</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+        <valueSet>
+            <restricted>true</restricted>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>2012</fullName>
+                    <default>false</default>
+                    <label>2012</label>
+                </value>
+                <value>
+                    <fullName>2013</fullName>
+                    <default>false</default>
+                    <label>2013</label>
+                </value>
+                <value>
+                    <fullName>2014</fullName>
+                    <default>false</default>
+                    <label>2014</label>
+                </value>
+                <value>
+                    <fullName>2015</fullName>
+                    <default>false</default>
+                    <label>2015</label>
+                </value>
+                <value>
+                    <fullName>2016</fullName>
+                    <default>false</default>
+                    <label>2016</label>
+                </value>
+                <value>
+                    <fullName>2017</fullName>
+                    <default>false</default>
+                    <label>2017</label>
+                </value>
+                <value>
+                    <fullName>2018</fullName>
+                    <default>false</default>
+                    <label>2018</label>
+                </value>
+                <value>
+                    <fullName>2019</fullName>
+                    <default>false</default>
+                    <label>2019</label>
+                </value>
+                <value>
+                    <fullName>2020</fullName>
+                    <default>false</default>
+                    <label>2020</label>
+                </value>
+                <value>
+                    <fullName>2021</fullName>
+                    <default>false</default>
+                    <label>2021</label>
+                </value>
+                <value>
+                    <fullName>2022</fullName>
+                    <default>false</default>
+                    <label>2022</label>
+                </value>
+                <value>
+                    <fullName>2023</fullName>
+                    <default>false</default>
+                    <label>2023</label>
+                </value>
+                <value>
+                    <fullName>2024</fullName>
+                    <default>false</default>
+                    <label>2024</label>
+                </value>
+                <value>
+                    <fullName>2025</fullName>
+                    <default>false</default>
+                    <label>2025</label>
+                </value>
+                <value>
+                    <fullName>2026</fullName>
+                    <default>false</default>
+                    <label>2026</label>
+                </value>
+                <value>
+                    <fullName>2027</fullName>
+                    <default>false</default>
+                    <label>2027</label>
+                </value>
+                <value>
+                    <fullName>2028</fullName>
+                    <default>false</default>
+                    <label>2028</label>
+                </value>
+                <value>
+                    <fullName>2029</fullName>
+                    <default>false</default>
+                    <label>2029</label>
+                </value>
+                <value>
+                    <fullName>2030</fullName>
+                    <default>false</default>
+                    <label>2030</label>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+    <fields>
         <fullName>Proposal_Dropbox_Location__c</fullName>
         <externalId>false</externalId>
         <inlineHelpText>Should be in Dimagi - Proposals</inlineHelpText>
@@ -2388,39 +4944,6 @@ Total_Services_Work_Remaining__c * (9 / (MONTH(Contract_End_Date__c) + 12*YEAR(C
         <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Currency</type>
-    </fields>
-    <fields>
-        <fullName>R_D_Cluster__c</fullName>
-        <description>This field is to signify whether a project is part of the Research and Development Cluster, information needed for the A-133 Audit.</description>
-        <externalId>false</externalId>
-        <inlineHelpText>This field is to signify whether a project is part of the Research and Development Cluster, information needed for the A-133 Audit.</inlineHelpText>
-        <label>R&amp;D Cluster</label>
-        <required>false</required>
-        <trackHistory>false</trackHistory>
-        <trackTrending>false</trackTrending>
-        <type>Picklist</type>
-        <valueSet>
-            <valueSetDefinition>
-                <sorted>false</sorted>
-                <value>
-                    <fullName>Yes</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>No</fullName>
-                    <default>false</default>
-                </value>
-            </valueSetDefinition>
-        </valueSet>
-    </fields>
-    <fields>
-        <fullName>Require_Services_Spend_Refresh__c</fullName>
-        <defaultValue>false</defaultValue>
-        <externalId>false</externalId>
-        <label>Require Services Spend Refresh</label>
-        <trackHistory>false</trackHistory>
-        <trackTrending>false</trackTrending>
-        <type>Checkbox</type>
     </fields>
     <fields>
         <fullName>Requires_Developer_Work__c</fullName>
@@ -2448,10 +4971,47 @@ Total_Services_Work_Remaining__c * (9 / (MONTH(Contract_End_Date__c) + 12*YEAR(C
                 <value>
                     <fullName>No</fullName>
                     <default>true</default>
+                    <label>No</label>
                 </value>
                 <value>
                     <fullName>Yes</fullName>
                     <default>false</default>
+                    <label>Yes</label>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+    <fields>
+        <fullName>Require_Services_Spend_Refresh__c</fullName>
+        <defaultValue>false</defaultValue>
+        <externalId>false</externalId>
+        <label>Require Services Spend Refresh</label>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>R_D_Cluster__c</fullName>
+        <description>This field is to signify whether a project is part of the Research and Development Cluster, information needed for the A-133 Audit.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>This field is to signify whether a project is part of the Research and Development Cluster, information needed for the A-133 Audit.</inlineHelpText>
+        <label>R&amp;D Cluster</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+        <valueSet>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>Yes</fullName>
+                    <default>false</default>
+                    <label>Yes</label>
+                </value>
+                <value>
+                    <fullName>No</fullName>
+                    <default>false</default>
+                    <label>No</label>
                 </value>
             </valueSetDefinition>
         </valueSet>
@@ -2489,11 +5049,11 @@ Total_Services_Work_Remaining__c * (9 / (MONTH(Contract_End_Date__c) + 12*YEAR(C
     </fields>
     <fields>
         <fullName>Services_Budget__c</fullName>
-        <description>(Total Contract Amount - Expense Budget) * (1- Expected % Buffer)</description>
+        <description>(Total Contract Amount - (External Expense Budget + Total ID Subcontract Expense Budgets) * (1- Expected % Buffer)</description>
         <externalId>false</externalId>
-        <formula>(Total_Amount_of_Contract__c - Contract_Expense_BUDGET__c) * (1-Expected_Buffer__c )</formula>
+        <formula>(Total_Amount_of_Contract__c - Contract_Expense_BUDGET__c -   Total_ID_Subcontract_Expense_Budgets__c  ) * (1-Expected_Buffer__c )</formula>
         <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
-        <inlineHelpText>(Total Contract Amount - Expense Budget) * (1- Expected % Buffer)</inlineHelpText>
+        <inlineHelpText>(Total Contract Amount - (External Expense Budget + Total ID Subcontract Expense Budgets) * (1- Expected % Buffer)</inlineHelpText>
         <label>Project Services Budget</label>
         <precision>18</precision>
         <required>false</required>
@@ -2624,10 +5184,12 @@ Total_Services_Work_Remaining__c * (9 / (MONTH(Contract_End_Date__c) + 12*YEAR(C
                 <value>
                     <fullName>Contract</fullName>
                     <default>true</default>
+                    <label>Contract</label>
                 </value>
                 <value>
                     <fullName>Opportunity</fullName>
                     <default>false</default>
+                    <label>Opportunity</label>
                 </value>
             </valueSetDefinition>
         </valueSet>
@@ -2648,6 +5210,7 @@ Total_Services_Work_Remaining__c * (9 / (MONTH(Contract_End_Date__c) + 12*YEAR(C
                 <value>
                     <fullName>Closed</fullName>
                     <default>true</default>
+                    <label>Closed</label>
                 </value>
             </valueSetDefinition>
         </valueSet>
@@ -2668,6 +5231,7 @@ Total_Services_Work_Remaining__c * (9 / (MONTH(Contract_End_Date__c) + 12*YEAR(C
                 <value>
                     <fullName>Outstanding Contracted</fullName>
                     <default>true</default>
+                    <label>Outstanding Contracted</label>
                 </value>
             </valueSetDefinition>
         </valueSet>
@@ -2687,6 +5251,7 @@ Total_Services_Work_Remaining__c * (9 / (MONTH(Contract_End_Date__c) + 12*YEAR(C
                 <value>
                     <fullName>Total</fullName>
                     <default>true</default>
+                    <label>Total</label>
                 </value>
             </valueSetDefinition>
         </valueSet>
@@ -2726,17 +5291,33 @@ Total_Services_Work_Remaining__c * (9 / (MONTH(Contract_End_Date__c) + 12*YEAR(C
                 <value>
                     <fullName>Draft</fullName>
                     <default>false</default>
+                    <label>Draft</label>
                 </value>
                 <value>
                     <fullName>Active</fullName>
                     <default>true</default>
+                    <label>Active</label>
                 </value>
                 <value>
                     <fullName>Complete</fullName>
                     <default>false</default>
+                    <label>Complete</label>
                 </value>
             </valueSetDefinition>
         </valueSet>
+    </fields>
+    <fields>
+        <fullName>Subscription_MRR__c</fullName>
+        <description>Monthly Recurring Revenue Amount for Non Service Product Subscription Clients</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Monthly Recurring Revenue Amount for Non Service Product Subscription Clients</inlineHelpText>
+        <label>Subscription MRR</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
     </fields>
     <fields>
         <fullName>Sub_Area__c</fullName>
@@ -2753,234 +5334,292 @@ Total_Services_Work_Remaining__c * (9 / (MONTH(Contract_End_Date__c) + 12*YEAR(C
                 <value>
                     <fullName>*** Agriculture and Food Security ***</fullName>
                     <default>false</default>
+                    <label>*** Agriculture and Food Security ***</label>
                 </value>
                 <value>
                     <fullName>Agriculture</fullName>
                     <default>false</default>
+                    <label>Agriculture</label>
                 </value>
                 <value>
                     <fullName>Food Security</fullName>
                     <default>false</default>
+                    <label>Food Security</label>
                 </value>
                 <value>
                     <fullName>*** Economic Development ***</fullName>
                     <default>false</default>
+                    <label>*** Economic Development ***</label>
                 </value>
                 <value>
                     <fullName>Rural Development</fullName>
                     <default>false</default>
+                    <label>Rural Development</label>
                 </value>
                 <value>
                     <fullName>Safety &amp; Security</fullName>
                     <default>false</default>
+                    <label>Safety &amp; Security</label>
                 </value>
                 <value>
                     <fullName>Urban Development</fullName>
                     <default>false</default>
+                    <label>Urban Development</label>
                 </value>
                 <value>
                     <fullName>*** Education and Training ***</fullName>
                     <default>false</default>
+                    <label>*** Education and Training ***</label>
                 </value>
                 <value>
                     <fullName>Adult Training</fullName>
                     <default>false</default>
+                    <label>Adult Training</label>
                 </value>
                 <value>
                     <fullName>Child Education</fullName>
                     <default>false</default>
+                    <label>Child Education</label>
                 </value>
                 <value>
                     <fullName>Early Childhood Development</fullName>
                     <default>false</default>
+                    <label>Early Childhood Development</label>
                 </value>
                 <value>
                     <fullName>*** Emergency Response ***</fullName>
                     <default>false</default>
+                    <label>*** Emergency Response ***</label>
                 </value>
                 <value>
                     <fullName>Emergency Response</fullName>
                     <default>false</default>
+                    <label>Emergency Response</label>
                 </value>
                 <value>
                     <fullName>*** Financial Services for the Poor ***</fullName>
                     <default>false</default>
+                    <label>*** Financial Services for the Poor ***</label>
                 </value>
                 <value>
                     <fullName>Conditional Cash Transfer</fullName>
                     <default>false</default>
+                    <label>Conditional Cash Transfer</label>
                 </value>
                 <value>
                     <fullName>Financial Services to the Poor</fullName>
                     <default>false</default>
+                    <label>Financial Services to the Poor</label>
                 </value>
                 <value>
                     <fullName>Mobile Banking</fullName>
                     <default>false</default>
+                    <label>Mobile Banking</label>
                 </value>
                 <value>
                     <fullName>*** Gender Equality and Women&apos;s Emp ***</fullName>
                     <default>false</default>
+                    <label>*** Gender Equality and Women&apos;s Emp ***</label>
                 </value>
                 <value>
                     <fullName>Gender Services</fullName>
                     <default>false</default>
+                    <label>Gender Services</label>
                 </value>
                 <value>
                     <fullName>Sex Workers</fullName>
                     <default>false</default>
+                    <label>Sex Workers</label>
                 </value>
                 <value>
                     <fullName>*** Governance and Accountability ***</fullName>
                     <default>false</default>
+                    <label>*** Governance and Accountability ***</label>
                 </value>
                 <value>
                     <fullName>Governance</fullName>
                     <default>false</default>
+                    <label>Governance</label>
                 </value>
                 <value>
                     <fullName>Social Accountability</fullName>
                     <default>false</default>
+                    <label>Social Accountability</label>
                 </value>
                 <value>
                     <fullName>*** Health ***</fullName>
                     <default>false</default>
+                    <label>*** Health ***</label>
                 </value>
                 <value>
                     <fullName>Cardiac Diseases</fullName>
                     <default>false</default>
+                    <label>Cardiac Diseases</label>
                 </value>
                 <value>
                     <fullName>Care coordination</fullName>
                     <default>false</default>
+                    <label>Care coordination</label>
                 </value>
                 <value>
                     <fullName>Cervical Cancer</fullName>
                     <default>false</default>
+                    <label>Cervical Cancer</label>
                 </value>
                 <value>
                     <fullName>Diagnostics</fullName>
                     <default>false</default>
+                    <label>Diagnostics</label>
                 </value>
                 <value>
                     <fullName>Diarrhea</fullName>
                     <default>false</default>
+                    <label>Diarrhea</label>
                 </value>
                 <value>
                     <fullName>Family Planning</fullName>
                     <default>false</default>
+                    <label>Family Planning</label>
                 </value>
                 <value>
                     <fullName>HIV/AIDS</fullName>
                     <default>false</default>
+                    <label>HIV/AIDS</label>
                 </value>
                 <value>
                     <fullName>Infectious Diseases</fullName>
                     <default>false</default>
+                    <label>Infectious Diseases</label>
                 </value>
                 <value>
                     <fullName>Informatics</fullName>
                     <default>false</default>
+                    <label>Informatics</label>
                 </value>
                 <value>
                     <fullName>Malaria</fullName>
                     <default>false</default>
+                    <label>Malaria</label>
                 </value>
                 <value>
                     <fullName>Maternal, Newborn, &amp; Child Health</fullName>
                     <default>false</default>
+                    <label>Maternal, Newborn, &amp; Child Health</label>
                 </value>
                 <value>
                     <fullName>Medication adherence</fullName>
                     <default>false</default>
+                    <label>Medication adherence</label>
                 </value>
                 <value>
                     <fullName>Mental Health</fullName>
                     <default>false</default>
+                    <label>Mental Health</label>
                 </value>
                 <value>
                     <fullName>Neglected Tropical Diseases</fullName>
                     <default>false</default>
+                    <label>Neglected Tropical Diseases</label>
                 </value>
                 <value>
                     <fullName>Non-Communicable Diseases</fullName>
                     <default>false</default>
+                    <label>Non-Communicable Diseases</label>
                 </value>
                 <value>
                     <fullName>Nutrition</fullName>
                     <default>false</default>
+                    <label>Nutrition</label>
                 </value>
                 <value>
                     <fullName>Polio</fullName>
                     <default>false</default>
+                    <label>Polio</label>
                 </value>
                 <value>
                     <fullName>Primary Care</fullName>
                     <default>false</default>
+                    <label>Primary Care</label>
                 </value>
                 <value>
                     <fullName>Respiratory Diseases</fullName>
                     <default>false</default>
+                    <label>Respiratory Diseases</label>
                 </value>
                 <value>
                     <fullName>Surgery</fullName>
                     <default>false</default>
+                    <label>Surgery</label>
                 </value>
                 <value>
                     <fullName>Surveillance</fullName>
                     <default>false</default>
+                    <label>Surveillance</label>
                 </value>
                 <value>
                     <fullName>Telemedicine</fullName>
                     <default>false</default>
+                    <label>Telemedicine</label>
                 </value>
                 <value>
                     <fullName>Tuberculosis</fullName>
                     <default>false</default>
+                    <label>Tuberculosis</label>
                 </value>
                 <value>
                     <fullName>Vaccinations</fullName>
                     <default>false</default>
+                    <label>Vaccinations</label>
                 </value>
                 <value>
                     <fullName>*** Logistics ***</fullName>
                     <default>false</default>
+                    <label>*** Logistics ***</label>
                 </value>
                 <value>
                     <fullName>Commodity Tracking/Procurement</fullName>
                     <default>false</default>
+                    <label>Commodity Tracking/Procurement</label>
                 </value>
                 <value>
                     <fullName>Human Resources</fullName>
                     <default>false</default>
+                    <label>Human Resources</label>
                 </value>
                 <value>
                     <fullName>*** Other ***</fullName>
                     <default>false</default>
+                    <label>*** Other ***</label>
                 </value>
                 <value>
                     <fullName>Environment</fullName>
                     <default>false</default>
+                    <label>Environment</label>
                 </value>
                 <value>
                     <fullName>Orphans and Vulnerable Children</fullName>
                     <default>false</default>
+                    <label>Orphans and Vulnerable Children</label>
                 </value>
                 <value>
                     <fullName>Telecommunications</fullName>
                     <default>false</default>
+                    <label>Telecommunications</label>
                 </value>
                 <value>
                     <fullName>Other</fullName>
                     <default>false</default>
+                    <label>Other</label>
                 </value>
                 <value>
                     <fullName>*** Water, Sanitation, &amp; Hygiene ***</fullName>
                     <default>false</default>
+                    <label>*** Water, Sanitation, &amp; Hygiene ***</label>
                 </value>
                 <value>
                     <fullName>Water, Sanitation, &amp; Hygiene</fullName>
                     <default>false</default>
+                    <label>Water, Sanitation, &amp; Hygiene</label>
                 </value>
             </valueSetDefinition>
         </valueSet>
@@ -3012,22 +5651,27 @@ Total_Services_Work_Remaining__c * (9 / (MONTH(Contract_End_Date__c) + 12*YEAR(C
                 <value>
                     <fullName>1</fullName>
                     <default>false</default>
+                    <label>1</label>
                 </value>
                 <value>
                     <fullName>2</fullName>
                     <default>false</default>
+                    <label>2</label>
                 </value>
                 <value>
                     <fullName>3</fullName>
                     <default>false</default>
+                    <label>3</label>
                 </value>
                 <value>
                     <fullName>4</fullName>
                     <default>false</default>
+                    <label>4</label>
                 </value>
                 <value>
                     <fullName>5</fullName>
                     <default>false</default>
+                    <label>5</label>
                 </value>
             </valueSetDefinition>
         </valueSet>
@@ -3046,6 +5690,15 @@ Total_Services_Work_Remaining__c * (9 / (MONTH(Contract_End_Date__c) + 12*YEAR(C
         <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>Terms_of_Service_Exception__c</fullName>
+        <defaultValue>false</defaultValue>
+        <externalId>false</externalId>
+        <label>Terms of Service Exception</label>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
     </fields>
     <fields>
         <fullName>Third_Nag_Sent_Date__c</fullName>
@@ -3088,11 +5741,11 @@ Total_Services_Work_Remaining__c * (9 / (MONTH(Contract_End_Date__c) + 12*YEAR(C
         <type>Currency</type>
     </fields>
     <fields>
-        <fullName>Total_Amount_REMAINING__c</fullName>
-        <description>Amount left to Invoice. Total Amount of Contract minus All Time Income. Updated monthly by Jason doing the Intacct data upload.</description>
+        <fullName>Total_Amount_of_Contract__c</fullName>
+        <description>Set by Ops during Contract closing steps</description>
         <externalId>false</externalId>
-        <inlineHelpText>Amount left to Invoice. Total Amount of Contract minus All Time Income. Updated monthly by Jason doing the Intacct data upload.</inlineHelpText>
-        <label>Total Amount REMAINING</label>
+        <inlineHelpText>Set by Ops during Contract closing steps</inlineHelpText>
+        <label>Total Amount of Contract</label>
         <precision>16</precision>
         <required>false</required>
         <scale>2</scale>
@@ -3101,11 +5754,11 @@ Total_Services_Work_Remaining__c * (9 / (MONTH(Contract_End_Date__c) + 12*YEAR(C
         <type>Currency</type>
     </fields>
     <fields>
-        <fullName>Total_Amount_of_Contract__c</fullName>
-        <description>Set by Ops during Contract closing steps</description>
+        <fullName>Total_Amount_REMAINING__c</fullName>
+        <description>Amount left to Invoice. Total Amount of Contract minus All Time Income. Updated monthly by Jason doing the Intacct data upload.</description>
         <externalId>false</externalId>
-        <inlineHelpText>Set by Ops during Contract closing steps</inlineHelpText>
-        <label>Total Amount of Contract</label>
+        <inlineHelpText>Amount left to Invoice. Total Amount of Contract minus All Time Income. Updated monthly by Jason doing the Intacct data upload.</inlineHelpText>
+        <label>Total Amount REMAINING</label>
         <precision>16</precision>
         <required>false</required>
         <scale>2</scale>
@@ -3155,6 +5808,21 @@ Total_Services_Work_Remaining__c * (9 / (MONTH(Contract_End_Date__c) + 12*YEAR(C
         <type>Currency</type>
     </fields>
     <fields>
+        <fullName>Total_ID_Subcontract_Expense_Budgets__c</fullName>
+        <description>This is the Total ID Subcontract Expense budget, which excludes LOE ID Subcontract budget which show up as labor on the PRO</description>
+        <externalId>false</externalId>
+        <formula>ID_Subcontract_1_Expense_Budget__c + ID_Subcontract_2_Expense_Budget__c</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <inlineHelpText>This is the Total ID Subcontract Expense budget, which excludes LOE ID Subcontract budget which show up as labor on the PRO</inlineHelpText>
+        <label>Total ID Subcontract Expense Budgets</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
         <fullName>Total_Labor_Expenses__c</fullName>
         <externalId>false</externalId>
         <label>Total Labor Expenses</label>
@@ -3184,7 +5852,7 @@ Total_Services_Work_Remaining__c * (9 / (MONTH(Contract_End_Date__c) + 12*YEAR(C
         <fullName>Total_Non_Expense_Income_Remaining__c</fullName>
         <description>Total Non Expense Income Remaining.  Also can be described as the Total Amount Remaining Minus the Expense Income Remaining.</description>
         <externalId>false</externalId>
-        <formula>IF(Total_Amount_REMAINING__c - MAX( Contract_Expense_BUDGET__c - Total_Direct_Costs_Expenses__c,0 )&gt;0,(Total_Amount_REMAINING__c - ( Contract_Expense_BUDGET__c - Total_Direct_Costs_Expenses__c )),0)</formula>
+        <formula>IF( ID_Support_Services_Contract__c = True, (ID_Sub_contract_Total_Amount_Remaining__c *-1),IF(((Contract_Expense_BUDGET__c + ID_Subcontract_1_Budget_Total__c +  ID_Subcontract_2_Budget_Total__c)- (Total_Direct_Costs_Expenses__c +  ID_Subcontract_Spend__c ) )&lt;0,  Total_Amount_REMAINING__c ,MAX(0,(Total_Amount_REMAINING__c - ( ( Contract_Expense_BUDGET__c +ID_Subcontract_1_Budget_Total__c + ID_Subcontract_2_Budget_Total__c ) - ( Total_Direct_Costs_Expenses__c + ID_Subcontract_Spend__c))))))</formula>
         <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
         <inlineHelpText>Total Non Expense Income Remaining.  Also can be described as the Total Amount Remaining Minus the Expense Income Remaining.</inlineHelpText>
         <label>Total Non Expense Income Remaining</label>
@@ -3271,22 +5939,27 @@ Total_Services_Work_Remaining__c * (9 / (MONTH(Contract_End_Date__c) + 12*YEAR(C
                 <value>
                     <fullName>1</fullName>
                     <default>false</default>
+                    <label>1</label>
                 </value>
                 <value>
                     <fullName>2</fullName>
                     <default>false</default>
+                    <label>2</label>
                 </value>
                 <value>
                     <fullName>3</fullName>
                     <default>false</default>
+                    <label>3</label>
                 </value>
                 <value>
                     <fullName>4</fullName>
                     <default>false</default>
+                    <label>4</label>
                 </value>
                 <value>
                     <fullName>5</fullName>
                     <default>false</default>
+                    <label>5</label>
                 </value>
             </valueSetDefinition>
         </valueSet>
@@ -3528,35 +6201,6 @@ Total_Non_Expense_Income_Remaining__c * (9 / (MONTH(Contract_End_Date__c) + 12*Y
         <trackTrending>false</trackTrending>
         <type>Currency</type>
     </fields>
-    <fields>
-        <fullName>executive_sponsor__c</fullName>
-        <deleteConstraint>SetNull</deleteConstraint>
-        <externalId>false</externalId>
-        <inlineHelpText>If this opportunity has innovation or strategic value not well captured through other impact, team, or profit metrics, it requires an executive sponsor.</inlineHelpText>
-        <label>Executive Sponsor</label>
-        <referenceTo>SFDC_Employee__c</referenceTo>
-        <relationshipLabel>Contracts</relationshipLabel>
-        <relationshipName>custom_contract_sponsor</relationshipName>
-        <required>false</required>
-        <trackHistory>false</trackHistory>
-        <trackTrending>false</trackTrending>
-        <type>Lookup</type>
-    </fields>
-    <fields>
-        <fullName>of_Services_budget_for_GS__c</fullName>
-        <defaultValue>1</defaultValue>
-        <description>This is the % of the Project Services Budget that is planned for GS work.</description>
-        <externalId>false</externalId>
-        <inlineHelpText>This is the % of the Project Services Budget that is planned for GS work.</inlineHelpText>
-        <label>% Services budget for GS</label>
-        <precision>18</precision>
-        <required>false</required>
-        <scale>0</scale>
-        <trackHistory>true</trackHistory>
-        <trackTrending>false</trackTrending>
-        <type>Percent</type>
-    </fields>
-    <label>Contract</label>
     <listViews>
         <fullName>Ag_Contracts</fullName>
         <columns>NAME</columns>
@@ -3691,6 +6335,24 @@ Total_Non_Expense_Income_Remaining__c * (9 / (MONTH(Contract_End_Date__c) + 12*Y
         <label>All by Country - Export for DHA</label>
     </listViews>
     <listViews>
+        <fullName>All_Contracts</fullName>
+        <columns>NAME</columns>
+        <columns>Execution_Owner_SubDivision__c</columns>
+        <columns>Contract_Start_Date__c</columns>
+        <columns>Contract_End_Date__c</columns>
+        <columns>Last_PRO_Project_Overview_Document_POD__c</columns>
+        <columns>Project_Manager__c</columns>
+        <columns>Area__c</columns>
+        <columns>Sub_Area__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Execution_Owner_Division__c</field>
+            <operation>equals</operation>
+            <value>Solutions</value>
+        </filters>
+        <label>All Solutions Contracts</label>
+    </listViews>
+    <listViews>
         <fullName>Cash_Flow_3Month_12Month</fullName>
         <columns>NAME</columns>
         <columns>Total_Amount_of_Contract__c</columns>
@@ -3701,6 +6363,17 @@ Total_Non_Expense_Income_Remaining__c * (9 / (MONTH(Contract_End_Date__c) + 12*Y
         <columns>EV_Date_1__c</columns>
         <filterScope>Everything</filterScope>
         <label>Cash Flow - 3Month / 12Month</label>
+    </listViews>
+    <listViews>
+        <fullName>CCP_Projects_for_PPR</fullName>
+        <columns>NAME</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Execution_Owner_SubDivision__c</field>
+            <operation>equals</operation>
+            <value>CCP</value>
+        </filters>
+        <label>CCP Projects for PPR</label>
     </listViews>
     <listViews>
         <fullName>Contracts</fullName>
@@ -3876,9 +6549,9 @@ Total_Non_Expense_Income_Remaining__c * (9 / (MONTH(Contract_End_Date__c) + 12*Y
     <listViews>
         <fullName>DWA_Contracts</fullName>
         <columns>NAME</columns>
+        <columns>Contract_Start_Date__c</columns>
         <columns>Total_Amount_of_Contract__c</columns>
         <columns>Status__c</columns>
-        <columns>Contract_Start_Date__c</columns>
         <columns>Contract_End_Date__c</columns>
         <columns>Product_Text__c</columns>
         <columns>OWNER.FIRST_NAME</columns>
@@ -3929,6 +6602,23 @@ Total_Non_Expense_Income_Remaining__c * (9 / (MONTH(Contract_End_Date__c) + 12*Y
         <label>Summaries</label>
     </listViews>
     <listViews>
+        <fullName>Terre_des_hommes_Closed_Contracts</fullName>
+        <columns>NAME</columns>
+        <columns>Date_of_Contract_Execution__c</columns>
+        <columns>Total_Amount_of_Contract__c</columns>
+        <columns>Expected_Buffer__c</columns>
+        <columns>Funder_Account__c</columns>
+        <columns>Duration_months__c</columns>
+        <columns>OWNER.ALIAS</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Account__c</field>
+            <operation>contains</operation>
+            <value>Terre des hommes</value>
+        </filters>
+        <label>Terre des hommes Closed Contracts</label>
+    </listViews>
+    <listViews>
         <fullName>USAID_View</fullName>
         <booleanFilter>1 OR 2</booleanFilter>
         <columns>NAME</columns>
@@ -3952,18 +6642,6 @@ Total_Non_Expense_Income_Remaining__c * (9 / (MONTH(Contract_End_Date__c) + 12*Y
         </filters>
         <label>USAID View</label>
     </listViews>
-    <nameField>
-        <label>Contract Name</label>
-        <trackHistory>false</trackHistory>
-        <type>Text</type>
-    </nameField>
-    <pluralLabel>Contracts</pluralLabel>
-    <searchLayouts>
-        <searchResultsAdditionalFields>Short_Description__c</searchResultsAdditionalFields>
-        <searchResultsAdditionalFields>Channel__c</searchResultsAdditionalFields>
-        <searchResultsAdditionalFields>Country_Text__c</searchResultsAdditionalFields>
-    </searchLayouts>
-    <sharingModel>ReadWrite</sharingModel>
     <validationRules>
         <fullName>Greater_than_100_percent</fullName>
         <active>true</active>
@@ -3973,6 +6651,17 @@ Total_Non_Expense_Income_Remaining__c * (9 / (MONTH(Contract_End_Date__c) + 12*Y
         <errorMessage>% of work completed cannot exceed 100%</errorMessage>
     </validationRules>
     <validationRules>
+        <fullName>NonStandard_Clauses</fullName>
+        <active>true</active>
+        <description>Enforces that if &quot;Non-Standard SaaS Clauses&quot; is checked, that &quot;Key Contractual Clauses for SaaS&quot; is populated</description>
+        <errorConditionFormula>AND(
+Non_Standard_SaaS_Clauses__c = TRUE,
+ISBLANK(Key_Contractual_Clauses_for_SaaS__c)
+)</errorConditionFormula>
+        <errorDisplayField>Key_Contractual_Clauses_for_SaaS__c</errorDisplayField>
+        <errorMessage>If &quot;Non-Standard SaaS Clauses&quot; is checked, the field &quot;Key Contractual Clauses for SaaS&quot; MUST be populated.</errorMessage>
+    </validationRules>
+    <validationRules>
         <fullName>Parent_Contract</fullName>
         <active>false</active>
         <description>If Intra-company subcontract = TRUE then require selecting a parent contract.</description>
@@ -3980,6 +6669,18 @@ Total_Non_Expense_Income_Remaining__c * (9 / (MONTH(Contract_End_Date__c) + 12*Y
         <errorDisplayField>Parent_Contract__c</errorDisplayField>
         <errorMessage>You must select a parent contract for Intracompany sub-contracts.</errorMessage>
     </validationRules>
+    <webLinks>
+        <fullName>Calculate_All_Time_Income</fullName>
+        <availability>online</availability>
+        <description>Populate Interdivision Child Contract 1 All Time Income to ID Sucbcontract  1 Spend</description>
+        <displayType>button</displayType>
+        <height>600</height>
+        <linkType>page</linkType>
+        <masterLabel>Calculate All Time Income</masterLabel>
+        <openType>sidebar</openType>
+        <page>CalculateAllTime</page>
+        <protected>false</protected>
+    </webLinks>
     <webLinks>
         <fullName>Recalculate_Services_Spend</fullName>
         <availability>online</availability>
