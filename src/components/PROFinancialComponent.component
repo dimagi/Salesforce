@@ -151,35 +151,47 @@
         </apex:pageBlockSectionItem>
     </apex:pageBlockSection>
 
-    <apex:pageBlockSection title="Timespend on Project by Person (Updated weekly from Fogbugz)" collapsible="false" columns="1">
+    <apex:pageBlockSection title="Timespend on Project by Person (Updated weekly from Clockify)" collapsible="false" columns="1">
         <apex:pageBlockSectionItem >
             <apex:outputPanel >
-                <apex:outputText value="Last Fogbugz synchronization date : {!lastFBSyncDate}, UTC" />
+                <apex:outputText value="Last synchronization date: {!lastFBSyncDate}, UTC" />
                 <apex:pageBlockTable value="{!timeSpendHistoryList}" var="obj" id="proTable5">
                     <apex:column headerValue="Name" value="{!obj.laborName}" style="{!if(obj.laborName='Total','font-weight: bold', '')}"/>
 
                     <apex:column headerValue="Current Month" style="{!if(obj.laborName='Total','font-weight: bold', '')}">
-                        <apex:outputText value="{!FLOOR(obj.currentMonthHours)}"/>
+                        <apex:outputText value="{0, number, ###,###,###,##0.0}">
+                            <apex:param value="{!obj.currentMonthHours}"/>
+                            </apex:outputText>
                     </apex:column>
 
                     <apex:column headerValue="Last Month" style="{!if(obj.laborName='Total','font-weight: bold', '')}">
-                        <apex:outputText value="{!FLOOR(obj.firstMonthHours)}"/>
+                        <apex:outputText value="{0, number, ###,###,###,##0.0}">
+                            <apex:param value="{!obj.firstMonthHours}"/>
+                            </apex:outputText>
                     </apex:column>
 
                     <apex:column headerValue="2 Months Ago" style="{!if(obj.laborName='Total','font-weight: bold', '')}">
-                        <apex:outputText value="{!FLOOR(obj.secondMonthHours)}"/>
+                        <apex:outputText value="{0, number, ###,###,###,##0.0}">
+                            <apex:param value="{!obj.secondMonthHours}"/>
+                            </apex:outputText>
                     </apex:column>
 
                     <apex:column headerValue="3 Months Ago" style="{!if(obj.laborName='Total','font-weight: bold', '')}">
-                        <apex:outputText value="{!FLOOR(obj.thirdMonthHours)}"/>
+                        <apex:outputText value="{0, number, ###,###,###,##0.0}">
+                            <apex:param value="{!obj.thirdMonthHours}"/>
+                            </apex:outputText>
                     </apex:column>
 
                     <apex:column headerValue="More Than 3 Ago" style="{!if(obj.laborName='Total','font-weight: bold', '')}">
-                        <apex:outputText value="{!FLOOR(obj.moreThanThreeMonthAgoHours)}"/>
+                        <apex:outputText value="{0, number, ###,###,###,##0.0}">
+                            <apex:param value="{!obj.moreThanThreeMonthAgoHours}"/>
+                            </apex:outputText>
                     </apex:column>
 
                     <apex:column headerValue="Total Hours to Date" style="{!if(obj.laborName='Total','font-weight: bold', '')}">
-                        <apex:outputText value="{!FLOOR(obj.totalHourstoDate)}"/>
+                        <apex:outputText value="{0, number, ###,###,###,##0.0}">
+                            <apex:param value="{!obj.totalHourstoDate}"/>
+                            </apex:outputText>
                     </apex:column>
 
                     <apex:column headerValue="Labor Cost Estimate (USD)" style="{!if(obj.laborName='Total','font-weight: bold', '')}">
