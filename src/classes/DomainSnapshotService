@@ -1,0 +1,15 @@
+public with sharing class DomainSnapshotService {
+    @AuraEnabled(cacheable=true)
+    public static List<Domain_Monthly_Snapshot__c> getSnapshotData(String domainId) {
+        Date twelveMonthsAgo = System.today().addMonths(-12);
+        
+        List<Domain_Monthly_Snapshot__c> snapshots = [
+            SELECT Id, Active_Mobile_Users__c, Forms_for_Period__c, Snapshot_Date__c
+            FROM Domain_Monthly_Snapshot__c
+            WHERE Domain__c = :domainId AND Snapshot_Date__c >= :twelveMonthsAgo
+            ORDER BY Snapshot_Date__c ASC
+        ];
+        
+        return snapshots;
+    }
+}
