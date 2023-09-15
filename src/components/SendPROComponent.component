@@ -62,7 +62,7 @@
                 </apex:pageBlockSectionItem>
 
                 <apex:pageBlockSectionItem >
-                    <apex:outputLabel >Project Dashboard or <a href="https://confluence.dimagi.com/display/internal/POD+-+Project+Overview+Document" target="_blank">POD</a></apex:outputLabel>
+                    <apex:outputLabel >Project Dashboard or <a href="https://confluence.dimagi.com/display/GS/POD+-+Project+Overview+Document" target="_blank">POD</a></apex:outputLabel>
                     <apex:inputfield value="{!pro.Project_Dashboard__c}" style="width:500px"/>
                 </apex:pageBlockSectionItem>
 
