@@ -1,35 +1,39 @@
 <apex:component controller="PROFinancialComponentController" allowDML="true">
     <apex:attribute name="employeeEmailComp"
-        type="String"
-        assignTo="{!employeeEmail}"
-        required="true"
-        description="This employee email adress, required to fill in RED Form." />
+                    type="String"
+                    assignTo="{!employeeEmail}"
+                    required="true"
+                    description="This employee email adress, required to fill in RED Form." />
     <apex:attribute name="pageControllerComp"
-        type="DimagiToolsController"
-        assignTo="{!pageController}"
-        required="true"
-        description="The controller for the page." />
-
+                    type="DimagiToolsController"
+                    assignTo="{!pageController}"
+                    required="true"
+                    description="The controller for the page." />
+    
     <script type="text/javascript">
-        function clickProBudget(projectId) {
-            console.log("contractId: "+ projectId);
-            $j('[id$=financialContractElement]').val(projectId);
-            readPROBudget();
-        }
-
-        function clickAddProjectToList(elem) {
-            var contractId = $j(elem).find(".accId").find('span').html();
-            $j('[id$=contractToAdd]').val(contractId);
-            addProjectToUserList();
-        }
+    function clickProBudget(projectId) {
+        console.log("contractId: "+ projectId);
+        $j('[id$=financialContractElement]').val(projectId);
+        readPROBudget();
+    }
+    
+    function clickAddProjectToList(elem) {
+        var contractId = $j(elem).find(".accId").find('span').html();
+        $j('[id$=contractToAdd]').val(contractId);
+        addProjectToUserList();
+    }
     </script>
-
+    <style>
+    .bold-label {
+        font-weight: bold;
+    }
+</style>
     <!-- Financial Data  -->
     <apex:pageBlock title="Projects" id="financialTabBlock">
         <apex:outputPanel layout="block" id="messages">
             <apex:pageMessages />
         </apex:outputPanel>
-
+        
         <apex:pageBlockSection columns="1">
             <apex:pageBlockSectionItem id="financialSearchBlock">
                 <apex:outputLabel value="Search Project" />
@@ -41,16 +45,16 @@
                     </apex:outputText>
                 </apex:outputPanel>
             </apex:pageBlockSectionItem>
-
+            
             <apex:pageBlockSectionItem id="financialSearchResultBlock" rendered="{!if(searchedProjects.size > 0,true,false)}">
                 <apex:outputLabel value="Search Results" />
                 <apex:outputPanel styleClass="requiredInput" layout="block">
                     <apex:inputHidden value="{!contractToAdd}" id="contractToAdd"/>
                     <apex:actionFunction status="loadingDiv" name="addProjectToUserList" action="{!addProjectToUserList}" reRender="financialTabBlock" />
                     <apex:pageBlockTable value="{!searchedProjects}" var="obj" onRowClick="clickAddProjectToList(this);" style="width:300px" id="searchResultTable" styleClass="tablesorter" >
-                    <apex:column headerValue="" value="{!obj.Id}" styleClass="accId" style="display:none" headerClass="hedareClsNone"   />
-                    <apex:column headerValue="Project Name" value="{!obj.Name}"  />
-                    <apex:column headerValue="Last Report Out Date" value="{!obj.Last_Report_Out_Date__c}"  />
+                        <apex:column headerValue="" value="{!obj.Id}" styleClass="accId" style="display:none" headerClass="hedareClsNone"   />
+                        <apex:column headerValue="Project Name" value="{!obj.Name}"  />
+                        <apex:column headerValue="Last Report Out Date" value="{!obj.Last_Report_Out_Date__c}"  />
                     </apex:pageBlockTable>
                 </apex:outputPanel>
             </apex:pageBlockSectionItem>
@@ -76,16 +80,16 @@
                 </apex:outputPanel>
             </apex:pageBlockSectionItem>
         </apex:pageBlockSection>
-
+        
         <apex:pageBlockSection collapsible="false" columns="1">
             <apex:pageBlockSectionItem >
                 <apex:pageBlockTable value="{!executionStatusList}" var="obj" id="proTable6" style="width:380px">
-                        <apex:column headerValue="Contract Execution Status" value="{!obj.fieldName}" />
-                        <apex:column headerValue="" value="{!obj.fieldValue}%" width="40" style="text-align: center;{!IF(obj.fieldName == 'Execution Efficiency' && obj.fieldValue < 60 ,'background-color: red;',IF(obj.fieldName="Execution Efficiency" && obj.fieldValue < 80,'background-color: yellow;',IF(obj.fieldName="Execution Efficiency" && obj.fieldValue > 120,'background-color: yellow;',IF(obj.fieldName = 'Difference between Budget Used and SOW Complete' && obj.fieldValue < 0,'background-color: red;',IF(obj.fieldName = 'Difference between Time into Contract and Budget Used' && obj.fieldValue < 0,'background-color: red','')))))}"/>
+                    <apex:column headerValue="Contract Execution Status" value="{!obj.fieldName}" />
+                    <apex:column headerValue="" value="{!obj.fieldValue}%" width="40" style="text-align: center;{!IF(obj.fieldName == 'Execution Efficiency' && obj.fieldValue < 60 ,'background-color: red;',IF(obj.fieldName="Execution Efficiency" && obj.fieldValue < 80,'background-color: yellow;',IF(obj.fieldName="Execution Efficiency" && obj.fieldValue > 120,'background-color: yellow;',IF(obj.fieldName = 'Difference between Budget Used and SOW Complete' && obj.fieldValue < 0,'background-color: red;',IF(obj.fieldName = 'Difference between Time into Contract and Budget Used' && obj.fieldValue < 0,'background-color: red','')))))}"/>
                 </apex:pageBlockTable>
             </apex:pageBlockSectionItem>
         </apex:pageBlockSection>
-
+        
         <apex:pageBlockSection title="Contract Budget and Spend to date (Services & Labor updated in real time, all other data updated monthly, including subcontracts)" collapsible="false" columns="1">
             <apex:pageBlockSectionItem >
                 <apex:outputPanel >
@@ -96,23 +100,23 @@
                                 <apex:param value="{!obj.contractamount}" />
                             </apex:outputText>
                         </apex:column>
-
+                        
                         <apex:column headerValue="Amount In Contract" style="{!if(obj.categoryName='Total','font-weight: bold', '')}" rendered="{!if(obj.categoryName = 'Margin',true,false )}">
                             <apex:outputText value="{!obj.contractamount}%" />
                         </apex:column>
-
+                        
                         <apex:column headerValue="Amount Spent" style="{!if(obj.categoryName='Total','font-weight: bold', '')}">
                             <apex:outputText value="${0, number,###,###,###,###}" rendered="{!if(obj.categoryName='Margin',false,true )}">
                                 <apex:param value="{!obj.spentAmount}" />
                             </apex:outputText>
                         </apex:column>
-
+                        
                         <apex:column headerValue="Amount Remaining" style="{!if(obj.categoryName='Total','font-weight: bold', '')}">
                             <apex:outputText value="${0, number,###,###,###,###}" rendered="{!if(obj.categoryName='Margin',false,true )}">
                                 <apex:param value="{!obj.amountRemaining}" />
                             </apex:outputText>
                         </apex:column>
-
+                        
                         <apex:column headerValue="% Budget Used" style = "{!if(obj.prcntgUsed > 100,'background-color: red;', if(obj.prcntgUsed > 85,'background-color: yellow;',''))};{!if(obj.categoryName='Total','font-weight: bold', '')}" >
                             <apex:outputText value="{!obj.prcntgUsed}%" rendered="{!if(obj.categoryName='Margin',false,true )}"/>
                         </apex:column>
@@ -120,7 +124,7 @@
                 </apex:outputPanel>
             </apex:pageBlockSectionItem>
         </apex:pageBlockSection>
-
+        
         <apex:pageBlockSection title="Expense spend on Project (Updated Monthly)" collapsible="false" columns="1">
             <apex:pageBlockSectionItem >
                 <apex:outputPanel >
@@ -131,66 +135,108 @@
                                 <apex:param value="{!obj.contractamount}" />
                             </apex:outputText>
                         </apex:column>
-
-                    <apex:column headerValue="Amount Spent" style="{!if(obj.categoryName='Total Costs (not including Internal subcontracts' || obj.categoryName='Total Costs (including Internal subcontracts','font-weight: bold', '')}">
-                        <apex:outputText value="${0, number,###,###,###,###}">
-                            <apex:param value="{!obj.spentAmount}" />
-                        </apex:outputText>
-                    </apex:column>
-
-                    <apex:column headerValue="Amount Remaining" style="{!if(obj.categoryName='Total Costs (not including Internal subcontracts' || obj.categoryName='Total Costs (including Internal subcontracts','font-weight: bold', '')}">
-                        <apex:outputText value="${0, number,###,###,###,###}">
-                            <apex:param value="{!obj.throughSOWDeliverable}" />
-                        </apex:outputText>
-                    </apex:column>
-
-                    <apex:column headerValue="% Budget Used" value="{!obj.prcntgUsed}%" style = "{!if(obj.prcntgUsed > 100,'background-color: red;', if(obj.prcntgUsed > 85,'background-color: yellow;',''))};{!if(obj.categoryName='Total Costs (not including Internal subcontracts' || obj.categoryName='Total Costs (including Internal subcontracts','font-weight: bold', '')}" />
-
-                </apex:pageBlockTable>
-            </apex:outputPanel>
-        </apex:pageBlockSectionItem>
-    </apex:pageBlockSection>
-
-    <apex:pageBlockSection title="Timespend on Project by Person (Updated weekly from Fogbugz)" collapsible="false" columns="1">
-        <apex:pageBlockSectionItem >
-            <apex:outputPanel >
-                <apex:outputText value="Last Fogbugz synchronization date : {!lastFBSyncDate}, UTC" />
-                <apex:pageBlockTable value="{!timeSpendHistoryList}" var="obj" id="proTable5">
-                    <apex:column headerValue="Name" value="{!obj.laborName}" style="{!if(obj.laborName='Total','font-weight: bold', '')}"/>
-
-                    <apex:column headerValue="Current Month" style="{!if(obj.laborName='Total','font-weight: bold', '')}">
-                        <apex:outputText value="{!FLOOR(obj.currentMonthHours)}"/>
-                    </apex:column>
-
-                    <apex:column headerValue="Last Month" style="{!if(obj.laborName='Total','font-weight: bold', '')}">
-                        <apex:outputText value="{!FLOOR(obj.firstMonthHours)}"/>
-                    </apex:column>
-
-                    <apex:column headerValue="2 Months Ago" style="{!if(obj.laborName='Total','font-weight: bold', '')}">
-                        <apex:outputText value="{!FLOOR(obj.secondMonthHours)}"/>
-                    </apex:column>
-
-                    <apex:column headerValue="3 Months Ago" style="{!if(obj.laborName='Total','font-weight: bold', '')}">
-                        <apex:outputText value="{!FLOOR(obj.thirdMonthHours)}"/>
-                    </apex:column>
-
-                    <apex:column headerValue="More Than 3 Ago" style="{!if(obj.laborName='Total','font-weight: bold', '')}">
-                        <apex:outputText value="{!FLOOR(obj.moreThanThreeMonthAgoHours)}"/>
-                    </apex:column>
-
-                    <apex:column headerValue="Total Hours to Date" style="{!if(obj.laborName='Total','font-weight: bold', '')}">
-                        <apex:outputText value="{!FLOOR(obj.totalHourstoDate)}"/>
-                    </apex:column>
-
-                    <apex:column headerValue="Labor Cost Estimate (USD)" style="{!if(obj.laborName='Total','font-weight: bold', '')}">
-                        <apex:outputText value="${0, number,###,###,###,###}">
-                            <apex:param value="{!obj.laborCost}" />
-                        </apex:outputText>
-                    </apex:column>
-
+                        
+                        <apex:column headerValue="Amount Spent" style="{!if(obj.categoryName='Total Costs (not including Internal subcontracts' || obj.categoryName='Total Costs (including Internal subcontracts','font-weight: bold', '')}">
+                            <apex:outputText value="${0, number,###,###,###,###}">
+                                <apex:param value="{!obj.spentAmount}" />
+                            </apex:outputText>
+                        </apex:column>
+                        
+                        <apex:column headerValue="Amount Remaining" style="{!if(obj.categoryName='Total Costs (not including Internal subcontracts' || obj.categoryName='Total Costs (including Internal subcontracts','font-weight: bold', '')}">
+                            <apex:outputText value="${0, number,###,###,###,###}">
+                                <apex:param value="{!obj.throughSOWDeliverable}" />
+                            </apex:outputText>
+                        </apex:column>
+                        
+                        <apex:column headerValue="% Budget Used" value="{!obj.prcntgUsed}%" style = "{!if(obj.prcntgUsed > 100,'background-color: red;', if(obj.prcntgUsed > 85,'background-color: yellow;',''))};{!if(obj.categoryName='Total Costs (not including Internal subcontracts' || obj.categoryName='Total Costs (including Internal subcontracts','font-weight: bold', '')}" />
+                        
                     </apex:pageBlockTable>
                 </apex:outputPanel>
             </apex:pageBlockSectionItem>
         </apex:pageBlockSection>
+        
+        <apex:pageBlockSection title="Timespend on Project by Person (Updated weekly from Clockify)" collapsible="false" columns="1">
+            <apex:pageBlockSectionItem >
+                <apex:outputPanel >
+                    <apex:outputText value="Last synchronization date: {!lastFBSyncDate}, UTC" />
+                    <apex:pageBlockTable value="{!timeSpendHistoryList}" var="obj" id="proTable5">
+                        <apex:column headerValue="Name" value="{!obj.laborName}" style="{!if(obj.laborName='Total','font-weight: bold', '')}"/>
+                        
+                        <apex:column headerValue="Current Month" style="{!if(obj.laborName='Total','font-weight: bold', '')}">
+                            <apex:outputText value="{0, number, ###,###,###,##0.0}">
+                                <apex:param value="{!obj.currentMonthHours}"/>
+                            </apex:outputText>
+                        </apex:column>
+                        
+                        <apex:column headerValue="Last Month" style="{!if(obj.laborName='Total','font-weight: bold', '')}">
+                            <apex:outputText value="{0, number, ###,###,###,##0.0}">
+                                <apex:param value="{!obj.firstMonthHours}"/>
+                            </apex:outputText>
+                        </apex:column>
+                        
+                        <apex:column headerValue="2 Months Ago" style="{!if(obj.laborName='Total','font-weight: bold', '')}">
+                            <apex:outputText value="{0, number, ###,###,###,##0.0}">
+                                <apex:param value="{!obj.secondMonthHours}"/>
+                            </apex:outputText>
+                        </apex:column>
+                        
+                        <apex:column headerValue="3 Months Ago" style="{!if(obj.laborName='Total','font-weight: bold', '')}">
+                            <apex:outputText value="{0, number, ###,###,###,##0.0}">
+                                <apex:param value="{!obj.thirdMonthHours}"/>
+                            </apex:outputText>
+                        </apex:column>
+                        
+                        <apex:column headerValue="More Than 3 Ago" style="{!if(obj.laborName='Total','font-weight: bold', '')}">
+                            <apex:outputText value="{0, number, ###,###,###,##0.0}">
+                                <apex:param value="{!obj.moreThanThreeMonthAgoHours}"/>
+                            </apex:outputText>
+                        </apex:column>
+                        
+                        <apex:column headerValue="Total Hours to Date" style="{!if(obj.laborName='Total','font-weight: bold', '')}">
+                            <apex:outputText value="{0, number, ###,###,###,##0.0}">
+                                <apex:param value="{!obj.totalHourstoDate}"/>
+                            </apex:outputText>
+                        </apex:column>
+                        
+                        <apex:column headerValue="Labor Cost Estimate (USD)" style="{!if(obj.laborName='Total','font-weight: bold', '')}">
+                            <apex:outputText value="${0, number,###,###,###,###}">
+                                <apex:param value="{!obj.laborCost}" />
+                            </apex:outputText>
+                        </apex:column>
+                        
+                    </apex:pageBlockTable>
+                </apex:outputPanel>
+            </apex:pageBlockSectionItem>
+        </apex:pageBlockSection>
+        
+        <apex:pageBlockSection title="CommCare Activity (Updated Monthly)" collapsible="false" columns="1">
+            <apex:pageBlockSectionItem >
+                <apex:pageBlockSection >
+                    <apex:outputText value="Most recent month’s data: {!lastsnapshot}"/><br />
+                    <apex:outputText >
+                        More information about this data can be found <a href="https://confluence.dimagi.com/display/internal/Project+Report+Out+-+CommCare+Activity" target="_blank">here</a>.
+                    </apex:outputText>
+                </apex:pageBlockSection>
+            </apex:pageBlockSectionItem>
+        
+    <apex:outputLabel value="CommCare Activity (Updated Monthly, Aggregated Across All Projects)" styleClass="bold-label"/>
+                  <apex:pageBlockTable value="{!domainNameToURLMap}" var="key">
+            <apex:column headerValue="Domain Name">
+                <apex:outputLink value="{!domainNameToURLMap[key]}" target="_blank">
+                    <apex:outputText value="{!key}" />
+                </apex:outputLink>
+            </apex:column>
+        </apex:pageBlockTable>
+            <apex:pageBlockTable value="{!Most_Recent_Month[0]['recordCount']}" var="dom1">
+                                                   <apex:column headerValue="Most Recent Month: Active Mobile Workers" value="{!FLOOR(dom1)}"/>
+
+            </apex:pageBlockTable>
+            <apex:pageBlockTable value="{!One_Month_prior[0]['recordCount']}" var="dom2">
+                                                   <apex:column headerValue="One Month Prior: Active Mobile Workers" value="{!FLOOR(dom2)}"/>
+            </apex:pageBlockTable>
+            <apex:pageBlockTable value="{!Two_Months_prior[0]['recordCount']}" var="dom3">
+                                                   <apex:column headerValue="Two Months Prior: Active Mobile Workers " value="{!FLOOR(dom3)}"/>
+            </apex:pageBlockTable>
+                    </apex:pageBlockSection>
     </apex:pageBlock>
 </apex:component>
