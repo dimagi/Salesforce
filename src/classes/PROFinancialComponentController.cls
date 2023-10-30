@@ -17,6 +17,14 @@ public class PROFinancialComponentController {
     public string seachProjectName { get; set; }
     public List<DContract__c> searchedProjects { get; set; }
     public string myLightningHostname {get;set;}
+    public Date lastsnapshot { get; set;}
+    public List<Domain_Monthly_Snapshot__c> snapshots { get; set; }
+    public List<Domain__c> domainsss { get; set; }
+    public List<String> domainURLs { get; set; }
+    public List<AggregateResult> Most_Recent_Month{ get; set; }
+    public List<AggregateResult> One_Month_prior{ get; set; }
+    public List<AggregateResult> Two_Months_prior{ get; set; }
+    public Map<String, String> domainNameToURLMap { get; set; }  
     
     private String sfInstanceName;
     private Map<Id,List<DContract__c>> childcontractMap;
@@ -34,7 +42,7 @@ public class PROFinancialComponentController {
         Time_Card__c lastTimeCard = [SELECT Id, CreatedDate FROM Time_Card__c ORDER BY CreatedDate DESC LIMIT 1];
         if (lastTimeCard != null) {
             this.lastFBSyncDate = Date.newInstance(lastTimeCard.CreatedDate.year(), lastTimeCard.CreatedDate.month(), lastTimeCard.CreatedDate.day());
-        }
+        } 
         
         List<DimagiToolsController.PROProject> proList = new List<DimagiToolsController.PROProject>();
         Set<Id> customContractsIdsToAddInList = new Set<Id>();
@@ -74,6 +82,60 @@ public class PROFinancialComponentController {
             this.financialContractId = this.contractMap.values()[0].id;
             loadContractBudgetAndSpentData();
         }
+        
+        if(this.contractMap.containsKey(this.financialContractId)){
+            DContract__c contractid = this.contractMap.get(this.financialContractId);
+            List<Contract_Domain__c> domainId = [select id,Name, Domain__c, Contract__r.id from Contract_Domain__c where Contract__c = :contractid.id];
+            set<id> domainids = new set<id>();
+            
+            for(Contract_Domain__c contDomain : domainId){
+                domainids.add(contDomain.Domain__c);
+                
+            }
+            list<id> excludedomains = new list<id>();
+            for(Domain_Monthly_Snapshot__c dms : [SELECT id,Domain__c FROM Domain_Monthly_Snapshot__c where Domain__c IN :domainids AND (Subscription_Service_Type__c = 'IMPLEMENTATION' OR Subscription_Service_Type__c = 'PRODUCT')]){
+                excludedomains.add(dms.Domain__c);
+            }
+            domainNameToURLMap = new Map<String, String>();
+            
+            for (Domain__c domain : [select id, name,Server_Name__c from Domain__c where id IN : excludedomains]) {
+                String serverName = domain.Server_Name__c;
+                String baseUrl;
+                
+                if (serverName == 'CommCareHQ') {
+                    baseUrl = 'https://www.commcarehq.org/a/';
+                } else if (serverName == 'CommCareHQ India') {
+                    baseUrl = 'https://india.commcarehq.org/a/';
+                } else {
+                    baseUrl = 'https://www.commcarehq.org/a/';
+                }
+                
+                String domainURL = baseUrl + domain.Name;
+                
+                // Populate the map with domain names as keys and URLs as values
+                domainNameToURLMap.put(domain.Name, domainURL);
+                System.debug('domainNameToURLMap: ' + domainNameToURLMap);
+                
+            }
+            
+            
+            try{
+                list<Domain_Monthly_Snapshot__c> domainsnap = [SELECT Id,name, Domain__c,Subscription_Service_Type__c, Snapshot_Date__c FROM Domain_Monthly_Snapshot__c where Domain__c IN :domainids AND (Subscription_Service_Type__c = 'IMPLEMENTATION' OR Subscription_Service_Type__c = 'PRODUCT') and Snapshot_Date__c != null ORDER BY Snapshot_Date__c DESC];
+                System.debug('DomainMap: ' + domainsnap.size());
+                if (!domainsnap.isEmpty()) {
+                    System.debug('year:: ' + domainsnap[0].Snapshot_Date__c);
+                    this.lastsnapshot = Date.newInstance(domainsnap[0].Snapshot_Date__c.year(), domainsnap[0].Snapshot_Date__c.month(), domainsnap[0].Snapshot_Date__c.day());
+                    System.debug('lastsnapshot: ' + this.lastsnapshot);
+                }
+            }catch(Exception ex){
+                System.debug(ex.getMessage());
+            }
+            
+            this.Most_Recent_Month = [SELECT SUM(Active_Mobile_Users__c)recordCount  FROM Domain_Monthly_Snapshot__c where Domain__c IN :domainids AND (Subscription_Service_Type__c = 'IMPLEMENTATION' OR Subscription_Service_Type__c = 'PRODUCT') and Snapshot_Date__c >= LAST_N_MONTHS:1];
+            this.One_Month_prior = [SELECT SUM(Active_Mobile_Users__c)recordCount  FROM Domain_Monthly_Snapshot__c where Domain__c IN :domainids AND (Subscription_Service_Type__c = 'IMPLEMENTATION' OR Subscription_Service_Type__c = 'PRODUCT') and Snapshot_Date__c >= LAST_N_MONTHS:2];
+            this.Two_Months_prior = [SELECT SUM(Active_Mobile_Users__c)recordCount  FROM Domain_Monthly_Snapshot__c where Domain__c IN :domainids AND (Subscription_Service_Type__c = 'IMPLEMENTATION' OR Subscription_Service_Type__c = 'PRODUCT') and Snapshot_Date__c >= LAST_N_MONTHS:3];
+            
+        }  
         
         for (DContract__c dc:this.contractMap.values()) {
             this.excludeContractFromSearch.add(dc.Id);
@@ -189,9 +251,9 @@ public class PROFinancialComponentController {
             Decimal idSubcontractValue;            
             String subContractType = contractObj.ID_Subcontract_1_Type__c;
             /*if('LOE'.equals(subContractType)){                
-                idSubcontractValue = 0;
-            } else {*/
-                idSubcontractValue = contractObj.ID_Subcontract_Expense_Spend__c != null ? contractObj.ID_Subcontract_Expense_Spend__c : 0 ;
+idSubcontractValue = 0;
+} else {*/
+            idSubcontractValue = contractObj.ID_Subcontract_Expense_Spend__c != null ? contractObj.ID_Subcontract_Expense_Spend__c : 0 ;
             //}            
             
             if(childContracts != null && childContracts.size() > 0) {
@@ -272,7 +334,7 @@ public class PROFinancialComponentController {
             prbjObj5.amountRemaining = Integer.valueOf(Total_Amount_of_Contract - b);
             prbjObj5.prcntgUsed = a != 0 ? Math.round((b/a) * 100) : 0;
             this.proBudgetList.add(prbjObj5);
-        }
+        }  
         
         loadProjectexecutionStatusList();
         loadHistoryOfTimeSpend(contractIdTimeCardsMap);
@@ -314,11 +376,11 @@ public class PROFinancialComponentController {
             Decimal ID_Subcontract_Spend = contractObj.ID_Subcontract_Spend__c != null ? contractObj.ID_Subcontract_Spend__c : 0 ;
             Decimal idSubcontractValue;            
             /*String subContractType = contractObj.ID_Subcontract_1_Type__c;
-            if('LOE'.equals(subContractType)){                
-                idSubcontractValue = 0;
-            } else {*/
-                idSubcontractValue = contractObj.ID_Subcontract_Expense_Spend__c != null ? contractObj.ID_Subcontract_Expense_Spend__c : 0 ;
-           // } 
+if('LOE'.equals(subContractType)){                
+idSubcontractValue = 0;
+} else {*/
+            idSubcontractValue = contractObj.ID_Subcontract_Expense_Spend__c != null ? contractObj.ID_Subcontract_Expense_Spend__c : 0 ;
+            // } 
             
             Decimal a = Direct_Costs_Travel_BUDGET;
             Decimal b = Direct_Costs_Travel_Expenses;
@@ -519,5 +581,5 @@ public class PROFinancialComponentController {
             
             this.executionStatusList = new List<DimagiToolsController.ProjectExecutionStatus> { execStatus1, execStatus2, execStatus3, execStatus4 };
                 }
-    }
+    } 
 }
