@@ -1,7 +1,12 @@
 public class ContactTriggerHelper{
+    
+    /*
+      Regarding this Ticket SAL-141 To prevent users from modifying employee object data by updating contact records,
+	  we are commenting this code.
+  */ 
 
     public static void UpdateEmployee(Map<Id,Contact> oldContactMap,List<Contact> contactList) {
-        if (CheckRecursive.firstRun) {
+       /* if (CheckRecursive.firstRun) {
             CheckRecursive.firstrun = false;
             List<SFDC_Employee__c> empList = [SELECT Id, Contact__c, Email_Address__c, Entity__c FROM SFDC_Employee__c WHERE Contact__c =: contactList];
             Map<Id, SFDC_Employee__c> contactEmployeeMap = new Map<Id, SFDC_Employee__c>();
@@ -91,6 +96,6 @@ public class ContactTriggerHelper{
             if(updateEmpList.size()>0){
                 update updateEmpList;
             }
-        }
+        }*/
     }
 }
