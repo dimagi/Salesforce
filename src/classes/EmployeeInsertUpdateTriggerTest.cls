@@ -16,11 +16,11 @@ public class EmployeeInsertUpdateTriggerTest {
 
         //Create Account
         Account acc = new Account();
-        acc.Name = 'Test dimagi';
+        acc.Name = 'Test Dimagi ' + DateTime.now().getTime(); // Add a unique suffix
         insert acc;
 
         Account acc2 = new Account();
-        acc2.Name = 'Test dimagi 2';
+        acc2.Name = 'Test Dimagi 2 ' + DateTime.now().getTime(); // Add a unique suffix
         insert acc2;
 
         //Create Contact
