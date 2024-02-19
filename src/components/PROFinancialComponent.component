@@ -24,10 +24,10 @@
     }
     </script>
     <style>
-    .bold-label {
+        .bold-label {
         font-weight: bold;
-    }
-</style>
+        }
+    </style>
     <!-- Financial Data  -->
     <apex:pageBlock title="Projects" id="financialTabBlock">
         <apex:outputPanel layout="block" id="messages">
@@ -218,25 +218,51 @@
                     </apex:outputText>
                 </apex:pageBlockSection>
             </apex:pageBlockSectionItem>
-        
-    <apex:outputLabel value="CommCare Activity (Updated Monthly, Aggregated Across All Projects)" styleClass="bold-label"/>
-                  <apex:pageBlockTable value="{!domainNameToURLMap}" var="key">
-            <apex:column headerValue="Domain Name">
-                <apex:outputLink value="{!domainNameToURLMap[key]}" target="_blank">
-                    <apex:outputText value="{!key}" />
-                </apex:outputLink>
-            </apex:column>
-        </apex:pageBlockTable>
-            <apex:pageBlockTable value="{!Most_Recent_Month[0]['recordCount']}" var="dom1">
-                                                   <apex:column headerValue="Most Recent Month: Active Mobile Workers" value="{!FLOOR(dom1)}"/>
-
+            
+            <apex:outputLabel value="CommCare Activity (Updated Monthly, Aggregated Across All Projects)" styleClass="bold-label"/>
+            <apex:pageBlockTable value="{!domainNameToURLMap}" var="key">
+                <apex:column headerValue="Domain Name">
+                    <apex:outputLink value="{!domainNameToURLMap[key]}" target="_blank">
+                        <apex:outputText value="{!key}" />
+                    </apex:outputLink>
+                </apex:column>
             </apex:pageBlockTable>
-            <apex:pageBlockTable value="{!One_Month_prior[0]['recordCount']}" var="dom2">
-                                                   <apex:column headerValue="One Month Prior: Active Mobile Workers" value="{!FLOOR(dom2)}"/>
+            <apex:pageBlockTable value="{!snapshotDataList}" var="data">
+                <apex:column headerValue=" ">
+                    <apex:outputText value="{!data.label}" />
+                </apex:column>
+                <apex:variable var="today" value="{!TODAY()}" />
+                <apex:variable var="monthNumber" value="{!MONTH(today)}" />
+                <apex:variable var="year" value="{!YEAR(today)}" />
+                
+                <apex:variable var="lastMonthNumber" value="{!IF(monthNumber = 1, 12, monthNumber - 1)}" />
+                <apex:variable var="lastYear" value="{!IF(monthNumber = 1, year - 1, year)}" />
+                <apex:variable var="lastMonthName" value="{!CASE(lastMonthNumber, 1, 'January', 2, 'February', 3, 'March', 4, 'April', 5, 'May', 6, 'June', 7, 'July', 8, 'August', 9, 'September', 10, 'October', 11, 'November', 12, 'December', 'Unknown')}" />
+                
+                <apex:column headerValue="{!lastMonthName} {!lastYear}  (Most Recent)">
+                    <apex:outputText value="{0}">
+                        <apex:param value="{!data.mostRecent}" />
+                    </apex:outputText>
+                </apex:column>
+                <apex:variable var="lastLastMonthNumber" value="{!IF(lastMonthNumber = 1, 12,IF(lastMonthNumber = 2, 1, lastMonthNumber - 1))}" />
+                <apex:variable var="lastLastYear" value="{!IF(lastMonthNumber = 1, lastYear - 1, lastYear)}" />
+                <apex:variable var="lastLastMonthName" value="{!CASE(lastLastMonthNumber, 1, 'January', 2, 'February', 3, 'March', 4, 'April', 5, 'May', 6, 'June', 7, 'July', 8, 'August', 9, 'September', 10, 'October', 11, 'November', 12, 'December', 'Unknown')}" />
+                
+                
+                <apex:column headerValue="{!lastLastMonthName} {!lastLastYear}">
+                    <apex:outputText value="{0}">
+                        <apex:param value="{!data.oneMonthPrior}" />
+                    </apex:outputText>
+                </apex:column>
+                <apex:variable var="TwoLastMonthNumber" value="{!IF(lastLastMonthNumber = 1, 12,IF(lastLastMonthNumber = 2, 1, lastLastMonthNumber - 1))}" />
+                <apex:variable var="TwoLastYear" value="{!IF(lastLastMonthNumber = 1, lastLastYear - 1, lastLastYear)}" />
+                <apex:variable var="TwoLastMonthName" value="{!CASE(TwoLastMonthNumber, 1, 'January', 2, 'February', 3, 'March', 4, 'April', 5, 'May', 6, 'June', 7, 'July', 8, 'August', 9, 'September', 10, 'October', 11, 'November', 12, 'December', 'Unknown')}" />
+                <apex:column headerValue="{!TwoLastMonthName} {!TwoLastYear}">
+                    <apex:outputText value="{0}">
+                        <apex:param value="{!data.twoMonthsPrior}" />
+                    </apex:outputText>
+                </apex:column>
             </apex:pageBlockTable>
-            <apex:pageBlockTable value="{!Two_Months_prior[0]['recordCount']}" var="dom3">
-                                                   <apex:column headerValue="Two Months Prior: Active Mobile Workers " value="{!FLOOR(dom3)}"/>
-            </apex:pageBlockTable>
-                    </apex:pageBlockSection>
+        </apex:pageBlockSection>
     </apex:pageBlock>
 </apex:component>
