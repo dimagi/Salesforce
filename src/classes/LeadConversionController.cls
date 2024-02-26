@@ -75,7 +75,7 @@ public with sharing class LeadConversionController {
                 newOpp.CloseDate = Date.today().addMonths(2).toStartofMonth().addDays(-1);
                 newOpp.Renewal_expected__c = true;
                 newOpp.Opportunity_Owner_Division__c = 'SaaS';
-                newOpp.Opportunity_Owner_Sub_Division__c = 'Inbound Sales';
+                newOpp.Opportunity_Owner_Sub_Division__c = 'SaaS - Sales';
 
                 Business_Unit__c bu = [SELECT Id FROM Business_Unit__c WHERE Name = 'Inc' LIMIT 1];
                 if (bu != null) {
@@ -96,7 +96,6 @@ public with sharing class LeadConversionController {
             }
             ApexPages.addMessage(new ApexPages.message(ApexPages.severity.ERROR, 'Cannot conver lead : ' + message + '.'));
         }
-
         return null;
     }
 
