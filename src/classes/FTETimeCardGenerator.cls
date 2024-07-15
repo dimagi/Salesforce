@@ -119,8 +119,8 @@ public class FTETimeCardGenerator {
         
         for (FTEMonthTimeCard resRecord : result) {
             for (Integer i = 0; i < this.monthDays; i++) {
-                resRecord.hours[i] = resRecord.hours[i].setScale(4);
-                unassignedHours.hours[i] += resRecord.hours[i].setScale(4);                 
+                resRecord.hours[i] = resRecord.hours[i].setScale(2);
+                unassignedHours.hours[i] += resRecord.hours[i].setScale(2);                 
             }
         }
         for (Integer i = 0; i < this.monthDays; i++) {
@@ -138,7 +138,7 @@ public class FTETimeCardGenerator {
             }
             unassignedHours.totalHours += unassignedHours.hours[i]; 
         }
-        unassignedHours.totalHours =  unassignedHours.totalHours.setScale(4); 
+        unassignedHours.totalHours =  unassignedHours.totalHours.setScale(2); 
         // unassignedHours.totalHours =  unassignedHours.totalHours.round(System.RoundingMode.HALF_UP); 
         unassignedHours.totalProjectHours = (workingDays-this.oveHeadTotal)*8;
         
@@ -201,10 +201,10 @@ public class FTETimeCardGenerator {
                 // System.debug(dayCardDate + '-----' + dayCardsMap.get(dayCardDate));
                 FTE_Day_Card__c temp = dayCardsMap.get(dayCardDate);                
                 monthData.hours[i] = temp.hours__c;                 
-                monthData.workCardTotalHours = (temp.Work_Card_Total_Hours__c*8).setScale(4);
+                monthData.workCardTotalHours = (temp.Work_Card_Total_Hours__c*8).setScale(2);
             }
             //  monthData.totalHours = monthData.totalHours.round(System.RoundingMode.HALF_UP); 
-            monthData.totalHours = (monthTotalHours*8) - dayCardsMap.values().get(0).Available_Hours__c; 
+            monthData.totalHours = (monthTotalHours*8) - dayCardsMap.values().get(0).Available_Hours__c.setScale(2); 
             monthData.totalProjectHours = monthTotalHours*8;
             
             if(isMonthTotalHoursUpdated) {
@@ -219,22 +219,22 @@ public class FTETimeCardGenerator {
                 {
                     monthData.hours[i] = 0;
                     FTE_Day_Card__c dayCardSat = new FTE_Day_Card__c(Contract__c = contractId, Employee__c = this.employeeId, hours__c = 0, Available_Hours__c = 0,
-                                                                     Work_Card_Total_Hours__c = monthTotalHours.setScale(4), Date__c = Date.newInstance(this.fteYear, this.employeeMonth, i+1));
+                                                                     Work_Card_Total_Hours__c = monthTotalHours, Date__c = Date.newInstance(this.fteYear, this.employeeMonth, i+1));
                     dayCardsToBeInserted.add(dayCardSat);
                 } else if((('Sunday').equals(DateTime.newInstance(this.fteYear, this.employeeMonth, i+1).format('EEEE')))) {
                     monthData.hours[i] = 0;
                     FTE_Day_Card__c dayCardSun = new FTE_Day_Card__c(Contract__c = contractId, Employee__c = this.employeeId, hours__c = 0, Available_Hours__c = 0,
-                                                                     Work_Card_Total_Hours__c = monthTotalHours.setScale(4), Date__c = Date.newInstance(this.fteYear, this.employeeMonth, i+1));
+                                                                     Work_Card_Total_Hours__c = monthTotalHours, Date__c = Date.newInstance(this.fteYear, this.employeeMonth, i+1));
                     dayCardsToBeInserted.add(dayCardSun);
                 } else {
                     monthData.hours[i] = (monthTotalHours/workingDays)*8;
                     FTE_Day_Card__c dayCard = new FTE_Day_Card__c(Contract__c = contractId, Employee__c = this.employeeId, hours__c = (monthTotalHours/workingDays)*8, Available_Hours__c = 0,
-                                                                  Work_Card_Total_Hours__c = monthTotalHours.setScale(4), Date__c = Date.newInstance(this.fteYear, this.employeeMonth, i+1));
+                                                                  Work_Card_Total_Hours__c = monthTotalHours, Date__c = Date.newInstance(this.fteYear, this.employeeMonth, i+1));
                     dayCardsToBeInserted.add(dayCard);
                 }
             }
             // System.debug(dayCardsToBeInserted.size());
-            monthData.totalHours = (monthTotalHours*8).setScale(4); 
+            monthData.totalHours = (monthTotalHours*8).setScale(2); 
             monthData.totalProjectHours = monthTotalHours*8;
             monthData.workCardTotalHours = monthTotalHours*8;
             System.debug(monthData.workCardTotalHours);
@@ -257,20 +257,19 @@ public class FTETimeCardGenerator {
         } 
         Date dayCardDate = Date.newInstance(this.fteYear, this.employeeMonth, day);
         FTE_Day_Card__c singleDayCard = dayCardsMap.get(dayCardDate);
-        
         Decimal diff;
         if(inputHours < singleDayCard.hours__c) {
             diff = singleDayCard.hours__c-inputHours;
             for(FTE_Day_Card__c dc : dayCardFromDb){
                 dc.Available_Hours__c += diff;
-                dc.Available_Hours__c= dc.Available_Hours__c.setScale(4); // Nov 5th
+                dc.Available_Hours__c= dc.Available_Hours__c.setScale(2); // Nov 5th
             }
             update dayCardFromDb;
         } else if(inputHours > singleDayCard.hours__c){
             diff = inputHours-singleDayCard.hours__c;
             for(FTE_Day_Card__c dc : dayCardFromDb){
                 dc.Available_Hours__c -= diff;
-                dc.Available_Hours__c= dc.Available_Hours__c.setScale(4);  // Nov 5th
+                dc.Available_Hours__c= dc.Available_Hours__c.setScale(2);  // Nov 5th               
             }
             update dayCardFromDb;
         }        

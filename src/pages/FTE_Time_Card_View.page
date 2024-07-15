@@ -271,6 +271,8 @@
                 <apex:commandButton action="{!goToCSVUploadView}" value="CSV File Upload" id="uploadButton" />
                 <apex:commandButton action="{!goToEmployeeViewFromTimeCardView}" value="Employee View" id="backButton" />
                 &nbsp;&nbsp;&nbsp;<a class="btn" style="text-decoration:none;" href="apex/FTE_Download_File?employeeId={!employeeId}&month={!exportMonth}&fteyear={!fteYear}" target="_blank">Download CSV</a>
+                            <apex:commandButton action="{!export_FTEListViewPDF}" value="Export PDF" id="Exportpdf" />
+
             </apex:outputPanel>
         </apex:form>
     </apex:pageBlock>
