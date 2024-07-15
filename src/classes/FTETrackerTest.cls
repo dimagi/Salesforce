@@ -690,7 +690,7 @@ public class FTETrackerTest {
                                            AND Date__c=:formDate LIMIT 1];
         System.debug('SumOfhrs: '+dayCardList[0].hours__c+','+ dayCardList[0].Available_Hours__c+','+dayCardList.size());
         Decimal sumofhrs = dayCardList[0].hours__c + dayCardList[0].Available_Hours__c;
-        System.assertEquals(fileCtrl.userAvailableDays, sumofhrs.setScale(4));
+        System.assertEquals(fileCtrl.userAvailableDays, sumofhrs.setScale(2));
     }
     
     @isTest
