@@ -45,9 +45,13 @@ public class ContactDirectoryController {
     public void loadPageData() {
         if (isTokenValid()) {
             this.empList = [SELECT Id, Name, Email_Address__c, Direct_Manager_Lookup__c, Direct_Manager_Lookup__r.Name,
-                            Division__c, Sub_Division__c, Title__c, Business_Unit__c
-                            FROM SFDC_Employee__c WHERE Employee_Status__c = 'Active'];
+                            Division__c, Sub_Division__c, Title__c, Business_Unit__c, Business_Unit__r.Name
+                            FROM SFDC_Employee__c 
+                            WHERE Employee_Status__c = 'Active'
+                            AND Employee_Type__c IN ('Employee', 'Employee (PEO)', 'Internal Contractor')
+                           ];
 
+            
             this.contractList = [SELECT Id, Prime_Contracting_Business_Unit__c, Name, Prime_Contracting_Business_Unit__r.Name,
                                  Safety_Contact__c, Contract_End_Date__c
                                  FROM DContract__c WHERE Status__c IN ('Draft', 'Active')];
@@ -59,8 +63,10 @@ public class ContactDirectoryController {
         if (isTokenValid()) {
             String searchString = '%' + this.empSearchName + '%';
             this.empList = [SELECT Id, Name, Email_Address__c,  Direct_Manager__c, Direct_Manager_Lookup__c, Direct_Manager_Lookup__r.Name,
-                            Division__c, Sub_Division__c, Title__c, Business_Unit__c
-                            FROM SFDC_Employee__c WHERE Employee_Status__c = 'Active' AND Name LIKE: searchString];
+                            Division__c, Sub_Division__c, Title__c, Business_Unit__c, Business_Unit__r.Name
+                            FROM SFDC_Employee__c WHERE Employee_Status__c = 'Active' 
+                            AND Employee_Type__c IN ('Employee', 'Employee (PEO)', 'Internal Contractor')
+                            AND Name LIKE: searchString];
         }
     }
 
@@ -80,10 +86,6 @@ public class ContactDirectoryController {
     }
 
     public Boolean getAccessGranted() {
-        if (Test.isRunningTest()) {
-            return true;
-        }
-
         if (this.token != null && this.tokenIsValid == true) {
             return true;
         }
@@ -92,10 +94,11 @@ public class ContactDirectoryController {
     }
 
     public Boolean isTokenValid() {
+        
+        String domainName = getSettings().Domain_Name__c;
         if (Test.isRunningTest()) {
             return true;
         }
-        String domainName = getSettings().Domain_Name__c;
         String userEmail = SFAuthUtils.callForUserInfo(this.token); // this method will throw an exception if token is not valid
         if (userEmail == this.currentLoginEmail && (domainName == 'gmail.com' || domainName == this.currentLoginEmail.split('@')[1])) {
              this.tokenIsValid = true;
