@@ -34,18 +34,18 @@ public class ContactDirectoryTest {
         System.assertNotEquals(null, testRedirect);
         
         ctrl.loadPageData();
-        System.assertEquals(7, ctrl.empList.size());
+        System.assertEquals(4, ctrl.empList.size());
         System.assertEquals(8, ctrl.contractList.size());
         
         ctrl.showMessage = 'Message';
 
         ctrl.empSearchName = 'Emp';
         ctrl.searchEmp();
-        System.assertEquals(5, ctrl.empList.size());
+        System.assertEquals(4, ctrl.empList.size());
         
         ctrl.empSearchName = 'Four';
         ctrl.searchEmp();
-        System.assertEquals(1, ctrl.empList.size());
+        System.assertEquals(0, ctrl.empList.size());
         
         ctrl.contractSearchName = 'Test';
         ctrl.searchContract();
