@@ -57,7 +57,7 @@ public class ClockifyAPI {
             
             for(Integer i = 0 ; i<ClockifyData.timeentries.size(); i++){
                 Time_Card__c tcard = new Time_Card__c();
-                if(ClockifyData.timeentries[i].tags.size()>0){
+				if (ClockifyData.timeentries[i].tags != null && ClockifyData.timeentries[i].tags.size() > 0) {
                     if(ClientNameIdMap.containsKey(ClockifyData.timeentries[i].tags[0].name)){
                         tcard.Client__c = ClientNameIdMap.get(ClockifyData.timeentries[i].tags[0].name);
                     }
@@ -149,8 +149,12 @@ public class ClockifyAPI {
         Map<String,Id> ClientNameIdMap = new Map<String,Id>();
         List<String> tagNames = new List<String>();
         for(Integer i = 0; i<timeentries.size(); i++){
-            for(Integer t = 0; t<timeentries[i].tags.size(); t++){
-                tagNames.add(timeentries[i].tags[t].name);
+            if (timeentries[i] != null && timeentries[i].tags != null) {
+            	for(Integer t = 0; t<timeentries[i].tags.size(); t++){
+                	if (timeentries[i].tags[t] != null) {
+                		tagNames.add(timeentries[i].tags[t].name);
+                	}
+            	}
             }
         }
         for(DContract__c contract : [SELECT Id , Name FROM DContract__c WHERE Name IN:tagNames]){
