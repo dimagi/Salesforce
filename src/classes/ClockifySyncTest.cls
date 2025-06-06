@@ -87,4 +87,14 @@ public class ClockifySyncTest {
         System.schedule('Clockify Sync', sch, sh1); 
         Test.stopTest(); 
     }
+    @isTest
+	public static void testResponseCode404() {
+    	Test.startTest();
+    	Test.setMock(HttpCalloutMock.class, new ClockifyExceptionMock());
+    	Database.executeBatch(new ClockifySyncBatch(), 1);
+    	Test.stopTest();
+	    List<Status_log__c> logs = [SELECT Id, message__c FROM Status_log__c WHERE CreatedDate = TODAY];
+        System.debug('errorLogs : ' +logs.size());
+    	System.assert(logs.size() > 0, 'Expected at least one log entry from exception catch block.');
+	}
 }
