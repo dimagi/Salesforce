@@ -129,7 +129,7 @@ public class ClockifySyncBatch implements Database.Batchable<Integer>, Database.
             system.debug(timeCardMap.get(existing.Time_Entry_ID__c));
             if(timeCardMap.get(existing.Time_Entry_ID__c) != null){
                 Time_Card__c tc = timeCardMap.get(existing.Time_Entry_ID__c);
-                if(existing.Employee__c == tc.Employee__c && existing.Area__c == tc.Area__c && existing.Case__c == tc.Case__c && existing.Date__c == tc.Date__c && 
+                if(existing.Client__c == tc.Client__c && existing.Employee__c == tc.Employee__c && existing.Area__c == tc.Area__c && existing.Case__c == tc.Case__c && existing.Date__c == tc.Date__c && 
                    existing.FTE_hours__c == tc.FTE_hours__c && existing.Project__c == tc.Project__c && existing.Total__c == tc.Total__c && existing.Task_ID__c == tc.Task_ID__c){
                     timeCardMap.remove(existing.Time_Entry_ID__c);                   
                 }else{
