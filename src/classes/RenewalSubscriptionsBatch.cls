@@ -217,7 +217,7 @@ for (Accounting_Subscription_service_type__mdt record : [SELECT service_types__c
         return [SELECT Id, date_start__c, date_end__c, Accounting_subscriber_domain__r.Name FROM Accounting_Subscription__c
                 WHERE service_type__c NOT IN :service_type AND Accounting_subscriber_domain__r.Name != '' AND is_trial__c = false AND is_hidden_to_ops__c = false
                 AND date_start__c >: this.currentDate
-                AND Server_Name__c = 'CommCareHQ'];
+                AND (Server_Name__c = 'CommCareHQ' OR Server_Name__c = 'CommCareHQ India' OR Server_Name__c = 'CommCareHQ EU')];
     }
     
 
@@ -238,6 +238,6 @@ for (Accounting_Subscription_service_type__mdt record : [SELECT service_types__c
                 FROM Accounting_Subscription__c
                 WHERE service_type__c NOT IN :service_type AND Accounting_subscriber_domain__r.Name != '' AND date_end__c != null AND date_end__c <=: this.currentDate.addDays(90)
                 AND date_end__c >=: this.currentDate AND Accounting_subscriber_domain__r.Name NOT IN: domainsWithFutureSubscriptions AND is_active__c = true
-                AND is_hidden_to_ops__c = false AND is_trial__c = false AND Server_Name__c = 'CommCareHQ' ORDER BY date_end__c DESC];
+                AND is_hidden_to_ops__c = false AND is_trial__c = false AND (Server_Name__c = 'CommCareHQ' OR Server_Name__c = 'CommCareHQ India' OR Server_Name__c = 'CommCareHQ EU') ORDER BY date_end__c DESC];
     }
 }
