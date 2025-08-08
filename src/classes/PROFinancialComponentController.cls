@@ -107,6 +107,8 @@ public class PROFinancialComponentController {
                         baseUrl = 'https://www.commcarehq.org/a/';
                     } else if (serverName == 'CommCareHQ India') {
                         baseUrl = 'https://india.commcarehq.org/a/';
+                    } else if (serverName == 'CommCareHQ EU') {
+                        baseUrl = 'https://eu.commcarehq.org/a/';
                     } else {
                         baseUrl = 'https://www.commcarehq.org/a/';
                     }
