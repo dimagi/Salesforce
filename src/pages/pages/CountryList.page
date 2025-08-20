@@ -1,0 +1,206 @@
+<apex:page Controller="CountryListAcc" tabStyle="Country__c" lightningStylesheets="true">
+    <apex:includeScript value="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js" />
+
+    <apex:form id="thFrm">
+        <!-- Search Block -->
+        <apex:pageBlock >
+            <apex:pageblockSection >
+                <apex:pageBlockSectionItem >
+                    <apex:outputLink target="_blank" value="https://confluence.dimagi.com/display/internal/Salesforce+-+Global+Accounts+View">
+                    For instructions on how to use this please see: The Salesforce - Global Accounts View Confluence Page</apex:outputLink>
+                </apex:pageBlockSectionItem>
+                <br/>
+                <apex:pageBlockSectionItem >
+                    <apex:inputText value="{!searchstring}" label="Input"/>
+                    <apex:commandButton value="Search Account" action="{!searchButtonAction}"/>
+                </apex:pageBlockSectionItem>
+            </apex:pageblockSection>
+        </apex:pageBlock>
+        <!-- End Search Block -->
+
+        <!-- Account Block -->
+        <apex:pageBlock title="Search Result" rendered="{!showPage}" id="acctabl" >
+            <apex:pageblockTable title="Account Name" value="{!wrapperList}" var="a" onRowClick="highlight(this);">
+                <apex:column headerValue="Select to view">
+                    <apex:actionsupport action="{!searchByAccountButtonAction}" event="onclick" rerender="childAccount, outputContbl, outputOpnCont, outputclosedContr, outputOpnOpp, outputClsOpp">
+                        <input type="button" value="View" name="selectRadio"/>
+                        <apex:param name="conid" value="{!a.acc.Id}" assignto="{!selectedAccountId}"></apex:param>
+                    </apex:actionsupport>
+                </apex:column>
+                <apex:column headerValue="Account Name">
+                    <apex:outputlink value="/{!a.acc.id}" >{!a.acc.Name}</apex:outputlink>
+                </apex:column>
+                <apex:column headerValue="Country Name" value="{!a.acc.Country__r.Name}"/>
+                <apex:column headerValue="Account Status" value="{!a.acc.Account_Status__c}"/>
+                <apex:column headerValue="Parent Name" value="{!a.acc.Parent.Name}"/>
+            </apex:pageBlockTable>
+        </apex:pageBlock>
+        <!-- End Account Block -->
+
+        <!-- Child Account Block -->
+        <apex:pageBlock title="Child Accounts" rendered="{!showPage}" id="childAccount">
+            <apex:pageblockTable title="Account Name" value="{!childAccounts}" var="child">
+                <apex:column headerValue="Account Name">
+                    <apex:outputlink value="/{!child.id}" >{!child.Name}</apex:outputlink>
+                </apex:column>
+                <apex:column headerValue="Country Name" value="{!child.Country__r.Name}"/>
+                <apex:column headerValue="Account Status" value="{!child.Account_Status__c}"/>
+                <apex:column headerValue="Parent Name" value="{!child.Parent.Name}"/>
+            </apex:pageBlockTable>
+        </apex:pageBlock>
+        <!-- End Child Account Block -->
+
+        <!-- Contact Block -->
+        <apex:outputPanel Id="outputContbl" rendered="{!showPage}">
+            <apex:pageBlock title="Contacts" Id="Contbl" rendered="{!showPage}">
+                <apex:pageBlockTable value="{!lstCon}" var="cont" >
+                    <apex:column headerValue="Account" value="{!cont.Account.Name}"/>
+                    <apex:column headerValue="Contact Name">
+                        <apex:outputlink value="/{!cont.id}" >{!cont.Name}</apex:outputlink>
+                    </apex:column>
+                    <apex:column headerValue="Last Activity Date" value="{!cont.LastActivityDate}"/>
+                    <apex:column headerValue="Email" value="{!cont.Email}"/>
+                    <apex:column headerValue="Title" value="{!cont.Title}"/>
+                    <apex:column headerValue="Country" value="{!cont.Country__c}"/>
+                </apex:pageBlockTable>
+            </apex:pageBlock>
+        </apex:outputPanel>
+        <!-- End Contact Block -->
+
+        <!-- Contract Open Block -->
+        <apex:outputPanel Id="outputOpnCont" rendered="{!showPage}">
+            <apex:pageBlock title="Contracts (Open)" Id="OpnCont" rendered="{!showPage}">
+                <apex:pageBlockTable value="{!lstContr}" var="cotr">
+                    <apex:column headerValue="Account" value="{!cotr.Account__r.Name}"/>
+                    <apex:column headerValue="Contract Name">
+                        <apex:outputlink value="/{!cotr.id}" >{!cotr.Name}</apex:outputlink>
+                    </apex:column>
+                    <apex:column headerValue="Contract Start Date" value="{!cotr.Contract_Start_Date__c}"/>
+                    <apex:column headerValue="Contract End Date" value="{!cotr.Contract_End_Date__c}"/>
+                    <apex:column headerValue="Project Manager" value="{!cotr.Project_Manager__r.Name}"/>
+                    <apex:column headerValue="Status" value="{!cotr.Status__c}"/>
+                    <apex:column headerValue="Description" value="{!cotr.Short_Description__c}"/>
+                </apex:pageBlockTable>
+            </apex:pageBlock>
+        </apex:outputPanel>
+        <!-- End Contract Open Block -->
+
+        <!-- Contract Close Block -->
+        <apex:outputPanel Id="outputclosedContr" rendered="{!showPage}"> 
+            <apex:pageBlock title="Contracts (Closed)" Id="closedContr" rendered="{!showPage}">
+                <apex:pageBlockTable value="{!lstContrclosed}" var="contr">
+                    <apex:column headerValue="Account" value="{!contr.Account__r.Name}" />
+                    <apex:column headerValue="Contract Name">
+                        <apex:outputlink value="/{!contr.id}" >{!contr.Name}</apex:outputlink>
+                    </apex:column>
+                    <apex:column headerValue="Contract Start Date" value="{!contr.Contract_Start_Date__c}" />
+                    <apex:column headerValue="Contract End Date" value="{!contr.Contract_End_Date__c}" />
+                    <apex:column headerValue="Project Manager" value="{!contr.Project_Manager__r.Name}" />
+                    <apex:column headerValue="Status" value="{!contr.Status__c}" />
+                    <apex:column headerValue="Description" value="{!contr.Short_Description__c}" />
+                </apex:pageBlockTable>
+            </apex:pageBlock>
+        </apex:outputPanel>
+        <!-- End Contract Close Block -->
+
+        <!-- Domains Block -->
+        <apex:outputPanel Id="domains" rendered="{!showPage}">
+            <apex:pageBlock title="Domains" Id="domBlck" rendered="{!showPage}">
+                <apex:pageBlockTable value="{!lstDomains}" var="domain">
+                    <apex:column headerValue="SF Account" value="{!domain.Account__r.Name}" />
+                    <apex:column headerValue="Domain Name">
+                        <apex:outputlink value="/{!domain.id}" >{!domain.Name}</apex:outputlink>
+                    </apex:column>
+                    <apex:column headerValue="Project Length" value="{!domain.Project_Length__c}" />
+                    <apex:column headerValue="Commcare Edition" value="{!domain.InternalProp_commcare_edition__c}" />
+                    <apex:column headerValue="Lifetime MRR" value="{!domain.Lifetime_MRR__c}" />
+                    <apex:column headerValue="Is Active" value="{!domain.is_active__c}" />
+                    <apex:column headerValue="Is Inside Sales" value="{!domain.Is_Inside_Sales__c}" />
+                </apex:pageBlockTable>
+            </apex:pageBlock>
+        </apex:outputPanel>
+        <!-- End Domains Block -->
+
+        <!-- Subscriptions Block -->
+        <apex:outputPanel Id="subscriptions" rendered="{!showPage}">
+            <apex:pageBlock title="Subscriptions" Id="subscriptionsBlck" rendered="{!showPage}">
+                <apex:pageBlockTable value="{!lstSubscriptions}" var="subscription">
+                    <apex:column headerValue="Domain Name">
+                        <apex:outputlink value="/{!subscription.Accounting_subscriber_domain__c}" >{!subscription.Accounting_subscriber_domain__r.Name}</apex:outputlink>
+                    </apex:column>
+                    <apex:column headerValue="Subscription Name">
+                        <apex:outputlink value="/{!subscription.id}" >{!subscription.Name}</apex:outputlink>
+                    </apex:column>
+                    <apex:column headerValue="Start Date" value="{!subscription.date_start__c}" />
+                    <apex:column headerValue="End Date" value="{!subscription.date_end__c}" />
+                    <apex:column headerValue="Software Plan Edition" value="{!subscription.Software_Plan_Edition__c}" />
+                    <apex:column headerValue="Monthly Fee " value="{!subscription.accounting_software_monthly_fee__c}" />
+                    <apex:column headerValue="Service Type" value="{!subscription.service_type__c}" />
+                </apex:pageBlockTable>
+            </apex:pageBlock>
+        </apex:outputPanel>
+        <!-- End Subscriptions Block -->
+
+        <!-- Opportunities Open Block -->
+        <apex:outputPanel Id="outputOpnOpp" rendered="{!showPage}">
+            <apex:pageBlock title="Opportunities (Open)" Id="OpnOpp" rendered="{!showPage}">
+                <apex:pageBlockTable value="{!lstoppty}" var="op">
+                    <apex:column headerValue="Account" value="{!op.Account.Name}"/>
+                    <apex:column headerValue="Opportunity Name">
+                        <apex:outputlink value="/{!op.id}" >{!op.Name}</apex:outputlink>
+                    </apex:column>
+                    <apex:column headerValue="Description" value="{!op.Description}"/>
+                    <apex:column headerValue="Country" value="{!op.Country__r.Name}"/>
+                    <apex:column headerValue="Stage" value="{!op.StageName}"/>
+                </apex:pageBlockTable>
+            </apex:pageBlock>
+        </apex:outputPanel>
+        <!-- End Opportunities Open Block -->
+
+        <!-- Opportunities Close Block -->
+        <apex:outputPanel Id="outputClsOpp" rendered="{!showPage}">
+            <apex:pageBlock title="Opportunities (Closed)" Id="ClsOpp" rendered="{!showPage}">
+                <apex:pageBlockTable value="{!lstopptyClosed}" var="opc">
+                    <apex:column headerValue="Account" value="{!opc.Account.Name}"/>
+                    <apex:column headerValue="Opportunity Name">
+                        <apex:outputlink value="/{!opc.id}" >{!opc.Name}</apex:outputlink>
+                    </apex:column>
+                    <apex:column headerValue="Description" value="{!opc.Description}"/>
+                    <apex:column headerValue="Country" value="{!opc.Country__r.Name}"/>
+                    <apex:column headerValue="Stage" value="{!opc.StageName}"/>
+                </apex:pageBlockTable>
+            </apex:pageBlock>
+        </apex:outputPanel>
+        <!-- End Opportunities Close Block -->
+    </apex:form>
+
+    <script>
+        // jQuery plugin to prevent double submission of forms
+        jQuery.fn.preventDoubleSubmission = function() {
+          $(this).on('submit',function(e){
+            var $form = $(this);
+            if ($form.data('submitted') === true) {
+              // Previously submitted - don't submit again
+              e.preventDefault();
+            } else {
+              // Mark it so that the next submit can be ignored
+              $form.data('submitted', true);
+            }
+          });
+          // Keep chainability
+          return this;
+        };
+
+        $(document).ready(function(){
+            $('form').preventDoubleSubmission();
+        });
+
+        var lastRow;
+        function highlight(elem){
+            if(lastRow != undefined)
+                lastRow.style.backgroundColor = 'white';
+            elem.style.backgroundColor ='#E3F3EE';
+            lastRow = elem;
+        }
+    </script>
+</apex:page>

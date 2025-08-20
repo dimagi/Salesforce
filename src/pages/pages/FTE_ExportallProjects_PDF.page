@@ -1,0 +1,16 @@
+<apex:page showHeader="false" controller="FTE_ALLprojectsListExport"
+           cache="true"
+           contentType="application/x-pdf#ProjectPDFReport.pdf" applyHtmlTag="false" applyBodyTag="false" sidebar="false">
+    
+     <head>
+        <style>
+            @page {
+            margin-left: 0.1cm;
+            margin-right:0.1cm;            
+            }
+        </style>
+    </head>
+
+   
+    <apex:include pageName="FTE_projectListExport_PDF"/>  
+</apex:page>

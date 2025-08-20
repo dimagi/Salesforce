@@ -1,0 +1,3 @@
+<apex:page controller="FTEFileController" contentType="text/csv#{!fileName}">
+   <apex:outputText value="{!csvFile}"/>
+</apex:page>

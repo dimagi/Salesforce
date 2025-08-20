@@ -1,0 +1,34 @@
+<apex:page standardController="Contract_Product__c" extensions="ContractProductController" lightningStylesheets="true">
+    <apex:form >
+        <apex:pageBlock title="New Contract Product">
+
+        <apex:pageBlockButtons >
+            <apex:commandButton action="{!saveNewRelation}" value="Save" />
+            <apex:commandButton action="{!goBack}" immediate="true" value="Cancel" />
+        </apex:pageBlockButtons>
+
+            <apex:pageBlockSection columns="2">
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="Contract" for="contractId" />
+                    <apex:inputField id="contractId" value="{!record.Contract__c}" />
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="Quantity" for="quantityId" />
+                    <apex:inputField id="quantityId" value="{!record.Quantity__c}" />
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="Product" for="locationId" />
+                    <apex:inputField id="locationId" required="true" value="{!record.Product__c}" />
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="Sales Price" for="salespriceId" />
+                    <apex:inputField id="salespriceId" value="{!record.UnitPrice__c}" />
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="Line Description" for="descId" />
+                    <apex:inputField id="descId" value="{!record.Description__c}" />
+                </apex:pageBlockSectionItem>
+            </apex:pageBlockSection>
+        </apex:pageBlock>
+    </apex:form>
+</apex:page>
