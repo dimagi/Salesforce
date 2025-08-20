@@ -1,0 +1,8 @@
+<apex:page standardController="DContract__c" extensions="CalculateAllTime" action="{!runRecalculation}">
+    <apex:form >
+        <apex:pageBlock title="Calculate All Time Income">
+            <apex:pageMessages />
+            <apex:commandButton value="Return" action="{!goBack}"/>
+        </apex:pageBlock>
+    </apex:form>
+</apex:page>

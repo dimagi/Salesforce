@@ -1,0 +1,121 @@
+/**
+ * OpportunityPipelineSnapshotBatch for generating new Pipeline Snapshots.
+ */
+public class OpportunityPipelineSnapshotBatch implements Database.Batchable<Opportunity>, Database.Stateful {
+
+    private Date runDate;
+
+    public OpportunityPipelineSnapshotBatch() {
+        this(Date.today());
+    }
+
+    public OpportunityPipelineSnapshotBatch(Date runDate) {
+        this.runDate = runDate;
+    }
+
+    public List<Opportunity> start(Database.BatchableContext BC) {
+        List<Pipeline_Snapshot_EV_DIff__c> evToRemove = [SELECT Id FROM Pipeline_Snapshot_EV_DIff__c WHERE Month_Date__c =: this.runDate];
+        List<Pipeline_Snapshot__c> psTORemove = [SELECT Id FROM Pipeline_Snapshot__c WHERE Month_Date__c =: this.runDate AND Source_Type__c = 'Opportunity'];
+        if (evToRemove.size() > 0) {
+            delete evToRemove;
+        }
+        if (psTORemove.size() > 0) {
+            delete psTORemove;
+        }
+
+        return [SELECT Id, Name, AccountId, Amount, Amount_Minus_Expense_Income__c, Country_Text__c, Duration_months__c, Expected_Buffer__c,
+                    Funder_Account__c, Expense_Income__c, Opportunity_Owning_Entity__c, Probability, Product_Text__c,Opportunity_Owner_Division__c,
+                    Opportunity_Owner_Sub_Division__c,Channel_Response__c, StageName, CloseDate, OwnerId,DA_Monthly_Recurring_Revenue_MRR__c
+                    FROM Opportunity
+                    WHERE 
+                    // StageName = 'Stage 3 - Prospect' OR 
+                     StageName = 'Stage 4 - Proposal Development'
+                    OR StageName = 'Stage 5 - Submitted'
+                    OR StageName = 'Stage 6 - In Negotiations'
+                    OR StageName = 'Cash on Hand'
+                    OR StageName = 'Predicted pipeline'
+                    OR StageName = 'Core run rate'];
+    }
+
+    public void execute(Database.BatchableContext BC, List<Opportunity> scope) {
+        List<Pipeline_Snapshot__c> newSnapshots = new List<Pipeline_Snapshot__c>();
+        for (Opportunity opp : scope) {
+            Pipeline_Snapshot__c lastMonthSnapshot = getOldSnapshots(opp.Id, this.runDate);
+
+            String nameSuffix = ' - ' + this.runDate.month() + '/' + this.runDate.year();
+            String namePrefix = opp.Name;
+
+            if (namePrefix != null && namePrefix.length() + nameSuffix.length() > 80) {
+                Integer charsToCut = namePrefix.length() - (namePrefix.length() + nameSuffix.length() - 80);
+                namePrefix = namePrefix.subString(0, charsToCut);
+            }
+
+            Pipeline_Snapshot__c newPs = new Pipeline_Snapshot__c(
+                    Name = namePrefix + nameSuffix,
+                    Month_Date__c = this.runDate,
+                    Opportunity__c = opp.Id,
+                    Account__c = opp.AccountId,
+                    Amount__c = opp.Amount,
+                    Amount_Minus_Expense_Income__c = opp.Amount_Minus_Expense_Income__c,
+                    Country__c = opp.Country_Text__c,
+                    Duration_months__c = opp.Duration_months__c,
+                    Expected_Buffer__c = opp.Expected_Buffer__c,
+                    Funder_Account__c = opp.Funder_Account__c,
+                    Opportunity_Amount__c = opp.Amount,
+                    Opportunity_Amount_Minus_Expense_Income__c = opp.Amount_Minus_Expense_Income__c,
+                    CloseDate__c = opp.CloseDate,
+                    Opportunity_Duration__c = opp.Duration_months__c,
+                    Opportunity_Expense_Income__c = opp.Expense_Income__c,
+                    OwnerId = opp.OwnerId,
+                    Owning_Entity__c = opp.Opportunity_Owning_Entity__c,
+                    Probability__c = opp.Probability,
+                    Products__c = opp.Product_Text__c,
+                    RFP_Response__c = opp.Channel_Response__c,
+                    Source_Type__c = 'Opportunity',
+                    Stage__c = opp.StageName,
+                    Division__c = opp.Opportunity_Owner_Division__c,
+                    Subdivision__c = opp.Opportunity_Owner_Sub_Division__c,
+                    DA_MRR_Opp__c = opp.DA_Monthly_Recurring_Revenue_MRR__c
+                );
+
+            newPs.Submitted_this_month__c = isSubmittedThisMonth(newPs);
+            newPs.recalculateFormulas();
+            newPs.Buffer_EV_for_Period__c = (newPs.Buffer_EV__c != null ? newPs.Buffer_EV__c : 0) - (lastMonthSnapshot.Buffer_EV__c != null ? lastMonthSnapshot.Buffer_EV__c : 0);
+            newSnapshots.add(newPs);
+        }
+
+        if (newSnapshots.size() > 0) {
+            insert newSnapshots;
+        }
+
+        NetEVDifferenceTriggerGateway evDiffHelper = new NetEVDifferenceTriggerGateway();
+        evDiffHelper.processLastMonthSnapshots(newSnapshots);
+    }
+
+    public void finish(Database.BatchableContext BC) {
+        if (!Test.isRunningTest()) {
+            NetEVDifferenceTriggerGateway.processPriorMonthSnapshotsWithClosedStatus(this.runDate);
+            EmailHelper.sendEmail(BatchDefaultSettings__c.getOrgDefaults().Error_Emails__c.split(','), 'Opportunity Pipeline Snapshots', 'Job finished : ' + Date.today() + ' created for : ' + this.runDate);
+        }
+    }
+
+    public static String isSubmittedThisMonth(Pipeline_Snapshot__c snapshot) {
+        if (snapshot.Stage__c != 'Stage 5 - Submitted') {
+            return 'No';
+        }
+        Integer stage5Count = [SELECT count() FROM Pipeline_Snapshot__c WHERE Opportunity__c =: snapshot.Opportunity__c AND Source_Type__c = 'Opportunity' AND Month_Date__c <: snapshot.Month_Date__c AND Stage__c = 'Stage 5 - Submitted'];
+        return stage5Count == 0 ? 'Yes' : 'No';
+    }
+
+    private Pipeline_Snapshot__c getOldSnapshots(Id oppId, Date monthDate) {
+        List<Pipeline_Snapshot__c> oldSnapshots;
+        oldSnapshots = [SELECT Id, Opportunity__c, Buffer_EV__c FROM Pipeline_Snapshot__c
+                            WHERE Opportunity__c =: oppId AND Month_Date__c < :monthDate AND Month_Date__c > :monthDate.addMonths(-6)
+                            AND Stage__c != 'Total' AND Source_Type__c = 'Opportunity' ORDER BY Month_Date__c DESC];
+
+        if (oldSnapshots.size() > 0) {
+            return oldSnapshots.get(0);
+        }
+        return new Pipeline_Snapshot__c();
+    }
+}

@@ -1,0 +1,4 @@
+<apex:page controller="FTEEmployeeController" docType="html-5.0">
+    <apex:pageBlock title="Assign Days">
+    </apex:pageBlock>
+</apex:page>
