@@ -1,4 +1,5 @@
-<apex:page id="projectReportOutPage" controller="DimagiToolsController" action="{!initAction}">
+<apex:page >
+<!-- <apex:page id="projectReportOutPage" controller="DimagiToolsController" action="{!initAction}">
 
     <head>
         <style>
@@ -115,9 +116,9 @@
             function ShowMessage() {
             }
         </script>
-    </head>
+    </head> 
 
-    <body>
+  <body>
         <apex:form >
             <apex:inputHidden id="projectId" value="{!projectId}"/>
 
@@ -537,7 +538,6 @@
                                 <apex:outputLabel value="" />
                                 <apex:commandButton action="{!saveProjectOnly}" value="Save Changes" 
                                 disabled="{!!enableAddButton}"/>
-                                <!-- reRender="PROEmailTab,messages"  status="loadingDiv" /> TODO -->
                             </apex:pageBlockSectionItem>
                         </apex:pageBlockSection>
 
@@ -606,11 +606,11 @@
 
             <apex:pageBlock title="Project Report Out" rendered="{!NOT(isAuthenticated)}">
                 <apex:commandButton action="{!authenticate}" value="Authenticate with Dimagi email" />
-                <!-- <apex:pageBlockButtons ></apex:pageBlockButtons >-->
 
             <apex:pageMessages />
             </apex:pageBlock>
 
         </apex:form>
     </body>
-</apex:page>
+</apex:page>  -->
+    </apex:page>
