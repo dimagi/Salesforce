@@ -1,4 +1,5 @@
-<apex:page title="Project report out" docType="html-5.0" controller="DimagiToolsController" action="{!loadSubmittedPro}">
+<apex:page >
+ <!-- <apex:page title="Project report out" docType="html-5.0" controller="DimagiToolsController" action="{!loadSubmittedPro}">
 
     <head>
         <style type="text/css">
@@ -53,4 +54,5 @@
 
         </apex:PageBlock>
     </body>
-</apex:page>
+</apex:page> -->
+    </apex:page>
