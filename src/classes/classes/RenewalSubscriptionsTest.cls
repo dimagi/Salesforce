@@ -56,7 +56,7 @@ public class RenewalSubscriptionsTest {
         Business_Unit__c bizUnit = new Business_Unit__c(Name = 'Test Business Unit 1');
         Opportunity opp = new Opportunity(Name = 'AAA Opportunity 1', Business_Unit_Owner__c = bizUnit.Id, StageName = 'Stage 5 - Submitted',Expense_Income__c = 0,
                                                  CloseDate = date.today().addMonths(5), Probability = 30, Domain_Name__c = domain4.Id,
-                                                 Opportunity_Owner_Division__c = 'Solutions', Opportunity_Owner_Sub_Division__c = 'USH - Tech',Country__c = 'a00b0000001AOufAAG',Proposal_Dropbox_Location__c = 'https://example.com/proposal.pdf');
+                                                 Opportunity_Owner_Division__c = 'Global Solutions', Opportunity_Owner_Sub_Division__c = 'USS Delivery',Country__c = 'a00b0000001AOufAAG',Proposal_Dropbox_Location__c = 'https://example.com/proposal.pdf');
         insert opp;
 
 
@@ -199,7 +199,7 @@ public class RenewalSubscriptionsTest {
         Business_Unit__c bizUnit = new Business_Unit__c(Name = 'Test Business Unit 1');
         Opportunity opp = new Opportunity(Name = 'Old Renewal Opportunity', Business_Unit_Owner__c = bizUnit.Id, StageName = 'Closed',Expense_Income__c = 0,
                                                  CloseDate = date.today().addDays(-1), Probability = 30, Domain_Name__c = domain1.Id,
-                                                 Opportunity_Owner_Division__c = 'Solutions', Opportunity_Owner_Sub_Division__c = 'USH - Tech',Country__c = 'a00b0000001AOufAAG');
+                                                 Opportunity_Owner_Division__c = 'Global Solutions', Opportunity_Owner_Sub_Division__c = 'USS Delivery',Country__c = 'a00b0000001AOufAAG');
         insert opp;
         Test.setCreatedDate(opp.Id, DateTime.now().addDays(-200));
         update new Domain__c(Id = domain1.Id, Opportunity__c = opp.Id);
@@ -306,5 +306,4 @@ public class RenewalSubscriptionsTest {
         PricebookEntry resellerPrice2 = new PricebookEntry(Pricebook2Id = dimagiPB.Id, Product2Id = reseller.Id, UnitPrice = 2000, IsActive = true);
         insert resellerPrice2;
     }
-    
 }

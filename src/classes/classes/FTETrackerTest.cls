@@ -923,11 +923,11 @@ System.assertEquals(true, b, 'Expected error message not found.');
         System.assertEquals(3, workCardList.size());
 
         SFDC_Employee__c emp  = [SELECT Id, Sub_Unit__c FROM SFDC_Employee__c WHERE Name = 'FTE Employee'];
-        emp.Division__c = 'Solutions';
+        emp.Division__c = 'Global Solutions';
         update emp;
 
         emplListCtrl.employeeNameSearch = '';
-        emplListCtrl.Division = 'Solutions';
+        emplListCtrl.Division = 'Global Solutions';
         emplListCtrl.searchEmplopyee();
         workCardList = emplListCtrl.queryWorkCards(workcards_list);
         PageReference pageRef3  = emplListCtrl.export_FTEListViewExcel();

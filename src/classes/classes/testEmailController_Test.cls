@@ -24,8 +24,8 @@ private class testEmailController_Test {
             StageName = 'Prospecting', // use a valid early stage
             CloseDate = Date.today().addDays(30),
             AccountId = acc.Id,
-            Opportunity_Owner_Division__c = 'Solutions',          
-            Opportunity_Owner_Sub_Division__c = 'GSO - BizStrat'
+            Opportunity_Owner_Division__c = 'Global Solutions',          
+            Opportunity_Owner_Sub_Division__c = 'Ops - BizOps'
         );
         insert opp;
         return opp;

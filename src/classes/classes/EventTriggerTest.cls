@@ -17,7 +17,7 @@ public class EventTriggerTest {
             Name = 'Test Opp',
             CloseDate = date.today()+ 1,
             StageName = 'Stage 2 - Talking',
-            Opportunity_Owner_Division__c = 'Solutions',
+            Opportunity_Owner_Division__c = 'Global Solutions',
             Opportunity_Owner_Sub_Division__c='Inbound Sales'
         );
         insert theOpp1;
@@ -26,7 +26,7 @@ public class EventTriggerTest {
             Name = 'Test Opp2',
             CloseDate = date.today()+ 1,
             StageName = 'Stage 2 - Talking',
-            Opportunity_Owner_Division__c = 'Solutions',
+            Opportunity_Owner_Division__c = 'Global Solutions',
             Opportunity_Owner_Sub_Division__c='Inbound Sales'
         );
         insert theOpp2;

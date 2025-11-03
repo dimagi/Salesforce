@@ -13,7 +13,7 @@ public without sharing class RenewalSubscriptionsBatch implements Database.Batch
     private User implementationEnterpriseOwner;
     private User productNonEnterpriseOwner;
     private User productEnterpriseOwner;
-    public Subscription_Renewal_Settings__c settings;
+    private Subscription_Renewal_Settings__c settings;
 
     private Map<String, PricebookEntry> priceBookEntries;
     private PricebookEntry commCareEntry;
@@ -33,30 +33,12 @@ public without sharing class RenewalSubscriptionsBatch implements Database.Batch
         List<Accounting_Subscription__c> subscriptions = getFutureSubscriptions();
         this.settings = Subscription_Renewal_Settings__c.getOrgDefaults();
 
-List<Business_Unit__c> buList = [SELECT Id FROM Business_Unit__c WHERE Name = :settings.Default_Business_Unit__c];
-if (!buList.isEmpty()) {
-    this.incBusinessUnit = buList[0];
-} else {
-    // handle missing BU, e.g., throw a custom exception or use a default
-    System.debug('No matching Business Unit found for ' + settings.Default_Business_Unit__c);
-}
+        this.incBusinessUnit = [SELECT Id FROM Business_Unit__c WHERE Name =: settings.Default_Business_Unit__c];
 		system.debug('==' + this.incBusinessUnit);
-List<User> users = [SELECT Id FROM User WHERE Name = :settings.Implementation_non_Enterprise_Owner__c LIMIT 1];
-if (!users.isEmpty()) {
-    this.implementationNonEnterpriseOwner = users[0];
-} else {
-    // handle missing user, e.g., throw a meaningful exception
-    System.debug('No matching user found: ' + settings.Implementation_non_Enterprise_Owner__c);
-}
-        List<User> implEnterpriseUsers = [SELECT Id FROM User WHERE Name = :settings.Implementation_Enterprise_Owner__c LIMIT 1];
-this.implementationEnterpriseOwner = implEnterpriseUsers.isEmpty() ? null : implEnterpriseUsers[0];
-
-List<User> prodNonEnterpriseUsers = [SELECT Id FROM User WHERE Name = :settings.Product_non_Enterprise_Owner__c LIMIT 1];
-this.productNonEnterpriseOwner = prodNonEnterpriseUsers.isEmpty() ? null : prodNonEnterpriseUsers[0];
-
-List<User> prodEnterpriseUsers = [SELECT Id FROM User WHERE Name = :settings.Product_Enterprise_Owner__c LIMIT 1];
-this.productEnterpriseOwner = prodEnterpriseUsers.isEmpty() ? null : prodEnterpriseUsers[0];
-
+        this.implementationNonEnterpriseOwner = [SELECT Id FROM User WHERE Name =: settings.Implementation_non_Enterprise_Owner__c];
+        this.implementationEnterpriseOwner = [SELECT Id FROM User WHERE Name =: settings.Implementation_Enterprise_Owner__c];
+        this.productNonEnterpriseOwner = [SELECT Id FROM User WHERE Name =: settings.Product_non_Enterprise_Owner__c];
+        this.productEnterpriseOwner = [SELECT Id FROM User WHERE Name =: settings.Product_Enterprise_Owner__c];
 
         if (this.incBusinessUnit == null || this.implementationNonEnterpriseOwner == null || this.implementationEnterpriseOwner == null
                 || this.productNonEnterpriseOwner == null || this.productEnterpriseOwner == null) {
@@ -118,7 +100,8 @@ this.productEnterpriseOwner = prodEnterpriseUsers.isEmpty() ? null : prodEnterpr
         String dateString = (this.currentDate.month() < 10 ? '0' + this.currentDate.month() : '' + this.currentDate.month())
                                 + (this.currentDate.day() < 10 ? '0' + this.currentDate.day() : '' + this.currentDate.day())
                                 + ('' + this.currentDate.year());
-
+        integer a = 0;
+        integer b = 0;
         for (Accounting_Subscription__c subscription : subs) {
             
             if (subscription.Accounting_subscriber_domain__r.Opportunity__c != null &&
@@ -127,6 +110,7 @@ this.productEnterpriseOwner = prodEnterpriseUsers.isEmpty() ? null : prodEnterpr
                 this.domainsToSkip.add(subscription.Accounting_subscriber_domain__c);
             }
             if (!this.domainsToSkip.contains(subscription.Accounting_subscriber_domain__c)) {
+                System.debug('a =>>> '+ a++);
                 String oppSource = '';
                 Id ownerId = null;
                 if (subscription.service_type__c == 'IMPLEMENTATION' && subscription.Software_Plan_Edition__c != 'Enterprise') {
@@ -146,6 +130,8 @@ this.productEnterpriseOwner = prodEnterpriseUsers.isEmpty() ? null : prodEnterpr
                 } else {
                     continue; // we skip this subscription
                 }
+                                                    system.debug('subscription' + subscription.Id);
+
 
                 String oppNameFirstPart = subscription.Accounting_subscriber_domain__r.Account__r.Name != null && subscription.Accounting_subscriber_domain__r.Account__r.Name != '' ?
                                             subscription.Accounting_subscriber_domain__r.Account__r.Name : subscription.Accounting_subscriber_domain__r.Name;
@@ -175,26 +161,37 @@ system.debug('==' + this.incBusinessUnit);
                                                         Contract_Owner_BU__c = this.incBusinessUnit.Id,
                                                         Implementing_Business_Unit__c = this.incBusinessUnit.Id,
                                                         Opportunity_Source__c = oppSource,
-                                                        Opportunity_Owner_Division__c = 'SaaS',
-                                                        Opportunity_Owner_Sub_Division__c = 'SaaS - Sales',
+                                                        Opportunity_Owner_Division__c = 'CommCare',
+                                                        Opportunity_Owner_Sub_Division__c = 'CommCare Sales',
                     									AccountId = subscription.Accounting_subscriber_domain__r.Account__r.id
                                                     );                    									
 
 
                 PricebookEntry pbe = this.priceBookEntries.get(subscription.Software_Plan_Edition__c);
+                system.debug('pbe==> '+pbe);
                 Decimal price = this.salesPrices.get(subscription.Software_Plan_Edition__c);
+                if (pbe == null || price == null) {
+    System.debug(' Missing Pricebook entry or price for edition: ' + subscription.Software_Plan_Edition__c);
+    StatusLoggerUtils.logError(
+        StatusLoggerUtils.RENEWAL_LOGGER,
+        subscription.Name,
+        0,
+        'Missing Pricebook entry or price for edition: ' + subscription.Software_Plan_Edition__c
+    );
+    continue; // skip this subscription safely
+                }else{
                 Domain__c domainToUpdate = domains.get(subscription.Accounting_subscriber_domain__c);
-                system.debug('@@newOpp ' + newOpp);
-                system.debug('@@pbe ' + pbe);
-                system.debug('@@newOpp ' + this.priceBookEntries);
-                system.debug(subscription.Software_Plan_Edition__c);
-                system.debug('@@subscription ' + subscription);
+                system.debug('@@newOpp' + newOpp);
                 Savepoint sp = Database.setSavepoint();
                 try {
+                                    System.debug('b =>>> '+ b++);
+
                     insert newOpp;
                     domainToUpdate.Opportunity__c = newOpp.Id;
                     update domainToUpdate;
-                    system.debug('@@newOpp' + newOpp);
+                                    system.debug('@@pbe.Id' + pbe.Id);
+                system.debug('@@price' + price);
+                system.debug('@@newOpp.Id' + newOpp.Id);
 
                     insert new OpportunityLineItem(PricebookEntryId = pbe.Id, Quantity = 12, UnitPrice = price, OpportunityId = newOpp.Id);
                     // SAL-48 removing commcare: product pricebook entry
@@ -204,6 +201,7 @@ system.debug('==' + this.incBusinessUnit);
                     Database.rollback(sp);
                     system.debug('@@Error' + e.getMessage());
                     StatusLoggerUtils.logError(StatusLoggerUtils.RENEWAL_LOGGER, domainToUpdate.Name + ' - ' + subscription.Name, 0, e.getMessage());
+                }
                 }
             }
 

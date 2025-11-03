@@ -5,14 +5,14 @@ public class OpportunityFailingSalesProcessTest {
     public static void setUpData() {
         insert new Opportunity(Name = 'Test Opportunity 1', StageName = 'Stage 5 - Submitted', Channel_Response__c = 'Inside Sales',
                                                  CloseDate = date.today().addMonths(5), Probability = 30,
-                                                 Opportunity_Owner_Division__c = 'Solutions', Opportunity_Owner_Sub_Division__c = 'Inbound Sales',Country__c = 'a00b0000001AP19AAG',Expense_Income__c = 0,Proposal_Dropbox_Location__c = 'test');
+                                                 Opportunity_Owner_Division__c = 'Global Solutions', Opportunity_Owner_Sub_Division__c = 'Inbound Sales',Country__c = 'a00b0000001AP19AAG',Expense_Income__c = 0,Proposal_Dropbox_Location__c = 'test');
         insert new Opportunity(Name = 'Test Opportunity 2', StageName = 'Stage 5 - Submitted', Channel_Response__c = 'Inside Sales',
                                                  CloseDate = date.today().addMonths(5), Probability = 30,
-                                                 Opportunity_Owner_Division__c = 'Solutions', Opportunity_Owner_Sub_Division__c = 'Inbound Sales',Country__c = 'a00b0000001AP19AAG',Expense_Income__c = 0,Proposal_Dropbox_Location__c = 'test');
+                                                 Opportunity_Owner_Division__c = 'Global Solutions', Opportunity_Owner_Sub_Division__c = 'Inbound Sales',Country__c = 'a00b0000001AP19AAG',Expense_Income__c = 0,Proposal_Dropbox_Location__c = 'test');
         insert new Opportunity(Name = 'Test Opportunity 3', StageName = 'Stage 5 - Submitted', Channel_Response__c = 'Inside Sales',
                                                  CloseDate = date.today().addMonths(5), Probability = 30, Latest_day_Opp_failed_sales_process__c = Date.today().addDays(-15),
                                                  Nb_times_Opp_failed_sales_process__c = 15,
-                                                 Opportunity_Owner_Division__c = 'Solutions', Opportunity_Owner_Sub_Division__c = 'Inbound Sales',Country__c = 'a00b0000001AP19AAG',Expense_Income__c = 0,Proposal_Dropbox_Location__c = 'test');
+                                                 Opportunity_Owner_Division__c = 'Global Solutions', Opportunity_Owner_Sub_Division__c = 'Inbound Sales',Country__c = 'a00b0000001AP19AAG',Expense_Income__c = 0,Proposal_Dropbox_Location__c = 'test');
     }
 
     @isTest

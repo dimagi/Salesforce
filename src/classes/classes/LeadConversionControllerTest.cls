@@ -4,7 +4,7 @@ public class LeadConversionControllerTest {
     public static testMethod void shouldConvertLeadAndSetFields() {
         Test.startTest();
 
-        Lead testLead = new Lead(FirstName = 'Tom', LastName = 'Smith', Company = 'Smith IT Company', Opportunity_Owner_Division__c = 'Solutions', Opportunity_Owner_Sub_Division__c='SaaS - Sales', Email='test@gmail.com', Status='Open - Not Contacted', Lead_Status_Reason__c = 'Personal Outreach');
+        Lead testLead = new Lead(FirstName = 'Tom', LastName = 'Smith', Company = 'Smith IT Company', Opportunity_Owner_Division__c = 'Global Solutions', Opportunity_Owner_Sub_Division__c='CommCare Sales', Email='test@gmail.com', Status='Open - Not Contacted', Lead_Status_Reason__c = 'Personal Outreach');
         insert testLead;
         LeadConversionController convController = new LeadConversionController(testLead.Id);
         Business_Unit__c bu = new Business_Unit__c(Name = 'Inc');
@@ -35,7 +35,7 @@ public class LeadConversionControllerTest {
 
         Account acc = new Account(Name = 'Custom ACC');
         insert acc;
-        Lead testLead = new Lead(FirstName = 'Tom', LastName = 'Smith', Company = 'Smith IT Company', account_name__c = acc.Id, Opportunity_Owner_Division__c = 'Solutions', Opportunity_Owner_Sub_Division__c='SaaS - Sales',Lead_Status_Reason__c = 'Personal Outreach');
+        Lead testLead = new Lead(FirstName = 'Tom', LastName = 'Smith', Company = 'Smith IT Company', account_name__c = acc.Id, Opportunity_Owner_Division__c = 'Global Solutions', Opportunity_Owner_Sub_Division__c='CommCare Sales',Lead_Status_Reason__c = 'Personal Outreach');
         insert testLead;
         LeadConversionController convController = new LeadConversionController(testLead.Id);
         Business_Unit__c bu = new Business_Unit__c(Name = 'Inc');
@@ -69,7 +69,7 @@ public class LeadConversionControllerTest {
 
         Account acc = new Account(Name = 'Smith IT Company');
         insert acc;
-        Lead testLead = new Lead(FirstName = 'Tom', LastName = 'Smith', Company = 'Smith IT Company', Opportunity_Owner_Division__c = 'Solutions', Opportunity_Owner_Sub_Division__c='SaaS - Sales',Email='test@gmail.com', Lead_Status_Reason__c = 'Personal Outreach');
+        Lead testLead = new Lead(FirstName = 'Tom', LastName = 'Smith', Company = 'Smith IT Company', Opportunity_Owner_Division__c = 'Global Solutions', Opportunity_Owner_Sub_Division__c='CommCare Sales',Email='test@gmail.com', Lead_Status_Reason__c = 'Personal Outreach');
         insert testLead;
         LeadConversionController convController = new LeadConversionController(testLead.Id);
         Business_Unit__c bu = new Business_Unit__c(Name = 'Inc');
@@ -91,7 +91,7 @@ public class LeadConversionControllerTest {
     public static testMethod void testLeadConversionTrigger() {
         Test.startTest();
 
-        Lead testLead = new Lead(FirstName = 'Tom', LastName = 'Smith', Company = 'Smith IT Company', Opportunity_Owner_Division__c = 'Solutions', Opportunity_Owner_Sub_Division__c='SaaS - Sales');
+        Lead testLead = new Lead(FirstName = 'Tom', LastName = 'Smith', Company = 'Smith IT Company', Opportunity_Owner_Division__c = 'Global Solutions', Opportunity_Owner_Sub_Division__c='CommCare Sales');
         insert testLead;
 
         testLead.Status = 'Working - Talking';

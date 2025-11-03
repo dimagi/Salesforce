@@ -116,10 +116,10 @@ public class OpenOpportunityTest {
         opportunity.StageName = 'Stage 1 - Connect';
         opportunity.CloseDate = Date.today();
         opportunity.AccountId = accountId;
-        opportunity.Opportunity_Owner_Division__c = 'Solutions';
+        opportunity.Opportunity_Owner_Division__c = 'Global Solutions';
        // opportunity.Opportunity_Owner_Sub_Division__c = 'Inbound Sales';
        //opportunity.Opportunity_Owner_Sub_Division__c = 'IndiaDiv - Partnerships';
-       opportunity.Opportunity_Owner_Sub_Division__c = 'GSO - BizStrat';
+       opportunity.Opportunity_Owner_Sub_Division__c = 'Ops - BizOps';
 
         insert opportunity;
 

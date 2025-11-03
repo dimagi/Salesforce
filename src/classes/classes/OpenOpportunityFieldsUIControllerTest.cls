@@ -11,8 +11,8 @@ private class OpenOpportunityFieldsUIControllerTest {
             StageName = 'Prospecting',
             CloseDate = Date.today().addDays(15),
             AccountId = a.Id,
-            Opportunity_Owner_Division__c = 'Solutions',
-            Opportunity_Owner_Sub_Division__c = 'Sol - Delivery Asia'
+            Opportunity_Owner_Division__c = 'Global Solutions',
+            Opportunity_Owner_Sub_Division__c = 'GS - Leadership'
         );
         insert opp;
 

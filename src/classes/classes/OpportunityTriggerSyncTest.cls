@@ -7,7 +7,7 @@ public class OpportunityTriggerSyncTest {
             Name = 'Test Opportunity',
             StageName = 'Prospecting',
             CloseDate = System.today(),
-            Opportunity_Owner_Division__c = 'Solutions',
+            Opportunity_Owner_Division__c = 'Global Solutions',
             Opportunity_Owner_Sub_Division__c = 'Inbound Sales'
         );
         insert o;

@@ -15,7 +15,7 @@ private class OpportunityProductTriggerTest {
         insert pbe;
 
         Opportunity opp = new Opportunity(Name = 'Test Opp', CloseDate = Date.today(), StageName = 'Stage 1 - Connecting',
-                                            Opportunity_Owner_Division__c = 'Solutions', Opportunity_Owner_Sub_Division__c='Inbound Sales');
+                                            Opportunity_Owner_Division__c = 'Global Solutions', Opportunity_Owner_Sub_Division__c='Inbound Sales');
         insert opp;
 
         OpportunityLineItem oli = new OpportunityLineItem(OpportunityId = opp.Id, PricebookEntryId = pbe.Id, Quantity = 1, totalPrice = 50 );
@@ -47,7 +47,7 @@ private class OpportunityProductTriggerTest {
         insert pbe3;
 
         Opportunity opp = new Opportunity(Name = 'Test Opp', CloseDate = date.today(), StageName = 'Stage 1 - Connecting',
-                                            Opportunity_Owner_Division__c = 'Solutions', Opportunity_Owner_Sub_Division__c='Inbound Sales');
+                                            Opportunity_Owner_Division__c = 'Global Solutions', Opportunity_Owner_Sub_Division__c='Inbound Sales');
         insert opp;
 
         List<OpportunityLineItem> prods = new List<OpportunityLineItem>();

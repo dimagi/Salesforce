@@ -8,11 +8,11 @@ public class OpportunityPipelineSnapshotTest {
         Opportunity opp1 = new Opportunity(Name = 'Test Opportunity 1', StageName = 'Stage 5 - Submitted', Channel_Response__c = 'Inside Sales', Amount = 50000,
                                                 Expense_Income__c = 15000, Expected_Buffer__c = 50, Duration_months__c = 18, Country_Text__c = 'Sample text 1 test',
                                                 Product_Text__c = 'Product test 1', CloseDate = date.today().addMonths(5), Probability = 30, AccountId = snapShotAccount.Id,
-                                                Opportunity_Owner_Division__c = 'Solutions', Opportunity_Owner_Sub_Division__c = 'USH - Tech',Country__c = 'a00b0000001AOufAAG',Proposal_Dropbox_Location__c = 'https://example.com/proposal.pdf');
+                                                Opportunity_Owner_Division__c = 'Global Solutions', Opportunity_Owner_Sub_Division__c = 'USS Delivery',Country__c = 'a00b0000001AOufAAG',Proposal_Dropbox_Location__c = 'https://example.com/proposal.pdf');
         Opportunity opp2 = new Opportunity(Name = 'Test Opportunity 2', StageName = 'Stage 5 - Submitted', Channel_Response__c = 'Inside Sales', Amount = 70000,
                                                 Expense_Income__c = 23000, Expected_Buffer__c = 40, Duration_months__c = 24, Country_Text__c = 'Sample text 2 test',
                                                 Product_Text__c = 'Product test 2', CloseDate = date.today().addMonths(6), Probability = 40, AccountId = snapShotAccount.Id,
-                                                Opportunity_Owner_Division__c = 'Solutions', Opportunity_Owner_Sub_Division__c = 'USH - Tech',Country__c = 'a00b0000001AOufAAG',Proposal_Dropbox_Location__c = 'https://example.com/proposal.pdf');
+                                                Opportunity_Owner_Division__c = 'Solutions', Opportunity_Owner_Sub_Division__c = 'USS Delivery',Country__c = 'a00b0000001AOufAAG',Proposal_Dropbox_Location__c = 'https://example.com/proposal.pdf');
         insert opp1;
         insert opp2;
     }
@@ -25,11 +25,11 @@ public class OpportunityPipelineSnapshotTest {
         Opportunity opp3 = new Opportunity(Name = 'Test Opportunity 3', StageName = 'Stage 5 - Submitted', Channel_Response__c = 'Inside Sales', Amount = 50000,
                                                 Expense_Income__c = 15000, Expected_Buffer__c = 50, Duration_months__c = 18, Country_Text__c = 'Sample text 1 test',
                                                 Product_Text__c = 'Product test 1', CloseDate = date.today().addMonths(5), Probability = 30, AccountId = snapShotAccount.Id,
-                                                Opportunity_Owner_Division__c = 'Solutions', Opportunity_Owner_Sub_Division__c = 'USH - Tech',Country__c = 'a00b0000001AOufAAG',Proposal_Dropbox_Location__c = 'https://example.com/proposal.pdf');
+                                                Opportunity_Owner_Division__c = 'Global Solutions', Opportunity_Owner_Sub_Division__c = 'USS Delivery',Country__c = 'a00b0000001AOufAAG',Proposal_Dropbox_Location__c = 'https://example.com/proposal.pdf');
         Opportunity opp4 = new Opportunity(Name = 'Test Opportunity 4', StageName = 'Stage 5 - Submitted', Channel_Response__c = 'Inside Sales', Amount = 50000,
                                                 Expense_Income__c = 15000, Expected_Buffer__c = 50, Duration_months__c = 18, Country_Text__c = 'Sample text 1 test',
                                                 Product_Text__c = 'Product test 1', CloseDate = date.today().addMonths(5), Probability = 30, AccountId = snapShotAccount.Id,
-                                                Opportunity_Owner_Division__c = 'Solutions', Opportunity_Owner_Sub_Division__c = 'USH - Tech',Country__c = 'a00b0000001AOufAAG',Proposal_Dropbox_Location__c = 'https://example.com/proposal.pdf');
+                                                Opportunity_Owner_Division__c = 'Global Solutions', Opportunity_Owner_Sub_Division__c = 'USS Delivery',Country__c = 'a00b0000001AOufAAG',Proposal_Dropbox_Location__c = 'https://example.com/proposal.pdf');
         insert opp3;
         insert opp4;
 
@@ -90,7 +90,7 @@ public class OpportunityPipelineSnapshotTest {
         Opportunity opp3 = new Opportunity(Name = 'Test Opportunity 3', StageName = 'Stage 4 - Proposal Development', Channel_Response__c = 'Inside Sales', Amount = 40000,
                                                 Expense_Income__c = 23000, Expected_Buffer__c = 40, Duration_months__c = 24, Country_Text__c = 'Sample text 3 test',
                                                 Product_Text__c = 'Product test 3', CloseDate = date.today().addMonths(6), Probability = 35, AccountId = snapShotAccount.Id,
-                                                Opportunity_Owner_Division__c = 'Solutions', Opportunity_Owner_Sub_Division__c = 'USH - Tech',Country__c = 'a00b0000001AOufAAG',Proposal_Dropbox_Location__c = 'https://example.com/proposal.pdf');
+                                                Opportunity_Owner_Division__c = 'Global Solutions', Opportunity_Owner_Sub_Division__c = 'USS Delivery',Country__c = 'a00b0000001AOufAAG',Proposal_Dropbox_Location__c = 'https://example.com/proposal.pdf');
         insert opp3;
 
         Test.startTest();
@@ -228,7 +228,7 @@ public class OpportunityPipelineSnapshotTest {
         Business_Unit__c bizUnit = new Business_Unit__c(Name = 'Test Business Unit 1');
         Opportunity currentOpp = new Opportunity(Name = 'Test Opportunity 1', Business_Unit_Owner__c = bizUnit.Id, StageName = 'Stage 5 - Submitted',
                                                  CloseDate = date.today().addMonths(5), Probability = 30,
-                                                 Opportunity_Owner_Division__c = 'Solutions', Opportunity_Owner_Sub_Division__c = 'USH - Tech',Country__c = 'a00b0000001AOufAAG',Expense_Income__c=0,Proposal_Dropbox_Location__c = 'https://example.com/proposal.pdf');
+                                                 Opportunity_Owner_Division__c = 'Global Solutions', Opportunity_Owner_Sub_Division__c = 'USS Delivery',Country__c = 'a00b0000001AOufAAG',Expense_Income__c=0,Proposal_Dropbox_Location__c = 'https://example.com/proposal.pdf');
         insert currentOpp;
 
         Pipeline_Snapshot__c snapShot1 = new Pipeline_Snapshot__c(Opportunity__c = currentOpp.Id, Opportunity_Amount_Minus_Expense_Income__c = 2000,
@@ -295,13 +295,13 @@ public class OpportunityPipelineSnapshotTest {
         Business_Unit__c bizUnit = new Business_Unit__c(Name = 'Test Business Unit 1');
         Opportunity currentOpp1 = new Opportunity(Name = 'Test Opportunity 1', Business_Unit_Owner__c = bizUnit.Id, StageName = 'Stage 5 - Submitted',
                                                  CloseDate = date.today().addMonths(5), Probability = 30,
-                                                 Opportunity_Owner_Division__c = 'Solutions', Opportunity_Owner_Sub_Division__c = 'USH - Tech',Country__c = 'a00b0000001AOufAAG',Expense_Income__c=0,Proposal_Dropbox_Location__c = 'https://example.com/proposal.pdf');
+                                                 Opportunity_Owner_Division__c = 'Global Solutions', Opportunity_Owner_Sub_Division__c = 'USS Delivery',Country__c = 'a00b0000001AOufAAG',Expense_Income__c=0,Proposal_Dropbox_Location__c = 'https://example.com/proposal.pdf');
         Opportunity currentOpp2 = new Opportunity(Name = 'Test Opportunity 2', Business_Unit_Owner__c = bizUnit.Id, StageName = 'Stage 5 - Submitted',
                                                  CloseDate = date.today().addMonths(5), Probability = 30,
-                                                 Opportunity_Owner_Division__c = 'Solutions', Opportunity_Owner_Sub_Division__c = 'USH - Tech',Country__c = 'a00b0000001AOufAAG',Expense_Income__c=0,Proposal_Dropbox_Location__c = 'https://example.com/proposal.pdf');
+                                                 Opportunity_Owner_Division__c = 'Global Solutions', Opportunity_Owner_Sub_Division__c = 'USS Delivery',Country__c = 'a00b0000001AOufAAG',Expense_Income__c=0,Proposal_Dropbox_Location__c = 'https://example.com/proposal.pdf');
         Opportunity currentOpp3 = new Opportunity(Name = 'Test Opportunity 3', Business_Unit_Owner__c = bizUnit.Id, StageName = 'Stage 5 - Submitted',
                                                  CloseDate = date.today().addMonths(5), Probability = 30,
-                                                 Opportunity_Owner_Division__c = 'Solutions', Opportunity_Owner_Sub_Division__c = 'USH - Tech',Country__c = 'a00b0000001AOufAAG',Expense_Income__c=0,Proposal_Dropbox_Location__c = 'https://example.com/proposal.pdf');
+                                                 Opportunity_Owner_Division__c = 'Global Solutions', Opportunity_Owner_Sub_Division__c = 'USS Delivery',Country__c = 'a00b0000001AOufAAG',Expense_Income__c=0,Proposal_Dropbox_Location__c = 'https://example.com/proposal.pdf');
         insert currentOpp1;
         insert currentOpp2;
         insert currentOpp3;
@@ -419,13 +419,13 @@ public class OpportunityPipelineSnapshotTest {
     public static void shouldCalculateIsSubmittedThisMonth() {
         Opportunity opp1 = new Opportunity(Name = 'Test Opportunity 1', StageName = 'Stage 5 - Submitted',
                                                  CloseDate = date.today().addMonths(5), Probability = 30,
-                                                 Opportunity_Owner_Division__c = 'Solutions', Opportunity_Owner_Sub_Division__c = 'USH - Tech',Country__c = 'a00b0000001AOufAAG',Expense_Income__c=0,Proposal_Dropbox_Location__c = 'https://example.com/proposal.pdf');
+                                                 Opportunity_Owner_Division__c = 'Global Solutions', Opportunity_Owner_Sub_Division__c = 'USS Delivery',Country__c = 'a00b0000001AOufAAG',Expense_Income__c=0,Proposal_Dropbox_Location__c = 'https://example.com/proposal.pdf');
         Opportunity opp2 = new Opportunity(Name = 'Test Opportunity 2', StageName = 'Stage 5 - Submitted',
                                                  CloseDate = date.today().addMonths(5), Probability = 30,
-                                                 Opportunity_Owner_Division__c = 'Solutions', Opportunity_Owner_Sub_Division__c = 'USH - Tech',Country__c = 'a00b0000001AOufAAG',Expense_Income__c=0,Proposal_Dropbox_Location__c = 'https://example.com/proposal.pdf');
+                                                 Opportunity_Owner_Division__c = 'Global Solutions', Opportunity_Owner_Sub_Division__c = 'USS Delivery',Country__c = 'a00b0000001AOufAAG',Expense_Income__c=0,Proposal_Dropbox_Location__c = 'https://example.com/proposal.pdf');
         Opportunity opp3 = new Opportunity(Name = 'Test Opportunity 3', StageName = 'Stage 5 - Submitted',
                                                  CloseDate = date.today().addMonths(5), Probability = 30,
-                                                 Opportunity_Owner_Division__c = 'Solutions', Opportunity_Owner_Sub_Division__c = 'USH - Tech',Country__c = 'a00b0000001AOufAAG',Expense_Income__c=0,Proposal_Dropbox_Location__c = 'https://example.com/proposal.pdf');
+                                                 Opportunity_Owner_Division__c = 'Global Solutions', Opportunity_Owner_Sub_Division__c = 'USS Delivery',Country__c = 'a00b0000001AOufAAG',Expense_Income__c=0,Proposal_Dropbox_Location__c = 'https://example.com/proposal.pdf');
         insert new List<Opportunity> { opp1, opp2, opp3 };
 
         Integer testYear = Date.today().year() - 1;
