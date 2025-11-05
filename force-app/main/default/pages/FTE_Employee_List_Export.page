@@ -1,0 +1,58 @@
+<apex:page controller="FTESortController" action="{!loadWorkCardJobStatus}"
+           contentType="{!if(isExportExcel = true, mode,'')}" renderAs="{!if(isExportPDF = true, 'pdf', '')}">
+  <!--  <style type="text/css">
+        .fteProjectCell {
+            cursor: pointer;
+        }
+        .fteProjectCell:hover {
+            background: #1797C0 !important;
+        }
+        .overbilled {
+            color: red !important;
+        }
+        .fteTable {
+            margin-top: 10px;
+            border: 1px solid black;
+        }
+        .fteFilters {
+            padding-left: 10px;
+            vertical-align: middle;
+        }
+        .fteFilters input, .fteFilters label, .fteFilters select {
+            padding-left: 0px;
+            margin-right: 10px;
+            height: 22px !important;
+        }
+    </style> -->
+     
+     <apex:pageBlock title="Total Allocated Time by Employee" id="employeeListBlockId">
+          <apex:pageBlockSection columns="2" id="tableSection">
+                    <apex:pageBlockTable id="employeesHours" value="{!EmployeesListExport}" var="empTime" style="margin-top: 10px;border: 1px solid black;">
+                        <apex:column onclick="goToEmployeeView('{!empTime.objId}');" headerValue="Employee Name" value="{!empTime.name}" style="border-bottom: 1px solid black;"/>
+                         <apex:column headerValue="Hire Date" style="border-bottom: 1px solid black;">
+                        <apex:outputText value="{0, date, MM'/'dd'/'yyyy}" escape="false">
+                            <apex:param value="{!empTime.hireDate}" /> 
+                            </apex:outputText> </apex:column>
+                        <apex:column headerValue="Termination Date" style="border-bottom: 1px solid black;">
+                            <apex:outputText value="{0, date, MM'/'dd'/'yyyy}" escape="false">
+                            <apex:param value="{!empTime.termDate}" /> 
+                            </apex:outputText>
+                        </apex:column>
+                        <apex:column headerValue="Jan {!fteYear}" value="{!empTime.daysArray[0]}" style="border-bottom: 1px solid black;"/>
+                        <apex:column headerValue="Feb {!fteYear}" value="{!empTime.daysArray[1]}" style="border-bottom: 1px solid black;"/>
+                        <apex:column headerValue="Mar {!fteYear}" value="{!empTime.daysArray[2]}" style="border-bottom: 1px solid black;"/>
+                        <apex:column headerValue="Apr {!fteYear}" value="{!empTime.daysArray[3]}" style="border-bottom: 1px solid black;"/>
+                        <apex:column headerValue="May {!fteYear}" value="{!empTime.daysArray[4]}" style="border-bottom: 1px solid black;"/>
+                        <apex:column headerValue="Jun {!fteYear}" value="{!empTime.daysArray[5]}" style="border-bottom: 1px solid black;"/>
+                        <apex:column headerValue="Jul {!fteYear}" value="{!empTime.daysArray[6]}" style="border-bottom: 1px solid black;"/>
+                        <apex:column headerValue="Aug {!fteYear}" value="{!empTime.daysArray[7]}" style="border-bottom: 1px solid black;"/>
+                        <apex:column headerValue="Sep {!fteYear}" value="{!empTime.daysArray[8]}" style="border-bottom: 1px solid black;"/>
+                        <apex:column headerValue="Ocb {!fteYear}" value="{!empTime.daysArray[9]}" style="border-bottom: 1px solid black;"/>
+                        <apex:column headerValue="Nov {!fteYear}" value="{!empTime.daysArray[10]}" style="border-bottom: 1px solid black;"/>
+                        <apex:column headerValue="Dec {!fteYear}" value="{!empTime.daysArray[11]}" style="border-bottom: 1px solid black;"/>
+                        <apex:column headerValue="Total" value="{!empTime.daysArray[12]}" style="border-bottom: 1px solid black;"/>
+                    </apex:pageBlockTable>
+                </apex:pageBlockSection>
+         
+    </apex:pageBlock>
+</apex:page>

@@ -1,0 +1,71 @@
+<apex:page controller="FTE_ALLprojectsListExport" 
+    contentType="{!if(isExportExcel = true, mode,'')}" > 
+ <!--   contenttype="application/vnd.ms-excel#projectExport.xlsx" renderAs="{!if(Ispdf = true, 'pdf', '')}"  >
+    
+    <head>
+        <style>
+            @page {
+            margin-center: 0.0cm;
+            <!-- margin-right:0.0cm;          
+            }
+        </style>
+    </head>  -->  
+    <apex:pageBlock title="List of Projects" id="projectListViewIBlock">
+        <apex:form >
+                <apex:pageBlockSection columns="1" id="ProjectPanel">
+                    <apex:pageBlockTable id="fteContractList" value="{!list_contracts}" var="fteProject" styleClass="projectTable" style="margin-top: 10px;border: 1px solid black;">
+                        <apex:column headerValue="FTE Project Name" value="{!fteProject.name}" style="border-bottom: 1px solid black; font-size: 12px;"/>
+                        <apex:column headerValue="Contract" value="{!fteProject.name}" style="border-bottom: 1px solid black;font-size: 12px;"/>
+                        <apex:column headerValue="Project Manager" value="{!fteProject.Project_Manager__c}" style="border-bottom: 1px solid black;font-size: 12px;" /> 
+                        <apex:column headerValue="Start Date" value="{!fteProject.Contract_Start_Date__c}" style="border-bottom: 1px solid black;font-size: 12px;"/>
+                        <apex:column headerValue="End Date" value="{!fteProject.Contract_End_Date__c}" style="border-bottom: 1px solid black;font-size: 12px;"/>
+                    </apex:pageBlockTable>
+                </apex:pageBlockSection>
+        </apex:form>
+    </apex:pageBlock>
+      <apex:repeat value="{!displayProjectList}" var="eachEmp">
+        <table style="width:100%; border: 1px solid black;">
+            <h3>
+                {!eachEmp.ContractName}
+            </h3>
+            <tr>
+                <th style="border-bottom: 1px solid black;width:9%; font-size: 12px;">Name </th>
+                <th style="border-bottom: 1px solid black;width:7%; font-size: 12px;">Jan {!fteYear} </th>
+                <th style="border-bottom: 1px solid black;width:7%; font-size: 12px;">Feb {!fteYear}</th>
+                <th style="border-bottom: 1px solid black;width:7%; font-size: 12px;">March {!fteYear}</th>
+                <th style="border-bottom: 1px solid black;width:7%; font-size: 12px;">April {!fteYear}</th>
+                <th style="border-bottom: 1px solid black;width:7%; font-size: 12px;">May {!fteYear}</th>
+                <th style="border-bottom: 1px solid black;width:7%; font-size: 12px;">June {!fteYear}</th>
+                <th style="border-bottom: 1px solid black;width:7%; font-size: 12px;">July {!fteYear}</th>
+                <th style="border-bottom: 1px solid black;width:7%; font-size: 12px;">August {!fteYear}</th>
+                <th style="border-bottom: 1px solid black;width:7%; font-size: 12px;">Sep {!fteYear}</th>
+                <th style="border-bottom: 1px solid black;width:7%; font-size: 12px;">Oct {!fteYear}</th>
+                <th style="border-bottom: 1px solid black;width:7%; font-size: 12px;">Nov {!fteYear}</th>
+                <th style="border-bottom: 1px solid black;width:7%; font-size: 12px;">Dec {!fteYear}</th>
+                <th style="border-bottom: 1px solid black;width:7%; font-size: 12px;">Total Hours </th>
+                <th style="border-bottom: 1px solid black;width:7%; font-size: 12px;"> </th>
+                <th style="border-bottom: 1px solid black;width:7%; font-size: 12px;"> </th>
+            </tr>
+          <apex:repeat value="{!eachEmp.empDataTable}" var="empTime">
+                
+                <tr>
+                    <td style="border-bottom: 1px solid black;text-align: left; font-size: 12px;" ><apex:outputText value="{!empTime.Name}" /></td>
+                    <td style="border-bottom: 1px solid black;text-align: center; font-size: 12px;" ><apex:outputText value="{!empTime.daysArray[0]}" /></td>
+                    <td style="border-bottom: 1px solid black;text-align: center; font-size: 12px;" ><apex:outputText value="{!empTime.daysArray[1]}" /></td>
+                    <td style="border-bottom: 1px solid black;text-align: center; font-size: 12px;" ><apex:outputText value="{!empTime.daysArray[2]}" /></td> 
+                    <td style="border-bottom: 1px solid black;text-align: center; font-size: 12px;" ><apex:outputText value="{!empTime.daysArray[3]}" /></td>
+                    <td style="border-bottom: 1px solid black;text-align: center; font-size: 12px;" ><apex:outputText value="{!empTime.daysArray[4]}" /></td>
+                    <td style="border-bottom: 1px solid black;text-align: center; font-size: 12px;" ><apex:outputText value="{!empTime.daysArray[5]}" /></td>
+                    <td style="border-bottom: 1px solid black;text-align: center; font-size: 12px;" ><apex:outputText value="{!empTime.daysArray[6]}" /></td>
+                    <td style="border-bottom: 1px solid black;text-align: center; font-size: 12px;" ><apex:outputText value="{!empTime.daysArray[7]}" /></td>
+                    <td style="border-bottom: 1px solid black;text-align: center; font-size: 12px;" ><apex:outputText value="{!empTime.daysArray[8]}" /></td>
+                    <td style="border-bottom: 1px solid black;text-align: center; font-size: 12px;" ><apex:outputText value="{!empTime.daysArray[9]}" /></td>
+                    <td style="border-bottom: 1px solid black;text-align: center; font-size: 12px;" ><apex:outputText value="{!empTime.daysArray[10]}" /></td>
+                    <td style="border-bottom: 1px solid black;text-align: center; font-size: 12px;" ><apex:outputText value="{!empTime.daysArray[11]}" /></td>
+                    <td style="border-bottom: 1px solid black;text-align: center; font-size: 12px;" ><apex:outputText value="{!empTime.daysArray[12]}" /></td>
+                    
+                    <td style="border-bottom: 1px solid black;text-align: center; font-size: 12px;" ></td>
+                    <td style="border-bottom: 1px solid black;text-align: center; font-size: 12px;" ></td>
+                </tr> </apex:repeat> </table> <br/>
+    </apex:repeat>
+</apex:page>

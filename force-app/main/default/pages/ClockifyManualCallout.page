@@ -1,0 +1,8 @@
+<apex:page standardController="Time_Card__c" extensions="ClockifyManualCallout" action="{!runRecalculation}" recordSetVar="timeCards">
+    <apex:form >
+        <apex:pageBlock title="Clockify Sync Time Cards">
+            <apex:pageMessages />
+            <apex:commandButton value="Return" action="{!goBack}"/>
+        </apex:pageBlock>
+    </apex:form>
+</apex:page>
