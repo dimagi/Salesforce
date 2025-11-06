@@ -134,7 +134,8 @@
                             <apex:outputText value="${0, number,###,###,###,###}">
                                 <apex:param value="{!obj.contractamount}" />
                             </apex:outputText>
-                        </apex:column>                        
+                        </apex:column>
+                        
                         <apex:column headerValue="Amount Spent" style="{!if(obj.categoryName='Total Costs (not including Internal subcontracts' || obj.categoryName='Total Costs (including Internal subcontracts','font-weight: bold', '')}">
                             <apex:outputText value="${0, number,###,###,###,###}">
                                 <apex:param value="{!obj.spentAmount}" />
@@ -202,7 +203,8 @@
                                 <apex:param value="{!obj.laborCost}" />
                             </apex:outputText>
                         </apex:column>
-                                            </apex:pageBlockTable>
+                        
+                    </apex:pageBlockTable>
                 </apex:outputPanel>
             </apex:pageBlockSectionItem>
         </apex:pageBlockSection>
