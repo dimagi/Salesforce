@@ -161,14 +161,14 @@
                                 <a href="#reportTab" ><span class="ui-icon ui-icon-blank"></span>Report Out<span class="ui-icon ui-icon-blank"></span></a>
                             </li>
                             <li id="financialTabLi">
-                                <a href="#financialTab" ><span class="ui-icon ui-icon-blank"></span>Project Financial Data<span class="ui-icon ui-icon-blank"></span></a>
+                                <a href="#financialTab" ><span class="ui-icon ui-icon-blank"></span>Project Data<span class="ui-icon ui-icon-blank"></span></a>
                             </li>
                             <li id="projectTabLi">
                                 <a href="#projectTab"><span class="ui-icon ui-icon-blank"></span>All Projects<span class="ui-icon ui-icon-blank"></span></a>
                             </li>
-                            <li id="corporateDashboardTabLi">
+                          <!--  <li id="corporateDashboardTabLi">
                                 <a href="#corporateDashboard" ><span class="ui-icon ui-icon-blank"></span>Global Metrics<span class="ui-icon ui-icon-blank"></span></a>
-                            </li>
+                            </li>  -->
                             <li id="employeeRedFormLi">
                                 <a href="#employeeRedForm" ><span class="ui-icon ui-icon-blank"></span>Employee Red Form<span class="ui-icon ui-icon-blank"></span></a>
                             </li>
@@ -193,11 +193,11 @@
                         </apex:form>
                     </section>
 
-                    <section id="corporateDashboard" >
+                  <!--  <section id="corporateDashboard" >
                         <apex:form >
                             <c:GlobalMetricsComponent employeeEmailComp="{!currentLoginEmail}" pageControllerComp="{!this}" />
                         </apex:form>
-                    </section>
+                    </section> -->
 
                     <section id="employeeRedForm" >
                         <apex:form >
