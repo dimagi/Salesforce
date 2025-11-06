@@ -4,6 +4,7 @@
 public class CreateFBCasesSchedulable implements Schedulable {
 
     public void execute(SchedulableContext sc) {
-        Database.executeBatch(new CreateFBCasesBatch(), 10);
+            Database.executeBatch(new CreateFBCasesBatch(), 10);
+        
     }
 }

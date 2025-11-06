@@ -3,8 +3,8 @@
  */
 public class ScriptBatchJob implements Database.Batchable<SObject>, Database.AllowsCallouts, Database.Stateful {
 
-    private Date helperDate;
-    private Date dateThreshold = Date.newInstance(2017, 12, 1);
+    public Date helperDate;
+    public Date dateThreshold = Date.newInstance(2017, 12, 1);
 
     public ScriptBatchJob() {
         this.helperDate = Date.today();

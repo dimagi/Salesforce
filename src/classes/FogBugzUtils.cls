@@ -77,8 +77,7 @@ public without sharing class FogBugzUtils {
         FogBugzCase fbCase = api.getCase(o.Fogbugz_Ticket_Number__c);
 
         if (fbCase != null) {
-            if (!checkTimes || o.Fogbugz_Last_Updated_Date__c == null || fbCase.lastModifiedDate == null ||
-                fbCase.lastModifiedDate > o.Fogbugz_Last_Updated_Date__c) {
+            if (!checkTimes || o.Fogbugz_Last_Updated_Date__c == null || fbCase.lastModifiedDate == null || fbCase.lastModifiedDate > o.Fogbugz_Last_Updated_Date__c) {
 
                 if (o.Fogbugz_Opened_By__c != null) {
                     // Update externalBugId in FB for new opportunities
@@ -95,11 +94,9 @@ public without sharing class FogBugzUtils {
                 if (fbArea == 'Closed - Won') { // When User will close Opp in SF then 100% is set as default, so we must
                                                 // do this also when Opp is closed in FB
                     o.Probability = 100;
-                    if (o.StageName !=  fbCase.area) {
-                        o.CloseDate = Date.today(); // We don't want update it again if we are using 4h time window it can be next day
+                    if (o.StageName !=  fbCase.area) { o.CloseDate = Date.today(); // We don't want update it again if we are using 4h time window it can be next day
                     }
-                } else if (fbArea == 'Closed' || fbArea == 'Closed - No Go' || fbArea == 'Closed - Lost') {
-                    o.Probability = 0;
+                } else if (fbArea == 'Closed' || fbArea == 'Closed - No Go' || fbArea == 'Closed - Lost') {  o.Probability = 0;
                 }
 
                 o.StageName = fbArea;
@@ -114,8 +111,7 @@ public without sharing class FogBugzUtils {
                 if (fbCase.latestEvent != null) {
                     o.Fogbugz_Most_Recent_Note__c = fbCase.latestEvent;
                 }
-                if (o.Id == null) {
-                    o.CloseDate = Date.today();
+                if (o.Id == null) {   o.CloseDate = Date.today();
                 }
 
                 Database.UpsertResult[] srList = Database.upsert(new List<Opportunity> { o }, false);
@@ -129,14 +125,12 @@ public without sharing class FogBugzUtils {
                 }
             } else {
                 System.debug(LoggingLevel.INFO, 'FogBugzUtils::syncOpportunityFromFB() - Case not updated in FB, case #' + o.Fogbugz_Ticket_Number__c);
-                StatusLoggerUtils.logWarning(StatusLoggerUtils.FOGBUGZ_SYNC_LOGGER, 'Fogbugz Sync batchId : ' + batchId, 0,
-                                            'FogBugzUtils::syncOpportunityFromFB() - Case not updated in FB, case #' + o.Fogbugz_Ticket_Number__c);
+                StatusLoggerUtils.logWarning(StatusLoggerUtils.FOGBUGZ_SYNC_LOGGER, 'Fogbugz Sync batchId : ' + batchId, 0, 'FogBugzUtils::syncOpportunityFromFB() - Case not updated in FB, case #' + o.Fogbugz_Ticket_Number__c);
                 success = false;
             }
         } else {
             System.debug(LoggingLevel.WARN, 'FogBugzUtils::syncOpportunityFromFB() - Could not retrieve details for FB case #' + o.Fogbugz_Ticket_Number__c);
-            StatusLoggerUtils.logError(StatusLoggerUtils.FOGBUGZ_SYNC_LOGGER, 'Fogbugz Sync Error batchId : ' + batchId, 0,
-                                            'FogBugzUtils::syncOpportunityFromFB() - Could not retrieve details for FB case #' + o.Fogbugz_Ticket_Number__c);
+            StatusLoggerUtils.logError(StatusLoggerUtils.FOGBUGZ_SYNC_LOGGER, 'Fogbugz Sync Error batchId : ' + batchId, 0, 'FogBugzUtils::syncOpportunityFromFB() - Could not retrieve details for FB case #' + o.Fogbugz_Ticket_Number__c);
             success = false;
         }
 
@@ -145,8 +139,7 @@ public without sharing class FogBugzUtils {
 
     public static Set<String> closedStages {
         get {
-            if(closedStages == null) {
-                closedStages = new Set<String>();
+            if(closedStages == null) { closedStages = new Set<String>();
                 for(OpportunityStage os : [SELECT MasterLabel FROM OpportunityStage WHERE IsClosed = true]) {
                     closedStages.add(os.MasterLabel);
                 }

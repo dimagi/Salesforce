@@ -30,7 +30,7 @@ public class EmployeeSnapshotTriggerHandler {
         Date endDate = emplSnp.Snapshot_Date__c;
         Date startDate = endDate.toStartOfMonth();
         Set<Id> contractIds = new Set<Id>();
-        List<Time_Card__c> timeCards = [SELECT Id, Time_Card_Salary__c, Billing_Rate__c, Uses_Contractor_Billing_Rate__c,
+        List<Time_Card__c> timeCards = [SELECT Id, Date__c,Time_Card_Salary__c, Billing_Rate__c, Uses_Contractor_Billing_Rate__c,
                                         Client__r.Project_Billing_Rate__c
                                         FROM Time_Card__c WHERE Employee__c =: emplSnp.Employee_Record__c
                                         AND Date__c >=: startDate AND Date__c <=: endDate AND FTE_Only__c != true];

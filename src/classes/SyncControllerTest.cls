@@ -51,7 +51,7 @@ public class SyncControllerTest {
                                           CloseDate = Date.today(),
                                           Fogbugz_Assigned_To__c = 'Change me',
                                           Fogbugz_Ticket_Number__c = FogBugzHttpCalloutMock.TEST_FB_ID,
-                                          Opportunity_Owner_Division__c = 'Solutions',
+                                          Opportunity_Owner_Division__c = 'Global Solutions',
                                           Opportunity_Owner_Sub_Division__c='Inbound Sales');
         insert opp;
         return opp;

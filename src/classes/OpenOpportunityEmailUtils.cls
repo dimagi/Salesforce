@@ -219,7 +219,7 @@ public with sharing class OpenOpportunityEmailUtils {
             }
         }
 
-        String href = URL.getSalesforceBaseUrl().toExternalForm() + '/' + String.valueOf(opp.Id);
+String href = URL.getOrgDomainUrl().toExternalForm() + '/' + opp.Id;
         
         Open_Opportunity_Fields__c[] selectedFields = OpenOpportunityReportController.getOpportunityFields();
         String result =  rowStart;

@@ -152,6 +152,7 @@ public class HQSyncProcessors {
                     setAccountId.add(obj.Id);
                     listModelObj.add(obj);
                     parser.skipChildren();
+                    system.debug('obj ==> '+obj);
                 }
             }
 
@@ -173,8 +174,12 @@ public class HQSyncProcessors {
                 Accounting_Billingaccount__c sobj = billingAccount.createDbObject(billingContactId, serverName);
                 if (externalIdMap.containsKey(sobj.id__c)) {
                     sobj.Id = externalIdMap.get(sobj.id__c);
+                                                    system.debug('sobj ==> '+sobj);
+                                                    system.debug('sobj.is_auto_invoiceable__c ==> '+sobj.is_auto_invoiceable__c);
+
                 }
                 listSobject.add(sobj);
+                                system.debug('listSobject ==> '+listSobject);
             }
 
             upsert listSobject;
@@ -257,6 +262,7 @@ public class HQSyncProcessors {
                     sobj.Id = externalIdMap.get(sobj.id__c);
                 }
                 listSobject.add(sobj);
+                system.debug('listSobject ==> '+listSobject);
             }
 
             upsert listSobject;

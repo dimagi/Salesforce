@@ -15,6 +15,10 @@ public class FTEUploadData {
         this.fteYear = fteYear;
         this.timeTable = new Decimal[] {-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1};
     }
+    
+    public FTEUploadData(){
+        
+    }
 
     public Decimal getMonthTime(Integer month) {
         return this.timeTable[month - 1];

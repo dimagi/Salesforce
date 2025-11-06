@@ -30,8 +30,11 @@ public class ClockifyAPI {
         }
         try{
             String responseBody = response.getBody().replace('"end":', '"end_Z":');
+                            System.debug('--responseBody' + responseBody);
+
             ClockifyModel ClockifyData = ClockifyModel.parse(responseBody);
-        
+                                    System.debug('--ClockifyData' + ClockifyData);
+
             this.totalCount =  ClockifyData.totals[0].entriesCount;
             System.debug('Total Entries Count : ' +this.totalCount);
             return this.totalCount;
@@ -47,7 +50,8 @@ public class ClockifyAPI {
             System.debug('response###' +response);            
             
             String responseBody = response.getBody().replace('"end":', '"end_Z":');
-            
+                        System.debug('responseBody###' +responseBody);            
+
             ClockifyModel ClockifyData = ClockifyModel.parse(responseBody);
             System.debug('ClockifyData.timeentries.size()'+ClockifyData.timeentries.size());
         
@@ -83,7 +87,7 @@ public class ClockifyAPI {
                     continue;
                 }
             }   
-        }catch(Exception e){           
+        }catch(Exception e){
             System.debug('ex--' + e.getStackTraceString());
             System.debug('ex--' + e.getMessage());
             StatusLoggerUtils.logError(StatusLoggerUtils.CLOCKIFY_LOGGER, 'Clockify Sync Script - time entry failed', 0, e.getMessage() + ' ' + e.getStackTraceString());
@@ -101,7 +105,7 @@ public class ClockifyAPI {
         request.setHeader('X-Api-Key', this.XApikey);
         request.setHeader('Content-Type', 'application/json');
         request.setHeader('Accept', '*/*');
-        request.setHeader('Accept-Encoding', 'gzip, deflate, br');
+        request.setHeader('Accept-Encoding', 'gzip, deflate');
         request.setHeader('Connection', 'keep-alive');
         request.setMethod('POST');
         request.setBody('{"dateRangeStart": \"'+ startRange +'\", ' +
@@ -124,6 +128,7 @@ public class ClockifyAPI {
        
         try{
             response = httpObject.send(request);
+
         }catch(Exception e){           
             System.debug('ex--' + e.getStackTraceString());
             System.debug('ex--' + e.getMessage());

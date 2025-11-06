@@ -77,7 +77,6 @@ public class ClockifySyncBatch implements Database.Batchable<Integer>, Database.
                         while(System.now().getTime() - startingTime < delayInMilliseconds){
                             // Do nothing until desired delay has passed
                         }
-                       
                         requests++;
                     }
                 }

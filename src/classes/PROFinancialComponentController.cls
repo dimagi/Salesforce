@@ -24,11 +24,16 @@ public class PROFinancialComponentController {
     public List<AggregateResult> Most_Recent_Month{ get; set; }
     public List<AggregateResult> One_Month_prior{ get; set; }
     public List<AggregateResult> Two_Months_prior{ get; set; }
-    public Map<String, String> domainNameToURLMap { get; set; }  
+    public Map<String, String> domainNameToURLMap { get; set; }
+    
+    // public DimagiToolsController.SnapshotData snapshotData { get; set; }
+    public List<SnapshotData> snapshotDataList { get; set; }
+    
     
     private String sfInstanceName;
     private Map<Id,List<DContract__c>> childcontractMap;
     private Set<Id> excludeContractFromSearch = new Set<Id>();
+    
     
     public PROFinancialComponentController() {
         this.searchedProjects = new List<DContract__c>();
@@ -42,7 +47,8 @@ public class PROFinancialComponentController {
         Time_Card__c lastTimeCard = [SELECT Id, CreatedDate FROM Time_Card__c ORDER BY CreatedDate DESC LIMIT 1];
         if (lastTimeCard != null) {
             this.lastFBSyncDate = Date.newInstance(lastTimeCard.CreatedDate.year(), lastTimeCard.CreatedDate.month(), lastTimeCard.CreatedDate.day());
-        } 
+        }
+        
         
         List<DimagiToolsController.PROProject> proList = new List<DimagiToolsController.PROProject>();
         Set<Id> customContractsIdsToAddInList = new Set<Id>();
@@ -52,108 +58,157 @@ public class PROFinancialComponentController {
             customContractsIdsToAddInList.add(obj.Contract__c);
         }
         
-        if (!customContractsIdsToAddInList.isEmpty()) {
-            this.childcontractMap = new Map<Id,List<DContract__c>>();
-            this.contractMap = new Map<Id,DContract__c>([SELECT Id, Name, Requires_Developer_Work__c, Last_Report_Out_Date__c, Last_Report_Out_Status__c, Percent_through_SOW_deliverables__c,
-                                                        Burdened_Income_Budget__c, Total_ID_Subcontract_Expense_Budgets__c, ID_Subcontract_1_Type__c, ID_Subcontract_Spend__c, Direct_Costs_Travel_BUDGET__c, Direct_Costs_Total_Expenses__c, Percent_through_Contract__c,
-                                                        Product_Income_Budget__c, Services_Income__c, Product_Spend__c, Total_Amount_of_Contract__c, Direct_Costs_Sub_Contract_BUDGET__c,
-                                                        Internal_Sub_contract_BUDGET__c, Project_Other_BUDGET__c, Direct_Costs_Travel_Expenses__c, Direct_Costs_Sub_contract_Expenses__c,
-                                                        Internal_Sub_contract_Spend__c, Project_Other_Spent__c, Expected_Margin__c,Budget_Used__c, Margin_by_SOW_Completed__c,
-                                                        Margin_by_Contract_Dates__c, Execution_Efficiency__c, Contract_Expense_BUDGET__c, ID_Subcontract_Expense_Spend__c,
-                                                        (SELECT Id, Name, Requires_Developer_Work__c, Last_Report_Out_Date__c, Last_Report_Out_Status__c, Percent_through_SOW_deliverables__c,
-                                                        Burdened_Income_Budget__c, Total_ID_Subcontract_Expense_Budgets__c,ID_Subcontract_1_Type__c, ID_Subcontract_Spend__c, Direct_Costs_Travel_BUDGET__c, Direct_Costs_Total_Expenses__c, Percent_through_Contract__c,
-                                                        Product_Income_Budget__c, Services_Income__c, Product_Spend__c, Total_Amount_of_Contract__c, Direct_Costs_Sub_Contract_BUDGET__c,
-                                                        Internal_Sub_contract_BUDGET__c, Project_Other_BUDGET__c, Direct_Costs_Travel_Expenses__c, Direct_Costs_Sub_contract_Expenses__c,
-                                                        Internal_Sub_contract_Spend__c, Project_Other_Spent__c, Expected_Margin__c, Budget_Used__c ,Margin_by_SOW_Completed__c,
-                                                        Margin_by_Contract_Dates__c, Execution_Efficiency__c, Contract_Expense_BUDGET__c,ID_Subcontract_Expense_Spend__c FROM Contracts__r)
-                                                        FROM DContract__c
-                                                        WHERE Id IN : customContractsIdsToAddInList OR
-                                                        (In_Charge_Of_Report_Out__c='Project Manager' AND  Project_Manager__r.Email=:this.employeeEmail) OR
-                                                        (In_Charge_Of_Report_Out__c='Field Manager' AND  Field_Manager__r.Email=:this.employeeEmail) OR
-                                                        (In_Charge_Of_Report_Out__c='Backstop' AND  Backstop__r.Email=:this.employeeEmail)
-                                                        ORDER BY Name]);
+        this.childcontractMap = new Map<Id,List<DContract__c>>();
+        this.contractMap = new Map<Id,DContract__c>([SELECT Id, Name, Requires_Developer_Work__c, Last_Report_Out_Date__c, Last_Report_Out_Status__c, Percent_through_SOW_deliverables__c,
+                                                     Burdened_Income_Budget__c, Total_ID_Subcontract_Expense_Budgets__c, ID_Subcontract_1_Type__c, ID_Subcontract_Spend__c, Direct_Costs_Travel_BUDGET__c, Direct_Costs_Total_Expenses__c, Percent_through_Contract__c,
+                                                     Product_Income_Budget__c, Services_Income__c, Product_Spend__c, Total_Amount_of_Contract__c, Direct_Costs_Sub_Contract_BUDGET__c,
+                                                     Internal_Sub_contract_BUDGET__c, Project_Other_BUDGET__c, Direct_Costs_Travel_Expenses__c, Direct_Costs_Sub_contract_Expenses__c,
+                                                     Internal_Sub_contract_Spend__c, Project_Other_Spent__c, Expected_Margin__c,Budget_Used__c, Margin_by_SOW_Completed__c,
+                                                     Margin_by_Contract_Dates__c, Execution_Efficiency__c, Contract_Expense_BUDGET__c, ID_Subcontract_Expense_Spend__c,
+                                                     (SELECT Id, Name, Requires_Developer_Work__c, Last_Report_Out_Date__c, Last_Report_Out_Status__c, Percent_through_SOW_deliverables__c,
+                                                      Burdened_Income_Budget__c, Total_ID_Subcontract_Expense_Budgets__c,ID_Subcontract_1_Type__c, ID_Subcontract_Spend__c, Direct_Costs_Travel_BUDGET__c, Direct_Costs_Total_Expenses__c, Percent_through_Contract__c,
+                                                      Product_Income_Budget__c, Services_Income__c, Product_Spend__c, Total_Amount_of_Contract__c, Direct_Costs_Sub_Contract_BUDGET__c,
+                                                      Internal_Sub_contract_BUDGET__c, Project_Other_BUDGET__c, Direct_Costs_Travel_Expenses__c, Direct_Costs_Sub_contract_Expenses__c,
+                                                      Internal_Sub_contract_Spend__c, Project_Other_Spent__c, Expected_Margin__c, Budget_Used__c ,Margin_by_SOW_Completed__c,
+                                                      Margin_by_Contract_Dates__c, Execution_Efficiency__c, Contract_Expense_BUDGET__c,ID_Subcontract_Expense_Spend__c FROM Contracts__r)
+                                                     FROM DContract__c
+                                                     WHERE Id IN : customContractsIdsToAddInList OR
+                                                     (In_Charge_Of_Report_Out__c='Project Manager' AND  Project_Manager__r.Email=:this.employeeEmail) OR
+                                                     (In_Charge_Of_Report_Out__c='Field Manager' AND  Field_Manager__r.Email=:this.employeeEmail) OR
+                                                     (In_Charge_Of_Report_Out__c='Backstop' AND  Backstop__r.Email=:this.employeeEmail)
+                                                     ORDER BY Name]);
+        
+        for (DContract__c dc : this.contractMap.values()) {
+            if (dc.Contracts__r.size() > 0) {
+                this.childcontractMap.put(dc.Id,dc.Contracts__r);
+            }
+        }
+        
+        if (this.contractMap.values().size() > 0 && this.financialContractId == null) {
+            this.financialContractId = this.contractMap.values()[0].id;
+            loadContractBudgetAndSpentData();
+        }
+        
+        if(this.contractMap.containsKey(this.financialContractId)){
+            DContract__c contractid = this.contractMap.get(this.financialContractId);
+            List<Contract_Domain__c> domainId = [select id,Name, Domain__c, Contract__r.id from Contract_Domain__c where Contract__c = :contractid.id];
+            set<id> domainids = new set<id>();
             
-            for (DContract__c dc : this.contractMap.values()) {
-                if (dc.Contracts__r != null && dc.Contracts__r.size() > 0) {
-                    this.childcontractMap.put(dc.Id,dc.Contracts__r);
+            for(Contract_Domain__c contDomain : domainId){
+                domainids.add(contDomain.Domain__c);
+                
+            }
+            list<id> excludedomains = new list<id>();
+            for(Domain_Monthly_Snapshot__c dms : [SELECT id,Domain__c FROM Domain_Monthly_Snapshot__c where Domain__c IN :domainids AND (Subscription_Service_Type__c = 'IMPLEMENTATION' OR Subscription_Service_Type__c = 'PRODUCT')]){
+                excludedomains.add(dms.Domain__c);
+            }
+            domainNameToURLMap = new Map<String, String>();
+            
+            for (Domain__c domain : [select id, name,Server_Name__c from Domain__c where id IN : excludedomains]) {
+                String serverName = domain.Server_Name__c;
+                String baseUrl;
+                
+                if (serverName == 'CommCareHQ') {
+                    baseUrl = 'https://www.commcarehq.org/a/';
+                } else if (serverName == 'CommCareHQ India') {
+                    baseUrl = 'https://india.commcarehq.org/a/';
+                } else if (serverName == 'CommCareHQ EU') {
+                    baseUrl = 'https://nu2sk6wk2n.eu.commcarehq.org/a/';
+                } else {
+                    baseUrl = 'https://www.commcarehq.org/a/';
                 }
+                
+                String domainURL = baseUrl + domain.Name;
+                
+                // Populate the map with domain names as keys and URLs as values
+                domainNameToURLMap.put(domain.Name, domainURL);
+                System.debug('domainNameToURLMap: ' + domainNameToURLMap);
+                
             }
             
-            if (this.contractMap.values().size() > 0 && this.financialContractId == null) {
-                this.financialContractId = this.contractMap.values()[0].id;
-                loadContractBudgetAndSpentData();
+            
+            try{
+                list<Domain_Monthly_Snapshot__c> domainsnap = [SELECT Id,name, Domain__c,Subscription_Service_Type__c, Snapshot_Date__c FROM Domain_Monthly_Snapshot__c where Domain__c IN :domainids AND (Subscription_Service_Type__c = 'IMPLEMENTATION' OR Subscription_Service_Type__c = 'PRODUCT') and Snapshot_Date__c != null ORDER BY Snapshot_Date__c DESC];
+                if (!domainsnap.isEmpty()) {
+                    this.lastsnapshot = Date.newInstance(domainsnap[0].Snapshot_Date__c.year(), domainsnap[0].Snapshot_Date__c.month(), domainsnap[0].Snapshot_Date__c.day());
+                }
+            }catch(Exception ex){
+                System.debug(ex.getMessage());
             }
             
-            if(this.contractMap.containsKey(this.financialContractId)){
-                DContract__c contractid = this.contractMap.get(this.financialContractId);
-                List<Contract_Domain__c> domainId = [select id,Name, Domain__c, Contract__r.id from Contract_Domain__c where Contract__c = :contractid.id];
-                set<id> domainids = new set<id>();
-                
-                for(Contract_Domain__c contDomain : domainId){
-                    domainids.add(contDomain.Domain__c);
-                    
-                }
-                list<id> excludedomains = new list<id>();
-                for(Domain_Monthly_Snapshot__c dms : [SELECT id,Domain__c FROM Domain_Monthly_Snapshot__c where Domain__c IN :domainids AND (Subscription_Service_Type__c = 'IMPLEMENTATION' OR Subscription_Service_Type__c = 'PRODUCT')]){
-                    excludedomains.add(dms.Domain__c);
-                }
-                domainNameToURLMap = new Map<String, String>();
-                
-                for (Domain__c domain : [select id, name,Server_Name__c from Domain__c where id IN : excludedomains]) {
-                    String serverName = domain.Server_Name__c;
-                    String baseUrl;
-                    
-                    if (serverName == 'CommCareHQ') {
-                        baseUrl = 'https://www.commcarehq.org/a/';
-                    } else if (serverName == 'CommCareHQ India') {
-                        baseUrl = 'https://india.commcarehq.org/a/';
-                    } else if (serverName == 'CommCareHQ EU') {
-                        baseUrl = 'https://eu.commcarehq.org/a/';
-                    } else {
-                        baseUrl = 'https://www.commcarehq.org/a/';
-                    }
-                    
-                    String domainURL = baseUrl + domain.Name;
-                    
-                    // Populate the map with domain names as keys and URLs as values
-                    domainNameToURLMap.put(domain.Name, domainURL);
-                    System.debug('domainNameToURLMap: ' + domainNameToURLMap);
-                    
-                }
-                
-                
-                try{
-                    list<Domain_Monthly_Snapshot__c> domainsnap = [SELECT Id,name, Domain__c,Subscription_Service_Type__c, Snapshot_Date__c FROM Domain_Monthly_Snapshot__c where Domain__c IN :domainids AND (Subscription_Service_Type__c = 'IMPLEMENTATION' OR Subscription_Service_Type__c = 'PRODUCT') and Snapshot_Date__c != null ORDER BY Snapshot_Date__c DESC];
-                    System.debug('DomainMap: ' + domainsnap.size());
-                    if (!domainsnap.isEmpty()) {
-                        System.debug('year:: ' + domainsnap[0].Snapshot_Date__c);
-                        this.lastsnapshot = Date.newInstance(domainsnap[0].Snapshot_Date__c.year(), domainsnap[0].Snapshot_Date__c.month(), domainsnap[0].Snapshot_Date__c.day());
-                        System.debug('lastsnapshot: ' + this.lastsnapshot);
-                    }
-                }catch(Exception ex){
-                    System.debug(ex.getMessage());
-                }
-                
-                this.Most_Recent_Month = [SELECT SUM(Active_Mobile_Users__c)recordCount  FROM Domain_Monthly_Snapshot__c where Domain__c IN :domainids AND (Subscription_Service_Type__c = 'IMPLEMENTATION' OR Subscription_Service_Type__c = 'PRODUCT') and Snapshot_Date__c >= LAST_N_MONTHS:1];
-                this.One_Month_prior = [SELECT SUM(Active_Mobile_Users__c)recordCount  FROM Domain_Monthly_Snapshot__c where Domain__c IN :domainids AND (Subscription_Service_Type__c = 'IMPLEMENTATION' OR Subscription_Service_Type__c = 'PRODUCT') and Snapshot_Date__c >= LAST_N_MONTHS:2];
-                this.Two_Months_prior = [SELECT SUM(Active_Mobile_Users__c)recordCount  FROM Domain_Monthly_Snapshot__c where Domain__c IN :domainids AND (Subscription_Service_Type__c = 'IMPLEMENTATION' OR Subscription_Service_Type__c = 'PRODUCT') and Snapshot_Date__c >= LAST_N_MONTHS:3];
-                
-            }  
+            AggregateResult mostRecentResult = [SELECT SUM(Active_Mobile_Users__c)recordCount  FROM Domain_Monthly_Snapshot__c where Domain__c IN :domainids AND (Subscription_Service_Type__c = 'IMPLEMENTATION' OR Subscription_Service_Type__c = 'PRODUCT') and Snapshot_Date__c >= LAST_N_MONTHS:1
+                                                AND Snapshot_Date__c < LAST_N_MONTHS:0];
+            AggregateResult oneMonthPriorResult = [SELECT SUM(Active_Mobile_Users__c)recordCount  FROM Domain_Monthly_Snapshot__c where Domain__c IN :domainids AND (Subscription_Service_Type__c = 'IMPLEMENTATION' OR Subscription_Service_Type__c = 'PRODUCT') and Snapshot_Date__c >= LAST_N_MONTHS:2
+                                                   AND Snapshot_Date__c < LAST_N_MONTHS:1];
+            AggregateResult twoMonthsPriorResult = [SELECT SUM(Active_Mobile_Users__c)recordCount  FROM Domain_Monthly_Snapshot__c where Domain__c IN :domainids AND (Subscription_Service_Type__c = 'IMPLEMENTATION' OR Subscription_Service_Type__c = 'PRODUCT') and Snapshot_Date__c >= LAST_N_MONTHS:3
+                                                    AND Snapshot_Date__c < LAST_N_MONTHS:2];
             
-            for (DContract__c dc:this.contractMap.values()) {
-                this.excludeContractFromSearch.add(dc.Id);
-                DimagiToolsController.PROProject prObj = new DimagiToolsController.PROProject();
-                prObj.Contract = dc;
-                
-                if (this.financialContractId != null && this.financialContractId != '') {
-                    prObj.cssClass = dc.id == this.financialContractId ? 'bgColorCls' : '';
-                }
-                
-                if (customContractsIdsToAddInList.contains(dc.Id)) {
-                    prObj.customAdded = true;
-                }
-                proList.add(prObj);
+            
+            AggregateResult mostRecentusersResult = [SELECT SUM(Total_Mobile_Workers_Domain_cp_all_mobi__c)recordCount  FROM Domain_Monthly_Snapshot__c where Domain__c IN :domainids AND (Subscription_Service_Type__c = 'IMPLEMENTATION' OR Subscription_Service_Type__c = 'PRODUCT') and Snapshot_Date__c >= LAST_N_MONTHS:1
+                                                     AND Snapshot_Date__c < LAST_N_MONTHS:0];
+            AggregateResult oneMonthPriorusersResult = [SELECT SUM(Total_Mobile_Workers_Domain_cp_all_mobi__c)recordCount  FROM Domain_Monthly_Snapshot__c where Domain__c IN :domainids AND (Subscription_Service_Type__c = 'IMPLEMENTATION' OR Subscription_Service_Type__c = 'PRODUCT') and Snapshot_Date__c >= LAST_N_MONTHS:2
+                                                        AND Snapshot_Date__c < LAST_N_MONTHS:1];
+            AggregateResult twoMonthsPriorusersResult = [SELECT SUM(Total_Mobile_Workers_Domain_cp_all_mobi__c)recordCount  FROM Domain_Monthly_Snapshot__c where Domain__c IN :domainids AND (Subscription_Service_Type__c = 'IMPLEMENTATION' OR Subscription_Service_Type__c = 'PRODUCT') and Snapshot_Date__c >= LAST_N_MONTHS:3
+                                                         AND Snapshot_Date__c < LAST_N_MONTHS:2];
+            
+            
+            snapshotDataList = new List<SnapshotData>();
+            SnapshotData labels = new SnapshotData();
+            labels.label = 'Active Mobile Workers';
+            labels.mostRecent =  (Decimal)mostRecentResult.get('recordCount');
+            labels.oneMonthPrior =  (Decimal)oneMonthPriorResult.get('recordCount');
+            labels.twoMonthsPrior =  (Decimal)twoMonthsPriorResult.get('recordCount');
+            
+            snapshotDataList.add(labels);
+            SnapshotData Total_Mobile_Workers = new SnapshotData();
+            Total_Mobile_Workers.label = 'Total Mobile Workers';
+            Total_Mobile_Workers.mostRecent =  (Decimal)mostRecentusersResult.get('recordCount');
+            Total_Mobile_Workers.oneMonthPrior =  (Decimal)oneMonthPriorusersResult.get('recordCount');
+            Total_Mobile_Workers.twoMonthsPrior =  (Decimal)twoMonthsPriorusersResult.get('recordCount');
+            snapshotDataList.add(Total_Mobile_Workers);
+
+            SnapshotData Percentage_Workers_Active = new SnapshotData();
+            Percentage_Workers_Active.label = 'Percentage Workers Active';
+            Decimal mostRecentPercentage = (mostRecentResult.get('recordCount') != null && mostRecentResult.get('recordCount') != 0 && mostRecentusersResult.get('recordCount') != null && mostRecentusersResult.get('recordCount') != 0) 
+    ? ((Decimal)mostRecentResult.get('recordCount') / (Decimal)mostRecentusersResult.get('recordCount')) * 100 
+    : null;
+
+Percentage_Workers_Active.mostRecent = (mostRecentPercentage != null) 
+    ? mostRecentPercentage.setScale(1, System.RoundingMode.HALF_UP)  
+    : null;
+Decimal oneMonthPriorPercentage = (oneMonthPriorResult.get('recordCount') != null && oneMonthPriorResult.get('recordCount') != 0 && oneMonthPriorusersResult.get('recordCount') != null && oneMonthPriorusersResult.get('recordCount') != 0) 
+    ? ((Decimal)oneMonthPriorResult.get('recordCount') / (Decimal)oneMonthPriorusersResult.get('recordCount')) * 100
+    : null;
+
+Percentage_Workers_Active.oneMonthPrior = (oneMonthPriorPercentage != null) 
+    ? oneMonthPriorPercentage.setScale(1, System.RoundingMode.HALF_UP)  
+    : null;
+
+Decimal twoMonthsPriorPercentage = (twoMonthsPriorResult.get('recordCount') != null && twoMonthsPriorResult.get('recordCount') != 0 && twoMonthsPriorusersResult.get('recordCount') != null && twoMonthsPriorusersResult.get('recordCount') != 0) 
+    ? ((Decimal)twoMonthsPriorResult.get('recordCount') / (Decimal)twoMonthsPriorusersResult.get('recordCount')) * 100
+    : null;
+
+Percentage_Workers_Active.twoMonthsPrior = (twoMonthsPriorPercentage != null) 
+    ? twoMonthsPriorPercentage.setScale(1, System.RoundingMode.HALF_UP)  
+    : null;
+
+            snapshotDataList.add(Percentage_Workers_Active);
+           
+        }  
+        
+        for (DContract__c dc:this.contractMap.values()) {
+            this.excludeContractFromSearch.add(dc.Id);
+            DimagiToolsController.PROProject prObj = new DimagiToolsController.PROProject();
+            prObj.Contract = dc;
+            
+            if (this.financialContractId != null && this.financialContractId != '') {
+                prObj.cssClass = dc.id == this.financialContractId ? 'bgColorCls' : '';
             }
+            
+            if (customContractsIdsToAddInList.contains(dc.Id)) {
+                prObj.customAdded = true;
+            }
+            proList.add(prObj);
         }
         
         return proList;
@@ -338,7 +393,9 @@ idSubcontractValue = 0;
             prbjObj5.amountRemaining = Integer.valueOf(Total_Amount_of_Contract - b);
             prbjObj5.prcntgUsed = a != 0 ? Math.round((b/a) * 100) : 0;
             this.proBudgetList.add(prbjObj5);
-        }  
+        }
+        
+        
         
         loadProjectexecutionStatusList();
         loadHistoryOfTimeSpend(contractIdTimeCardsMap);
@@ -585,5 +642,12 @@ idSubcontractValue = 0;
             
             this.executionStatusList = new List<DimagiToolsController.ProjectExecutionStatus> { execStatus1, execStatus2, execStatus3, execStatus4 };
                 }
-    } 
+    }
+    public class SnapshotData {
+        public String label { get; set; }
+        public decimal mostRecent { get; set; }
+        public decimal oneMonthPrior { get; set; }
+        public decimal twoMonthsPrior { get; set; }
+    }
+    
 }

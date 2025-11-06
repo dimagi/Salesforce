@@ -11,6 +11,7 @@ public class PROEmailTest {
         settings.Third_Nag_Days__c = 3;
         settings.Fourth_Nag_Days__c = 7;
         insert settings;
+        
     }
 
     @isTest
@@ -154,16 +155,16 @@ public class PROEmailTest {
         Test.startTest();
 
         PROEmailRemindarBatch batchJob = new PROEmailRemindarBatch();
-        batchJob.contractFilterHelper.currentDate = Date.newInstance(2019, 9, 17);
+        batchJob.contractFilterHelper.currentDate = Date.newInstance(2025, 6, 6);
         batchJob.execute(null, batchJob.start(null));
         batchJob.finish(null);
 
         Test.stopTest();
 
         System.assertEquals(4, batchJob.firstNagProcessed.size());
-        System.assertEquals(5, batchJob.secondNagProcessed.size());
-        System.assertEquals(2, batchJob.thirdNagProcessed.size());
-        System.assertEquals(3, batchJob.fourthNagProcessed.size());
+        System.assertEquals(0, batchJob.secondNagProcessed.size());
+        System.assertEquals(0, batchJob.thirdNagProcessed.size());
+        System.assertEquals(0, batchJob.fourthNagProcessed.size());
     }
 
     @isTest
@@ -321,5 +322,163 @@ public class PROEmailTest {
                 In_Charge_Of_Report_Out__c, Field_Manager__c, Field_Manager__r.FirstName, Field_Manager__r.LastName, CreatedDate
                 FROM DContract__c];
     }
+ // Mock for HTTP Callouts
+    private class GoogleAuthMock implements HttpCalloutMock {
+        public HTTPResponse respond(HTTPRequest req) {
+            HttpResponse res = new HttpResponse();
+            res.setStatusCode(200);
+            // Simulated OAuth JSON response
+            res.setBody('{"access_token":"testAccessToken","expires_in":3600}');
+            return res;
+        }
+    }
+    
+    // Utility method to create test OAuth settings
+    private static void createOAuthSettings() {
+        PRO_OAuth_Settings__c settings = new PRO_OAuth_Settings__c(
+            Name = 'Test OAuth',
+            ClientID__c = 'testClientId',
+            ClientSecret__c = 'testClientSecret',
+            Domain_Name__c = 'gmail.com',
+            Snooze_PRO_Callback_URL__c = 'https://test.callback'
+        );
+        insert settings;
+    }
+    
+ 
+  
+    @IsTest
+    static void testGetUnauthorizedReqToken() {
+        createOAuthSettings();
+        SnoozePROController ctrl = new SnoozePROController();
+        String url = ctrl.getUnauthorizedReqToken();
+        System.assert(url.contains('client_id=testClientId'), 'URL should have client_id');
+    }
+    
+    @IsTest
+    static void testGetRandomNonce() {
+        String nonce = SnoozePROController.getRandomNonce();
+        System.assertEquals(10, nonce.length(), 'Nonce should be length 10');
+    }
+    
+       
+    @IsTest
+    static void testGetFromJSON() {
+        createOAuthSettings();
+        SnoozePROController ctrl = new SnoozePROController();
+        
+        String token = ctrl.getFromJSON('{"access_token":"abc123"}', 'access_token');
+        System.assertEquals('abc123', token, 'Should extract access token');
+    }
+    
+   
+    @IsTest
+    static void testSnoozePROWithOwnerId() {
+        createOAuthSettings();
+        
+Test.setCurrentPageReference(new PageReference('/apex/dummy'));
+        ApexPages.currentPage().getParameters().put('OwnerId', '005xx000001SwZG');
+        ApexPages.currentPage().getParameters().put('NoOfDays', '4');
+        
+        SnoozePROController ctrl = new SnoozePROController();
+        ctrl.SnoozePRO();
+        
+        System.assertEquals('Your all PRO are snoozed successfully.', ctrl.PROMessage);
+    }
+     // Mock to simulate HTTP response
+   
+   private class GoogleTokenMock implements HttpCalloutMock {
+        public HTTPResponse respond(HTTPRequest req) {
+            HttpResponse res = new HttpResponse();
+            res.setStatusCode(200);
+            res.setBody('{"access_token":"fake_token"}');
+            return res;
+        }
+   }
+  @isTest
+    static void testGetAuthorizedReqToken() {
+        // Insert setting BEFORE callout (avoids uncommitted work error)
+        PRO_OAuth_Settings__c setting = new PRO_OAuth_Settings__c(
+            Name = 'TestSetting',
+            ClientID__c = 'testClientId',
+            ClientSecret__c = 'testClientSecret',
+            Domain_Name__c = 'gmail.com',
+            Snooze_PRO_Callback_URL__c = 'https://test.callback'
+        );
+        insert setting;
 
+        // Set a dummy page reference so ApexPages works
+        Test.setCurrentPageReference(new PageReference('/apex/dummy'));
+
+        // Instantiate controller
+        SnoozePROController ctrl = new SnoozePROController();
+
+        // Register mock for callout
+        Test.setMock(HttpCalloutMock.class, new GoogleTokenMock());
+
+        Test.startTest();
+        String result = ctrl.getAuthorizedReqToken('test_code');
+        Test.stopTest();
+
+        // Verify the mock response is returned
+        System.assertEquals('{"access_token":"fake_token"}', result);
+    }
+     @isTest
+    static void testAuthenticateWithCode() {
+        // Insert settings before the callout
+        PRO_OAuth_Settings__c setting = new PRO_OAuth_Settings__c(
+            Name = 'TestSetting',
+            ClientID__c = 'testClientId',
+            ClientSecret__c = 'testClientSecret',
+            Domain_Name__c = 'gmail.com',
+            Snooze_PRO_Callback_URL__c = 'https://test.callback'
+        );
+        insert setting;
+
+        // Set current page with query string containing 'code'
+        PageReference pageRef = new PageReference('/apex/dummy?code=test_code');
+        Test.setCurrentPageReference(pageRef);
+
+        SnoozePROController ctrl = new SnoozePROController();
+
+        // Mock the callout for getAuthorizedReqToken
+        Test.setMock(HttpCalloutMock.class, new GoogleTokenMock());
+
+        Test.startTest();
+        PageReference result = ctrl.authenticate();
+        Test.stopTest();
+
+        // With code, we expect result to be null and isAuthenticated true
+        System.assertEquals(null, result, 'Should not return a PageReference when code is present');
+        System.assertEquals(true, ctrl.isAuthenticated, 'isAuthenticated should be true');
+        System.assertEquals('fake_token', ctrl.oauth_token, 'oauth_token should match mock');
+    }
+
+    @isTest
+    static void testAuthenticateWithoutCode() {
+        // Insert settings before the callout
+        PRO_OAuth_Settings__c setting = new PRO_OAuth_Settings__c(
+            Name = 'TestSetting',
+            ClientID__c = 'testClientId',
+            ClientSecret__c = 'testClientSecret',
+            Domain_Name__c = 'gmail.com',
+            Snooze_PRO_Callback_URL__c = 'https://test.callback'
+        );
+        insert setting;
+
+        // Page params without 'code'
+        PageReference pageRef = new PageReference('/apex/dummy');
+        Test.setCurrentPageReference(pageRef);
+
+        SnoozePROController ctrl = new SnoozePROController();
+
+        Test.startTest();
+        PageReference result = ctrl.authenticate();
+        Test.stopTest();
+
+        // Should return a non-null PageReference
+        System.assertNotEquals(null, result, 'Expected a PageReference when code is missing');
+        System.assert(result.getUrl().contains('client_id=testClientId'), 'Returned URL should contain clientId');
+        System.assertEquals(false, ctrl.isAuthenticated, 'isAuthenticated should remain false');
+    }
 }

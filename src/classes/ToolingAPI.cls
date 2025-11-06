@@ -51,15 +51,13 @@ public with sharing class ToolingAPI {
      **/
     public ToolingAPI() {
         this.sessionId = UserInfo.getSessionId();
-        if(this.sessionId==null)
-            throw new ToolingAPIException('Unable to obtain Session Id');
+        if(this.sessionId==null) throw new ToolingAPIException('Unable to obtain Session Id');
     }
 
     /**
      * Uses the given Session Id, useful when using the API in a batch context
      **/
-    public ToolingAPI(String sessionId) {
-        this.sessionId = sessionId;
+    public ToolingAPI(String sessionId) {  this.sessionId = sessionId;
     }
 
     /**
@@ -86,18 +84,7 @@ public with sharing class ToolingAPI {
         public CustomField() {
             super(SObjectType.CustomField);
         }
-        public override void serialize(JSONGenerator jsonGen) {
-            super.serialize(jsonGen);
-            if(fullName!=null)
-                jsonGen.writeStringField('fullName', fullName);
-            if(developerName!=null)
-                jsonGen.writeStringField('developerName', developerName);
-            if(metadata!=null)
-                jsonGen.writeObjectField('metadata', metadata);
-            if(namespacePrefix!=null)
-                jsonGen.writeStringField('namespacePrefix', namespacePrefix);
-            if(tableEnumOrId!=null)
-                jsonGen.writeStringField('tableEnumOrId', tableEnumOrId);
+        public override void serialize(JSONGenerator jsonGen) { super.serialize(jsonGen); if(fullName!=null)jsonGen.writeStringField('fullName', fullName); if(developerName!=null) jsonGen.writeStringField('developerName', developerName); if(metadata!=null)  jsonGen.writeObjectField('metadata', metadata); if(namespacePrefix!=null) jsonGen.writeStringField('namespacePrefix', namespacePrefix); if(tableEnumOrId!=null)  jsonGen.writeStringField('tableEnumOrId', tableEnumOrId);
         }        
     }
     
@@ -155,14 +142,7 @@ public with sharing class ToolingAPI {
         public CustomObject() {
             super(SObjectType.CustomObject);
         }
-        public override void serialize(JSONGenerator jsonGen) {
-            super.serialize(jsonGen);
-            if(developerName!=null)
-                jsonGen.writeStringField('developerName', developerName);
-            if(externalDataSourceId!=null)
-                jsonGen.writeStringField('externalDataSourceId', externalDataSourceId);
-            if(namespacePrefix!=null)
-                jsonGen.writeStringField('namespacePrefix', namespacePrefix);
+        public override void serialize(JSONGenerator jsonGen) { super.serialize(jsonGen);if(developerName!=null)  jsonGen.writeStringField('developerName', developerName);if(externalDataSourceId!=null) jsonGen.writeStringField('externalDataSourceId', externalDataSourceId); if(namespacePrefix!=null) jsonGen.writeStringField('namespacePrefix', namespacePrefix);
         }        
     }
     
@@ -225,24 +205,19 @@ public with sharing class ToolingAPI {
         public SObject_x(SObjectType sObjectType){
             type_x = sObjectType;
         }
-        public virtual void serialize(JSONGenerator jsonGen) {
-            if(id!=null)
-                jsonGen.writeStringField('id', id);
-            if(fieldsToNull!=null)
-                for(String fieldToNull : fieldsToNull)
-                    jsonGen.writeNullField(fieldToNull);
+        public virtual void serialize(JSONGenerator jsonGen) { if(id!=null)jsonGen.writeStringField('id', id);
+            if(fieldsToNull!=null) for(String fieldToNull : fieldsToNull)    jsonGen.writeNullField(fieldToNull);
         }
     }
 
     public class ToolingAPIException extends Exception{
-        public ToolingAPIException(List<ErrorResponse> errorResponses){
-            this(errorResponses[0].errorCode + ' : ' + errorResponses[0].message);
+        public ToolingAPIException(List<ErrorResponse> errorResponses){   this(errorResponses[0].errorCode + ' : ' + errorResponses[0].message);
         }
     }
 
     public class ToolingAPIAuthorizationException extends Exception
     {
-    	
+        
     }
     
     public class User_x extends SObject_x implements ISerialize {
@@ -250,16 +225,9 @@ public with sharing class ToolingAPI {
         public QueryResult userPreferences;
         public Id          workspaceId;
         public User_x() {
-        	super(SObjectType.User);
+            super(SObjectType.User);
         }
-        public override void serialize(JSONGenerator jsonGen) {
-            super.serialize(jsonGen);
-            if(delegatedUsers!=null)
-                jsonGen.writeObjectField('delegatedUsers', delegatedUsers);
-            if(userPreferences!=null)
-                jsonGen.writeObjectField('userPreferences', userPreferences);
-            if(workspaceId!=null)
-                jsonGen.writeIdField('workspaceId', workspaceId);
+        public override void serialize(JSONGenerator jsonGen) { super.serialize(jsonGen); if(delegatedUsers!=null) jsonGen.writeObjectField('delegatedUsers', delegatedUsers); if(userPreferences!=null) jsonGen.writeObjectField('userPreferences', userPreferences); if(workspaceId!=null) jsonGen.writeIdField('workspaceId', workspaceId);
         }                
     }    
 
@@ -298,14 +266,7 @@ public with sharing class ToolingAPI {
         if(data!=null)
         {
             // Custom serializer?
-            if(data instanceof ISerialize)
-            {
-                ISerialize dataToserialize = (ISerialize) data;
-                JSONGenerator jsonGen = JSON.createGenerator(false);
-                jsonGen.writeStartObject();
-                dataToserialize.serialize(jsonGen);
-                jsonGen.writeEndObject();
-                queryReq.setBody(jsonGen.getAsString());
+            if(data instanceof ISerialize) { ISerialize dataToserialize = (ISerialize) data; JSONGenerator jsonGen = JSON.createGenerator(false); jsonGen.writeStartObject(); dataToserialize.serialize(jsonGen);jsonGen.writeEndObject();queryReq.setBody(jsonGen.getAsString());
             }
             else
             {
@@ -321,10 +282,7 @@ public with sharing class ToolingAPI {
             queryRes = h.send(queryReq);
         }
         catch (System.CalloutException ce)
-        {
-            if (ce.getMessage().containsIgnoreCase('unauthorized endpoint'))
-            {
-                throw new ToolingAPIAuthorizationException(ce);
+        {  if (ce.getMessage().containsIgnoreCase('unauthorized endpoint')) { throw new ToolingAPIAuthorizationException(ce);
             }
             else
             {
@@ -333,15 +291,9 @@ public with sharing class ToolingAPI {
         }
 
         Integer successCode = 200;
-        if(method.equals('POST'))
-            successCode = 201;
-        else if(method.equals('DELETE'))
-            successCode = 204;
-        if(queryRes.getStatusCode() != successCode)
-            if(queryRes.getBody().length()>0)
-                throw new ToolingAPIException((List<ErrorResponse>) JSON.deserialize(queryRes.getBody(), List<ErrorResponse>.class));
-            else
-                throw new ToolingAPIException('Unexpected HTTP Status ' + queryRes.getStatusCode());
+        if(method.equals('POST')) successCode = 201;
+        else if(method.equals('DELETE')) successCode = 204;
+        if(queryRes.getStatusCode() != successCode) if(queryRes.getBody().length()>0)    throw new ToolingAPIException((List<ErrorResponse>) JSON.deserialize(queryRes.getBody(), List<ErrorResponse>.class)); else  throw new ToolingAPIException('Unexpected HTTP Status ' + queryRes.getStatusCode());
         return queryRes;
     }
 
@@ -399,4 +351,5 @@ public with sharing class ToolingAPI {
         }
         return null;
     }
+    
 }

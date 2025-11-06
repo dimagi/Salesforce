@@ -17,7 +17,7 @@ private class OpportunityCountryTriggerTest {
         opp.StageName = 'Stage 1 - Connect';
         opp.CloseDate = Date.newInstance(2013, 4, 9);
         opp.Implementing_Business_Unit__c = bunit.Id;
-        opp.Opportunity_Owner_Division__c = 'Solutions';
+        opp.Opportunity_Owner_Division__c = 'Global Solutions';
         opp.Opportunity_Owner_Sub_Division__c='Inbound Sales';
         insert opp;
 
@@ -64,7 +64,7 @@ private class OpportunityCountryTriggerTest {
         opp.StageName = 'Stage 1 - Connect';
         opp.CloseDate = Date.newInstance(2013, 4, 9);
         opp.Implementing_Business_Unit__c = bunit.Id;
-        opp.Opportunity_Owner_Division__c = 'Solutions';
+        opp.Opportunity_Owner_Division__c = 'Global Solutions';
         opp.Opportunity_Owner_Sub_Division__c='Inbound Sales';
         insert opp;
 
@@ -115,7 +115,7 @@ private class OpportunityCountryTriggerTest {
         opp.StageName = 'Stage 1 - Connect';
         opp.CloseDate = Date.newInstance(2013, 4, 9);
         opp.Implementing_Business_Unit__c = bunit.Id;
-        opp.Opportunity_Owner_Division__c = 'Solutions';
+        opp.Opportunity_Owner_Division__c = 'Global Solutions';
         opp.Opportunity_Owner_Sub_Division__c='Inbound Sales';
         insert opp;
 

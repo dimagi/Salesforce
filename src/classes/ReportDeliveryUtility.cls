@@ -18,7 +18,7 @@ public with sharing class ReportDeliveryUtility implements Database.AllowsCallou
      * @param Id jobId
      * @return Report_Delivery_Info
      */
-    private static Report_Delivery_Info__c getReportDeliveryInfo(String jobId) {
+    public static Report_Delivery_Info__c getReportDeliveryInfo(String jobId) {
         Report_Delivery_Info__c reportDeliveryInfo = null;
         if (jobId != null) {
             List<Report_Delivery_Info__c> reportDeliveryInfos = [SELECT Id, Email_Recipients__c,Email_body__c,Field_Id__c, Filter__c, Report_Id__c,Email_Subject__C FROM Report_Delivery_Info__c
@@ -35,7 +35,7 @@ public with sharing class ReportDeliveryUtility implements Database.AllowsCallou
     /*
      * Send individual reports based on the filter 
      */
-    private static void sendEmail(Id reportId, String filter, Map<String, String> options, String otherRecipients,string body,string subject) {
+    public static void sendEmail(Id reportId, String filter, Map<String, String> options, String otherRecipients,string body,string subject) {
         
         String username ;
         String password ;
@@ -124,7 +124,7 @@ public with sharing class ReportDeliveryUtility implements Database.AllowsCallou
     }
     
     @future(callout=true)
-    private static void sendHttpCallOut(string requestUrl,string email,string emailBody,string reportUrl,string username,string password,string subject) {
+    public static void sendHttpCallOut(string requestUrl,string email,string emailBody,string reportUrl,string username,string password,string subject) {
         // get session id 
         String sessionId= LoginClass.login(username,password);
         
@@ -153,7 +153,7 @@ public with sharing class ReportDeliveryUtility implements Database.AllowsCallou
      * Generate a single email with a single report for other recipients without applying the filter
      */ 
     @future(callout=true)
-    private static void generateEmailForOtherRecipients(String otherRecipients,string body, String reportId,string username,string password,string subject) {
+    public static void generateEmailForOtherRecipients(String otherRecipients,string body, String reportId,string username,string password,string subject) {
         
         // split other recipients
         List<String> recipients = otherRecipients.split(';');
@@ -315,7 +315,7 @@ public with sharing class ReportDeliveryUtility implements Database.AllowsCallou
                             string valueType = getType(s.getValue());
                             string value = valueType == 'Date' || valueType == 'DateTime' || valueType == 'Time'? String.valueOf(s.getValue()): (String)s.getValue();
                             if(!recipients.containsKey(value)) {
-                            	recipients.put(value, s.getLabel());
+                                recipients.put(value, s.getLabel());
                             }
                         }
                     }
@@ -390,5 +390,5 @@ public with sharing class ReportDeliveryUtility implements Database.AllowsCallou
         if(o instanceof Double)             return 'Double';   // we can't distinguish between decimal and double
         if(o instanceof List<object>)       return 'List';
         return 'Object';                    // actually we can't detect maps and sets and maps
-	}
+    }
 }

@@ -14,11 +14,7 @@ public class AdminPageTest {
         testCustomSetting.API_Limit_Parameter__c = 10;
         testCustomSetting.Name = 'CommCare HQ';
         insert testCustomSetting;
-    }
-
-    @testSetup
-    static void setup() {
-        Integer currentYear = Date.today().year();
+         Integer currentYear = Date.today().year();
         List<ICDS_Domain_Snapshot__c> testData = new List<ICDS_Domain_Snapshot__c>();
         for (Integer i = 1; i <= 12; i++) {
             testData.add(new ICDS_Domain_Snapshot__c(Date__c = Date.newInstance(currentYear, i, Date.daysInMonth(currentYear, i)),
@@ -26,6 +22,7 @@ public class AdminPageTest {
         }
         insert testData;
     }
+
 
     @isTest
     public static void testRefresh() {

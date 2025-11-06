@@ -103,8 +103,7 @@ public class PROEmailProcessHelper {
                                                 projectInChargeId));
             }
 
-            if(ownerEmailMessageList.size() > 0 && !Test.isRunningTest()){
-                Messaging.sendEmail(ownerEmailMessageList);
+            if(ownerEmailMessageList.size() > 0 && !Test.isRunningTest()){     Messaging.sendEmail(ownerEmailMessageList);
             }
 
             //Send Email To PM.

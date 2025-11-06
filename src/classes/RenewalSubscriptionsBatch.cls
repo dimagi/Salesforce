@@ -100,7 +100,8 @@ public without sharing class RenewalSubscriptionsBatch implements Database.Batch
         String dateString = (this.currentDate.month() < 10 ? '0' + this.currentDate.month() : '' + this.currentDate.month())
                                 + (this.currentDate.day() < 10 ? '0' + this.currentDate.day() : '' + this.currentDate.day())
                                 + ('' + this.currentDate.year());
-
+        integer a = 0;
+        integer b = 0;
         for (Accounting_Subscription__c subscription : subs) {
             
             if (subscription.Accounting_subscriber_domain__r.Opportunity__c != null &&
@@ -109,6 +110,7 @@ public without sharing class RenewalSubscriptionsBatch implements Database.Batch
                 this.domainsToSkip.add(subscription.Accounting_subscriber_domain__c);
             }
             if (!this.domainsToSkip.contains(subscription.Accounting_subscriber_domain__c)) {
+                System.debug('a =>>> '+ a++);
                 String oppSource = '';
                 Id ownerId = null;
                 if (subscription.service_type__c == 'IMPLEMENTATION' && subscription.Software_Plan_Edition__c != 'Enterprise') {
@@ -128,6 +130,8 @@ public without sharing class RenewalSubscriptionsBatch implements Database.Batch
                 } else {
                     continue; // we skip this subscription
                 }
+                                                    system.debug('subscription' + subscription.Id);
+
 
                 String oppNameFirstPart = subscription.Accounting_subscriber_domain__r.Account__r.Name != null && subscription.Accounting_subscriber_domain__r.Account__r.Name != '' ?
                                             subscription.Accounting_subscriber_domain__r.Account__r.Name : subscription.Accounting_subscriber_domain__r.Name;
@@ -157,21 +161,38 @@ system.debug('==' + this.incBusinessUnit);
                                                         Contract_Owner_BU__c = this.incBusinessUnit.Id,
                                                         Implementing_Business_Unit__c = this.incBusinessUnit.Id,
                                                         Opportunity_Source__c = oppSource,
-                                                        Opportunity_Owner_Division__c = 'SaaS',
-                                                        Opportunity_Owner_Sub_Division__c = 'SaaS - Sales',
+                                                        Opportunity_Owner_Division__c = 'CommCare',
+                                                        Opportunity_Owner_Sub_Division__c = 'CommCare Sales',
                     									AccountId = subscription.Accounting_subscriber_domain__r.Account__r.id
                                                     );                    									
 
 
                 PricebookEntry pbe = this.priceBookEntries.get(subscription.Software_Plan_Edition__c);
+                system.debug('pbe==> '+pbe);
                 Decimal price = this.salesPrices.get(subscription.Software_Plan_Edition__c);
+                if (pbe == null || price == null) {
+    System.debug(' Missing Pricebook entry or price for edition: ' + subscription.Software_Plan_Edition__c);
+    StatusLoggerUtils.logError(
+        StatusLoggerUtils.RENEWAL_LOGGER,
+        subscription.Name,
+        0,
+        'Missing Pricebook entry or price for edition: ' + subscription.Software_Plan_Edition__c
+    );
+    continue; // skip this subscription safely
+                }else{
                 Domain__c domainToUpdate = domains.get(subscription.Accounting_subscriber_domain__c);
                 system.debug('@@newOpp' + newOpp);
                 Savepoint sp = Database.setSavepoint();
                 try {
+                                    System.debug('b =>>> '+ b++);
+
                     insert newOpp;
                     domainToUpdate.Opportunity__c = newOpp.Id;
                     update domainToUpdate;
+                                    system.debug('@@pbe.Id' + pbe.Id);
+                system.debug('@@price' + price);
+                system.debug('@@newOpp.Id' + newOpp.Id);
+
                     insert new OpportunityLineItem(PricebookEntryId = pbe.Id, Quantity = 12, UnitPrice = price, OpportunityId = newOpp.Id);
                     // SAL-48 removing commcare: product pricebook entry
                     // insert new OpportunityLineItem(PricebookEntryId = commCareEntry.Id, Quantity = 1, UnitPrice = commCareEntry.UnitPrice, OpportunityId = newOpp.Id);
@@ -180,6 +201,7 @@ system.debug('==' + this.incBusinessUnit);
                     Database.rollback(sp);
                     system.debug('@@Error' + e.getMessage());
                     StatusLoggerUtils.logError(StatusLoggerUtils.RENEWAL_LOGGER, domainToUpdate.Name + ' - ' + subscription.Name, 0, e.getMessage());
+                }
                 }
             }
 

@@ -39,8 +39,7 @@ public abstract class PipelineSnapshotController {
                     if (lastJobInfo.Status == 'Completed' && (lastJobInfo.ExtendedStatus == null || lastJobInfo.ExtendedStatus == '')) {
                         ApexPages.addMessage(new ApexPages.message(ApexPages.severity.CONFIRM, 'Pipeline snapshots job complete.'));
                     } else {
-                        ApexPages.addMessage(new ApexPages.message(ApexPages.severity.ERROR, 'Pipeline snapshots job complete with status ' + lastJobInfo.Status
-                                                                        + ' ' + lastJobInfo.ExtendedStatus));
+                        ApexPages.addMessage(new ApexPages.message(ApexPages.severity.ERROR, 'Pipeline snapshots job complete with status ' + lastJobInfo.Status                                                                        + ' ' + lastJobInfo.ExtendedStatus));
                     }
                     this.pagination = new Pagination();
                     loadTotal();

@@ -94,10 +94,7 @@ public class PROEmailRemindarBatch implements Database.Batchable<DContract__c>, 
         processHelper.processFourthNag(fourthNagProcessed);
     }
 
-    /*
-        Get All contract where at least one PRO is created and 
-        require report out.
-    */
+  
     private List<DContract__c> GetContract() {
         return [SELECT Id, Name, Last_Report_Out_Date__c, Last_Report_Out_Status__c, Is_Snooze__c, Is_First_Nag_Sent__c,
                 Snooze_Days__c, Snooze_Date__c, First_Nag_Sent_Date__c , OwnerId, Owner.Name,Owner.Email,

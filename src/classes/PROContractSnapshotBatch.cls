@@ -4,8 +4,8 @@
 */
 public class PROContractSnapshotBatch implements Database.Batchable<DContract__c>, Database.Stateful {
 
-    private Date currentDate;
-    private List<PRO_Contract_Snapshot__c> failedReocrds = new List<PRO_Contract_Snapshot__c>();
+    public Date currentDate;
+    public List<PRO_Contract_Snapshot__c> failedReocrds = new List<PRO_Contract_Snapshot__c>();
 
     public PROContractSnapshotBatch(){
         this.currentDate = Date.today();

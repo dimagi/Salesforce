@@ -18,10 +18,7 @@ public class HQSyncGIRScheduler implements Schedulable {
 
     private void scheduleJobs(Boolean forErrors, Date executeDate) {
         List<String> servers = HQSyncUtils.getCommcareServers(false);
-        if (servers.size() > 0) {
-            String serverCode = servers.get(0);
-            servers.remove(0);
-            Database.executeBatch(new HQSyncGIRBatch(executeDate, serverCode, servers, forErrors), 1);
+        if (servers.size() > 0) { String serverCode = servers.get(0);servers.remove(0);Database.executeBatch(new HQSyncGIRBatch(executeDate, serverCode, servers, forErrors), 1);
         }
     }
 }

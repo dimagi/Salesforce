@@ -7,11 +7,11 @@ private class OpportunityTriggersTest {
     @isTest
     public static void shouldAddUpdateFogBugzAssignedTo() {
         Opportunity opp1 = new Opportunity(Name = 'Opp simple 1', StageName = 'Closed - Lost', Fogbugz_Assigned_To__c = 'CLOSED', CloseDate = Date.today(),
-                                            Opportunity_Owner_Division__c = 'Solutions', Opportunity_Owner_Sub_Division__c='Inbound Sales');
+                                            Opportunity_Owner_Division__c = 'Global Solutions', Opportunity_Owner_Sub_Division__c='Inbound Sales',Country__c = 'a00b0000001AP19AAG',Expense_Income__c = 0,Proposal_Dropbox_Location__c = 'test');
         Opportunity opp2 = new Opportunity(Name = 'Opp simple 2', StageName = 'Closed - Lost', Fogbugz_Assigned_To__c = '', CloseDate = Date.today(),
-                                            Opportunity_Owner_Division__c = 'Solutions', Opportunity_Owner_Sub_Division__c='Inbound Sales');
+                                            Opportunity_Owner_Division__c = 'Global Solutions', Opportunity_Owner_Sub_Division__c='Inbound Sales',Country__c = 'a00b0000001AP19AAG',Expense_Income__c = 0,Proposal_Dropbox_Location__c = 'test');
         Opportunity opp3 = new Opportunity(Name = 'Opp simple 3', StageName = 'Closed - Lost', Fogbugz_Assigned_To__c = 'Person', CloseDate = Date.today(),
-                                            Opportunity_Owner_Division__c = 'Solutions', Opportunity_Owner_Sub_Division__c='Inbound Sales');
+                                            Opportunity_Owner_Division__c = 'Global Solutions', Opportunity_Owner_Sub_Division__c='Inbound Sales',Country__c = 'a00b0000001AP19AAG',Expense_Income__c = 0,Proposal_Dropbox_Location__c = 'test');
         insert new List<Opportunity> { opp1, opp2, opp3 };
 
         Test.startTest();
@@ -49,13 +49,13 @@ private class OpportunityTriggersTest {
         Account acc3 = new Account(Name = 'Acc 3 Test', Status__c = 'Active');
         insert acc3;
         Opportunity opp1 = new Opportunity(Name = 'opp1', StageName = 'Stage 1 - Connect', CloseDate = Date.today().addDays(50),
-                                          Implementing_Business_Unit__c = bunit.Id, AccountId = acc1.Id,Opportunity_Owner_Division__c = 'Solutions', Opportunity_Owner_Sub_Division__c='Inbound Sales');
+                                          Implementing_Business_Unit__c = bunit.Id, AccountId = acc1.Id,Opportunity_Owner_Division__c = 'Global Solutions', Opportunity_Owner_Sub_Division__c='Inbound Sales');
         insert opp1;
         Opportunity opp2 = new Opportunity(Name = 'opp2', StageName = 'Stage 1 - Connect', CloseDate = Date.today().addDays(50),
-                                          Implementing_Business_Unit__c = bunit.Id, AccountId = acc2.Id,Opportunity_Owner_Division__c = 'Solutions', Opportunity_Owner_Sub_Division__c='Inbound Sales');
+                                          Implementing_Business_Unit__c = bunit.Id, AccountId = acc2.Id,Opportunity_Owner_Division__c = 'Global Solutions', Opportunity_Owner_Sub_Division__c='Inbound Sales');
         insert opp2;
         Opportunity opp3 = new Opportunity(Name = 'opp3', StageName = 'Stage 1 - Connect', CloseDate = Date.today().addDays(50),
-                                          Implementing_Business_Unit__c = bunit.Id, AccountId = acc3.Id,Opportunity_Owner_Division__c = 'Solutions', Opportunity_Owner_Sub_Division__c='Inbound Sales');
+                                          Implementing_Business_Unit__c = bunit.Id, AccountId = acc3.Id,Opportunity_Owner_Division__c = 'Global Solutions', Opportunity_Owner_Sub_Division__c='Inbound Sales');
         insert opp3;
 
         HQSyncDomainModel.DomainModel d1 = new HQSyncDomainModel.DomainModel();
@@ -113,10 +113,10 @@ private class OpportunityTriggersTest {
         Account acc2 = new Account(Name = 'Acc 2 Test', Status__c = 'Active');
         insert acc2;
         Opportunity opp1 = new Opportunity(Name = 'opp1', StageName = 'Stage 1 - Connect', CloseDate = Date.today().addDays(50),
-                                          Implementing_Business_Unit__c = bunit.Id, AccountId = acc1.Id, Opportunity_Owner_Division__c = 'Solutions', Opportunity_Owner_Sub_Division__c='Inbound Sales');
+                                          Implementing_Business_Unit__c = bunit.Id, AccountId = acc1.Id, Opportunity_Owner_Division__c = 'Global Solutions', Opportunity_Owner_Sub_Division__c='Inbound Sales');
         insert opp1;
         Opportunity opp2 = new Opportunity(Name = 'opp2', StageName = 'Stage 1 - Connect', CloseDate = Date.today().addDays(50),
-                                          Implementing_Business_Unit__c = bunit.Id, AccountId = acc2.Id, Opportunity_Owner_Division__c = 'Solutions', Opportunity_Owner_Sub_Division__c='Inbound Sales');
+                                          Implementing_Business_Unit__c = bunit.Id, AccountId = acc2.Id, Opportunity_Owner_Division__c = 'Global Solutions', Opportunity_Owner_Sub_Division__c='Inbound Sales');
         insert opp2;
 
         HQSyncDomainModel.DomainModel d1 = new HQSyncDomainModel.DomainModel();
@@ -150,7 +150,7 @@ private class OpportunityTriggersTest {
         opp.CloseDate = Date.newInstance(2013, 4, 9);
         opp.Implementing_Business_Unit__c = bunit.Id;
         opp.Fogbugz_Ticket_Number__c = FogBugzHttpCalloutMock.TEST_FB_ID;
-        opp.Opportunity_Owner_Division__c = 'Solutions';
+        opp.Opportunity_Owner_Division__c = 'Global Solutions';
         opp.Opportunity_Owner_Sub_Division__c='Inbound Sales';
         insert opp;
 
@@ -174,7 +174,7 @@ private class OpportunityTriggersTest {
         opp.CloseDate = Date.newInstance(2013, 4, 9);
         opp.Implementing_Business_Unit__c = bunit.Id;
         opp.Fogbugz_Ticket_Number__c = FogBugzHttpCalloutMock.TEST_FB_ID;
-        opp.Opportunity_Owner_Division__c = 'Solutions';
+        opp.Opportunity_Owner_Division__c = 'Global Solutions';
         opp.Opportunity_Owner_Sub_Division__c='Inbound Sales';
         insert opp;
 
@@ -201,7 +201,7 @@ private class OpportunityTriggersTest {
         opp.Implementing_Business_Unit__c = bunit.Id;
         opp.Fogbugz_Ticket_Number__c = FogBugzHttpCalloutMock.TEST_FB_ID;
         opp.Amount = 10;
-        opp.Opportunity_Owner_Division__c = 'Solutions';
+        opp.Opportunity_Owner_Division__c = 'Global Solutions';
         opp.Opportunity_Owner_Sub_Division__c='Inbound Sales';
         insert opp;
 
@@ -222,8 +222,9 @@ private class OpportunityTriggersTest {
         opp.CloseDate = Date.newInstance(2013, 4, 9);
         opp.Implementing_Business_Unit__c = bunit.Id;
         opp.Fogbugz_Ticket_Number__c = FogBugzHttpCalloutMock.TEST_FB_ID;
-        opp.Opportunity_Owner_Division__c = 'Solutions';
+        opp.Opportunity_Owner_Division__c = 'Global Solutions';
         opp.Opportunity_Owner_Sub_Division__c='Inbound Sales';
+        opp.Expense_Income__c = 0;
         insert opp;
 
         Test.startTest();
@@ -246,8 +247,9 @@ private class OpportunityTriggersTest {
         opp.CloseDate = Date.newInstance(2013, 4, 9);
         opp.Implementing_Business_Unit__c = bunit.Id;
         opp.Fogbugz_Ticket_Number__c = FogBugzHttpCalloutMock.TEST_FB_ID;
-        opp.Opportunity_Owner_Division__c = 'Solutions';
+        opp.Opportunity_Owner_Division__c = 'Global Solutions';
         opp.Opportunity_Owner_Sub_Division__c='Inbound Sales';
+        opp.Expense_Income__c = 0;
 
         Test.startTest();
         insert opp;

@@ -32,8 +32,7 @@ public class PROEmailRemindarClearDataBatch implements Database.Batchable<DContr
                     noOfDays = 2;
                 }
 
-                if (noOfDays == 1 || (noOfDays == 2 && (thursDayList[1] == this.currentDate || thursDayList[3] == this.currentDate ))
-                                  || (noOfDays == 3 && thursDayList[2] == this.currentDate) || (noOfDays == 4 && thursDayList[3] == this.currentDate)) {
+                if (noOfDays == 1 || (noOfDays == 2 && (thursDayList[1] == this.currentDate || thursDayList[3] == this.currentDate )) || (noOfDays == 3 && thursDayList[2] == this.currentDate) || (noOfDays == 4 && thursDayList[3] == this.currentDate)) {
 
                     contract.Is_Snooze__c = false;
                     contract.Snooze_Date__c = null;
@@ -57,8 +56,7 @@ public class PROEmailRemindarClearDataBatch implements Database.Batchable<DContr
                     // DML operation failed
                     Database.Error error = updateResults.get(i).getErrors().get(0);
                     failedDML = error.getMessage();
-                    System.debug('Failed ID' + updateList.get(i).Id);
-                    failedReocrds.add(updateList.get(i));
+                    System.debug('Failed ID' + updateList.get(i).Id);    failedReocrds.add(updateList.get(i));
                 }
             }
         }
@@ -68,19 +66,12 @@ public class PROEmailRemindarClearDataBatch implements Database.Batchable<DContr
         List<String> toAddresses = new List<String>();
         List<PRO_Email_Remindar_Settings__c> settingList = PRO_Email_Remindar_Settings__c.getALL().values();
         PRO_Email_Remindar_Settings__c settings = settingList[0];
-        if (settings.Error_Email__c != null && settings.Error_Email__c.contains(',')) {
-            for (String email : settings.Error_Email__c.split(',')) {
-                toAddresses.add(email);
+        if (settings.Error_Email__c != null && settings.Error_Email__c.contains(',')) {for (String email : settings.Error_Email__c.split(',')) {  toAddresses.add(email);
             }
-        } else if(settings.Error_Email__c != null) {
-            toAddresses.add(settings.Error_Email__c);
+        } else if(settings.Error_Email__c != null) {  toAddresses.add(settings.Error_Email__c);
         }
 
-        if (failedReocrds.size() > 0 && toAddresses.size() > 0) {
-            Messaging.SingleEmailMessage mail = new Messaging.SingleEmailMessage();
-            mail.setToAddresses(toAddresses);
-            mail.setSenderDisplayName('');
-            mail.setSubject('');
+        if (failedReocrds.size() > 0 && toAddresses.size() > 0) {  Messaging.SingleEmailMessage mail = new Messaging.SingleEmailMessage(); mail.setToAddresses(toAddresses); mail.setSenderDisplayName(''); mail.setSubject('');
             String htmlBody = 'Second reminder was failed to sent on the following records.<br/>';
             htmlBody += '<b>Error:</b> '+failedDML+'<br/><br/>';
             htmlBody += '<b>Records:</b> <br/>';

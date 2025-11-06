@@ -34,6 +34,7 @@ public class HQSyncDomainModel {
         public Integer cp_n_web_users;
         public Integer cp_n_cc_users;
         public Integer cp_n_active_cc_users;
+        public Integer cp_n_active_cc_users_365_days;
         public DateTime cp_first_form;
         public DateTime cp_last_form;
         public DateTime cp_300th_form;
@@ -300,7 +301,6 @@ public class HQSyncDomainModel {
             domainObj.sms_conversation_length__c = this.sms_conversation_length;
             domainObj.total_downloads__c = this.total_downloads;
             domainObj.id__c = this.x_id;
-            
             domainObj.attribution_notes__c = this.attribution_notes;
             domainObj.author__c = this.author;
             domainObj.cloudcare_releases__c = this.cloudcare_releases;
@@ -312,7 +312,6 @@ public class HQSyncDomainModel {
             domainObj.default_sms_backend_id__c = this.default_sms_backend_id;
             domainObj.default_timezone__c = this.default_timezone;
             domainObj.description__c = this.description;
-            
             domainObj.hr_name__c = this.hr_name;
             domainObj.is_test__c = this.is_test;
             domainObj.license__c = this.license;
@@ -393,6 +392,8 @@ public class HQSyncDomainModel {
                 domainObj.cpAllWebUsers__c = calculatedProperties.cp_n_web_users;
                 domainObj.cpAllMobileUsers__c = calculatedProperties.cp_n_cc_users;
                 domainObj.cpActiveMobileUsers__c = calculatedProperties.cp_n_active_cc_users;
+                               domainObj.cp_n_active_cc_users_365_days__c = calculatedProperties.cp_n_active_cc_users_365_days;
+
                 domainObj.cpFirstFormSubmissionDate__c = calculatedProperties.cp_first_form;
                 domainObj.cpLastFormSubmissionDate__c = calculatedProperties.cp_last_form;
                 domainObj.cp300thFormSubmission__c = calculatedProperties.cp_300th_form;
