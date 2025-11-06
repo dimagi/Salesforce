@@ -14,7 +14,7 @@ Global class GETExcelSheetContent{
         PageReference ref = new PageReference(urlForReport + '&excel=1&details=yes');
         Blob b;
         if (Test.IsRunningTest()) {
-        	b = Blob.valueOf('UNIT.TEST');
+b = Blob.valueOf('<html><body>Mock Excel Content</body></html>');
    		} else {
         	b = ref.getContent();
         	ref.getContent();

@@ -21,6 +21,8 @@ public class HQSyncAPI {
         parameters.put(HQSyncUtils.OFFSET_PARAM, '0');
         parameters.put(HQSyncUtils.LIMIT_PARAM, '1');
         HTTPResponse res = httpGet(parameters);
+                system.debug('response1111>>> '+res.getBody());
+
         JSONParser parser = JSON.createParser(res.getBody());
 
         while (parser.nextToken() != null) {
@@ -45,7 +47,7 @@ public class HQSyncAPI {
 
         Http http = new Http();
         HttpResponse res = http.send(req);
-
+        system.debug('response>>> '+res.getBody());
         if(res.getStatusCode() != 200) {
             Exception e = new CalloutException();
             e.setMessage('HQ Sync Error, cannot fetch HQ objects data. Http status : ' + res.getStatusCode() + ' Body : ' + res.getBody());

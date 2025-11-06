@@ -327,7 +327,7 @@ public class TimeCardTriggerControllerTest {
         Time_Card__c tc3 = [SELECT Id, Time_Card_Salary__c FROM Time_Card__c WHERE Id =: timeCardObj3.Id];
         System.assertEquals((((77000 / 2.0) / 260.0) / 8.0).setScale(8), tc2.Time_Card_Salary__c);
     }
-	/*
+	
     @isTest
     public static void shouldUpdateRatesAndTCFieldsAfterFetchingUpdatedCases() {
         DContract__c parent1 = [SELECT Id FROM DContract__c WHERE Name = 'Sample Parent 1'];
@@ -439,7 +439,7 @@ public class TimeCardTriggerControllerTest {
         Time_Card__c tc4DB = [SELECT Id, Time_Card_Salary__c FROM Time_Card__c WHERE Id =: timeCardObj4.Id];
         System.assertEquals(salary2, tc4DB.Time_Card_Salary__c);
     }
-	*/
+	
     @isTest
     public static void shouldUpdateServicesSpend() {
         Test.startTest();

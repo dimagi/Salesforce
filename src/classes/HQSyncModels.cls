@@ -198,7 +198,7 @@ public class HQSyncModels {
         public String salesforce_account_id;
         public String created_by;
         public DateTime date_created;
-        public Boolean is_auto_invoiceable;
+        public Boolean require_auto_pay;
         public String account_type;
         public String created_by_domain;
         public DateTime date_confirmed_extra_charges;
@@ -219,7 +219,8 @@ public class HQSyncModels {
             accountingBillingAccount.salesforce_account_id__c = this.salesforce_account_id;
             accountingBillingAccount.created_by__c = this.created_by;
             accountingBillingAccount.date_created__c = this.date_created;
-            accountingBillingAccount.is_auto_invoiceable__c = this.is_auto_invoiceable;
+            accountingBillingAccount.is_auto_invoiceable__c = this.require_auto_pay;
+            system.debug('is_auto_invoiceable__c ==> '+accountingBillingAccount.is_auto_invoiceable__c);
             accountingBillingAccount.account_type__c = this.account_type;
             accountingBillingAccount.created_by_domain__c = this.created_by_domain;
             accountingBillingAccount.date_confirmed_extra_charges__c = this.date_confirmed_extra_charges;

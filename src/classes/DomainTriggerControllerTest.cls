@@ -27,19 +27,19 @@ public class DomainTriggerControllerTest {
 
         Opportunity opp1 = new Opportunity(Name = 'opp1', StageName = 'Stage 1 - Connect', CloseDate = Date.today().addDays(50), Fogbugz_Probability__c = 0,
                                           Implementing_Business_Unit__c = bunit.Id, AccountId = acc1.Id, Fogbugz_Ticket_Number__c = '111', 
-                                                    Opportunity_Owner_Division__c = 'Solutions', Opportunity_Owner_Sub_Division__c='Inbound Sales');
+                                                    Opportunity_Owner_Division__c = 'Global Solutions', Opportunity_Owner_Sub_Division__c='Inbound Sales');
         Opportunity opp2 = new Opportunity(Name = 'opp2', StageName = 'Stage 1 - Connect', CloseDate = Date.today().addDays(50), Fogbugz_Probability__c = 0,
                                           Implementing_Business_Unit__c = bunit.Id, Fogbugz_Ticket_Number__c = '222', 
-                                                    Opportunity_Owner_Division__c = 'Solutions', Opportunity_Owner_Sub_Division__c='Inbound Sales');
+                                                    Opportunity_Owner_Division__c = 'Global Solutions', Opportunity_Owner_Sub_Division__c='Inbound Sales');
         Opportunity opp3 = new Opportunity(Name = 'opp3', StageName = 'Stage 1 - Connect', CloseDate = Date.today().addDays(50), Fogbugz_Probability__c = 0,
                                           Implementing_Business_Unit__c = bunit.Id, Fogbugz_Ticket_Number__c = '333', 
-                                                    Opportunity_Owner_Division__c = 'Solutions', Opportunity_Owner_Sub_Division__c='Inbound Sales');
+                                                    Opportunity_Owner_Division__c = 'Global Solutions', Opportunity_Owner_Sub_Division__c='Inbound Sales');
         Opportunity opp4 = new Opportunity(Name = 'opp4', StageName = 'Stage 1 - Connect', CloseDate = Date.today().addDays(50), Fogbugz_Probability__c = 0,
                                           Implementing_Business_Unit__c = bunit.Id, AccountId = acc3.Id, Fogbugz_Ticket_Number__c = '444', 
-                                                    Opportunity_Owner_Division__c = 'Solutions', Opportunity_Owner_Sub_Division__c='Inbound Sales');
+                                                    Opportunity_Owner_Division__c = 'Global Solutions', Opportunity_Owner_Sub_Division__c='Inbound Sales');
         Opportunity opp5 = new Opportunity(Name = 'opp5', StageName = 'Stage 1 - Connect', CloseDate = Date.today().addDays(50), Fogbugz_Probability__c = 0,
                                           Implementing_Business_Unit__c = bunit.Id, AccountId = acc1.Id, Fogbugz_Ticket_Number__c = '555', 
-                                                    Opportunity_Owner_Division__c = 'Solutions', Opportunity_Owner_Sub_Division__c='Inbound Sales');
+                                                    Opportunity_Owner_Division__c = 'Global Solutions', Opportunity_Owner_Sub_Division__c='Inbound Sales');
         insert new List<Opportunity> { opp1, opp2, opp3, opp4, opp5 };
 
         Contact c1 = new Contact(Title = 'Test Contact 1', Department = 'Account', Email = 'test2@test.com', FirstName = 'Test 1', LastName = 'Contact');
@@ -197,9 +197,9 @@ public class DomainTriggerControllerTest {
                                               new Contract_Domain__c(Contract__c = contract2.Id, DOmain__c = d2.Id) };
 
         Lead l1 = new Lead(FirstName = 'Tom', LastName = 'Smith', Company = 'Smith IT Company', Lead_Status_Reason__c = 'Working - Exploratory Call - Trying for',
-                                  Status = 'Working - Talking', Follow_up_calls_held__c = 1, Opportunity_Owner_Division__c = 'Solutions', Opportunity_Owner_Sub_Division__c='Inbound Sales');
+                                  Status = 'Working - Talking', Follow_up_calls_held__c = 1, Opportunity_Owner_Division__c = 'Global Solutions', Opportunity_Owner_Sub_Division__c='CommCare Technology');
         Lead l2 = new Lead(FirstName = 'Tom 1', LastName = 'Smith 1', Company = 'Smith IT Company 1', Lead_Status_Reason__c = 'Working - Exploratory Call - Trying for',
-                                  Status = 'Passive & Friendly', Follow_up_calls_held__c = 88, Opportunity_Owner_Division__c = 'Solutions', Opportunity_Owner_Sub_Division__c='Inbound Sales');
+                                  Status = 'Passive & Friendly', Follow_up_calls_held__c = 88, Opportunity_Owner_Division__c = 'Global Solutions', Opportunity_Owner_Sub_Division__c='CommCare Technology');
         insert new List<Lead> { l1, l2 };
 
         Database.LeadConvert lc = new Database.LeadConvert();

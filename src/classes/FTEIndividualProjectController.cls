@@ -64,10 +64,21 @@ public class FTEIndividualProjectController extends FTEController {
                     this.projectTimeTrackingMap.put(workCard.Employee__c, new FTEEmployeeTime(workCard.Employee__r.name, workCard.Employee__c, false));
             }
             tmpHelper = this.projectTimeTrackingMap.get(workCard.Employee__c);
+            Double total = 0;
+
             for(Integer i=1; i< tmpHelper.hoursArray.size(); i++){
-                tmpHelper.hoursArray[i-1] = (Decimal) workCard.get('month_'+ i + '__c') * 8;
+              //  tmpHelper.hoursArray[i-1] = (Decimal) workCard.get('month_'+ i + '__c') * 8;
+                Decimal hoursTotal = (Decimal) workCard.get('month_'+ i + '__c') * 8;
+                tmpHelper.hoursArray[i-1] += hoursTotal;
+                total += hoursTotal;
             }
-            tmpHelper.hoursArray[12]=workCard.Total__c * 8;
+            System.debug('LOG:::' + JSON.serialize(tmpHelper.hoursArray));
+            System.debug('LOG:::' + total);
+            if (total == 0) {
+                tmpHelper.hoursArray[12] += workCard.Total__c * 8;
+            } else {
+                tmpHelper.hoursArray[12] += total;
+            }
         }
 
         for (Time_Card__c timeCard : [SELECT Id, Employee__c, Employee__r.Name, Date__c, Total__c, FTE_hours__c, FTE_Contract__c FROM Time_Card__c WHERE

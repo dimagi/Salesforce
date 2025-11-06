@@ -28,7 +28,7 @@ public class OpenOpportunityReportController {
 
     public Opportunity[] getOpenOpportunitiesAllUsers(String[] channel) {
         String[] stages = new String[] {'Stage 1 - Connect','Stage 2 - Talking','Stage 3 - Prospect','Stage 4 - Proposal Development','Stage 5 - Submitted','Stage 6 - In Negotiations'};
-        String OpportunityOwnerDivisionFilter = 'Solutions';
+        String OpportunityOwnerDivisionFilter = 'Global Solutions';
 
         Opportunity[] result = new Opportunity[] {};
 

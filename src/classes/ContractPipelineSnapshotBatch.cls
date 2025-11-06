@@ -31,7 +31,7 @@ public class ContractPipelineSnapshotBatch implements Database.Batchable<DContra
                 Total_Non_Expense_Income_Remaining__c, Country_Text__c, Duration_months__c, Expected_Buffer__c, Direct_Costs_Total_Expenses__c,
                 GS_Net_Income_to_Date__c, GS_Net_Income_to_Date_Handover__c, GS_Execution_Budget__c, GS_Project_Services_Budget_Handoff__c,
                 GS_Services_Completed_Handover__c, Intracompany_Sub_contract__c, Contracting_Business_Unit__c, Product_Text__c, Product_Spend__c,
-                Total_Costs__c, Execution_Owner_Division__c, Execution_Owner_SubDivision__c, Total_Direct_Costs_Expenses__c, Total_Non_Expense_Income_BUDGET__c, OwnerId, Status__c, Total_Amount_of_Contract__c,ALL_TIME_Income__c
+                Total_Costs__c, Execution_Owner_Division__c,Subscription_MRR__c, Execution_Owner_SubDivision__c, Total_Direct_Costs_Expenses__c, Total_Non_Expense_Income_BUDGET__c, OwnerId, Status__c, Total_Amount_of_Contract__c,ALL_TIME_Income__c
                 FROM DContract__c
                 WHERE Status__c = 'Active'
                 OR (Date_of_Contract_Execution__c >=: this.monthStart AND Date_of_Contract_Execution__c <=: this.runDate)
@@ -162,8 +162,9 @@ public class ContractPipelineSnapshotBatch implements Database.Batchable<DContra
                         Product_Spend__c = dContract.Product_Spend__c,
                         Services_Spend__c = dContract.Services_Spend__c,
                         Total_Calculated_Costs__c = dContract.Total_Costs__c,
-            			ALL_TIME_Income__c = dContract.ALL_TIME_Income__c,
+                        ALL_TIME_Income__c = dContract.ALL_TIME_Income__c,
                         Total_Amount_of_Contract__c = dContract.Total_Amount_of_Contract__c,
+                        DA_MRR_Contract__c = dContract.Subscription_MRR__c,
                         Month_Date__c = monthDate,
                         Probability__c = 100,
                         Source_Type__c = 'Contract',

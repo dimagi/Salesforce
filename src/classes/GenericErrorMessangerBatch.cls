@@ -3,9 +3,9 @@
  */
 public class GenericErrorMessangerBatch implements Database.Batchable<AsyncApexJob>, Database.Stateful {
 
-    private DateTime lastJobDateTime;
-    private DateTime currentRunTime;
-    private List<String> errorMessages;
+    public DateTime lastJobDateTime;
+    public DateTime currentRunTime;
+    public List<String> errorMessages;
 
     public GenericErrorMessangerBatch() {
         BatchDefaultSettings__c batchSettings = BatchDefaultSettings__c.getOrgDefaults();

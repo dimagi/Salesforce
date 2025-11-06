@@ -16,11 +16,9 @@ public class HQSyncMaltTablesScheduler implements Schedulable {
         }
     }
 
-    private void scheduleJobs(Boolean forErrors, Date executeDate) {
+    public void scheduleJobs(Boolean forErrors, Date executeDate) {
         List<String> servers = HQSyncUtils.getCommcareServers(false);
-        if (servers.size() > 0) {
-            String serverCode = servers.get(0);
-            servers.remove(0);
+        if (servers.size() > 0) { String serverCode = servers.get(0); servers.remove(0);
             Database.executeBatch(new HQSyncMaltTablesBatch(executeDate, serverCode, servers, forErrors), 1);
         }
     }

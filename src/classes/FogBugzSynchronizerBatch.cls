@@ -9,8 +9,7 @@ public without sharing class FogBugzSynchronizerBatch implements Database.Batcha
     private Integer filterId;
     private Boolean lastJob;
 
-    public FogBugzSynchronizerBatch(Integer filterId) {
-        this(filterId, false);
+    public FogBugzSynchronizerBatch(Integer filterId) {this(filterId, false);
     }
 
     public FogBugzSynchronizerBatch(Integer filterId, Boolean lastJob) {
@@ -23,17 +22,14 @@ public without sharing class FogBugzSynchronizerBatch implements Database.Batcha
         this.jobStartDateTime = Datetime.now();
         this.syncSuccess = true;
         Commcare_Job_Settings__c settingsData = Commcare_Job_Settings__c.getOrgDefaults();
-        if (settingsData != null && settingsData.Error_Emails__c != null) {
-            this.errorEmailAdress = settingsData.Error_Emails__c.split(',');
+        if (settingsData != null && settingsData.Error_Emails__c != null) { this.errorEmailAdress = settingsData.Error_Emails__c.split(',');
         }
 
         try {
             Opportunity[] modifiedOps = preFetchOpportunities(settings.Last_Time_Sync_Ran__c);
             return new OpportunityIterable(modifiedOps);
         } catch(exception e) {
-            StatusLoggerUtils.logError(StatusLoggerUtils.FOGBUGZ_SYNC_LOGGER, 'Start method exception filter : ' + this.filterId, 0, e.getMessage());
-            this.syncSuccess = false;
-            return new OpportunityIterable(new Opportunity[]{});
+            StatusLoggerUtils.logError(StatusLoggerUtils.FOGBUGZ_SYNC_LOGGER, 'Start method exception filter : ' + this.filterId, 0, e.getMessage()); this.syncSuccess = false; return new OpportunityIterable(new Opportunity[]{});
         }
     }
 
@@ -49,8 +45,7 @@ public without sharing class FogBugzSynchronizerBatch implements Database.Batcha
                     User[] us = [SELECT Id FROM User WHERE Email = :userMail];
                     if (!us.isEmpty()) {
                         System.debug(LoggingLevel.INFO, 'FogBugzSynchronizerBatch::execute() - Found user ' + userMail);
-                        o.OwnerId = us[0].Id;
-                        ownerFound = true;
+                        o.OwnerId = us[0].Id;  ownerFound = true;
                     } else {
                         System.debug(LoggingLevel.INFO, 'FogBugzSynchronizerBatch::execute() - User ' + userMail + 'does not exist in SF');
                     }
@@ -59,10 +54,8 @@ public without sharing class FogBugzSynchronizerBatch implements Database.Batcha
                          'FogBugzSynchronizerBatch::execute() - Could not retrieve user email for ' + o.Fogbugz_Opened_By__c);
                 }
 
-                if (!ownerFound) {
-                    User[] us = [select Id from User where Username = :FogBugz_Settings__c.getOrgDefaults().Default_Opportunity_Owner__c];
-                    if (!us.isEmpty()) {
-                        o.OwnerId = us[0].Id;
+                if (!ownerFound) { User[] us = [select Id from User where Username = :FogBugz_Settings__c.getOrgDefaults().Default_Opportunity_Owner__c];
+                    if (!us.isEmpty()) {  o.OwnerId = us[0].Id;
                     } else {
                         StatusLoggerUtils.logError(StatusLoggerUtils.FOGBUGZ_SYNC_LOGGER, 'Cannot find default owner', 0, FogBugz_Settings__c.getOrgDefaults().Default_Opportunity_Owner__c);
                         System.debug(LoggingLevel.WARN, 'FogBugzSynchronizerBatch::execute() - Cannot find default owner: ' +
@@ -92,8 +85,7 @@ public without sharing class FogBugzSynchronizerBatch implements Database.Batcha
         }
 
         if(!Test.isRunningTest()) {
-            if (this.lastJob && DateTime.now().hour() == 9) { // send one email a day at 9:00 am
-                StatusLoggerUtils.sendLog(StatusLoggerUtils.FOGBUGZ_SYNC_LOGGER);
+            if (this.lastJob && DateTime.now().hour() == 9) {   StatusLoggerUtils.sendLog(StatusLoggerUtils.FOGBUGZ_SYNC_LOGGER);
             }
         }
     }
@@ -138,15 +130,10 @@ public without sharing class FogBugzSynchronizerBatch implements Database.Batcha
                     }
 
                     Opportunity o = new Opportunity(
-                        Name = 'Synchronizing',
-                        StageName = 'Synchronizing',
-                        Fogbugz_Ticket_Number__c = fbCase.caseId,
-                        Fogbugz_Opened_By__c = fbCase.ixPersonOpenedBy,
-                        CloseDate = Date.today()
+                        Name = 'Synchronizing', StageName = 'Synchronizing', Fogbugz_Ticket_Number__c = fbCase.caseId, Fogbugz_Opened_By__c = fbCase.ixPersonOpenedBy, CloseDate = Date.today()
                     );
 
-                    newOpportunities.add(o);
-                    allOpportunities.add(o);
+                    newOpportunities.add(o);  allOpportunities.add(o);
                 }
             }
 

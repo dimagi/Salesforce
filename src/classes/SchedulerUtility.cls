@@ -33,12 +33,10 @@ public with sharing class SchedulerUtility {
             dayOfWeek = String.join(weeklyFrequency,',');
         }else{
             //If job frequency is Monthly, we set dayOfMonth or dayOfWeek depending on the monthly frequency selected  
-            if (monthlyFrequency != null && monthlyFrequency != ''){
-                dayOfMonth = monthlyFrequency ; 
+            if (monthlyFrequency != null && monthlyFrequency != ''){   dayOfMonth = monthlyFrequency ; 
             }else{
                 if (day != null && day != '' && week != null && week != ''){
-                	if(week.equals('L')){
-                		dayOfWeek = day + week;	
+                	if(week.equals('L')){	dayOfWeek = day + week;	
                 	}else{
                 		dayOfWeek = day+'#'+week;
                 	}

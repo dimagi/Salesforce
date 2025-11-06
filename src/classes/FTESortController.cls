@@ -104,64 +104,78 @@ public class FTESortController extends FTEController{
         return this.employees;
     } 
     
-   public List<FTE_Work_Card__c> queryEmployeeList(String ObjectName, Boolean Isdisplay, String Orderby, string orderType)
-   {
-       system.debug('Query');
-       List<FTEEmployeeTime> employeeList = new List<FTEEmployeeTime>(); 
-       List<FTE_Work_Card__c> workCards = null;
-       QueryBuilder qb = new QueryBuilder(ObjectName);
-        QueryBuilder qbCount = new QueryBuilder(ObjectName);
-        qb.addColumns(new List<String> { 'Id', 'Employee__c', 'Employee__r.Hire_Date__c','Employee__r.Termination_Date__c','Employee__r.Name', 'Month_1__c', 'Month_2__c', 'Month_3__c',
-                                         'Month_4__c', 'Month_5__c', 'Month_6__c', 'Month_7__c', 'Month_8__c', 'Month_9__c', 'Month_10__c', 'Month_11__c',
-                                         'Month_12__c', 'Total__c', 'Total_Hours__c', 'Year__c'});
-        qbCount.addColumn('count()');
-
-        if (this.employeeNameSearch != null && this.employeeNameSearch != '') {
-            qb.addLike('Employee__r.Name', ('%' + String.escapeSingleQuotes(this.employeeNameSearch) + '%'));
-            qbCount.addLike('Employee__r.Name', ('%' + String.escapeSingleQuotes(this.employeeNameSearch) + '%'));
+    public List<FTE_Work_Card__c> queryEmployeeList(String ObjectName, Boolean isDisplay, String orderBy, String orderType) {
+        system.debug('Querying Employee List for Object: ' + ObjectName);
+    
+        // Initialize the QueryBuilder
+        QueryBuilder qb = new QueryBuilder(ObjectName);
+        qb.addColumns(new List<String> {
+            'Id', 'Employee__c', 'Employee__r.Hire_Date__c', 'Employee__r.Termination_Date__c', 'Employee__r.Name',
+            'Month_1__c', 'Month_2__c', 'Month_3__c', 'Month_4__c', 'Month_5__c', 'Month_6__c',
+            'Month_7__c', 'Month_8__c', 'Month_9__c', 'Month_10__c', 'Month_11__c', 'Month_12__c',
+            'Total__c', 'Total_Hours__c', 'Year__c'
+        });
+    
+        // Apply filters and ordering
+        if (!String.isEmpty(this.employeeNameSearch)) {
+            qb.addLike('Employee__r.Name', '%' + String.escapeSingleQuotes(this.employeeNameSearch) + '%');
         }
-
-      /*  if (this.emplBusinessUnit != '---') {
-            qb.addAnd('Employee__r.Business_Unit__c', this.emplBusinessUnit != '-' ? this.emplBusinessUnit : '', null);
-            qbCount.addAnd('Employee__r.Business_Unit__c', this.emplBusinessUnit != '-' ? this.emplBusinessUnit : '', null);
-        }
-
-        if (this.emplDepartment != '---') {
-            qb.addAnd('Employee__r.Sub_Unit__c', this.emplDepartment != '-' ? this.emplDepartment : '', null);
-            qbCount.addAnd('Employee__r.Sub_Unit__c', this.emplDepartment != '-' ? this.emplDepartment : '', null);
-        } */
-       
+    
         if (this.Division != '---') {
-            qb.addAnd('Employee__r.Division__c', this.Division != '-' ? this.Division : '', null);
-            qbCount.addAnd('Employee__r.Division__c', this.Division != '-' ? this.Division : '', null);
+            qb.addAnd('Employee__r.Division__c', this.Division, null);
         }
-       if (this.subDivision != '---') {
-            qb.addAnd('Employee__r.Sub_Division__c', this.subDivision != '-' ? this.subDivision : '', null);
-            qbCount.addAnd('Employee__r.Sub_Division__c', this.subDivision != '-' ? this.subDivision : '', null);
+    
+        if (this.subDivision != '---') {
+            qb.addAnd('Employee__r.Sub_Division__c', this.subDivision, null);
         }
-
+    
         qb.addAnd('Year__c', '' + this.fteYear, QueryBuilder.QB_DECIMAL_TYPE);
-        qbCount.addAnd('Year__c', '' + this.fteYear, QueryBuilder.QB_DECIMAL_TYPE);
-      
-
-        qb.orderBy(Orderby, orderType); //Total_Hours__c
-        
-        system.debug('@@pagesize' +this.employeePagination.pageSize);
-        system.debug('@@isDisplay' +isDisplay);
-        if(isDisplay == true) {
+        qb.orderBy(orderBy, orderType);
+    
+        if (isDisplay) {
             qb.setLimit(this.employeePagination.pageSize);
             qb.setOffset(this.employeePagination.getOffsetValue());
         }
-     
-        testQuery = qb.buildQuery();
-        testQueryCount = qbCount.buildQuery();
-        workCards = Database.query(qb.buildQuery());
-        system.debug('testQuery' + testQuery);
-       
-      //  this.employeePagination.handleResulSize(Database.countQuery(qbCount.buildQuery()));
-       return workCards;
-       
-   }
+    
+        // Execute the query
+        List<FTE_Work_Card__c> workCards = Database.query(qb.buildQuery());
+        system.debug('Queried Work Cards: ' + workCards.size());
+    
+        // Aggregation logic
+        Map<Id, FTE_Work_Card__c> employeeAggregates = new Map<Id, FTE_Work_Card__c>();
+    
+        for (FTE_Work_Card__c card : workCards) {
+            if (!employeeAggregates.containsKey(card.Employee__c)) {
+                FTE_Work_Card__c aggregatedCard = new FTE_Work_Card__c(
+                    Employee__c = card.Employee__c,
+                    Employee__r = card.Employee__r,
+                    Year__c = card.Year__c,
+                    Total_Hours__c = 0,
+                    Month_1__c = 0, Month_2__c = 0, Month_3__c = 0, Month_4__c = 0,
+                    Month_5__c = 0, Month_6__c = 0, Month_7__c = 0, Month_8__c = 0,
+                    Month_9__c = 0, Month_10__c = 0, Month_11__c = 0, Month_12__c = 0
+                );
+                employeeAggregates.put(card.Employee__c, aggregatedCard);
+            }
+    
+            FTE_Work_Card__c aggregatedCard = employeeAggregates.get(card.Employee__c);
+            aggregatedCard.Total_Hours__c += card.Total_Hours__c;
+    
+            for (Integer i = 1; i <= 12; i++) {
+                String monthField = 'Month_' + i + '__c';
+                aggregatedCard.put(monthField, (Decimal)aggregatedCard.get(monthField) + (Decimal)card.get(monthField));
+            }
+        }
+        system.debug('employeeAggregates.values(): ' + employeeAggregates.values().size());
+
+        // Return the list of aggregated records
+        return employeeAggregates.values();
+    }
+    
+    
+    
+    
+    
     public list<FTEEmployeeTime> setWorkCardsonPages(List<FTE_Work_Card__c> workCards, String ObjectName){
         
         List<FTE_Work_Card__c> eachPage_workcards = new List<FTE_Work_Card__c>();
@@ -184,8 +198,10 @@ public class FTESortController extends FTEController{
         calculateEmployeeTime(workCards);
         for (FTEEmployeeTime empT : this.employeeTimeMap.values()) {
             empT.calculateDays();
-           employeeList.add(empT);
+            System.debug('LOG:::' + JSON.serialize(empT.daysArray));
+            employeeList.add(empT);
         }
+
        system.debug('size' + employeeList.size());
        return employeeList;
     }
@@ -212,21 +228,38 @@ public class FTESortController extends FTEController{
     
     public void calculateEmployeeTime(List<FTE_Work_Card__c> workCards){
         try{
+            System.debug('LOG:::' + workCards.size());    
             for (FTE_Work_Card__c workCard : workCards) {
                 FTEEmployeeTime tmpHelper;
+
                 if (!this.employeeTimeMap.containsKey(workCard.Employee__c)) {
                     this.employeeTimeMap.put(workCard.Employee__c, new FTEEmployeeTime(workCard.employee__r.name, workCard.Employee__c, workCard.employee__r.Hire_Date__c, workCard.employee__r.Termination_Date__c,false));
                 }
                 tmpHelper = this.employeeTimeMap.get(workCard.Employee__c);
                 
+                Double total = 0;
                 for(Integer i=1; i< tmpHelper.hoursArray.size(); i++){
-                    tmpHelper.hoursArray[i-1] += (Decimal) workCard.get('month_'+ i + '__c') * 8;
+                    Decimal hoursTotal = (Decimal) workCard.get('month_'+ i + '__c') * 8;
+                    tmpHelper.hoursArray[i-1] += hoursTotal;
+                    total += hoursTotal;
                 }
-				tmpHelper.hoursArray[12] += workCard.Total__c * 8;
+                System.debug('LOG:::' + JSON.serialize(tmpHelper.hoursArray));
+                System.debug('LOG:::' + total);
+                System.debug('LOG:::' + tmpHelper.hoursArray[12]);
+                System.debug('LOG:::' + workCard.Total__c);
+
+                if (total == 0) {
+                    tmpHelper.hoursArray[12] += workCard.Total__c != null ? workCard.Total__c * 8 : 0;
+                } else {
+                    tmpHelper.hoursArray[12] += total;
+                }
+				
             }
         }
         catch(Exception e){
-            System.debug(e.getMessage()+'------'+ e.getLineNumber());
+            System.debug(e.getStackTraceString());
+            System.debug(e.getMessage());
+            System.debug(e.getLineNumber());
         }
     }
     public PageReference export_FTEListViewExcel(){

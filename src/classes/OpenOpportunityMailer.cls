@@ -72,38 +72,31 @@ public class OpenOpportunityMailer {
 
             List<OpportunityContactRole> contactRoles = [SELECT ContactId, OpportunityId FROM OpportunityContactRole WHERE IsPrimary = true AND OpportunityId IN: stagedOpportunities.get(stageName)];
             Map<Id, Id> oppToContactMap = new Map<Id, Id>();
-            for (OpportunityContactRole role : contactRoles) {
-                oppToContactMap.put(role.OpportunityId, role.ContactId);
+            for (OpportunityContactRole role : contactRoles) {  oppToContactMap.put(role.OpportunityId, role.ContactId);
             }
             List<OpportunityContactRole> contactRolesNotPrim = [SELECT ContactId, OpportunityId FROM OpportunityContactRole WHERE IsPrimary = false AND OpportunityId IN: opportunities];
             for (OpportunityContactRole role : contactRolesNotPrim) {
-                if (!oppToContactMap.containsKey(role.OpportunityId)) {
-                    oppToContactMap.put(role.OpportunityId, role.ContactId);
+                if (!oppToContactMap.containsKey(role.OpportunityId)) {  oppToContactMap.put(role.OpportunityId, role.ContactId);
                 }
             }
             Map<Id, Contact> contacts = new Map<Id, Contact>([SELECT Id, Follow_up_Date__c FROM Contact WHERE Id IN: oppToContactMap.values()]);
 
             for(Opportunity opportunity : stagedOpportunities.get(stageName)) {
                 Boolean isBlankORFromThePast = true;
-                if (oppToContactMap.containsKey(opportunity.Id) && contacts.containsKey(oppToContactMap.get(opportunity.Id))) {
-                    Contact con = contacts.get(oppToContactMap.get(opportunity.Id));
-                    if (con.Follow_up_Date__c != null && con.Follow_up_Date__c >= Date.today()) {
-                        isBlankORFromThePast = false;
+                if (oppToContactMap.containsKey(opportunity.Id) && contacts.containsKey(oppToContactMap.get(opportunity.Id))) {  Contact con = contacts.get(oppToContactMap.get(opportunity.Id));
+                    if (con.Follow_up_Date__c != null && con.Follow_up_Date__c >= Date.today()) {  isBlankORFromThePast = false;
                     }
                 }
                 if (earlyStagesSet.contains(opportunity.StageName)) {
-                    if (opportunity.Total_Days_Not_Updated__c > daysNotUpdatedLimitEarlyStages && !opportunity.long_wait__c && isBlankORFromThePast) {
-                        opportunities.add(opportunity);
+                    if (opportunity.Total_Days_Not_Updated__c > daysNotUpdatedLimitEarlyStages && !opportunity.long_wait__c && isBlankORFromThePast) {  opportunities.add(opportunity);
                     }
                 } else {
-                    if (opportunity.Total_Days_Not_Updated__c > daysNotUpdatedLimit && !opportunity.long_wait__c && isBlankORFromThePast) {
-                        opportunities.add(opportunity);
+                    if (opportunity.Total_Days_Not_Updated__c > daysNotUpdatedLimit && !opportunity.long_wait__c && isBlankORFromThePast) {    opportunities.add(opportunity);
                     }
                 }
             }
 
-            if (!opportunities.isEmpty()) {
-              redStagedOpportunities.put(stageName, opportunities);
+            if (!opportunities.isEmpty()) {  redStagedOpportunities.put(stageName, opportunities);
             }
         } 
 
@@ -118,8 +111,7 @@ public class OpenOpportunityMailer {
         if (!redStagedOpportunities.isEmpty()) {
             
             Map<String, String> stageComments = new Map<String, String>();
-            for (String stageComment :redStagedOpportunities.keySet()) {           
-                stageComments.put(stageComment, '');
+            for (String stageComment :redStagedOpportunities.keySet()) {              stageComments.put(stageComment, '');
             }
             
             String content = OpenOpportunityEmailUtils.buildEmailContent(redStagedOpportunities, false, stageComments);
@@ -131,9 +123,7 @@ public class OpenOpportunityMailer {
     // Added by Nick to support sending this email globally to biz dev
     // If it's a global email the subject has to be different
     
-        public static void sendRedOpenOpportunitiesUsers(User[] users, Map<String, Opportunity[]> stagedOpportunities) {
-        
-        	sendRedOpenOpportunitiesUsers(users, stagedOpportunities, 'individual');
+        public static void sendRedOpenOpportunitiesUsers(User[] users, Map<String, Opportunity[]> stagedOpportunities) {sendRedOpenOpportunitiesUsers(users, stagedOpportunities, 'individual');
 
     }
 
@@ -142,21 +132,16 @@ public class OpenOpportunityMailer {
         Map<String, Opportunity[]> redStagedOpportunities = getRedStagedOpportunities(stagedOpportunities, message_type); 
     
         // Only send Mail if there are opportunities    
-        if (!redStagedOpportunities.isEmpty()) {
-            
-            Map<String, String> stageComments = new Map<String, String>();
-            for (String stageComment :redStagedOpportunities.keySet()) {           
-                stageComments.put(stageComment, '');
+        if (!redStagedOpportunities.isEmpty()) {Map<String, String> stageComments = new Map<String, String>();
+            for (String stageComment :redStagedOpportunities.keySet()) {            stageComments.put(stageComment, '');
             }
             
             String content = OpenOpportunityEmailUtils.buildEmailContent(redStagedOpportunities, false, stageComments, message_type);
             
             // Added by Nick to check if global or individual subject should be used
-            if(message_type == 'global') {
-            	sendEmails(content, users, GLOBAL_RED_EMAIL_SUBJECT );
+            if(message_type == 'global') {	sendEmails(content, users, GLOBAL_RED_EMAIL_SUBJECT );
             }
-            else {
-            	sendEmails(content, users, RED_EMAIL_SUBJECT);
+            else {sendEmails(content, users, RED_EMAIL_SUBJECT);
             }
         }
     }
@@ -168,16 +153,13 @@ public class OpenOpportunityMailer {
         if (!redStagedOpportunities.isEmpty()) {
 
             Map<String, String> stageComments = new Map<String, String>();
-            for (String stageComment :redStagedOpportunities.keySet()) {
-                stageComments.put(stageComment, '');
+            for (String stageComment :redStagedOpportunities.keySet()) {   stageComments.put(stageComment, '');
             }
 
             String content = OpenOpportunityEmailUtils.buildEmailContent(redStagedOpportunities, false, stageComments, message_type);
 
-            if(message_type == 'global') {
-                sendEmails(content, emails, GLOBAL_RED_EMAIL_SUBJECT);
-            } else {
-                sendEmails(content, emails, RED_EMAIL_SUBJECT);
+            if(message_type == 'global') {  sendEmails(content, emails, GLOBAL_RED_EMAIL_SUBJECT);
+            } else {sendEmails(content, emails, RED_EMAIL_SUBJECT);
             }
         }
     }
@@ -194,8 +176,7 @@ public class OpenOpportunityMailer {
         mail.setHtmlBody(content);
         mail.setSubject(subject);
         mail.setToAddresses(recipients);
-        if (!Test.isRunningTest()) {
-            Messaging.sendEmail(new Messaging.Email[] { mail });
+        if (!Test.isRunningTest()) {  Messaging.sendEmail(new Messaging.Email[] { mail });
         }
     }
 
@@ -224,25 +205,17 @@ public class OpenOpportunityMailer {
 
     private static void sendEmails(String content, List<String> emails, String subject) {
 
-        Messaging.Email[] mails = new Messaging.Email[]{};
-        OrgWideEmailAddress wideAddress = OpenOpportunityReportController.getOrganizationWideAddressMail();
+        Messaging.Email[] mails = new Messaging.Email[]{}; OrgWideEmailAddress wideAddress = OpenOpportunityReportController.getOrganizationWideAddressMail();
 
-        for (String email: emails) {
-            Messaging.Singleemailmessage mail = new Messaging.Singleemailmessage();
+        for (String email: emails) {  Messaging.Singleemailmessage mail = new Messaging.Singleemailmessage();
 
-            if (wideAddress != null) {
-                mail.setOrgWideEmailAddressId(wideAddress.Id);
+            if (wideAddress != null) {  mail.setOrgWideEmailAddressId(wideAddress.Id);
             }
 
-            mail.setToAddresses(new String[] {email});
-            mail.setHtmlBody(content);
-            mail.setSubject(subject);
-            mail.setSaveAsActivity(false);
-            mails.add(mail);
+            mail.setToAddresses(new String[] {email});  mail.setHtmlBody(content);   mail.setSubject(subject); mail.setSaveAsActivity(false);mails.add(mail);
         }
 
-        if (!Test.isRunningTest()) {
-            Messaging.sendEmail(mails);
+        if (!Test.isRunningTest()) {   Messaging.sendEmail(mails);
         }
     }
 }

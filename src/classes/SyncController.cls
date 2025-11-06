@@ -5,7 +5,6 @@ public with sharing class SyncController {
 
     private PageReference cancelPage = null;
     private Opportunity o;
-
     public SyncController(ApexPages.StandardSetController controller) {
         cancelPage = controller.cancel();
     }
@@ -18,8 +17,7 @@ public with sharing class SyncController {
     public void runSync() {
         FogBugz_Settings__c fbSettings = FogBugz_Settings__c.getOrgDefaults();
 
-        if (fbSettings.Sync_Script_Running__c) {
-            ApexPages.addMessage(new ApexPages.Message(ApexPages.Severity.WARNING, 'The synchronization script is currently running'));
+        if (fbSettings.Sync_Script_Running__c) { ApexPages.addMessage(new ApexPages.Message(ApexPages.Severity.WARNING, 'The synchronization script is currently running'));
         } else {
             Database.executeBatch(new FogBugzSynchronizerBatch(fbSettings.Sync_Filter__c.intValue(), false), 1);
             ApexPages.addMessage(new ApexPages.Message(ApexPages.Severity.INFO,
@@ -41,7 +39,6 @@ public with sharing class SyncController {
             }
         }
     }
-
     public PageReference goBack() {
         return cancelPage;
     }

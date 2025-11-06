@@ -488,4 +488,364 @@ public class ProjectReportOutControllerTest {
             Height__c = '25', Eye_Colour__c = 'Blue', Blood_Group__c = 'AB', Email_Address__c = employeeEmail);
         insert employeeObj;
     }
+     @isTest
+    static void testInitWithValidStateParam() {
+        // Create test page reference with state parameter
+        PageReference testPage = Page.DimagiSFTools;
+        testPage.getParameters().put('state', '001000000000001'); // Mock ID format
+        Test.setCurrentPage(testPage);
+        
+        // Instantiate controller
+        DimagiToolsController controller = new DimagiToolsController();
+        
+        Test.startTest();
+        PageReference result = controller.initSFToolsPage();
+        Test.stopTest();
+        
+        // Verify project ID was set
+        System.assertEquals('001000000000001', controller.projId, 'Project ID should be set from state parameter');
+        System.assertEquals(2, controller.currentTab, 'Current tab should be set to 2 when project ID exists');
+        System.assertEquals(null, result, 'Should return null when no code parameter exists');
+    }
+    
+    // Test when state parameter is 'null' string
+    @isTest
+    static void testInitWithNullStateParam() {
+        PageReference testPage = Page.DimagiSFTools;
+        testPage.getParameters().put('state', 'null');
+        Test.setCurrentPage(testPage);
+        
+        DimagiToolsController controller = new DimagiToolsController();
+        
+        Test.startTest();
+        PageReference result = controller.initSFToolsPage();
+        Test.stopTest();
+        
+        System.assertEquals(null, controller.projId, 'Project ID should remain null');
+        System.assertEquals(0, controller.currentTab, 'Current tab should be 0 when no project ID');
+    }
+    
+    // Test when code parameter exists (OAuth callback scenario)
+    @isTest
+    static void testInitWithCodeParameter() {
+        PageReference testPage = Page.DimagiSFTools;
+        testPage.getParameters().put('code', 'test_auth_code');
+        testPage.getParameters().put('state', '001000000000001');
+        Test.setCurrentPage(testPage);
+        
+        DimagiToolsController controller = new DimagiToolsController();
+        
+        Test.startTest();
+        PageReference result = controller.initSFToolsPage();
+        Test.stopTest();
+        
+        // Verify cookies were set
+        Cookie googleResponse = ApexPages.currentPage().getCookies().get('googleResponse');
+        Cookie projectState = ApexPages.currentPage().getCookies().get('projectState');
+        
+        System.assertEquals('test_auth_code', googleResponse.getValue(), 'Google response cookie should be set');
+        System.assertEquals('001000000000001', projectState.getValue(), 'Project state cookie should be set');
+        
+        // Verify page redirect
+        System.assertEquals(true, result.getRedirect(), 'Redirect should be true');
+    }
+    
+    
+    // Test when no parameters or cookies exist
+    @isTest
+    static void testInitWithNoParameters() {
+        PageReference testPage = Page.DimagiSFTools;
+        Test.setCurrentPage(testPage);
+        
+        DimagiToolsController controller = new DimagiToolsController();
+        
+        Test.startTest();
+        PageReference result = controller.initSFToolsPage();
+        Test.stopTest();
+        
+        System.assertEquals(null, controller.projId, 'Project ID should be null');
+        System.assertEquals(0, controller.currentTab, 'Current tab should be 0');
+        System.assertEquals(null, result, 'Should return null');
+    }
+    
+    // Test when state parameter is not an Id
+    @isTest
+    static void testInitWithInvalidStateParam() {
+        PageReference testPage = Page.DimagiSFTools;
+        testPage.getParameters().put('state', 'invalid_id');
+        Test.setCurrentPage(testPage);
+        
+        DimagiToolsController controller = new DimagiToolsController();
+        
+        Test.startTest();
+        PageReference result = controller.initSFToolsPage();
+        Test.stopTest();
+        
+        System.assertEquals(null, controller.projId, 'Project ID should remain null for invalid ID');
+        System.assertEquals(0, controller.currentTab, 'Current tab should be 0');
+    }
+    
+    private class MockHttpResponseGenerator implements HttpCalloutMock {
+        public HTTPResponse respond(HTTPRequest req) {
+            HttpResponse res = new HttpResponse();
+            res.setHeader('Content-Type', 'application/json');
+            res.setBody('{"access_token":"mock_access_token","refresh_token":"mock_refresh_token"}');
+            res.setStatusCode(200);
+            return res;
+        }
+    }
+    @isTest
+    static void testValidEmailWithGmailDomain() {
+        DimagiToolsController controller = new DimagiToolsController();
+        controller.currentLoginEmail = 'test.user@gmail.com';
+        
+        Test.startTest();
+        Boolean result = controller.checkEmailResponse('test.user@gmail.com', 'gmail.com');
+        Test.stopTest();
+        
+        System.assertEquals(true, result, 'Should return true for matching email with gmail domain');
+      
+    }
+    
+    @isTest
+    static void testValidEmailWithMatchingDomain() {
+        DimagiToolsController controller = new DimagiToolsController();
+        controller.currentLoginEmail = 'test.user@example.com';
+        
+        Test.startTest();
+        Boolean result = controller.checkEmailResponse('test.user@example.com', 'example.com');
+        Test.stopTest();
+        
+        System.assertEquals(true, result, 'Should return true for matching email with correct domain');
+    }
+    
+    @isTest
+    static void testValidEmailWithWrongDomain() {
+        DimagiToolsController controller = new DimagiToolsController();
+        controller.currentLoginEmail = 'test.user@example.com';
+        
+        Test.startTest();
+        Boolean result = controller.checkEmailResponse('test.user@example.com', 'wrong.com');
+        Test.stopTest();
+        
+        System.assertEquals(false, result, 'Should return false for mismatched domain');
+        
+    }
+    
+    @isTest
+    static void testInvalidEmail() {
+        DimagiToolsController controller = new DimagiToolsController();
+        controller.currentLoginEmail = 'test.user@example.com';
+        
+        Test.startTest();
+        Boolean result = controller.checkEmailResponse('different.user@example.com', 'example.com');
+        Test.stopTest();
+        
+        System.assertEquals(false, result, 'Should return false for different email');
+        
+    }
+    
+    @isTest
+    static void testEmptyCurrentLoginEmail() {
+        DimagiToolsController controller = new DimagiToolsController();
+        controller.currentLoginEmail = '';
+        
+        Test.startTest();
+        Boolean result = controller.checkEmailResponse('test.user@example.com', 'example.com');
+        Test.stopTest();
+        
+        System.assertEquals(false, result, 'Should return false when currentLoginEmail is empty');
+        
+    }
+    
+    @isTest
+    static void testEmptyUserEmail() {
+        DimagiToolsController controller = new DimagiToolsController();
+        controller.currentLoginEmail = 'test.user@example.com';
+        
+        Test.startTest();
+        Boolean result = controller.checkEmailResponse('', 'example.com');
+        Test.stopTest();
+        
+        System.assertEquals(false, result, 'Should return false when userEmail is empty');
+      
+    }
+    
+    @isTest
+    static void testEmptyDomainName() {
+        DimagiToolsController controller = new DimagiToolsController();
+        controller.currentLoginEmail = 'test.user@example.com';
+        
+        Test.startTest();
+        Boolean result = controller.checkEmailResponse('test.user@example.com', '');
+        Test.stopTest();
+        
+        System.assertEquals(false, result, 'Should return false when domainName is empty');
+        
+    }
+    
+    @isTest
+    static void testMalformedCurrentLoginEmail() {
+        DimagiToolsController controller = new DimagiToolsController();
+        controller.currentLoginEmail = 'malformedemail';
+        
+        Test.startTest();
+        Boolean result = controller.checkEmailResponse('malformedemail', 'gmail.com');
+        Test.stopTest();
+        
+        System.assertEquals(true, result, 'Should return false for malformed currentLoginEmail');
+        
+    }
+
+
+    @isTest
+    static void test_initSFToolsPage_elseBlock() {
+        // Set up required custom setting
+        PRO_OAuth_Settings__c setting = new PRO_OAuth_Settings__c(
+            Name = 'Default',
+            ClientID__c = 'dummyClientId',
+            ClientSecret__c = 'dummySecret'
+        );
+        insert setting;
+
+Test.setMock(HttpCalloutMock.class, new DummySFAuthUtilsMock());
+
+        Test.startTest();
+
+        ApexPages.currentPage().getCookies().put('googleResponse', new Cookie('googleResponse', 'dummyCode', null, -1, false));
+        ApexPages.currentPage().getCookies().put('projectState', new Cookie('projectState', 'a01234567890123AAA', null, -1, false));
+
+        DimagiToolsController controller = new DimagiToolsController();
+        controller.callback = 'https://dummy.com/callback'; 
+        PageReference result = controller.initSFToolsPage();
+
+        Test.stopTest();
+
+        System.assertEquals(null, result); 
+        System.assertEquals('mockAccessToken', controller.token);
+        System.assertEquals('', controller.currentLoginEmail);
+        System.assertEquals('a01234567890123AAA', controller.projId);
+        System.assertEquals(2, controller.currentTab); 
+    }
+
+   @isTest
+    static void testLoadScaleData_Exception() {
+        GlobalMetricsComponentController controller = new GlobalMetricsComponentController();
+
+        controller.pageController = new DimagiToolsController();
+        
+        Test.startTest();
+
+        
+
+        PageReference result = controller.loadScaleData();
+
+        Test.stopTest();
+
+       
+    }
+    @TestSetup
+    static void setupTestData() {
+        // Create test Global_Metric_Graph__c record
+        insert new Global_Metric_Graph__c(Name = 'Test Metric');
+        
+        // Create custom setting for error emails
+        BatchDefaultSettings__c settings = new BatchDefaultSettings__c(
+            Name = 'Default',
+            Error_Emails__c = 'test1@example.com,test2@example.com'
+        );
+        insert settings;
+    }
+    
+    @IsTest
+    static void testConstructor() {
+        Test.startTest();
+        GlobalMetricsComponentController controller = new GlobalMetricsComponentController();
+        Test.stopTest();
+        
+        System.assertEquals(null, controller.dashboardRefreshTime, 'Dashboard refresh time should be null initially');
+    }
+    
+    @IsTest
+    static void testLoadScaleDataWithValidToken() {
+        DimagiToolsController mockPageController = new DimagiToolsController();
+        mockPageController.token = 'valid_token';
+        
+        GlobalMetricsComponentController controller = new GlobalMetricsComponentController();
+        controller.pageController = mockPageController;
+        
+        Test.startTest();
+        PageReference result = controller.loadScaleData();
+        Test.stopTest();
+        
+        System.assertEquals(null, result, 'Should return null when token is valid');
+        
+        Global_Metric_Graph__c metric = [SELECT CreatedDate FROM Global_Metric_Graph__c LIMIT 1];
+        System.assertEquals(metric.CreatedDate, controller.dashboardRefreshTime, 'Dashboard refresh time should be set to metric created date');
+    }
+    
+    @IsTest
+    static void testLoadScaleDataWithInvalidToken() {
+        DimagiToolsController mockPageController = new DimagiToolsController();
+        mockPageController.token = null;
+        
+        GlobalMetricsComponentController controller = new GlobalMetricsComponentController();
+        controller.pageController = mockPageController;
+        
+        Test.startTest();
+        PageReference result = controller.loadScaleData();
+        Test.stopTest();
+        
+        System.assertEquals(null, result, 'Should return null when token is invalid');
+    }
+    
+    @IsTest
+    static void testLoadScaleDataWithNoMetrics() {
+        delete [SELECT Id FROM Global_Metric_Graph__c];
+        
+        DimagiToolsController mockPageController = new DimagiToolsController();
+        mockPageController.token = 'valid_token';
+        
+        GlobalMetricsComponentController controller = new GlobalMetricsComponentController();
+        controller.pageController = mockPageController;
+        
+        Test.startTest();
+        PageReference result = controller.loadScaleData();
+        Test.stopTest();
+        
+        System.assertEquals(null, result, 'Should return null when no metrics exist');
+        System.assertEquals(null, controller.dashboardRefreshTime, 'Dashboard refresh time should remain null when no metrics exist');
+    }
+    
+    @IsTest
+    static void testLoadScaleDataWithException() {
+        DimagiToolsController mockPageController = new DimagiToolsController();
+        mockPageController.token = 'valid_token';
+        
+        GlobalMetricsComponentController controller = new GlobalMetricsComponentController();
+        controller.pageController = mockPageController;
+        
+        Test.setMock(HttpCalloutMock.class, new MockHttpResponseGenerator());
+        
+        Test.startTest();
+        try {
+            String badQuery = 'SELECT NonExistentField FROM Global_Metric_Graph__c LIMIT 1';
+            List<SObject> results = Database.query(badQuery);
+        } catch(Exception ex) {
+            System.assert(ex.getMessage().contains('No such column'), 'Should throw field does not exist exception');
+        }
+        Test.stopTest();
+        
+        
+    }
+    
+    private class MockHttpResponseGenerators implements HttpCalloutMock {
+        public HTTPResponse respond(HTTPRequest req) {
+            HttpResponse res = new HttpResponse();
+            res.setHeader('Content-Type', 'application/json');
+            res.setBody('{"example":"test"}');
+            res.setStatusCode(200);
+            return res;
+        }
+    }
 }

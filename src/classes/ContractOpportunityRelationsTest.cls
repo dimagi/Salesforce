@@ -20,7 +20,7 @@ public class ContractOpportunityRelationsTest {
         insert product;
 
         Opportunity opportunity = new Opportunity(Name = 'Test Opportunity', StageName = 'Stage 2 - Talking', AccountId = account.Id, CloseDate = Date.today().addMonths(6), 
-                                                    Opportunity_Owner_Division__c = 'Solutions',Opportunity_Owner_Sub_Division__c='USH - Delivery'); //, Opportunity_Owner_Sub_Division__c='USH - Delivery'
+                                                    Opportunity_Owner_Division__c = 'Global Solutions',Opportunity_Owner_Sub_Division__c='USS Delivery');
         insert opportunity;
         Business_Unit__c bu = new Business_Unit__c(Name = 'Inc');
         insert bu;

@@ -51,13 +51,33 @@ public class FTETimeManager {
                     this.assignedTimeMap.put(workCard.Contract__c, new FTEEmployeeTime(workCard.Contract__r.name, workCard.Contract__c, false));
             }
             tmpHelper = this.assignedTimeMap.get(workCard.Contract__c);
+            Double total = 0;
+            Double totalUnassignedDays = 0;
+
             for(Integer i=1; i< tmpHelper.hoursArray.size(); i++){
-                tmpHelper.hoursArray[i-1] = (Decimal) workCard.get('month_'+ i + '__c') * 8;
-                System.debug(this.unAssignedTimeMap.hoursArray[i-1]);
-                this.unAssignedTimeMap.hoursArray[i-1] -= (Decimal) workCard.get('month_'+ i + '__c') * 8;
+                Decimal hoursTotal = (Decimal) workCard.get('month_'+ i + '__c') * 8;
+                tmpHelper.hoursArray[i-1] += hoursTotal;
+                total += hoursTotal;
+
+
+                Decimal UnassignedhoursTotal = (Decimal) workCard.get('month_'+ i + '__c') * 8;
+                this.unAssignedTimeMap.hoursArray[i-1] -= UnassignedhoursTotal;
+                totalUnassignedDays += UnassignedhoursTotal;
+
+                
             }
-            tmpHelper.hoursArray[12]=workCard.Total__c * 8;
-			this.unAssignedTimeMap.hoursArray[12] -= workCard.Total__c * 8;
+            if (total == 0) {
+                tmpHelper.hoursArray[12] += workCard.Total__c * 8;
+            } else {
+                tmpHelper.hoursArray[12] += total;
+            }
+            if (totalUnassignedDays == 0) {
+                this.unAssignedTimeMap.hoursArray[12] -= workCard.Total__c * 8;
+            } else {
+                this.unAssignedTimeMap.hoursArray[12] -= totalUnassignedDays;
+            }
+           // tmpHelper.hoursArray[12]=workCard.Total__c * 8;
+			//this.unAssignedTimeMap.hoursArray[12] -= workCard.Total__c * 8;
             system.debug('unAssignedTimeMap :'+this.unAssignedTimeMap);
         }
     }
@@ -331,11 +351,16 @@ public class FTETimeManager {
                                                 AND CALENDAR_YEAR(Date__c) =: this.fteYear AND CALENDAR_MONTH(Date__c) =: month];
 
             Decimal totalValue = workCardsFromDB.get(0).Total__c;
+            system.debug('@@totalValue'  + totalValue);
             Decimal totalHoursValue = workCardsFromDB.get(0).Total_Hours__c;
+            system.debug('@@totalHoursValue'  + totalValue);
             FTE_Work_Card__c workCard = workCardsFromDB.get(0);
             Decimal monthValue = (Decimal) workCard.get('Month_' + month + '__c');
+            system.debug('@@monthValue' + monthValue);
 
             workCard.put('Total__c', totalValue + days);
+            system.debug('totalValue + days  ' + totalValue + days);
+
             workCard.put('Total_Hours__c', totalHoursValue + (days * 8));
             if(assigned == true){
                  decimal missingtime =  remainDays + monthValue;

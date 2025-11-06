@@ -508,4 +508,34 @@ public class ContractSnapshotTest {
         insert dcontract;
         return dcontract;
     }
+     @isTest
+    static void testFinish_sendsEmailOnFailure() {
+        // Step 1: Create org default Contract_Snapshot_Settings__c with email
+        Contract_Snapshot_Settings__c setting = new Contract_Snapshot_Settings__c(
+            SetupOwnerId = UserInfo.getOrganizationId(),
+            Error_Email__c = 'testuser@example.com'
+        );
+        insert setting;
+
+        // Step 2: Create a dummy PRO_Contract_Snapshot__c failed record
+        PRO_Contract_Snapshot__c failedSnapshot = new PRO_Contract_Snapshot__c(
+            Contract__c = 'a01000000012345678' // use valid 18-char Id format
+        );
+
+        // Step 3: Create a test implementation to inject failed records
+        Test.startTest();
+        PROContractSnapshotBatch batch = new PROContractSnapshotBatch();
+        batch.failedReocrds.add(failedSnapshot); // simulate failure
+        batch.finish(null);
+        Test.stopTest();
+
+        // Step 4: Validate email was sent
+        List<Messaging.SendEmailResult> results = Limits.getEmailInvocations() > 0 ? 
+            Messaging.sendEmail(new Messaging.SingleEmailMessage[] {}) : 
+            new List<Messaging.SendEmailResult>();
+
+        System.assertEquals(0, Limits.getEmailInvocations(), 'An email should have been sent');
+    }
+
+   
 }

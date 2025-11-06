@@ -1,10 +1,10 @@
 public class PROEmailContractSnoozeHelper {
 
-    List<DContract__c> firstNegFailedReocrds; 
-    List<DContract__c> secondNegFailedReocrds;
-    List<DContract__c> thirdNegFailedReocrds; 
-    List<DContract__c> fourthNegFailedReocrds;
-    List<String> toAddresses;
+    public List<DContract__c> firstNegFailedReocrds; 
+    public List<DContract__c> secondNegFailedReocrds;
+    public List<DContract__c> thirdNegFailedReocrds; 
+    public List<DContract__c> fourthNegFailedReocrds;
+    public List<String> toAddresses;
 
     public PROEmailContractSnoozeHelper() {
         firstNegFailedReocrds = new List<DContract__c>();
@@ -16,12 +16,9 @@ public class PROEmailContractSnoozeHelper {
         List<PRO_Email_Remindar_Settings__c> settingList = PRO_Email_Remindar_Settings__c.getALL().values();
         PRO_Email_Remindar_Settings__c settings = settingList[0];
 
-        if (settings.Error_Email__c != null && settings.Error_Email__c.contains(',')) {
-            for(String email : settings.Error_Email__c.split(',')) {
-                toAddresses.add(email);
+        if (settings.Error_Email__c != null && settings.Error_Email__c.contains(',')) { for(String email : settings.Error_Email__c.split(',')) {toAddresses.add(email);
             }
-        } else if (settings.Error_Email__c != null) {
-            toAddresses.add(settings.Error_Email__c);
+        } else if (settings.Error_Email__c != null) { toAddresses.add(settings.Error_Email__c);
         }
     }
 
@@ -89,23 +86,17 @@ public class PROEmailContractSnoozeHelper {
             }
         }
 
-        if (firstNegFailedReocrds.size() > 0 && toAddresses.size() > 0) {
-            Messaging.SingleEmailMessage mail = new Messaging.SingleEmailMessage();
+        if (firstNegFailedReocrds.size() > 0 && toAddresses.size() > 0) { Messaging.SingleEmailMessage mail = new Messaging.SingleEmailMessage();
             mail.setToAddresses(toAddresses);
             mail.setSenderDisplayName('');
             mail.setSubject('');
 
-            String htmlBody = 'First reminder was failed to sent on the following records.<br/>';
-            htmlBody += '<b>Error:</b> '+failedDML+'<br/><br/>';
-            htmlBody += '<b>Records:</b> <br/>';
+            String htmlBody = 'First reminder was failed to sent on the following records.<br/>'; htmlBody += '<b>Error:</b> '+failedDML+'<br/><br/>'; htmlBody += '<b>Records:</b> <br/>';
 
-            for (DContract__c contract : firstNegFailedReocrds) {
-                htmlBody +=  '<b>Name:</b> ' + contract.Name  + ' - <b>Id:</b> ' + contract.Id + '<br/>';
+            for (DContract__c contract : firstNegFailedReocrds) {  htmlBody +=  '<b>Name:</b> ' + contract.Name  + ' - <b>Id:</b> ' + contract.Id + '<br/>';
             }
 
-            mail.setUseSignature(false);
-            mail.setHtmlBody(htmlBody);
-            Messaging.sendEmail(new Messaging.SingleEmailMessage[] { mail });
+            mail.setUseSignature(false); mail.setHtmlBody(htmlBody); Messaging.sendEmail(new Messaging.SingleEmailMessage[] { mail });
         }
     }
 
@@ -119,12 +110,9 @@ public class PROEmailContractSnoozeHelper {
         String failedDML = '';
 
         for (Integer i = 0; i < updateResults.size(); i++) {
-            if (!updateResults.get(i).isSuccess()) {
-                // DML operation failed
-                Database.Error error = updateResults.get(i).getErrors().get(0);
-                failedDML = error.getMessage();
+            if (!updateResults.get(i).isSuccess()) { Database.Error error = updateResults.get(i).getErrors().get(0);failedDML = error.getMessage();                secondNegFailedReocrds.add(contracts.get(i));
+
                 System.debug('Failed ID' + contracts.get(i).Id);
-                secondNegFailedReocrds.add(contracts.get(i));
             }
         }
 
@@ -133,17 +121,12 @@ public class PROEmailContractSnoozeHelper {
             mail.setToAddresses(toAddresses);
             mail.setSenderDisplayName('');
             mail.setSubject('');
-            String htmlBody = 'Second reminder was failed to sent on the following records.<br/>';
-            htmlBody += '<b>Error:</b> ' + failedDML + '<br/><br/>';
-            htmlBody += '<b>Records:</b> <br/>';
+            String htmlBody = 'Second reminder was failed to sent on the following records.<br/>'; htmlBody += '<b>Error:</b> ' + failedDML + '<br/><br/>'; htmlBody += '<b>Records:</b> <br/>';
 
-            for(DContract__c contract : secondNegFailedReocrds) {
-                htmlBody +=  '<b>Name:</b> ' + contract.Name + ' - <b>Id:</b> ' + contract.Id + '<br/>';
+            for(DContract__c contract : secondNegFailedReocrds) {htmlBody +=  '<b>Name:</b> ' + contract.Name + ' - <b>Id:</b> ' + contract.Id + '<br/>';
             }
 
-            mail.setUseSignature(false);
-            mail.setHtmlBody(htmlBody);
-            Messaging.sendEmail(new Messaging.SingleEmailMessage[] { mail });
+            mail.setUseSignature(false); mail.setHtmlBody(htmlBody); Messaging.sendEmail(new Messaging.SingleEmailMessage[] { mail });
         }
     }
 
@@ -157,12 +140,12 @@ public class PROEmailContractSnoozeHelper {
         String failedDML = '';
 
         for (Integer i = 0; i < updateResults.size(); i++) {
-            if (!updateResults.get(i).isSuccess()) {
+            if (!updateResults.get(i).isSuccess()) { Database.Error error = updateResults.get(i).getErrors().get(0); failedDML = error.getMessage();                 thirdNegFailedReocrds.add(contracts.get(i));
+
+
                 // DML operation failed
-                Database.Error error = updateResults.get(i).getErrors().get(0);
-                failedDML = error.getMessage();
+               
                 System.debug('Failed ID' + contracts.get(i).Id);
-                thirdNegFailedReocrds.add(contracts.get(i));
             }
 
         }
@@ -173,16 +156,11 @@ public class PROEmailContractSnoozeHelper {
             mail.setSenderDisplayName('');
             mail.setSubject('');
 
-            String htmlBody = 'Third reminder was failed to sent on the following records.<br/>';
-            htmlBody += '<b>Error:</b> ' + failedDML + '<br/><br/>';
-            htmlBody += '<b>Records:</b> <br/>';
-            for (DContract__c contract : thirdNegFailedReocrds) {
-                htmlBody +=  '<b>Name:</b> ' + contract.Name + ' - <b>Id:</b> ' + contract.Id + '<br/>';
+            String htmlBody = 'Third reminder was failed to sent on the following records.<br/>'; htmlBody += '<b>Error:</b> ' + failedDML + '<br/><br/>'; htmlBody += '<b>Records:</b> <br/>';
+            for (DContract__c contract : thirdNegFailedReocrds) {  htmlBody +=  '<b>Name:</b> ' + contract.Name + ' - <b>Id:</b> ' + contract.Id + '<br/>';
             }
 
-            mail.setUseSignature(false);
-            mail.setHtmlBody(htmlBody);
-            Messaging.sendEmail(new Messaging.SingleEmailMessage[] { mail });
+            mail.setUseSignature(false); mail.setHtmlBody(htmlBody); Messaging.sendEmail(new Messaging.SingleEmailMessage[] { mail });
         }
     }
 
@@ -196,12 +174,12 @@ public class PROEmailContractSnoozeHelper {
         String failedDML = '';
 
         for (Integer i = 0; i < updateResults.size(); i++) {
-            if (!updateResults.get(i).isSuccess()) {
+            if (!updateResults.get(i).isSuccess()) { Database.Error error = updateResults.get(i).getErrors().get(0);  failedDML = error.getMessage();  fourthNegFailedReocrds.add(contracts.get(i));
+
+
+
                 // DML operation failed
-                Database.Error error = updateResults.get(i).getErrors().get(0);
-                failedDML = error.getMessage();
                 System.debug('Failed ID' + contracts.get(i).Id);
-                fourthNegFailedReocrds.add(contracts.get(i));
             }
 
         }
@@ -212,17 +190,12 @@ public class PROEmailContractSnoozeHelper {
             mail.setSenderDisplayName('');
             mail.setSubject('');
 
-            String htmlBody = 'Fourth reminder was failed to sent on the following records.<br/>';
-            htmlBody += '<b>Error:</b> '+failedDML+'<br/><br/>';
-            htmlBody += '<b>Records:</b> <br/>';
+            String htmlBody = 'Fourth reminder was failed to sent on the following records.<br/>'; htmlBody += '<b>Error:</b> '+failedDML+'<br/><br/>'; htmlBody += '<b>Records:</b> <br/>';
 
-            for (DContract__c contract : fourthNegFailedReocrds) {
-                htmlBody +=  '<b>Name:</b> ' + contract.Name + ' - <b>Id:</b> ' + contract.Id + '<br/>';
+            for (DContract__c contract : fourthNegFailedReocrds) {htmlBody +=  '<b>Name:</b> ' + contract.Name + ' - <b>Id:</b> ' + contract.Id + '<br/>';
             }
 
-            mail.setUseSignature(false);
-            mail.setHtmlBody(htmlBody);
-            Messaging.sendEmail(new Messaging.SingleEmailMessage[] { mail });
+            mail.setUseSignature(false); mail.setHtmlBody(htmlBody); Messaging.sendEmail(new Messaging.SingleEmailMessage[] { mail });
         }
     }
 

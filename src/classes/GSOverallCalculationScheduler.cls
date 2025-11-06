@@ -1,7 +1,9 @@
-public without sharing class GSOverallCalculationScheduler implements Schedulable {
-
+public virtual without sharing class GSOverallCalculationScheduler implements Schedulable{
+public virtual Date getToday() {
+    return Date.today();
+}
     public void execute(SchedulableContext sc) {
-        Date currentDate = Date.today();
+        Date currentDate = getToday();
         List<Date> thursDayList = PROHelper.GetAllThursDayOfMonth(currentDate.year(), currentDate.month());
         List<Date> thursDayListLastMonth = PROHelper.GetAllThursDayOfMonth(currentDate.addMonths(-1).year(), currentDate.addMonths(-1).month());
         List<Date> thursDayListNextMonth = PROHelper.GetAllThursDayOfMonth(currentDate.addMonths(1).year(), currentDate.addMonths(1).month());

@@ -75,10 +75,10 @@ public without sharing class DimagiToolsController {
      * OAuth section
      */
 
-    private String callback;
-    private String token;
-    private String refreshToken;
-    private Boolean tokenIsValid; // we must use it because checking token with google in some cases cause Pending job exception.
+    public String callback;
+    public String token;
+    public String refreshToken;
+    public Boolean tokenIsValid; // we must use it because checking token with google in some cases cause Pending job exception.
 
     public String currentLoginEmail { get; set; }
 
@@ -121,7 +121,7 @@ public without sharing class DimagiToolsController {
         return this.tokenIsValid;
     }
 
-    private Boolean checkEmailResponse(String userEmail, String domainName) {
+    public Boolean checkEmailResponse(String userEmail, String domainName) {
         if (String.isNotEmpty(this.currentLoginEmail) && userEmail == this.currentLoginEmail
                && (domainName == 'gmail.com' || domainName == this.currentLoginEmail.split('@')[1])) {
              this.tokenIsValid = true;
@@ -132,7 +132,7 @@ public without sharing class DimagiToolsController {
         return this.tokenIsValid;
     }
 
-    private PRO_OAuth_Settings__c getSettings() { // we don't want store settings in StateView
+    PUBLIC PRO_OAuth_Settings__c getSettings() { // we don't want store settings in StateView
         List<PRO_OAuth_Settings__c> googleSettings = PRO_OAuth_Settings__c.getAll().values();
         if (googleSettings != null && googleSettings.size() > 0) {
             return googleSettings.get(0);

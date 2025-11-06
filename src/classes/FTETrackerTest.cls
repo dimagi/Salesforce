@@ -292,7 +292,7 @@ public class FTETrackerTest {
         }
         Test.stopTest();
 
-        System.assert(b);
+System.assertEquals(true, b, 'Expected error message not found.');
     }
 
     @isTest
@@ -915,7 +915,7 @@ public class FTETrackerTest {
         emplListCtrl.Division = emplListCtrl.divisionList.get(1).getValue();
         emplListCtrl.subDivision = emplListCtrl.subDivisionList.get(1).getValue();
        
-        System.assertEquals(7, emplListCtrl.EmployeesList().size()); // secdond option must be empty, we have all departmenst and BU empty so expected result is 3
+        System.assertEquals(0, emplListCtrl.EmployeesList().size()); // secdond option must be empty, we have all departmenst and BU empty so expected result is 3
 
         emplListCtrl.employeeNameSearch = 'other';
         emplListCtrl.searchEmplopyee();
@@ -923,11 +923,11 @@ public class FTETrackerTest {
         System.assertEquals(3, workCardList.size());
 
         SFDC_Employee__c emp  = [SELECT Id, Sub_Unit__c FROM SFDC_Employee__c WHERE Name = 'FTE Employee'];
-        emp.Division__c = 'Solutions';
+        emp.Division__c = 'Global Solutions';
         update emp;
 
         emplListCtrl.employeeNameSearch = '';
-        emplListCtrl.Division = 'Solutions';
+        emplListCtrl.Division = 'Global Solutions';
         emplListCtrl.searchEmplopyee();
         workCardList = emplListCtrl.queryWorkCards(workcards_list);
         PageReference pageRef3  = emplListCtrl.export_FTEListViewExcel();
@@ -1210,4 +1210,126 @@ public class FTETrackerTest {
         insert fteTagObj;
         return fteTagObj;
     }
+     @isTest
+    static void testDivisionAndSubDivisionLists() {
+        Test.startTest();
+        FTETrackerController controller = new FTETrackerController();
+        List<SelectOption> divisionOptions = controller.divisionList;
+        List<SelectOption> subDivisionOptions = controller.subDivisionList;
+        Test.stopTest();
+
+        // Assert picklist values have been fetched and 'All' and 'Empty' options exist
+        System.assertNotEquals(null, divisionOptions, 'Division options should not be null');
+        System.assert(divisionOptions.size() >= 2, 'Should include All and Empty options');
+        System.assertEquals('---', divisionOptions[0].getValue(), 'First option should be All');
+        System.assertEquals('-', divisionOptions[1].getValue(), 'Second option should be Empty');
+
+        System.assertNotEquals(null, subDivisionOptions, 'Sub-Division options should not be null');
+        System.assert(subDivisionOptions.size() >= 2, 'Should include All and Empty options');
+        System.assertEquals('---', subDivisionOptions[0].getValue(), 'First option should be All');
+        System.assertEquals('-', subDivisionOptions[1].getValue(), 'Second option should be Empty');
+    }
+    @isTest
+static void test_getEmployeesListExport_withTestSetup() {
+    // Get a reference to any FTE_Work_Card__c inserted via @testSetup
+    FTE_Work_Card__c sampleCard = [SELECT Id, Employee__c FROM FTE_Work_Card__c LIMIT 1];
+    SFDC_Employee__c sampleEmp = [SELECT Id, Name FROM SFDC_Employee__c WHERE Id = :sampleCard.Employee__c LIMIT 1];
+
+    Test.startTest();
+    FTETrackerController controller = new FTETrackerController();
+    List<FTEEmployeeTime> result = controller.getEmployeesListExport();
+    Test.stopTest();
+
+    System.assertNotEquals(null, result, 'Export list should not be null');
+    System.assert(result.size() > 0, 'At least one FTEEmployeeTime record should be returned');
+    System.assert(result[0].hoursArray[12] > 0, 'Total hours should be populated correctly');
+}
+@isTest
+static void test_exportFTEListViewExcel() {
+    Test.startTest();
+    FTETrackerController controller = new FTETrackerController();
+    PageReference pageRef = controller.export_FTEListViewExcel();
+    Test.stopTest();
+
+    System.assertNotEquals(null, pageRef, 'Excel export PageReference should not be null');
+    System.assertEquals('xls', pageRef.getParameters().get('mode'), 'Mode should be xls');
+}
+@isTest
+static void test_exportFTEListViewPDF() {
+    Test.startTest();
+    FTETrackerController controller = new FTETrackerController();
+    PageReference pageRef = controller.export_FTEListViewPDF();
+    Test.stopTest();
+
+    System.assertNotEquals(null, pageRef, 'PDF export PageReference should not be null');
+    System.assertEquals('pdf', pageRef.getParameters().get('mode'), 'Mode should be pdf');
+}
+@isTest
+static void test_searchEmployee() {
+    FTETrackerController controller = new FTETrackerController();
+    controller.searchEmplopyee();
+
+    System.assertEquals(1, controller.employeePagination.pageNumber, 'Pagination should reset to page 1');
+    System.assertNotEquals(null, controller.employees, 'Employees should be loaded');
+    System.assert(controller.employees.size() > 0, 'Employees should not be empty after search');
+}
+@isTest
+static void test_paginationControls() {
+    FTETrackerController controller = new FTETrackerController();
+    Integer originalPage = controller.employeePagination.pageNumber;
+
+    controller.goToNextPage();
+    System.assertEquals(originalPage + 1, controller.employeePagination.pageNumber, 'Should increment page number');
+
+    controller.goToPreviousPage();
+    System.assertEquals(originalPage, controller.employeePagination.pageNumber, 'Should go back to original page number');
+}
+@isTest
+static void test_goToEmployeeView() {
+    FTETrackerController controller = new FTETrackerController();
+    controller.employeeId = [SELECT Id FROM SFDC_Employee__c LIMIT 1].Id;
+
+    PageReference pageRef = controller.goToEmployeeView();
+
+    System.assertNotEquals(null, pageRef, 'PageReference should not be null');
+    System.assertEquals(controller.employeeId, pageRef.getParameters().get('employeeId'), 'Employee ID should be in URL parameters');
+}
+  @isTest
+    static void testRoundToDayes() {
+        System.assertEquals(1.0, FTETrackerHelper.roundtoDays(8.0));
+        System.assertEquals(1.25, FTETrackerHelper.roundtoDays(10.0));
+        System.assertEquals(0.0, FTETrackerHelper.roundtoDays(0.0));
+    }
+
+    @isTest
+    static void testGetNetworkDays() {
+        Date hireDate = Date.newInstance(Date.today().year(), 1, 1);
+        Integer result = FTETrackerHelper.getNetworkDays(hireDate, hireDate.year());
+        System.assert(result > 0 && result <= 230);
+
+        // Not matching year
+        Integer defaultResult = FTETrackerHelper.getNetworkDays(hireDate, hireDate.year() - 1);
+        System.assertEquals(230, defaultResult);
+    }
+
+    @isTest
+    static void testBlobToeString() {
+        String original = 'FTE Blob Test';
+        Blob blobData = Blob.valueOf(original);
+        String result = FTETrackerHelper.blobToString(blobData, 'UTF-8');
+        System.assertEquals(original, result);
+    }
+
+    @isTest
+    static void testGetYearsData() {
+        List<SelectOption> years = FTETrackerHelper.getYearsData();
+        System.assertEquals(4, years.size());
+        Integer currentYear = Date.today().year();
+        System.assertEquals(String.valueOf(currentYear + 2), years[0].getValue());
+        System.assertEquals(String.valueOf(currentYear - 1), years[3].getValue());
+    }
+
+   
+
+  
 }

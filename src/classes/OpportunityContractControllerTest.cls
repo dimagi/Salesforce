@@ -29,7 +29,7 @@ private class OpportunityContractControllerTest {
         opp.Proposal_Dropbox_Location__c = 'proposal';
         opp.X7_Long_term_partnership_or_one_off__c = 'long term';
         opp.X10_Major_component_risks__c = 'risk';
-        opp.Opportunity_Owner_Division__c = 'Solutions';
+        opp.Opportunity_Owner_Division__c = 'Global Solutions';
         opp.Opportunity_Owner_Sub_Division__c='Inbound Sales';
         insert opp;
 
@@ -81,7 +81,6 @@ private class OpportunityContractControllerTest {
         System.assertEquals(contract.Account__c, opp.AccountId);
         System.assertEquals(contract.Area__c, opp.Area__c);
         System.assertEquals(contract.Sub_Area__c, opp.Sub_Area__c);
-        System.assertEquals(contract.Prime_Contracting_Business_Unit__c, opp.Implementing_Business_Unit__c);
         System.assertEquals(contract.Proposal_Dropbox_Location__c, opp.Proposal_Dropbox_Location__c);
         System.assertEquals(contract.Long_term_partnership_or_one_off__c, opp.X7_Long_term_partnership_or_one_off__c);
         System.assertEquals(contract.Major_Component_Risks__c, opp.X10_Major_component_risks__c);

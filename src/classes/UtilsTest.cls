@@ -100,6 +100,25 @@ public class UtilsTest {
         messageBatch.finish(null);
         System.assertNotEquals(testTime, BatchDefaultSettings__c.getOrgDefaults().Last_Batch_Error_Check_Date__c);
     }
+     @isTest
+    static void testSendEmailFromDatabaseSaveResultErrors() {
+        // Create invalid Account to trigger DML error
+        Account acc = new Account(); // No Name to fail validation
+        Database.SaveResult[] results = Database.insert(new List<Account>{ acc }, false); // allOrNone = false
+
+        System.assertEquals(false, results[0].isSuccess(), 'Expected save to fail');
+
+        // Prepare email params
+        List<String> addressList = new List<String>{ 'test@example.com' };
+        String subject = 'DML Errors';
+        String head = '<h2>Error Report</h2>';
+
+        Test.startTest();
+        EmailHelper.sendEmailFromDatabaseSaveResultErrors(addressList, subject, head, results);
+        Test.stopTest();
+
+        
+    }
 
     @isTest
     public static void shouldSendEmails() {
@@ -297,4 +316,24 @@ public class UtilsTest {
             return res;
         }
     }
+    @isTest
+static void testFinishWithErrors() {
+    BatchDefaultSettings__c settings = new BatchDefaultSettings__c(
+        Error_Emails__c = 'test1@example.com,test2@example.com'
+    );
+    insert settings;
+
+    GenericErrorMessangerBatch batch = new GenericErrorMessangerBatch();
+    batch.errorMessages.add('<tr><td>TestClass</td><td>Failed</td><td>Error</td><td>1</td><td>' + String.valueOf(DateTime.now()) + '</td></tr>');
+    batch.currentRunTime = DateTime.now();
+
+    Test.startTest();
+    batch.finish(null);  
+    Test.stopTest();
+
+    BatchDefaultSettings__c updated = [SELECT Last_Batch_Error_Check_Date__c FROM BatchDefaultSettings__c LIMIT 1];
+    System.assertEquals(batch.currentRunTime, updated.Last_Batch_Error_Check_Date__c);
+}
+
+    
 }

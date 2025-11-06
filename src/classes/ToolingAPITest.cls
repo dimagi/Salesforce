@@ -79,6 +79,7 @@ private class ToolingAPITest
             return res;
         }
     }
+    
 
     private static String testObjectResponse =
         '{' +
@@ -116,7 +117,7 @@ private class ToolingAPITest
           '} ],' +
           '"entityTypeName" : "CustomFieldDefinition"' +
         '}';
-
+ 
     private static String testErrorResponse =
         '[{' +
           '"errorCode" : "INVALID_FIELD",' +
