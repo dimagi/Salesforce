@@ -111,7 +111,7 @@ public class OpenOpportunityReportController {
         String[] stages = new String[] {'Stage 1 - Connect','Stage 2 - Talking','Stage 3 - Prospect','Stage 4 - Proposal Development','Stage 5 - Submitted','Stage 6 - In Negotiations'};
         Opportunity[] result = new Opportunity[] {};
         String queryValues = this.getOpenOpportunitiesQueryValues();
-        String OpportunityOwnerDivisionFilter = 'Solutions';
+        String OpportunityOwnerDivisionFilter = 'Global Solutions';
 
         /******
         /* Added in filter for Opportunity_Owning_Entity__c so can filter on business unit in the report
