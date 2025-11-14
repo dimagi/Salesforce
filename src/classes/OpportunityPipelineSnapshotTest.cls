@@ -12,7 +12,7 @@ public class OpportunityPipelineSnapshotTest {
         Opportunity opp2 = new Opportunity(Name = 'Test Opportunity 2', StageName = 'Stage 5 - Submitted', Channel_Response__c = 'Inside Sales', Amount = 70000,
                                                 Expense_Income__c = 23000, Expected_Buffer__c = 40, Duration_months__c = 24, Country_Text__c = 'Sample text 2 test',
                                                 Product_Text__c = 'Product test 2', CloseDate = date.today().addMonths(6), Probability = 40, AccountId = snapShotAccount.Id,
-                                                Opportunity_Owner_Division__c = 'Solutions', Opportunity_Owner_Sub_Division__c = 'USS Delivery',Country__c = 'a00b0000001AOufAAG',Proposal_Dropbox_Location__c = 'https://example.com/proposal.pdf');
+                                                Opportunity_Owner_Division__c = 'Global Solutions', Opportunity_Owner_Sub_Division__c = 'USS Delivery',Country__c = 'a00b0000001AOufAAG',Proposal_Dropbox_Location__c = 'https://example.com/proposal.pdf');
         insert opp1;
         insert opp2;
     }
