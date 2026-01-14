@@ -327,68 +327,6 @@ public class TimeCardTriggerControllerTest {
         Time_Card__c tc3 = [SELECT Id, Time_Card_Salary__c FROM Time_Card__c WHERE Id =: timeCardObj3.Id];
         System.assertEquals((((77000 / 2.0) / 260.0) / 8.0).setScale(8), tc2.Time_Card_Salary__c);
     }
-	
-    @isTest
-    public static void shouldUpdateRatesAndTCFieldsAfterFetchingUpdatedCases() {
-        DContract__c parent1 = [SELECT Id FROM DContract__c WHERE Name = 'Sample Parent 1'];
-        DContract__c child2 = [SELECT Id FROM DContract__c WHERE Name = 'Sample Child 2'];
-        DContract__c child3 = [SELECT Id FROM DContract__c WHERE Name = 'Sample Child 3'];
-        SFDC_Employee__c employeeObj = [SELECT Id FROM SFDC_Employee__c WHERE Name = 'Sample Employee'];
-
-        Time_Card__c timeCardObj1 = new Time_Card__c(Time_Card_Salary__c = 0, Billing_Rate__c = 2.0, Total__c = 8, Date__c = Date.newInstance(2018 , 1, 2),
-                                                        Employee__c = employeeObj.Id, Client__c = child2.Id, Case__c = '22222: WrongTitle');
-        Time_Card__c timeCardObj2 = new Time_Card__c(Time_Card_Salary__c = 0, Billing_Rate__c = 3.0, Total__c = 4, Date__c = Date.newInstance(2018 , 1, 12),
-                                                        Employee__c = employeeObj.Id, Client__c = child2.Id, Case__c = '22222: WrongTitle');
-        Time_Card__c timeCardObj3 = new Time_Card__c(Time_Card_Salary__c = 0, Billing_Rate__c = 2.0, Total__c = 10, Date__c = Date.newInstance(2018 , 1, 20),
-                                                        Employee__c = employeeObj.Id, Client__c = child2.Id, Case__c = '11111: WrongTitle');
-        Time_Card__c timeCardObj4 = new Time_Card__c(Time_Card_Salary__c = 0, Billing_Rate__c = 2.0, Total__c = 8, Date__c = Date.newInstance(2018 , 1, 2),
-                                                        Employee__c = employeeObj.Id, Client__c = child2.Id, Case__c = '11111: WrongTitle');
-
-        List<Time_Card__c> timeCards = new List<Time_Card__c> {timeCardObj1, timeCardObj2, timeCardObj3, timeCardObj4};
-        insert timeCards;
-
-        List<DContract__c> toUpdate = new List<DContract__c>();
-        for (DContract__c dContract : [SELECT Id, Services_Spend__c, Require_Services_Spend_Refresh__c FROM DContract__c]) {
-            dContract.Require_Services_Spend_Refresh__c = false;
-            toUpdate.add(dContract);
-        }
-        update toUpdate;
-
-        Test.setMock(HttpCalloutMock.class, new FogBugzHttpCalloutMock());
-        Test.startTest();
-        Database.executeBatch(new TimeCardCaseUpdateBatch(), 200);
-        Test.stopTest();
-
-        Time_Card__c tc1DB = [SELECT Area__c, Case__c, Project__c, Client__c, Billing_Rate__c FROM Time_Card__c WHERE Id =: timeCardObj1.Id];
-        System.assertEquals('area 2', tc1DB.Area__c);
-        System.assertEquals('22222: Title 2', tc1DB.Case__c);
-        System.assertEquals('Test 2', tc1DB.Project__c);
-        System.assertEquals(child3.Id, tc1DB.Client__c);
-        System.assertEquals(2.39096, tc1DB.Billing_Rate__c);
-
-        Time_Card__c tc2DB = [SELECT Area__c, Case__c, Project__c, Client__c, Billing_Rate__c FROM Time_Card__c WHERE Id =: timeCardObj2.Id];
-        System.assertEquals('area 2', tc2DB.Area__c);
-        System.assertEquals('22222: Title 2', tc2DB.Case__c);
-        System.assertEquals('Test 2', tc2DB.Project__c);
-        System.assertEquals(child3.Id, tc2DB.Client__c);
-        System.assertEquals(2.39096, tc2DB.Billing_Rate__c);
-
-        Time_Card__c tc3DB = [SELECT Area__c, Case__c, Project__c, Client__c, Billing_Rate__c FROM Time_Card__c WHERE Id =: timeCardObj3.Id];
-        System.assertEquals('area 1', tc3DB.Area__c);
-        System.assertEquals('11111: Title 1', tc3DB.Case__c);
-        System.assertEquals('Test 1', tc3DB.Project__c);
-        System.assertEquals(parent1.Id, tc3DB.Client__c);
-        System.assertEquals(2.39096, tc3DB.Billing_Rate__c);
-
-        Time_Card__c tc4DB = [SELECT Area__c, Case__c, Project__c, Client__c, Billing_Rate__c FROM Time_Card__c WHERE Id =: timeCardObj4.Id];
-        System.assertEquals('area 1', tc4DB.Area__c);
-        System.assertEquals('11111: Title 1', tc4DB.Case__c);
-        System.assertEquals('Test 1', tc4DB.Project__c);
-        System.assertEquals(parent1.Id, tc4DB.Client__c);
-        System.assertEquals(2.39096, tc4DB.Billing_Rate__c);
-
-        System.assertEquals(3, [SELECT Id FROM DContract__c WHERE Require_Services_Spend_Refresh__c = true].size());
-    }
 
     @isTest
     public static void shouldUpdateTimeCardSalaryAfterEmployeeSnapshotUpsert() {

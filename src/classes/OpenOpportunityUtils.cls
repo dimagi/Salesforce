@@ -11,10 +11,6 @@ public with sharing class OpenOpportunityUtils {
             Opportunity oldOpportunity = oldOpportunities.get(opportunity.Id);
             if (oldOpportunity.StageName != opportunity.StageName) {
                 opportunity.Stage_Name_Updated_Date__c = Date.today();
-                if (opportunity.Fogbugz_Assigned_To__c == 'CLOSED' && opportunity.IsClosed == false
-                        && oldOpportunity.IsClosed == true) { // Opportunity was reopened
-                    opportunity.Fogbugz_Assigned_To__c = 'REOPENED';
-                }
             }
         }
     }

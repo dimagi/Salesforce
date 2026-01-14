@@ -5,39 +5,6 @@
 private class OpportunityTriggersTest {
 
     @isTest
-    public static void shouldAddUpdateFogBugzAssignedTo() {
-        Opportunity opp1 = new Opportunity(Name = 'Opp simple 1', StageName = 'Closed - Lost', Fogbugz_Assigned_To__c = 'CLOSED', CloseDate = Date.today(),
-                                            Opportunity_Owner_Division__c = 'Global Solutions', Opportunity_Owner_Sub_Division__c='Inbound Sales',Country__c = 'a00b0000001AP19AAG',Expense_Income__c = 0,Proposal_Dropbox_Location__c = 'test');
-        Opportunity opp2 = new Opportunity(Name = 'Opp simple 2', StageName = 'Closed - Lost', Fogbugz_Assigned_To__c = '', CloseDate = Date.today(),
-                                            Opportunity_Owner_Division__c = 'Global Solutions', Opportunity_Owner_Sub_Division__c='Inbound Sales',Country__c = 'a00b0000001AP19AAG',Expense_Income__c = 0,Proposal_Dropbox_Location__c = 'test');
-        Opportunity opp3 = new Opportunity(Name = 'Opp simple 3', StageName = 'Closed - Lost', Fogbugz_Assigned_To__c = 'Person', CloseDate = Date.today(),
-                                            Opportunity_Owner_Division__c = 'Global Solutions', Opportunity_Owner_Sub_Division__c='Inbound Sales',Country__c = 'a00b0000001AP19AAG',Expense_Income__c = 0,Proposal_Dropbox_Location__c = 'test');
-        insert new List<Opportunity> { opp1, opp2, opp3 };
-
-        Test.startTest();
-        opp1.StageName = 'Stage 1 - Connect';
-        opp2.StageName = 'Stage 1 - Connect';
-        opp3.StageName = 'Stage 1 - Connect';
-        update new List<Opportunity> { opp1, opp2, opp3 };
-        Test.stopTest();
-
-        Opportunity testOpp = [SELECT Id, Name, StageName, Fogbugz_Assigned_To__c, IsClosed FROM Opportunity WHERE Id =: opp1.Id];
-        System.assertEquals('Stage 1 - Connect', testOpp.StageName);
-        System.assertEquals('REOPENED', testOpp.Fogbugz_Assigned_To__c);
-        System.assertEquals(false, testOpp.IsClosed);
-
-        testOpp = [SELECT Id, Name, StageName, Fogbugz_Assigned_To__c, IsClosed FROM Opportunity WHERE Id =: opp2.Id];
-        System.assertEquals('Stage 1 - Connect', testOpp.StageName);
-        System.assertEquals(null, testOpp.Fogbugz_Assigned_To__c);
-        System.assertEquals(false, testOpp.IsClosed);
-
-        testOpp = [SELECT Id, Name, StageName, Fogbugz_Assigned_To__c, IsClosed FROM Opportunity WHERE Id =: opp3.Id];
-        System.assertEquals('Stage 1 - Connect', testOpp.StageName);
-        System.assertEquals('Person', testOpp.Fogbugz_Assigned_To__c);
-        System.assertEquals(false, testOpp.IsClosed);
-    }
-
-    @isTest
     public static void shouldUpdateAccountRelationInTheDomainObjectBulk() {
         Business_Unit__c bunit = new Business_Unit__c();
         bunit.Name = 'Test';
@@ -149,12 +116,10 @@ private class OpportunityTriggersTest {
         opp.StageName = 'Stage 1 - Connect';
         opp.CloseDate = Date.newInstance(2013, 4, 9);
         opp.Implementing_Business_Unit__c = bunit.Id;
-        opp.Fogbugz_Ticket_Number__c = FogBugzHttpCalloutMock.TEST_FB_ID;
         opp.Opportunity_Owner_Division__c = 'Global Solutions';
         opp.Opportunity_Owner_Sub_Division__c='Inbound Sales';
         insert opp;
 
-        Test.setMock(HttpCalloutMock.class, new FogBugzHttpCalloutMock());
         Test.startTest();
         delete opp;
         Test.stopTest();
@@ -173,7 +138,6 @@ private class OpportunityTriggersTest {
         opp.StageName = 'Stage 1 - Connect';
         opp.CloseDate = Date.newInstance(2013, 4, 9);
         opp.Implementing_Business_Unit__c = bunit.Id;
-        opp.Fogbugz_Ticket_Number__c = FogBugzHttpCalloutMock.TEST_FB_ID;
         opp.Opportunity_Owner_Division__c = 'Global Solutions';
         opp.Opportunity_Owner_Sub_Division__c='Inbound Sales';
         insert opp;
@@ -199,14 +163,12 @@ private class OpportunityTriggersTest {
         opp.StageName = 'Stage 1 - Connect';
         opp.CloseDate = Date.newInstance(2013, 4, 9);
         opp.Implementing_Business_Unit__c = bunit.Id;
-        opp.Fogbugz_Ticket_Number__c = FogBugzHttpCalloutMock.TEST_FB_ID;
         opp.Amount = 10;
         opp.Opportunity_Owner_Division__c = 'Global Solutions';
         opp.Opportunity_Owner_Sub_Division__c='Inbound Sales';
         insert opp;
 
         Test.startTest();
-        opp.Fogbugz_Probability__c = 10;
         update opp;
         Test.stopTest();
     }
@@ -221,7 +183,6 @@ private class OpportunityTriggersTest {
         opp.StageName = 'Stage 1 - Connect';
         opp.CloseDate = Date.newInstance(2013, 4, 9);
         opp.Implementing_Business_Unit__c = bunit.Id;
-        opp.Fogbugz_Ticket_Number__c = FogBugzHttpCalloutMock.TEST_FB_ID;
         opp.Opportunity_Owner_Division__c = 'Global Solutions';
         opp.Opportunity_Owner_Sub_Division__c='Inbound Sales';
         opp.Expense_Income__c = 0;
@@ -246,7 +207,6 @@ private class OpportunityTriggersTest {
         opp.StageName = 'Closed';
         opp.CloseDate = Date.newInstance(2013, 4, 9);
         opp.Implementing_Business_Unit__c = bunit.Id;
-        opp.Fogbugz_Ticket_Number__c = FogBugzHttpCalloutMock.TEST_FB_ID;
         opp.Opportunity_Owner_Division__c = 'Global Solutions';
         opp.Opportunity_Owner_Sub_Division__c='Inbound Sales';
         opp.Expense_Income__c = 0;

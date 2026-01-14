@@ -13,7 +13,7 @@ public class DContractRecalculationController {
     }
 
     public void runRecalculation() {
-        ApexClass[] batchClass = [SELECT Id FROM ApexClass WHERE Name='TimeCardCalculator' OR Name = 'TimeCardCaseUpdateBatch'];
+        ApexClass[] batchClass = [SELECT Id FROM ApexClass WHERE Name='TimeCardCalculator'];
         AsyncApexJob[] batchClassJobList = [SELECT Id, JobItemsProcessed, TotalJobItems, createdDate FROM AsyncApexJob WHERE ApexClassID IN: batchClass
                                             AND Status IN ('Holding', 'Queued', 'Preparing', 'Processing') ORDER BY createdDate DESC LIMIT 1];
 

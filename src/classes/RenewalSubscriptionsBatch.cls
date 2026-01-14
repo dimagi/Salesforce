@@ -1,5 +1,5 @@
 /**
- * RenewalSubscriptionsBatch creates new Opps and Fogbugz cases for ending Domain Subscriptions.
+ * RenewalSubscriptionsBatch creates new Opps for ending Domain Subscriptions.
  */
 public without sharing class RenewalSubscriptionsBatch implements Database.Batchable<Accounting_Subscription__c>, Database.AllowsCallouts, Database.Stateful {
 
@@ -146,7 +146,6 @@ system.debug('==' + this.incBusinessUnit);
                                                         Prior_Dimagi_contact__c = subscription.Dimagi_Contact__c,
                                                         Name = oppNameFirstPart + oppNamesecondPart,
                                                         Subscriptions_web_users__c = subscription.Accounting_subscriber_domain__r.cpAllWebUsers__c,
-                                                        Fogbugz_Probability__c = 30,
                                                         Probability = 30,
                                                         Duration_months__c = 12,
                                                         Expected_Buffer__c = 100,
@@ -221,7 +220,6 @@ system.debug('==' + this.incBusinessUnit);
         if (Test.isRunningTest()) {
             return;
         }
-        Database.executeBatch(new CreateFBCasesBatch(), 5);
         StatusLoggerUtils.sendLog(StatusLoggerUtils.RENEWAL_LOGGER, BatchDefaultSettings__c.getOrgDefaults().Error_Emails__c.split(','));
     }
     

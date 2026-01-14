@@ -36,7 +36,6 @@ public class TimeCardTriggerController {
     }
 
     public static void handleAfterUpdate(List<Time_Card__c> updatedTimeCards, Map<Id, Time_Card__c> beforeUpdateTimeCards) {
-        // Time card Total can't be updated in fogbugz, time card must be deleted and submited again in such case insert and delte trigger will work
         if (RecursiveTriggerHelper.hasRecursiveFlag()) {
             return;
         }
