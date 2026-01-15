@@ -6,6 +6,23 @@
  *    @date:     3/25/2013
  */
 public with sharing class OpportunityTriggerSync {
+    
+    private static Set<String> closedStages;
+
+    public static Set<String> getClosedStages() {
+        if (closedStages == null) {
+            closedStages = new Set<String>();
+            for (OpportunityStage os : [
+                SELECT MasterLabel
+                FROM OpportunityStage
+                WHERE IsClosed = true
+            ]) {
+                closedStages.add(os.MasterLabel);
+            }
+        }
+        system.debug(closedStages);
+        return closedStages;
+    }
 
     // Entry point from @insert trigger event.
     public static void onInsert(Opportunity_Location__c[] newLocations) {
@@ -22,7 +39,7 @@ public with sharing class OpportunityTriggerSync {
 
             if (!existentOpptyCountries.contains(ol.Opportunity__c + '' + locationCountry.get(ol.Location__c))) {
                 oc.Opportunity__c = ol.Opportunity__c;
-                if (FogBugzUtils.closedStages.contains(opptyStages.get(ol.Opportunity__c))) {
+                if (getClosedStages().contains(opptyStages.get(ol.Opportunity__c))) {
                     oc.Country_Closed__c = locationCountry.get(ol.Location__c);
                 } else {
                     oc.Country_Open__c = locationCountry.get(ol.Location__c);
@@ -125,7 +142,7 @@ public with sharing class OpportunityTriggerSync {
                 oc.Opportunity__c = oc.OpportunityId__c;
                 oc.OpportunityId__c = null;
 
-                if (FogBugzUtils.closedStages.contains(opptyStages.get(oc.Opportunity__c))) {
+                if (getClosedStages().contains(opptyStages.get(oc.Opportunity__c))) {
                     oc.Country_Closed__c = oc.Country__c;
                     oc.Country_Open__c = null;
                 } else {
@@ -154,7 +171,7 @@ public with sharing class OpportunityTriggerSync {
                                          FROM OpportunityCountry__c
                                          WHERE Opportunity__c IN: opptyStages.keySet()]) {
 
-            if (FogBugzUtils.closedStages.contains(opptyStages.get(oc.Opportunity__c))) {
+            if (getClosedStages().contains(opptyStages.get(oc.Opportunity__c))) {
                 oc.Country_Closed__c = oc.Country__c;
                 oc.Country_Open__c = NULL;
             } else {

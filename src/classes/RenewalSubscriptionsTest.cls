@@ -108,7 +108,7 @@ public class RenewalSubscriptionsTest {
         Database.executeBatch(batchJob, 50);
         Test.stopTest();
 
-        List<Opportunity> opps = [SELECT Id, Name, Prior_Dimagi_contact__c, Subscriptions_web_users__c, Fogbugz_Probability__c, Duration_months__c,
+        List<Opportunity> opps = [SELECT Id, Name, Prior_Dimagi_contact__c, Subscriptions_web_users__c, Duration_months__c,
                                   Expected_Buffer__c, of_Execution_budget_for_GS__c, CloseDate, Domain_Name__c, Product_Text__c,
                                   StageName, Implementation_Type__c, Opportunity_Owning_Entity__c, Contract_Owner_BU__c,
                                   Implementing_Business_Unit__c, Opportunity_Source__c, Owner.Name FROM Opportunity ORDER BY Name DESC];
@@ -122,7 +122,6 @@ public class RenewalSubscriptionsTest {
         System.assertEquals('contact_1@dimagi.com', opp1.Prior_Dimagi_contact__c);
         System.assertEquals('Test Account-Pro-Implementation Renewal 06112023', opp1.Name);
         System.assertEquals(30, opp1.Subscriptions_web_users__c);
-        System.assertEquals(30, opp1.Fogbugz_Probability__c);
         System.assertEquals(12, opp1.Duration_months__c);
         System.assertEquals(100, opp1.Expected_Buffer__c);
         System.assertEquals(0, opp1.of_Execution_budget_for_GS__c);
@@ -151,7 +150,6 @@ public class RenewalSubscriptionsTest {
         System.assertEquals('contact_1@dimagi.com', opp2.Prior_Dimagi_contact__c);
         System.assertEquals('domain_4-Standard Renewal 06112023', opp2.Name);
         System.assertEquals(111, opp2.Subscriptions_web_users__c);
-        System.assertEquals(30, opp2.Fogbugz_Probability__c);
         System.assertEquals(12, opp2.Duration_months__c);
         System.assertEquals(100, opp2.Expected_Buffer__c);
         System.assertEquals(0, opp2.of_Execution_budget_for_GS__c);
@@ -175,7 +173,7 @@ public class RenewalSubscriptionsTest {
         batchJob.start(null);
         batchJob.execute(null, renewalList);
 
-        opps = [SELECT Id, Name, Prior_Dimagi_contact__c, Subscriptions_web_users__c, Fogbugz_Probability__c, Duration_months__c,
+        opps = [SELECT Id, Name, Prior_Dimagi_contact__c, Subscriptions_web_users__c, Duration_months__c,
                                   Expected_Buffer__c, of_Execution_budget_for_GS__c, CloseDate, Domain_Name__c, Product_Text__c,
                                   StageName, Implementation_Type__c, Opportunity_Owning_Entity__c, Contract_Owner_BU__c,
                                   Implementing_Business_Unit__c, Opportunity_Source__c, Owner.Name FROM Opportunity ORDER BY Name DESC];
@@ -234,7 +232,7 @@ public class RenewalSubscriptionsTest {
         Database.executeBatch(batchJob, 50);
         Test.stopTest();
 
-        List<Opportunity> opps = [SELECT Id, Name, Prior_Dimagi_contact__c, Subscriptions_web_users__c, Fogbugz_Probability__c, Duration_months__c,
+        List<Opportunity> opps = [SELECT Id, Name, Prior_Dimagi_contact__c, Subscriptions_web_users__c, Duration_months__c,
                                   Expected_Buffer__c, of_Execution_budget_for_GS__c, CloseDate, Domain_Name__c, Product_Text__c,
                                   StageName, Implementation_Type__c, Opportunity_Owning_Entity__c, Contract_Owner_BU__c,
                                   Implementing_Business_Unit__c, Opportunity_Source__c, Owner.Name FROM Opportunity ORDER BY Name DESC];

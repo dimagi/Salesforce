@@ -45,8 +45,7 @@ public class OpenOpportunityReportController {
         Comments: Filled in with default values
         **************************************************/          
         String queryValues = 'Id,Name,StageName,CreatedDate,Amount,AccountId,Total_Days_Not_Updated__c,Stage_Name_Updated_Date__c,Stage_Duration__c,Business_Unit_Owner__c,' +
-                                'Business_Unit_Owner__r.Name,Account.Name,OwnerId,Owner.Name,Fogbugz_Link__c,Fogbugz_Probability__c,Fogbugz_Days_Not_Updated__c,' +                       
-                                'Fogbugz_Ticket_Number__c,Fogbugz_Assigned_To__c,Fogbugz_Last_Updated_Date__c,long_wait__c';
+                                'Business_Unit_Owner__r.Name,Account.Name,OwnerId,Owner.Name,long_wait__c';
                                 // THIS STRING MUST NOT END WITH A COMMA.
         
         Open_Opportunity_Fields__c[] selectedFields = getOpportunityFields();                 

@@ -28,7 +28,6 @@ public with sharing class OpenOpportunityEmailUtils {
     // End Color Key
     // Instructions added by Nick
     private static String INSTRUCTIONS = '<b>Keep Warm (<a href="https://confluence.dimagi.com/display/internal/Overdue+Opportunities+Workflow">Instructions</a>)</b><br>"Keep Warm" functionality is used when you want to be reminded to follow-up with an account after a certain period of time. For instance, you had an opportunity with CRS - Tanzania that fizzled out but you want to remember to check on them in three months time.You should use this functionality instead of creating Opportunities in Stage 1 and/or Stage 2. Stage 1/2 opps should not be used as keep warm reminders.<br><br><b>Do not turn this red:</b><br>Each opportunity has a check box at the top to make it not show up on this report. You will NEVER be reminded of an opp if you use this.<br><br>';
-    private static final String FOGBUGZ_LINK = 'https://manage.dimagi.com/default.asp?';
 
 	/**************************************************
 	Method Name: buildEmailContent
@@ -151,14 +150,8 @@ public with sharing class OpenOpportunityEmailUtils {
         if (!selectedFields.isEmpty()) {
             
             result += '<th [LEFT_STYLE]>Opportunity Name</th>';
-            for(Open_Opportunity_Fields__c selectedField :selectedFields) {
-                
-                if (selectedField.Name.equals('Fogbugz_Ticket_Number__c') || selectedField.Name.equals('Fogbugz_Assigned_To__c')) {
-                    result += '';
-                }
-                else {
+            for(Open_Opportunity_Fields__c selectedField :selectedFields) {   
                     result += '<th [RIGHT_STYLE]>' + selectedField.Label__c + '</th>';
-                }
             }
         }
         else {
@@ -265,13 +258,7 @@ String href = URL.getOrgDomainUrl().toExternalForm() + '/' + opp.Id;
                             fieldValue = '$' + String.format(currencyValue.format(), args);
                         }
                     }
-                    
-                    if (selectedField.Name.equals('Fogbugz_Ticket_Number__c') || selectedField.Name.equals('Fogbugz_Assigned_To__c')) {
-                        result += '';
-                    }
-                    else {
-                        result += '<td [STYLE]><span>' + fieldValue + '</span></td>';
-                    }
+                    result += '<td [STYLE]><span>' + fieldValue + '</span></td>';
                 } catch (Exception e) {}
             }
         } else {
@@ -288,7 +275,6 @@ String href = URL.getOrgDomainUrl().toExternalForm() + '/' + opp.Id;
 
             result += '<td [LEFT_STYLE]><span><a href="' + href + '" target="_blank">' + opp.Name + '</a></span></td>' +
                         '<td [STYLE]><span>' + opp.Stage_Duration__c + '</span></td>' +
-                        '<td [STYLE]><span>' + opp.Fogbugz_Probability__c + '</span></td>' +
                         '<td [STYLE]><span>' + amountValue + '</span></td>' +
                         '<td [STYLE]><span>' + opp.Account.Name + '</span></td>' +
                         '<td [STYLE]><span>' + opp.Business_Unit_Owner__r.Name + '</span></td>' + 

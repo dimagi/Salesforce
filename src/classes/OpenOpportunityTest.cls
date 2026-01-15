@@ -110,9 +110,6 @@ public class OpenOpportunityTest {
         Opportunity opportunity = new Opportunity();
         opportunity.Name = 'Test Opportunity';
         opportunity.Amount = 5000;
-        opportunity.Fogbugz_Assigned_To__c = 'Test Assignee';
-        opportunity.Fogbugz_Ticket_Number__c = '12345';
-        opportunity.Fogbugz_Last_Updated_Date__c = Date.today();
         opportunity.StageName = 'Stage 1 - Connect';
         opportunity.CloseDate = Date.today();
         opportunity.AccountId = accountId;
