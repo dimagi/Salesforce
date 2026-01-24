@@ -1,15 +1,15 @@
 <apex:component controller="EmployeeFileController" allowDML="true">
     <apex:attribute name="employeeEmailComp"
-        type="String"
-        assignTo="{!employeeEmail}"
-        required="true"
-        description="This employee email adress, required to fill in RED Form." />
+                    type="String"
+                    assignTo="{!employeeEmail}"
+                    required="true"
+                    description="This employee email adress, required to fill in RED Form." />
     <apex:attribute name="pageControllerComp"
-        type="DimagiToolsController"
-        assignTo="{!pageController}"
-        required="true"
-        description="The controller for the page." />
-
+                    type="DimagiToolsController"
+                    assignTo="{!pageController}"
+                    required="true"
+                    description="The controller for the page." />
+    
     <!-- Record of Emergency Data Form  -->
     <apex:pageBlock title="Record of Emergency Data Form" mode="edit" id="redFormId">
         <apex:pageBlockButtons >
@@ -18,22 +18,44 @@
         <apex:outputPanel layout="block" id="messages">
             <apex:pageMessages />
         </apex:outputPanel>
-
+        
         <apex:pageBlockSection title="Personal Details" columns="2">
-            <apex:inputField value="{!redForm.Employee_First_Name__c}"/>
-            <apex:inputField value="{!redForm.Employee_Last_Name__c}"/>
-            <apex:inputField value="{!redForm.Employee_Middle_Name__c}"/>
-            <apex:inputField onclick="setYear(50, 0)" value="{!redForm.DOB__c}"/>
-            <apex:inputField value="{!redForm.Citizenship__c}" />
-            <apex:inputField value="{!redForm.Gender__c}" />
+            <apex:outputText value="{!redForm.Employee_First_Name__c}"/>
+            <apex:outputText value="{!redForm.Employee_Last_Name__c}"/>
+            <apex:outputText value="{!redForm.Employee_Middle_Name__c}"/>
+            <!-- <apex:outputText onclick="setYear(50, 0)" value="{!redForm.DOB__c}"/> -->
+            <apex:pageBlockSectionItem >
+                <apex:outputLabel value="Date of Birth"/>
+                <apex:outputText value="{!formattedDOB}" />
+            </apex:pageBlockSectionItem>
+            <apex:outputText value="{!redForm.Citizenship__c}" />
+            <apex:outputText value="{!redForm.Gender__c}" />
+            <apex:outputText value="{!redForm.Current_Address_City__c}" />
             <apex:inputField value="{!redForm.Personal_Phone_Number__c}" />
+            <apex:outputText value="{!redForm.Current_Address_Street__c}" />
             <apex:inputField value="{!redForm.Passport_No__c}" />
+            <apex:outputText value="{!redForm.Current_Address_State__c}" />
             <apex:inputField onclick="setYear(0, 10)" value="{!redForm.Passport_Expiration_Date__c}" />
-            <apex:inputField value="{!redForm.Current_Address_City__c}" />
-            <apex:inputField value="{!redForm.Current_Address_Street__c}" />
-            <apex:inputField value="{!redForm.Current_Address_State__c}" />
-            <apex:inputField value="{!redForm.Current_Address_Country__c}" />
+            <apex:outputText value="{!redForm.Current_Address_Country__c}" />
+            <apex:outputText ></apex:outputText>
+            <apex:pageBlockSectionItem >
+                <apex:outputLabel value="Current Address Zip / Postal Code" />
+                <apex:outputText value="{!zipCodeUI}" /> 
+            </apex:pageBlockSectionItem>
+            
         </apex:pageBlockSection>
+        <apex:pageBlockSection columns="1">
+            <apex:outputText escape="false"
+                             style="font-weight:bold; font-style:italic;">
+                If you want to change any of the personal details above (other than phone/passport details), please reach out to POps following the instructions
+                <a target="_blank"
+                   href="https://dimagi.atlassian.net/wiki/spaces/internal/pages/2146007895/Change+of+Address+Personal+Details">
+                    here.
+                </a>
+            </apex:outputText>
+        </apex:pageBlockSection>
+        
+        
         <apex:pageBlockSection title="Emergency Contacts" columns="1">
             <div>
                 <span>
@@ -88,11 +110,11 @@
             <div>
                 <span>
                     <i>Providing this information is <b><u>voluntary</u></b>.
-                    You are under no obligation to provide any or all of the questions asked below.
-                    All information will securely stored and only accessible by the People Operations team.
-                    In the event that you are incapacitated for any reason or need emergency treatment,
-                    or in the event of a safety and security incident, this information will help Dimagi more effectively
-                    support you.</i>
+                        You are under no obligation to provide any or all of the questions asked below.
+                        All information will securely stored and only accessible by the People Operations team.
+                        In the event that you are incapacitated for any reason or need emergency treatment,
+                        or in the event of a safety and security incident, this information will help Dimagi more effectively
+                        support you.</i>
                 </span>
             </div>
             <apex:inputField value="{!redForm.Height__c}"/>
