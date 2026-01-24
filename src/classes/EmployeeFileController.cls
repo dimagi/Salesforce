@@ -12,6 +12,10 @@ public class EmployeeFileController {
 
     public EmployeeFileController() {
     }
+public String zipCodeUI {
+    get;
+    set;
+}
 
     public void saveREDForm() {
         if (this.pageController.isTokenValid()) {
@@ -29,7 +33,7 @@ public class EmployeeFileController {
     }
 
     private void copyEmployeeData() {
-        List<SFDC_Employee__c> employees = [SELECT Id, Employee_First_Name__c, Employee_Last_Name__c, Employee_Middle_Name__c,
+        List<SFDC_Employee__c> employees = [SELECT Id, Employee_First_Name__c, Employee_Last_Name__c, Employee_Middle_Name__c,Current_Address_Zip_Postal_Code__c,
                                             DOB__c, Citizenship__c, Gender__c, Personal_Phone_Number__c,
                                             Passport_No__c, Passport_Expiration_Date__c, Current_Address_City__c,
                                             Current_Address_Street__c, Current_Address_State__c, Current_Address_Country__c,
@@ -41,6 +45,7 @@ public class EmployeeFileController {
                                             Religion_Impact__c, Distinguishing_Features__c, Medical_Conditions_Allergies__c,
                                             Regular_Medication__c, Medical_Permission__c, Additional_Comments__c
                                             FROM SFDC_Employee__c WHERE Email_Address__c =: this.employeeEmail];
+        system.debug('email : '+employees);
 
         if (employees.size() == 1) { // Load employee Data
             this.userEmployeeObj = employees.get(0);
@@ -58,6 +63,9 @@ public class EmployeeFileController {
             this.redForm.Current_Address_Street__c = userEmployeeObj.Current_Address_Street__c;
             this.redForm.Current_Address_State__c = userEmployeeObj.Current_Address_State__c;
             this.redForm.Current_Address_Country__c = userEmployeeObj.Current_Address_Country__c;
+            this.redForm.Current_Address_Zip_Postal_Code__c = userEmployeeObj.Current_Address_Zip_Postal_Code__c;
+
+          system.debug('this.redForm.Current_Address_Zip_Postal_Code__c  =>> '+this.redForm.Current_Address_Zip_Postal_Code__c);
 
             // Emergency Contact
             this.redForm.Emergency_Contact__c = userEmployeeObj.EMERGENCY_CONTACT__c;
@@ -89,11 +97,14 @@ public class EmployeeFileController {
     }
 
     public Record_of_Emergency_Data_Form__c getRedForm() {
+        system.debug('here we are');
         if (this.redForm == null) {
             this.redForm = new Record_of_Emergency_Data_Form__c();
             if (this.pageController.isTokenValid()) {
                 if (this.employeeEmail != null) {
                     copyEmployeeData();
+                                this.zipCodeUI =
+    userEmployeeObj.Current_Address_Zip_Postal_Code__c;
                 }
             }
         }
@@ -103,4 +114,12 @@ public class EmployeeFileController {
     public void setRedForm(Record_of_Emergency_Data_Form__c redForm) {
         this.redForm = redForm;
     }
+    public String getFormattedDOB() {
+    if (redForm != null && redForm.DOB__c != null) {
+        return redForm.DOB__c.format();
+    }
+    return '';
+}
+
+
 }
