@@ -205,10 +205,18 @@
         <members>Solution</members>
         <members>StreamingChannel</members>
         <members>Task</members>
+        <members>Trip__c</members>
         <members>User</members>
         <members>UserProvisioningRequest</members>
         <members>*</members>
         <name>CustomObject</name>
     </types>
-    <version>36.0</version>
+    <types>
+        <members>travelRiskBadge</members>
+        <members>travelTripTable</members>
+        <members>travelTripForm</members>
+        <members>travelPortal</members>
+        <name>LightningComponentBundle</name>
+    </types>
+    <version>62.0</version>
 </Package>

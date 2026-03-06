@@ -1,0 +1,185 @@
+<template>
+    <div class="modal-backdrop">
+        <div class="modal-container">
+            <div class="modal-header">
+                <h2 class="slds-text-heading_medium">{modalTitle}</h2>
+                <button class="slds-button slds-button_icon modal-close" onclick={handleClose}>
+                    <lightning-icon icon-name="utility:close" size="small"></lightning-icon>
+                </button>
+            </div>
+
+            <div class="modal-body">
+                <!-- Country Search -->
+                <div class="slds-form-element {countryErrorClass}">
+                    <label class="slds-form-element__label">
+                        <abbr class="slds-required" title="required">*</abbr>
+                        Destination Country
+                    </label>
+                    <div class="slds-form-element__control slds-input-has-icon slds-input-has-icon_right">
+                        <input type="text" class="slds-input" placeholder="Search countries..."
+                            value={countrySearch}
+                            oninput={handleCountrySearch}
+                            onfocus={handleCountryFocus}
+                            onblur={handleCountryBlur} />
+                        <template if:true={showCountryDropdown}>
+                            <div class="country-dropdown">
+                                <template for:each={countryResults} for:item="country">
+                                    <div key={country.Id} class="country-option"
+                                        onmousedown={handleCountrySelect}
+                                        data-id={country.Id}
+                                        data-name={country.Name}
+                                        data-risk={country.Travel_Risk_Level__c}>
+                                        <span>{country.Name}</span>
+                                        <c-travel-risk-badge risk-level={country.Travel_Risk_Level__c}></c-travel-risk-badge>
+                                    </div>
+                                </template>
+                                <template if:true={noCountryResults}>
+                                    <div class="country-option country-option_empty">No countries found</div>
+                                </template>
+                            </div>
+                        </template>
+                    </div>
+                    <template if:true={errors.country}>
+                        <p class="slds-form-error">{errors.country}</p>
+                    </template>
+                </div>
+
+                <!-- Risk Level -->
+                <template if:true={showRiskLevel}>
+                    <div class="slds-form-element risk-section">
+                        <label class="slds-form-element__label">
+                            <abbr class="slds-required" title="required">*</abbr>
+                            Risk Level
+                        </label>
+                        <div class="risk-buttons">
+                            <button class={lowButtonClass} data-risk="Low" onclick={handleRiskSelect}>Low</button>
+                            <button class={moderateButtonClass} data-risk="Moderate" onclick={handleRiskSelect}>Moderate</button>
+                            <button class={highButtonClass} data-risk="High" onclick={handleRiskSelect}>High</button>
+                        </div>
+                        <template if:true={showRiskOverrideWarning}>
+                            <div class="risk-override-warning">
+                                <lightning-icon icon-name="utility:warning" size="x-small"></lightning-icon>
+                                This differs from the country default ({countryDefaultRisk}). Consider adding context in Notes.
+                            </div>
+                        </template>
+                    </div>
+                </template>
+
+                <!-- City -->
+                <div class="slds-form-element">
+                    <label class="slds-form-element__label">Destination City</label>
+                    <div class="slds-form-element__control">
+                        <input type="text" class="slds-input" placeholder="e.g. Nairobi"
+                            value={form.Destination_City__c}
+                            data-field="Destination_City__c"
+                            onchange={handleFieldChange} />
+                    </div>
+                </div>
+
+                <!-- Dates -->
+                <div class="slds-grid slds-gutters">
+                    <div class="slds-col">
+                        <div class="slds-form-element {departureDateErrorClass}">
+                            <label class="slds-form-element__label">
+                                <abbr class="slds-required" title="required">*</abbr>
+                                Departure Date
+                            </label>
+                            <div class="slds-form-element__control">
+                                <input type="date" class="slds-input"
+                                    value={form.Departure_Date__c}
+                                    data-field="Departure_Date__c"
+                                    onchange={handleFieldChange} />
+                            </div>
+                            <template if:true={errors.departureDate}>
+                                <p class="slds-form-error">{errors.departureDate}</p>
+                            </template>
+                        </div>
+                    </div>
+                    <div class="slds-col">
+                        <div class="slds-form-element {returnDateErrorClass}">
+                            <label class="slds-form-element__label">
+                                <abbr class="slds-required" title="required">*</abbr>
+                                Return Date
+                            </label>
+                            <div class="slds-form-element__control">
+                                <input type="date" class="slds-input"
+                                    value={form.Return_Date__c}
+                                    data-field="Return_Date__c"
+                                    onchange={handleFieldChange} />
+                            </div>
+                            <template if:true={errors.returnDate}>
+                                <p class="slds-form-error">{errors.returnDate}</p>
+                            </template>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Purpose -->
+                <div class="slds-form-element {purposeErrorClass}">
+                    <label class="slds-form-element__label">
+                        <abbr class="slds-required" title="required">*</abbr>
+                        Trip Purpose
+                    </label>
+                    <div class="slds-form-element__control">
+                        <select class="slds-select"
+                            value={form.Trip_Purpose__c}
+                            data-field="Trip_Purpose__c"
+                            onchange={handleFieldChange}>
+                            <option value="">Select purpose...</option>
+                            <option value="Project Travel">Project Travel</option>
+                            <option value="Internal Meeting">Internal Meeting</option>
+                            <option value="Conference">Conference</option>
+                            <option value="Other">Other</option>
+                        </select>
+                    </div>
+                    <template if:true={errors.purpose}>
+                        <p class="slds-form-error">{errors.purpose}</p>
+                    </template>
+                </div>
+
+                <!-- Accommodation -->
+                <div class="slds-form-element">
+                    <label class="slds-form-element__label">Accommodation</label>
+                    <div class="slds-form-element__control">
+                        <input type="text" class="slds-input" placeholder="Hotel name or address"
+                            value={form.Accommodation__c}
+                            data-field="Accommodation__c"
+                            onchange={handleFieldChange} />
+                    </div>
+                </div>
+
+                <!-- Local Contact -->
+                <div class="slds-form-element">
+                    <label class="slds-form-element__label">Local Contact Number</label>
+                    <div class="slds-form-element__control">
+                        <input type="tel" class="slds-input" placeholder="+1 234 567 8900"
+                            value={form.Local_Contact_Number__c}
+                            data-field="Local_Contact_Number__c"
+                            onchange={handleFieldChange} />
+                    </div>
+                    <p class="slds-form-element__help">Can be updated after arrival</p>
+                </div>
+
+                <!-- Notes -->
+                <div class="slds-form-element">
+                    <label class="slds-form-element__label">Notes</label>
+                    <div class="slds-form-element__control">
+                        <textarea class="slds-textarea" placeholder="Any additional context..."
+                            value={form.Notes__c}
+                            data-field="Notes__c"
+                            onchange={handleFieldChange}
+                            rows="3"></textarea>
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <button class="slds-button slds-button_neutral" onclick={handleClose}>Cancel</button>
+                <button class="slds-button slds-button_brand" onclick={handleSave}>
+                    <template if:true={isSaving}>Saving...</template>
+                    <template if:false={isSaving}>{saveButtonLabel}</template>
+                </button>
+            </div>
+        </div>
+    </div>
+</template>

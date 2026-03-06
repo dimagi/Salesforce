@@ -1,0 +1,94 @@
+<template>
+    <div class="travel-portal">
+        <!-- Header -->
+        <div class="portal-header">
+            <div class="portal-header__titles">
+                <h1 class="slds-text-heading_large">Company Travel</h1>
+                <p class="slds-text-body_regular slds-text-color_weak">
+                    Upcoming and active trips &mdash; {tripCount} trip(s)
+                </p>
+            </div>
+            <button class="slds-button slds-button_brand" onclick={handleNewTrip}>
+                + Log New Trip
+            </button>
+        </div>
+
+        <!-- Filters -->
+        <div class="portal-filters">
+            <button class={myTripsButtonClass} onclick={handleMyTripsToggle}>
+                My Trips
+            </button>
+
+            <div class="filter-divider"></div>
+
+            <span class="filter-label">Risk:</span>
+            <button class={lowFilterClass} data-risk="Low" onclick={handleRiskFilter}>Low</button>
+            <button class={moderateFilterClass} data-risk="Moderate" onclick={handleRiskFilter}>Moderate</button>
+            <button class={highFilterClass} data-risk="High" onclick={handleRiskFilter}>High</button>
+
+            <div class="filter-divider"></div>
+
+            <select class="slds-select division-select" onchange={handleDivisionFilter}>
+                <option value="">All Divisions</option>
+                <template for:each={divisions} for:item="div">
+                    <option key={div} value={div}>{div}</option>
+                </template>
+            </select>
+        </div>
+
+        <!-- Loading -->
+        <template if:true={isLoading}>
+            <div class="loading-container">
+                <lightning-spinner alternative-text="Loading trips..." size="medium"></lightning-spinner>
+            </div>
+        </template>
+
+        <!-- Error -->
+        <template if:true={hasError}>
+            <div class="slds-notify slds-notify_alert slds-alert_error">
+                <p>{errorMessage}</p>
+            </div>
+        </template>
+
+        <!-- Table -->
+        <template if:false={isLoading}>
+            <c-travel-trip-table
+                trips={trips}
+                current-employee-id={currentEmployeeId}
+                my-trips-only={myTripsOnly}
+                risk-filter={riskFilter}
+                division-filter={divisionFilter}
+                onedit={handleEditTrip}
+                ondelete={handleDeleteTrip}>
+            </c-travel-trip-table>
+        </template>
+
+        <!-- Trip Form Modal -->
+        <template if:true={showForm}>
+            <c-travel-trip-form
+                trip={selectedTrip}
+                employee-email={employeeEmail}
+                onsave={handleSaveTrip}
+                onclose={handleCloseForm}>
+            </c-travel-trip-form>
+        </template>
+
+        <!-- Delete Confirmation -->
+        <template if:true={showDeleteConfirm}>
+            <div class="modal-backdrop">
+                <div class="modal-container modal-container_small">
+                    <div class="modal-header">
+                        <h2 class="slds-text-heading_medium">Delete this trip?</h2>
+                    </div>
+                    <div class="modal-body">
+                        <p>This trip will be permanently deleted. This cannot be undone.</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button class="slds-button slds-button_neutral" onclick={handleCancelDelete}>Cancel</button>
+                        <button class="slds-button slds-button_destructive" onclick={handleConfirmDelete}>Delete Trip</button>
+                    </div>
+                </div>
+            </div>
+        </template>
+    </div>
+</template>

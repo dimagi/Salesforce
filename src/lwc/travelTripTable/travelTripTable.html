@@ -1,0 +1,59 @@
+<template>
+    <div class="trip-table-container">
+        <template if:true={hasTripS}>
+            <table class="slds-table slds-table_cell-buffer slds-table_bordered slds-table_striped">
+                <thead>
+                    <tr class="slds-line-height_reset">
+                        <th scope="col"><div class="slds-truncate">Traveler</div></th>
+                        <th scope="col"><div class="slds-truncate">Division</div></th>
+                        <th scope="col"><div class="slds-truncate">Country</div></th>
+                        <th scope="col"><div class="slds-truncate">City</div></th>
+                        <th scope="col"><div class="slds-truncate">Departure</div></th>
+                        <th scope="col"><div class="slds-truncate">Return</div></th>
+                        <th scope="col"><div class="slds-truncate">Days</div></th>
+                        <th scope="col"><div class="slds-truncate">Purpose</div></th>
+                        <th scope="col"><div class="slds-truncate">Risk</div></th>
+                        <th scope="col"><div class="slds-truncate">Actions</div></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <template for:each={filteredTrips} for:item="trip">
+                        <tr key={trip.Id} class={trip.rowClass}>
+                            <td>{trip.travelerName}</td>
+                            <td>{trip.Division__c}</td>
+                            <td>{trip.Destination_Country__r.Name}</td>
+                            <td>{trip.Destination_City__c}</td>
+                            <td>{trip.Departure_Date__c}</td>
+                            <td>{trip.Return_Date__c}</td>
+                            <td>{trip.Total_Days__c}</td>
+                            <td>{trip.Trip_Purpose__c}</td>
+                            <td>
+                                <c-travel-risk-badge risk-level={trip.Risk_Level__c}></c-travel-risk-badge>
+                            </td>
+                            <td>
+                                <template if:true={trip.isOwner}>
+                                    <button class="slds-button slds-button_base link-button"
+                                        data-id={trip.Id} onclick={handleEdit}>Edit</button>
+                                    <span> | </span>
+                                    <button class="slds-button slds-button_base link-button link-button_danger"
+                                        data-id={trip.Id} onclick={handleDelete}>Delete</button>
+                                </template>
+                                <template if:false={trip.isOwner}>
+                                    <span class="slds-text-color_weak">-</span>
+                                </template>
+                            </td>
+                        </tr>
+                    </template>
+                </tbody>
+            </table>
+        </template>
+        <template if:false={hasTrips}>
+            <div class="slds-illustration slds-illustration_small empty-state">
+                <div class="slds-text-longform">
+                    <h3 class="slds-text-heading_medium">No trips found</h3>
+                    <p class="slds-text-body_regular">Try adjusting your filters or log a new trip.</p>
+                </div>
+            </div>
+        </template>
+    </div>
+</template>
