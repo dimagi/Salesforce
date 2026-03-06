@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <description>Configuration settings for the Travel Management feature.</description>
+    <label>Travel Settings</label>
+    <pluralLabel>Travel Settings</pluralLabel>
+    <visibility>Public</visibility>
+    <fields>
+        <fullName>Security_Ops_Email__c</fullName>
+        <fieldManageability>DeveloperControlled</fieldManageability>
+        <label>Security Ops Email</label>
+        <length>255</length>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Is_Test_Mode__c</fullName>
+        <fieldManageability>DeveloperControlled</fieldManageability>
+        <label>Is Test Mode</label>
+        <type>Checkbox</type>
+        <defaultValue>false</defaultValue>
+    </fields>
+    <fields>
+        <fullName>Test_Email__c</fullName>
+        <fieldManageability>DeveloperControlled</fieldManageability>
+        <label>Test Email</label>
+        <length>255</length>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+</CustomObject>
