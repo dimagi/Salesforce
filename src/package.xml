@@ -211,12 +211,5 @@
         <members>*</members>
         <name>CustomObject</name>
     </types>
-    <types>
-        <members>travelRiskBadge</members>
-        <members>travelTripTable</members>
-        <members>travelTripForm</members>
-        <members>travelPortal</members>
-        <name>LightningComponentBundle</name>
-    </types>
     <version>62.0</version>
 </Package>

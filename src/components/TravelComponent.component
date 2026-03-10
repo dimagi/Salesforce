@@ -1,0 +1,651 @@
+<apex:component controller="TravelComponentController" allowDML="true">
+    <apex:attribute name="employeeEmailComp"
+        type="String"
+        assignTo="{!employeeEmail}"
+        required="true"
+        description="The logged-in employee's email address." />
+    <apex:attribute name="pageControllerComp"
+        type="DimagiToolsController"
+        assignTo="{!pageController}"
+        required="true"
+        description="The controller for the page." />
+
+    <style type="text/css">
+        #travel-portal { padding: 10px; font-family: inherit; }
+
+        /* Header */
+        #travel-header { overflow: hidden; margin-bottom: 10px; padding-bottom: 8px; border-bottom: 2px solid #ddd; }
+        #travel-header h2 { float: left; margin: 0; font-size: 20px; color: #333; }
+        #travel-trip-count { float: left; margin-left: 10px; color: #888; padding-top: 4px; font-size: 14px; }
+        #new-trip-btn { float: right; }
+
+        /* Filters */
+        #travel-filters { margin-bottom: 12px; padding: 8px 0; }
+        .travel-filter-btn { cursor: pointer; margin-right: 4px; padding: 3px 10px; }
+        .travel-filter-btn.active { background-color: #0070d2 !important; color: #fff !important; border-color: #005fb2 !important; }
+        .travel-filter-btn.risk-low.active  { background-color: #2e7d32 !important; border-color: #1b5e20 !important; }
+        .travel-filter-btn.risk-mod.active  { background-color: #e65100 !important; border-color: #bf360c !important; }
+        .travel-filter-btn.risk-high.active { background-color: #b71c1c !important; border-color: #7f0000 !important; }
+        #division-filter-select { padding: 3px 6px; }
+
+        /* Error banner */
+        #travel-error-banner { display: none; padding: 8px 12px; background: #ffebee;
+            color: #b71c1c; border: 1px solid #ef9a9a; border-radius: 3px; margin-bottom: 10px; }
+
+        /* Risk badges */
+        .risk-badge { display: inline-block; padding: 2px 10px; border-radius: 10px;
+            font-size: 11px; font-weight: bold; white-space: nowrap; }
+        .risk-badge.low      { background: #c8e6c9; color: #1b5e20; }
+        .risk-badge.moderate { background: #ffe0b2; color: #e65100; }
+        .risk-badge.high     { background: #ffcdd2; color: #b71c1c; }
+
+        /* Table */
+        #trips-table { width: 100%; border-collapse: collapse; }
+        #trips-table th { background: #f4f4f4; text-align: left; padding: 6px 8px;
+            border-bottom: 2px solid #ccc; white-space: nowrap; }
+        #trips-table td { padding: 5px 8px; border-bottom: 1px solid #eee; vertical-align: middle; }
+        #trips-table tr.owner-row td { background-color: #f0f7ff; }
+        .trip-action-link { margin-right: 6px; cursor: pointer; }
+        .trip-delete-link { color: #c62828; cursor: pointer; }
+
+        /* Empty / loading */
+        #travel-loading-msg, #travel-empty-msg { padding: 30px; text-align: center; color: #888; }
+
+        /* Trip form modal */
+        .travel-form-row { margin-bottom: 10px; }
+        .travel-form-row label { display: block; font-weight: bold; margin-bottom: 3px; font-size: 13px; }
+        .travel-form-row input[type=text],
+        .travel-form-row input[type=date],
+        .travel-form-row input[type=tel],
+        .travel-form-row select,
+        .travel-form-row textarea { width: 100%; box-sizing: border-box; padding: 4px 6px; border: 1px solid #ccc; border-radius: 3px; }
+        .travel-form-row input.field-error,
+        .travel-form-row select.field-error { border-color: #c62828; }
+        .travel-field-error { color: #c62828; font-size: 11px; margin-top: 2px; }
+        .travel-form-half { width: 48%; display: inline-block; vertical-align: top; }
+        .travel-form-half:first-child { margin-right: 2%; }
+
+        /* Risk level selector in form */
+        .risk-select-btn { margin-right: 5px; padding: 3px 12px; cursor: pointer; }
+        .risk-select-btn.sel-low      { background: #2e7d32 !important; color: #fff !important; border-color: #1b5e20 !important; }
+        .risk-select-btn.sel-moderate { background: #e65100 !important; color: #fff !important; border-color: #bf360c !important; }
+        .risk-select-btn.sel-high     { background: #b71c1c !important; color: #fff !important; border-color: #7f0000 !important; }
+        .risk-override-warning { color: #e65100; font-size: 12px; margin-top: 4px; }
+        .travel-form-banner { padding: 6px 10px; border-radius: 3px; margin-bottom: 8px;
+            background: #ffebee; color: #b71c1c; border: 1px solid #ef9a9a; display: none; }
+
+        /* Country autocomplete */
+        .ui-autocomplete { z-index: 99999 !important; }
+        .country-ac-risk { float: right; margin-left: 8px; font-size: 11px; }
+    </style>
+
+    <div id="travel-portal">
+
+        <div id="travel-error-banner"></div>
+
+        <!-- Header -->
+        <div id="travel-header">
+            <h2>Company Travel</h2>
+            <span id="travel-trip-count"></span>
+            <button id="new-trip-btn" class="btn" onclick="travelPortal.openNewTripForm(); return false;">+ Log New Trip</button>
+        </div>
+
+        <!-- Filters -->
+        <div id="travel-filters">
+            <button class="btn travel-filter-btn" id="my-trips-btn"
+                onclick="travelPortal.toggleMyTrips(); return false;">My Trips</button>
+            &nbsp;|&nbsp;
+            <span style="font-size:13px">Risk:</span>
+            <button class="btn travel-filter-btn risk-low"  data-risk="Low"
+                onclick="travelPortal.toggleRiskFilter(this); return false;">Low</button>
+            <button class="btn travel-filter-btn risk-mod"  data-risk="Moderate"
+                onclick="travelPortal.toggleRiskFilter(this); return false;">Moderate</button>
+            <button class="btn travel-filter-btn risk-high" data-risk="High"
+                onclick="travelPortal.toggleRiskFilter(this); return false;">High</button>
+            &nbsp;|&nbsp;
+            <select id="division-filter-select" onchange="travelPortal.setDivisionFilter(this.value)">
+                <option value="">All Divisions</option>
+            </select>
+        </div>
+
+        <!-- Loading / Table / Empty -->
+        <div id="travel-loading-msg">Loading trips&hellip;</div>
+
+        <div id="trips-container" style="display:none">
+            <table id="trips-table">
+                <thead>
+                    <tr>
+                        <th>Traveler</th>
+                        <th>Division</th>
+                        <th>Country</th>
+                        <th>City</th>
+                        <th>Departure</th>
+                        <th>Return</th>
+                        <th>Days</th>
+                        <th>Purpose</th>
+                        <th>Risk</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="trips-tbody"></tbody>
+            </table>
+            <div id="travel-empty-msg" style="display:none">
+                No upcoming trips found. Adjust your filters or log a new trip.
+            </div>
+        </div>
+
+        <!-- Trip Form (jQuery UI dialog) -->
+        <div id="trip-form-modal" style="display:none" title="Log New Trip">
+            <div class="travel-form-banner" id="trip-form-banner"></div>
+
+            <div class="travel-form-row">
+                <label>Destination Country <span style="color:red">*</span></label>
+                <input type="text" id="tc-country-search" placeholder="Type to search countries..." autocomplete="off"/>
+                <input type="hidden" id="tc-country-id"/>
+                <input type="hidden" id="tc-country-default-risk"/>
+                <div class="travel-field-error" id="tc-country-error"></div>
+            </div>
+
+            <div class="travel-form-half">
+                <div class="travel-form-row">
+                    <label>Departure Date <span style="color:red">*</span></label>
+                    <input type="date" id="tc-departure-date"/>
+                    <div class="travel-field-error" id="tc-departure-error"></div>
+                </div>
+            </div>
+            <div class="travel-form-half">
+                <div class="travel-form-row">
+                    <label>Return Date <span style="color:red">*</span></label>
+                    <input type="date" id="tc-return-date"/>
+                    <div class="travel-field-error" id="tc-return-error"></div>
+                </div>
+            </div>
+
+            <div class="travel-form-row" style="clear:both">
+                <label>Destination City</label>
+                <input type="text" id="tc-city" placeholder="e.g. Nairobi"/>
+            </div>
+
+            <div class="travel-form-row">
+                <label>Trip Purpose <span style="color:red">*</span></label>
+                <select id="tc-purpose">
+                    <option value="">Select purpose...</option>
+                    <option value="Project Travel">Project Travel</option>
+                    <option value="Internal Meeting">Internal Meeting</option>
+                    <option value="Conference">Conference</option>
+                    <option value="Other">Other</option>
+                </select>
+                <div class="travel-field-error" id="tc-purpose-error"></div>
+            </div>
+
+            <div class="travel-form-row" id="tc-risk-row" style="display:none">
+                <label>Risk Level <span style="color:red">*</span></label>
+                <div>
+                    <button class="btn risk-select-btn" data-risk="Low"
+                        onclick="travelPortal.selectRisk('Low'); return false;">Low</button>
+                    <button class="btn risk-select-btn" data-risk="Moderate"
+                        onclick="travelPortal.selectRisk('Moderate'); return false;">Moderate</button>
+                    <button class="btn risk-select-btn" data-risk="High"
+                        onclick="travelPortal.selectRisk('High'); return false;">High</button>
+                    <input type="hidden" id="tc-risk-level"/>
+                    <input type="hidden" id="tc-risk-source"/>
+                </div>
+                <div class="risk-override-warning" id="tc-risk-warning" style="display:none">
+                    &#9888; This differs from the country default. Consider adding context in Notes.
+                </div>
+            </div>
+
+            <div class="travel-form-row">
+                <label>Accommodation</label>
+                <input type="text" id="tc-accommodation" placeholder="Hotel name or address"/>
+            </div>
+
+            <div class="travel-form-row">
+                <label>Local Contact Number</label>
+                <input type="tel" id="tc-local-contact" placeholder="+1 234 567 8900"/>
+                <small style="color:#888">Can be updated after arrival</small>
+            </div>
+
+            <div class="travel-form-row">
+                <label>Notes</label>
+                <textarea id="tc-notes" rows="3" placeholder="Any additional context..."></textarea>
+            </div>
+
+            <input type="hidden" id="tc-trip-id"/>
+        </div>
+
+        <!-- Delete Confirm (jQuery UI dialog) -->
+        <div id="delete-confirm-modal" style="display:none" title="Delete Trip">
+            <p>This trip will be permanently deleted. This cannot be undone.</p>
+            <input type="hidden" id="tc-delete-trip-id"/>
+        </div>
+
+    </div><!-- /travel-portal -->
+
+    <script type="text/javascript">
+    (function() {
+        var EMAIL = '{!JSENCODE(employeeEmail)}';
+        var allTrips       = [];
+        var currentEmpId   = '';
+        var myTripsOnly    = false;
+        var riskFilters    = [];
+        var divisionFilter = '';
+        var editingTripId  = null;
+
+        /* ─── Initialisation ─────────────────────────────────────────────── */
+        function init() {
+            initModals();
+            initCountryTypeahead();
+            loadEmployeeId();
+            loadTrips();
+        }
+
+        function loadEmployeeId() {
+            TravelComponentController.getEmployeeId(EMAIL, function(result, event) {
+                if (event.status && result) {
+                    currentEmpId = result;
+                    renderTable();
+                }
+            });
+        }
+
+        function loadTrips() {
+            $j('#travel-loading-msg').show();
+            $j('#trips-container').hide();
+            TravelComponentController.getTrips('all', EMAIL, function(result, event) {
+                $j('#travel-loading-msg').hide();
+                if (event.status) {
+                    allTrips = result || [];
+                    buildDivisionDropdown();
+                    renderTable();
+                    $j('#trips-container').show();
+                } else {
+                    showBanner('Error loading trips: ' + event.message);
+                    $j('#trips-container').show();
+                }
+            });
+        }
+
+        /* ─── Filters ────────────────────────────────────────────────────── */
+        function buildDivisionDropdown() {
+            var divs = [];
+            $j.each(allTrips, function(i, t) {
+                var d = t.Traveler__r && t.Traveler__r.Division__c;
+                if (d && $j.inArray(d, divs) === -1) divs.push(d);
+            });
+            divs.sort();
+            var sel = $j('#division-filter-select');
+            sel.find('option:not(:first)').remove();
+            $j.each(divs, function(i, d) { sel.append($j('<option>').val(d).text(d)); });
+        }
+
+        function filteredTrips() {
+            return $j.grep(allTrips, function(t) {
+                if (myTripsOnly && t.Traveler__c !== currentEmpId) return false;
+                if (riskFilters.length && $j.inArray(t.Risk_Level__c, riskFilters) === -1) return false;
+                if (divisionFilter) {
+                    var d = t.Traveler__r && t.Traveler__r.Division__c;
+                    if (d !== divisionFilter) return false;
+                }
+                return true;
+            });
+        }
+
+        /* ─── Render table ───────────────────────────────────────────────── */
+        function renderTable() {
+            var trips = filteredTrips();
+            var total = allTrips.length;
+            $j('#travel-trip-count').text('(' + total + ' trip' + (total !== 1 ? 's' : '') + ')');
+
+            var tbody = $j('#trips-tbody').empty();
+
+            if (trips.length === 0) {
+                $j('#trips-table').hide();
+                $j('#travel-empty-msg').show();
+                return;
+            }
+            $j('#trips-table').show();
+            $j('#travel-empty-msg').hide();
+
+            $j.each(trips, function(i, t) {
+                var travelerName = '';
+                if (t.Traveler__r) {
+                    var fn = t.Traveler__r.Employee_First_Name__c || '';
+                    var ln = t.Traveler__r.Employee_Last_Name__c || '';
+                    travelerName = esc((fn + ' ' + ln).trim() || t.Traveler__r.Name || '');
+                }
+                var division  = esc(t.Traveler__r && t.Traveler__r.Division__c || '');
+                var country   = esc(t.Destination_Country__r && t.Destination_Country__r.Name || '');
+                var riskLow   = (t.Risk_Level__c || '').toLowerCase();
+                var isOwner   = (t.Traveler__c === currentEmpId);
+
+                var actions = isOwner
+                    ? '<a href="#" class="trip-action-link" data-id="' + t.Id + '" data-action="edit">Edit</a>' +
+                      '<a href="#" class="trip-delete-link" data-id="' + t.Id + '" data-action="delete">Delete</a>'
+                    : '<span style="color:#bbb">&mdash;</span>';
+
+                var tr = $j('<tr>').addClass(isOwner ? 'owner-row' : '');
+                tr.html(
+                    '<td>' + travelerName + '</td>' +
+                    '<td>' + division + '</td>' +
+                    '<td>' + country + '</td>' +
+                    '<td>' + esc(t.Destination_City__c || '') + '</td>' +
+                    '<td>' + formatDate(t.Departure_Date__c) + '</td>' +
+                    '<td>' + formatDate(t.Return_Date__c) + '</td>' +
+                    '<td>' + (t.Total_Days__c || '') + '</td>' +
+                    '<td>' + esc(t.Trip_Purpose__c || '') + '</td>' +
+                    '<td><span class="risk-badge ' + riskLow + '">' + esc(t.Risk_Level__c || '') + '</span></td>' +
+                    '<td>' + actions + '</td>'
+                );
+                tbody.append(tr);
+            });
+
+            tbody.find('[data-action=edit]').on('click', function(e) {
+                e.preventDefault();
+                var trip = findTrip($j(this).data('id'));
+                if (trip) openEditForm(trip);
+            });
+            tbody.find('[data-action=delete]').on('click', function(e) {
+                e.preventDefault();
+                openDeleteConfirm($j(this).data('id'));
+            });
+        }
+
+        function findTrip(id) {
+            for (var i = 0; i < allTrips.length; i++) {
+                if (allTrips[i].Id === id) return allTrips[i];
+            }
+            return null;
+        }
+
+        function esc(str) { return $j('<div>').text(String(str)).html(); }
+
+        // Returns YYYY-MM-DD for <input type="date"> value
+        function toInputDate(val) {
+            if (!val) return '';
+            if (typeof val === 'number') {
+                var d = new Date(val);
+                var m = d.getUTCMonth() + 1;
+                var day = d.getUTCDate();
+                return d.getUTCFullYear() + '-' + (m < 10 ? '0' + m : m) + '-' + (day < 10 ? '0' + day : day);
+            }
+            if (typeof val === 'string') return val.substring(0, 10);
+            return '';
+        }
+
+        function formatDate(val) {
+            if (!val) return '';
+            // @RemoteAction returns Date fields as millisecond timestamps
+            if (typeof val === 'number') {
+                var d = new Date(val);
+                return (d.getUTCMonth() + 1) + '/' + d.getUTCDate() + '/' + d.getUTCFullYear();
+            }
+            // Already a string (ISO or YYYY-MM-DD)
+            if (typeof val === 'string' && val.length >= 10) {
+                var parts = val.substring(0, 10).split('-');
+                if (parts.length === 3) return parts[1] + '/' + parts[2] + '/' + parts[0];
+            }
+            return val;
+        }
+
+        /* ─── Modals ──────────────────────────────────────────────────────── */
+        function initModals() {
+            $j('#trip-form-modal').dialog({
+                autoOpen: false, width: 560, modal: true,
+                buttons: {
+                    'Cancel':    function() { $j(this).dialog('close'); },
+                    'Save Trip': function() { submitTripForm(); }
+                },
+                close: function() { clearFormErrors(); }
+            });
+
+            $j('#delete-confirm-modal').dialog({
+                autoOpen: false, width: 400, modal: true,
+                buttons: {
+                    'Cancel':      function() { $j(this).dialog('close'); },
+                    'Delete Trip': function() { confirmDelete(); }
+                }
+            });
+        }
+
+        /* ─── Country typeahead ───────────────────────────────────────────── */
+        function initCountryTypeahead() {
+            $j('#tc-country-search').autocomplete({
+                minLength: 2,
+                source: function(req, resp) {
+                    TravelComponentController.searchCountries(req.term, function(results, event) {
+                        if (event.status && results) {
+                            resp($j.map(results, function(c) {
+                                return {
+                                    label: c.Name,
+                                    value: c.Name,
+                                    countryId: c.Id,
+                                    risk: c.Travel_Risk_Level__c
+                                };
+                            }));
+                        } else { resp([]); }
+                    });
+                },
+                select: function(event, ui) {
+                    $j('#tc-country-id').val(ui.item.countryId);
+                    $j('#tc-country-default-risk').val(ui.item.risk);
+                    $j('#tc-country-error').text('');
+                    $j('#tc-country-search').removeClass('field-error');
+                    setRiskFromCountry(ui.item.risk);
+                },
+                change: function(event, ui) {
+                    if (!ui.item) {
+                        $j('#tc-country-id').val('');
+                        $j('#tc-country-default-risk').val('');
+                        $j('#tc-risk-row').hide();
+                    }
+                }
+            });
+        }
+
+        function setRiskFromCountry(risk) {
+            $j('#tc-risk-row').show();
+            if (risk) {
+                $j('#tc-risk-level').val(risk);
+                $j('#tc-risk-source').val('Derived from Country');
+                updateRiskButtons(risk);
+                $j('#tc-risk-warning').hide();
+            }
+            // If no default risk, leave buttons unselected so user picks manually
+        }
+
+        /* ─── Trip form ───────────────────────────────────────────────────── */
+        function openNewForm() {
+            editingTripId = null;
+            $j('#trip-form-modal').dialog('option', 'title', 'Log New Trip')
+                .dialog('option', 'buttons', {
+                    'Cancel':    function() { $j(this).dialog('close'); },
+                    'Save Trip': function() { submitTripForm(); }
+                });
+            clearForm();
+            $j('#trip-form-modal').dialog('open');
+        }
+
+        function openEditForm(trip) {
+            editingTripId = trip.Id;
+            $j('#trip-form-modal').dialog('option', 'title', 'Edit Trip')
+                .dialog('option', 'buttons', {
+                    'Cancel':       function() { $j(this).dialog('close'); },
+                    'Save Changes': function() { submitTripForm(); }
+                });
+            clearForm();
+
+            $j('#tc-country-search').val(trip.Destination_Country__r ? trip.Destination_Country__r.Name : '');
+            $j('#tc-country-id').val(trip.Destination_Country__c || '');
+            $j('#tc-departure-date').val(toInputDate(trip.Departure_Date__c));
+            $j('#tc-return-date').val(toInputDate(trip.Return_Date__c));
+            $j('#tc-city').val(trip.Destination_City__c || '');
+            $j('#tc-purpose').val(trip.Trip_Purpose__c || '');
+            $j('#tc-accommodation').val(trip.Accommodation__c || '');
+            $j('#tc-local-contact').val(trip.Local_Contact_Number__c || '');
+            $j('#tc-notes').val(trip.Notes__c || '');
+            $j('#tc-trip-id').val(trip.Id);
+            $j('#tc-country-default-risk').val(trip.Risk_Level__c || '');
+
+            if (trip.Risk_Level__c) {
+                $j('#tc-risk-level').val(trip.Risk_Level__c);
+                $j('#tc-risk-source').val(trip.Risk_Level_Source__c || 'Derived from Country');
+                $j('#tc-risk-row').show();
+                updateRiskButtons(trip.Risk_Level__c);
+            }
+
+            $j('#trip-form-modal').dialog('open');
+        }
+
+        function clearForm() {
+            $j('#tc-country-search, #tc-departure-date, #tc-return-date, #tc-city, #tc-purpose, #tc-accommodation, #tc-local-contact, #tc-notes').val('');
+            $j('#tc-country-id, #tc-country-default-risk, #tc-risk-level, #tc-risk-source, #tc-trip-id').val('');
+            $j('#tc-risk-row').hide();
+            $j('.risk-select-btn').removeClass('sel-low sel-moderate sel-high');
+            $j('#tc-risk-warning').hide();
+            $j('#trip-form-banner').hide();
+            clearFormErrors();
+        }
+
+        function clearFormErrors() {
+            $j('#tc-country-error, #tc-departure-error, #tc-return-error, #tc-purpose-error').text('');
+            $j('#tc-country-search, #tc-departure-date, #tc-return-date, #tc-purpose').removeClass('field-error');
+        }
+
+        function updateRiskButtons(risk) {
+            $j('.risk-select-btn').removeClass('sel-low sel-moderate sel-high');
+            $j('.risk-select-btn[data-risk="' + risk + '"]').addClass('sel-' + risk.toLowerCase());
+        }
+
+        function validateForm() {
+            clearFormErrors();
+            var ok = true;
+            if (!$j('#tc-country-id').val()) {
+                $j('#tc-country-error').text('Destination country is required');
+                $j('#tc-country-search').addClass('field-error');
+                ok = false;
+            }
+            if (!$j('#tc-departure-date').val()) {
+                $j('#tc-departure-error').text('Departure date is required');
+                $j('#tc-departure-date').addClass('field-error');
+                ok = false;
+            }
+            if (!$j('#tc-return-date').val()) {
+                $j('#tc-return-error').text('Return date is required');
+                $j('#tc-return-date').addClass('field-error');
+                ok = false;
+            }
+            if ($j('#tc-departure-date').val() && $j('#tc-return-date').val() &&
+                $j('#tc-return-date').val() < $j('#tc-departure-date').val()) {
+                $j('#tc-return-error').text('Return date must be on or after departure date');
+                $j('#tc-return-date').addClass('field-error');
+                ok = false;
+            }
+            if (!$j('#tc-purpose').val()) {
+                $j('#tc-purpose-error').text('Trip purpose is required');
+                $j('#tc-purpose').addClass('field-error');
+                ok = false;
+            }
+            if (!$j('#tc-risk-level').val()) {
+                var msg = $j('#tc-country-id').val()
+                    ? 'Please select a risk level above.'
+                    : 'Select a destination country first to set the risk level.';
+                $j('#trip-form-banner').text(msg).show();
+                ok = false;
+            }
+            return ok;
+        }
+
+        function submitTripForm() {
+            if (!validateForm()) return;
+
+            var tripData = {
+                Destination_Country__c: $j('#tc-country-id').val(),
+                Destination_City__c:    $j('#tc-city').val(),
+                Departure_Date__c:      $j('#tc-departure-date').val(),
+                Return_Date__c:         $j('#tc-return-date').val(),
+                Trip_Purpose__c:        $j('#tc-purpose').val(),
+                Accommodation__c:       $j('#tc-accommodation').val(),
+                Local_Contact_Number__c:$j('#tc-local-contact').val(),
+                Risk_Level__c:          $j('#tc-risk-level').val(),
+                Risk_Level_Source__c:   $j('#tc-risk-source').val(),
+                Notes__c:               $j('#tc-notes').val()
+            };
+            if (editingTripId) tripData.Id = editingTripId;
+
+            var dlg = $j('#trip-form-modal');
+            dlg.dialog('option', 'buttons', [{ text: 'Saving\u2026', disabled: true, click: function() {} }]);
+
+            TravelComponentController.saveTrip(JSON.stringify(tripData), EMAIL, function(result, event) {
+                if (event.status) {
+                    dlg.dialog('close');
+                    loadTrips();
+                } else {
+                    $j('#trip-form-banner').text('Error saving trip: ' + event.message).show();
+                    dlg.dialog('option', 'buttons', {
+                        'Cancel':    function() { $j(this).dialog('close'); },
+                        'Save Trip': function() { submitTripForm(); }
+                    });
+                }
+            });
+        }
+
+        /* ─── Delete ──────────────────────────────────────────────────────── */
+        function openDeleteConfirm(tripId) {
+            $j('#tc-delete-trip-id').val(tripId);
+            $j('#delete-confirm-modal').dialog('open');
+        }
+
+        function confirmDelete() {
+            var tripId = $j('#tc-delete-trip-id').val();
+            TravelComponentController.deleteTrip(tripId, EMAIL, function(result, event) {
+                $j('#delete-confirm-modal').dialog('close');
+                if (event.status) {
+                    loadTrips();
+                } else {
+                    showBanner('Error deleting trip: ' + event.message);
+                }
+            });
+        }
+
+        /* ─── Error banner ────────────────────────────────────────────────── */
+        function showBanner(msg) {
+            $j('#travel-error-banner').text(msg).show();
+            setTimeout(function() { $j('#travel-error-banner').fadeOut(); }, 6000);
+        }
+
+        /* ─── Public API ──────────────────────────────────────────────────── */
+        window.travelPortal = {
+            openNewTripForm: openNewForm,
+            toggleMyTrips: function() {
+                myTripsOnly = !myTripsOnly;
+                $j('#my-trips-btn').toggleClass('active', myTripsOnly);
+                renderTable();
+            },
+            toggleRiskFilter: function(btn) {
+                var risk = $j(btn).data('risk');
+                var idx  = $j.inArray(risk, riskFilters);
+                if (idx === -1) { riskFilters.push(risk); }
+                else            { riskFilters.splice(idx, 1); }
+                $j(btn).toggleClass('active', idx === -1);
+                renderTable();
+            },
+            setDivisionFilter: function(val) {
+                divisionFilter = val;
+                renderTable();
+            },
+            selectRisk: function(risk) {
+                $j('#tc-risk-level').val(risk);
+                var def = $j('#tc-country-default-risk').val();
+                var src = (def && risk !== def) ? 'Overridden by Traveler' : 'Derived from Country';
+                $j('#tc-risk-source').val(src);
+                updateRiskButtons(risk);
+                (def && risk !== def) ? $j('#tc-risk-warning').show() : $j('#tc-risk-warning').hide();
+            }
+        };
+
+        $j(document).ready(function() { init(); });
+    })();
+    </script>
+
+</apex:component>

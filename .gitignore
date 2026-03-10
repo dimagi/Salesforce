@@ -175,3 +175,17 @@ build.properties
 config
 mm.log
 *~
+
+# Ignore custom medatadta files
+src/customMetadata/
+
+# Salesforce DX / tooling
+.sfdx/
+.vscode/
+.claude/
+src/main/
+
+# Binary static resources
+src/staticresources/*.bin
+src/staticresources/*.gif
+src/staticresources/*.zip
