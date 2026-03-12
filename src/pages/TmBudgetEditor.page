@@ -624,8 +624,12 @@ function showToast(msg, type) {
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
-function parseJson(str) {
-    try { return JSON.parse(str); } catch(e) { return null; }
+// Salesforce @RemoteAction may return an already-parsed object OR a JSON string
+// depending on the API version / page context. Handle both.
+function parseJson(result) {
+    if (result == null) return null;
+    if (typeof result === 'object') return result;
+    try { return JSON.parse(result); } catch(e) { return null; }
 }
 
 function escHtml(str) {
