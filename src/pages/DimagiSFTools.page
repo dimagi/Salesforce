@@ -172,6 +172,9 @@
                             <li id="employeeRedFormLi">
                                 <a href="#employeeRedForm" ><span class="ui-icon ui-icon-blank"></span>Employee Red Form<span class="ui-icon ui-icon-blank"></span></a>
                             </li>
+                            <li id="travelTabLi">
+                                <a href="#travelTab"><span class="ui-icon ui-icon-blank"></span>Travel<span class="ui-icon ui-icon-blank"></span></a>
+                            </li>
                         </ul>
                     </apex:outputPanel>
 
@@ -206,6 +209,13 @@
                             </div>
                         </apex:form>
                     </section>
+
+                    <section id="travelTab">
+                        <apex:form>
+                            <c:TravelComponent employeeEmailComp="{!currentLoginEmail}" pageControllerComp="{!this}" />
+                        </apex:form>
+                    </section>
+
                 </div>
             </apex:outputPanel>
 
