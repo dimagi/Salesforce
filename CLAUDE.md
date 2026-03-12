@@ -62,17 +62,27 @@ Main branch: `develop`. Feature branches follow the pattern `SAL###-Description`
 - Employee type: `Employee_Type__c` | Active status: `Employee_Status__c`
 - Agreement/Subcontract: `Agreement__c`
 
+### Confirmed Picklist Values
+- `Actuals_Locked__c`: **'Yes, actuals final'** = locked | 'No, still projected' | 'Not Set'
+- `Indirect_Cost_Type__c`: **'Standard'** = NICRA rates | **'Custom'** = use `Custom_Indirect_Cost_Rate__c` only
+- `Employee_Type__c`: 'Employee', 'PEO', 'Internal Contractor'
+
 ### Business Rules (never violate)
-1. Fringe applies to Employees + PEO only — never to Internal Contractors
-2. G&A on subcontractors: only first $25,000 per sub per contract lifetime, tracked cumulatively in month order
-3. Once a month is locked (Actuals), no field on any line item in that month can be edited — enforced by trigger
-4. New line items added to a budget where some months are locked must inherit locked state
-5. Rates are non-dynamic: pulling a new employee's rate does not retroactively change locked periods
+1. Fringe applies to Employees + PEO only — never to Internal Contractors (`Cost_Category__c != 'Internal Contractor'`)
+2. G&A on subcontractors: only first $25,000 per sub per contract lifetime, tracked cumulatively in chronological month order. Each Agreement__c Id has its own independent cap.
+3. Subcontract rows identified by `Cost_Category__c = 'Subcontracts'` + non-null `Agreement__c`. Cap keyed by `Agreement__c` Id.
+4. Lock behavior: (1) AG Grid `editable: false` on locked month columns in UI; (2) trigger blocks any DML on locked records; (3) locked month totals ARE included in "Billed to Date" summary calculation
+5. Once a month is locked (`Actuals_Locked__c = 'Yes, actuals final'`), no field on any line item in that month can be edited — enforced by trigger, bypass with `Bypass_Budget_Lock` custom permission
+6. New line items added to a budget where some months are locked must inherit locked state
+7. Rates are non-dynamic: pulling a new employee's rate does not retroactively change locked periods
+8. Bulk upload is out of scope for this build — `saveBudget` accepts full payload to enable future CSV import without controller changes
 
 ### Sandbox Strategy
-- Building in **QASandbox** (alias: `qasandbox`). Existing Flow + LWC implementation is still present.
+- Building in **tmtracker** Dev sandbox (alias: `tmtracker`). Created from Production — does NOT have Budget__c or Budget_Line_Item__c objects. These must be deployed first.
+- QASandbox (alias: `qasandbox`) has the existing Flow + LWC implementation — do not deploy new code there.
 - **Never overwrite existing files** — only create new files. Do not touch `BudgetViewController.cls`, `BudgetSummaryComponentClass.cls`, existing flows, or existing LWC components.
 - The new `BudgetLineItemTrigger` must include an early-exit guard: `if (record.Month_Key__c == null) continue;` so it only affects records created by the new editor, leaving old records untouched.
+- Always deploy using explicit `--metadata` or `--source-dir` flags targeting only new files. Never deploy `--source-dir src/`.
 
 ### Do Not
 - Do not put formula logic in Screen Flows or LWC JS
