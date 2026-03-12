@@ -43,13 +43,24 @@ Main branch: `develop`. Feature branches follow the pattern `SAL###-Description`
 - `BudgetLineItemTriggerHandler.cls` — lock enforcement
 - `BudgetLineItemTrigger.trigger` — thin trigger, all logic in handler
 
-### Object API Names
-**UPDATE THIS SECTION after pulling metadata from QASandbox:**
-- Budget object: `Budget__c` — confirm lookup field to DContract__c
-- Budget Line Item: `Budget_Line_Item__c` — confirm Month_Key__c vs date-range model
-- Contract: `DContract__c` — confirm start/end date field names
-- Employee: `SFDC_Employee__c` — confirm rate field (Loaded vs Unloaded) and type picklist values
-- Agreement/Subcontract: `Agreement__c` — confirm
+### Object API Names (confirmed from QASandbox)
+- Budget: `Budget__c` — MasterDetail to `DContract__c` via `Contract__c`
+- Budget period: `Budget_Period_Start_Date__c` / `Budget_Period_End_date__c` (lowercase 'd')
+- Fringe rate: `Fringe_Benefit_Rate__c` (not Fringe_Rate__c)
+- G&A rate: `G_A_Rate__c` | Overhead: `Overhead_Rate__c` | Custom: `Custom_Indirect_Cost_Rate__c`
+- Fee: `Fee_Percentage__c` (Percent, not flat Currency)
+- NICRA toggle: `Indirect_Cost_Type__c` (Picklist)
+- Budget Line Item: `Budget_Line_Item__c` — MasterDetail to `Budget__c`
+- Line item type: `Cost_Category__c` (Picklist: 'Employee', 'Internal Contractor', 'Subcontracts', + direct cost categories)
+- Lock field: `Actuals_Locked__c` (Picklist, not Checkbox)
+- Per-month key: `Month_Key__c` — **NEW FIELD TO ADD** (Text 10, format "YYYY_MM")
+- Projected fields: `Projected_Units__c`, `Projected_Daily_Rate__c`, `Projected_Total_Salary__c`
+- Actual fields: `Actual_Units__c`, `Actual_Daily_Rate__c`, `Actual_Total_Salary__c`
+- Contract dates: `Contract_Start_Date__c` / `Contract_End_Date__c` on DContract__c
+- Contract total: `Total_Amount_of_Contract__c` on DContract__c
+- Employee rate: `Loaded_Daily_Rate__c` on SFDC_Employee__c
+- Employee type: `Employee_Type__c` | Active status: `Employee_Status__c`
+- Agreement/Subcontract: `Agreement__c`
 
 ### Business Rules (never violate)
 1. Fringe applies to Employees + PEO only — never to Internal Contractors

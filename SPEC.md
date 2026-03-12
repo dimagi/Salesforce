@@ -53,56 +53,64 @@ NOTE: File paths use `src/` (MDAPI format), not `force-app/main/default/`.
 
 ## 3. Data Model
 
-**NOTE: All API names below are PLACEHOLDERS. Update this section after pulling metadata from QASandbox.**
+**Field names confirmed against QASandbox metadata pull.**
 
 ### Budget__c
-Child of `DContract__c` (lookup). One budget per obligation period.
+Master-detail child of `DContract__c`. One budget per obligation period.
 
 | Field | API Name | Type | Notes |
 |---|---|---|---|
-| Contract | `Contract__c` | Lookup(DContract__c) | Required — CONFIRM actual name |
-| Notes | `Notes__c` | Long Text | |
-| Fee Amount | `Fee_Amount__c` | Currency | Optional, defaults 0 |
-| Use NICRA Rates | `Use_NICRA_Rates__c` | Checkbox | Default true |
-| Fringe Rate | `Fringe_Rate__c` | Percent(5,2) | Default from CMT |
-| Overhead Rate | `Overhead_Rate__c` | Percent(5,2) | Default from CMT |
-| G&A Rate | `GA_Rate__c` | Percent(5,2) | Default from CMT |
-| Custom Fringe Rate | `Custom_Fringe_Rate__c` | Percent(5,2) | Used when NICRA=false |
-| Custom Overhead Rate | `Custom_Overhead_Rate__c` | Percent(5,2) | |
-| Custom G&A Rate | `Custom_GA_Rate__c` | Percent(5,2) | |
+| Contract | `Contract__c` | MasterDetail(DContract__c) | |
+| Budget Period Start | `Budget_Period_Start_Date__c` | Date | Defines month columns |
+| Budget Period End | `Budget_Period_End_date__c` | Date | Note lowercase 'd' |
+| Fringe Rate | `Fringe_Benefit_Rate__c` | Percent | Default from CMT |
+| Overhead Rate | `Overhead_Rate__c` | Percent | |
+| G&A Rate | `G_A_Rate__c` | Percent | |
+| Custom Indirect Rate | `Custom_Indirect_Cost_Rate__c` | Percent | Used when NICRA=false |
+| Indirect Cost Type | `Indirect_Cost_Type__c` | Picklist | Controls NICRA vs custom — confirm picklist values |
+| Fee | `Fee_Percentage__c` | Percent | Fee is stored as a percentage, not flat amount |
+| Budgeted Grand Total | `Budgeted_Grand_Total__c` | Currency | Read-only rollup |
 
 ### Budget_Line_Item__c
-Master-detail child of `Budget__c`. **One record per person/category per month.**
+Master-detail child of `Budget__c`. New implementation creates **one record per person/category per month** using `Month_Key__c`.
 
 | Field | API Name | Type | Notes |
 |---|---|---|---|
-| Budget | `Budget__c` | Master-Detail(Budget__c) | |
-| Employee | `Employee__c` | Lookup(SFDC_Employee__c) | For Personnel/Contractor rows |
+| Budget | `Budget__c` | MasterDetail(Budget__c) | |
+| Employee | `Employee__c` | Lookup(SFDC_Employee__c) | For Employee/Contractor rows |
 | Agreement | `Agreement__c` | Lookup(Agreement__c) | For Subcontract rows |
-| Line Item Type | `Line_Item_Type__c` | Picklist | Personnel, Contractor, DirectCost, Subcontract — CONFIRM values |
-| Category | `Category__c` | Picklist | Travel & Transportation, Equipment, Contractual, Other Direct Costs — CONFIRM |
-| Month Key | `Month_Key__c` | Text(10) | Format: "YYYY_MM" e.g. "2024_01" — CONFIRM exists or add |
-| Units | `Units__c` | Number(18,2) | Days — CONFIRM field name |
-| Daily Rate | `Daily_Rate__c` | Currency | CONFIRM field name |
-| Amount | `Amount__c` | Currency | Units × Rate for personnel; flat $ for direct costs |
-| Is Locked | `Is_Locked__c` | Checkbox | May be Actuals_Locked__c — CONFIRM |
-| Rate Overridden | `Rate_Overridden__c` | Checkbox | True if user changed from employee default |
+| Cost Category | `Cost_Category__c` | Picklist | **'Employee', 'Internal Contractor', 'Subcontracts'**, + direct cost categories |
+| Month Key | `Month_Key__c` | Text(10) | **NEW FIELD TO ADD** — format "YYYY_MM". Old data uses date ranges; new editor uses this |
+| Start Date | `Budget_Line_Item_Start_Date__c` | Date | Existing date-range field (old data) |
+| End Date | `Budget_Line_Item_EndDate__c` | Date | Existing date-range field (old data) |
+| Projected Units | `Projected_Units__c` | Number | Days budgeted |
+| Projected Daily Rate | `Projected_Daily_Rate__c` | Currency | Rate for projected |
+| Projected Total | `Projected_Total_Salary__c` | Currency | Projected_Units × Projected_Daily_Rate |
+| Actual Units | `Actual_Units__c` | Number | Days actuals |
+| Actual Daily Rate | `Actual_Daily_Rate__c` | Currency | |
+| Actual Total | `Actual_Total_Salary__c` | Currency | |
+| Lock Status | `Actuals_Locked__c` | Picklist | Lock field — confirm picklist values (e.g. 'Locked') |
+| G&A Amount | `Amount_to_Include_in_G_A__c` | Currency | Calculated |
+| Fringe Amount | `Fringe_Amount__c` | Currency | Calculated |
+| Overhead Amount | `Overhead_Amount__c` | Currency | Calculated |
+| G&A Amount | `G_A_Amount__c` | Currency | Calculated |
+
+> **Month_Key__c is a new field** that needs to be deployed to QASandbox as part of this build. Format: "2024_01". The new editor creates one record per person per month using this key. Existing date-range records from the old implementation are left untouched.
 
 ### DContract__c (read-only fields used)
-- `Contract_Start_Date__c` — Date — CONFIRM actual name
-- `Funding_End_Date__c` — Date — CONFIRM actual name
-- `Agreement_End_Date__c` — Date
-- `Total_Amount_of_Contract__c` — Currency — CONFIRM actual name
+- `Contract_Start_Date__c` — Date
+- `Contract_End_Date__c` — Date
+- `Total_Amount_of_Contract__c` — Currency
 
 ### SFDC_Employee__c (read-only fields used)
-- `Loaded_Daily_Rate__c` or `Unloaded_Daily_Rate__c` — CONFIRM which to use
-- `Employee_Type__c` — Picklist: confirm values (Employee, PEO, InternalContractor?)
-- Active status field — CONFIRM field name
+- `Loaded_Daily_Rate__c` — Currency (use this for default rate)
+- `Employee_Type__c` — Picklist (confirm values — expected: Employee, PEO, Internal Contractor)
+- `Employee_Status__c` — Picklist (active/inactive — confirm active value)
 
-### TM_Budget_Defaults__mdt (Custom Metadata — may need to create)
-- `Default_Fringe_Rate__c` — Percent — value: 0.37
-- `Default_Overhead_Rate__c` — Percent — value: 0.58
-- `Default_GA_Rate__c` — Percent — value: 0.11
+### TM_Budget_Defaults__mdt (Custom Metadata — confirm or create)
+- `Default_Fringe_Rate__c` — Percent
+- `Default_Overhead_Rate__c` — Percent
+- `Default_GA_Rate__c` — Percent
 - Record DeveloperName: `Standard`
 
 ---
