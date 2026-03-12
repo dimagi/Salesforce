@@ -69,11 +69,17 @@ Main branch: `develop`. Feature branches follow the pattern `SAL###-Description`
 4. New line items added to a budget where some months are locked must inherit locked state
 5. Rates are non-dynamic: pulling a new employee's rate does not retroactively change locked periods
 
+### Sandbox Strategy
+- Building in **QASandbox** (alias: `qasandbox`). Existing Flow + LWC implementation is still present.
+- **Never overwrite existing files** — only create new files. Do not touch `BudgetViewController.cls`, `BudgetSummaryComponentClass.cls`, existing flows, or existing LWC components.
+- The new `BudgetLineItemTrigger` must include an early-exit guard: `if (record.Month_Key__c == null) continue;` so it only affects records created by the new editor, leaving old records untouched.
+
 ### Do Not
 - Do not put formula logic in Screen Flows or LWC JS
 - Do not use `lightning-datatable` for the budget grid (use AG Grid in VF page)
 - Do not use `@AuraEnabled` for the budget editor (use `@RemoteAction`)
 - Do not modify locked line items without checking `Bypass_Budget_Lock` custom permission
+- Do not modify or overwrite any existing Apex classes, flows, or LWC components
 
 ---
 
