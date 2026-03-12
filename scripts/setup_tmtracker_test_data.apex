@@ -1,11 +1,10 @@
 /**
  * setup_tmtracker_test_data.apex
  *
- * Run in tmtracker Developer Console:
- *   Setup → Developer Console → Debug → Open Execute Anonymous Window → paste → Execute
+ * Run from terminal:
+ *   sf apex run --file scripts/setup_tmtracker_test_data.apex --target-org tmtracker
  *
- * After running, look for the "OPEN PAGE:" line in the debug log output
- * (filter by "USER_DEBUG" in the log view).
+ * After running, the URL is printed at the end of the output.
  *
  * Reference scenario (matches SPEC.md manual verification):
  *   Employee A: 10 days × $500/day = $5,000 salary
@@ -15,9 +14,8 @@
  *   Grand Total:  $8,450
  */
 
-// ── 1. Find or create an active employee ─────────────────────────────────────
+// ── 1. Find an active employee ────────────────────────────────────────────────
 
-SFDC_Employee__c emp;
 List<SFDC_Employee__c> existingEmps = [
     SELECT Id, Name, Employee_Type__c, Loaded_Daily_Rate__c
     FROM SFDC_Employee__c
@@ -26,110 +24,103 @@ List<SFDC_Employee__c> existingEmps = [
     LIMIT 1
 ];
 
-if (!existingEmps.isEmpty()) {
-    emp = existingEmps[0];
-    System.debug('Using existing employee: ' + emp.Name + ' (Id: ' + emp.Id + ')');
-} else {
-    // Fall back to creating a placeholder employee
-    emp = new SFDC_Employee__c(
-        Name             = 'Test Employee (Budget Setup)',
-        Employee_Status__c = 'Active',
-        Exchange_Rate__c = 1,
-        Employee_Type__c = 'Employee'
-    );
-    insert emp;
-    System.debug('Created placeholder employee: ' + emp.Id);
+if (existingEmps.isEmpty()) {
+    System.debug('ERROR: No active employees found in tmtracker. ' +
+        'Add at least one SFDC_Employee__c with Employee_Status__c = \'Active\' first.');
+    return;
 }
+SFDC_Employee__c emp = existingEmps[0];
+System.debug('Using employee: ' + emp.Name + ' (' + emp.Id + ')');
 
 // ── 2. Create contract ────────────────────────────────────────────────────────
 
 DContract__c contract = new DContract__c(
-    Name                    = 'TEST — T&M Budget Reference Scenario',
-    Contract_Start_Date__c  = Date.newInstance(2024, 1, 1),
-    Contract_End_Date__c    = Date.newInstance(2024, 12, 31),
-    Total_Amount_of_Contract__c = 100000
+    Name                   = 'TEST — T&M Budget Reference Scenario',
+    Contract_Start_Date__c = Date.newInstance(2024, 1, 1),
+    Contract_End_Date__c   = Date.newInstance(2024, 12, 31)
 );
 insert contract;
 System.debug('Created contract: ' + contract.Id);
 
-// ── 3. Create budget with reference scenario rates ────────────────────────────
+// ── 3. Build save payload — uses BudgetController to avoid direct field refs ──
+//    Jan: locked  — 10 days × $500  → expected grand total $8,450
+//    Feb: unlocked — 8 days × $500
+//    Mar: unlocked — 5 days × $500
 
-Budget__c budget = new Budget__c(
-    Contract__c                 = contract.Id,
-    Budget_Period_Start_Date__c = Date.newInstance(2024, 1, 1),
-    Budget_Period_End_date__c   = Date.newInstance(2024, 3, 31),  // Jan–Mar for demo
-    Fringe_Benefit_Rate__c      = 30,   // 30%
-    Overhead_Rate__c            = 20,   // 20%
-    G_A_Rate__c                 = 10,   // 10%
-    Custom_Indirect_Cost_Rate__c = 0,
-    Indirect_Cost_Type__c       = 'Standard',
-    Fee_Percentage__c           = 0
-);
-insert budget;
-System.debug('Created budget: ' + budget.Id);
+BudgetDTO.BudgetRates rates = new BudgetDTO.BudgetRates();
+rates.budgetStart      = Date.newInstance(2024, 1, 1);
+rates.budgetEnd        = Date.newInstance(2024, 3, 31);
+rates.fringeRate       = 30;
+rates.overheadRate     = 20;
+rates.gaRate           = 10;
+rates.customRate       = 0;
+rates.indirectCostType = 'Standard';
+rates.feePercentage    = 0;
 
-// ── 4. Create line items — reference scenario employee across Jan–Mar ─────────
-//    Jan: 10 days × $500/day  →  actual total $5,000 → expected grand total $8,450
-//    Feb: 8 days × $500/day   →  unlocked
-//    Mar: 5 days × $500/day   →  unlocked
+List<BudgetDTO.BudgetRow> rows = new List<BudgetDTO.BudgetRow>();
 
-List<Budget_Line_Item__c> items = new List<Budget_Line_Item__c>();
+// January — locked actuals
+BudgetDTO.BudgetRow jan = new BudgetDTO.BudgetRow();
+jan.monthKey       = '2024_01';
+jan.costCategory   = 'Employee';
+jan.employeeId     = emp.Id;
+jan.lockedStatus   = 'Yes, actuals final';
+jan.projectedUnits = 10;
+jan.actualUnits    = 10;
+jan.actualRate     = 500;
+rows.add(jan);
 
-// January — locked (to test "Billed to Date" calculation)
-items.add(new Budget_Line_Item__c(
-    Budget__c            = budget.Id,
-    Employee__c          = emp.Id,
-    Cost_Category__c     = 'Employee',
-    Month_Key__c         = '2024_01',
-    Actuals_Locked__c    = 'Yes, actuals final',
-    Projected_Units__c   = 10,
-    Actual_Units__c      = 10,
-    Actual_Daily_Rate__c = 500,
-    Amount_to_Include_in_G_A__c = 0  // n/a for employees — formula uses salary+fringe
-));
+// February — unlocked
+BudgetDTO.BudgetRow feb = new BudgetDTO.BudgetRow();
+feb.monthKey       = '2024_02';
+feb.costCategory   = 'Employee';
+feb.employeeId     = emp.Id;
+feb.lockedStatus   = 'No, still projected';
+feb.projectedUnits = 8;
+feb.actualUnits    = 0;
+feb.actualRate     = 0;
+rows.add(feb);
 
-// February — unlocked projected
-items.add(new Budget_Line_Item__c(
-    Budget__c            = budget.Id,
-    Employee__c          = emp.Id,
-    Cost_Category__c     = 'Employee',
-    Month_Key__c         = '2024_02',
-    Actuals_Locked__c    = 'No, still projected',
-    Projected_Units__c   = 8,
-    Actual_Units__c      = 0,
-    Actual_Daily_Rate__c = 500,
-    Amount_to_Include_in_G_A__c = 0
-));
+// March — unlocked
+BudgetDTO.BudgetRow mar = new BudgetDTO.BudgetRow();
+mar.monthKey       = '2024_03';
+mar.costCategory   = 'Employee';
+mar.employeeId     = emp.Id;
+mar.lockedStatus   = 'No, still projected';
+mar.projectedUnits = 5;
+mar.actualUnits    = 0;
+mar.actualRate     = 0;
+rows.add(mar);
 
-// March — unlocked projected
-items.add(new Budget_Line_Item__c(
-    Budget__c            = budget.Id,
-    Employee__c          = emp.Id,
-    Cost_Category__c     = 'Employee',
-    Month_Key__c         = '2024_03',
-    Actuals_Locked__c    = 'No, still projected',
-    Projected_Units__c   = 5,
-    Actual_Units__c      = 0,
-    Actual_Daily_Rate__c = 500,
-    Amount_to_Include_in_G_A__c = 0
-));
+BudgetDTO.SavePayload payload = new BudgetDTO.SavePayload();
+payload.contractId = contract.Id;
+payload.rates      = rates;
+payload.rows       = rows;
 
-insert items;
-System.debug('Created ' + items.size() + ' line items');
+// ── 4. Save via controller ────────────────────────────────────────────────────
 
-// ── 5. Print the page URL ─────────────────────────────────────────────────────
+String saveResult = BudgetController.saveBudget(JSON.serialize(payload));
+Map<String, Object> response = (Map<String, Object>) JSON.deserializeUntyped(saveResult);
 
-String pageUrl = '/apex/TmBudgetEditor?contractId=' + contract.Id
-    + '&budgetId=' + budget.Id;
+if (response.get('success') != true) {
+    System.debug('ERROR saving budget: ' + response.get('message'));
+    return;
+}
 
-System.debug('OPEN PAGE: https://dimagi--tmtracker.sandbox.lightning.force.com' + pageUrl);
-System.debug('Contract Id: ' + contract.Id);
-System.debug('Budget Id:   ' + budget.Id);
-System.debug('Employee:    ' + emp.Name + ' (' + emp.Id + ')');
+String budgetId = (String) response.get('budgetId');
+System.debug('Created budget: ' + budgetId);
+
+// ── 5. Print the URL ──────────────────────────────────────────────────────────
+
+System.debug('');
+System.debug('======================================================');
+System.debug('OPEN THIS URL IN TMTRACKER:');
+System.debug('https://dimagi--tmtracker.sandbox.lightning.force.com/apex/TmBudgetEditor?contractId=' + contract.Id + '&budgetId=' + budgetId);
+System.debug('======================================================');
 System.debug('');
 System.debug('Expected Jan totals (reference scenario):');
 System.debug('  Salary:   $5,000  (10 days x $500)');
 System.debug('  Fringe:   $1,500  (30% of $5,000)');
 System.debug('  Overhead: $1,300  (20% of $6,500)');
 System.debug('  G&A:      $650    (10% of $6,500)');
-System.debug('  Total:    $8,450');
+System.debug('  Grand Total: $8,450');
