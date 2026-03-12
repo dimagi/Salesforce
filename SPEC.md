@@ -1,7 +1,7 @@
 # SPEC: T&M Budget Tool — Salesforce Implementation
 
 > **Status:** Ready for implementation
-> **Sandbox:** `dimagi--qasandbox.sandbox.lightning.force.com`
+> **Sandbox:** `dimagi--tmtracker.sandbox.lightning.force.com`
 > **Audience:** Claude Code — use this file as the primary implementation reference
 
 ---
@@ -95,7 +95,7 @@ Master-detail child of `Budget__c`. New implementation creates **one record per 
 | Overhead Amount | `Overhead_Amount__c` | Currency | Calculated |
 | G&A Amount | `G_A_Amount__c` | Currency | Calculated |
 
-> **Month_Key__c is a new field** that needs to be deployed to QASandbox as part of this build. Format: "2024_01". The new editor creates one record per person per month using this key. Existing date-range records from the old implementation are left untouched.
+> **Month_Key__c is a new field** that needs to be deployed to tmtracker as part of this build. Format: "2024_01". The new editor creates one record per person per month using this key. Existing date-range records from the old implementation are left untouched.
 
 ### DContract__c (read-only fields used)
 - `Contract_Start_Date__c` — Date
@@ -299,10 +299,10 @@ public static String addEmployees(String budgetId, List<String> employeeIds)
 
 ## 11. Implementation Order
 
-1. Pull metadata from QASandbox → confirm/update all API names in this file
+1. Pull metadata from QASandbox → confirm/update all API names in this file ✓ (complete)
 2. `BudgetDTO.cls` — no dependencies
 3. `BudgetCalculationService.cls` + tests — pass all tests before moving on
 4. `BudgetLineItemTriggerHandler.cls` + trigger + tests
 5. `BudgetController.cls` + tests
 6. `TmBudgetEditor.page` — test in browser against sandbox
-7. Deploy to QASandbox; run scenario tests
+7. Deploy to tmtracker; run scenario tests

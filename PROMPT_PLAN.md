@@ -92,7 +92,7 @@
   Include AG Grid Community CDN script and stylesheet.
   Build topbar, summary strip, toolbar, rates bar, and status bar as static HTML.
   Grid div fills all remaining height.
-  Deploy and open: sf org open --path /apex/TmBudgetEditor?contractId=TEST --target-org QASandbox
+  Deploy and open: sf org open --path /apex/TmBudgetEditor?contractId=TEST --target-org tmtracker
   Verify layout renders before adding data.
   ```
 
@@ -106,7 +106,7 @@
   3. Build row data — section headers, employee rows, calc rows, grand total pinned bottom
   4. Initialize grid with agGrid.createGrid()
   5. Populate summary strip and rates bar
-  Deploy and test with a real contractId from QASandbox.
+  Deploy and test with a real contractId from tmtracker.
   ```
 
 - [ ] **Step 3.3 — Inline editing and client-side recalc**
@@ -151,7 +151,7 @@
 
 - [ ] **Step 4.3 — Scenario testing**
   ```
-  Test against QASandbox scenario contracts:
+  Test against tmtracker scenario contracts:
   1. Standard Budget No Sub and No Fee
   2. Standard Budget w/ Sub and No Fee
   3. Standard Budget w/ Sub and w/ Fee
@@ -163,7 +163,7 @@
 
 - [ ] **Step 4.4 — Final coverage check**
   ```
-  sf apex run test --class-names BudgetCalculationServiceTest,BudgetControllerTest,BudgetLineItemTriggerHandlerTest --target-org QASandbox
+  sf apex run test --class-names BudgetCalculationServiceTest,BudgetControllerTest,BudgetLineItemTriggerHandlerTest --target-org tmtracker
   All classes must be ≥85% coverage.
   Final commit: git commit -m "SAL-495 T&M Budget Tool — complete implementation"
   ```
