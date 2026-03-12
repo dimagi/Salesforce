@@ -1,0 +1,639 @@
+<apex:page controller="BudgetController" showHeader="true" sidebar="false"
+           standardStylesheets="false" applyBodyTag="false" docType="html-5.0"
+           title="T&amp;M Budget Editor">
+
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>T&amp;M Budget Editor</title>
+
+    <!-- AG Grid Community 31.3.2 -->
+    <script src="https://cdn.jsdelivr.net/npm/ag-grid-community@31.3.2/dist/ag-grid-community.min.js"></script>
+
+    <style>
+        * { box-sizing: border-box; }
+        body { font-family: 'Salesforce Sans', Arial, sans-serif; font-size: 13px;
+               margin: 0; padding: 0; background: #f3f3f3; }
+
+        /* ── Header bar ── */
+        #page-header {
+            background: #0070d2; color: #fff;
+            padding: 10px 16px;
+            display: flex; align-items: center; gap: 16px;
+        }
+        #page-header h1 { margin: 0; font-size: 16px; font-weight: 600; flex: 1; }
+        #page-header button {
+            background: #fff; color: #0070d2; border: none;
+            padding: 6px 14px; border-radius: 4px;
+            font-size: 13px; cursor: pointer; font-weight: 600;
+        }
+        #page-header button:hover { background: #e0efff; }
+        #save-status { font-size: 12px; color: #c9e6ff; min-width: 120px; }
+
+        /* ── Summary strip ── */
+        #summary-strip {
+            background: #fff; border-bottom: 1px solid #ddd;
+            padding: 8px 16px;
+            display: flex; gap: 32px; align-items: center;
+        }
+        .summary-item { display: flex; flex-direction: column; }
+        .summary-label { font-size: 11px; color: #706e6b; text-transform: uppercase; letter-spacing: .5px; }
+        .summary-value { font-size: 15px; font-weight: 600; color: #080707; }
+
+        /* ── Rates panel ── */
+        #rates-panel {
+            background: #fff; border-bottom: 1px solid #ddd;
+            padding: 8px 16px;
+            display: flex; gap: 24px; align-items: center; flex-wrap: wrap;
+        }
+        .rate-field { display: flex; flex-direction: column; }
+        .rate-field label { font-size: 11px; color: #706e6b; margin-bottom: 2px; }
+        .rate-field input, .rate-field select {
+            width: 90px; padding: 4px 6px; border: 1px solid #ddd;
+            border-radius: 3px; font-size: 13px;
+        }
+        .rate-field input:focus, .rate-field select:focus {
+            outline: none; border-color: #0070d2;
+        }
+
+        /* ── Toolbar ── */
+        #toolbar {
+            background: #fafaf9; border-bottom: 1px solid #ddd;
+            padding: 6px 16px; display: flex; gap: 8px; align-items: center;
+        }
+        #toolbar button {
+            background: #0070d2; color: #fff; border: none;
+            padding: 5px 12px; border-radius: 4px;
+            font-size: 12px; cursor: pointer;
+        }
+        #toolbar button:hover { background: #005fb2; }
+        #toolbar button.secondary {
+            background: #fff; color: #0070d2;
+            border: 1px solid #0070d2;
+        }
+        #toolbar button.secondary:hover { background: #e0efff; }
+
+        /* ── Grid ── */
+        #grid-container {
+            width: 100%;
+            height: calc(100vh - 180px);
+        }
+
+        /* ── Locked column style ── */
+        .ag-locked-cell {
+            background: #f0f4f8 !important;
+            color: #888 !important;
+        }
+        .ag-header-locked {
+            background: #dce9f5 !important;
+        }
+
+        /* ── Modal overlay ── */
+        .modal-overlay {
+            display: none; position: fixed; inset: 0;
+            background: rgba(0,0,0,.4); z-index: 1000;
+            align-items: center; justify-content: center;
+        }
+        .modal-overlay.open { display: flex; }
+        .modal-box {
+            background: #fff; border-radius: 6px; padding: 24px;
+            width: 480px; max-height: 80vh; display: flex; flex-direction: column;
+            box-shadow: 0 4px 24px rgba(0,0,0,.2);
+        }
+        .modal-box h2 { margin: 0 0 12px; font-size: 16px; }
+        #employee-search {
+            width: 100%; padding: 6px 10px; border: 1px solid #ddd;
+            border-radius: 4px; margin-bottom: 10px; font-size: 13px;
+        }
+        #employee-list {
+            flex: 1; overflow-y: auto; border: 1px solid #eee; border-radius: 4px;
+            max-height: 320px;
+        }
+        .emp-row {
+            padding: 8px 12px; cursor: pointer; border-bottom: 1px solid #f0f0f0;
+            display: flex; align-items: center; gap: 10px;
+        }
+        .emp-row:hover { background: #f3f7ff; }
+        .emp-row input[type=checkbox] { width: 16px; height: 16px; }
+        .emp-name { font-weight: 500; }
+        .emp-meta { font-size: 11px; color: #888; }
+        .modal-footer { display: flex; justify-content: flex-end; gap: 8px; margin-top: 12px; }
+        .modal-footer button {
+            padding: 6px 16px; border-radius: 4px; font-size: 13px; cursor: pointer;
+        }
+        .btn-primary { background: #0070d2; color: #fff; border: none; }
+        .btn-primary:hover { background: #005fb2; }
+        .btn-cancel { background: #fff; color: #333; border: 1px solid #ddd; }
+        .btn-cancel:hover { background: #f5f5f5; }
+
+        /* ── Toast ── */
+        #toast {
+            position: fixed; bottom: 24px; right: 24px;
+            padding: 12px 20px; border-radius: 6px;
+            font-size: 13px; color: #fff; z-index: 2000;
+            display: none; box-shadow: 0 2px 12px rgba(0,0,0,.2);
+        }
+        #toast.success { background: #2e844a; display: block; }
+        #toast.error   { background: #c23934; display: block; }
+    </style>
+</head>
+
+<body>
+    <!-- Page header -->
+    <div id="page-header">
+        <h1 id="page-title">T&amp;M Budget Editor</h1>
+        <span id="save-status"></span>
+        <button onclick="saveAll()">Save</button>
+    </div>
+
+    <!-- Summary strip -->
+    <div id="summary-strip">
+        <div class="summary-item">
+            <span class="summary-label">Contract Value</span>
+            <span class="summary-value" id="sum-contract">—</span>
+        </div>
+        <div class="summary-item">
+            <span class="summary-label">Total Budgeted</span>
+            <span class="summary-value" id="sum-budgeted">—</span>
+        </div>
+        <div class="summary-item">
+            <span class="summary-label">Billed to Date</span>
+            <span class="summary-value" id="sum-billed">—</span>
+        </div>
+        <div class="summary-item">
+            <span class="summary-label">Remaining</span>
+            <span class="summary-value" id="sum-remaining">—</span>
+        </div>
+    </div>
+
+    <!-- Indirect rates panel -->
+    <div id="rates-panel">
+        <div class="rate-field">
+            <label>Indirect Type</label>
+            <select id="indirect-type" onchange="onRateChange()">
+                <option value="Standard">Standard (NICRA)</option>
+                <option value="Custom">Custom Rate</option>
+            </select>
+        </div>
+        <div class="rate-field" id="field-fringe">
+            <label>Fringe %</label>
+            <input type="number" id="fringe-rate" min="0" max="100" step="0.01" onchange="onRateChange()" />
+        </div>
+        <div class="rate-field" id="field-overhead">
+            <label>Overhead %</label>
+            <input type="number" id="overhead-rate" min="0" max="100" step="0.01" onchange="onRateChange()" />
+        </div>
+        <div class="rate-field" id="field-ga">
+            <label>G&amp;A %</label>
+            <input type="number" id="ga-rate" min="0" max="100" step="0.01" onchange="onRateChange()" />
+        </div>
+        <div class="rate-field" id="field-custom" style="display:none">
+            <label>Custom Rate %</label>
+            <input type="number" id="custom-rate" min="0" max="100" step="0.01" onchange="onRateChange()" />
+        </div>
+        <div class="rate-field">
+            <label>Fee %</label>
+            <input type="number" id="fee-pct" min="0" max="100" step="0.01" onchange="onRateChange()" />
+        </div>
+    </div>
+
+    <!-- Toolbar -->
+    <div id="toolbar">
+        <button onclick="openAddEmployeeModal()">+ Add Employee</button>
+        <button class="secondary" onclick="expandAll()">Expand All</button>
+        <button class="secondary" onclick="collapseAll()">Collapse All</button>
+    </div>
+
+    <!-- AG Grid -->
+    <div id="grid-container" class="ag-theme-alpine"></div>
+
+    <!-- Add Employee modal -->
+    <div class="modal-overlay" id="emp-modal">
+        <div class="modal-box">
+            <h2>Add Employees</h2>
+            <input type="text" id="employee-search" placeholder="Search by name..."
+                   oninput="filterEmployeeList()" />
+            <div id="employee-list"></div>
+            <div class="modal-footer">
+                <button class="btn-cancel" onclick="closeModal()">Cancel</button>
+                <button class="btn-primary" onclick="confirmAddEmployees()">Add Selected</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast notification -->
+    <div id="toast"></div>
+
+<script>
+// ─── Global state ─────────────────────────────────────────────────────────────
+
+var CONTRACT_ID = '{!$CurrentPage.parameters.contractId}';
+var BUDGET_ID   = '{!$CurrentPage.parameters.budgetId}';
+
+var gridApi;
+var state = {
+    budgetId:   null,
+    header:     null,
+    months:     [],    // [{monthKey, label, isLocked}]
+    rows:       [],    // raw BudgetDTO.BudgetRow list from server
+    employees:  [],    // [{employeeId, name, employeeType, dailyRate}]
+    dirty:      false
+};
+
+// ─── Currency formatter ────────────────────────────────────────────────────────
+
+function fmtCurrency(val) {
+    if (val == null || val === '') return '';
+    return '$' + Number(val).toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+}
+
+// ─── Load budget on page ready ─────────────────────────────────────────────────
+
+window.addEventListener('DOMContentLoaded', function() {
+    if (!CONTRACT_ID) {
+        showToast('Missing contractId parameter.', 'error');
+        return;
+    }
+    loadBudget();
+});
+
+function loadBudget() {
+    setStatus('Loading...');
+    BudgetController.loadBudget(CONTRACT_ID, BUDGET_ID || null, function(result, event) {
+        if (!event.status) { showToast('Load failed: ' + event.message, 'error'); return; }
+        var data = parseJson(result);
+        if (!data || data.success === false) {
+            showToast('Load failed: ' + (data ? data.message : 'Unknown error'), 'error');
+            return;
+        }
+        applyLoadResponse(data);
+        setStatus('');
+    });
+}
+
+function applyLoadResponse(data) {
+    state.budgetId  = data.header && data.header.budgetId;
+    state.header    = data.header;
+    state.months    = data.months  || [];
+    state.rows      = data.rows    || [];
+    state.employees = data.employees || [];
+    state.dirty     = false;
+
+    // Page title
+    if (data.header) {
+        document.getElementById('page-title').textContent =
+            'T&M Budget — ' + (data.header.contractName || '');
+    }
+
+    // Populate rate fields
+    populateRateFields(data.header);
+
+    // Update summary
+    updateSummary(data.summary);
+
+    // Build or refresh grid
+    buildGrid();
+}
+
+// ─── Rate fields ──────────────────────────────────────────────────────────────
+
+function populateRateFields(header) {
+    if (!header) return;
+    var isCustom = header.indirectCostType === 'Custom';
+    document.getElementById('indirect-type').value  = header.indirectCostType || 'Standard';
+    document.getElementById('fringe-rate').value    = header.fringeRate   || 0;
+    document.getElementById('overhead-rate').value  = header.overheadRate || 0;
+    document.getElementById('ga-rate').value        = header.gaRate       || 0;
+    document.getElementById('custom-rate').value    = header.customRate   || 0;
+    document.getElementById('fee-pct').value        = header.feePercentage || 0;
+    toggleRateMode(isCustom);
+}
+
+function toggleRateMode(isCustom) {
+    document.getElementById('field-fringe').style.display   = isCustom ? 'none' : '';
+    document.getElementById('field-overhead').style.display = isCustom ? 'none' : '';
+    document.getElementById('field-ga').style.display       = isCustom ? 'none' : '';
+    document.getElementById('field-custom').style.display   = isCustom ? '' : 'none';
+}
+
+function onRateChange() {
+    var isCustom = document.getElementById('indirect-type').value === 'Custom';
+    toggleRateMode(isCustom);
+    markDirty();
+}
+
+function getRates() {
+    return {
+        indirectCostType: document.getElementById('indirect-type').value,
+        fringeRate:       parseFloat(document.getElementById('fringe-rate').value)   || 0,
+        overheadRate:     parseFloat(document.getElementById('overhead-rate').value) || 0,
+        gaRate:           parseFloat(document.getElementById('ga-rate').value)       || 0,
+        customRate:       parseFloat(document.getElementById('custom-rate').value)   || 0,
+        feePercentage:    parseFloat(document.getElementById('fee-pct').value)       || 0,
+        budgetStart:      state.header ? state.header.budgetStart : null,
+        budgetEnd:        state.header ? state.header.budgetEnd   : null
+    };
+}
+
+// ─── Summary ──────────────────────────────────────────────────────────────────
+
+function updateSummary(summary) {
+    if (!summary) return;
+    document.getElementById('sum-contract').textContent  = fmtCurrency(summary.contractTotal);
+    document.getElementById('sum-budgeted').textContent  = fmtCurrency(summary.totalBudgeted);
+    document.getElementById('sum-billed').textContent    = fmtCurrency(summary.billedToDate);
+    document.getElementById('sum-remaining').textContent = fmtCurrency(summary.remaining);
+}
+
+// ─── AG Grid ──────────────────────────────────────────────────────────────────
+
+function buildGrid() {
+    var container = document.getElementById('grid-container');
+
+    // Group rows by costCategory + employeeId/agreementId
+    var rowData = buildRowData();
+    var columnDefs = buildColumnDefs();
+
+    var gridOptions = {
+        columnDefs: columnDefs,
+        rowData: rowData,
+        groupDisplayType: 'groupRows',
+        groupDefaultExpanded: 1,
+        animateRows: true,
+        defaultColDef: {
+            resizable: true,
+            sortable: false,
+            suppressMovable: true
+        },
+        onCellValueChanged: function(params) {
+            syncRowToState(params);
+            markDirty();
+        },
+        getRowStyle: function(params) {
+            if (params.node.group) {
+                return { fontWeight: '600', background: '#f9f9f9' };
+            }
+        }
+    };
+
+    if (gridApi) {
+        gridApi.destroy();
+    }
+
+    gridApi = agGrid.createGrid(container, gridOptions);
+}
+
+function buildColumnDefs() {
+    var cols = [
+        {
+            field: 'rowLabel',
+            headerName: 'Category / Person',
+            width: 220,
+            pinned: 'left',
+            cellRenderer: 'agGroupCellRenderer'
+        }
+    ];
+
+    state.months.forEach(function(month) {
+        var isLocked = month.isLocked;
+        var monthKey = month.monthKey;
+
+        cols.push({
+            headerName: month.label,
+            headerClass: isLocked ? 'ag-header-locked' : '',
+            children: [
+                {
+                    field: 'proj_' + monthKey,
+                    headerName: 'Proj',
+                    width: 90,
+                    editable: !isLocked,
+                    cellClass: isLocked ? 'ag-locked-cell' : '',
+                    valueFormatter: function(p) { return p.value != null ? Number(p.value).toFixed(0) : ''; },
+                    type: 'numericColumn'
+                },
+                {
+                    field: 'actual_' + monthKey,
+                    headerName: 'Actual',
+                    width: 90,
+                    editable: !isLocked,
+                    cellClass: isLocked ? 'ag-locked-cell' : '',
+                    valueFormatter: function(p) { return p.value != null ? fmtCurrency(p.value) : ''; },
+                    type: 'numericColumn'
+                }
+            ]
+        });
+    });
+
+    return cols;
+}
+
+function buildRowData() {
+    // Build a flat row per (category+person, month) pivoted into wide format
+    // Group key = costCategory + '|' + (employeeId || agreementId || '')
+    var groups = {};  // groupKey → {rowLabel, groupKey, fields...}
+
+    state.rows.forEach(function(r) {
+        var groupKey = r.costCategory + '|' + (r.employeeId || r.agreementId || '');
+        var rowLabel = r.costCategory;  // Will be enriched with employee name if available
+
+        if (!groups[groupKey]) {
+            // Try to find employee name
+            var empName = null;
+            if (r.employeeId) {
+                var emp = state.employees.find(function(e) { return e.employeeId === r.employeeId; });
+                if (emp) empName = emp.name;
+            }
+            groups[groupKey] = {
+                rowLabel: empName || r.costCategory,
+                groupKey: groupKey,
+                costCategory: r.costCategory,
+                employeeId: r.employeeId,
+                agreementId: r.agreementId,
+                rowIds: {}  // monthKey → lineItemId
+            };
+        }
+
+        var row = groups[groupKey];
+        row['proj_'   + r.monthKey] = r.projectedUnits;
+        row['actual_' + r.monthKey] = r.actualTotal;
+        row.rowIds[r.monthKey]      = r.lineItemId;
+    });
+
+    return Object.values(groups);
+}
+
+function syncRowToState(params) {
+    // When a cell changes, update state.rows
+    var data = params.data;
+    var field = params.column.getColId();
+    var isProj = field.startsWith('proj_');
+    var isActual = field.startsWith('actual_');
+    if (!isProj && !isActual) return;
+
+    var monthKey = field.replace('proj_', '').replace('actual_', '');
+
+    // Find or create the matching row in state.rows
+    var stateRow = state.rows.find(function(r) {
+        return r.monthKey === monthKey
+            && r.costCategory === data.costCategory
+            && (r.employeeId || '') === (data.employeeId || '')
+            && (r.agreementId || '') === (data.agreementId || '');
+    });
+
+    if (!stateRow) {
+        // New row — create it
+        stateRow = {
+            lineItemId: null,
+            monthKey: monthKey,
+            costCategory: data.costCategory,
+            employeeId: data.employeeId,
+            agreementId: data.agreementId,
+            lockedStatus: 'No, still projected',
+            projectedUnits: null, projectedRate: null, projectedTotal: null,
+            actualUnits: null, actualRate: null, actualTotal: null
+        };
+        state.rows.push(stateRow);
+    }
+
+    if (isProj) {
+        stateRow.projectedUnits = parseFloat(params.newValue) || null;
+    } else {
+        stateRow.actualTotal = parseFloat(params.newValue) || null;
+    }
+}
+
+function expandAll()   { if (gridApi) gridApi.expandAll(); }
+function collapseAll() { if (gridApi) gridApi.collapseAll(); }
+
+// ─── Save ─────────────────────────────────────────────────────────────────────
+
+function saveAll() {
+    setStatus('Saving...');
+    var payload = {
+        budgetId:   state.budgetId,
+        contractId: CONTRACT_ID,
+        rates:      getRates(),
+        rows:       state.rows
+    };
+
+    BudgetController.saveBudget(JSON.stringify(payload), function(result, event) {
+        if (!event.status) { showToast('Save failed: ' + event.message, 'error'); setStatus(''); return; }
+        var data = parseJson(result);
+        if (!data || !data.success) {
+            showToast('Save failed: ' + (data ? data.message : 'Unknown error'), 'error');
+            setStatus('');
+            return;
+        }
+        if (data.budgetId) {
+            state.budgetId = data.budgetId;
+            BUDGET_ID = data.budgetId;
+        }
+        state.dirty = false;
+        setStatus('');
+        showToast('Saved successfully', 'success');
+        // Reload to get fresh formula field values
+        loadBudget();
+    });
+}
+
+function markDirty() {
+    state.dirty = true;
+    setStatus('Unsaved changes');
+}
+
+function setStatus(msg) {
+    document.getElementById('save-status').textContent = msg;
+}
+
+// ─── Add Employee modal ───────────────────────────────────────────────────────
+
+function openAddEmployeeModal() {
+    if (!state.budgetId) {
+        showToast('Save the budget first before adding employees.', 'error');
+        return;
+    }
+    document.getElementById('employee-search').value = '';
+    renderEmployeeList(state.employees);
+    document.getElementById('emp-modal').classList.add('open');
+}
+
+function closeModal() {
+    document.getElementById('emp-modal').classList.remove('open');
+}
+
+function filterEmployeeList() {
+    var q = document.getElementById('employee-search').value.toLowerCase();
+    var filtered = state.employees.filter(function(e) {
+        return e.name.toLowerCase().includes(q);
+    });
+    renderEmployeeList(filtered);
+}
+
+function renderEmployeeList(employees) {
+    var list = document.getElementById('employee-list');
+    list.innerHTML = '';
+    employees.forEach(function(emp) {
+        var div = document.createElement('div');
+        div.className = 'emp-row';
+        div.innerHTML =
+            '<input type="checkbox" class="emp-check" value="' + emp.employeeId + '" />' +
+            '<span class="emp-name">' + escHtml(emp.name) + '</span>' +
+            '<span class="emp-meta">' + escHtml(emp.employeeType || '') +
+            (emp.dailyRate ? ' · $' + Number(emp.dailyRate).toFixed(0) + '/day' : '') + '</span>';
+        div.addEventListener('click', function(e) {
+            if (e.target.type !== 'checkbox') {
+                var cb = div.querySelector('.emp-check');
+                cb.checked = !cb.checked;
+            }
+        });
+        list.appendChild(div);
+    });
+}
+
+function confirmAddEmployees() {
+    var checks = document.querySelectorAll('#employee-list .emp-check:checked');
+    var ids = Array.from(checks).map(function(cb) { return cb.value; });
+    if (ids.length === 0) { closeModal(); return; }
+
+    closeModal();
+    setStatus('Adding employees...');
+
+    BudgetController.addEmployees(state.budgetId, JSON.stringify(ids), function(result, event) {
+        if (!event.status) { showToast('Add failed: ' + event.message, 'error'); setStatus(''); return; }
+        var data = parseJson(result);
+        if (!data || !data.success) {
+            showToast('Add failed: ' + (data ? data.message : 'Unknown error'), 'error');
+            setStatus('');
+            return;
+        }
+        showToast(ids.length + ' employee(s) added', 'success');
+        loadBudget(); // reload grid with new rows
+    });
+}
+
+// ─── Toast ────────────────────────────────────────────────────────────────────
+
+function showToast(msg, type) {
+    var t = document.getElementById('toast');
+    t.textContent = msg;
+    t.className = type; // 'success' or 'error'
+    clearTimeout(t._timer);
+    t._timer = setTimeout(function() { t.className = ''; }, 4000);
+}
+
+// ─── Helpers ──────────────────────────────────────────────────────────────────
+
+function parseJson(str) {
+    try { return JSON.parse(str); } catch(e) { return null; }
+}
+
+function escHtml(str) {
+    return String(str)
+        .replace(/&/g, '&amp;').replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+}
+</script>
+</body>
+</html>
+</apex:page>
