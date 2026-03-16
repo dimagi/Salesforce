@@ -7,89 +7,148 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>T&amp;M Budget Editor</title>
-
-    <!-- AG Grid Community 31.3.2 -->
-    <script src="https://cdn.jsdelivr.net/npm/ag-grid-community@31.3.2/dist/ag-grid-community.min.js"></script>
-
     <style>
         * { box-sizing: border-box; }
         body { font-family: 'Salesforce Sans', Arial, sans-serif; font-size: 13px;
-               margin: 0; padding: 0; background: #f3f3f3; }
+               margin: 0; padding: 0; background: #f3f3f3; color: #222; }
 
-        /* ── Header bar ── */
+        /* ── Header ── */
         #page-header {
-            background: #0070d2; color: #fff;
-            padding: 10px 16px;
-            display: flex; align-items: center; gap: 16px;
+            background: #16325c; color: #fff;
+            padding: 10px 16px; display: flex; align-items: center; gap: 12px;
         }
-        #page-header h1 { margin: 0; font-size: 16px; font-weight: 600; flex: 1; }
+        #page-title { margin: 0; font-size: 16px; font-weight: 600; flex: 1; }
+        #save-status { font-size: 12px; color: #b0cce8; min-width: 130px; }
         #page-header button {
-            background: #fff; color: #0070d2; border: none;
-            padding: 6px 14px; border-radius: 4px;
-            font-size: 13px; cursor: pointer; font-weight: 600;
+            background: #fff; color: #16325c; border: none;
+            padding: 6px 16px; border-radius: 4px; font-size: 13px;
+            cursor: pointer; font-weight: 600;
         }
-        #page-header button:hover { background: #e0efff; }
-        #save-status { font-size: 12px; color: #c9e6ff; min-width: 120px; }
+        #page-header button:hover { background: #e0ecf8; }
 
         /* ── Summary strip ── */
         #summary-strip {
-            background: #fff; border-bottom: 1px solid #ddd;
-            padding: 8px 16px;
-            display: flex; gap: 32px; align-items: center;
+            background: #fff; border-bottom: 2px solid #ddd;
+            padding: 8px 16px; display: flex; gap: 20px; align-items: center; flex-wrap: wrap;
         }
-        .summary-item { display: flex; flex-direction: column; }
-        .summary-label { font-size: 11px; color: #706e6b; text-transform: uppercase; letter-spacing: .5px; }
-        .summary-value { font-size: 15px; font-weight: 600; color: #080707; }
+        .sum-divider { width: 1px; height: 36px; background: #ddd; margin: 0 4px; }
+        .summary-item { display: flex; flex-direction: column; min-width: 80px; }
+        .summary-label { font-size: 10px; color: #706e6b; text-transform: uppercase; letter-spacing: .4px; }
+        .summary-value { font-size: 15px; font-weight: 700; }
+        .summary-item.sm .summary-value { font-size: 13px; font-weight: 600; }
 
-        /* ── Rates panel ── */
+        /* ── Rates bar ── */
         #rates-panel {
-            background: #fff; border-bottom: 1px solid #ddd;
-            padding: 8px 16px;
-            display: flex; gap: 24px; align-items: center; flex-wrap: wrap;
+            background: #f8f9fb; border-bottom: 1px solid #ddd;
+            padding: 5px 16px; display: flex; gap: 18px; align-items: center; flex-wrap: wrap;
         }
-        .rate-field { display: flex; flex-direction: column; }
-        .rate-field label { font-size: 11px; color: #706e6b; margin-bottom: 2px; }
-        .rate-field input, .rate-field select {
-            width: 90px; padding: 4px 6px; border: 1px solid #ddd;
-            border-radius: 3px; font-size: 13px;
+        .rate-chip { display: flex; align-items: center; gap: 5px; font-size: 12px; }
+        .rate-lbl { color: #706e6b; }
+        .rate-inp {
+            width: 65px; padding: 2px 6px; border: 1px solid #c9d5e8; border-radius: 4px;
+            font-size: 12px; font-family: inherit; text-align: right; background: #fff;
         }
-        .rate-field input:focus, .rate-field select:focus {
-            outline: none; border-color: #0070d2;
+        .rate-inp:focus { outline: none; border-color: #0070d2; }
+        .rate-sel {
+            padding: 2px 4px; border: 1px solid #c9d5e8; border-radius: 4px;
+            font-size: 12px; font-family: inherit; background: #fff;
         }
 
         /* ── Toolbar ── */
         #toolbar {
             background: #fafaf9; border-bottom: 1px solid #ddd;
-            padding: 6px 16px; display: flex; gap: 8px; align-items: center;
+            padding: 5px 16px; display: flex; gap: 8px; align-items: center;
         }
         #toolbar button {
             background: #0070d2; color: #fff; border: none;
-            padding: 5px 12px; border-radius: 4px;
-            font-size: 12px; cursor: pointer;
+            padding: 5px 12px; border-radius: 4px; font-size: 12px; cursor: pointer;
         }
         #toolbar button:hover { background: #005fb2; }
-        #toolbar button.secondary {
-            background: #fff; color: #0070d2;
-            border: 1px solid #0070d2;
+        #toolbar button.btn-outline {
+            background: #fff; color: #0070d2; border: 1px solid #0070d2;
         }
-        #toolbar button.secondary:hover { background: #e0efff; }
+        #toolbar button.btn-outline:hover { background: #e0efff; }
 
-        /* ── Grid ── */
-        #grid-container {
-            width: 100%;
-            height: calc(100vh - 180px);
-        }
+        /* ── Grid container ── */
+        #grid-container { overflow: auto; max-height: calc(100vh - 168px); background: #fff; }
 
-        /* ── Locked column style ── */
-        .ag-locked-cell {
-            background: #f0f4f8 !important;
-            color: #888 !important;
-        }
-        .ag-header-locked {
-            background: #dce9f5 !important;
+        /* ── Budget table ── */
+        #budget-table {
+            border-collapse: collapse; width: max-content; min-width: 100%; font-size: 12px;
         }
 
-        /* ── Modal overlay ── */
+        /* Sticky left columns */
+        .sc { position: sticky; z-index: 3; }
+        .sc0 { left: 0;    width: 185px; min-width: 185px; background: inherit; }
+        .sc1 { left: 185px; width: 100px; min-width: 100px; background: inherit; text-align: right; }
+        .sc2 { left: 285px; width: 100px; min-width: 100px; background: inherit; text-align: right; }
+        .sc3 { left: 385px; width: 100px; min-width: 100px; background: inherit; text-align: right;
+               border-right: 2px solid #ccc; }
+
+        /* thead sticky */
+        #budget-table thead { position: sticky; top: 0; z-index: 4; }
+        #budget-table thead .sc { z-index: 6; }
+
+        /* Header cells */
+        #budget-table thead th {
+            background: #f0f2f7; font-weight: 600; color: #444;
+            padding: 5px 7px; white-space: nowrap; border-bottom: 1px solid #ccc;
+        }
+        /* Month group header */
+        th.mhdr { text-align: center; border-left: 1px solid #ccc; font-size: 11px; padding: 3px 6px; }
+        th.mhdr.locked-hdr { background: #d6e9f8; }
+        /* Lock dropdown */
+        .lock-sel {
+            display: block; font-size: 10px; border: 1px solid #bbb; border-radius: 3px;
+            background: #fff; cursor: pointer; color: #444; margin: 3px auto 0;
+            padding: 1px 2px; max-width: 70px;
+        }
+        .lock-sel.is-locked { background: #d6e9f8; color: #005a9e; border-color: #8ab4d8; }
+        /* Sub-header row */
+        th.shdr {
+            text-align: center; font-size: 10px; font-weight: 500; color: #888;
+            border-left: 1px solid #e8e8e8; padding: 2px 4px; background: #f0f2f7;
+            min-width: 62px;
+        }
+        th.shdr.locked-hdr { background: #d6e9f8; }
+
+        /* Data cells */
+        #budget-table td {
+            padding: 3px 7px; border-bottom: 1px solid #eee; vertical-align: middle;
+            white-space: nowrap;
+        }
+        td.num { text-align: right; }
+        td.mstart { border-left: 1px solid #ddd; }
+        td.locked-cell { background: #f0f4f8 !important; color: #888; }
+
+        /* Inputs */
+        td input[type=number] {
+            width: 100%; min-width: 58px; border: 1px solid transparent;
+            background: transparent; padding: 2px 4px; font-size: 12px;
+            text-align: right; font-family: inherit;
+        }
+        td input[type=number]:focus {
+            border-color: #0070d2; background: #fff; outline: none; border-radius: 2px;
+        }
+
+        /* Section header rows */
+        #budget-table tr.row-sec td {
+            background: #3e4a6d; color: #fff; font-weight: 700;
+            padding: 5px 10px; font-size: 11px; letter-spacing: .4px; text-transform: uppercase;
+        }
+
+        /* Calc rows */
+        #budget-table tr.row-calc td { background: #f4f7fc; color: #555; font-style: italic; }
+        #budget-table tr.row-calc td.sc { background: #f4f7fc; }
+
+        /* Grand total */
+        #budget-table tr.row-grand td {
+            background: #16325c; color: #fff; font-weight: 700; font-style: normal;
+            border-top: 2px solid #0a1f40;
+        }
+        #budget-table tr.row-grand td.sc { background: #16325c; }
+
+        /* ── Modal ── */
         .modal-overlay {
             display: none; position: fixed; inset: 0;
             background: rgba(0,0,0,.4); z-index: 1000;
@@ -97,8 +156,8 @@
         }
         .modal-overlay.open { display: flex; }
         .modal-box {
-            background: #fff; border-radius: 6px; padding: 24px;
-            width: 480px; max-height: 80vh; display: flex; flex-direction: column;
+            background: #fff; border-radius: 6px; padding: 24px; width: 480px;
+            max-height: 80vh; display: flex; flex-direction: column;
             box-shadow: 0 4px 24px rgba(0,0,0,.2);
         }
         .modal-box h2 { margin: 0 0 12px; font-size: 16px; }
@@ -107,8 +166,8 @@
             border-radius: 4px; margin-bottom: 10px; font-size: 13px;
         }
         #employee-list {
-            flex: 1; overflow-y: auto; border: 1px solid #eee; border-radius: 4px;
-            max-height: 320px;
+            flex: 1; overflow-y: auto; border: 1px solid #eee;
+            border-radius: 4px; max-height: 320px;
         }
         .emp-row {
             padding: 8px 12px; cursor: pointer; border-bottom: 1px solid #f0f0f0;
@@ -119,19 +178,46 @@
         .emp-name { font-weight: 500; }
         .emp-meta { font-size: 11px; color: #888; }
         .modal-footer { display: flex; justify-content: flex-end; gap: 8px; margin-top: 12px; }
-        .modal-footer button {
-            padding: 6px 16px; border-radius: 4px; font-size: 13px; cursor: pointer;
-        }
+        .modal-footer button { padding: 6px 16px; border-radius: 4px; font-size: 13px; cursor: pointer; }
         .btn-primary { background: #0070d2; color: #fff; border: none; }
         .btn-primary:hover { background: #005fb2; }
         .btn-cancel { background: #fff; color: #333; border: 1px solid #ddd; }
         .btn-cancel:hover { background: #f5f5f5; }
 
+        /* ── Budget Summary table ── */
+        #budget-summary {
+            background: #fff; border-bottom: 2px solid #ccc; padding: 0;
+        }
+        #bsummary-table {
+            border-collapse: collapse; width: 100%; font-size: 12px;
+        }
+        #bsummary-table th {
+            background: #3e4a6d; color: #fff; font-weight: 600; font-size: 11px;
+            padding: 5px 10px; text-align: right; white-space: nowrap;
+        }
+        #bsummary-table th:first-child { text-align: left; width: 220px; }
+        #bsummary-table td {
+            padding: 4px 10px; border-bottom: 1px solid #eee; white-space: nowrap;
+            text-align: right;
+        }
+        #bsummary-table td:first-child { text-align: left; color: #222; }
+        #bsummary-table tr.bs-calc td { color: #555; font-style: italic; }
+        #bsummary-table tr.bs-calc td:first-child { padding-left: 18px; }
+        #bsummary-table tr.bs-subtotal td {
+            background: #f0f2f7; font-weight: 700; border-top: 1px solid #ccc;
+        }
+        #bsummary-table tr.bs-grand td {
+            background: #16325c; color: #fff; font-weight: 700; border-top: 2px solid #0a1f40;
+        }
+        #bsummary-table tr.bs-section td {
+            background: #e8ebf5; color: #3e4a6d; font-weight: 600; font-size: 11px;
+            text-transform: uppercase; letter-spacing: .3px; padding: 3px 10px;
+        }
+
         /* ── Toast ── */
         #toast {
-            position: fixed; bottom: 24px; right: 24px;
-            padding: 12px 20px; border-radius: 6px;
-            font-size: 13px; color: #fff; z-index: 2000;
+            position: fixed; bottom: 24px; right: 24px; padding: 12px 20px;
+            border-radius: 6px; font-size: 13px; color: #fff; z-index: 2000;
             display: none; box-shadow: 0 2px 12px rgba(0,0,0,.2);
         }
         #toast.success { background: #2e844a; display: block; }
@@ -140,132 +226,184 @@
 </head>
 
 <body>
-    <!-- Page header -->
-    <div id="page-header">
-        <h1 id="page-title">T&amp;M Budget Editor</h1>
-        <span id="save-status"></span>
-        <button onclick="saveAll()">Save</button>
+
+<!-- Page header -->
+<div id="page-header">
+    <h1 id="page-title">T&amp;M Budget Editor</h1>
+    <span id="save-status"></span>
+    <button onclick="saveAll()">Save</button>
+</div>
+
+<!-- Summary strip -->
+<div id="summary-strip">
+    <div class="summary-item">
+        <span class="summary-label">Grand Total</span>
+        <span class="summary-value" id="sum-grand">&#8212;</span>
     </div>
+    <div class="summary-item">
+        <span class="summary-label">Billed to Date</span>
+        <span class="summary-value" id="sum-billed">&#8212;</span>
+    </div>
+    <div class="summary-item">
+        <span class="summary-label">Remaining</span>
+        <span class="summary-value" id="sum-remaining">&#8212;</span>
+    </div>
+    <div class="sum-divider"></div>
+    <div class="summary-item sm">
+        <span class="summary-label">Contract Value</span>
+        <span class="summary-value" id="sum-contract">&#8212;</span>
+    </div>
+    <div class="summary-item sm">
+        <span class="summary-label">Salaries</span>
+        <span class="summary-value" id="sum-salaries">&#8212;</span>
+    </div>
+    <div class="summary-item sm">
+        <span class="summary-label">Fringe</span>
+        <span class="summary-value" id="sum-fringe">&#8212;</span>
+    </div>
+    <div class="summary-item sm">
+        <span class="summary-label">Overhead</span>
+        <span class="summary-value" id="sum-overhead">&#8212;</span>
+    </div>
+    <div class="summary-item sm">
+        <span class="summary-label">G&amp;A</span>
+        <span class="summary-value" id="sum-ga">&#8212;</span>
+    </div>
+    <div class="summary-item sm">
+        <span class="summary-label">Direct Costs</span>
+        <span class="summary-value" id="sum-direct">&#8212;</span>
+    </div>
+</div>
 
-    <!-- Summary strip -->
-    <div id="summary-strip">
-        <div class="summary-item">
-            <span class="summary-label">Contract Value</span>
-            <span class="summary-value" id="sum-contract">—</span>
-        </div>
-        <div class="summary-item">
-            <span class="summary-label">Total Budgeted</span>
-            <span class="summary-value" id="sum-budgeted">—</span>
-        </div>
-        <div class="summary-item">
-            <span class="summary-label">Billed to Date</span>
-            <span class="summary-value" id="sum-billed">—</span>
-        </div>
-        <div class="summary-item">
-            <span class="summary-label">Remaining</span>
-            <span class="summary-value" id="sum-remaining">—</span>
+<!-- Rates bar -->
+<div id="rates-panel">
+    <span class="rate-chip"><span class="rate-lbl">Start:</span><input type="date" class="rate-inp" id="rd-start" style="width:120px" onchange="onRateChange()" /></span>
+    <span class="rate-chip"><span class="rate-lbl">End:</span><input type="date" class="rate-inp" id="rd-end" style="width:120px" onchange="onRateChange()" /></span>
+    <span style="width:1px;height:20px;background:#ddd;margin:0 4px"></span>
+    <span class="rate-chip"><span class="rate-lbl">Fringe %:</span><input type="number" class="rate-inp" id="rd-fringe" min="0" max="100" step="0.1" onchange="onRateChange()" /></span>
+    <span class="rate-chip"><span class="rate-lbl">Overhead %:</span><input type="number" class="rate-inp" id="rd-overhead" min="0" max="100" step="0.1" onchange="onRateChange()" /></span>
+    <span class="rate-chip"><span class="rate-lbl">G&amp;A %:</span><input type="number" class="rate-inp" id="rd-ga" min="0" max="100" step="0.1" onchange="onRateChange()" /></span>
+    <span class="rate-chip"><span class="rate-lbl">Fee %:</span><input type="number" class="rate-inp" id="rd-fee" min="0" step="0.1" onchange="onRateChange()" /></span>
+    <span class="rate-chip"><span class="rate-lbl">Type:</span>
+        <select class="rate-sel" id="rd-type" onchange="onRateChange()">
+            <option value="Standard">Standard (NICRA)</option>
+            <option value="Custom">Custom</option>
+        </select>
+    </span>
+</div>
+
+<!-- Budget Summary -->
+<div id="budget-summary"></div>
+
+<!-- Toolbar -->
+<div id="toolbar">
+    <button onclick="openAddModal('Employee')">+ Employee</button>
+    <button class="btn-outline" onclick="openAddModal('Internal Contractor')">+ Contractor</button>
+    <button class="btn-outline" onclick="openSubModal()">+ Subcontract</button>
+</div>
+
+<!-- Budget table -->
+<div id="grid-container"><p style="padding:20px;color:#888">Loading...</p></div>
+
+<!-- Add Employee / Contractor modal -->
+<div class="modal-overlay" id="emp-modal">
+    <div class="modal-box">
+        <h2 id="modal-title">Add Employees</h2>
+        <input type="text" id="employee-search" placeholder="Search by name..."
+               oninput="filterEmployeeList()" />
+        <div id="employee-list"></div>
+        <div class="modal-footer">
+            <button class="btn-cancel" onclick="closeModal()">Cancel</button>
+            <button class="btn-primary" onclick="confirmAddEmployees()">Add Selected</button>
         </div>
     </div>
+</div>
 
-    <!-- Indirect rates panel -->
-    <div id="rates-panel">
-        <div class="rate-field">
-            <label>Indirect Type</label>
-            <select id="indirect-type" onchange="onRateChange()">
-                <option value="Standard">Standard (NICRA)</option>
-                <option value="Custom">Custom Rate</option>
-            </select>
-        </div>
-        <div class="rate-field" id="field-fringe">
-            <label>Fringe %</label>
-            <input type="number" id="fringe-rate" min="0" max="100" step="0.01" onchange="onRateChange()" />
-        </div>
-        <div class="rate-field" id="field-overhead">
-            <label>Overhead %</label>
-            <input type="number" id="overhead-rate" min="0" max="100" step="0.01" onchange="onRateChange()" />
-        </div>
-        <div class="rate-field" id="field-ga">
-            <label>G&amp;A %</label>
-            <input type="number" id="ga-rate" min="0" max="100" step="0.01" onchange="onRateChange()" />
-        </div>
-        <div class="rate-field" id="field-custom" style="display:none">
-            <label>Custom Rate %</label>
-            <input type="number" id="custom-rate" min="0" max="100" step="0.01" onchange="onRateChange()" />
-        </div>
-        <div class="rate-field">
-            <label>Fee %</label>
-            <input type="number" id="fee-pct" min="0" max="100" step="0.01" onchange="onRateChange()" />
+<!-- Add Subcontract modal -->
+<div class="modal-overlay" id="sub-modal">
+    <div class="modal-box">
+        <h2>Add Subcontract</h2>
+        <input type="text" id="sub-search" placeholder="Search by name..."
+               oninput="filterSubList()" style="width:100%;padding:6px 10px;border:1px solid #ddd;border-radius:4px;margin-bottom:10px;font-size:13px" />
+        <div id="sub-list" style="flex:1;overflow-y:auto;border:1px solid #eee;border-radius:4px;max-height:320px"></div>
+        <div class="modal-footer">
+            <button class="btn-cancel" onclick="closeSubModal()">Cancel</button>
+            <button class="btn-primary" onclick="confirmAddSubcontracts()">Add Selected</button>
         </div>
     </div>
+</div>
 
-    <!-- Toolbar -->
-    <div id="toolbar">
-        <button onclick="openAddEmployeeModal()">+ Add Employee</button>
-        <button class="secondary" onclick="expandAll()">Expand All</button>
-        <button class="secondary" onclick="collapseAll()">Collapse All</button>
-    </div>
-
-    <!-- AG Grid -->
-    <div id="grid-container" class="ag-theme-alpine"></div>
-
-    <!-- Add Employee modal -->
-    <div class="modal-overlay" id="emp-modal">
-        <div class="modal-box">
-            <h2>Add Employees</h2>
-            <input type="text" id="employee-search" placeholder="Search by name..."
-                   oninput="filterEmployeeList()" />
-            <div id="employee-list"></div>
-            <div class="modal-footer">
-                <button class="btn-cancel" onclick="closeModal()">Cancel</button>
-                <button class="btn-primary" onclick="confirmAddEmployees()">Add Selected</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- Toast notification -->
-    <div id="toast"></div>
+<!-- Toast -->
+<div id="toast"></div>
 
 <script>
-// ─── Global state ─────────────────────────────────────────────────────────────
-
+// ─── State ────────────────────────────────────────────────────────────────────
 var CONTRACT_ID = '{!$CurrentPage.parameters.contractId}';
 var BUDGET_ID   = '{!$CurrentPage.parameters.budgetId}';
 
-var gridApi;
 var state = {
     budgetId:   null,
     header:     null,
-    months:     [],    // [{monthKey, label, isLocked}]
-    rows:       [],    // raw BudgetDTO.BudgetRow list from server
-    employees:  [],    // [{employeeId, name, employeeType, dailyRate}]
+    months:     [],   // [{monthKey, label, isLocked}]
+    rows:       [],   // flat BudgetRow list from server
+    employees:  [],   // [{employeeId, name, employeeType, dailyRate}]
+    agreements: [],   // [{agreementId, name, contractBudget}]
     dirty:      false
 };
 
-// ─── Currency formatter ────────────────────────────────────────────────────────
+// Direct cost categories (single Amount input per month, no Units/Rate split).
+// 'Subcontracts' has its own section below.
+var DIRECT_COST_CATS = [
+    'Travel \u0026 Transportation',
+    'Equipment',
+    'Contractual',
+    'Other Direct Cost'
+];
 
+// ─── Utilities ────────────────────────────────────────────────────────────────
 function fmtCurrency(val) {
     if (val == null || val === '') return '';
-    return '$' + Number(val).toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+    return '$' + Number(val).toLocaleString('en-US',
+        {minimumFractionDigits: 2, maximumFractionDigits: 2});
+}
+function rnd2(v) { return Math.round((v || 0) * 100) / 100; }
+function pct(v)  { return (v != null ? Number(v).toFixed(1) : '0.0') + '%'; }
+
+function escHtml(s) {
+    return String(s == null ? '' : s)
+        .replace(/&/g, '&amp;').replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 }
 
-// ─── Load budget on page ready ─────────────────────────────────────────────────
+// Decode HTML entities from Salesforce RemoteAction string, then JSON.parse.
+function parseJson(result) {
+    if (result == null) return null;
+    if (typeof result === 'object') return result;
+    try {
+        var ta = document.createElement('textarea');
+        ta.innerHTML = result;
+        return JSON.parse(ta.value);
+    } catch(e) { return null; }
+}
 
+// ─── Boot ─────────────────────────────────────────────────────────────────────
 window.addEventListener('DOMContentLoaded', function() {
-    if (!CONTRACT_ID) {
-        showToast('Missing contractId parameter.', 'error');
-        return;
-    }
+    if (!CONTRACT_ID) { showToast('Missing contractId parameter.', 'error'); return; }
     loadBudget();
 });
 
+// ─── Load ─────────────────────────────────────────────────────────────────────
 function loadBudget() {
     setStatus('Loading...');
     BudgetController.loadBudget(CONTRACT_ID, BUDGET_ID || null, function(result, event) {
-        if (!event.status) { showToast('Load failed: ' + event.message, 'error'); return; }
+        if (!event.status) {
+            showToast('Load failed: ' + (event.message || 'Unknown error'), 'error');
+            setStatus(''); return;
+        }
         var data = parseJson(result);
         if (!data || data.success === false) {
             showToast('Load failed: ' + (data ? data.message : 'Unknown error'), 'error');
-            return;
+            setStatus(''); return;
         }
         applyLoadResponse(data);
         setStatus('');
@@ -273,243 +411,718 @@ function loadBudget() {
 }
 
 function applyLoadResponse(data) {
-    state.budgetId  = data.header && data.header.budgetId;
-    state.header    = data.header;
-    state.months    = data.months  || [];
-    state.rows      = data.rows    || [];
-    state.employees = data.employees || [];
-    state.dirty     = false;
+    state.budgetId   = data.header && data.header.budgetId;
+    state.header     = data.header     || {};
+    state.months     = data.months     || [];
+    state.rows       = data.rows       || [];
+    state.employees  = data.employees  || [];
+    state.agreements = data.agreements || [];
+    state.dirty      = false;
 
-    // Page title
-    if (data.header) {
+    if (data.header && data.header.contractName) {
         document.getElementById('page-title').textContent =
-            'T&M Budget — ' + (data.header.contractName || '');
+            'T\u0026M Budget \u2014 ' + data.header.contractName;
     }
-
-    // Populate rate fields
-    populateRateFields(data.header);
-
-    // Update summary
-    updateSummary(data.summary);
-
-    // Build or refresh grid
-    buildGrid();
+    populateRateDisplay(state.header);
+    buildTable();
+    updateSummaryStrip();
 }
 
-// ─── Rate fields ──────────────────────────────────────────────────────────────
-
-function populateRateFields(header) {
-    if (!header) return;
-    var isCustom = header.indirectCostType === 'Custom';
-    document.getElementById('indirect-type').value  = header.indirectCostType || 'Standard';
-    document.getElementById('fringe-rate').value    = header.fringeRate   || 0;
-    document.getElementById('overhead-rate').value  = header.overheadRate || 0;
-    document.getElementById('ga-rate').value        = header.gaRate       || 0;
-    document.getElementById('custom-rate').value    = header.customRate   || 0;
-    document.getElementById('fee-pct').value        = header.feePercentage || 0;
-    toggleRateMode(isCustom);
-}
-
-function toggleRateMode(isCustom) {
-    document.getElementById('field-fringe').style.display   = isCustom ? 'none' : '';
-    document.getElementById('field-overhead').style.display = isCustom ? 'none' : '';
-    document.getElementById('field-ga').style.display       = isCustom ? 'none' : '';
-    document.getElementById('field-custom').style.display   = isCustom ? '' : 'none';
+// ─── Rates panel ──────────────────────────────────────────────────────────────
+function populateRateDisplay(h) {
+    if (!h) return;
+    document.getElementById('rd-start').value   = h.budgetStart   ? h.budgetStart.substring(0,10)   : '';
+    document.getElementById('rd-end').value     = h.budgetEnd     ? h.budgetEnd.substring(0,10)     : '';
+    document.getElementById('rd-fringe').value  = h.fringeRate    != null ? h.fringeRate   : '';
+    document.getElementById('rd-overhead').value = h.overheadRate != null ? h.overheadRate : '';
+    document.getElementById('rd-ga').value      = h.gaRate        != null ? h.gaRate       : '';
+    document.getElementById('rd-fee').value     = h.feePercentage != null ? h.feePercentage : '';
+    document.getElementById('rd-type').value    = h.indirectCostType || 'Standard';
 }
 
 function onRateChange() {
-    var isCustom = document.getElementById('indirect-type').value === 'Custom';
-    toggleRateMode(isCustom);
+    state.header = state.header || {};
+    state.header.budgetStart     = document.getElementById('rd-start').value || null;
+    state.header.budgetEnd       = document.getElementById('rd-end').value   || null;
+    state.header.fringeRate      = parseFloat(document.getElementById('rd-fringe').value)  || 0;
+    state.header.overheadRate    = parseFloat(document.getElementById('rd-overhead').value) || 0;
+    state.header.gaRate          = parseFloat(document.getElementById('rd-ga').value)      || 0;
+    state.header.feePercentage   = parseFloat(document.getElementById('rd-fee').value)     || 0;
+    state.header.indirectCostType = document.getElementById('rd-type').value || 'Standard';
     markDirty();
+    buildTable();
+    updateSummaryStrip();
 }
 
+// ─── Rates for save payload ───────────────────────────────────────────────────
 function getRates() {
+    var h = state.header || {};
     return {
-        indirectCostType: document.getElementById('indirect-type').value,
-        fringeRate:       parseFloat(document.getElementById('fringe-rate').value)   || 0,
-        overheadRate:     parseFloat(document.getElementById('overhead-rate').value) || 0,
-        gaRate:           parseFloat(document.getElementById('ga-rate').value)       || 0,
-        customRate:       parseFloat(document.getElementById('custom-rate').value)   || 0,
-        feePercentage:    parseFloat(document.getElementById('fee-pct').value)       || 0,
-        budgetStart:      state.header ? state.header.budgetStart : null,
-        budgetEnd:        state.header ? state.header.budgetEnd   : null
+        indirectCostType: h.indirectCostType || 'Standard',
+        fringeRate:    h.fringeRate    || 0,
+        overheadRate:  h.overheadRate  || 0,
+        gaRate:        h.gaRate        || 0,
+        customRate:    h.customRate    || 0,
+        feePercentage: h.feePercentage || 0,
+        budgetStart:   h.budgetStart   || null,
+        budgetEnd:     h.budgetEnd     || null
     };
 }
 
-// ─── Summary ──────────────────────────────────────────────────────────────────
+// ─── Pivot: flat rows → grouped ──────────────────────────────────────────────
+function pivot() {
+    var empMap = {}, conMap = {}, subMap = {};
+    // Pre-populate direct cost map so all categories show even when empty
+    var dcMap = {};
+    DIRECT_COST_CATS.forEach(function(cat) { dcMap[cat] = { label: cat, months: {} }; });
 
-function updateSummary(summary) {
-    if (!summary) return;
-    document.getElementById('sum-contract').textContent  = fmtCurrency(summary.contractTotal);
-    document.getElementById('sum-budgeted').textContent  = fmtCurrency(summary.totalBudgeted);
-    document.getElementById('sum-billed').textContent    = fmtCurrency(summary.billedToDate);
-    document.getElementById('sum-remaining').textContent = fmtCurrency(summary.remaining);
-}
+    state.rows.forEach(function(r) {
+        var mk  = r.monthKey;
+        var cat = r.costCategory;
+        var locked = state.months.some(function(m) { return m.monthKey === mk && m.isLocked; });
 
-// ─── AG Grid ──────────────────────────────────────────────────────────────────
-
-function buildGrid() {
-    var container = document.getElementById('grid-container');
-
-    // Group rows by costCategory + employeeId/agreementId
-    var rowData = buildRowData();
-    var columnDefs = buildColumnDefs();
-
-    var gridOptions = {
-        columnDefs: columnDefs,
-        rowData: rowData,
-        groupDisplayType: 'groupRows',
-        groupDefaultExpanded: 1,
-        animateRows: true,
-        defaultColDef: {
-            resizable: true,
-            sortable: false,
-            suppressMovable: true
-        },
-        onCellValueChanged: function(params) {
-            syncRowToState(params);
-            markDirty();
-        },
-        getRowStyle: function(params) {
-            if (params.node.group) {
-                return { fontWeight: '600', background: '#f9f9f9' };
+        if (cat === 'Employee') {
+            if (!empMap[r.employeeId]) {
+                var e = findEmp(r.employeeId);
+                empMap[r.employeeId] = { rowId: r.employeeId, label: e ? e.name : '(Unknown)',
+                                         costCategory: cat, months: {} };
             }
+            empMap[r.employeeId].months[mk] = laborCell(r, locked);
+
+        } else if (cat === 'Internal Contractor') {
+            if (!conMap[r.employeeId]) {
+                var e2 = findEmp(r.employeeId);
+                conMap[r.employeeId] = { rowId: r.employeeId, label: e2 ? e2.name : '(Unknown)',
+                                         costCategory: cat, months: {} };
+            }
+            conMap[r.employeeId].months[mk] = laborCell(r, locked);
+
+        } else if (cat === 'Subcontracts') {
+            var aid = r.agreementId || ('sub_' + mk);
+            if (!subMap[aid]) {
+                var agr = findAgreement(r.agreementId);
+                subMap[aid] = { rowId: aid, label: agr ? agr.name : aid, costCategory: cat, months: {} };
+            }
+            subMap[aid].months[mk] = {
+                lineItemId: r.lineItemId,
+                amount: locked ? rnd2(r.actualTotal != null ? r.actualTotal : r.projectedUnits) : rnd2(r.projectedUnits),
+                locked: locked
+            };
+
+        } else if (dcMap[cat] !== undefined) {
+            dcMap[cat].months[mk] = {
+                lineItemId: r.lineItemId,
+                amount: locked ? rnd2(r.actualTotal != null ? r.actualTotal : r.projectedUnits) : rnd2(r.projectedUnits),
+                locked: locked
+            };
         }
+    });
+
+    return {
+        employees:   Object.values(empMap),
+        contractors: Object.values(conMap),
+        subs:        Object.values(subMap),
+        directCosts: DIRECT_COST_CATS.map(function(cat) { return dcMap[cat]; })
     };
-
-    if (gridApi) {
-        gridApi.destroy();
-    }
-
-    gridApi = agGrid.createGrid(container, gridOptions);
 }
 
-function buildColumnDefs() {
-    var cols = [
-        {
-            field: 'rowLabel',
-            headerName: 'Category / Person',
-            width: 220,
-            pinned: 'left',
-            cellRenderer: 'agGroupCellRenderer'
-        }
-    ];
+function findEmp(id) {
+    return state.employees.find(function(e) { return e.employeeId === id; }) || null;
+}
 
-    state.months.forEach(function(month) {
-        var isLocked = month.isLocked;
-        var monthKey = month.monthKey;
+function findAgreement(id) {
+    return state.agreements.find(function(a) { return a.agreementId === id; }) || null;
+}
 
-        cols.push({
-            headerName: month.label,
-            headerClass: isLocked ? 'ag-header-locked' : '',
-            children: [
-                {
-                    field: 'proj_' + monthKey,
-                    headerName: 'Proj',
-                    width: 90,
-                    editable: !isLocked,
-                    cellClass: isLocked ? 'ag-locked-cell' : '',
-                    valueFormatter: function(p) { return p.value != null ? Number(p.value).toFixed(0) : ''; },
-                    type: 'numericColumn'
-                },
-                {
-                    field: 'actual_' + monthKey,
-                    headerName: 'Actual',
-                    width: 90,
-                    editable: !isLocked,
-                    cellClass: isLocked ? 'ag-locked-cell' : '',
-                    valueFormatter: function(p) { return p.value != null ? fmtCurrency(p.value) : ''; },
-                    type: 'numericColumn'
-                }
-            ]
+function laborCell(r, locked) {
+    // Units: prefer actuals when locked, fall back to projected
+    var units = locked ? (r.actualUnits != null ? r.actualUnits : r.projectedUnits) : r.projectedUnits;
+    // Rate: prefer user-entered actual rate (persisted to Actual_Daily_Rate__c),
+    //       fall back to formula rate (Projected_Daily_Rate__c from employee record)
+    var rate  = r.actualRate != null ? r.actualRate : r.projectedRate;
+    // Use server-computed total when available (formula fields)
+    var serverTotal = locked ? r.actualTotal : r.projectedTotal;
+    var total = serverTotal != null ? serverTotal : rnd2((units || 0) * (rate || 0));
+    return { lineItemId: r.lineItemId, units: units, rate: rate, total: total, locked: locked };
+}
+
+// ─── Calculations ─────────────────────────────────────────────────────────────
+function calcTotals(piv) {
+    var h          = state.header || {};
+    var isCustom   = (h.indirectCostType === 'Custom');
+    var fringeRate = (h.fringeRate   || 0) / 100;
+    var ohRate     = (h.overheadRate || 0) / 100;
+    var gaRate     = (h.gaRate       || 0) / 100;
+    var custRate   = (h.customRate   || 0) / 100;
+    var feeRate    = (h.feePercentage || 0) / 100;
+
+    // Per-month accumulators
+    var mths = state.months;
+    var empSal = {}, conSal = {}, dcAmt = {}, subAmt = {};
+    mths.forEach(function(m) { empSal[m.monthKey] = conSal[m.monthKey] = dcAmt[m.monthKey] = subAmt[m.monthKey] = 0; });
+
+    piv.employees.forEach(function(p) {
+        mths.forEach(function(m) {
+            var c = p.months[m.monthKey];
+            if (c) empSal[m.monthKey] += rnd2(c.total);
+        });
+    });
+    piv.contractors.forEach(function(p) {
+        mths.forEach(function(m) {
+            var c = p.months[m.monthKey];
+            if (c) conSal[m.monthKey] += rnd2(c.total);
+        });
+    });
+    piv.directCosts.forEach(function(dc) {
+        mths.forEach(function(m) {
+            var c = dc.months[m.monthKey];
+            if (c) dcAmt[m.monthKey] += rnd2(c.amount);
         });
     });
 
-    return cols;
+    // Subcontract G&A cap ($25k per sub per contract lifetime, chronologically)
+    var subCapUsed = {};
+    piv.subs.forEach(function(sub) { subCapUsed[sub.rowId] = 0; });
+    var subGaElig = {};
+    mths.forEach(function(m) { subGaElig[m.monthKey] = 0; });
+
+    piv.subs.forEach(function(sub) {
+        mths.forEach(function(m) {
+            var mk  = m.monthKey;
+            var c   = sub.months[mk];
+            var amt = c ? rnd2(c.amount) : 0;
+            subAmt[mk] += amt;
+            var capRem = 25000 - (subCapUsed[sub.rowId] || 0);
+            var elig   = Math.min(Math.max(capRem, 0), amt);
+            subCapUsed[sub.rowId] += elig;
+            subGaElig[mk] += elig;
+        });
+    });
+
+    // Per-category totals (for Budget Summary table)
+    var dcByCategory = {};
+    var billedDcByCategory = {};
+    DIRECT_COST_CATS.forEach(function(cat) { dcByCategory[cat] = 0; billedDcByCategory[cat] = 0; });
+
+    // Per-month computed amounts
+    var byMonth = {};
+    var totGrand = 0, totBilled = 0;
+    var totSal = 0, totFringe = 0, totOh = 0, totGa = 0, totDc = 0, totSubs = 0, totFee = 0;
+    var billedSal = 0, billedFringe = 0, billedOh = 0, billedGa = 0, billedSubs = 0, billedFee = 0, billedGrand = 0;
+
+    mths.forEach(function(m) {
+        var mk  = m.monthKey;
+        var sal = rnd2(empSal[mk] + conSal[mk]);
+        var fringe   = isCustom ? 0 : rnd2(empSal[mk] * fringeRate);
+        var overhead = isCustom ? rnd2(sal * custRate) : rnd2((sal + fringe) * ohRate);
+        var gaBase   = sal + fringe + dcAmt[mk] + overhead + subGaElig[mk];
+        var ga       = isCustom ? 0 : rnd2(gaBase * gaRate);
+        var direct   = rnd2(dcAmt[mk] + subAmt[mk]);
+        var subtotal = rnd2(sal + fringe + direct + overhead + ga);
+        var grand    = rnd2(subtotal * (1 + feeRate));
+        var fee      = rnd2(grand - subtotal);
+
+        byMonth[mk] = { sal: sal, fringe: fringe, overhead: overhead, ga: ga,
+                        direct: direct, grandTotal: grand };
+
+        totSal    += sal;
+        totFringe += fringe;
+        totOh     += overhead;
+        totGa     += ga;
+        totDc     += direct;
+        totSubs   += rnd2(subAmt[mk]);
+        totFee    += fee;
+        totGrand  += grand;
+
+        // Per-category direct cost accumulators
+        DIRECT_COST_CATS.forEach(function(cat) {
+            var dcRow = piv.directCosts.find(function(d) { return d.label === cat; });
+            var v = dcRow && dcRow.months[mk] ? rnd2(dcRow.months[mk].amount) : 0;
+            dcByCategory[cat] += v;
+        });
+
+        if (m.isLocked) {
+            totBilled    += grand;
+            billedSal    += sal;
+            billedFringe += fringe;
+            billedOh     += overhead;
+            billedGa     += ga;
+            billedSubs   += rnd2(subAmt[mk]);
+            billedFee    += fee;
+            billedGrand  += grand;
+            DIRECT_COST_CATS.forEach(function(cat) {
+                var dcRow = piv.directCosts.find(function(d) { return d.label === cat; });
+                var v = dcRow && dcRow.months[mk] ? rnd2(dcRow.months[mk].amount) : 0;
+                billedDcByCategory[cat] += v;
+            });
+        }
+    });
+
+    var totDcOnly = 0; // direct costs excluding subs
+    DIRECT_COST_CATS.forEach(function(cat) { totDcOnly += dcByCategory[cat]; });
+    var billedDcOnly = 0;
+    DIRECT_COST_CATS.forEach(function(cat) { billedDcOnly += billedDcByCategory[cat]; });
+
+    return {
+        byMonth:      byMonth,
+        grand:        rnd2(totGrand),
+        billed:       rnd2(totBilled),
+        remaining:    rnd2(totGrand - totBilled),
+        salaries:     rnd2(totSal),
+        fringe:       rnd2(totFringe),
+        overhead:     rnd2(totOh),
+        ga:           rnd2(totGa),
+        direct:       rnd2(totDc),
+        subs:         rnd2(totSubs),
+        fee:          rnd2(totFee),
+        dcByCategory: dcByCategory,
+        billedSal:    rnd2(billedSal),
+        billedFringe: rnd2(billedFringe),
+        billedOh:     rnd2(billedOh),
+        billedGa:     rnd2(billedGa),
+        billedSubs:   rnd2(billedSubs),
+        billedFee:    rnd2(billedFee),
+        billedGrand:  rnd2(billedGrand),
+        billedDcByCategory: billedDcByCategory,
+        billedDcOnly: rnd2(billedDcOnly),
+        totDcOnly:    rnd2(totDcOnly),
+        contractTotal: (state.header && state.header.contractTotal) || 0
+    };
 }
 
-function buildRowData() {
-    // Build a flat row per (category+person, month) pivoted into wide format
-    // Group key = costCategory + '|' + (employeeId || agreementId || '')
-    var groups = {};  // groupKey → {rowLabel, groupKey, fields...}
+// ─── Summary strip ────────────────────────────────────────────────────────────
+function updateSummaryStrip() {
+    var t = calcTotals(pivot());
+    document.getElementById('sum-grand').textContent     = fmtCurrency(t.grand);
+    document.getElementById('sum-billed').textContent    = fmtCurrency(t.billed);
+    document.getElementById('sum-remaining').textContent = fmtCurrency(t.remaining);
+    document.getElementById('sum-contract').textContent  = fmtCurrency(t.contractTotal);
+    document.getElementById('sum-salaries').textContent  = fmtCurrency(t.salaries);
+    document.getElementById('sum-fringe').textContent    = fmtCurrency(t.fringe);
+    document.getElementById('sum-overhead').textContent  = fmtCurrency(t.overhead);
+    document.getElementById('sum-ga').textContent        = fmtCurrency(t.ga);
+    document.getElementById('sum-direct').textContent    = fmtCurrency(t.direct);
+    buildBudgetSummary(t);
+}
 
-    state.rows.forEach(function(r) {
-        var groupKey = r.costCategory + '|' + (r.employeeId || r.agreementId || '');
-        var rowLabel = r.costCategory;  // Will be enriched with employee name if available
+// ─── Budget Summary table ──────────────────────────────────────────────────────
+function buildBudgetSummary(t) {
+    var el = document.getElementById('budget-summary');
+    if (!el) return;
 
-        if (!groups[groupKey]) {
-            // Try to find employee name
-            var empName = null;
-            if (r.employeeId) {
-                var emp = state.employees.find(function(e) { return e.employeeId === r.employeeId; });
-                if (emp) empName = emp.name;
-            }
-            groups[groupKey] = {
-                rowLabel: empName || r.costCategory,
-                groupKey: groupKey,
-                costCategory: r.costCategory,
-                employeeId: r.employeeId,
-                agreementId: r.agreementId,
-                rowIds: {}  // monthKey → lineItemId
-            };
+    function bsRow(label, budgeted, billed, cls) {
+        var rem = rnd2(budgeted - billed);
+        return '<tr' + (cls ? ' class="' + cls + '"' : '') + '>'
+            + '<td>' + label + '</td>'
+            + '<td>' + fmtCurrency(budgeted) + '</td>'
+            + '<td>' + fmtCurrency(billed) + '</td>'
+            + '<td>' + fmtCurrency(rem) + '</td>'
+            + '</tr>';
+    }
+
+    var totalDirect = rnd2(t.salaries + t.fringe + t.totDcOnly + t.subs);
+    var billedDirect = rnd2(t.billedSal + t.billedFringe + t.billedDcOnly + t.billedSubs);
+    var totalIndirect = rnd2(t.ga + t.overhead);
+    var billedIndirect = rnd2(t.billedGa + t.billedOh);
+
+    var h = [];
+    h.push('<table id="bsummary-table">');
+    h.push('<thead><tr>'
+        + '<th>Budget Category</th>'
+        + '<th>Total Budgeted</th>'
+        + '<th>Billed to Date</th>'
+        + '<th>Amount Remaining</th>'
+        + '</tr></thead>');
+    h.push('<tbody>');
+
+    // Labor
+    h.push('<tr class="bs-section"><td colspan="4">Labor</td></tr>');
+    h.push(bsRow('Salaries &amp; Wages', t.salaries, t.billedSal));
+    h.push(bsRow('Fringe Benefits', t.fringe, t.billedFringe, 'bs-calc'));
+
+    // Direct costs
+    h.push('<tr class="bs-section"><td colspan="4">Other Direct Costs</td></tr>');
+    DIRECT_COST_CATS.forEach(function(cat) {
+        var bud = t.dcByCategory[cat] || 0;
+        var bil = t.billedDcByCategory[cat] || 0;
+        h.push(bsRow(cat, bud, bil));
+    });
+    h.push(bsRow('Subcontracts', t.subs, t.billedSubs));
+
+    // Total Direct Costs
+    h.push(bsRow('Total Direct Costs', totalDirect, billedDirect, 'bs-subtotal'));
+
+    // Indirect
+    h.push('<tr class="bs-section"><td colspan="4">Indirect Costs</td></tr>');
+    h.push(bsRow('G&amp;A', t.ga, t.billedGa, 'bs-calc'));
+    h.push(bsRow('Overhead', t.overhead, t.billedOh, 'bs-calc'));
+    h.push(bsRow('Total Indirect Costs', totalIndirect, billedIndirect, 'bs-subtotal'));
+
+    // Fee
+    h.push(bsRow('Fee', t.fee, t.billedFee, 'bs-calc'));
+
+    // Grand Total
+    h.push(bsRow('Grand Total', t.grand, t.billedGrand, 'bs-grand'));
+
+    h.push('</tbody></table>');
+    el.innerHTML = h.join('');
+}
+
+// ─── Row aggregates ───────────────────────────────────────────────────────────
+function rowAgg(getAmt) {
+    var budget = 0, billed = 0;
+    state.months.forEach(function(m) {
+        var v = rnd2(getAmt(m.monthKey));
+        budget += v;
+        if (m.isLocked) billed += v;
+    });
+    return { budget: rnd2(budget), billed: rnd2(billed), remaining: rnd2(budget - billed) };
+}
+
+// ─── Build table ──────────────────────────────────────────────────────────────
+function buildTable() {
+    // No budget yet — show setup prompt instead of table
+    if (!state.budgetId) {
+        document.getElementById('grid-container').innerHTML =
+            '<p style="padding:24px;color:#706e6b;font-size:14px">'
+            + 'No budget configured yet. '
+            + 'Set the <strong>Start</strong> and <strong>End</strong> dates in the bar above, '
+            + 'enter the indirect rates, then click <strong>Save</strong> to initialize the budget.'
+            + '</p>';
+        return;
+    }
+    var piv    = pivot();
+    var totals = calcTotals(piv);
+    buildBudgetSummary(totals);
+    var mths   = state.months;
+    var N      = mths.length;
+    var h      = [];
+
+    h.push('<table id="budget-table">');
+
+    // THEAD — row 1: sticky col headers (rowspan=2) + month group headers
+    h.push('<thead><tr>');
+    h.push('<th class="sc sc0" rowspan="2">Line Items</th>');
+    h.push('<th class="sc sc1" rowspan="2">Total Budgeted</th>');
+    h.push('<th class="sc sc2" rowspan="2">Billed to Date</th>');
+    h.push('<th class="sc sc3" rowspan="2">Remaining</th>');
+
+    mths.forEach(function(m) {
+        var cls = 'mhdr' + (m.isLocked ? ' locked-hdr' : '');
+        var sel = '<select class="lock-sel' + (m.isLocked ? ' is-locked' : '') + '"'
+                + ' data-mk="' + escHtml(m.monthKey) + '">'
+                + '<option value="0"' + (!m.isLocked ? ' selected' : '') + '>Planned</option>'
+                + '<option value="1"' + (m.isLocked  ? ' selected' : '') + '>Locked</option>'
+                + '</select>';
+        h.push('<th colspan="3" class="' + cls + '">' + escHtml(m.label) + sel + '</th>');
+    });
+    h.push('</tr>');
+
+    // THEAD — row 2: sub-column labels
+    h.push('<tr>');
+    mths.forEach(function(m) {
+        var lk = m.isLocked ? ' locked-hdr' : '';
+        h.push('<th class="shdr' + lk + '">Units</th>');
+        h.push('<th class="shdr' + lk + '">Rate</th>');
+        h.push('<th class="shdr' + lk + '">Total</th>');
+    });
+    h.push('</tr></thead>');
+
+    // TBODY
+    h.push('<tbody>');
+
+    // Employees
+    h.push(secRow('Employees', N));
+    piv.employees.forEach(function(p) { h.push(laborRow(p, mths)); });
+
+    // Internal Contractors
+    h.push(secRow('Internal Contractors', N));
+    piv.contractors.forEach(function(p) { h.push(laborRow(p, mths)); });
+
+    // Direct Costs
+    h.push(secRow('Direct Costs', N));
+    piv.directCosts.forEach(function(dc) { h.push(directRow(dc, mths)); });
+
+    // Subcontracts
+    h.push(secRow('Subcontracts', N));
+    piv.subs.forEach(function(sub) { h.push(subRow(sub, mths)); });
+
+    // Calc rows
+    h.push(calcRow('Fringe Benefit Cost', mths, totals, 'fringe'));
+    h.push(calcRow('Overhead', mths, totals, 'overhead'));
+    h.push(calcRow('G\u0026A', mths, totals, 'ga'));
+
+    // Grand Total
+    h.push('<tr class="row-grand">');
+    h.push('<td class="sc sc0">Grand Total</td>');
+    h.push('<td class="sc sc1 num">' + fmtCurrency(totals.grand) + '</td>');
+    h.push('<td class="sc sc2 num">' + fmtCurrency(totals.billed) + '</td>');
+    h.push('<td class="sc sc3 num">' + fmtCurrency(totals.remaining) + '</td>');
+    mths.forEach(function(m) {
+        var v = totals.byMonth[m.monthKey];
+        h.push('<td colspan="3" class="mstart num">' + fmtCurrency(v ? v.grandTotal : 0) + '</td>');
+    });
+    h.push('</tr>');
+
+    h.push('</tbody></table>');
+
+    document.getElementById('grid-container').innerHTML = h.join('');
+
+    // Attach change listeners (must use addEventListener — inline onchange blocked by SF CSP)
+    document.querySelectorAll('#budget-table input[type=number]').forEach(function(inp) {
+        inp.addEventListener('change', onCellEdit);
+    });
+    document.querySelectorAll('#budget-table .lock-sel').forEach(function(sel) {
+        sel.addEventListener('change', function() { onLockChange(this); });
+    });
+}
+
+// Section header row (spans full width)
+function secRow(label, N) {
+    return '<tr class="row-sec"><td colspan="' + (4 + N * 3) + '">' + escHtml(label) + '</td></tr>';
+}
+
+// Labor row (Employee or Internal Contractor)
+function laborRow(person, mths) {
+    var agg = rowAgg(function(mk) {
+        var c = person.months[mk]; return c ? c.total : 0;
+    });
+    var h = '<tr class="row-labor" data-rowid="' + escHtml(person.rowId)
+          + '" data-cat="' + escHtml(person.costCategory) + '">';
+    h += '<td class="sc sc0">' + escHtml(person.label) + '</td>';
+    h += '<td class="sc sc1 num">' + fmtCurrency(agg.budget) + '</td>';
+    h += '<td class="sc sc2 num">' + fmtCurrency(agg.billed) + '</td>';
+    h += '<td class="sc sc3 num">' + fmtCurrency(agg.remaining) + '</td>';
+
+    mths.forEach(function(m) {
+        var mk   = m.monthKey;
+        var cell = person.months[mk] || {};
+        if (m.isLocked) {
+            h += '<td class="mstart num locked-cell">'
+               + (cell.units != null ? Number(cell.units).toFixed(1) : '') + '</td>';
+            h += '<td class="num locked-cell">' + fmtCurrency(cell.rate) + '</td>';
+            h += '<td class="num locked-cell">' + fmtCurrency(cell.total) + '</td>';
+        } else {
+            var dMk  = escHtml(mk);
+            var dRid = escHtml(person.rowId);
+            var dCat = escHtml(person.costCategory);
+            h += '<td class="mstart"><input type="number" step="0.1" min="0"'
+               + ' data-mk="' + dMk + '" data-rowid="' + dRid + '" data-cat="' + dCat + '" data-field="units"'
+               + ' value="' + (cell.units != null ? cell.units : '') + '" /></td>';
+            h += '<td><input type="number" step="0.01" min="0"'
+               + ' data-mk="' + dMk + '" data-rowid="' + dRid + '" data-cat="' + dCat + '" data-field="rate"'
+               + ' value="' + (cell.rate != null ? cell.rate : '') + '" /></td>';
+            var computed = rnd2((cell.units || 0) * (cell.rate || 0));
+            h += '<td class="num">' + (computed ? fmtCurrency(computed) : '') + '</td>';
+        }
+    });
+    h += '</tr>';
+    return h;
+}
+
+// Direct cost row (single Amount per month, colspan=3)
+function directRow(dc, mths) {
+    var agg = rowAgg(function(mk) {
+        var c = dc.months[mk]; return c ? c.amount : 0;
+    });
+    var h = '<tr class="row-direct" data-cat="' + escHtml(dc.label) + '">';
+    h += '<td class="sc sc0" style="padding-left:18px">' + escHtml(dc.label) + '</td>';
+    h += '<td class="sc sc1 num">' + fmtCurrency(agg.budget) + '</td>';
+    h += '<td class="sc sc2 num">' + fmtCurrency(agg.billed) + '</td>';
+    h += '<td class="sc sc3 num">' + fmtCurrency(agg.remaining) + '</td>';
+
+    mths.forEach(function(m) {
+        var mk   = m.monthKey;
+        var cell = dc.months[mk] || {};
+        if (m.isLocked) {
+            h += '<td colspan="3" class="mstart num locked-cell">'
+               + (cell.amount ? fmtCurrency(cell.amount) : '') + '</td>';
+        } else {
+            h += '<td colspan="3" class="mstart"><input type="number" step="0.01" min="0"'
+               + ' data-mk="' + escHtml(mk) + '" data-cat="' + escHtml(dc.label) + '" data-field="amount"'
+               + ' value="' + (cell.amount != null ? cell.amount : '') + '" /></td>';
+        }
+    });
+    h += '</tr>';
+    return h;
+}
+
+// Subcontract row (single Amount per month, colspan=3)
+function subRow(sub, mths) {
+    var agg = rowAgg(function(mk) {
+        var c = sub.months[mk]; return c ? c.amount : 0;
+    });
+    var h = '<tr class="row-sub" data-rowid="' + escHtml(sub.rowId) + '">';
+    h += '<td class="sc sc0" style="padding-left:18px">' + escHtml(sub.label) + '</td>';
+    h += '<td class="sc sc1 num">' + fmtCurrency(agg.budget) + '</td>';
+    h += '<td class="sc sc2 num">' + fmtCurrency(agg.billed) + '</td>';
+    h += '<td class="sc sc3 num">' + fmtCurrency(agg.remaining) + '</td>';
+
+    mths.forEach(function(m) {
+        var mk   = m.monthKey;
+        var cell = sub.months[mk] || {};
+        if (m.isLocked) {
+            h += '<td colspan="3" class="mstart num locked-cell">'
+               + (cell.amount ? fmtCurrency(cell.amount) : '') + '</td>';
+        } else {
+            h += '<td colspan="3" class="mstart"><input type="number" step="0.01" min="0"'
+               + ' data-mk="' + escHtml(mk) + '" data-rowid="' + escHtml(sub.rowId)
+               + '" data-field="sub-amount"'
+               + ' value="' + (cell.amount != null ? cell.amount : '') + '" /></td>';
+        }
+    });
+    h += '</tr>';
+    return h;
+}
+
+// Calculated row (read-only)
+function calcRow(label, mths, totals, key) {
+    var total = 0;
+    mths.forEach(function(m) { total += rnd2((totals.byMonth[m.monthKey] || {})[key] || 0); });
+    var h = '<tr class="row-calc">';
+    h += '<td class="sc sc0">' + label + '</td>';
+    h += '<td class="sc sc1 num">' + fmtCurrency(rnd2(total)) + '</td>';
+    h += '<td class="sc sc2 num"></td><td class="sc sc3 num"></td>';
+    mths.forEach(function(m) {
+        var v = ((totals.byMonth[m.monthKey] || {})[key]) || 0;
+        h += '<td colspan="3" class="mstart num">' + (v ? fmtCurrency(v) : '') + '</td>';
+    });
+    h += '</tr>';
+    return h;
+}
+
+// ─── Cell edit ────────────────────────────────────────────────────────────────
+function onCellEdit(e) {
+    var inp   = e.target;
+    var mk    = inp.dataset.mk;
+    var cat   = inp.dataset.cat   || '';
+    var rowId = inp.dataset.rowid || '';
+    var field = inp.dataset.field;
+    var val   = parseFloat(inp.value);
+    if (isNaN(val)) val = null;
+
+    var row;
+    if (field === 'units' || field === 'rate') {
+        // Labor: keyed by monthKey + costCategory + employeeId
+        row = state.rows.find(function(r) {
+            return r.monthKey === mk && r.costCategory === cat && r.employeeId === rowId;
+        });
+        if (!row) {
+            row = newRow(mk, cat, rowId, null);
+            state.rows.push(row);
+        }
+        if (field === 'units') row.projectedUnits = val;
+        else                   row.actualRate     = val;  // saves to Actual_Daily_Rate__c
+
+        // Update the total cell in this row's DOM directly (avoids full table rebuild)
+        var tdEl = inp.parentElement;
+        var totalTd = (field === 'units')
+            ? (tdEl.nextElementSibling && tdEl.nextElementSibling.nextElementSibling)
+            : tdEl.nextElementSibling;
+        if (totalTd) {
+            var u = row.projectedUnits || 0;
+            var r = row.actualRate != null ? row.actualRate : (row.projectedRate || 0);
+            var computed = rnd2(u * r);
+            totalTd.textContent = computed ? fmtCurrency(computed) : '';
         }
 
-        var row = groups[groupKey];
-        row['proj_'   + r.monthKey] = r.projectedUnits;
-        row['actual_' + r.monthKey] = r.actualTotal;
-        row.rowIds[r.monthKey]      = r.lineItemId;
-    });
+    } else if (field === 'amount') {
+        // Direct cost: keyed by monthKey + costCategory (no employeeId/agreementId)
+        row = state.rows.find(function(r) {
+            return r.monthKey === mk && r.costCategory === cat && !r.employeeId && !r.agreementId;
+        });
+        if (!row) {
+            row = newRow(mk, cat, null, null);
+            state.rows.push(row);
+        }
+        row.projectedUnits = val;  // amount stored as projectedUnits
 
-    return Object.values(groups);
-}
-
-function syncRowToState(params) {
-    // When a cell changes, update state.rows
-    var data = params.data;
-    var field = params.column.getColId();
-    var isProj = field.startsWith('proj_');
-    var isActual = field.startsWith('actual_');
-    if (!isProj && !isActual) return;
-
-    var monthKey = field.replace('proj_', '').replace('actual_', '');
-
-    // Find or create the matching row in state.rows
-    var stateRow = state.rows.find(function(r) {
-        return r.monthKey === monthKey
-            && r.costCategory === data.costCategory
-            && (r.employeeId || '') === (data.employeeId || '')
-            && (r.agreementId || '') === (data.agreementId || '');
-    });
-
-    if (!stateRow) {
-        // New row — create it
-        stateRow = {
-            lineItemId: null,
-            monthKey: monthKey,
-            costCategory: data.costCategory,
-            employeeId: data.employeeId,
-            agreementId: data.agreementId,
-            lockedStatus: 'No, still projected',
-            projectedUnits: null, projectedRate: null, projectedTotal: null,
-            actualUnits: null, actualRate: null, actualTotal: null
-        };
-        state.rows.push(stateRow);
+    } else if (field === 'sub-amount') {
+        // Subcontract: keyed by monthKey + agreementId
+        row = state.rows.find(function(r) {
+            return r.monthKey === mk && r.costCategory === 'Subcontracts' && r.agreementId === rowId;
+        });
+        if (!row) {
+            row = newRow(mk, 'Subcontracts', null, rowId);
+            state.rows.push(row);
+        }
+        row.projectedUnits = val;
     }
 
-    if (isProj) {
-        stateRow.projectedUnits = parseFloat(params.newValue) || null;
-    } else {
-        stateRow.actualTotal = parseFloat(params.newValue) || null;
-    }
+    markDirty();
+    // Don't call buildTable() here — it destroys the current input and loses focus/value.
+    // The Budget Summary updates via updateSummaryStrip(); the spending plan row totals
+    // and calc rows refresh on the next lock change, rate change, or save+reload.
+    updateSummaryStrip();
 }
 
-function expandAll()   { if (gridApi) gridApi.expandAll(); }
-function collapseAll() { if (gridApi) gridApi.collapseAll(); }
+function newRow(mk, cat, empId, agrId) {
+    return { lineItemId: null, monthKey: mk, costCategory: cat,
+             employeeId: empId || null, agreementId: agrId || null,
+             lockedStatus: 'No, still projected',
+             projectedUnits: null, projectedRate: null, projectedTotal: null,
+             actualUnits: null, actualRate: null, actualTotal: null };
+}
+
+// ─── Lock change ──────────────────────────────────────────────────────────────
+function onLockChange(sel) {
+    var mk     = sel.dataset.mk;
+    var locked = (sel.value === '1');
+    var m = state.months.find(function(m) { return m.monthKey === mk; });
+    if (m) m.isLocked = locked;
+    markDirty();
+    buildTable();
+    updateSummaryStrip();
+}
 
 // ─── Save ─────────────────────────────────────────────────────────────────────
 
+// Read all current DOM input values into state.rows before saving.
+// Covers the case where the user clicks Save without blurring the last edited input
+// (change event never fired, so onCellEdit was never called for that value).
+function flushInputsToState() {
+    document.querySelectorAll('#budget-table input[type=number]').forEach(function(inp) {
+        var mk    = inp.dataset.mk;
+        var cat   = inp.dataset.cat   || '';
+        var rowId = inp.dataset.rowid || '';
+        var field = inp.dataset.field;
+        var val   = parseFloat(inp.value);
+        if (!mk || !field) return;
+        if (isNaN(val)) val = null;
+
+        var row;
+        if (field === 'units' || field === 'rate') {
+            row = state.rows.find(function(r) {
+                return r.monthKey === mk && r.costCategory === cat && r.employeeId === rowId;
+            });
+            if (!row) { row = newRow(mk, cat, rowId, null); state.rows.push(row); }
+            if (field === 'units') row.projectedUnits = val;
+            else                   row.actualRate     = val;
+        } else if (field === 'amount') {
+            row = state.rows.find(function(r) {
+                return r.monthKey === mk && r.costCategory === cat && !r.employeeId && !r.agreementId;
+            });
+            if (!row) { row = newRow(mk, cat, null, null); state.rows.push(row); }
+            row.projectedUnits = val;
+        } else if (field === 'sub-amount') {
+            row = state.rows.find(function(r) {
+                return r.monthKey === mk && r.costCategory === 'Subcontracts' && r.agreementId === rowId;
+            });
+            if (!row) { row = newRow(mk, 'Subcontracts', null, rowId); state.rows.push(row); }
+            row.projectedUnits = val;
+        }
+    });
+}
+
 function saveAll() {
+    flushInputsToState();
     setStatus('Saving...');
+    // Stamp lock status onto every row before sending
+    state.rows.forEach(function(r) {
+        var m = state.months.find(function(m) { return m.monthKey === r.monthKey; });
+        r.lockedStatus = (m && m.isLocked) ? 'Yes, actuals final' : 'No, still projected';
+    });
+
     var payload = {
         budgetId:   state.budgetId,
         contractId: CONTRACT_ID,
@@ -522,52 +1135,48 @@ function saveAll() {
         var data = parseJson(result);
         if (!data || !data.success) {
             showToast('Save failed: ' + (data ? data.message : 'Unknown error'), 'error');
-            setStatus('');
-            return;
+            setStatus(''); return;
         }
-        if (data.budgetId) {
-            state.budgetId = data.budgetId;
-            BUDGET_ID = data.budgetId;
-        }
+        if (data.budgetId) { state.budgetId = data.budgetId; BUDGET_ID = data.budgetId; }
         state.dirty = false;
         setStatus('');
         showToast('Saved successfully', 'success');
-        // Reload to get fresh formula field values
         loadBudget();
     });
 }
 
-function markDirty() {
-    state.dirty = true;
-    setStatus('Unsaved changes');
-}
+function markDirty() { state.dirty = true; setStatus('Unsaved changes'); }
+function setStatus(msg) { document.getElementById('save-status').textContent = msg; }
 
-function setStatus(msg) {
-    document.getElementById('save-status').textContent = msg;
-}
+// ─── Add Employee / Contractor modal ──────────────────────────────────────────
+var _modalCat = 'Employee';
 
-// ─── Add Employee modal ───────────────────────────────────────────────────────
-
-function openAddEmployeeModal() {
+function openAddModal(costCategory) {
     if (!state.budgetId) {
-        showToast('Save the budget first before adding employees.', 'error');
-        return;
+        showToast('Save the budget first before adding people.', 'error'); return;
     }
+    _modalCat = costCategory;
+    document.getElementById('modal-title').textContent =
+        costCategory === 'Internal Contractor' ? 'Add Contractor' : 'Add Employee';
     document.getElementById('employee-search').value = '';
-    renderEmployeeList(state.employees);
+    renderEmployeeList(filteredEmployees(''));
     document.getElementById('emp-modal').classList.add('open');
 }
 
-function closeModal() {
-    document.getElementById('emp-modal').classList.remove('open');
+function closeModal() { document.getElementById('emp-modal').classList.remove('open'); }
+
+function filteredEmployees(q) {
+    return state.employees.filter(function(e) {
+        var typeOk = (_modalCat === 'Internal Contractor')
+            ? e.employeeType === 'Internal Contractor'
+            : (e.employeeType === 'Employee' || e.employeeType === 'PEO');
+        return typeOk && (!q || e.name.toLowerCase().indexOf(q) >= 0);
+    });
 }
 
 function filterEmployeeList() {
     var q = document.getElementById('employee-search').value.toLowerCase();
-    var filtered = state.employees.filter(function(e) {
-        return e.name.toLowerCase().includes(q);
-    });
-    renderEmployeeList(filtered);
+    renderEmployeeList(filteredEmployees(q));
 }
 
 function renderEmployeeList(employees) {
@@ -577,12 +1186,12 @@ function renderEmployeeList(employees) {
         var div = document.createElement('div');
         div.className = 'emp-row';
         div.innerHTML =
-            '<input type="checkbox" class="emp-check" value="' + emp.employeeId + '" />' +
+            '<input type="checkbox" class="emp-check" value="' + escHtml(emp.employeeId) + '" />' +
             '<span class="emp-name">' + escHtml(emp.name) + '</span>' +
             '<span class="emp-meta">' + escHtml(emp.employeeType || '') +
-            (emp.dailyRate ? ' · $' + Number(emp.dailyRate).toFixed(0) + '/day' : '') + '</span>';
-        div.addEventListener('click', function(e) {
-            if (e.target.type !== 'checkbox') {
+            (emp.dailyRate ? ' \u00b7 $' + Number(emp.dailyRate).toFixed(0) + '/day' : '') + '</span>';
+        div.addEventListener('click', function(ev) {
+            if (ev.target.type !== 'checkbox') {
                 var cb = div.querySelector('.emp-check');
                 cb.checked = !cb.checked;
             }
@@ -595,47 +1204,87 @@ function confirmAddEmployees() {
     var checks = document.querySelectorAll('#employee-list .emp-check:checked');
     var ids = Array.from(checks).map(function(cb) { return cb.value; });
     if (ids.length === 0) { closeModal(); return; }
-
     closeModal();
-    setStatus('Adding employees...');
-
-    BudgetController.addEmployees(state.budgetId, JSON.stringify(ids), function(result, event) {
+    setStatus('Adding...');
+    BudgetController.addEmployees(state.budgetId, JSON.stringify(ids), _modalCat, function(result, event) {
         if (!event.status) { showToast('Add failed: ' + event.message, 'error'); setStatus(''); return; }
         var data = parseJson(result);
         if (!data || !data.success) {
             showToast('Add failed: ' + (data ? data.message : 'Unknown error'), 'error');
-            setStatus('');
-            return;
+            setStatus(''); return;
         }
-        showToast(ids.length + ' employee(s) added', 'success');
-        loadBudget(); // reload grid with new rows
+        showToast(ids.length + ' added', 'success');
+        loadBudget();
+    });
+}
+
+// ─── Add Subcontract modal ────────────────────────────────────────────────────
+function openSubModal() {
+    if (!state.budgetId) {
+        showToast('Save the budget first before adding subcontracts.', 'error'); return;
+    }
+    document.getElementById('sub-search').value = '';
+    renderSubList(state.agreements);
+    document.getElementById('sub-modal').classList.add('open');
+}
+
+function closeSubModal() { document.getElementById('sub-modal').classList.remove('open'); }
+
+function filterSubList() {
+    var q = document.getElementById('sub-search').value.toLowerCase();
+    renderSubList(state.agreements.filter(function(a) {
+        return !q || a.name.toLowerCase().indexOf(q) >= 0;
+    }));
+}
+
+function renderSubList(agreements) {
+    var list = document.getElementById('sub-list');
+    list.innerHTML = '';
+    if (!agreements.length) {
+        list.innerHTML = '<p style="padding:12px;color:#888;font-size:12px">No agreements found for this contract.</p>';
+        return;
+    }
+    agreements.forEach(function(agr) {
+        var div = document.createElement('div');
+        div.className = 'emp-row';
+        div.innerHTML =
+            '<input type="checkbox" class="sub-check" value="' + escHtml(agr.agreementId) + '" />' +
+            '<span class="emp-name">' + escHtml(agr.name) + '</span>' +
+            (agr.contractBudget ? '<span class="emp-meta">$' + Number(agr.contractBudget).toLocaleString('en-US', {minimumFractionDigits:0,maximumFractionDigits:0}) + ' budget</span>' : '');
+        div.addEventListener('click', function(ev) {
+            if (ev.target.type !== 'checkbox') {
+                var cb = div.querySelector('.sub-check');
+                cb.checked = !cb.checked;
+            }
+        });
+        list.appendChild(div);
+    });
+}
+
+function confirmAddSubcontracts() {
+    var checks = document.querySelectorAll('#sub-list .sub-check:checked');
+    var ids = Array.from(checks).map(function(cb) { return cb.value; });
+    if (ids.length === 0) { closeSubModal(); return; }
+    closeSubModal();
+    setStatus('Adding...');
+    BudgetController.addSubcontracts(state.budgetId, JSON.stringify(ids), function(result, event) {
+        if (!event.status) { showToast('Add failed: ' + event.message, 'error'); setStatus(''); return; }
+        var data = parseJson(result);
+        if (!data || !data.success) {
+            showToast('Add failed: ' + (data ? data.message : 'Unknown error'), 'error');
+            setStatus(''); return;
+        }
+        showToast(ids.length + ' subcontract(s) added', 'success');
+        loadBudget();
     });
 }
 
 // ─── Toast ────────────────────────────────────────────────────────────────────
-
 function showToast(msg, type) {
     var t = document.getElementById('toast');
-    t.textContent = msg;
-    t.className = type; // 'success' or 'error'
+    t.textContent = msg; t.className = type;
     clearTimeout(t._timer);
     t._timer = setTimeout(function() { t.className = ''; }, 4000);
-}
-
-// ─── Helpers ──────────────────────────────────────────────────────────────────
-
-// Salesforce @RemoteAction may return an already-parsed object OR a JSON string
-// depending on the API version / page context. Handle both.
-function parseJson(result) {
-    if (result == null) return null;
-    if (typeof result === 'object') return result;
-    try { return JSON.parse(result); } catch(e) { return null; }
-}
-
-function escHtml(str) {
-    return String(str)
-        .replace(/&/g, '&amp;').replace(/</g, '&lt;')
-        .replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 }
 </script>
 </body>

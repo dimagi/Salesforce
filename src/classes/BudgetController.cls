@@ -22,13 +22,17 @@ public class BudgetController {
                 return errorJson('contractId is required');
             }
 
-            DContract__c contract = [
+            List<DContract__c> contracts = [
                 SELECT Id, Name, Contract_Start_Date__c, Contract_End_Date__c,
                        Total_Amount_of_Contract__c
                 FROM DContract__c
                 WHERE Id = :contractId
                 LIMIT 1
             ];
+            if (contracts.isEmpty()) {
+                return errorJson('Contract not found: ' + contractId);
+            }
+            DContract__c contract = contracts[0];
 
             // Find existing budget (by explicit Id or most recent for contract)
             Budget__c budget = findBudget(contractId, budgetId);
@@ -67,9 +71,10 @@ public class BudgetController {
                 lineItems = [
                     SELECT Id, Employee__c, Agreement__c, Cost_Category__c,
                            Month_Key__c, Actuals_Locked__c,
-                           Projected_Units__c, Projected_Total_Salary__c,
+                           Projected_Units__c, Projected_Daily_Rate__c, Projected_Total_Salary__c,
                            Actual_Units__c, Actual_Daily_Rate__c, Actual_Total_Salary__c,
-                           Amount_to_Include_in_G_A__c
+                           Amount_to_Include_in_G_A__c,
+                           Fringe_Amount__c, Overhead_Amount__c, G_A_Amount__c
                     FROM Budget_Line_Item__c
                     WHERE Budget__c = :budget.Id
                       AND Month_Key__c != null
@@ -77,10 +82,11 @@ public class BudgetController {
                 ];
             }
 
-            response.months   = buildMonthColumns(periodStart, periodEnd, lineItems);
-            response.rows     = buildRows(lineItems);
-            response.summary  = buildSummary(response.rows, contract.Total_Amount_of_Contract__c);
+            response.months    = buildMonthColumns(periodStart, periodEnd, lineItems);
+            response.rows      = buildRows(lineItems);
+            response.summary   = buildSummary(response.rows, contract.Total_Amount_of_Contract__c);
             response.employees = loadEmployees();
+            response.agreements = loadAgreements(contractId);
 
             return JSON.serialize(response);
 
@@ -134,7 +140,24 @@ public class BudgetController {
                 Map<String, Decimal> gaUsed = new Map<String, Decimal>();
                 List<Budget_Line_Item__c> toUpsert = new List<Budget_Line_Item__c>();
 
+                // Rows already locked in DB cannot be updated (trigger blocks it).
+                // Query their IDs so we can skip them in the upsert.
+                Set<Id> alreadyLockedIds = new Set<Id>();
+                for (Budget_Line_Item__c li : [
+                    SELECT Id FROM Budget_Line_Item__c
+                    WHERE Budget__c = :budget.Id
+                      AND Actuals_Locked__c = :BudgetCalculationService.LOCKED
+                      AND Month_Key__c != null
+                ]) {
+                    alreadyLockedIds.add(li.Id);
+                }
+
                 for (BudgetDTO.BudgetRow row : sortedRows) {
+                    // Skip records already locked in the DB — trigger would block the update
+                    if (String.isNotBlank(row.lineItemId)
+                            && alreadyLockedIds.contains(Id.valueOf(row.lineItemId))) {
+                        continue;
+                    }
                     BudgetCalculationService.LineItemCalc calc =
                         BudgetCalculationService.calcRow(row, rates, gaUsed, false);
 
@@ -149,9 +172,8 @@ public class BudgetController {
                     if (String.isNotBlank(row.employeeId))  li.Employee__c  = row.employeeId;
                     if (String.isNotBlank(row.agreementId)) li.Agreement__c = row.agreementId;
 
-                    // Writable fields only — formula fields (Projected_Daily_Rate__c,
-                    // Projected_Total_Salary__c, Actual_Total_Salary__c) auto-compute
                     li.Projected_Units__c          = row.projectedUnits;
+                    // Projected_Daily_Rate__c is a formula field — not writable
                     li.Actual_Units__c             = row.actualUnits;
                     li.Actual_Daily_Rate__c        = row.actualRate;
                     li.Amount_to_Include_in_G_A__c = calc.gaBaseIncluded;
@@ -175,7 +197,7 @@ public class BudgetController {
     // ─── addEmployees ─────────────────────────────────────────────────────────
 
     @RemoteAction
-    public static String addEmployees(String budgetId, String employeeIdsJson) {
+    public static String addEmployees(String budgetId, String employeeIdsJson, String costCategory) {
         try {
             List<String> employeeIds = (List<String>)
                 JSON.deserialize(employeeIdsJson, List<String>.class);
@@ -184,15 +206,30 @@ public class BudgetController {
                 return errorJson('budgetId and at least one employeeId are required');
             }
 
+            if (String.isBlank(costCategory)) costCategory = 'Employee';
+
             Budget__c budget = [
-                SELECT Id, Budget_Period_Start_Date__c, Budget_Period_End_date__c
+                SELECT Id, Contract__c, Budget_Period_Start_Date__c, Budget_Period_End_date__c
                 FROM Budget__c WHERE Id = :budgetId LIMIT 1
             ];
 
-            List<String> monthKeys = generateMonthKeys(
-                budget.Budget_Period_Start_Date__c,
-                budget.Budget_Period_End_date__c
-            );
+            Date periodStart = budget.Budget_Period_Start_Date__c;
+            Date periodEnd   = budget.Budget_Period_End_date__c;
+
+            // Fall back to contract dates if budget period not set
+            if ((periodStart == null || periodEnd == null) && String.isNotBlank(budget.Contract__c)) {
+                DContract__c contract = [
+                    SELECT Contract_Start_Date__c, Contract_End_Date__c
+                    FROM DContract__c WHERE Id = :budget.Contract__c LIMIT 1
+                ];
+                if (periodStart == null) periodStart = contract.Contract_Start_Date__c;
+                if (periodEnd   == null) periodEnd   = contract.Contract_End_Date__c;
+            }
+
+            List<String> monthKeys = generateMonthKeys(periodStart, periodEnd);
+            if (monthKeys.isEmpty()) {
+                return errorJson('Budget has no period dates set and no contract dates to fall back to.');
+            }
             Set<String> lockedMonths = getLockedMonths(budgetId);
 
             List<Budget_Line_Item__c> newItems = new List<Budget_Line_Item__c>();
@@ -201,7 +238,7 @@ public class BudgetController {
                     Budget_Line_Item__c li = new Budget_Line_Item__c();
                     li.Budget__c         = budgetId;
                     li.Employee__c       = empId;
-                    li.Cost_Category__c  = 'Employee';
+                    li.Cost_Category__c  = costCategory;
                     li.Month_Key__c      = monthKey;
                     li.Actuals_Locked__c = lockedMonths.contains(monthKey)
                         ? BudgetCalculationService.LOCKED
@@ -299,11 +336,15 @@ public class BudgetController {
             row.costCategory   = li.Cost_Category__c;
             row.monthKey       = li.Month_Key__c;
             row.lockedStatus   = li.Actuals_Locked__c;
-            row.projectedUnits = li.Projected_Units__c;
-            row.projectedTotal = li.Projected_Total_Salary__c;  // formula — read-only
-            row.actualUnits    = li.Actual_Units__c;
-            row.actualRate     = li.Actual_Daily_Rate__c;
-            row.actualTotal    = li.Actual_Total_Salary__c;      // formula — read-only
+            row.projectedUnits  = li.Projected_Units__c;
+            row.projectedRate   = li.Projected_Daily_Rate__c;    // formula — read-only
+            row.projectedTotal  = li.Projected_Total_Salary__c;  // formula — read-only
+            row.actualUnits     = li.Actual_Units__c;
+            row.actualRate      = li.Actual_Daily_Rate__c;
+            row.actualTotal     = li.Actual_Total_Salary__c;     // formula — read-only
+            row.fringeAmount    = li.Fringe_Amount__c;
+            row.overheadAmount  = li.Overhead_Amount__c;
+            row.gaAmount        = li.G_A_Amount__c;
             rows.add(row);
         }
         return rows;
@@ -335,6 +376,98 @@ public class BudgetController {
             opt.name         = emp.Name;
             opt.employeeType = emp.Employee_Type__c;
             opt.dailyRate    = emp.Loaded_Daily_Rate__c;
+            options.add(opt);
+        }
+        return options;
+    }
+
+    // ─── addSubcontracts ──────────────────────────────────────────────────────
+
+    @RemoteAction
+    public static String addSubcontracts(String budgetId, String agreementIdsJson) {
+        try {
+            List<String> agreementIds = (List<String>)
+                JSON.deserialize(agreementIdsJson, List<String>.class);
+
+            if (String.isBlank(budgetId) || agreementIds == null || agreementIds.isEmpty()) {
+                return errorJson('budgetId and at least one agreementId are required');
+            }
+
+            Budget__c budget = [
+                SELECT Id, Contract__c, Budget_Period_Start_Date__c, Budget_Period_End_date__c
+                FROM Budget__c WHERE Id = :budgetId LIMIT 1
+            ];
+
+            Date periodStart = budget.Budget_Period_Start_Date__c;
+            Date periodEnd   = budget.Budget_Period_End_date__c;
+
+            if ((periodStart == null || periodEnd == null) && String.isNotBlank(budget.Contract__c)) {
+                DContract__c contract = [
+                    SELECT Contract_Start_Date__c, Contract_End_Date__c
+                    FROM DContract__c WHERE Id = :budget.Contract__c LIMIT 1
+                ];
+                if (periodStart == null) periodStart = contract.Contract_Start_Date__c;
+                if (periodEnd   == null) periodEnd   = contract.Contract_End_Date__c;
+            }
+
+            List<String> monthKeys = generateMonthKeys(periodStart, periodEnd);
+            if (monthKeys.isEmpty()) {
+                return errorJson('Budget has no period dates set and no contract dates to fall back to.');
+            }
+
+            // Skip agreements already present in this budget (prevent duplicates)
+            Set<String> existingAgreementIds = new Set<String>();
+            for (Budget_Line_Item__c li : [
+                SELECT Agreement__c FROM Budget_Line_Item__c
+                WHERE Budget__c = :budgetId
+                  AND Cost_Category__c = 'Subcontracts'
+                  AND Agreement__c != null
+                  AND Month_Key__c != null
+            ]) {
+                existingAgreementIds.add(li.Agreement__c);
+            }
+
+            Set<String> lockedMonths = getLockedMonths(budgetId);
+
+            List<Budget_Line_Item__c> newItems = new List<Budget_Line_Item__c>();
+            for (String agrId : agreementIds) {
+                if (existingAgreementIds.contains(agrId)) continue;
+                for (String monthKey : monthKeys) {
+                    Budget_Line_Item__c li = new Budget_Line_Item__c();
+                    li.Budget__c         = budgetId;
+                    li.Agreement__c      = agrId;
+                    li.Cost_Category__c  = 'Subcontracts';
+                    li.Month_Key__c      = monthKey;
+                    li.Actuals_Locked__c = lockedMonths.contains(monthKey)
+                        ? BudgetCalculationService.LOCKED
+                        : 'No, still projected';
+                    newItems.add(li);
+                }
+            }
+            insert newItems;
+
+            BudgetDTO.ResponseWrapper result =
+                new BudgetDTO.ResponseWrapper(true, 'Subcontracts added');
+            return JSON.serialize(result);
+
+        } catch (Exception e) {
+            return errorJson(e.getMessage());
+        }
+    }
+
+    private static List<BudgetDTO.AgreementOption> loadAgreements(String contractId) {
+        List<BudgetDTO.AgreementOption> options = new List<BudgetDTO.AgreementOption>();
+        for (Agreement__c agr : [
+            SELECT Id, Name, Contract_Budget__c
+            FROM Agreement__c
+            WHERE Contract__c = :contractId
+            ORDER BY Name ASC
+            LIMIT 200
+        ]) {
+            BudgetDTO.AgreementOption opt = new BudgetDTO.AgreementOption();
+            opt.agreementId    = agr.Id;
+            opt.name           = agr.Name;
+            opt.contractBudget = agr.Contract_Budget__c;
             options.add(opt);
         }
         return options;

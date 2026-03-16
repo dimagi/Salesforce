@@ -42,11 +42,15 @@ public class BudgetDTO {
         public String  monthKey;         // Month_Key__c "YYYY_MM"
         public String  lockedStatus;     // Actuals_Locked__c picklist value
         public Decimal projectedUnits;   // Projected_Units__c
-        public Decimal projectedRate;    // Projected_Daily_Rate__c
-        public Decimal projectedTotal;   // Projected_Total_Salary__c
+        public Decimal projectedRate;    // Projected_Daily_Rate__c  (formula, read-only)
+        public Decimal projectedTotal;   // Projected_Total_Salary__c (formula, read-only)
         public Decimal actualUnits;      // Actual_Units__c
         public Decimal actualRate;       // Actual_Daily_Rate__c
-        public Decimal actualTotal;      // Actual_Total_Salary__c
+        public Decimal actualTotal;      // Actual_Total_Salary__c    (formula, read-only)
+        // Calculated indirect cost amounts (formula fields — populated on load, used for P&L display)
+        public Decimal fringeAmount;     // Fringe_Amount__c
+        public Decimal overheadAmount;   // Overhead_Amount__c
+        public Decimal gaAmount;         // G_A_Amount__c
     }
 
     // ─── Outbound (Apex → JS) ─────────────────────────────────────────────────
@@ -59,7 +63,8 @@ public class BudgetDTO {
         public List<MonthColumn> months;   // ordered list of month columns
         public List<BudgetRow>   rows;     // all line items
         public BudgetSummary   summary;
-        public List<EmployeeOption> employees; // active employees for the picker
+        public List<EmployeeOption>  employees;  // active employees for the picker
+        public List<AgreementOption> agreements; // agreements linked to the contract
     }
 
     /**
@@ -109,6 +114,15 @@ public class BudgetDTO {
         public String  name;
         public String  employeeType;   // Employee_Type__c
         public Decimal dailyRate;      // Loaded_Daily_Rate__c
+    }
+
+    /**
+     * One agreement option in the Add Subcontract picker modal.
+     */
+    public class AgreementOption {
+        public String  agreementId;
+        public String  name;
+        public Decimal contractBudget; // Contract_Budget__c
     }
 
     /**
