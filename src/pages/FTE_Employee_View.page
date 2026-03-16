@@ -138,6 +138,18 @@
             setExportyearData(YearData);
         }
 
+        $j(document).ready(function() {
+            var sel = document.getElementById('YearList');
+            if (!sel) return;
+            var cur = new Date().getFullYear();
+            for (var y = cur + 2; y >= cur - 1; y--) {
+                var opt = document.createElement('option');
+                opt.value = y; opt.text = y;
+                if (y === cur) opt.selected = true;
+                sel.appendChild(opt);
+            }
+        });
+
         function loadModalData(month, contractId) {
             if (contractId == "") {
                 loadEmployeeMonth(month);
@@ -391,12 +403,7 @@
                     </div>
                     <div style="float:left">
                         <label for="YearList">Select a Year : </label>
-                        <select name="YearList" id="YearList">
-                            <option value="2025">2025</option>
-                            <option value="2024">2024</option>
-                            <option value="2023" selected="selected">2023</option>
-                            <option value="2022">2022</option>
-                        </select>
+                        <select name="YearList" id="YearList"></select>
                     </div>
                   <!--   <div class="fteFilters">
                             <apex:outputLabel value="Select a year :" for="fteYearSelect" />
