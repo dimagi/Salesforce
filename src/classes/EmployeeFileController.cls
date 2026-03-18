@@ -114,12 +114,5 @@ public String zipCodeUI {
     public void setRedForm(Record_of_Emergency_Data_Form__c redForm) {
         this.redForm = redForm;
     }
-    public String getFormattedDOB() {
-    if (redForm != null && redForm.DOB__c != null) {
-        return redForm.DOB__c.format();
-    }
-    return '';
-}
-
 
 }
