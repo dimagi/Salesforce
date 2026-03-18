@@ -23,13 +23,9 @@
             <apex:outputText value="{!redForm.Employee_First_Name__c}"/>
             <apex:outputText value="{!redForm.Employee_Last_Name__c}"/>
             <apex:outputText value="{!redForm.Employee_Middle_Name__c}"/>
-            <!-- <apex:outputText onclick="setYear(50, 0)" value="{!redForm.DOB__c}"/> -->
-            <apex:pageBlockSectionItem >
-                <apex:outputLabel value="Date of Birth"/>
-                <apex:outputText value="{!formattedDOB}" />
-            </apex:pageBlockSectionItem>
-            <apex:outputText value="{!redForm.Citizenship__c}" />
-            <apex:outputText value="{!redForm.Gender__c}" />
+            <apex:inputField onclick="setYear(50, 0)" value="{!redForm.DOB__c}"/>
+            <apex:inputField value="{!redForm.Citizenship__c}" />
+            <apex:inputField value="{!redForm.Gender__c}" />
             <apex:outputText value="{!redForm.Current_Address_City__c}" />
             <apex:inputField value="{!redForm.Personal_Phone_Number__c}" />
             <apex:outputText value="{!redForm.Current_Address_Street__c}" />
@@ -47,7 +43,7 @@
         <apex:pageBlockSection columns="1">
             <apex:outputText escape="false"
                              style="font-weight:bold; font-style:italic;">
-                If you want to change any of the personal details above (other than phone/passport details), please reach out to POps following the instructions
+                If you want to change your name or address details above, please reach out to POps following the instructions
                 <a target="_blank"
                    href="https://dimagi.atlassian.net/wiki/spaces/internal/pages/2146007895/Change+of+Address+Personal+Details">
                     here.
