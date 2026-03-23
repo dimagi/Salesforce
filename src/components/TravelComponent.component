@@ -22,10 +22,10 @@
         /* Filters */
         #travel-filters { margin-bottom: 12px; padding: 8px 0; }
         .travel-filter-btn { cursor: pointer; margin-right: 4px; padding: 3px 10px; }
-        .travel-filter-btn.active { background-color: #0070d2 !important; color: #fff !important; border-color: #005fb2 !important; }
-        .travel-filter-btn.risk-low.active  { background-color: #2e7d32 !important; border-color: #1b5e20 !important; }
-        .travel-filter-btn.risk-mod.active  { background-color: #e65100 !important; border-color: #bf360c !important; }
-        .travel-filter-btn.risk-high.active { background-color: #b71c1c !important; border-color: #7f0000 !important; }
+        .travel-filter-btn.active { background-color: #fff !important; color: #0070d2 !important; border: 2px solid #0070d2 !important; }
+        .travel-filter-btn.risk-low.active  { background-color: #fff !important; border: 2px solid #2e7d32 !important; color: #2e7d32 !important; }
+        .travel-filter-btn.risk-mod.active  { background-color: #fff !important; border: 2px solid #e65100 !important; color: #e65100 !important; }
+        .travel-filter-btn.risk-high.active { background-color: #fff !important; border: 2px solid #b71c1c !important; color: #b71c1c !important; }
         #division-filter-select { padding: 3px 6px; }
 
         /* Error banner */
@@ -104,7 +104,7 @@
                 onclick="travelPortal.toggleRiskFilter(this); return false;">High</button>
             &nbsp;|&nbsp;
             <select id="division-filter-select" onchange="travelPortal.setDivisionFilter(this.value)">
-                <option value="">All Divisions</option>
+                <option value="__all__">All Divisions</option>
             </select>
         </div>
 
@@ -631,7 +631,7 @@
                 renderTable();
             },
             setDivisionFilter: function(val) {
-                divisionFilter = val;
+                divisionFilter = (val && val !== '__all__') ? val : '';
                 renderTable();
             },
             selectRisk: function(risk) {
