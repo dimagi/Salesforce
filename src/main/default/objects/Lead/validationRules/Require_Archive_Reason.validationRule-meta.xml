@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Require_Archive_Reason</fullName>
+    <active>true</active>
+    <description>Prevents reps from archiving by directly changing the Lead Status picklist. The Archive Lead button sets Archive_Reason__c in the same operation, so it is not blocked.</description>
+    <errorConditionFormula>AND(
+    ISPICKVAL(Status, "Archived - Not Interested"),
+    ISBLANK(TEXT(Archive_Reason__c))
+)</errorConditionFormula>
+    <errorDisplayField>Status</errorDisplayField>
+    <errorMessage>Please use the "Archive Lead" button to archive this lead.</errorMessage>
+</ValidationRule>

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Prior_Lead_Status__c</fullName>
+    <description>Helper field. Never edited by reps — flow updates it automatically on every status change. Can be hidden from page layout.</description>
+    <inlineHelpText>Helper field for tracking lead movement/status</inlineHelpText>
+    <label>Prior Lead Status</label>
+    <required>false</required>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <type>TextArea</type>
+</CustomField>

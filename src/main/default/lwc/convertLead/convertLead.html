@@ -1,0 +1,217 @@
+<template>
+    <lightning-card title="Convert Lead">
+        <div class="slds-p-around_medium">
+
+            <template lwc:if={isInitializing}>
+                <div class="slds-align_absolute-center slds-p-around_large">
+                    <lightning-spinner alternative-text="Loading..." size="small"></lightning-spinner>
+                </div>
+            </template>
+
+            <template lwc:else>
+
+                <template lwc:if={isLoading}>
+                    <lightning-spinner alternative-text="Converting..." size="small"></lightning-spinner>
+                </template>
+
+                <!-- Conversion Outcome -->
+                <lightning-combobox
+                    name="conversionOutcome"
+                    label="Conversion Outcome"
+                    required
+                    value={conversionOutcome}
+                    placeholder="Select an outcome"
+                    options={conversionOutcomeOptions}
+                    onchange={handleOutcomeChange}>
+                </lightning-combobox>
+
+                <!-- Disposition Notes -->
+                <div class="slds-m-top_small">
+                    <lightning-textarea
+                        name="dispositionNotes"
+                        label="Disposition Notes"
+                        value={dispositionNotes}
+                        onchange={handleDispositionNotesChange}>
+                    </lightning-textarea>
+                </div>
+
+                <!-- Contact Only section -->
+                <template lwc:if={isContactOnly}>
+                    <div class="slds-box slds-m-top_small slds-p-around_small">
+                        <p class="slds-text-title_caps slds-m-bottom_x-small">Re-engagement Plan</p>
+                        <lightning-combobox
+                            name="reEngagementPathway"
+                            label="Re-engagement Pathway"
+                            required
+                            value={reEngagementPathway}
+                            placeholder="Select a pathway"
+                            options={pathwayOptions}
+                            onchange={handlePathwayChange}>
+                        </lightning-combobox>
+                        <template lwc:if={showReEngageDate}>
+                            <div class="slds-m-top_small">
+                                <lightning-input
+                                    type="date"
+                                    name="reEngageDate"
+                                    label="Re-engage Date"
+                                    required
+                                    value={reEngageDate}
+                                    onchange={handleReEngageDateChange}>
+                                </lightning-input>
+                            </div>
+                        </template>
+                    </div>
+                </template>
+
+                <!-- With Opportunity section -->
+                <template lwc:if={isWithOpportunity}>
+                    <div class="slds-box slds-m-top_small slds-p-around_small">
+                        <lightning-input
+                            type="text"
+                            name="opportunityName"
+                            label="Opportunity Name"
+                            required
+                            value={opportunityName}
+                            onchange={handleOppNameChange}>
+                        </lightning-input>
+                    </div>
+                </template>
+
+                <!-- Account lookup -->
+                <div class="slds-form-element slds-m-top_small">
+                    <label class="slds-form-element__label">Account</label>
+                    <div class="slds-form-element__control slds-m-top_xx-small">
+                        <template lwc:if={selectedAccountId}>
+                            <div class="slds-pill_container">
+                                <span class="slds-pill">
+                                    <span class="slds-pill__label">{selectedAccountName}</span>
+                                    <button
+                                        class="slds-button slds-button_icon slds-pill__remove"
+                                        onclick={clearAccount}
+                                        title="Remove">
+                                        <lightning-icon icon-name="utility:close" size="x-small"></lightning-icon>
+                                    </button>
+                                </span>
+                            </div>
+                        </template>
+                        <template lwc:else>
+                            <lightning-input
+                                type="search"
+                                label="Search existing accounts"
+                                variant="label-hidden"
+                                placeholder="Type to search accounts..."
+                                value={accountSearchTerm}
+                                onchange={handleAccountSearch}>
+                            </lightning-input>
+                            <template lwc:if={hasAccountResults}>
+                                <div class="slds-dropdown slds-dropdown_length-5 slds-dropdown_fluid" role="listbox">
+                                    <ul class="slds-listbox slds-listbox_vertical" role="presentation">
+                                        <template for:each={accountResults} for:item="acc">
+                                            <li key={acc.Id}
+                                                role="presentation"
+                                                class="slds-listbox__item"
+                                                onclick={selectAccount}
+                                                data-id={acc.Id}
+                                                data-name={acc.Name}>
+                                                <span class="slds-media slds-listbox__option slds-listbox__option_plain" role="option">
+                                                    <span class="slds-media__figure">
+                                                        <lightning-icon icon-name="standard:account" size="x-small"></lightning-icon>
+                                                    </span>
+                                                    <span class="slds-media__body">{acc.Name}</span>
+                                                </span>
+                                            </li>
+                                        </template>
+                                    </ul>
+                                </div>
+                            </template>
+                            <p class="slds-text-body_small slds-text-color_weak slds-m-top_xx-small">
+                                Leave blank to create a new account for: {leadCompany}
+                            </p>
+                        </template>
+                    </div>
+                </div>
+
+                <!-- Contact lookup -->
+                <div class="slds-form-element slds-m-top_small">
+                    <label class="slds-form-element__label">Contact</label>
+                    <div class="slds-form-element__control slds-m-top_xx-small">
+                        <template lwc:if={selectedContactId}>
+                            <div class="slds-pill_container">
+                                <span class="slds-pill">
+                                    <span class="slds-pill__label">{selectedContactName}</span>
+                                    <button
+                                        class="slds-button slds-button_icon slds-pill__remove"
+                                        onclick={clearContact}
+                                        title="Remove">
+                                        <lightning-icon icon-name="utility:close" size="x-small"></lightning-icon>
+                                    </button>
+                                </span>
+                            </div>
+                        </template>
+                        <template lwc:else>
+                            <lightning-input
+                                type="search"
+                                label="Search existing contacts"
+                                variant="label-hidden"
+                                placeholder="Type to search by name or email..."
+                                value={contactSearchTerm}
+                                onchange={handleContactSearch}>
+                            </lightning-input>
+                            <template lwc:if={hasContactResults}>
+                                <div class="slds-dropdown slds-dropdown_length-5 slds-dropdown_fluid" role="listbox">
+                                    <ul class="slds-listbox slds-listbox_vertical" role="presentation">
+                                        <template for:each={contactResults} for:item="con">
+                                            <li key={con.Id}
+                                                role="presentation"
+                                                class="slds-listbox__item"
+                                                onclick={selectContact}
+                                                data-id={con.Id}
+                                                data-name={con.Name}>
+                                                <span class="slds-media slds-listbox__option slds-listbox__option_plain" role="option">
+                                                    <span class="slds-media__figure">
+                                                        <lightning-icon icon-name="standard:contact" size="x-small"></lightning-icon>
+                                                    </span>
+                                                    <span class="slds-media__body">
+                                                        {con.Name}
+                                                        <span class="slds-text-color_weak"> &mdash; {con.Email}</span>
+                                                    </span>
+                                                </span>
+                                            </li>
+                                        </template>
+                                    </ul>
+                                </div>
+                            </template>
+                            <p class="slds-text-body_small slds-text-color_weak slds-m-top_xx-small">
+                                Leave blank to create a new contact from this lead.
+                            </p>
+                        </template>
+                    </div>
+                </div>
+
+                <!-- Error message -->
+                <template lwc:if={errorMessage}>
+                    <div class="slds-notify slds-notify_alert slds-alert_error slds-m-top_small" role="alert">
+                        <span class="slds-assistive-text">Error</span>
+                        {errorMessage}
+                    </div>
+                </template>
+
+            </template>
+
+        </div>
+
+        <div slot="footer">
+            <lightning-button
+                label="Cancel"
+                onclick={handleCancel}>
+            </lightning-button>
+            <lightning-button
+                variant="brand"
+                label="Convert"
+                onclick={handleConvert}
+                disabled={isLoading}
+                class="slds-m-left_x-small">
+            </lightning-button>
+        </div>
+    </lightning-card>
+</template>

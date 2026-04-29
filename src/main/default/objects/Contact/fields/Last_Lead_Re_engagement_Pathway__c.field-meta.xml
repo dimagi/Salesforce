@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Last_Lead_Re_engagement_Pathway__c</fullName>
+    <description>Copied from the lead's Re-engagement Pathway. Tells the rep how to re-engage (e.g., Scheduled Follow-up, Event-Based). Updated by the Contact Updater flow.</description>
+    <label>Last Lead Re-engagement Pathway</label>
+    <length>255</length>
+    <required>false</required>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <type>Text</type>
+    <unique>false</unique>
+</CustomField>

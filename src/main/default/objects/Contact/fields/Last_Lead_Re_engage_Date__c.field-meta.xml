@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Last_Lead_Re_engage_Date__c</fullName>
+    <description>Carried over from the lead's Re-engage Date. Used in contact follow-up reports and list views. Updated by the Contact Updater flow.</description>
+    <label>Last Lead Re-engage Date</label>
+    <required>false</required>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <type>Date</type>
+</CustomField>
