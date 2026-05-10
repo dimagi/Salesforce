@@ -9,7 +9,9 @@ public with sharing class ConvertLeadController {
         Date reEngageDate,
         Id existingAccountId,
         Id existingContactId,
-        String opportunityName
+        String opportunityName,
+        String contactStatus,
+        Boolean gspPrimaryContact
     ) {
         // Capture current status before we change anything — this becomes Lead_Stage_at_Exit__c
         Lead currentLead = [SELECT Id, Status, Company, Opportunity_Owner_Division__c, Opportunity_Owner_Sub_Division__c
@@ -59,10 +61,11 @@ public with sharing class ConvertLeadController {
             // Update Contact: status (existing behavior) + lead context fields
             if (cr.contactId != null) {
                 Contact c = [SELECT Id, Lead_Cycle_Count__c FROM Contact WHERE Id = :cr.contactId LIMIT 1];
-                c.Status__c = '1- Working - Active Opp Development';
+                c.Status__c = String.isNotBlank(contactStatus) ? contactStatus : '1- Working - Active Opp Development';
+                c.GSP_Primary_Contact__c = gspPrimaryContact == true;
                 c.Last_Lead_Outcome__c = conversionOutcome;
                 c.Last_Lead_Context__c = dispositionNotes;
-                c.Last_Lead_Re_engage_Date__c = reEngageDate;
+                c.Follow_up_Date__c = reEngageDate;
                 c.Last_Lead_Re_engagement_Pathway__c = reEngagementPathway;
                 c.Last_Lead_Date__c = Date.today();
                 c.Lead_Cycle_Count__c = (c.Lead_Cycle_Count__c == null ? 0 : c.Lead_Cycle_Count__c) + 1;
@@ -112,7 +115,7 @@ public with sharing class ConvertLeadController {
     @AuraEnabled(cacheable=true)
     public static List<Contact> searchContacts(String searchTerm) {
         String s = '%' + String.escapeSingleQuotes(searchTerm) + '%';
-        return [SELECT Id, Name, Email, Account.Name
+        return [SELECT Id, Name, Email, Account.Name, Status__c, GSP_Primary_Contact__c
                 FROM Contact WHERE Name LIKE :s OR Email LIKE :s ORDER BY Name LIMIT 10];
     }
 
@@ -142,10 +145,14 @@ public with sharing class ConvertLeadController {
             }
         }
         if (String.isNotBlank(lead.Email)) {
-            List<Contact> cons = [SELECT Id, Name FROM Contact WHERE Email = :lead.Email LIMIT 1];
+            List<Contact> cons = [SELECT Id, Name, Follow_up_Date__c, Status__c, GSP_Primary_Contact__c
+                                  FROM Contact WHERE Email = :lead.Email LIMIT 1];
             if (!cons.isEmpty()) {
                 m.contactId = cons[0].Id;
                 m.contactName = cons[0].Name;
+                m.contactFollowUpDate = cons[0].Follow_up_Date__c;
+                m.contactStatus = cons[0].Status__c;
+                m.contactGspPrimaryContact = cons[0].GSP_Primary_Contact__c;
             }
         }
         return m;
@@ -156,6 +163,9 @@ public with sharing class ConvertLeadController {
         @AuraEnabled public String accountName;
         @AuraEnabled public Id contactId;
         @AuraEnabled public String contactName;
+        @AuraEnabled public Date contactFollowUpDate;
+        @AuraEnabled public String contactStatus;
+        @AuraEnabled public Boolean contactGspPrimaryContact;
     }
 
     public class ConvertResult {

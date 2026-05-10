@@ -53,8 +53,7 @@
                                 <lightning-input
                                     type="date"
                                     name="reEngageDate"
-                                    label="Re-engage Date"
-                                    required
+                                    label="Contact Follow-up Date"
                                     value={reEngageDate}
                                     onchange={handleReEngageDateChange}>
                                 </lightning-input>
@@ -166,7 +165,9 @@
                                                 class="slds-listbox__item"
                                                 onclick={selectContact}
                                                 data-id={con.Id}
-                                                data-name={con.Name}>
+                                                data-name={con.Name}
+                                                data-status={con.Status__c}
+                                                data-gsp={con.GSP_Primary_Contact__c}>
                                                 <span class="slds-media slds-listbox__option slds-listbox__option_plain" role="option">
                                                     <span class="slds-media__figure">
                                                         <lightning-icon icon-name="standard:contact" size="x-small"></lightning-icon>
@@ -185,6 +186,27 @@
                                 Leave blank to create a new contact from this lead.
                             </p>
                         </template>
+                    </div>
+                </div>
+
+                <!-- Contact Status + GSP Primary Contact -->
+                <div class="slds-box slds-m-top_small slds-p-around_small">
+                    <lightning-combobox
+                        name="contactStatus"
+                        label="Contact Status"
+                        value={contactStatus}
+                        placeholder="Select a status"
+                        options={contactStatusOptions}
+                        onchange={handleContactStatusChange}>
+                    </lightning-combobox>
+                    <div class="slds-m-top_small">
+                        <lightning-input
+                            type="checkbox"
+                            name="gspPrimaryContact"
+                            label="GSP Primary Contact"
+                            checked={gspPrimaryContact}
+                            onchange={handleGspPrimaryContactChange}>
+                        </lightning-input>
                     </div>
                 </div>
 

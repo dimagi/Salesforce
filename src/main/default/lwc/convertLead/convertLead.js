@@ -1,7 +1,10 @@
-import { LightningElement, api } from 'lwc';
+import { LightningElement, api, wire } from 'lwc';
 import { NavigationMixin } from 'lightning/navigation';
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
 import { CloseActionScreenEvent } from 'lightning/actions';
+import { getPicklistValues, getObjectInfo } from 'lightning/uiObjectInfoApi';
+import CONTACT_OBJECT from '@salesforce/schema/Contact';
+import STATUS_FIELD from '@salesforce/schema/Contact.Status__c';
 import convertLead from '@salesforce/apex/ConvertLeadController.convertLead';
 import searchAccounts from '@salesforce/apex/ConvertLeadController.searchAccounts';
 import searchContacts from '@salesforce/apex/ConvertLeadController.searchContacts';
@@ -9,6 +12,7 @@ import getLeadDetails from '@salesforce/apex/ConvertLeadController.getLeadDetail
 import getSuggestedMatches from '@salesforce/apex/ConvertLeadController.getSuggestedMatches';
 
 const SEARCH_DELAY = 300;
+const DEFAULT_CONTACT_STATUS = '1- Working - Active Opp Development';
 
 const CONVERSION_OUTCOME_OPTIONS = [
     { label: 'With Opportunity', value: 'With Opportunity' },
@@ -34,7 +38,7 @@ export default class ConvertLead extends NavigationMixin(LightningElement) {
 
     conversionOutcome = '';
     dispositionNotes = '';
-    reEngagementPathway = '';
+    reEngagementPathway = 'Passive';
     reEngageDate = null;
     opportunityName = '';
     leadCompany = '';
@@ -49,6 +53,9 @@ export default class ConvertLead extends NavigationMixin(LightningElement) {
     selectedContactId = null;
     selectedContactName = '';
 
+    contactStatus = DEFAULT_CONTACT_STATUS;
+    gspPrimaryContact = false;
+
     isLoading = false;
     isInitializing = true;
     errorMessage = '';
@@ -58,6 +65,16 @@ export default class ConvertLead extends NavigationMixin(LightningElement) {
 
     conversionOutcomeOptions = CONVERSION_OUTCOME_OPTIONS;
     pathwayOptions = PATHWAY_OPTIONS;
+
+    @wire(getObjectInfo, { objectApiName: CONTACT_OBJECT })
+    _contactObjectInfo;
+
+    @wire(getPicklistValues, { recordTypeId: '$_contactObjectInfo.data.defaultRecordTypeId', fieldApiName: STATUS_FIELD })
+    _contactStatusPicklist;
+
+    get contactStatusOptions() {
+        return this._contactStatusPicklist.data?.values || [];
+    }
 
     connectedCallback() {
         if (this._recordId) this._initOnce();
@@ -83,6 +100,9 @@ export default class ConvertLead extends NavigationMixin(LightningElement) {
                 if (m.contactId) {
                     this.selectedContactId = m.contactId;
                     this.selectedContactName = m.contactName;
+                    this.reEngageDate = m.contactFollowUpDate || null;
+                    this.contactStatus = m.contactStatus || DEFAULT_CONTACT_STATUS;
+                    this.gspPrimaryContact = m.contactGspPrimaryContact || false;
                 }
             } else if (matchesResult.status === 'rejected') {
                 this.errorMessage = matchesResult.reason?.body?.message || String(matchesResult.reason);
@@ -114,7 +134,7 @@ export default class ConvertLead extends NavigationMixin(LightningElement) {
 
     handleOutcomeChange(event) {
         this.conversionOutcome = event.detail.value;
-        this.reEngagementPathway = '';
+        this.reEngagementPathway = 'Passive';
         this.reEngageDate = null;
     }
 
@@ -135,6 +155,14 @@ export default class ConvertLead extends NavigationMixin(LightningElement) {
 
     handleOppNameChange(event) {
         this.opportunityName = event.detail.value;
+    }
+
+    handleContactStatusChange(event) {
+        this.contactStatus = event.detail.value;
+    }
+
+    handleGspPrimaryContactChange(event) {
+        this.gspPrimaryContact = event.detail.checked;
     }
 
     handleAccountSearch(event) {
@@ -180,8 +208,11 @@ export default class ConvertLead extends NavigationMixin(LightningElement) {
     }
 
     selectContact(event) {
-        this.selectedContactId = event.currentTarget.dataset.id;
-        this.selectedContactName = event.currentTarget.dataset.name;
+        const el = event.currentTarget;
+        this.selectedContactId = el.dataset.id;
+        this.selectedContactName = el.dataset.name;
+        this.contactStatus = el.dataset.status || DEFAULT_CONTACT_STATUS;
+        this.gspPrimaryContact = el.dataset.gsp === 'true';
         this.contactResults = [];
         this.contactSearchTerm = '';
     }
@@ -189,6 +220,8 @@ export default class ConvertLead extends NavigationMixin(LightningElement) {
     clearContact() {
         this.selectedContactId = null;
         this.selectedContactName = '';
+        this.contactStatus = DEFAULT_CONTACT_STATUS;
+        this.gspPrimaryContact = false;
     }
 
     handleConvert() {
@@ -200,10 +233,6 @@ export default class ConvertLead extends NavigationMixin(LightningElement) {
         }
         if (this.isContactOnly && !this.reEngagementPathway) {
             this.errorMessage = 'Re-engagement Pathway is required for Contact Only conversions.';
-            return;
-        }
-        if (this.isContactOnly && this.reEngagementPathway === 'Scheduled Follow-up' && !this.reEngageDate) {
-            this.errorMessage = 'Re-engage Date is required when pathway is Scheduled Follow-up.';
             return;
         }
         if (this.isWithOpportunity && !this.opportunityName) {
@@ -222,6 +251,8 @@ export default class ConvertLead extends NavigationMixin(LightningElement) {
             existingAccountId: this.selectedAccountId || null,
             existingContactId: this.selectedContactId || null,
             opportunityName: this.isWithOpportunity ? this.opportunityName : null,
+            contactStatus: this.contactStatus || DEFAULT_CONTACT_STATUS,
+            gspPrimaryContact: this.gspPrimaryContact,
         })
         .then(result => {
             this.isLoading = false;
