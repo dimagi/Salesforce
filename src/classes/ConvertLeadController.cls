@@ -60,8 +60,9 @@ public with sharing class ConvertLeadController {
 
             // Update Contact: status (existing behavior) + lead context fields
             if (cr.contactId != null) {
-                Contact c = [SELECT Id, Lead_Cycle_Count__c FROM Contact WHERE Id = :cr.contactId LIMIT 1];
+                Contact c = [SELECT Id, Lead_Cycle_Count__c, Lead__c FROM Contact WHERE Id = :cr.contactId LIMIT 1];
                 c.Status__c = String.isNotBlank(contactStatus) ? contactStatus : '1- Working - Active Opp Development';
+                if (c.Lead__c == null) c.Lead__c = leadId;
                 c.GSP_Primary_Contact__c = gspPrimaryContact;
                 c.Last_Lead_Outcome__c = conversionOutcome;
                 c.Last_Lead_Context__c = dispositionNotes;
