@@ -14,8 +14,12 @@ public with sharing class ConvertLeadController {
         Boolean gspPrimaryContact
     ) {
         // Capture current status before we change anything — this becomes Lead_Stage_at_Exit__c
-        Lead currentLead = [SELECT Id, Status, Company, Opportunity_Owner_Division__c, Opportunity_Owner_Sub_Division__c
+        List<Lead> leads = [SELECT Id, Status, Company, Opportunity_Owner_Division__c, Opportunity_Owner_Sub_Division__c
                             FROM Lead WHERE Id = :leadId LIMIT 1];
+        if (leads.isEmpty()) {
+            throw new AuraHandledException('Lead not found or has been deleted.');
+        }
+        Lead currentLead = leads[0];
 
         // Write context fields + stage at exit before calling convertLead, so the data is
         // preserved even if conversion fails and the rep needs to retry.
