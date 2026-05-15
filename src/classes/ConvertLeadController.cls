@@ -90,6 +90,7 @@ public with sharing class ConvertLeadController {
                 opp.Expected_Buffer__c = 0;
                 opp.Execution_Owner_Division__c = currentLead.Opportunity_Owner_Division__c;
                 opp.Execution_Owner_Practice__c = currentLead.Opportunity_Owner_Sub_Division__c;
+                opp.Source_Lead__c = leadId;
 
                 List<Business_Unit__c> bus = [SELECT Id FROM Business_Unit__c WHERE Name = 'Inc' LIMIT 1];
                 if (!bus.isEmpty()) {
