@@ -37,11 +37,13 @@ public class ConvertLeadControllerTest {
             null,
             null,
             null,
-            'OpportunityTest Co - Deal'
+            'OpportunityTest Co - Deal',
+            '1- Working - Active Opp Development',
+            false
         );
         Test.stopTest();
 
-        System.assertEquals(true, result.success, result.errorMessage);
+        System.assert(result.success, 'Conversion failed: ' + result.errorMessage);
         System.assertNotEquals(null, result.opportunityId, 'Opportunity should be created');
         System.assertNotEquals(null, result.contactId, 'Contact should be created');
 
@@ -55,14 +57,15 @@ public class ConvertLeadControllerTest {
         System.assertEquals('Stage 3 - Prospect', opp.StageName);
         System.assertEquals(20, opp.Probability);
 
-        Contact con = [SELECT Status__c, Last_Lead_Outcome__c, Last_Lead_Context__c,
-                              Last_Lead_Re_engage_Date__c, Last_Lead_Re_engagement_Pathway__c,
-                              Last_Lead_Date__c, Lead_Cycle_Count__c
+        Contact con = [SELECT Status__c, GSP_Primary_Contact__c, Last_Lead_Outcome__c,
+                              Last_Lead_Context__c, Follow_up_Date__c,
+                              Last_Lead_Re_engagement_Pathway__c, Last_Lead_Date__c, Lead_Cycle_Count__c
                        FROM Contact WHERE Id = :result.contactId];
         System.assertEquals('1- Working - Active Opp Development', con.Status__c);
+        System.assertEquals(false, con.GSP_Primary_Contact__c);
         System.assertEquals('With Opportunity', con.Last_Lead_Outcome__c);
         System.assertEquals('Great fit, moving forward.', con.Last_Lead_Context__c);
-        System.assertEquals(null, con.Last_Lead_Re_engage_Date__c);
+        System.assertEquals(null, con.Follow_up_Date__c);
         System.assertEquals(null, con.Last_Lead_Re_engagement_Pathway__c);
         System.assertEquals(Date.today(), con.Last_Lead_Date__c);
         System.assertEquals(1, con.Lead_Cycle_Count__c);
@@ -82,11 +85,13 @@ public class ConvertLeadControllerTest {
             Date.today().addMonths(3),
             null,
             null,
-            null
+            null,
+            '1- Working - Active Opp Development',
+            false
         );
         Test.stopTest();
 
-        System.assertEquals(true, result.success, result.errorMessage);
+        System.assert(result.success, 'Conversion failed: ' + result.errorMessage);
         System.assertEquals(null, result.opportunityId, 'No opportunity should be created');
         System.assertNotEquals(null, result.contactId, 'Contact should be created');
 
@@ -95,12 +100,12 @@ public class ConvertLeadControllerTest {
         System.assertEquals('Scheduled Follow-up', updatedLead.Re_engagement_Pathway__c);
         System.assertEquals(Date.today().addMonths(3), updatedLead.Re_engage_Date__c);
 
-        Contact con = [SELECT Last_Lead_Outcome__c, Last_Lead_Context__c, Last_Lead_Re_engage_Date__c,
+        Contact con = [SELECT Last_Lead_Outcome__c, Last_Lead_Context__c, Follow_up_Date__c,
                               Last_Lead_Re_engagement_Pathway__c, Last_Lead_Date__c, Lead_Cycle_Count__c
                        FROM Contact WHERE Id = :result.contactId];
         System.assertEquals('Contact Only - Passive', con.Last_Lead_Outcome__c);
         System.assertEquals('Good relationship, no immediate opportunity.', con.Last_Lead_Context__c);
-        System.assertEquals(Date.today().addMonths(3), con.Last_Lead_Re_engage_Date__c);
+        System.assertEquals(Date.today().addMonths(3), con.Follow_up_Date__c);
         System.assertEquals('Scheduled Follow-up', con.Last_Lead_Re_engagement_Pathway__c);
         System.assertEquals(Date.today(), con.Last_Lead_Date__c);
         System.assertEquals(1, con.Lead_Cycle_Count__c);
@@ -122,11 +127,13 @@ public class ConvertLeadControllerTest {
             null,
             existingAccount.Id,
             null,
-            'Existing Account Corp - Deal'
+            'Existing Account Corp - Deal',
+            '1- Working - Active Opp Development',
+            false
         );
         Test.stopTest();
 
-        System.assertEquals(true, result.success, result.errorMessage);
+        System.assert(result.success, 'Conversion failed: ' + result.errorMessage);
         System.assertEquals(existingAccount.Id, result.accountId, 'Should use the existing account');
         System.assertEquals(1, [SELECT COUNT() FROM Account WHERE Name = 'Existing Account Corp'], 'No duplicate account should be created');
     }
@@ -135,7 +142,7 @@ public class ConvertLeadControllerTest {
     static void testConvertWithExistingContact() {
         Account acc = new Account(Name = 'Contact Match Co');
         insert acc;
-        Contact existingContact = new Contact(FirstName = 'Test', LastName = 'Lead', AccountId = acc.Id, Email = 'test@example.com');
+        Contact existingContact = new Contact(FirstName = 'Test', LastName = 'Lead', AccountId = acc.Id, Email = 'existing@example.com');
         insert existingContact;
         Lead testLead = makeTestLead('Contact Match Co');
         insert testLead;
@@ -149,18 +156,21 @@ public class ConvertLeadControllerTest {
             null,
             acc.Id,
             existingContact.Id,
-            null
+            null,
+            '1- Working - Active Opp Development',
+            true
         );
         Test.stopTest();
 
-        System.assertEquals(true, result.success, result.errorMessage);
+        System.assert(result.success, 'Conversion failed: ' + result.errorMessage);
         System.assertEquals(existingContact.Id, result.contactId, 'Should use the existing contact');
 
-        Contact con = [SELECT Last_Lead_Outcome__c, Last_Lead_Date__c, Lead_Cycle_Count__c
+        Contact con = [SELECT Last_Lead_Outcome__c, Last_Lead_Date__c, Lead_Cycle_Count__c, GSP_Primary_Contact__c
                        FROM Contact WHERE Id = :result.contactId];
         System.assertEquals('Contact Only - Nurture', con.Last_Lead_Outcome__c);
         System.assertEquals(Date.today(), con.Last_Lead_Date__c);
         System.assertEquals(1, con.Lead_Cycle_Count__c);
+        System.assertEquals(true, con.GSP_Primary_Contact__c);
     }
 
     @isTest

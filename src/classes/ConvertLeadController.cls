@@ -62,7 +62,7 @@ public with sharing class ConvertLeadController {
             if (cr.contactId != null) {
                 Contact c = [SELECT Id, Lead_Cycle_Count__c FROM Contact WHERE Id = :cr.contactId LIMIT 1];
                 c.Status__c = String.isNotBlank(contactStatus) ? contactStatus : '1- Working - Active Opp Development';
-                c.GSP_Primary_Contact__c = gspPrimaryContact == true;
+                c.GSP_Primary_Contact__c = gspPrimaryContact;
                 c.Last_Lead_Outcome__c = conversionOutcome;
                 c.Last_Lead_Context__c = dispositionNotes;
                 c.Follow_up_Date__c = reEngageDate;
