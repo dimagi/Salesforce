@@ -86,6 +86,9 @@ public with sharing class ConvertLeadController {
                 opp.Renewal_expected__c = true;
                 opp.Opportunity_Owner_Division__c = currentLead.Opportunity_Owner_Division__c;
                 opp.Opportunity_Owner_Sub_Division__c = currentLead.Opportunity_Owner_Sub_Division__c;
+                opp.Expected_Buffer__c = 0;
+                opp.Execution_Owner_Division__c = currentLead.Opportunity_Owner_Division__c;
+                opp.Execution_Owner_Practice__c = currentLead.Opportunity_Owner_Sub_Division__c;
 
                 List<Business_Unit__c> bus = [SELECT Id FROM Business_Unit__c WHERE Name = 'Inc' LIMIT 1];
                 if (!bus.isEmpty()) {
