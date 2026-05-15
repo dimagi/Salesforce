@@ -75,7 +75,7 @@ public with sharing class ConvertLeadController {
             // Set Opportunity defaults — mirrors the existing LeadConversionController behavior
             if (cr.opportunityId != null) {
                 Opportunity opp = new Opportunity(Id = cr.opportunityId);
-                opp.StageName = 'Stage 3 - Prospect';
+                opp.StageName = 'Stage 4 - Proposal Development';
                 opp.Probability = 20;
                 opp.of_Execution_budget_for_GS__c = 0;
                 opp.Channel_Response__c = 'Inside Sales';

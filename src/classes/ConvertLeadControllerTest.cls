@@ -54,7 +54,7 @@ public class ConvertLeadControllerTest {
         System.assertEquals('Open - Not Contacted', updatedLead.Lead_Stage_at_Exit__c);
 
         Opportunity opp = [SELECT StageName, Probability FROM Opportunity WHERE Id = :result.opportunityId];
-        System.assertEquals('Stage 3 - Prospect', opp.StageName);
+        System.assertEquals('Stage 4 - Proposal Development', opp.StageName);
         System.assertEquals(20, opp.Probability);
 
         Contact con = [SELECT Status__c, GSP_Primary_Contact__c, Last_Lead_Outcome__c,
