@@ -213,6 +213,53 @@ public class ConvertLeadControllerTest {
         System.assertEquals('Detail Co', result.Company);
     }
 
+    @isTest
+    static void testGetSuggestedMatchesWithAccountNameLookup() {
+        Account acc = new Account(Name = 'Suggested Corp');
+        insert acc;
+        Contact con = new Contact(FirstName = 'Match', LastName = 'Person', AccountId = acc.Id, Email = 'match@suggested.com');
+        insert con;
+        Lead testLead = makeTestLead('Suggested Corp');
+        testLead.account_name__c = acc.Id;
+        testLead.Email = 'match@suggested.com';
+        insert testLead;
+
+        Test.startTest();
+        ConvertLeadController.SuggestedMatches m = ConvertLeadController.getSuggestedMatches(testLead.Id);
+        Test.stopTest();
+
+        System.assertEquals(acc.Id, m.accountId, 'Should match account via account_name__c lookup');
+        System.assertEquals(con.Id, m.contactId, 'Should match contact via email');
+    }
+
+    @isTest
+    static void testGetSuggestedMatchesWithCompanyName() {
+        Account acc = new Account(Name = 'CompanyMatch Corp');
+        insert acc;
+        Lead testLead = makeTestLead('CompanyMatch Corp');
+        insert testLead;
+
+        Test.startTest();
+        ConvertLeadController.SuggestedMatches m = ConvertLeadController.getSuggestedMatches(testLead.Id);
+        Test.stopTest();
+
+        System.assertEquals(acc.Id, m.accountId, 'Should match account via Company name');
+        System.assertEquals(null, m.contactId, 'No contact match expected');
+    }
+
+    @isTest
+    static void testGetSuggestedMatchesNoMatch() {
+        Lead testLead = makeTestLead('No Match Co XYZ');
+        insert testLead;
+
+        Test.startTest();
+        ConvertLeadController.SuggestedMatches m = ConvertLeadController.getSuggestedMatches(testLead.Id);
+        Test.stopTest();
+
+        System.assertEquals(null, m.accountId);
+        System.assertEquals(null, m.contactId);
+    }
+
     // ── ArchiveLeadController ──────────────────────────────────────────────────
 
     @isTest
