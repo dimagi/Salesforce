@@ -260,6 +260,38 @@ public class ConvertLeadControllerTest {
         System.assertEquals(null, m.contactId);
     }
 
+    @isTest
+    static void testConvertLeadRest() {
+        Lead testLead = makeTestLead('REST Test Co');
+        insert testLead;
+
+        RestRequest req = new RestRequest();
+        req.requestURI = '/services/apexrest/convert-lead/';
+        req.httpMethod = 'POST';
+        req.requestBody = Blob.valueOf(JSON.serialize(new Map<String, Object>{
+            'leadId'               => testLead.Id,
+            'conversionOutcome'    => 'With Opportunity',
+            'dispositionNotes'     => 'REST call test',
+            'reEngagementPathway'  => null,
+            'reEngageDate'         => null,
+            'existingAccountId'    => null,
+            'existingContactId'    => null,
+            'opportunityName'      => 'REST Test Co - Deal',
+            'contactStatus'        => '1- Working - Active Opp Development',
+            'gspPrimaryContact'    => false
+        }));
+        RestContext.request  = req;
+        RestContext.response = new RestResponse();
+
+        Test.startTest();
+        ConvertLeadController.ConvertResult result = ConvertLeadController.convertLeadRest();
+        Test.stopTest();
+
+        System.assert(result.success, 'REST conversion failed: ' + result.errorMessage);
+        System.assertNotEquals(null, result.opportunityId, 'Opportunity should be created via REST');
+        System.assertNotEquals(null, result.contactId, 'Contact should be created via REST');
+    }
+
     // ── ArchiveLeadController ──────────────────────────────────────────────────
 
     @isTest

@@ -1,4 +1,29 @@
-public with sharing class ConvertLeadController {
+@RestResource(urlMapping='/convert-lead/*')
+global with sharing class ConvertLeadController {
+
+    @HttpPost
+    global static ConvertResult convertLeadRest() {
+        Map<String, Object> body = (Map<String, Object>) JSON.deserializeUntyped(
+            RestContext.request.requestBody.toString()
+        );
+
+        Id leadId                  = body.containsKey('leadId')             ? (Id)     body.get('leadId')             : null;
+        String conversionOutcome   = body.containsKey('conversionOutcome')  ? (String) body.get('conversionOutcome')  : null;
+        String dispositionNotes    = body.containsKey('dispositionNotes')   ? (String) body.get('dispositionNotes')   : null;
+        String reEngagementPathway = body.containsKey('reEngagementPathway')? (String) body.get('reEngagementPathway'): null;
+        Date reEngageDate          = body.containsKey('reEngageDate') && body.get('reEngageDate') != null
+                                        ? Date.valueOf((String) body.get('reEngageDate'))
+                                        : null;
+        Id existingAccountId       = body.containsKey('existingAccountId')  ? (Id)      body.get('existingAccountId') : null;
+        Id existingContactId       = body.containsKey('existingContactId')  ? (Id)      body.get('existingContactId') : null;
+        String opportunityName     = body.containsKey('opportunityName')    ? (String)  body.get('opportunityName')   : null;
+        String contactStatus       = body.containsKey('contactStatus')      ? (String)  body.get('contactStatus')     : null;
+        Boolean gspPrimaryContact  = body.containsKey('gspPrimaryContact')  ? (Boolean) body.get('gspPrimaryContact') : false;
+
+        return convertLead(leadId, conversionOutcome, dispositionNotes, reEngagementPathway,
+                           reEngageDate, existingAccountId, existingContactId,
+                           opportunityName, contactStatus, gspPrimaryContact);
+    }
 
     @AuraEnabled
     public static ConvertResult convertLead(
@@ -167,7 +192,7 @@ public with sharing class ConvertLeadController {
         return m;
     }
 
-    public class SuggestedMatches {
+    global class SuggestedMatches {
         @AuraEnabled public Id accountId;
         @AuraEnabled public String accountName;
         @AuraEnabled public Id contactId;
@@ -177,7 +202,7 @@ public with sharing class ConvertLeadController {
         @AuraEnabled public Boolean contactGspPrimaryContact;
     }
 
-    public class ConvertResult {
+    global class ConvertResult {
         @AuraEnabled public Boolean success;
         @AuraEnabled public String errorMessage;
         @AuraEnabled public Id accountId;
