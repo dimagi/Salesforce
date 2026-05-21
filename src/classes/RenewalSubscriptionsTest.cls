@@ -74,7 +74,7 @@ public class RenewalSubscriptionsTest {
         Accounting_SoftwarePlanVersion__c planVersion3 = new Accounting_SoftwarePlanVersion__c(Server_Name__c = 'CommCareHQ', Accounting_SoftwarePlan__c = softwarePlan3.Id);
         insert planVersion3;
 
-        Accounting_Subscription__c subscription1 = new Accounting_Subscription__c(Server_Name__c = 'CommCareHQ', is_trial__c = false, date_start__c = Date.newInstance(2023, 1, 1), date_end__c = Date.newInstance(2023, 6, 14), service_type__c = 'Implementation', is_active__c = true,
+        Accounting_Subscription__c subscription1 = new Accounting_Subscription__c(Server_Name__c = 'CommCareHQ', is_trial__c = false, date_start__c = Date.newInstance(2023, 1, 1), date_end__c = Date.newInstance(2023, 6, 14), service_type__c = 'Product', is_active__c = true,
                                                                                   account__c = billingAccount1.Id, Accounting_subscriber_domain__c = domain1.Id, plan_version__c = planVersion1.Id);
         insert subscription1; // should create
 
@@ -84,7 +84,7 @@ public class RenewalSubscriptionsTest {
         Accounting_Subscription__c subscription3 = new Accounting_Subscription__c(Server_Name__c = 'CommCareHQ', is_trial__c = false, date_start__c = Date.newInstance(2023, 6, 1), date_end__c = Date.newInstance(2023, 6, 13), service_type__c = 'Implementation', is_active__c = true,
                                                                                   account__c = billingAccount3.Id, Accounting_subscriber_domain__c = domain2.Id, plan_version__c = planVersion2.Id);
         insert subscription3;
-        Accounting_Subscription__c subscription4 = new Accounting_Subscription__c(Server_Name__c = 'CommCareHQ', is_trial__c = false, date_start__c = Date.newInstance(2023, 6, 13), date_end__c = Date.newInstance(2024, 8, 1), service_type__c = 'Implementation', is_active__c = true,
+        Accounting_Subscription__c subscription4 = new Accounting_Subscription__c(Server_Name__c = 'CommCareHQ', is_trial__c = false, date_start__c = Date.newInstance(2023, 6, 13), date_end__c = Date.newInstance(2024, 8, 1), service_type__c = 'Product', is_active__c = true,
                                                                                   account__c = billingAccount4.Id, Accounting_subscriber_domain__c = domain2.Id, plan_version__c = planVersion2.Id);
         insert subscription4; // has future subscription no create
 
@@ -120,7 +120,7 @@ public class RenewalSubscriptionsTest {
 		system.debug('oppsssss :' + opps.get(0).name);
         
         System.assertEquals('contact_1@dimagi.com', opp1.Prior_Dimagi_contact__c);
-        System.assertEquals('Test Account-Pro-Implementation Renewal 06112023', opp1.Name);
+        System.assertEquals('Test Account-Pro Renewal 06112023', opp1.Name);
         System.assertEquals(30, opp1.Subscriptions_web_users__c);
         System.assertEquals(12, opp1.Duration_months__c);
         System.assertEquals(100, opp1.Expected_Buffer__c);
