@@ -292,6 +292,52 @@ public class ConvertLeadControllerTest {
         System.assertNotEquals(null, result.contactId, 'Contact should be created via REST');
     }
 
+    @isTest
+    static void testConvertLeadRestLeadNotFound() {
+        RestRequest req = new RestRequest();
+        req.requestURI = '/services/apexrest/convert-lead/';
+        req.httpMethod = 'POST';
+        req.requestBody = Blob.valueOf(JSON.serialize(new Map<String, Object>{
+            'leadId'            => '00Q000000000000AAA',
+            'conversionOutcome' => 'With Opportunity'
+        }));
+        RestContext.request  = req;
+        RestContext.response = new RestResponse();
+
+        Test.startTest();
+        ConvertLeadController.ConvertResult result = ConvertLeadController.convertLeadRest();
+        Test.stopTest();
+
+        System.assertEquals(false, result.success, 'Should report failure for missing lead');
+        System.assert(String.isNotBlank(result.errorMessage), 'Should include an error message');
+    }
+
+    @isTest
+    static void testGetSuggestedMatchesRest() {
+        Account acc = new Account(Name = 'REST Suggested Corp');
+        insert acc;
+        Contact con = new Contact(FirstName = 'REST', LastName = 'Match', AccountId = acc.Id, Email = 'restmatch@suggested.com');
+        insert con;
+        Lead testLead = makeTestLead('REST Suggested Corp');
+        testLead.account_name__c = acc.Id;
+        testLead.Email = 'restmatch@suggested.com';
+        insert testLead;
+
+        RestRequest req = new RestRequest();
+        req.requestURI = '/services/apexrest/convert-lead/';
+        req.httpMethod = 'GET';
+        req.params.put('leadId', testLead.Id);
+        RestContext.request  = req;
+        RestContext.response = new RestResponse();
+
+        Test.startTest();
+        ConvertLeadController.SuggestedMatches m = ConvertLeadController.getSuggestedMatchesRest();
+        Test.stopTest();
+
+        System.assertEquals(acc.Id, m.accountId, 'Should return account via REST');
+        System.assertEquals(con.Id, m.contactId, 'Should return contact via REST');
+    }
+
     // ── ArchiveLeadController ──────────────────────────────────────────────────
 
     @isTest

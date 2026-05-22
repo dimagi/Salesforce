@@ -1,6 +1,24 @@
 @RestResource(urlMapping='/convert-lead/*')
 global with sharing class ConvertLeadController {
 
+    @HttpGet
+    global static SuggestedMatches getSuggestedMatchesRest() {
+        Id leadId;
+        try {
+            leadId = (Id) RestContext.request.params.get('leadId');
+        } catch (Exception e) {
+            return new SuggestedMatches();
+        }
+        SuggestedMatches m = new SuggestedMatches();
+        if (leadId == null) return m;
+        try {
+            m = getSuggestedMatches(leadId);
+        } catch (Exception e) {
+            // return empty matches rather than HTTP 500
+        }
+        return m;
+    }
+
     @HttpPost
     global static ConvertResult convertLeadRest() {
         Map<String, Object> body = (Map<String, Object>) JSON.deserializeUntyped(
@@ -20,9 +38,25 @@ global with sharing class ConvertLeadController {
         String contactStatus       = body.containsKey('contactStatus')      ? (String)  body.get('contactStatus')     : null;
         Boolean gspPrimaryContact  = body.containsKey('gspPrimaryContact')  ? (Boolean) body.get('gspPrimaryContact') : false;
 
-        return convertLead(leadId, conversionOutcome, dispositionNotes, reEngagementPathway,
-                           reEngageDate, existingAccountId, existingContactId,
-                           opportunityName, contactStatus, gspPrimaryContact);
+        ConvertResult cr = new ConvertResult();
+        try {
+            List<Lead> leads = [SELECT Id, Status, Company,
+                                       Opportunity_Owner_Division__c,
+                                       Opportunity_Owner_Sub_Division__c
+                                FROM Lead WHERE Id = :leadId LIMIT 1];
+            if (leads.isEmpty()) {
+                cr.success = false;
+                cr.errorMessage = 'Lead not found or has been deleted.';
+                return cr;
+            }
+            cr = doConvertLead(leads[0], conversionOutcome, dispositionNotes, reEngagementPathway,
+                               reEngageDate, existingAccountId, existingContactId,
+                               opportunityName, contactStatus, gspPrimaryContact);
+        } catch (Exception e) {
+            cr.success = false;
+            cr.errorMessage = e.getMessage();
+        }
+        return cr;
     }
 
     @AuraEnabled
@@ -38,17 +72,33 @@ global with sharing class ConvertLeadController {
         String contactStatus,
         Boolean gspPrimaryContact
     ) {
-        // Capture current status before we change anything — this becomes Lead_Stage_at_Exit__c
-        List<Lead> leads = [SELECT Id, Status, Company, Opportunity_Owner_Division__c, Opportunity_Owner_Sub_Division__c
+        List<Lead> leads = [SELECT Id, Status, Company,
+                                   Opportunity_Owner_Division__c,
+                                   Opportunity_Owner_Sub_Division__c
                             FROM Lead WHERE Id = :leadId LIMIT 1];
         if (leads.isEmpty()) {
             throw new AuraHandledException('Lead not found or has been deleted.');
         }
-        Lead currentLead = leads[0];
+        return doConvertLead(leads[0], conversionOutcome, dispositionNotes, reEngagementPathway,
+                             reEngageDate, existingAccountId, existingContactId,
+                             opportunityName, contactStatus, gspPrimaryContact);
+    }
 
+    private static ConvertResult doConvertLead(
+        Lead currentLead,
+        String conversionOutcome,
+        String dispositionNotes,
+        String reEngagementPathway,
+        Date reEngageDate,
+        Id existingAccountId,
+        Id existingContactId,
+        String opportunityName,
+        String contactStatus,
+        Boolean gspPrimaryContact
+    ) {
         // Write context fields + stage at exit before calling convertLead, so the data is
         // preserved even if conversion fails and the rep needs to retry.
-        Lead leadUpdate = new Lead(Id = leadId);
+        Lead leadUpdate = new Lead(Id = currentLead.Id);
         leadUpdate.Conversion_Outcome__c = conversionOutcome;
         leadUpdate.Disposition_Notes__c = dispositionNotes;
         leadUpdate.Re_engagement_Pathway__c = reEngagementPathway;
@@ -59,7 +109,7 @@ global with sharing class ConvertLeadController {
         Boolean createOpportunity = conversionOutcome == 'With Opportunity';
 
         Database.LeadConvert lc = new Database.LeadConvert();
-        lc.setLeadId(leadId);
+        lc.setLeadId(currentLead.Id);
         lc.setConvertedStatus('Converted');
         lc.setDoNotCreateOpportunity(!createOpportunity);
 
@@ -91,7 +141,7 @@ global with sharing class ConvertLeadController {
             if (cr.contactId != null) {
                 Contact c = [SELECT Id, Lead_Cycle_Count__c, Lead__c FROM Contact WHERE Id = :cr.contactId LIMIT 1];
                 c.Status__c = String.isNotBlank(contactStatus) ? contactStatus : '1- Working - Active Opp Development';
-                if (c.Lead__c == null) c.Lead__c = leadId;
+                if (c.Lead__c == null) c.Lead__c = currentLead.Id;
                 c.GSP_Primary_Contact__c = gspPrimaryContact;
                 c.Last_Lead_Outcome__c = conversionOutcome;
                 c.Last_Lead_Context__c = dispositionNotes;
@@ -119,7 +169,7 @@ global with sharing class ConvertLeadController {
                 opp.Expected_Buffer__c = 0;
                 opp.Execution_Owner_Division__c = currentLead.Opportunity_Owner_Division__c;
                 opp.Execution_Owner_Practice__c = currentLead.Opportunity_Owner_Sub_Division__c;
-                opp.Source_Lead__c = leadId;
+                opp.Source_Lead__c = currentLead.Id;
 
                 List<Business_Unit__c> bus = [SELECT Id FROM Business_Unit__c WHERE Name = 'Inc' LIMIT 1];
                 if (!bus.isEmpty()) {
