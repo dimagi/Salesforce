@@ -20,7 +20,6 @@ public class RenewalSubscriptionsTest {
         settings.Product_Enterprise_Owner__c = 'FirstName LastName';
 
         settings.Error_Emails__c = 'dimagiErrors@dimagi.com';
-        settings.Pro__c = 750;
         insert settings;
     }
 
@@ -67,7 +66,11 @@ public class RenewalSubscriptionsTest {
         Accounting_Softwareplan__c softwarePlan3 = new Accounting_Softwareplan__c(Server_Name__c = 'CommCareHQ', edition__c = 'Standard');
         insert softwarePlan3;
 
-        Accounting_SoftwarePlanVersion__c planVersion1 = new Accounting_SoftwarePlanVersion__c(Server_Name__c = 'CommCareHQ', Accounting_SoftwarePlan__c = softwarePlan1.Id);
+        // SAL-515: rate drives the subscription's current monthly fee (formula); planVersion1 -> $778.
+        Accounting_SoftwareProductRate__c proRate = new Accounting_SoftwareProductRate__c(Server_Name__c = 'CommCareHQ', monthly_fee__c = 778);
+        insert proRate;
+
+        Accounting_SoftwarePlanVersion__c planVersion1 = new Accounting_SoftwarePlanVersion__c(Server_Name__c = 'CommCareHQ', Accounting_SoftwarePlan__c = softwarePlan1.Id, Software_Product_Rate__c = proRate.Id);
         insert planVersion1;
         Accounting_SoftwarePlanVersion__c planVersion2 = new Accounting_SoftwarePlanVersion__c(Server_Name__c = 'CommCareHQ', Accounting_SoftwarePlan__c = softwarePlan2.Id);
         insert planVersion2;
@@ -143,7 +146,8 @@ public class RenewalSubscriptionsTest {
         opp1Products = [SELECT Id, Quantity, UnitPrice FROM OpportunityLineItem WHERE OpportunityId =: opp1.Id and ProductCode = 'Pro'];
         System.assertEquals(1, opp1Products.size());
         System.assertEquals(12, opp1Products.get(0).Quantity);
-        System.assertEquals(750, opp1Products.get(0).UnitPrice);
+        // SAL-515: priced from the subscription's current monthly fee ($778), not the custom setting.
+        System.assertEquals(778, opp1Products.get(0).UnitPrice);
 
         Opportunity opp2 = opps.get(1);
 
@@ -164,7 +168,8 @@ public class RenewalSubscriptionsTest {
         opp2Products = [SELECT Id, Quantity, UnitPrice FROM OpportunityLineItem WHERE OpportunityId =: opp2.Id and ProductCode = 'Standard'];
         System.assertEquals(1, opp2Products.size());
         System.assertEquals(12, opp2Products.get(0).Quantity);
-        System.assertEquals(100, opp2Products.get(0).UnitPrice);
+        // SAL-515: subscription has no rate, so it falls back to the Dimagi Pricebook list price ($500).
+        System.assertEquals(500, opp2Products.get(0).UnitPrice);
 
         futureList = batchJob.getFutureSubscriptions();
         System.assertEquals(1, futureList.size());

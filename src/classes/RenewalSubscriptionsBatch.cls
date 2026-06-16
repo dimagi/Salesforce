@@ -17,7 +17,6 @@ public without sharing class RenewalSubscriptionsBatch implements Database.Batch
 
     private Map<String, PricebookEntry> priceBookEntries;
     private PricebookEntry commCareEntry;
-    private Map<String, Decimal> salesPrices;
     private Set<Id> domainsToSkip;
 
     public RenewalSubscriptionsBatch () {
@@ -74,15 +73,6 @@ public without sharing class RenewalSubscriptionsBatch implements Database.Batch
             ex.setMessage('Cannot find price book entries');
             throw ex;
         }
-
-        this.salesPrices = new Map<String, Decimal>();
-        this.salesPrices.put('Community', this.settings.Community__c != null ? this.settings.Community__c : 0);
-        this.salesPrices.put('Standard', this.settings.Standard__c != null ? this.settings.Standard__c : 100);
-        this.salesPrices.put('Pro', this.settings.Pro__c != null ? this.settings.Pro__c : 500);
-        this.salesPrices.put('Advanced', this.settings.Advanced__c != null ? this.settings.Advanced__c : 1000);
-        this.salesPrices.put('Enterprise', this.settings.Enterprise__c != null ? this.settings.Enterprise__c : 2000);
-        this.salesPrices.put('Managed Hosting', this.settings.Managed_Hosting__c != null ? this.settings.Managed_Hosting__c : 2000);
-        this.salesPrices.put('Reseller', this.settings.Reseller__c != null ? this.settings.Reseller__c : 500);
 
         return getSubscriptionsForRenewal(domainsWithFutureSubscriptions);
     }
@@ -168,7 +158,11 @@ system.debug('==' + this.incBusinessUnit);
 
                 PricebookEntry pbe = this.priceBookEntries.get(subscription.Software_Plan_Edition__c);
                 system.debug('pbe==> '+pbe);
-                Decimal price = this.salesPrices.get(subscription.Software_Plan_Edition__c);
+                // SAL-515: price the renewal from the subscription's current monthly fee;
+                // fall back to the Pricebook list price (no custom setting / hardcoded values).
+                Decimal price = (subscription.accounting_software_monthly_fee__c != null && subscription.accounting_software_monthly_fee__c > 0)
+                                    ? subscription.accounting_software_monthly_fee__c
+                                    : (pbe != null ? pbe.UnitPrice : null);
                 if (pbe == null || price == null) {
     System.debug(' Missing Pricebook entry or price for edition: ' + subscription.Software_Plan_Edition__c);
     StatusLoggerUtils.logError(
@@ -252,7 +246,7 @@ for (Accounting_Subscription_service_type__mdt record : [SELECT service_types__c
     service_type.add(serviceType);
 }
         return [SELECT Id, Name, date_start__c, date_end__c, service_type__c, Accounting_subscriber_domain__c, Accounting_subscriber_domain__r.Name, Dimagi_Contact__c, Accounting_subscriber_domain__r.Account__r.Name,
-                Accounting_subscriber_domain__r.cpAllWebUsers__c, Software_Plan_Edition__c,
+                Accounting_subscriber_domain__r.cpAllWebUsers__c, Software_Plan_Edition__c, accounting_software_monthly_fee__c,
                 Accounting_subscriber_domain__r.Opportunity__r.CreatedDate, Accounting_subscriber_domain__r.Opportunity__c,
                 Accounting_subscriber_domain__r.Opportunity__r.CloseDate, Accounting_subscriber_domain__r.Opportunity__r.IsClosed
                 FROM Accounting_Subscription__c
