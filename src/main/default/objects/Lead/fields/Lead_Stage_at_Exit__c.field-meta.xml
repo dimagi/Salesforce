@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Lead_Stage_at_Exit__c</fullName>
+    <description>Auto-populated by flow from Prior_Lead_Status__c</description>
+    <inlineHelpText>Auto-populated by flow from Prior_Lead_Status__c</inlineHelpText>
+    <label>Lead Stage at Exit</label>
+    <required>false</required>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <type>Picklist</type>
+    <valueSet>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>Open - Not Contacted</fullName>
+                <default>false</default>
+                <label>Open - Not Contacted</label>
+            </value>
+            <value>
+                <fullName>Stage 1 - Contacted</fullName>
+                <default>false</default>
+                <label>Stage 1 - Contacted</label>
+            </value>
+            <value>
+                <fullName>Stage 2 - Scheduled</fullName>
+                <default>false</default>
+                <label>Stage 2 - Scheduled</label>
+            </value>
+            <value>
+                <fullName>Stage 3 - Deal Shaping</fullName>
+                <default>false</default>
+                <label>Stage 3 - Deal Shaping</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

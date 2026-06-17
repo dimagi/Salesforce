@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Last_Lead_Outcome__c</fullName>
+    <description>The Conversion Outcome or archive summary from the most recent lead cycle targeting this contact. Updated by the Contact Updater flow.</description>
+    <label>Last Lead Outcome</label>
+    <length>255</length>
+    <required>false</required>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <type>Text</type>
+    <unique>false</unique>
+</CustomField>

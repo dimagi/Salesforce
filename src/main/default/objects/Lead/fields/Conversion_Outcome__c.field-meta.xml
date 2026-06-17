@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Conversion_Outcome__c</fullName>
+    <inlineHelpText>Tracks conversion outcome</inlineHelpText>
+    <label>Conversion Outcome</label>
+    <required>false</required>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <type>Picklist</type>
+    <valueSet>
+        <restricted>true</restricted>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>With Opportunity</fullName>
+                <default>false</default>
+                <label>With Opportunity</label>
+            </value>
+            <value>
+                <fullName>Contact Only - Nurture</fullName>
+                <default>false</default>
+                <label>Contact Only - Nurture</label>
+            </value>
+            <value>
+                <fullName>Contact Only - Passive</fullName>
+                <default>false</default>
+                <label>Contact Only - Passive</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>
