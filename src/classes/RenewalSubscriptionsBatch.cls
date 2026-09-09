@@ -39,7 +39,6 @@ public without sharing class RenewalSubscriptionsBatch implements Database.Batch
         this.settings = Subscription_Renewal_Settings__c.getOrgDefaults();
 
         this.incBusinessUnit = [SELECT Id FROM Business_Unit__c WHERE Name =: settings.Default_Business_Unit__c];
-		system.debug('==' + this.incBusinessUnit);
         this.implementationNonEnterpriseOwner = [SELECT Id FROM User WHERE Name =: settings.Implementation_non_Enterprise_Owner__c];
         this.implementationEnterpriseOwner = [SELECT Id FROM User WHERE Name =: settings.Implementation_Enterprise_Owner__c];
         this.productNonEnterpriseOwner = [SELECT Id FROM User WHERE Name =: settings.Product_non_Enterprise_Owner__c];
@@ -101,24 +100,14 @@ public without sharing class RenewalSubscriptionsBatch implements Database.Batch
                                 + (this.currentDate.day() < 10 ? '0' + this.currentDate.day() : '' + this.currentDate.day())
                                 + ('' + this.currentDate.year());
 
-        // Pick at most one subscription per domain - the one ending furthest out - across
-        // the FULL dataset. Comparing date_end__c directly (rather than relying on query
-        // order) keeps this correct regardless of what order execute() chunks run in.
-        Map<Id, Accounting_Subscription__c> chosenSubscriptionByDomain = new Map<Id, Accounting_Subscription__c>();
-        for (Accounting_Subscription__c subscription : this.collectedSubscriptions) {
-            Id domainId = subscription.Accounting_subscriber_domain__c;
-            Accounting_Subscription__c current = chosenSubscriptionByDomain.get(domainId);
-            if (current == null || subscription.date_end__c > current.date_end__c) {
-                chosenSubscriptionByDomain.put(domainId, subscription);
-            }
-        }
-
-        // Group those per-domain subscriptions by billing account (Accounting_BillingAccount__c),
-        // so a grouped subscription with several project-space domains produces ONE renewal
-        // Opportunity instead of one per domain. A subscription with no billing account
-        // (Account__c null) falls back to being its own single-domain group.
+        // Group by billing account (Accounting_BillingAccount__c), so a grouped subscription
+        // with several project-space domains produces ONE renewal Opportunity instead of one
+        // per domain. A subscription with no billing account (Account__c null) falls back to
+        // being its own single-domain group. Every eligible subscription is kept here (not
+        // reduced to one per domain yet) - a domain with more than one candidate still needs
+        // all of them available in case its best candidate fails validation below.
         Map<Id, List<Accounting_Subscription__c>> subscriptionsByGroup = new Map<Id, List<Accounting_Subscription__c>>();
-        for (Accounting_Subscription__c subscription : chosenSubscriptionByDomain.values()) {
+        for (Accounting_Subscription__c subscription : this.collectedSubscriptions) {
             Id groupKey = subscription.Account__c != null ? subscription.Account__c : subscription.Accounting_subscriber_domain__c;
             if (!subscriptionsByGroup.containsKey(groupKey)) {
                 subscriptionsByGroup.put(groupKey, new List<Accounting_Subscription__c>());
@@ -128,43 +117,84 @@ public without sharing class RenewalSubscriptionsBatch implements Database.Batch
 
         for (List<Accounting_Subscription__c> groupSubs : subscriptionsByGroup.values()) {
 
-            // If any domain in the group already has an open (or very recently closed) renewal
-            // Opportunity, the group has already been handled - don't create another one.
-            Boolean groupAlreadyHasOpp = false;
+            // Drop candidates whose domain already has an open (or very recently closed)
+            // renewal Opportunity - that domain has already been handled. Domains that
+            // don't still get a shared Opportunity, even if a sibling domain in the same
+            // group already has one from a prior run.
+            List<Accounting_Subscription__c> eligibleSubs = new List<Accounting_Subscription__c>();
             for (Accounting_Subscription__c s : groupSubs) {
-                if (s.Accounting_subscriber_domain__r.Opportunity__c != null &&
+                Boolean domainAlreadyHasOpp = s.Accounting_subscriber_domain__r.Opportunity__c != null &&
                      (s.Accounting_subscriber_domain__r.Opportunity__r.IsClosed == false ||
-                       (s.Accounting_subscriber_domain__r.Opportunity__r.IsClosed == true && s.Accounting_subscriber_domain__r.Opportunity__r.CloseDate >= this.currentDate))) {
-                    groupAlreadyHasOpp = true;
-                    break;
+                       (s.Accounting_subscriber_domain__r.Opportunity__r.IsClosed == true && s.Accounting_subscriber_domain__r.Opportunity__r.CloseDate >= this.currentDate));
+                if (!domainAlreadyHasOpp) {
+                    eligibleSubs.add(s);
                 }
             }
-            if (groupAlreadyHasOpp) {
+            if (eligibleSubs.isEmpty()) {
                 continue;
             }
 
-            // Represent the group with the subscription that's actually billed
-            // (do_not_invoice__c = false) where one exists, otherwise the domain ending soonest.
-            Accounting_Subscription__c subscription = pickRepresentativeSubscription(groupSubs);
+            // Prefer the subscription that's actually billed (do_not_invoice__c = false),
+            // then the one ending soonest, then Id - fully deterministic regardless of
+            // execute() chunk arrival order. Walk candidates in that order and use the
+            // first one that's actually renewable, so one bad candidate (unmatched service
+            // type, missing Pricebook entry) doesn't take the whole group down with it.
+            eligibleSubs.sort(new RepresentativeCandidateComparator());
 
+            Accounting_Subscription__c subscription = null;
             String oppSource = '';
             Id ownerId = null;
-            if (subscription.service_type__c == 'IMPLEMENTATION' && subscription.Software_Plan_Edition__c != 'Enterprise') {
-                oppSource = IMPL_RENEWAL;
-                ownerId = this.implementationNonEnterpriseOwner.Id;
-            } else if (subscription.service_type__c == 'IMPLEMENTATION' && subscription.Software_Plan_Edition__c == 'Enterprise') {
-                oppSource = IMPL_RENEWAL;
-                ownerId = this.implementationEnterpriseOwner.Id;
-            } else if ((subscription.service_type__c == 'PRODUCT' || subscription.service_type__c == 'TRIAL' || subscription.service_type__c == 'NOT_SET')
-                            && subscription.Software_Plan_Edition__c != 'Enterprise') {
-                oppSource = PROD_RENEWAL;
-                ownerId = this.productNonEnterpriseOwner.Id;
-            } else if ((subscription.service_type__c == 'PRODUCT' || subscription.service_type__c == 'TRIAL' || subscription.service_type__c == 'NOT_SET')
-                            && subscription.Software_Plan_Edition__c == 'Enterprise') {
-                oppSource = PROD_RENEWAL;
-                ownerId = this.productEnterpriseOwner.Id;
-            } else {
-                continue; // representative subscription's service type isn't renewable - skip this group
+            PricebookEntry pbe = null;
+            Decimal price = null;
+
+            for (Accounting_Subscription__c candidate : eligibleSubs) {
+                String candidateOppSource = '';
+                Id candidateOwnerId = null;
+                if (candidate.service_type__c == 'IMPLEMENTATION' && candidate.Software_Plan_Edition__c != 'Enterprise') {
+                    candidateOppSource = IMPL_RENEWAL;
+                    candidateOwnerId = this.implementationNonEnterpriseOwner.Id;
+                } else if (candidate.service_type__c == 'IMPLEMENTATION' && candidate.Software_Plan_Edition__c == 'Enterprise') {
+                    candidateOppSource = IMPL_RENEWAL;
+                    candidateOwnerId = this.implementationEnterpriseOwner.Id;
+                } else if ((candidate.service_type__c == 'PRODUCT' || candidate.service_type__c == 'TRIAL' || candidate.service_type__c == 'NOT_SET')
+                                && candidate.Software_Plan_Edition__c != 'Enterprise') {
+                    candidateOppSource = PROD_RENEWAL;
+                    candidateOwnerId = this.productNonEnterpriseOwner.Id;
+                } else if ((candidate.service_type__c == 'PRODUCT' || candidate.service_type__c == 'TRIAL' || candidate.service_type__c == 'NOT_SET')
+                                && candidate.Software_Plan_Edition__c == 'Enterprise') {
+                    candidateOppSource = PROD_RENEWAL;
+                    candidateOwnerId = this.productEnterpriseOwner.Id;
+                } else {
+                    continue; // this candidate's service type isn't renewable - try the next one
+                }
+
+                PricebookEntry candidatePbe = this.priceBookEntries.get(candidate.Software_Plan_Edition__c);
+                // SAL-515: price the renewal from the subscription's current monthly fee;
+                // fall back to the Pricebook list price (no custom setting / hardcoded values).
+                Decimal candidatePrice = (candidate.accounting_software_monthly_fee__c != null && candidate.accounting_software_monthly_fee__c > 0)
+                                    ? candidate.accounting_software_monthly_fee__c
+                                    : (candidatePbe != null ? candidatePbe.UnitPrice : null);
+                if (candidatePbe == null || candidatePrice == null) {
+                    System.debug(' Missing Pricebook entry or price for edition: ' + candidate.Software_Plan_Edition__c);
+                    StatusLoggerUtils.logError(
+                        StatusLoggerUtils.RENEWAL_LOGGER,
+                        candidate.Name,
+                        0,
+                        'Missing Pricebook entry or price for edition: ' + candidate.Software_Plan_Edition__c
+                    );
+                    continue; // this candidate has no usable price - try the next one
+                }
+
+                subscription = candidate;
+                oppSource = candidateOppSource;
+                ownerId = candidateOwnerId;
+                pbe = candidatePbe;
+                price = candidatePrice;
+                break;
+            }
+
+            if (subscription == null) {
+                continue; // nothing in this group could be turned into a valid Opportunity this run
             }
 
             String oppNameFirstPart = subscription.Accounting_subscriber_domain__r.Account__r.Name != null && subscription.Accounting_subscriber_domain__r.Account__r.Name != '' ?
@@ -185,9 +215,13 @@ public without sharing class RenewalSubscriptionsBatch implements Database.Batch
                                                     Expected_Buffer__c = 100,
                                                     of_Execution_budget_for_GS__c = 0,
                                                     CloseDate = subscription.date_end__c,
-                                                    // Domain_Name__c is a single lookup and can only reference the
-                                                    // representative domain - the full set of domains this
-                                                    // Opportunity covers is on Domain__c.Opportunity__c below.
+                                                    // Domain_Name__c, AccountId, Prior_Dimagi_contact__c and
+                                                    // Subscriptions_web_users__c all take a single value and can
+                                                    // only reflect the representative domain - the full set of
+                                                    // domains this Opportunity covers is on Domain__c.Opportunity__c
+                                                    // below. In observed data, grouped domains don't carry a CRM
+                                                    // Account of their own (Domain__c.Account__c is null), so this
+                                                    // hasn't been seen to diverge across a group in practice.
                                                     Domain_Name__c = subscription.Accounting_subscriber_domain__c,
                                                     StageName = 'Stage 3 - Prospect',
                                                     OwnerId = ownerId,
@@ -202,36 +236,26 @@ public without sharing class RenewalSubscriptionsBatch implements Database.Batch
                                                     AccountId = subscription.Accounting_subscriber_domain__r.Account__r.id
                                                 );
 
-            PricebookEntry pbe = this.priceBookEntries.get(subscription.Software_Plan_Edition__c);
-            // SAL-515: price the renewal from the subscription's current monthly fee;
-            // fall back to the Pricebook list price (no custom setting / hardcoded values).
-            Decimal price = (subscription.accounting_software_monthly_fee__c != null && subscription.accounting_software_monthly_fee__c > 0)
-                                ? subscription.accounting_software_monthly_fee__c
-                                : (pbe != null ? pbe.UnitPrice : null);
-            if (pbe == null || price == null) {
-                System.debug(' Missing Pricebook entry or price for edition: ' + subscription.Software_Plan_Edition__c);
-                StatusLoggerUtils.logError(
-                    StatusLoggerUtils.RENEWAL_LOGGER,
-                    subscription.Name,
-                    0,
-                    'Missing Pricebook entry or price for edition: ' + subscription.Software_Plan_Edition__c
-                );
-                continue; // skip this group safely
-            }
-
+            // Stamp every still-eligible domain in the group, not just the representative's -
+            // that's what makes next week's run skip them. Dedup by domain: eligibleSubs can
+            // hold more than one candidate for the same domain.
             List<Domain__c> domainsToUpdate = new List<Domain__c>();
-            for (Accounting_Subscription__c s : groupSubs) {
-                Domain__c domainToUpdate = domains.get(s.Accounting_subscriber_domain__c);
+            Set<Id> domainIdsAdded = new Set<Id>();
+            for (Accounting_Subscription__c s : eligibleSubs) {
+                Id domainId = s.Accounting_subscriber_domain__c;
+                if (domainIdsAdded.contains(domainId)) {
+                    continue;
+                }
+                Domain__c domainToUpdate = domains.get(domainId);
                 if (domainToUpdate != null) {
                     domainsToUpdate.add(domainToUpdate);
+                    domainIdsAdded.add(domainId);
                 }
             }
 
             Savepoint sp = Database.setSavepoint();
             try {
                 insert newOpp;
-                // Stamp every domain in the group, not just the representative's domain -
-                // that's what makes next week's run skip the whole group.
                 for (Domain__c domainToUpdate : domainsToUpdate) {
                     domainToUpdate.Opportunity__c = newOpp.Id;
                 }
@@ -249,26 +273,23 @@ public without sharing class RenewalSubscriptionsBatch implements Database.Batch
     }
 
     /**
-     * Picks the subscription to represent a grouped billing account's renewal Opportunity:
-     * the one actually billed (do_not_invoice__c = false) if one exists in the group,
-     * otherwise the domain ending soonest. Ties broken by earliest date_end__c.
+     * Orders a group's candidate subscriptions for representative selection: the one
+     * actually billed (do_not_invoice__c = false) first, then the one ending soonest,
+     * then Id - so the choice is fully deterministic regardless of the order execute()
+     * chunks happened to run in.
      */
-    private Accounting_Subscription__c pickRepresentativeSubscription(List<Accounting_Subscription__c> groupSubs) {
-        Accounting_Subscription__c best = null;
-        for (Accounting_Subscription__c s : groupSubs) {
-            if (s.do_not_invoice__c == false && (best == null || s.date_end__c < best.date_end__c)) {
-                best = s;
+    private class RepresentativeCandidateComparator implements Comparator<Accounting_Subscription__c> {
+        public Integer compare(Accounting_Subscription__c a, Accounting_Subscription__c b) {
+            Boolean aBilled = a.do_not_invoice__c == false;
+            Boolean bBilled = b.do_not_invoice__c == false;
+            if (aBilled != bBilled) {
+                return aBilled ? -1 : 1;
             }
-        }
-        if (best != null) {
-            return best;
-        }
-        for (Accounting_Subscription__c s : groupSubs) {
-            if (best == null || s.date_end__c < best.date_end__c) {
-                best = s;
+            if (a.date_end__c != b.date_end__c) {
+                return a.date_end__c < b.date_end__c ? -1 : 1;
             }
+            return a.Id < b.Id ? -1 : (a.Id > b.Id ? 1 : 0);
         }
-        return best;
     }
 
     public void finish(Database.BatchableContext context) {
@@ -317,6 +338,9 @@ for (Accounting_Subscription_service_type__mdt record : [SELECT service_types__c
                 FROM Accounting_Subscription__c
                 WHERE service_type__c NOT IN :service_type AND Accounting_subscriber_domain__r.Name != '' AND date_end__c != null AND date_end__c <=: this.currentDate.addDays(90)
                 AND date_end__c >=: this.currentDate AND Accounting_subscriber_domain__r.Name NOT IN: domainsWithFutureSubscriptions AND is_active__c = true
-                AND is_hidden_to_ops__c = false AND is_trial__c = false AND (Server_Name__c = 'CommCareHQ' OR Server_Name__c = 'CommCareHQ India' OR Server_Name__c = 'CommCareHQ EU') ORDER BY date_end__c DESC];
+                AND is_hidden_to_ops__c = false AND is_trial__c = false AND (Server_Name__c = 'CommCareHQ' OR Server_Name__c = 'CommCareHQ India' OR Server_Name__c = 'CommCareHQ EU')];
+                // No ORDER BY: representative selection in processCollectedSubscriptions()
+                // sorts explicitly and doesn't depend on query order (execute() chunk order
+                // isn't guaranteed either, so relying on this would have been unsafe anyway).
     }
 }
