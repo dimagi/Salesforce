@@ -177,12 +177,13 @@ public class RenewalSubscriptionsTest {
         System.assertEquals(2, renewalList.size());
         batchJob.start(null);
         batchJob.execute(null, renewalList);
+        batchJob.finish(null);
 
         opps = [SELECT Id, Name, Prior_Dimagi_contact__c, Subscriptions_web_users__c, Duration_months__c,
                                   Expected_Buffer__c, of_Execution_budget_for_GS__c, CloseDate, Domain_Name__c, Product_Text__c,
                                   StageName, Implementation_Type__c, Opportunity_Owning_Entity__c, Contract_Owner_BU__c,
                                   Implementing_Business_Unit__c, Opportunity_Source__c, Owner.Name FROM Opportunity ORDER BY Name DESC];
-        System.assertEquals(3, opps.size());
+        System.assertEquals(3, opps.size(), 'Domains already carrying an open renewal Opportunity should be skipped, not duplicated');
     }
 
     public static testMethod void shouldCreateNewOppWhenRenewalOppHaveClosedDateFromThePast() {
@@ -250,6 +251,217 @@ public class RenewalSubscriptionsTest {
         System.assertEquals('Old Renewal Opportunity', opp2.Name);
         Domain__c domainFromDB = [SELECT Id, Name, Opportunity__c FROM Domain__c WHERE Id =: domain1.Id];
         System.assertEquals(opp1.Id, domainFromDB.Opportunity__c);
+    }
+
+    public static testMethod void shouldCreateOneOppForGroupedBillingAccount() {
+        addTestData();
+        addTestPricebooks();
+
+        // One billing account grouping three project-space domains - the "grouped subscription" case.
+        Accounting_BillingAccount__c groupBillingAccount = new Accounting_BillingAccount__c(Server_Name__c = 'CommCareHQ', account_type__c = 'Grouped', is_active__c = true, created_by__c = 'test@dimagi.com', created_by_domain__c = 'domain_group_1', dimagi_contact__c = 'contact_2@dimagi.com');
+        insert groupBillingAccount;
+
+        Account groupAccount = new Account(Name = 'Grouped Test Account');
+        insert groupAccount;
+        Domain__c domainG1 = new Domain__c(Server_Name__c = 'CommCareHQ', Name = 'domain_group_1', cpAllWebUsers__c = 5, Account__c = groupAccount.Id);
+        insert domainG1;
+        Domain__c domainG2 = new Domain__c(Server_Name__c = 'CommCareHQ', Name = 'domain_group_2', cpAllWebUsers__c = 8, Account__c = groupAccount.Id);
+        insert domainG2;
+        Domain__c domainG3 = new Domain__c(Server_Name__c = 'CommCareHQ', Name = 'domain_group_3', cpAllWebUsers__c = 13, Account__c = groupAccount.Id);
+        insert domainG3;
+
+        Accounting_Softwareplan__c softwarePlanAdvanced = new Accounting_Softwareplan__c(Server_Name__c = 'CommCareHQ', edition__c = 'Advanced');
+        insert softwarePlanAdvanced;
+        Accounting_SoftwarePlanVersion__c planVersionAdvanced = new Accounting_SoftwarePlanVersion__c(Server_Name__c = 'CommCareHQ', Accounting_SoftwarePlan__c = softwarePlanAdvanced.Id);
+        insert planVersionAdvanced;
+
+        // Two non-billing domains (Do Not Invoice) and one billing domain (domainG3), all in the same group, all ending on the same date.
+        Accounting_Subscription__c subscriptionG1 = new Accounting_Subscription__c(Server_Name__c = 'CommCareHQ', is_trial__c = false, date_start__c = Date.newInstance(2023, 1, 1), date_end__c = Date.newInstance(2023, 7, 1), service_type__c = 'Product', is_active__c = true,
+                                                                                    account__c = groupBillingAccount.Id, Accounting_subscriber_domain__c = domainG1.Id, plan_version__c = planVersionAdvanced.Id, do_not_invoice__c = true);
+        insert subscriptionG1;
+        Accounting_Subscription__c subscriptionG2 = new Accounting_Subscription__c(Server_Name__c = 'CommCareHQ', is_trial__c = false, date_start__c = Date.newInstance(2023, 1, 1), date_end__c = Date.newInstance(2023, 7, 1), service_type__c = 'Product', is_active__c = true,
+                                                                                    account__c = groupBillingAccount.Id, Accounting_subscriber_domain__c = domainG2.Id, plan_version__c = planVersionAdvanced.Id, do_not_invoice__c = true);
+        insert subscriptionG2;
+        Accounting_Subscription__c subscriptionG3 = new Accounting_Subscription__c(Server_Name__c = 'CommCareHQ', is_trial__c = false, date_start__c = Date.newInstance(2023, 1, 1), date_end__c = Date.newInstance(2023, 7, 1), service_type__c = 'Product', is_active__c = true,
+                                                                                    account__c = groupBillingAccount.Id, Accounting_subscriber_domain__c = domainG3.Id, plan_version__c = planVersionAdvanced.Id, do_not_invoice__c = false);
+        insert subscriptionG3;
+
+        Test.startTest();
+        RenewalSubscriptionsBatch batchJob = new RenewalSubscriptionsBatch(Date.newInstance(2023, 6, 11));
+        List<Accounting_Subscription__c> renewalList = batchJob.getSubscriptionsForRenewal(new Set<String>());
+        System.assertEquals(3, renewalList.size());
+        Database.executeBatch(batchJob, 50);
+        Test.stopTest();
+
+        List<Opportunity> opps = [SELECT Id, Name, Domain_Name__c FROM Opportunity WHERE AccountId =: groupAccount.Id];
+        System.assertEquals(1, opps.size(), 'One grouped billing account should produce exactly one renewal Opportunity, not one per domain');
+        Opportunity groupOpp = opps.get(0);
+        System.assertEquals(domainG3.Id, groupOpp.Domain_Name__c, 'The billed (non Do-Not-Invoice) domain should represent the group');
+
+        List<OpportunityLineItem> lineItems = [SELECT Id FROM OpportunityLineItem WHERE OpportunityId =: groupOpp.Id];
+        System.assertEquals(1, lineItems.size());
+
+        Map<Id, Domain__c> domainsAfter = new Map<Id, Domain__c>([SELECT Id, Opportunity__c FROM Domain__c WHERE Id IN (:domainG1.Id, :domainG2.Id, :domainG3.Id)]);
+        System.assertEquals(groupOpp.Id, domainsAfter.get(domainG1.Id).Opportunity__c, 'Every domain in the group should be stamped with the shared Opportunity');
+        System.assertEquals(groupOpp.Id, domainsAfter.get(domainG2.Id).Opportunity__c, 'Every domain in the group should be stamped with the shared Opportunity');
+        System.assertEquals(groupOpp.Id, domainsAfter.get(domainG3.Id).Opportunity__c, 'Every domain in the group should be stamped with the shared Opportunity');
+    }
+
+    /**
+     * RenewalSubscriptionsScheduler runs this batch with a scope of 10, so execute() only
+     * ever sees a slice of the eligible subscriptions at a time - a grouped billing account
+     * with more members than that (see the TECHOPS-211 analysis) spans multiple execute()
+     * calls. This forces that with a scope of 1, so every subscription in the group lands in
+     * its own chunk, to prove grouping still collapses to a single Opportunity.
+     */
+    public static testMethod void shouldCreateOneOppForGroupSpanningMultipleBatchChunks() {
+        addTestData();
+        addTestPricebooks();
+
+        Accounting_BillingAccount__c groupBillingAccount = new Accounting_BillingAccount__c(Server_Name__c = 'CommCareHQ', account_type__c = 'Grouped', is_active__c = true, created_by__c = 'test@dimagi.com', created_by_domain__c = 'domain_chunk_1', dimagi_contact__c = 'contact_3@dimagi.com');
+        insert groupBillingAccount;
+
+        Account groupAccount = new Account(Name = 'Grouped Chunked Account');
+        insert groupAccount;
+        Domain__c domainC1 = new Domain__c(Server_Name__c = 'CommCareHQ', Name = 'domain_chunk_1', cpAllWebUsers__c = 5, Account__c = groupAccount.Id);
+        insert domainC1;
+        Domain__c domainC2 = new Domain__c(Server_Name__c = 'CommCareHQ', Name = 'domain_chunk_2', cpAllWebUsers__c = 8, Account__c = groupAccount.Id);
+        insert domainC2;
+        Domain__c domainC3 = new Domain__c(Server_Name__c = 'CommCareHQ', Name = 'domain_chunk_3', cpAllWebUsers__c = 13, Account__c = groupAccount.Id);
+        insert domainC3;
+
+        Accounting_Softwareplan__c softwarePlanAdvanced = new Accounting_Softwareplan__c(Server_Name__c = 'CommCareHQ', edition__c = 'Advanced');
+        insert softwarePlanAdvanced;
+        Accounting_SoftwarePlanVersion__c planVersionAdvanced = new Accounting_SoftwarePlanVersion__c(Server_Name__c = 'CommCareHQ', Accounting_SoftwarePlan__c = softwarePlanAdvanced.Id);
+        insert planVersionAdvanced;
+
+        Accounting_Subscription__c subscriptionC1 = new Accounting_Subscription__c(Server_Name__c = 'CommCareHQ', is_trial__c = false, date_start__c = Date.newInstance(2023, 1, 1), date_end__c = Date.newInstance(2023, 7, 1), service_type__c = 'Product', is_active__c = true,
+                                                                                    account__c = groupBillingAccount.Id, Accounting_subscriber_domain__c = domainC1.Id, plan_version__c = planVersionAdvanced.Id, do_not_invoice__c = true);
+        insert subscriptionC1;
+        Accounting_Subscription__c subscriptionC2 = new Accounting_Subscription__c(Server_Name__c = 'CommCareHQ', is_trial__c = false, date_start__c = Date.newInstance(2023, 1, 1), date_end__c = Date.newInstance(2023, 7, 1), service_type__c = 'Product', is_active__c = true,
+                                                                                    account__c = groupBillingAccount.Id, Accounting_subscriber_domain__c = domainC2.Id, plan_version__c = planVersionAdvanced.Id, do_not_invoice__c = true);
+        insert subscriptionC2;
+        Accounting_Subscription__c subscriptionC3 = new Accounting_Subscription__c(Server_Name__c = 'CommCareHQ', is_trial__c = false, date_start__c = Date.newInstance(2023, 1, 1), date_end__c = Date.newInstance(2023, 7, 1), service_type__c = 'Product', is_active__c = true,
+                                                                                    account__c = groupBillingAccount.Id, Accounting_subscriber_domain__c = domainC3.Id, plan_version__c = planVersionAdvanced.Id, do_not_invoice__c = false);
+        insert subscriptionC3;
+
+        Test.startTest();
+        RenewalSubscriptionsBatch batchJob = new RenewalSubscriptionsBatch(Date.newInstance(2023, 6, 11));
+        // Database.executeBatch always runs a List-returning start() as a single chunk in
+        // test context (Salesforce won't let a test force >1 chunk that way), so multiple
+        // execute() calls are driven directly here to simulate the group spanning chunks
+        // the way it would in production with a scope of 10.
+        List<Accounting_Subscription__c> renewalList = batchJob.start(null);
+        System.assertEquals(3, renewalList.size());
+        for (Accounting_Subscription__c subscription : renewalList) {
+            batchJob.execute(null, new List<Accounting_Subscription__c> { subscription });
+        }
+        batchJob.finish(null);
+        Test.stopTest();
+
+        List<Opportunity> opps = [SELECT Id, Domain_Name__c FROM Opportunity WHERE AccountId =: groupAccount.Id];
+        System.assertEquals(1, opps.size(), 'A group split across multiple execute() chunks should still produce exactly one Opportunity');
+        System.assertEquals(domainC3.Id, opps.get(0).Domain_Name__c, 'The billed (non Do-Not-Invoice) domain should represent the group');
+    }
+
+    /**
+     * If one domain in a group already carries its own Opportunity (e.g. left over from
+     * before this fix shipped), the rest of the group shouldn't be blocked from getting a
+     * shared renewal Opportunity of their own.
+     */
+    public static testMethod void shouldCreateSharedOppForRemainingDomainsWhenOneDomainAlreadyHasOpp() {
+        addTestData();
+        addTestPricebooks();
+
+        Accounting_BillingAccount__c groupBillingAccount = new Accounting_BillingAccount__c(Server_Name__c = 'CommCareHQ', account_type__c = 'Grouped', is_active__c = true, created_by__c = 'test@dimagi.com', created_by_domain__c = 'domain_mixed_1', dimagi_contact__c = 'contact_4@dimagi.com');
+        insert groupBillingAccount;
+
+        Account groupAccount = new Account(Name = 'Grouped Mixed Account');
+        insert groupAccount;
+        Domain__c domainM1 = new Domain__c(Server_Name__c = 'CommCareHQ', Name = 'domain_mixed_1', cpAllWebUsers__c = 5, Account__c = groupAccount.Id);
+        insert domainM1;
+        Domain__c domainM2 = new Domain__c(Server_Name__c = 'CommCareHQ', Name = 'domain_mixed_2', cpAllWebUsers__c = 8, Account__c = groupAccount.Id);
+        insert domainM2;
+        Domain__c domainM3 = new Domain__c(Server_Name__c = 'CommCareHQ', Name = 'domain_mixed_3', cpAllWebUsers__c = 13, Account__c = groupAccount.Id);
+        insert domainM3;
+
+        // domainM1 already has its own open renewal Opportunity, e.g. left over from before
+        // this grouping logic existed.
+        Business_Unit__c bizUnitMixed = new Business_Unit__c(Name = 'Test Business Unit Mixed');
+        Opportunity existingOpp = new Opportunity(Name = 'Existing Domain Opp', Business_Unit_Owner__c = bizUnitMixed.Id, StageName = 'Stage 5 - Submitted', Expense_Income__c = 0,
+                                                 CloseDate = Date.newInstance(2023, 7, 1), Probability = 30, Domain_Name__c = domainM1.Id,
+                                                 Opportunity_Owner_Division__c = 'Global Solutions', Opportunity_Owner_Sub_Division__c = 'USS Delivery', Country__c = 'a00b0000001AOufAAG');
+        insert existingOpp;
+        update new Domain__c(Id = domainM1.Id, Opportunity__c = existingOpp.Id);
+
+        Accounting_Softwareplan__c softwarePlanAdvanced = new Accounting_Softwareplan__c(Server_Name__c = 'CommCareHQ', edition__c = 'Advanced');
+        insert softwarePlanAdvanced;
+        Accounting_SoftwarePlanVersion__c planVersionAdvanced = new Accounting_SoftwarePlanVersion__c(Server_Name__c = 'CommCareHQ', Accounting_SoftwarePlan__c = softwarePlanAdvanced.Id);
+        insert planVersionAdvanced;
+
+        Accounting_Subscription__c subscriptionM1 = new Accounting_Subscription__c(Server_Name__c = 'CommCareHQ', is_trial__c = false, date_start__c = Date.newInstance(2023, 1, 1), date_end__c = Date.newInstance(2023, 7, 1), service_type__c = 'Product', is_active__c = true,
+                                                                                    account__c = groupBillingAccount.Id, Accounting_subscriber_domain__c = domainM1.Id, plan_version__c = planVersionAdvanced.Id, do_not_invoice__c = true);
+        insert subscriptionM1;
+        Accounting_Subscription__c subscriptionM2 = new Accounting_Subscription__c(Server_Name__c = 'CommCareHQ', is_trial__c = false, date_start__c = Date.newInstance(2023, 1, 1), date_end__c = Date.newInstance(2023, 7, 1), service_type__c = 'Product', is_active__c = true,
+                                                                                    account__c = groupBillingAccount.Id, Accounting_subscriber_domain__c = domainM2.Id, plan_version__c = planVersionAdvanced.Id, do_not_invoice__c = true);
+        insert subscriptionM2;
+        Accounting_Subscription__c subscriptionM3 = new Accounting_Subscription__c(Server_Name__c = 'CommCareHQ', is_trial__c = false, date_start__c = Date.newInstance(2023, 1, 1), date_end__c = Date.newInstance(2023, 7, 1), service_type__c = 'Product', is_active__c = true,
+                                                                                    account__c = groupBillingAccount.Id, Accounting_subscriber_domain__c = domainM3.Id, plan_version__c = planVersionAdvanced.Id, do_not_invoice__c = false);
+        insert subscriptionM3;
+
+        Test.startTest();
+        RenewalSubscriptionsBatch batchJob = new RenewalSubscriptionsBatch(Date.newInstance(2023, 6, 11));
+        Database.executeBatch(batchJob, 50);
+        Test.stopTest();
+
+        List<Opportunity> newOpps = [SELECT Id, Domain_Name__c FROM Opportunity WHERE AccountId =: groupAccount.Id AND Id !=: existingOpp.Id];
+        System.assertEquals(1, newOpps.size(), 'domainM2 and domainM3 should still get one shared new Opportunity even though domainM1 already has its own');
+        System.assertEquals(domainM3.Id, newOpps.get(0).Domain_Name__c, 'The billed domain should represent the new shared Opportunity');
+
+        Map<Id, Domain__c> domainsAfter = new Map<Id, Domain__c>([SELECT Id, Opportunity__c FROM Domain__c WHERE Id IN (:domainM1.Id, :domainM2.Id, :domainM3.Id)]);
+        System.assertEquals(existingOpp.Id, domainsAfter.get(domainM1.Id).Opportunity__c, 'domainM1 should keep pointing at its existing Opportunity, untouched');
+        System.assertEquals(newOpps.get(0).Id, domainsAfter.get(domainM2.Id).Opportunity__c, 'domainM2 should be stamped with the new shared Opportunity');
+        System.assertEquals(newOpps.get(0).Id, domainsAfter.get(domainM3.Id).Opportunity__c, 'domainM3 should be stamped with the new shared Opportunity');
+    }
+
+    /**
+     * A domain can have more than one eligible candidate subscription. If the
+     * higher-priority one (preferred by do_not_invoice__c/date_end__c) turns out not to be
+     * renewable (unrecognized service type, here), the batch should fall back to the next
+     * candidate instead of giving up on the domain entirely.
+     */
+    public static testMethod void shouldFallBackToNextCandidateWhenBestCandidateFailsValidation() {
+        addTestData();
+        addTestPricebooks();
+
+        Account testAccount = new Account(Name = 'Fallback Test Account');
+        insert testAccount;
+        Domain__c domainF1 = new Domain__c(Server_Name__c = 'CommCareHQ', Name = 'domain_fallback_1', cpAllWebUsers__c = 9, Account__c = testAccount.Id);
+        insert domainF1;
+
+        Accounting_Softwareplan__c softwarePlanAdvanced = new Accounting_Softwareplan__c(Server_Name__c = 'CommCareHQ', edition__c = 'Advanced');
+        insert softwarePlanAdvanced;
+        Accounting_SoftwarePlanVersion__c planVersionAdvanced = new Accounting_SoftwarePlanVersion__c(Server_Name__c = 'CommCareHQ', Accounting_SoftwarePlan__c = softwarePlanAdvanced.Id);
+        insert planVersionAdvanced;
+
+        // Preferred by the representative comparator (do_not_invoice__c = false), but has a
+        // service type the batch doesn't know how to renew - should be passed over...
+        Accounting_Subscription__c subscriptionBad = new Accounting_Subscription__c(Server_Name__c = 'CommCareHQ', is_trial__c = false, date_start__c = Date.newInstance(2023, 1, 1), date_end__c = Date.newInstance(2023, 7, 1), service_type__c = 'UNRECOGNIZED_TYPE', is_active__c = true,
+                                                                                     Accounting_subscriber_domain__c = domainF1.Id, plan_version__c = planVersionAdvanced.Id, do_not_invoice__c = false);
+        insert subscriptionBad;
+        // ...in favor of this one, which is lower priority (do_not_invoice__c = true) but is actually renewable.
+        Accounting_Subscription__c subscriptionGood = new Accounting_Subscription__c(Server_Name__c = 'CommCareHQ', is_trial__c = false, date_start__c = Date.newInstance(2023, 1, 1), date_end__c = Date.newInstance(2023, 7, 1), service_type__c = 'Product', is_active__c = true,
+                                                                                      Accounting_subscriber_domain__c = domainF1.Id, plan_version__c = planVersionAdvanced.Id, do_not_invoice__c = true);
+        insert subscriptionGood;
+
+        Test.startTest();
+        RenewalSubscriptionsBatch batchJob = new RenewalSubscriptionsBatch(Date.newInstance(2023, 6, 11));
+        Database.executeBatch(batchJob, 50);
+        Test.stopTest();
+
+        List<Opportunity> opps = [SELECT Id, Domain_Name__c FROM Opportunity WHERE AccountId =: testAccount.Id];
+        System.assertEquals(1, opps.size(), 'Should fall back to the valid candidate instead of giving up because the preferred one is unrenewable');
+        System.assertEquals(domainF1.Id, opps.get(0).Domain_Name__c);
     }
 
     private static void addTestPricebooks() {
