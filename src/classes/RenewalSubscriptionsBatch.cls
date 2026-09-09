@@ -17,7 +17,6 @@ public without sharing class RenewalSubscriptionsBatch implements Database.Batch
 
     private Map<String, PricebookEntry> priceBookEntries;
     private PricebookEntry commCareEntry;
-    private Set<Id> domainsToSkip;
 
     public RenewalSubscriptionsBatch () {
         this(Date.today());
@@ -55,7 +54,6 @@ public without sharing class RenewalSubscriptionsBatch implements Database.Batch
             }
         }
 
-        this.domainsToSkip = new Set<Id>();
         this.priceBookEntries = new Map<String, PricebookEntry>();
 
         Set<String> productCodes = new Set<String> { 'Reseller', 'Managed Hosting', 'Advanced', 'Community', 'Enterprise', 'Pro', 'Standard' };
@@ -80,132 +78,182 @@ public without sharing class RenewalSubscriptionsBatch implements Database.Batch
     public void execute(Database.BatchableContext context, List<Accounting_Subscription__c> subs) {
         Set<Id> domainsSet = new Set<Id>();
         for (Accounting_Subscription__c subscription : subs) {
-            system.debug('@@subscription' + subscription.Accounting_subscriber_domain__c);
             domainsSet.add(subscription.Accounting_subscriber_domain__c);
         }
-      
+
         Map<Id, Domain__c> domains = new Map<Id, Domain__c> ([SELECT Id, Name, Opportunity__c FROM Domain__c WHERE Id IN: domainsSet]);
-        List<Domain__c> domainsToUpdate = new List<Domain__c>();
 
         String dateString = (this.currentDate.month() < 10 ? '0' + this.currentDate.month() : '' + this.currentDate.month())
                                 + (this.currentDate.day() < 10 ? '0' + this.currentDate.day() : '' + this.currentDate.day())
                                 + ('' + this.currentDate.year());
-        integer a = 0;
-        integer b = 0;
+
+        // Pick at most one subscription per domain - `subs` is ordered by date_end__c DESC,
+        // so the first one seen for a domain is the one ending furthest out. This preserves
+        // the pre-existing "only the latest subscription which will end" rule per domain.
+        Map<Id, Accounting_Subscription__c> chosenSubscriptionByDomain = new Map<Id, Accounting_Subscription__c>();
         for (Accounting_Subscription__c subscription : subs) {
-            
-            if (subscription.Accounting_subscriber_domain__r.Opportunity__c != null &&
-                 (subscription.Accounting_subscriber_domain__r.Opportunity__r.IsClosed == false || 
-                   (subscription.Accounting_subscriber_domain__r.Opportunity__r.IsClosed == true && subscription.Accounting_subscriber_domain__r.Opportunity__r.CloseDate >= this.currentDate))) {
-                this.domainsToSkip.add(subscription.Accounting_subscriber_domain__c);
+            Id domainId = subscription.Accounting_subscriber_domain__c;
+            if (!chosenSubscriptionByDomain.containsKey(domainId)) {
+                chosenSubscriptionByDomain.put(domainId, subscription);
             }
-            if (!this.domainsToSkip.contains(subscription.Accounting_subscriber_domain__c)) {
-                System.debug('a =>>> '+ a++);
-                String oppSource = '';
-                Id ownerId = null;
-                if (subscription.service_type__c == 'IMPLEMENTATION' && subscription.Software_Plan_Edition__c != 'Enterprise') {
-                    oppSource = IMPL_RENEWAL;
-                    ownerId = this.implementationNonEnterpriseOwner.Id;
-                } else if (subscription.service_type__c == 'IMPLEMENTATION' && subscription.Software_Plan_Edition__c == 'Enterprise') {
-                    oppSource = IMPL_RENEWAL;
-                    ownerId = this.implementationEnterpriseOwner.Id;
-                } else if ((subscription.service_type__c == 'PRODUCT' || subscription.service_type__c == 'TRIAL' || subscription.service_type__c == 'NOT_SET')
-                                && subscription.Software_Plan_Edition__c != 'Enterprise') {
-                    oppSource = PROD_RENEWAL;
-                    ownerId = this.productNonEnterpriseOwner.Id;
-                } else if ((subscription.service_type__c == 'PRODUCT' || subscription.service_type__c == 'TRIAL' || subscription.service_type__c == 'NOT_SET')
-                                && subscription.Software_Plan_Edition__c == 'Enterprise') {
-                    oppSource = PROD_RENEWAL;
-                    ownerId = this.productEnterpriseOwner.Id;
-                } else {
-                    continue; // we skip this subscription
+        }
+
+        // Group those per-domain subscriptions by billing account (Accounting_BillingAccount__c),
+        // so a grouped subscription with several project-space domains produces ONE renewal
+        // Opportunity instead of one per domain. A subscription with no billing account
+        // (Account__c null) falls back to being its own single-domain group.
+        Map<Id, List<Accounting_Subscription__c>> subscriptionsByGroup = new Map<Id, List<Accounting_Subscription__c>>();
+        for (Accounting_Subscription__c subscription : chosenSubscriptionByDomain.values()) {
+            Id groupKey = subscription.Account__c != null ? subscription.Account__c : subscription.Accounting_subscriber_domain__c;
+            if (!subscriptionsByGroup.containsKey(groupKey)) {
+                subscriptionsByGroup.put(groupKey, new List<Accounting_Subscription__c>());
+            }
+            subscriptionsByGroup.get(groupKey).add(subscription);
+        }
+
+        for (List<Accounting_Subscription__c> groupSubs : subscriptionsByGroup.values()) {
+
+            // If any domain in the group already has an open (or very recently closed) renewal
+            // Opportunity, the group has already been handled - don't create another one.
+            Boolean groupAlreadyHasOpp = false;
+            for (Accounting_Subscription__c s : groupSubs) {
+                if (s.Accounting_subscriber_domain__r.Opportunity__c != null &&
+                     (s.Accounting_subscriber_domain__r.Opportunity__r.IsClosed == false ||
+                       (s.Accounting_subscriber_domain__r.Opportunity__r.IsClosed == true && s.Accounting_subscriber_domain__r.Opportunity__r.CloseDate >= this.currentDate))) {
+                    groupAlreadyHasOpp = true;
+                    break;
                 }
-                                                    system.debug('subscription' + subscription.Id);
+            }
+            if (groupAlreadyHasOpp) {
+                continue;
+            }
 
+            // Represent the group with the subscription that's actually billed
+            // (do_not_invoice__c = false) where one exists, otherwise the domain ending soonest.
+            Accounting_Subscription__c subscription = pickRepresentativeSubscription(groupSubs);
 
-                String oppNameFirstPart = subscription.Accounting_subscriber_domain__r.Account__r.Name != null && subscription.Accounting_subscriber_domain__r.Account__r.Name != '' ?
-                                            subscription.Accounting_subscriber_domain__r.Account__r.Name : subscription.Accounting_subscriber_domain__r.Name;
+            String oppSource = '';
+            Id ownerId = null;
+            if (subscription.service_type__c == 'IMPLEMENTATION' && subscription.Software_Plan_Edition__c != 'Enterprise') {
+                oppSource = IMPL_RENEWAL;
+                ownerId = this.implementationNonEnterpriseOwner.Id;
+            } else if (subscription.service_type__c == 'IMPLEMENTATION' && subscription.Software_Plan_Edition__c == 'Enterprise') {
+                oppSource = IMPL_RENEWAL;
+                ownerId = this.implementationEnterpriseOwner.Id;
+            } else if ((subscription.service_type__c == 'PRODUCT' || subscription.service_type__c == 'TRIAL' || subscription.service_type__c == 'NOT_SET')
+                            && subscription.Software_Plan_Edition__c != 'Enterprise') {
+                oppSource = PROD_RENEWAL;
+                ownerId = this.productNonEnterpriseOwner.Id;
+            } else if ((subscription.service_type__c == 'PRODUCT' || subscription.service_type__c == 'TRIAL' || subscription.service_type__c == 'NOT_SET')
+                            && subscription.Software_Plan_Edition__c == 'Enterprise') {
+                oppSource = PROD_RENEWAL;
+                ownerId = this.productEnterpriseOwner.Id;
+            } else {
+                continue; // representative subscription's service type isn't renewable - skip this group
+            }
 
-                String oppNamesecondPart = '-' + subscription.Software_Plan_Edition__c + (subscription.service_type__c == 'IMPLEMENTATION' ? '-Implementation' : '') + ' Renewal ' + dateString;
+            String oppNameFirstPart = subscription.Accounting_subscriber_domain__r.Account__r.Name != null && subscription.Accounting_subscriber_domain__r.Account__r.Name != '' ?
+                                        subscription.Accounting_subscriber_domain__r.Account__r.Name : subscription.Accounting_subscriber_domain__r.Name;
 
-                if (oppNameFirstPart.length() + oppNamesecondPart.length() > 120) {
-                    oppNameFirstPart = oppNameFirstPart.subString(0, 120 - oppNamesecondPart.length());
+            String oppNamesecondPart = '-' + subscription.Software_Plan_Edition__c + (subscription.service_type__c == 'IMPLEMENTATION' ? '-Implementation' : '') + ' Renewal ' + dateString;
+
+            if (oppNameFirstPart.length() + oppNamesecondPart.length() > 120) {
+                oppNameFirstPart = oppNameFirstPart.subString(0, 120 - oppNamesecondPart.length());
+            }
+
+            Opportunity newOpp = new Opportunity(
+                                                    Prior_Dimagi_contact__c = subscription.Dimagi_Contact__c,
+                                                    Name = oppNameFirstPart + oppNamesecondPart,
+                                                    Subscriptions_web_users__c = subscription.Accounting_subscriber_domain__r.cpAllWebUsers__c,
+                                                    Probability = 30,
+                                                    Duration_months__c = 12,
+                                                    Expected_Buffer__c = 100,
+                                                    of_Execution_budget_for_GS__c = 0,
+                                                    CloseDate = subscription.date_end__c,
+                                                    // Domain_Name__c is a single lookup and can only reference the
+                                                    // representative domain - the full set of domains this
+                                                    // Opportunity covers is on Domain__c.Opportunity__c below.
+                                                    Domain_Name__c = subscription.Accounting_subscriber_domain__c,
+                                                    StageName = 'Stage 3 - Prospect',
+                                                    OwnerId = ownerId,
+                                                    Implementation_Type__c = 'Self Service',
+                                                    Channel_Response__c = 'Inside Sales',
+                                                    Opportunity_Owning_Entity__c = this.incBusinessUnit.Id,
+                                                    Contract_Owner_BU__c = this.incBusinessUnit.Id,
+                                                    Implementing_Business_Unit__c = this.incBusinessUnit.Id,
+                                                    Opportunity_Source__c = oppSource,
+                                                    Opportunity_Owner_Division__c = 'CommCare',
+                                                    Opportunity_Owner_Sub_Division__c = 'CommCare Sales',
+                                                    AccountId = subscription.Accounting_subscriber_domain__r.Account__r.id
+                                                );
+
+            PricebookEntry pbe = this.priceBookEntries.get(subscription.Software_Plan_Edition__c);
+            // SAL-515: price the renewal from the subscription's current monthly fee;
+            // fall back to the Pricebook list price (no custom setting / hardcoded values).
+            Decimal price = (subscription.accounting_software_monthly_fee__c != null && subscription.accounting_software_monthly_fee__c > 0)
+                                ? subscription.accounting_software_monthly_fee__c
+                                : (pbe != null ? pbe.UnitPrice : null);
+            if (pbe == null || price == null) {
+                System.debug(' Missing Pricebook entry or price for edition: ' + subscription.Software_Plan_Edition__c);
+                StatusLoggerUtils.logError(
+                    StatusLoggerUtils.RENEWAL_LOGGER,
+                    subscription.Name,
+                    0,
+                    'Missing Pricebook entry or price for edition: ' + subscription.Software_Plan_Edition__c
+                );
+                continue; // skip this group safely
+            }
+
+            List<Domain__c> domainsToUpdate = new List<Domain__c>();
+            for (Accounting_Subscription__c s : groupSubs) {
+                Domain__c domainToUpdate = domains.get(s.Accounting_subscriber_domain__c);
+                if (domainToUpdate != null) {
+                    domainsToUpdate.add(domainToUpdate);
                 }
-system.debug('==' + this.incBusinessUnit);
-                Opportunity newOpp = new Opportunity(
-                                                        Prior_Dimagi_contact__c = subscription.Dimagi_Contact__c,
-                                                        Name = oppNameFirstPart + oppNamesecondPart,
-                                                        Subscriptions_web_users__c = subscription.Accounting_subscriber_domain__r.cpAllWebUsers__c,
-                                                        Probability = 30,
-                                                        Duration_months__c = 12,
-                                                        Expected_Buffer__c = 100,
-                                                        of_Execution_budget_for_GS__c = 0,
-                                                        CloseDate = subscription.date_end__c,
-                                                        Domain_Name__c = subscription.Accounting_subscriber_domain__c,
-                                                        StageName = 'Stage 3 - Prospect',
-                                                        OwnerId = ownerId,
-                                                        Implementation_Type__c = 'Self Service',
-                                                        Channel_Response__c = 'Inside Sales',
-                                                        Opportunity_Owning_Entity__c = this.incBusinessUnit.Id,
-                                                        Contract_Owner_BU__c = this.incBusinessUnit.Id,
-                                                        Implementing_Business_Unit__c = this.incBusinessUnit.Id,
-                                                        Opportunity_Source__c = oppSource,
-                                                        Opportunity_Owner_Division__c = 'CommCare',
-                                                        Opportunity_Owner_Sub_Division__c = 'CommCare Sales',
-                    									AccountId = subscription.Accounting_subscriber_domain__r.Account__r.id
-                                                    );                    									
+            }
 
-
-                PricebookEntry pbe = this.priceBookEntries.get(subscription.Software_Plan_Edition__c);
-                system.debug('pbe==> '+pbe);
-                // SAL-515: price the renewal from the subscription's current monthly fee;
-                // fall back to the Pricebook list price (no custom setting / hardcoded values).
-                Decimal price = (subscription.accounting_software_monthly_fee__c != null && subscription.accounting_software_monthly_fee__c > 0)
-                                    ? subscription.accounting_software_monthly_fee__c
-                                    : (pbe != null ? pbe.UnitPrice : null);
-                if (pbe == null || price == null) {
-    System.debug(' Missing Pricebook entry or price for edition: ' + subscription.Software_Plan_Edition__c);
-    StatusLoggerUtils.logError(
-        StatusLoggerUtils.RENEWAL_LOGGER,
-        subscription.Name,
-        0,
-        'Missing Pricebook entry or price for edition: ' + subscription.Software_Plan_Edition__c
-    );
-    continue; // skip this subscription safely
-                }else{
-                Domain__c domainToUpdate = domains.get(subscription.Accounting_subscriber_domain__c);
-                system.debug('@@newOpp' + newOpp);
-                Savepoint sp = Database.setSavepoint();
-                try {
-                                    System.debug('b =>>> '+ b++);
-
-                    insert newOpp;
+            Savepoint sp = Database.setSavepoint();
+            try {
+                insert newOpp;
+                // Stamp every domain in the group, not just the representative's domain -
+                // that's what makes next week's run skip the whole group.
+                for (Domain__c domainToUpdate : domainsToUpdate) {
                     domainToUpdate.Opportunity__c = newOpp.Id;
-                    update domainToUpdate;
-                                    system.debug('@@pbe.Id' + pbe.Id);
-                system.debug('@@price' + price);
-                system.debug('@@newOpp.Id' + newOpp.Id);
-
-                    insert new OpportunityLineItem(PricebookEntryId = pbe.Id, Quantity = 12, UnitPrice = price, OpportunityId = newOpp.Id);
-                    // SAL-48 removing commcare: product pricebook entry
-                    // insert new OpportunityLineItem(PricebookEntryId = commCareEntry.Id, Quantity = 1, UnitPrice = commCareEntry.UnitPrice, OpportunityId = newOpp.Id);
-                    this.recordCounter++;
-                } catch (DMLException e) {
-                    Database.rollback(sp);
-                    system.debug('@@Error' + e.getMessage());
-                    StatusLoggerUtils.logError(StatusLoggerUtils.RENEWAL_LOGGER, domainToUpdate.Name + ' - ' + subscription.Name, 0, e.getMessage());
                 }
-                }
-            }
+                update domainsToUpdate;
 
-            // we must create Opp only for the latest subscription which will end
-            if (!this.domainsToSkip.contains(subscription.Accounting_subscriber_domain__c)) {
-                this.domainsToSkip.add(subscription.Accounting_subscriber_domain__c);
+                insert new OpportunityLineItem(PricebookEntryId = pbe.Id, Quantity = 12, UnitPrice = price, OpportunityId = newOpp.Id);
+                // SAL-48 removing commcare: product pricebook entry
+                // insert new OpportunityLineItem(PricebookEntryId = commCareEntry.Id, Quantity = 1, UnitPrice = commCareEntry.UnitPrice, OpportunityId = newOpp.Id);
+                this.recordCounter++;
+            } catch (DMLException e) {
+                Database.rollback(sp);
+                StatusLoggerUtils.logError(StatusLoggerUtils.RENEWAL_LOGGER, subscription.Accounting_subscriber_domain__r.Name + ' - ' + subscription.Name, 0, e.getMessage());
             }
         }
-        for(Id skipdomain : domainsToSkip){
-            system.debug('@@skipdomain' + skipdomain);
+    }
+
+    /**
+     * Picks the subscription to represent a grouped billing account's renewal Opportunity:
+     * the one actually billed (do_not_invoice__c = false) if one exists in the group,
+     * otherwise the domain ending soonest. Ties broken by earliest date_end__c.
+     */
+    private Accounting_Subscription__c pickRepresentativeSubscription(List<Accounting_Subscription__c> groupSubs) {
+        Accounting_Subscription__c best = null;
+        for (Accounting_Subscription__c s : groupSubs) {
+            if (s.do_not_invoice__c == false && (best == null || s.date_end__c < best.date_end__c)) {
+                best = s;
+            }
         }
+        if (best != null) {
+            return best;
+        }
+        for (Accounting_Subscription__c s : groupSubs) {
+            if (best == null || s.date_end__c < best.date_end__c) {
+                best = s;
+            }
+        }
+        return best;
     }
 
     public void finish(Database.BatchableContext context) {
@@ -248,7 +296,8 @@ for (Accounting_Subscription_service_type__mdt record : [SELECT service_types__c
         return [SELECT Id, Name, date_start__c, date_end__c, service_type__c, Accounting_subscriber_domain__c, Accounting_subscriber_domain__r.Name, Dimagi_Contact__c, Accounting_subscriber_domain__r.Account__r.Name,
                 Accounting_subscriber_domain__r.cpAllWebUsers__c, Software_Plan_Edition__c, accounting_software_monthly_fee__c,
                 Accounting_subscriber_domain__r.Opportunity__r.CreatedDate, Accounting_subscriber_domain__r.Opportunity__c,
-                Accounting_subscriber_domain__r.Opportunity__r.CloseDate, Accounting_subscriber_domain__r.Opportunity__r.IsClosed
+                Accounting_subscriber_domain__r.Opportunity__r.CloseDate, Accounting_subscriber_domain__r.Opportunity__r.IsClosed,
+                Account__c, do_not_invoice__c
                 FROM Accounting_Subscription__c
                 WHERE service_type__c NOT IN :service_type AND Accounting_subscriber_domain__r.Name != '' AND date_end__c != null AND date_end__c <=: this.currentDate.addDays(90)
                 AND date_end__c >=: this.currentDate AND Accounting_subscriber_domain__r.Name NOT IN: domainsWithFutureSubscriptions AND is_active__c = true
