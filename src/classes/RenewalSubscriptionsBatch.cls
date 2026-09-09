@@ -17,6 +17,12 @@ public without sharing class RenewalSubscriptionsBatch implements Database.Batch
 
     private Map<String, PricebookEntry> priceBookEntries;
     private PricebookEntry commCareEntry;
+    // Batch Apex hands execute() one chunk (scope) at a time - RenewalSubscriptionsScheduler
+    // uses a scope of 10 - and does not guarantee chunks run in query order. A grouped
+    // billing account can easily have more than 10 domains (see analysis), so grouping
+    // can't happen per-chunk: every eligible subscription is accumulated here across all
+    // execute() calls, and grouped/processed once in finish(), after the whole dataset is in.
+    private List<Accounting_Subscription__c> collectedSubscriptions;
 
     public RenewalSubscriptionsBatch () {
         this(Date.today());
@@ -28,6 +34,7 @@ public without sharing class RenewalSubscriptionsBatch implements Database.Batch
     }
 
     public List<Accounting_Subscription__c> start(Database.BatchableContext context) {
+        this.collectedSubscriptions = new List<Accounting_Subscription__c>();
         List<Accounting_Subscription__c> subscriptions = getFutureSubscriptions();
         this.settings = Subscription_Renewal_Settings__c.getOrgDefaults();
 
@@ -76,8 +83,15 @@ public without sharing class RenewalSubscriptionsBatch implements Database.Batch
     }
 
     public void execute(Database.BatchableContext context, List<Accounting_Subscription__c> subs) {
+        // Just accumulate - grouping by billing account has to see the whole dataset at
+        // once (see the comment on collectedSubscriptions), so the real work happens in
+        // finish(), once every chunk has been through execute().
+        this.collectedSubscriptions.addAll(subs);
+    }
+
+    private void processCollectedSubscriptions() {
         Set<Id> domainsSet = new Set<Id>();
-        for (Accounting_Subscription__c subscription : subs) {
+        for (Accounting_Subscription__c subscription : this.collectedSubscriptions) {
             domainsSet.add(subscription.Accounting_subscriber_domain__c);
         }
 
@@ -87,13 +101,14 @@ public without sharing class RenewalSubscriptionsBatch implements Database.Batch
                                 + (this.currentDate.day() < 10 ? '0' + this.currentDate.day() : '' + this.currentDate.day())
                                 + ('' + this.currentDate.year());
 
-        // Pick at most one subscription per domain - `subs` is ordered by date_end__c DESC,
-        // so the first one seen for a domain is the one ending furthest out. This preserves
-        // the pre-existing "only the latest subscription which will end" rule per domain.
+        // Pick at most one subscription per domain - the one ending furthest out - across
+        // the FULL dataset. Comparing date_end__c directly (rather than relying on query
+        // order) keeps this correct regardless of what order execute() chunks run in.
         Map<Id, Accounting_Subscription__c> chosenSubscriptionByDomain = new Map<Id, Accounting_Subscription__c>();
-        for (Accounting_Subscription__c subscription : subs) {
+        for (Accounting_Subscription__c subscription : this.collectedSubscriptions) {
             Id domainId = subscription.Accounting_subscriber_domain__c;
-            if (!chosenSubscriptionByDomain.containsKey(domainId)) {
+            Accounting_Subscription__c current = chosenSubscriptionByDomain.get(domainId);
+            if (current == null || subscription.date_end__c > current.date_end__c) {
                 chosenSubscriptionByDomain.put(domainId, subscription);
             }
         }
@@ -257,6 +272,7 @@ public without sharing class RenewalSubscriptionsBatch implements Database.Batch
     }
 
     public void finish(Database.BatchableContext context) {
+        processCollectedSubscriptions();
         StatusLoggerUtils.logInfo(StatusLoggerUtils.RENEWAL_LOGGER, 'Renewal Script', this.recordCounter,
                                                     'Finished Renewal Job with date : ' + this.currentDate);
         if (Test.isRunningTest()) {

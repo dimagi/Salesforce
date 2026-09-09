@@ -177,12 +177,13 @@ public class RenewalSubscriptionsTest {
         System.assertEquals(2, renewalList.size());
         batchJob.start(null);
         batchJob.execute(null, renewalList);
+        batchJob.finish(null);
 
         opps = [SELECT Id, Name, Prior_Dimagi_contact__c, Subscriptions_web_users__c, Duration_months__c,
                                   Expected_Buffer__c, of_Execution_budget_for_GS__c, CloseDate, Domain_Name__c, Product_Text__c,
                                   StageName, Implementation_Type__c, Opportunity_Owning_Entity__c, Contract_Owner_BU__c,
                                   Implementing_Business_Unit__c, Opportunity_Source__c, Owner.Name FROM Opportunity ORDER BY Name DESC];
-        System.assertEquals(3, opps.size());
+        System.assertEquals(3, opps.size(), 'Domains already carrying an open renewal Opportunity should be skipped, not duplicated');
     }
 
     public static testMethod void shouldCreateNewOppWhenRenewalOppHaveClosedDateFromThePast() {
@@ -304,6 +305,63 @@ public class RenewalSubscriptionsTest {
         System.assertEquals(groupOpp.Id, domainsAfter.get(domainG1.Id).Opportunity__c, 'Every domain in the group should be stamped with the shared Opportunity');
         System.assertEquals(groupOpp.Id, domainsAfter.get(domainG2.Id).Opportunity__c, 'Every domain in the group should be stamped with the shared Opportunity');
         System.assertEquals(groupOpp.Id, domainsAfter.get(domainG3.Id).Opportunity__c, 'Every domain in the group should be stamped with the shared Opportunity');
+    }
+
+    /**
+     * RenewalSubscriptionsScheduler runs this batch with a scope of 10, so execute() only
+     * ever sees a slice of the eligible subscriptions at a time - a grouped billing account
+     * with more members than that (see the TECHOPS-211 analysis) spans multiple execute()
+     * calls. This forces that with a scope of 1, so every subscription in the group lands in
+     * its own chunk, to prove grouping still collapses to a single Opportunity.
+     */
+    public static testMethod void shouldCreateOneOppForGroupSpanningMultipleBatchChunks() {
+        addTestData();
+        addTestPricebooks();
+
+        Accounting_BillingAccount__c groupBillingAccount = new Accounting_BillingAccount__c(Server_Name__c = 'CommCareHQ', account_type__c = 'Grouped', is_active__c = true, created_by__c = 'test@dimagi.com', created_by_domain__c = 'domain_chunk_1', dimagi_contact__c = 'contact_3@dimagi.com');
+        insert groupBillingAccount;
+
+        Account groupAccount = new Account(Name = 'Grouped Chunked Account');
+        insert groupAccount;
+        Domain__c domainC1 = new Domain__c(Server_Name__c = 'CommCareHQ', Name = 'domain_chunk_1', cpAllWebUsers__c = 5, Account__c = groupAccount.Id);
+        insert domainC1;
+        Domain__c domainC2 = new Domain__c(Server_Name__c = 'CommCareHQ', Name = 'domain_chunk_2', cpAllWebUsers__c = 8, Account__c = groupAccount.Id);
+        insert domainC2;
+        Domain__c domainC3 = new Domain__c(Server_Name__c = 'CommCareHQ', Name = 'domain_chunk_3', cpAllWebUsers__c = 13, Account__c = groupAccount.Id);
+        insert domainC3;
+
+        Accounting_Softwareplan__c softwarePlanAdvanced = new Accounting_Softwareplan__c(Server_Name__c = 'CommCareHQ', edition__c = 'Advanced');
+        insert softwarePlanAdvanced;
+        Accounting_SoftwarePlanVersion__c planVersionAdvanced = new Accounting_SoftwarePlanVersion__c(Server_Name__c = 'CommCareHQ', Accounting_SoftwarePlan__c = softwarePlanAdvanced.Id);
+        insert planVersionAdvanced;
+
+        Accounting_Subscription__c subscriptionC1 = new Accounting_Subscription__c(Server_Name__c = 'CommCareHQ', is_trial__c = false, date_start__c = Date.newInstance(2023, 1, 1), date_end__c = Date.newInstance(2023, 7, 1), service_type__c = 'Product', is_active__c = true,
+                                                                                    account__c = groupBillingAccount.Id, Accounting_subscriber_domain__c = domainC1.Id, plan_version__c = planVersionAdvanced.Id, do_not_invoice__c = true);
+        insert subscriptionC1;
+        Accounting_Subscription__c subscriptionC2 = new Accounting_Subscription__c(Server_Name__c = 'CommCareHQ', is_trial__c = false, date_start__c = Date.newInstance(2023, 1, 1), date_end__c = Date.newInstance(2023, 7, 1), service_type__c = 'Product', is_active__c = true,
+                                                                                    account__c = groupBillingAccount.Id, Accounting_subscriber_domain__c = domainC2.Id, plan_version__c = planVersionAdvanced.Id, do_not_invoice__c = true);
+        insert subscriptionC2;
+        Accounting_Subscription__c subscriptionC3 = new Accounting_Subscription__c(Server_Name__c = 'CommCareHQ', is_trial__c = false, date_start__c = Date.newInstance(2023, 1, 1), date_end__c = Date.newInstance(2023, 7, 1), service_type__c = 'Product', is_active__c = true,
+                                                                                    account__c = groupBillingAccount.Id, Accounting_subscriber_domain__c = domainC3.Id, plan_version__c = planVersionAdvanced.Id, do_not_invoice__c = false);
+        insert subscriptionC3;
+
+        Test.startTest();
+        RenewalSubscriptionsBatch batchJob = new RenewalSubscriptionsBatch(Date.newInstance(2023, 6, 11));
+        // Database.executeBatch always runs a List-returning start() as a single chunk in
+        // test context (Salesforce won't let a test force >1 chunk that way), so multiple
+        // execute() calls are driven directly here to simulate the group spanning chunks
+        // the way it would in production with a scope of 10.
+        List<Accounting_Subscription__c> renewalList = batchJob.start(null);
+        System.assertEquals(3, renewalList.size());
+        for (Accounting_Subscription__c subscription : renewalList) {
+            batchJob.execute(null, new List<Accounting_Subscription__c> { subscription });
+        }
+        batchJob.finish(null);
+        Test.stopTest();
+
+        List<Opportunity> opps = [SELECT Id, Domain_Name__c FROM Opportunity WHERE AccountId =: groupAccount.Id];
+        System.assertEquals(1, opps.size(), 'A group split across multiple execute() chunks should still produce exactly one Opportunity');
+        System.assertEquals(domainC3.Id, opps.get(0).Domain_Name__c, 'The billed (non Do-Not-Invoice) domain should represent the group');
     }
 
     private static void addTestPricebooks() {
