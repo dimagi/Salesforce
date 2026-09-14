@@ -17,12 +17,14 @@ public without sharing class RenewalSubscriptionsBatch implements Database.Batch
 
     private Map<String, PricebookEntry> priceBookEntries;
     private PricebookEntry commCareEntry;
-    // Batch Apex hands execute() one chunk (scope) at a time - RenewalSubscriptionsScheduler
-    // uses a scope of 10 - and does not guarantee chunks run in query order. A grouped
-    // billing account can easily have more than 10 domains (see analysis), so grouping
-    // can't happen per-chunk: every eligible subscription is accumulated here across all
-    // execute() calls, and grouped/processed once in finish(), after the whole dataset is in.
-    private List<Accounting_Subscription__c> collectedSubscriptions;
+    // Grouping by billing account has to see every eligible subscription at once - a group
+    // can span more than one execute() chunk (RenewalSubscriptionsScheduler uses a scope of
+    // 10), and chunk order isn't guaranteed either. start() is the only place that sees the
+    // whole candidate set in one call, so grouping and representative selection happen there;
+    // only one already-validated representative per group is returned, to be chunked (and
+    // its DML bounded) by Batch Apex as usual. The rest of each group's domain Ids are kept
+    // here for execute() to stamp alongside the representative's own domain.
+    private Map<Id, Set<Id>> domainIdsByGroup;
 
     public RenewalSubscriptionsBatch () {
         this(Date.today());
@@ -34,7 +36,6 @@ public without sharing class RenewalSubscriptionsBatch implements Database.Batch
     }
 
     public List<Accounting_Subscription__c> start(Database.BatchableContext context) {
-        this.collectedSubscriptions = new List<Accounting_Subscription__c>();
         List<Accounting_Subscription__c> subscriptions = getFutureSubscriptions();
         this.settings = Subscription_Renewal_Settings__c.getOrgDefaults();
 
@@ -78,36 +79,19 @@ public without sharing class RenewalSubscriptionsBatch implements Database.Batch
             throw ex;
         }
 
-        return getSubscriptionsForRenewal(domainsWithFutureSubscriptions);
+        return selectRepresentativesForRenewal(getSubscriptionsForRenewal(domainsWithFutureSubscriptions));
     }
 
-    public void execute(Database.BatchableContext context, List<Accounting_Subscription__c> subs) {
-        // Just accumulate - grouping by billing account has to see the whole dataset at
-        // once (see the comment on collectedSubscriptions), so the real work happens in
-        // finish(), once every chunk has been through execute().
-        this.collectedSubscriptions.addAll(subs);
-    }
-
-    private void processCollectedSubscriptions() {
-        Set<Id> domainsSet = new Set<Id>();
-        for (Accounting_Subscription__c subscription : this.collectedSubscriptions) {
-            domainsSet.add(subscription.Accounting_subscriber_domain__c);
-        }
-
-        Map<Id, Domain__c> domains = new Map<Id, Domain__c> ([SELECT Id, Name, Opportunity__c FROM Domain__c WHERE Id IN: domainsSet]);
-
-        String dateString = (this.currentDate.month() < 10 ? '0' + this.currentDate.month() : '' + this.currentDate.month())
-                                + (this.currentDate.day() < 10 ? '0' + this.currentDate.day() : '' + this.currentDate.day())
-                                + ('' + this.currentDate.year());
-
-        // Group by billing account (Accounting_BillingAccount__c), so a grouped subscription
-        // with several project-space domains produces ONE renewal Opportunity instead of one
-        // per domain. A subscription with no billing account (Account__c null) falls back to
-        // being its own single-domain group. Every eligible subscription is kept here (not
-        // reduced to one per domain yet) - a domain with more than one candidate still needs
-        // all of them available in case its best candidate fails validation below.
+    /**
+     * Groups the full candidate set by billing account (Account__c, falling back to the
+     * domain when there isn't one), picks one renewable representative subscription per
+     * group, and records the rest of each group's domain Ids in domainIdsByGroup for
+     * execute() to stamp later. Only ever called once, from start(), which is the only place
+     * that sees every candidate for this run at the same time.
+     */
+    private List<Accounting_Subscription__c> selectRepresentativesForRenewal(List<Accounting_Subscription__c> allCandidates) {
         Map<Id, List<Accounting_Subscription__c>> subscriptionsByGroup = new Map<Id, List<Accounting_Subscription__c>>();
-        for (Accounting_Subscription__c subscription : this.collectedSubscriptions) {
+        for (Accounting_Subscription__c subscription : allCandidates) {
             Id groupKey = subscription.Account__c != null ? subscription.Account__c : subscription.Accounting_subscriber_domain__c;
             if (!subscriptionsByGroup.containsKey(groupKey)) {
                 subscriptionsByGroup.put(groupKey, new List<Accounting_Subscription__c>());
@@ -115,7 +99,11 @@ public without sharing class RenewalSubscriptionsBatch implements Database.Batch
             subscriptionsByGroup.get(groupKey).add(subscription);
         }
 
-        for (List<Accounting_Subscription__c> groupSubs : subscriptionsByGroup.values()) {
+        this.domainIdsByGroup = new Map<Id, Set<Id>>();
+        List<Accounting_Subscription__c> representatives = new List<Accounting_Subscription__c>();
+
+        for (Id groupKey : subscriptionsByGroup.keySet()) {
+            List<Accounting_Subscription__c> groupSubs = subscriptionsByGroup.get(groupKey);
 
             // Drop candidates whose domain already has an open (or very recently closed)
             // renewal Opportunity - that domain has already been handled. Domains that
@@ -135,66 +123,128 @@ public without sharing class RenewalSubscriptionsBatch implements Database.Batch
             }
 
             // Prefer the subscription that's actually billed (do_not_invoice__c = false),
-            // then the one ending soonest, then Id - fully deterministic regardless of
-            // execute() chunk arrival order. Walk candidates in that order and use the
-            // first one that's actually renewable, so one bad candidate (unmatched service
-            // type, missing Pricebook entry) doesn't take the whole group down with it.
+            // then the one ending latest ("only the latest subscription which will end"),
+            // then Id - fully deterministic regardless of data order. Walk candidates in
+            // that order and use the first one that's actually renewable, so one bad
+            // candidate (unmatched service type, missing Pricebook entry) doesn't take the
+            // whole group down with it.
             eligibleSubs.sort(new RepresentativeCandidateComparator());
 
-            Accounting_Subscription__c subscription = null;
-            String oppSource = '';
-            Id ownerId = null;
-            PricebookEntry pbe = null;
-            Decimal price = null;
-
+            Accounting_Subscription__c representative = null;
             for (Accounting_Subscription__c candidate : eligibleSubs) {
-                String candidateOppSource = '';
-                Id candidateOwnerId = null;
-                if (candidate.service_type__c == 'IMPLEMENTATION' && candidate.Software_Plan_Edition__c != 'Enterprise') {
-                    candidateOppSource = IMPL_RENEWAL;
-                    candidateOwnerId = this.implementationNonEnterpriseOwner.Id;
-                } else if (candidate.service_type__c == 'IMPLEMENTATION' && candidate.Software_Plan_Edition__c == 'Enterprise') {
-                    candidateOppSource = IMPL_RENEWAL;
-                    candidateOwnerId = this.implementationEnterpriseOwner.Id;
-                } else if ((candidate.service_type__c == 'PRODUCT' || candidate.service_type__c == 'TRIAL' || candidate.service_type__c == 'NOT_SET')
-                                && candidate.Software_Plan_Edition__c != 'Enterprise') {
-                    candidateOppSource = PROD_RENEWAL;
-                    candidateOwnerId = this.productNonEnterpriseOwner.Id;
-                } else if ((candidate.service_type__c == 'PRODUCT' || candidate.service_type__c == 'TRIAL' || candidate.service_type__c == 'NOT_SET')
-                                && candidate.Software_Plan_Edition__c == 'Enterprise') {
-                    candidateOppSource = PROD_RENEWAL;
-                    candidateOwnerId = this.productEnterpriseOwner.Id;
-                } else {
-                    continue; // this candidate's service type isn't renewable - try the next one
+                if (resolveRenewalDetails(candidate) != null) {
+                    representative = candidate;
+                    break;
                 }
-
-                PricebookEntry candidatePbe = this.priceBookEntries.get(candidate.Software_Plan_Edition__c);
-                // SAL-515: price the renewal from the subscription's current monthly fee;
-                // fall back to the Pricebook list price (no custom setting / hardcoded values).
-                Decimal candidatePrice = (candidate.accounting_software_monthly_fee__c != null && candidate.accounting_software_monthly_fee__c > 0)
-                                    ? candidate.accounting_software_monthly_fee__c
-                                    : (candidatePbe != null ? candidatePbe.UnitPrice : null);
-                if (candidatePbe == null || candidatePrice == null) {
-                    System.debug(' Missing Pricebook entry or price for edition: ' + candidate.Software_Plan_Edition__c);
-                    StatusLoggerUtils.logError(
-                        StatusLoggerUtils.RENEWAL_LOGGER,
-                        candidate.Name,
-                        0,
-                        'Missing Pricebook entry or price for edition: ' + candidate.Software_Plan_Edition__c
-                    );
-                    continue; // this candidate has no usable price - try the next one
-                }
-
-                subscription = candidate;
-                oppSource = candidateOppSource;
-                ownerId = candidateOwnerId;
-                pbe = candidatePbe;
-                price = candidatePrice;
-                break;
+            }
+            if (representative == null) {
+                continue; // nothing in this group could be turned into a valid Opportunity this run
             }
 
-            if (subscription == null) {
-                continue; // nothing in this group could be turned into a valid Opportunity this run
+            Set<Id> domainIds = new Set<Id>();
+            for (Accounting_Subscription__c s : eligibleSubs) {
+                domainIds.add(s.Accounting_subscriber_domain__c);
+            }
+            this.domainIdsByGroup.put(groupKey, domainIds);
+            representatives.add(representative);
+        }
+
+        return representatives;
+    }
+
+    /**
+     * Orders a group's candidate subscriptions for representative selection: the one
+     * actually billed (do_not_invoice__c = false) first, then the one ending latest, then
+     * Id - so the choice is fully deterministic regardless of data order.
+     */
+    private class RepresentativeCandidateComparator implements Comparator<Accounting_Subscription__c> {
+        public Integer compare(Accounting_Subscription__c a, Accounting_Subscription__c b) {
+            Boolean aBilled = a.do_not_invoice__c == false;
+            Boolean bBilled = b.do_not_invoice__c == false;
+            if (aBilled != bBilled) {
+                return aBilled ? -1 : 1;
+            }
+            if (a.date_end__c != b.date_end__c) {
+                return a.date_end__c > b.date_end__c ? -1 : 1;
+            }
+            return a.Id < b.Id ? -1 : (a.Id > b.Id ? 1 : 0);
+        }
+    }
+
+    private class RenewalDetails {
+        String oppSource;
+        Id ownerId;
+        PricebookEntry pbe;
+        Decimal price;
+    }
+
+    /**
+     * Resolves the renewal owner/source and price for a candidate subscription, or null if
+     * it isn't renewable (unrecognized service type, or no usable Pricebook entry/fee).
+     * Pure - no SOQL, no logging, no state changes - so it's cheap to call speculatively
+     * while walking candidates in start(), and to call again in execute() to get the actual
+     * values for the one candidate that was chosen.
+     */
+    private RenewalDetails resolveRenewalDetails(Accounting_Subscription__c candidate) {
+        String oppSource = '';
+        Id ownerId = null;
+        if (candidate.service_type__c == 'IMPLEMENTATION' && candidate.Software_Plan_Edition__c != 'Enterprise') {
+            oppSource = IMPL_RENEWAL;
+            ownerId = this.implementationNonEnterpriseOwner.Id;
+        } else if (candidate.service_type__c == 'IMPLEMENTATION' && candidate.Software_Plan_Edition__c == 'Enterprise') {
+            oppSource = IMPL_RENEWAL;
+            ownerId = this.implementationEnterpriseOwner.Id;
+        } else if ((candidate.service_type__c == 'PRODUCT' || candidate.service_type__c == 'TRIAL' || candidate.service_type__c == 'NOT_SET')
+                        && candidate.Software_Plan_Edition__c != 'Enterprise') {
+            oppSource = PROD_RENEWAL;
+            ownerId = this.productNonEnterpriseOwner.Id;
+        } else if ((candidate.service_type__c == 'PRODUCT' || candidate.service_type__c == 'TRIAL' || candidate.service_type__c == 'NOT_SET')
+                        && candidate.Software_Plan_Edition__c == 'Enterprise') {
+            oppSource = PROD_RENEWAL;
+            ownerId = this.productEnterpriseOwner.Id;
+        } else {
+            return null; // service type isn't renewable
+        }
+
+        PricebookEntry pbe = this.priceBookEntries.get(candidate.Software_Plan_Edition__c);
+        // SAL-515: price the renewal from the subscription's current monthly fee;
+        // fall back to the Pricebook list price (no custom setting / hardcoded values).
+        Decimal price = (candidate.accounting_software_monthly_fee__c != null && candidate.accounting_software_monthly_fee__c > 0)
+                            ? candidate.accounting_software_monthly_fee__c
+                            : (pbe != null ? pbe.UnitPrice : null);
+        if (pbe == null || price == null) {
+            return null; // no usable price
+        }
+
+        RenewalDetails details = new RenewalDetails();
+        details.oppSource = oppSource;
+        details.ownerId = ownerId;
+        details.pbe = pbe;
+        details.price = price;
+        return details;
+    }
+
+    public void execute(Database.BatchableContext context, List<Accounting_Subscription__c> representatives) {
+        Set<Id> domainsSet = new Set<Id>();
+        for (Accounting_Subscription__c representative : representatives) {
+            Set<Id> groupDomainIds = this.domainIdsByGroup.get(groupKeyFor(representative));
+            if (groupDomainIds != null) {
+                domainsSet.addAll(groupDomainIds);
+            }
+        }
+        Map<Id, Domain__c> domains = new Map<Id, Domain__c> ([SELECT Id, Name, Opportunity__c FROM Domain__c WHERE Id IN: domainsSet]);
+
+        String dateString = (this.currentDate.month() < 10 ? '0' + this.currentDate.month() : '' + this.currentDate.month())
+                                + (this.currentDate.day() < 10 ? '0' + this.currentDate.day() : '' + this.currentDate.day())
+                                + ('' + this.currentDate.year());
+
+        for (Accounting_Subscription__c subscription : representatives) {
+            RenewalDetails details = resolveRenewalDetails(subscription);
+            if (details == null) {
+                // Shouldn't happen - start() already confirmed this candidate resolves.
+                StatusLoggerUtils.logError(StatusLoggerUtils.RENEWAL_LOGGER, subscription.Name, 0,
+                    'Representative subscription no longer resolves to a renewal (service type or Pricebook entry changed since start())');
+                continue;
             }
 
             String oppNameFirstPart = subscription.Accounting_subscriber_domain__r.Account__r.Name != null && subscription.Accounting_subscriber_domain__r.Account__r.Name != '' ?
@@ -219,37 +269,31 @@ public without sharing class RenewalSubscriptionsBatch implements Database.Batch
                                                     // Subscriptions_web_users__c all take a single value and can
                                                     // only reflect the representative domain - the full set of
                                                     // domains this Opportunity covers is on Domain__c.Opportunity__c
-                                                    // below. In observed data, grouped domains don't carry a CRM
-                                                    // Account of their own (Domain__c.Account__c is null), so this
-                                                    // hasn't been seen to diverge across a group in practice.
+                                                    // below.
                                                     Domain_Name__c = subscription.Accounting_subscriber_domain__c,
                                                     StageName = 'Stage 3 - Prospect',
-                                                    OwnerId = ownerId,
+                                                    OwnerId = details.ownerId,
                                                     Implementation_Type__c = 'Self Service',
                                                     Channel_Response__c = 'Inside Sales',
                                                     Opportunity_Owning_Entity__c = this.incBusinessUnit.Id,
                                                     Contract_Owner_BU__c = this.incBusinessUnit.Id,
                                                     Implementing_Business_Unit__c = this.incBusinessUnit.Id,
-                                                    Opportunity_Source__c = oppSource,
+                                                    Opportunity_Source__c = details.oppSource,
                                                     Opportunity_Owner_Division__c = 'CommCare',
                                                     Opportunity_Owner_Sub_Division__c = 'CommCare Sales',
                                                     AccountId = subscription.Accounting_subscriber_domain__r.Account__r.id
                                                 );
 
-            // Stamp every still-eligible domain in the group, not just the representative's -
-            // that's what makes next week's run skip them. Dedup by domain: eligibleSubs can
-            // hold more than one candidate for the same domain.
+            // Stamp every domain in the group, not just the representative's - that's what
+            // makes next week's run skip them.
             List<Domain__c> domainsToUpdate = new List<Domain__c>();
-            Set<Id> domainIdsAdded = new Set<Id>();
-            for (Accounting_Subscription__c s : eligibleSubs) {
-                Id domainId = s.Accounting_subscriber_domain__c;
-                if (domainIdsAdded.contains(domainId)) {
-                    continue;
-                }
-                Domain__c domainToUpdate = domains.get(domainId);
-                if (domainToUpdate != null) {
-                    domainsToUpdate.add(domainToUpdate);
-                    domainIdsAdded.add(domainId);
+            Set<Id> groupDomainIds = this.domainIdsByGroup.get(groupKeyFor(subscription));
+            if (groupDomainIds != null) {
+                for (Id domainId : groupDomainIds) {
+                    Domain__c domainToUpdate = domains.get(domainId);
+                    if (domainToUpdate != null) {
+                        domainsToUpdate.add(domainToUpdate);
+                    }
                 }
             }
 
@@ -261,7 +305,7 @@ public without sharing class RenewalSubscriptionsBatch implements Database.Batch
                 }
                 update domainsToUpdate;
 
-                insert new OpportunityLineItem(PricebookEntryId = pbe.Id, Quantity = 12, UnitPrice = price, OpportunityId = newOpp.Id);
+                insert new OpportunityLineItem(PricebookEntryId = details.pbe.Id, Quantity = 12, UnitPrice = details.price, OpportunityId = newOpp.Id);
                 // SAL-48 removing commcare: product pricebook entry
                 // insert new OpportunityLineItem(PricebookEntryId = commCareEntry.Id, Quantity = 1, UnitPrice = commCareEntry.UnitPrice, OpportunityId = newOpp.Id);
                 this.recordCounter++;
@@ -272,28 +316,11 @@ public without sharing class RenewalSubscriptionsBatch implements Database.Batch
         }
     }
 
-    /**
-     * Orders a group's candidate subscriptions for representative selection: the one
-     * actually billed (do_not_invoice__c = false) first, then the one ending soonest,
-     * then Id - so the choice is fully deterministic regardless of the order execute()
-     * chunks happened to run in.
-     */
-    private class RepresentativeCandidateComparator implements Comparator<Accounting_Subscription__c> {
-        public Integer compare(Accounting_Subscription__c a, Accounting_Subscription__c b) {
-            Boolean aBilled = a.do_not_invoice__c == false;
-            Boolean bBilled = b.do_not_invoice__c == false;
-            if (aBilled != bBilled) {
-                return aBilled ? -1 : 1;
-            }
-            if (a.date_end__c != b.date_end__c) {
-                return a.date_end__c < b.date_end__c ? -1 : 1;
-            }
-            return a.Id < b.Id ? -1 : (a.Id > b.Id ? 1 : 0);
-        }
+    private Id groupKeyFor(Accounting_Subscription__c subscription) {
+        return subscription.Account__c != null ? subscription.Account__c : subscription.Accounting_subscriber_domain__c;
     }
 
     public void finish(Database.BatchableContext context) {
-        processCollectedSubscriptions();
         StatusLoggerUtils.logInfo(StatusLoggerUtils.RENEWAL_LOGGER, 'Renewal Script', this.recordCounter,
                                                     'Finished Renewal Job with date : ' + this.currentDate);
         if (Test.isRunningTest()) {
@@ -301,7 +328,7 @@ public without sharing class RenewalSubscriptionsBatch implements Database.Batch
         }
         StatusLoggerUtils.sendLog(StatusLoggerUtils.RENEWAL_LOGGER, BatchDefaultSettings__c.getOrgDefaults().Error_Emails__c.split(','));
     }
-    
+
 
     /**
      * Returns Subscriptions which ends after 60 days
@@ -318,7 +345,7 @@ for (Accounting_Subscription_service_type__mdt record : [SELECT service_types__c
                 AND date_start__c >: this.currentDate
                 AND (Server_Name__c = 'CommCareHQ' OR Server_Name__c = 'CommCareHQ India' OR Server_Name__c = 'CommCareHQ EU')];
     }
-    
+
 
     /**
      * Returns Subscriptions which ends in 60 days for domains which dosen't contain subscriptions from future (which ends after 60 days).
@@ -339,8 +366,7 @@ for (Accounting_Subscription_service_type__mdt record : [SELECT service_types__c
                 WHERE service_type__c NOT IN :service_type AND Accounting_subscriber_domain__r.Name != '' AND date_end__c != null AND date_end__c <=: this.currentDate.addDays(90)
                 AND date_end__c >=: this.currentDate AND Accounting_subscriber_domain__r.Name NOT IN: domainsWithFutureSubscriptions AND is_active__c = true
                 AND is_hidden_to_ops__c = false AND is_trial__c = false AND (Server_Name__c = 'CommCareHQ' OR Server_Name__c = 'CommCareHQ India' OR Server_Name__c = 'CommCareHQ EU')];
-                // No ORDER BY: representative selection in processCollectedSubscriptions()
-                // sorts explicitly and doesn't depend on query order (execute() chunk order
-                // isn't guaranteed either, so relying on this would have been unsafe anyway).
+                // No ORDER BY: representative selection sorts explicitly and doesn't depend
+                // on query order.
     }
 }

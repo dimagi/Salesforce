@@ -173,10 +173,12 @@ public class RenewalSubscriptionsTest {
 
         futureList = batchJob.getFutureSubscriptions();
         System.assertEquals(1, futureList.size());
-        renewalList = batchJob.getSubscriptionsForRenewal(new Set<String> { 'domain_2' });
-        System.assertEquals(2, renewalList.size());
-        batchJob.start(null);
-        batchJob.execute(null, renewalList);
+        // start() now does grouping/representative selection itself - domain1 and domain4
+        // already carry an open Opportunity from the run above, so no representatives
+        // should come back for them at all.
+        List<Accounting_Subscription__c> representatives = batchJob.start(null);
+        System.assertEquals(0, representatives.size(), 'Domains already carrying an open renewal Opportunity should produce no representatives');
+        batchJob.execute(null, representatives);
         batchJob.finish(null);
 
         opps = [SELECT Id, Name, Prior_Dimagi_contact__c, Subscriptions_web_users__c, Duration_months__c,
@@ -308,13 +310,18 @@ public class RenewalSubscriptionsTest {
     }
 
     /**
-     * RenewalSubscriptionsScheduler runs this batch with a scope of 10, so execute() only
-     * ever sees a slice of the eligible subscriptions at a time - a grouped billing account
-     * with more members than that (see the TECHOPS-211 analysis) spans multiple execute()
-     * calls. This forces that with a scope of 1, so every subscription in the group lands in
-     * its own chunk, to prove grouping still collapses to a single Opportunity.
+     * RenewalSubscriptionsScheduler runs this batch with a scope of 10, and a grouped
+     * billing account can have more members than that (see the TECHOPS-211 analysis).
+     * Grouping and representative selection happen entirely in start() - the only place
+     * that ever sees every candidate for a run at once - specifically so a group's DML work
+     * can never be split across execute() chunks: start() returns one already-validated
+     * representative per group, and execute() only ever receives representatives, never raw
+     * per-domain candidates. This drives start()/execute()/finish() directly (matching how
+     * Database.executeBatch would call them) and confirms that even though execute() here
+     * only sees the ONE representative record for the group, it still stamps every domain in
+     * it via the domainIdsByGroup state built in start().
      */
-    public static testMethod void shouldCreateOneOppForGroupSpanningMultipleBatchChunks() {
+    public static testMethod void shouldStampEveryGroupDomainWhenExecuteOnlySeesTheRepresentative() {
         addTestData();
         addTestPricebooks();
 
@@ -347,21 +354,21 @@ public class RenewalSubscriptionsTest {
 
         Test.startTest();
         RenewalSubscriptionsBatch batchJob = new RenewalSubscriptionsBatch(Date.newInstance(2023, 6, 11));
-        // Database.executeBatch always runs a List-returning start() as a single chunk in
-        // test context (Salesforce won't let a test force >1 chunk that way), so multiple
-        // execute() calls are driven directly here to simulate the group spanning chunks
-        // the way it would in production with a scope of 10.
-        List<Accounting_Subscription__c> renewalList = batchJob.start(null);
-        System.assertEquals(3, renewalList.size());
-        for (Accounting_Subscription__c subscription : renewalList) {
-            batchJob.execute(null, new List<Accounting_Subscription__c> { subscription });
-        }
+        List<Accounting_Subscription__c> representatives = batchJob.start(null);
+        System.assertEquals(1, representatives.size(), 'start() should already have reduced the 3-domain group to one representative');
+        System.assertEquals(domainC3.Id, representatives.get(0).Accounting_subscriber_domain__c, 'The billed (non Do-Not-Invoice) domain should represent the group');
+        batchJob.execute(null, representatives);
         batchJob.finish(null);
         Test.stopTest();
 
         List<Opportunity> opps = [SELECT Id, Domain_Name__c FROM Opportunity WHERE AccountId =: groupAccount.Id];
-        System.assertEquals(1, opps.size(), 'A group split across multiple execute() chunks should still produce exactly one Opportunity');
-        System.assertEquals(domainC3.Id, opps.get(0).Domain_Name__c, 'The billed (non Do-Not-Invoice) domain should represent the group');
+        System.assertEquals(1, opps.size(), 'The group should produce exactly one Opportunity');
+        System.assertEquals(domainC3.Id, opps.get(0).Domain_Name__c);
+
+        Map<Id, Domain__c> domainsAfter = new Map<Id, Domain__c>([SELECT Id, Opportunity__c FROM Domain__c WHERE Id IN (:domainC1.Id, :domainC2.Id, :domainC3.Id)]);
+        System.assertEquals(opps.get(0).Id, domainsAfter.get(domainC1.Id).Opportunity__c, 'domainC1 should be stamped even though execute() never saw its subscription directly');
+        System.assertEquals(opps.get(0).Id, domainsAfter.get(domainC2.Id).Opportunity__c, 'domainC2 should be stamped even though execute() never saw its subscription directly');
+        System.assertEquals(opps.get(0).Id, domainsAfter.get(domainC3.Id).Opportunity__c);
     }
 
     /**
@@ -462,6 +469,52 @@ public class RenewalSubscriptionsTest {
         List<Opportunity> opps = [SELECT Id, Domain_Name__c FROM Opportunity WHERE AccountId =: testAccount.Id];
         System.assertEquals(1, opps.size(), 'Should fall back to the valid candidate instead of giving up because the preferred one is unrenewable');
         System.assertEquals(domainF1.Id, opps.get(0).Domain_Name__c);
+    }
+
+    /**
+     * When a domain has more than one otherwise-valid candidate subscription, the one
+     * ending LATEST should win ("we must create Opp only for the latest subscription which
+     * will end") - not the one ending soonest. Both candidates here are equally billed
+     * (do_not_invoice__c = false) and both fully valid, so date_end__c is the only thing
+     * that can decide it.
+     */
+    public static testMethod void shouldPreferLatestEndingCandidateOverEarlierOne() {
+        addTestData();
+        addTestPricebooks();
+
+        Account testAccount = new Account(Name = 'Latest Wins Test Account');
+        insert testAccount;
+        Domain__c domainL1 = new Domain__c(Server_Name__c = 'CommCareHQ', Name = 'domain_latest_1', cpAllWebUsers__c = 4, Account__c = testAccount.Id);
+        insert domainL1;
+
+        Accounting_Softwareplan__c softwarePlanCommunity = new Accounting_Softwareplan__c(Server_Name__c = 'CommCareHQ', edition__c = 'Community');
+        insert softwarePlanCommunity;
+        Accounting_SoftwarePlanVersion__c planVersionCommunity = new Accounting_SoftwarePlanVersion__c(Server_Name__c = 'CommCareHQ', Accounting_SoftwarePlan__c = softwarePlanCommunity.Id);
+        insert planVersionCommunity;
+        Accounting_Softwareplan__c softwarePlanStandard = new Accounting_Softwareplan__c(Server_Name__c = 'CommCareHQ', edition__c = 'Standard');
+        insert softwarePlanStandard;
+        Accounting_SoftwarePlanVersion__c planVersionStandard = new Accounting_SoftwarePlanVersion__c(Server_Name__c = 'CommCareHQ', Accounting_SoftwarePlan__c = softwarePlanStandard.Id);
+        insert planVersionStandard;
+
+        Accounting_Subscription__c subscriptionEarlier = new Accounting_Subscription__c(Server_Name__c = 'CommCareHQ', is_trial__c = false, date_start__c = Date.newInstance(2023, 1, 1), date_end__c = Date.newInstance(2023, 6, 15), service_type__c = 'Product', is_active__c = true,
+                                                                                         Accounting_subscriber_domain__c = domainL1.Id, plan_version__c = planVersionCommunity.Id, do_not_invoice__c = false);
+        insert subscriptionEarlier;
+        Accounting_Subscription__c subscriptionLater = new Accounting_Subscription__c(Server_Name__c = 'CommCareHQ', is_trial__c = false, date_start__c = Date.newInstance(2023, 1, 1), date_end__c = Date.newInstance(2023, 8, 1), service_type__c = 'Product', is_active__c = true,
+                                                                                       Accounting_subscriber_domain__c = domainL1.Id, plan_version__c = planVersionStandard.Id, do_not_invoice__c = false);
+        insert subscriptionLater;
+
+        Test.startTest();
+        RenewalSubscriptionsBatch batchJob = new RenewalSubscriptionsBatch(Date.newInstance(2023, 6, 1));
+        Database.executeBatch(batchJob, 50);
+        Test.stopTest();
+
+        List<Opportunity> opps = [SELECT Id, CloseDate FROM Opportunity WHERE AccountId =: testAccount.Id];
+        System.assertEquals(1, opps.size());
+        System.assertEquals(Date.newInstance(2023, 8, 1), opps.get(0).CloseDate, 'The later-ending subscription should win, not the earlier one');
+
+        List<OpportunityLineItem> lineItems = [SELECT ProductCode FROM OpportunityLineItem WHERE OpportunityId =: opps.get(0).Id];
+        System.assertEquals(1, lineItems.size());
+        System.assertEquals('Standard', lineItems.get(0).ProductCode, 'The later subscription (Standard) should represent the Opportunity, not the earlier one (Community)');
     }
 
     private static void addTestPricebooks() {
