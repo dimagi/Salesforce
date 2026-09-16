@@ -562,7 +562,9 @@ public class RenewalSubscriptionsTest {
      * domain, or one has an Account__c and another doesn't). Grouping by billing account must
      * not lose the guarantee the old per-domain domainsToSkip gave: at most one Opportunity,
      * and one Domain__c.Opportunity__c stamp, per domain - regardless of which group(s) its
-     * subscriptions land in.
+     * subscriptions land in. The two candidates here deliberately differ (edition and
+     * date_end__c), not just their billing account, so this also proves the correct
+     * (later-ending) one wins the domain - not whichever group's Id happens to sort first.
      */
     public static testMethod void shouldNotDuplicateOpportunityWhenDomainSpansTwoBillingAccounts() {
         addTestData();
@@ -578,18 +580,23 @@ public class RenewalSubscriptionsTest {
         Domain__c domainSplit = new Domain__c(Server_Name__c = 'CommCareHQ', Name = 'domain_split', cpAllWebUsers__c = 3, Account__c = testAccount.Id);
         insert domainSplit;
 
-        Accounting_Softwareplan__c softwarePlanAdvanced = new Accounting_Softwareplan__c(Server_Name__c = 'CommCareHQ', edition__c = 'Advanced');
-        insert softwarePlanAdvanced;
-        Accounting_SoftwarePlanVersion__c planVersionAdvanced = new Accounting_SoftwarePlanVersion__c(Server_Name__c = 'CommCareHQ', Accounting_SoftwarePlan__c = softwarePlanAdvanced.Id);
-        insert planVersionAdvanced;
+        Accounting_Softwareplan__c softwarePlanCommunity = new Accounting_Softwareplan__c(Server_Name__c = 'CommCareHQ', edition__c = 'Community');
+        insert softwarePlanCommunity;
+        Accounting_SoftwarePlanVersion__c planVersionCommunity = new Accounting_SoftwarePlanVersion__c(Server_Name__c = 'CommCareHQ', Accounting_SoftwarePlan__c = softwarePlanCommunity.Id);
+        insert planVersionCommunity;
+        Accounting_Softwareplan__c softwarePlanStandard = new Accounting_Softwareplan__c(Server_Name__c = 'CommCareHQ', edition__c = 'Standard');
+        insert softwarePlanStandard;
+        Accounting_SoftwarePlanVersion__c planVersionStandard = new Accounting_SoftwarePlanVersion__c(Server_Name__c = 'CommCareHQ', Accounting_SoftwarePlan__c = softwarePlanStandard.Id);
+        insert planVersionStandard;
 
-        // Two fully valid, independently renewable subscriptions for the SAME domain, but
-        // pointing at two DIFFERENT billing accounts - each would form its own group.
-        Accounting_Subscription__c subscriptionViaA = new Accounting_Subscription__c(Server_Name__c = 'CommCareHQ', is_trial__c = false, date_start__c = Date.newInstance(2023, 1, 1), date_end__c = Date.newInstance(2023, 7, 1), service_type__c = 'Product', is_active__c = true,
-                                                                                      account__c = billingAccountA.Id, Accounting_subscriber_domain__c = domainSplit.Id, plan_version__c = planVersionAdvanced.Id, do_not_invoice__c = false);
+        // Two fully valid, independently renewable subscriptions for the SAME domain, under
+        // two DIFFERENT billing accounts - each would form its own group - but with different
+        // editions and end dates, so only the later one (Standard, Aug 1) should win.
+        Accounting_Subscription__c subscriptionViaA = new Accounting_Subscription__c(Server_Name__c = 'CommCareHQ', is_trial__c = false, date_start__c = Date.newInstance(2023, 1, 1), date_end__c = Date.newInstance(2023, 6, 15), service_type__c = 'Product', is_active__c = true,
+                                                                                      account__c = billingAccountA.Id, Accounting_subscriber_domain__c = domainSplit.Id, plan_version__c = planVersionCommunity.Id, do_not_invoice__c = false);
         insert subscriptionViaA;
-        Accounting_Subscription__c subscriptionViaB = new Accounting_Subscription__c(Server_Name__c = 'CommCareHQ', is_trial__c = false, date_start__c = Date.newInstance(2023, 1, 1), date_end__c = Date.newInstance(2023, 7, 1), service_type__c = 'Product', is_active__c = true,
-                                                                                      account__c = billingAccountB.Id, Accounting_subscriber_domain__c = domainSplit.Id, plan_version__c = planVersionAdvanced.Id, do_not_invoice__c = false);
+        Accounting_Subscription__c subscriptionViaB = new Accounting_Subscription__c(Server_Name__c = 'CommCareHQ', is_trial__c = false, date_start__c = Date.newInstance(2023, 1, 1), date_end__c = Date.newInstance(2023, 8, 1), service_type__c = 'Product', is_active__c = true,
+                                                                                      account__c = billingAccountB.Id, Accounting_subscriber_domain__c = domainSplit.Id, plan_version__c = planVersionStandard.Id, do_not_invoice__c = false);
         insert subscriptionViaB;
 
         Test.startTest();
@@ -597,8 +604,13 @@ public class RenewalSubscriptionsTest {
         Database.executeBatch(batchJob, 50);
         Test.stopTest();
 
-        List<Opportunity> opps = [SELECT Id FROM Opportunity WHERE Domain_Name__c =: domainSplit.Id];
+        List<Opportunity> opps = [SELECT Id, CloseDate FROM Opportunity WHERE Domain_Name__c =: domainSplit.Id];
         System.assertEquals(1, opps.size(), 'A domain split across two billing-account groups should still produce exactly one Opportunity');
+        System.assertEquals(Date.newInstance(2023, 8, 1), opps.get(0).CloseDate, 'The later-ending subscription (Standard, Aug 1) should win the domain, not whichever billing account happened to sort first');
+
+        List<OpportunityLineItem> lineItems = [SELECT ProductCode FROM OpportunityLineItem WHERE OpportunityId =: opps.get(0).Id];
+        System.assertEquals(1, lineItems.size());
+        System.assertEquals('Standard', lineItems.get(0).ProductCode, 'The winning Opportunity should reflect the later subscription\'s edition (Standard), not the earlier one\'s (Community)');
 
         Domain__c domainAfter = [SELECT Id, Opportunity__c FROM Domain__c WHERE Id =: domainSplit.Id];
         System.assertEquals(opps.get(0).Id, domainAfter.Opportunity__c, 'The domain should be stamped with the one Opportunity that won, not overwritten by a second one');
@@ -609,7 +621,9 @@ public class RenewalSubscriptionsTest {
      * run. Error logs for those groups must not be inserted one DML statement at a time
      * inside start()'s single transaction - that would share the 150-DML-statement budget
      * with every group in the run, valid or not, and could abort the whole batch before
-     * execute() ever creates a single Opportunity.
+     * execute() ever creates a single Opportunity. Asserts the actual DML count directly
+     * (not just the outcome) - an outcome-only assertion here would still pass against the
+     * old one-insert-per-group implementation at this small a scale.
      */
     public static testMethod void shouldBulkInsertErrorLogsWithoutBlockingAValidGroup() {
         addTestData();
@@ -644,7 +658,15 @@ public class RenewalSubscriptionsTest {
 
         Test.startTest();
         RenewalSubscriptionsBatch batchJob = new RenewalSubscriptionsBatch(Date.newInstance(2023, 6, 11));
-        Database.executeBatch(batchJob, 50);
+        // start() runs synchronously in the calling transaction when invoked directly (unlike
+        // via Database.executeBatch, which hands it its own async governor-limit context), so
+        // Limits.getDmlStatements() here actually reflects what start() itself consumed.
+        Integer dmlBeforeStart = Limits.getDmlStatements();
+        List<Accounting_Subscription__c> representatives = batchJob.start(null);
+        Integer dmlUsedByStart = Limits.getDmlStatements() - dmlBeforeStart;
+        System.assertEquals(1, dmlUsedByStart, 'start() should insert all failing-group error logs in a single bulk DML statement, not one per failing group');
+        batchJob.execute(null, representatives);
+        batchJob.finish(null);
         Test.stopTest();
 
         List<Opportunity> validOpps = [SELECT Id FROM Opportunity WHERE AccountId =: validAccount.Id];

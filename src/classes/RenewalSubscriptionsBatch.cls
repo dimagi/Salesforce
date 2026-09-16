@@ -83,63 +83,94 @@ public without sharing class RenewalSubscriptionsBatch implements Database.Batch
     }
 
     /**
-     * Groups the full candidate set by billing account (Account__c, falling back to the
+     * Resolves any domain whose subscriptions span more than one billing-account group down
+     * to a single owning group (by subscription priority, see RepresentativeCandidateComparator),
+     * groups the remaining candidate set by billing account (Account__c, falling back to the
      * domain when there isn't one), picks one renewable representative subscription per
      * group, and records the rest of each group's domain Ids in domainIdsByGroup for
      * execute() to stamp later. Only ever called once, from start(), which is the only place
      * that sees every candidate for this run at the same time.
      */
     private List<Accounting_Subscription__c> selectRepresentativesForRenewal(List<Accounting_Subscription__c> allCandidates) {
+        // Drop candidates whose domain already has an open (or very recently closed) renewal
+        // Opportunity - that domain has already been handled. Done once, globally, since this
+        // doesn't depend on grouping at all.
+        List<Accounting_Subscription__c> eligibleCandidates = new List<Accounting_Subscription__c>();
+        for (Accounting_Subscription__c s : allCandidates) {
+            Boolean domainAlreadyHasOpp = s.Accounting_subscriber_domain__r.Opportunity__c != null &&
+                 (s.Accounting_subscriber_domain__r.Opportunity__r.IsClosed == false ||
+                   (s.Accounting_subscriber_domain__r.Opportunity__r.IsClosed == true && s.Accounting_subscriber_domain__r.Opportunity__r.CloseDate >= this.currentDate));
+            if (!domainAlreadyHasOpp) {
+                eligibleCandidates.add(s);
+            }
+        }
+
+        // A domain's subscriptions can span more than one billing-account group (a sibling
+        // subscription with a different Account__c, or one with Account__c set and one
+        // without). The original per-domain domainsToSkip guaranteed at most one Opportunity
+        // per domain regardless of billing account, and grouping by Account__c must not lose
+        // that - but this must only kick in for a genuine cross-group conflict. A domain whose
+        // candidates all share one group needs to stay untouched here, so every one of them
+        // still reaches that group's validation-fallback walk below (a domain can have a
+        // higher-priority candidate that isn't actually renewable, and a lower-priority one
+        // that is - filtering by priority alone, before validity is even considered, would
+        // silently discard the one that could have worked).
+        Map<Id, List<Accounting_Subscription__c>> candidatesByDomain = new Map<Id, List<Accounting_Subscription__c>>();
+        for (Accounting_Subscription__c s : eligibleCandidates) {
+            Id domainId = s.Accounting_subscriber_domain__c;
+            if (!candidatesByDomain.containsKey(domainId)) {
+                candidatesByDomain.put(domainId, new List<Accounting_Subscription__c>());
+            }
+            candidatesByDomain.get(domainId).add(s);
+        }
+
+        // For domains that DO span more than one group, resolve which group wins by
+        // subscription PRIORITY (the same do_not_invoice__c / date_end__c / Id ordering used
+        // for representative selection below) - not by which group happens to sort first,
+        // which would silently pick the wrong CloseDate/edition/price. This is membership
+        // only: the winning candidate doesn't need to be renewable itself, since a group's
+        // actual representative is still chosen with validation fallback in the loop below.
+        RepresentativeCandidateComparator priorityComparator = new RepresentativeCandidateComparator();
+        Set<Id> subscriptionIdsExcludedByConflict = new Set<Id>();
+        for (List<Accounting_Subscription__c> domainCandidates : candidatesByDomain.values()) {
+            Set<Id> groupKeysForDomain = new Set<Id>();
+            for (Accounting_Subscription__c s : domainCandidates) {
+                groupKeysForDomain.add(s.Account__c != null ? s.Account__c : s.Accounting_subscriber_domain__c);
+            }
+            if (groupKeysForDomain.size() <= 1) {
+                continue; // no cross-group conflict for this domain - leave every candidate in play
+            }
+            Accounting_Subscription__c winner = null;
+            for (Accounting_Subscription__c s : domainCandidates) {
+                if (winner == null || priorityComparator.compare(s, winner) < 0) {
+                    winner = s;
+                }
+            }
+            for (Accounting_Subscription__c s : domainCandidates) {
+                if (s.Id != winner.Id) {
+                    subscriptionIdsExcludedByConflict.add(s.Id);
+                }
+            }
+        }
+
         Map<Id, List<Accounting_Subscription__c>> subscriptionsByGroup = new Map<Id, List<Accounting_Subscription__c>>();
-        for (Accounting_Subscription__c subscription : allCandidates) {
-            Id groupKey = subscription.Account__c != null ? subscription.Account__c : subscription.Accounting_subscriber_domain__c;
+        for (Accounting_Subscription__c s : eligibleCandidates) {
+            if (subscriptionIdsExcludedByConflict.contains(s.Id)) {
+                continue;
+            }
+            Id groupKey = s.Account__c != null ? s.Account__c : s.Accounting_subscriber_domain__c;
             if (!subscriptionsByGroup.containsKey(groupKey)) {
                 subscriptionsByGroup.put(groupKey, new List<Accounting_Subscription__c>());
             }
-            subscriptionsByGroup.get(groupKey).add(subscription);
+            subscriptionsByGroup.get(groupKey).add(s);
         }
-
-        // Process groups in a deterministic order. A domain's subscriptions can end up in
-        // more than one group here (one subscription's Account__c differs from a sibling's,
-        // or is null on one and set on another) - without a stable order, which group "wins"
-        // a shared domain (see claimedDomainIds below) would depend on Map iteration order
-        // instead of being reproducible.
-        List<Id> orderedGroupKeys = new List<Id>(subscriptionsByGroup.keySet());
-        orderedGroupKeys.sort();
 
         this.domainIdsByGroup = new Map<Id, Set<Id>>();
         List<Accounting_Subscription__c> representatives = new List<Accounting_Subscription__c>();
         List<Status_Log__c> pendingErrorLogs = new List<Status_Log__c>();
-        // Grouping by billing account can still let the same domain appear in two different
-        // groups (see above) - the original per-domain domainsToSkip prevented two
-        // Opportunities for one domain regardless of billing account, and grouping by
-        // Account__c must not lose that guarantee. Once a domain is claimed by a group here,
-        // no later group in this run may also claim it.
-        Set<Id> claimedDomainIds = new Set<Id>();
 
-        for (Id groupKey : orderedGroupKeys) {
-            List<Accounting_Subscription__c> groupSubs = subscriptionsByGroup.get(groupKey);
-
-            // Drop candidates whose domain already has an open (or very recently closed)
-            // renewal Opportunity - that domain has already been handled - or whose domain
-            // was already claimed by an earlier group in this same run. Domains that don't
-            // still get a shared Opportunity, even if a sibling domain in the same group
-            // already has one from a prior run.
-            List<Accounting_Subscription__c> eligibleSubs = new List<Accounting_Subscription__c>();
-            for (Accounting_Subscription__c s : groupSubs) {
-                if (claimedDomainIds.contains(s.Accounting_subscriber_domain__c)) {
-                    continue;
-                }
-                Boolean domainAlreadyHasOpp = s.Accounting_subscriber_domain__r.Opportunity__c != null &&
-                     (s.Accounting_subscriber_domain__r.Opportunity__r.IsClosed == false ||
-                       (s.Accounting_subscriber_domain__r.Opportunity__r.IsClosed == true && s.Accounting_subscriber_domain__r.Opportunity__r.CloseDate >= this.currentDate));
-                if (!domainAlreadyHasOpp) {
-                    eligibleSubs.add(s);
-                }
-            }
-            if (eligibleSubs.isEmpty()) {
-                continue;
-            }
+        for (Id groupKey : subscriptionsByGroup.keySet()) {
+            List<Accounting_Subscription__c> eligibleSubs = subscriptionsByGroup.get(groupKey);
 
             // Prefer the subscription that's actually billed (do_not_invoice__c = false),
             // then the one ending latest ("only the latest subscription which will end"),
@@ -198,7 +229,6 @@ public without sharing class RenewalSubscriptionsBatch implements Database.Batch
                 domainIds.add(s.Accounting_subscriber_domain__c);
             }
             this.domainIdsByGroup.put(groupKey, domainIds);
-            claimedDomainIds.addAll(domainIds);
             representatives.add(representative);
         }
 
