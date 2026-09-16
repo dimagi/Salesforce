@@ -472,6 +472,48 @@ public class RenewalSubscriptionsTest {
     }
 
     /**
+     * When every candidate in a group fails to resolve (unrecognized service type here,
+     * with no fallback available), the group should be skipped silently as far as
+     * Opportunity creation goes, but it must still show up in the error log - otherwise
+     * finish()'s error email has nothing to surface it in, which was the whole point of
+     * logging in the first place.
+     */
+    public static testMethod void shouldLogErrorWhenNoCandidateInGroupResolves() {
+        addTestData();
+        addTestPricebooks();
+
+        Account testAccount = new Account(Name = 'Unresolvable Test Account');
+        insert testAccount;
+        Domain__c domainU1 = new Domain__c(Server_Name__c = 'CommCareHQ', Name = 'domain_unresolvable_1', cpAllWebUsers__c = 6, Account__c = testAccount.Id);
+        insert domainU1;
+
+        Accounting_Softwareplan__c softwarePlanAdvanced = new Accounting_Softwareplan__c(Server_Name__c = 'CommCareHQ', edition__c = 'Advanced');
+        insert softwarePlanAdvanced;
+        Accounting_SoftwarePlanVersion__c planVersionAdvanced = new Accounting_SoftwarePlanVersion__c(Server_Name__c = 'CommCareHQ', Accounting_SoftwarePlan__c = softwarePlanAdvanced.Id);
+        insert planVersionAdvanced;
+
+        // Only candidate for this domain, and it isn't renewable - no fallback exists.
+        Accounting_Subscription__c subscriptionUnresolvable = new Accounting_Subscription__c(Server_Name__c = 'CommCareHQ', is_trial__c = false, date_start__c = Date.newInstance(2023, 1, 1), date_end__c = Date.newInstance(2023, 7, 1), service_type__c = 'UNRECOGNIZED_TYPE', is_active__c = true,
+                                                                                               Accounting_subscriber_domain__c = domainU1.Id, plan_version__c = planVersionAdvanced.Id, do_not_invoice__c = false);
+        insert subscriptionUnresolvable;
+        // Name is assigned by a trigger, not a native autonumber field, so it isn't
+        // reflected back onto this variable until re-queried.
+        subscriptionUnresolvable = [SELECT Id, Name FROM Accounting_Subscription__c WHERE Id =: subscriptionUnresolvable.Id];
+
+        Test.startTest();
+        RenewalSubscriptionsBatch batchJob = new RenewalSubscriptionsBatch(Date.newInstance(2023, 6, 11));
+        Database.executeBatch(batchJob, 50);
+        Test.stopTest();
+
+        List<Opportunity> opps = [SELECT Id FROM Opportunity WHERE AccountId =: testAccount.Id];
+        System.assertEquals(0, opps.size(), 'No Opportunity should be created when nothing in the group resolves');
+        List<Status_Log__c> errorLogs = [SELECT Title__c, Message__c FROM Status_Log__c WHERE Name =: StatusLoggerUtils.RENEWAL_LOGGER AND Status__c =: StatusLoggerUtils.ERROR_LOG];
+        System.assertEquals(1, errorLogs.size(), 'The unresolvable group should show up exactly once in the error log for the run\'s email');
+        System.assert(errorLogs.get(0).Title__c.contains(subscriptionUnresolvable.Name), 'Error log title should identify the subscription that was tried: ' + errorLogs.get(0).Title__c);
+        System.assert(errorLogs.get(0).Message__c.contains('could be turned into a renewal Opportunity'), 'Error log message should explain why: ' + errorLogs.get(0).Message__c);
+    }
+
+    /**
      * When a domain has more than one otherwise-valid candidate subscription, the one
      * ending LATEST should win ("we must create Opp only for the latest subscription which
      * will end") - not the one ending soonest. Both candidates here are equally billed

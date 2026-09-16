@@ -138,6 +138,16 @@ public without sharing class RenewalSubscriptionsBatch implements Database.Batch
                 }
             }
             if (representative == null) {
+                List<String> attemptedNames = new List<String>();
+                for (Accounting_Subscription__c s : eligibleSubs) {
+                    attemptedNames.add(s.Name + ' (' + s.service_type__c + '/' + s.Software_Plan_Edition__c + ')');
+                }
+                StatusLoggerUtils.logError(
+                    StatusLoggerUtils.RENEWAL_LOGGER,
+                    String.join(attemptedNames, ', '),
+                    0,
+                    'No candidate subscription in this group could be turned into a renewal Opportunity - unrecognized service type or missing Pricebook entry/price for every candidate tried'
+                );
                 continue; // nothing in this group could be turned into a valid Opportunity this run
             }
 
