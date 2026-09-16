@@ -99,18 +99,37 @@ public without sharing class RenewalSubscriptionsBatch implements Database.Batch
             subscriptionsByGroup.get(groupKey).add(subscription);
         }
 
+        // Process groups in a deterministic order. A domain's subscriptions can end up in
+        // more than one group here (one subscription's Account__c differs from a sibling's,
+        // or is null on one and set on another) - without a stable order, which group "wins"
+        // a shared domain (see claimedDomainIds below) would depend on Map iteration order
+        // instead of being reproducible.
+        List<Id> orderedGroupKeys = new List<Id>(subscriptionsByGroup.keySet());
+        orderedGroupKeys.sort();
+
         this.domainIdsByGroup = new Map<Id, Set<Id>>();
         List<Accounting_Subscription__c> representatives = new List<Accounting_Subscription__c>();
+        List<Status_Log__c> pendingErrorLogs = new List<Status_Log__c>();
+        // Grouping by billing account can still let the same domain appear in two different
+        // groups (see above) - the original per-domain domainsToSkip prevented two
+        // Opportunities for one domain regardless of billing account, and grouping by
+        // Account__c must not lose that guarantee. Once a domain is claimed by a group here,
+        // no later group in this run may also claim it.
+        Set<Id> claimedDomainIds = new Set<Id>();
 
-        for (Id groupKey : subscriptionsByGroup.keySet()) {
+        for (Id groupKey : orderedGroupKeys) {
             List<Accounting_Subscription__c> groupSubs = subscriptionsByGroup.get(groupKey);
 
             // Drop candidates whose domain already has an open (or very recently closed)
-            // renewal Opportunity - that domain has already been handled. Domains that
-            // don't still get a shared Opportunity, even if a sibling domain in the same
-            // group already has one from a prior run.
+            // renewal Opportunity - that domain has already been handled - or whose domain
+            // was already claimed by an earlier group in this same run. Domains that don't
+            // still get a shared Opportunity, even if a sibling domain in the same group
+            // already has one from a prior run.
             List<Accounting_Subscription__c> eligibleSubs = new List<Accounting_Subscription__c>();
             for (Accounting_Subscription__c s : groupSubs) {
+                if (claimedDomainIds.contains(s.Accounting_subscriber_domain__c)) {
+                    continue;
+                }
                 Boolean domainAlreadyHasOpp = s.Accounting_subscriber_domain__r.Opportunity__c != null &&
                      (s.Accounting_subscriber_domain__r.Opportunity__r.IsClosed == false ||
                        (s.Accounting_subscriber_domain__r.Opportunity__r.IsClosed == true && s.Accounting_subscriber_domain__r.Opportunity__r.CloseDate >= this.currentDate));
@@ -138,11 +157,18 @@ public without sharing class RenewalSubscriptionsBatch implements Database.Batch
                 }
             }
             if (representative == null) {
+                // Collected and inserted in one bulk DML after the loop, not per-group here -
+                // a bad deploy or a deactivated Pricebook entry for a shared edition can make
+                // many groups unresolvable in the same run, and one insert per group would
+                // share start()'s single-transaction 150-DML-statement budget with every
+                // other group, valid or not - exactly the failure mode this whole redesign
+                // exists to avoid, just moved from Opportunity creation onto error logging.
+                //
                 // Title__c is a 255-char field. A missing/deactivated Pricebook entry for a
                 // shared edition can fail every member of a large group at once (this is
                 // exactly the scenario this log exists to surface), so the candidate list
-                // has to be bounded here - an uncaught STRING_TOO_LONG on this insert would
-                // fail start() itself and abort the whole run, not just this group.
+                // has to be bounded here too - an uncaught STRING_TOO_LONG on this insert
+                // would fail start() itself and abort the whole run, not just this group.
                 List<String> attemptedNames = new List<String>();
                 Integer maxNamesShown = 5;
                 for (Integer i = 0; i < eligibleSubs.size() && i < maxNamesShown; i++) {
@@ -156,12 +182,14 @@ public without sharing class RenewalSubscriptionsBatch implements Database.Batch
                 if (title.length() > 255) {
                     title = title.subString(0, 255);
                 }
-                StatusLoggerUtils.logError(
-                    StatusLoggerUtils.RENEWAL_LOGGER,
-                    title,
-                    0,
-                    'No candidate subscription in this group could be turned into a renewal Opportunity - unrecognized service type or missing Pricebook entry/price for every candidate tried'
-                );
+                pendingErrorLogs.add(new Status_Log__c(
+                    Name = StatusLoggerUtils.RENEWAL_LOGGER,
+                    Title__c = title,
+                    Counter__c = 0,
+                    Message__c = 'No candidate subscription in this group could be turned into a renewal Opportunity - unrecognized service type or missing Pricebook entry/price for every candidate tried',
+                    Date__c = DateTime.now(),
+                    Status__c = StatusLoggerUtils.ERROR_LOG
+                ));
                 continue; // nothing in this group could be turned into a valid Opportunity this run
             }
 
@@ -170,7 +198,12 @@ public without sharing class RenewalSubscriptionsBatch implements Database.Batch
                 domainIds.add(s.Accounting_subscriber_domain__c);
             }
             this.domainIdsByGroup.put(groupKey, domainIds);
+            claimedDomainIds.addAll(domainIds);
             representatives.add(representative);
+        }
+
+        if (!pendingErrorLogs.isEmpty()) {
+            insert pendingErrorLogs;
         }
 
         return representatives;

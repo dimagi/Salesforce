@@ -557,6 +557,104 @@ public class RenewalSubscriptionsTest {
     }
 
     /**
+     * A domain's subscriptions can end up split across two different billing-account groups
+     * (e.g. its Account__c was changed on one subscription but not a sibling one for the same
+     * domain, or one has an Account__c and another doesn't). Grouping by billing account must
+     * not lose the guarantee the old per-domain domainsToSkip gave: at most one Opportunity,
+     * and one Domain__c.Opportunity__c stamp, per domain - regardless of which group(s) its
+     * subscriptions land in.
+     */
+    public static testMethod void shouldNotDuplicateOpportunityWhenDomainSpansTwoBillingAccounts() {
+        addTestData();
+        addTestPricebooks();
+
+        Accounting_BillingAccount__c billingAccountA = new Accounting_BillingAccount__c(Server_Name__c = 'CommCareHQ', account_type__c = 'A', is_active__c = true, created_by__c = 'test@dimagi.com', created_by_domain__c = 'domain_split', dimagi_contact__c = 'contact_6@dimagi.com');
+        insert billingAccountA;
+        Accounting_BillingAccount__c billingAccountB = new Accounting_BillingAccount__c(Server_Name__c = 'CommCareHQ', account_type__c = 'B', is_active__c = true, created_by__c = 'test@dimagi.com', created_by_domain__c = 'domain_split', dimagi_contact__c = 'contact_6@dimagi.com');
+        insert billingAccountB;
+
+        Account testAccount = new Account(Name = 'Split Domain Test Account');
+        insert testAccount;
+        Domain__c domainSplit = new Domain__c(Server_Name__c = 'CommCareHQ', Name = 'domain_split', cpAllWebUsers__c = 3, Account__c = testAccount.Id);
+        insert domainSplit;
+
+        Accounting_Softwareplan__c softwarePlanAdvanced = new Accounting_Softwareplan__c(Server_Name__c = 'CommCareHQ', edition__c = 'Advanced');
+        insert softwarePlanAdvanced;
+        Accounting_SoftwarePlanVersion__c planVersionAdvanced = new Accounting_SoftwarePlanVersion__c(Server_Name__c = 'CommCareHQ', Accounting_SoftwarePlan__c = softwarePlanAdvanced.Id);
+        insert planVersionAdvanced;
+
+        // Two fully valid, independently renewable subscriptions for the SAME domain, but
+        // pointing at two DIFFERENT billing accounts - each would form its own group.
+        Accounting_Subscription__c subscriptionViaA = new Accounting_Subscription__c(Server_Name__c = 'CommCareHQ', is_trial__c = false, date_start__c = Date.newInstance(2023, 1, 1), date_end__c = Date.newInstance(2023, 7, 1), service_type__c = 'Product', is_active__c = true,
+                                                                                      account__c = billingAccountA.Id, Accounting_subscriber_domain__c = domainSplit.Id, plan_version__c = planVersionAdvanced.Id, do_not_invoice__c = false);
+        insert subscriptionViaA;
+        Accounting_Subscription__c subscriptionViaB = new Accounting_Subscription__c(Server_Name__c = 'CommCareHQ', is_trial__c = false, date_start__c = Date.newInstance(2023, 1, 1), date_end__c = Date.newInstance(2023, 7, 1), service_type__c = 'Product', is_active__c = true,
+                                                                                      account__c = billingAccountB.Id, Accounting_subscriber_domain__c = domainSplit.Id, plan_version__c = planVersionAdvanced.Id, do_not_invoice__c = false);
+        insert subscriptionViaB;
+
+        Test.startTest();
+        RenewalSubscriptionsBatch batchJob = new RenewalSubscriptionsBatch(Date.newInstance(2023, 6, 11));
+        Database.executeBatch(batchJob, 50);
+        Test.stopTest();
+
+        List<Opportunity> opps = [SELECT Id FROM Opportunity WHERE Domain_Name__c =: domainSplit.Id];
+        System.assertEquals(1, opps.size(), 'A domain split across two billing-account groups should still produce exactly one Opportunity');
+
+        Domain__c domainAfter = [SELECT Id, Opportunity__c FROM Domain__c WHERE Id =: domainSplit.Id];
+        System.assertEquals(opps.get(0).Id, domainAfter.Opportunity__c, 'The domain should be stamped with the one Opportunity that won, not overwritten by a second one');
+    }
+
+    /**
+     * A missing/deactivated Pricebook entry can make many groups unresolvable in the same
+     * run. Error logs for those groups must not be inserted one DML statement at a time
+     * inside start()'s single transaction - that would share the 150-DML-statement budget
+     * with every group in the run, valid or not, and could abort the whole batch before
+     * execute() ever creates a single Opportunity.
+     */
+    public static testMethod void shouldBulkInsertErrorLogsWithoutBlockingAValidGroup() {
+        addTestData();
+        addTestPricebooks();
+
+        Accounting_Softwareplan__c softwarePlanAdvanced = new Accounting_Softwareplan__c(Server_Name__c = 'CommCareHQ', edition__c = 'Advanced');
+        insert softwarePlanAdvanced;
+        Accounting_SoftwarePlanVersion__c planVersionAdvanced = new Accounting_SoftwarePlanVersion__c(Server_Name__c = 'CommCareHQ', Accounting_SoftwarePlan__c = softwarePlanAdvanced.Id);
+        insert planVersionAdvanced;
+
+        // Several distinct, unrelated groups (different billing accounts / domains), each with
+        // a single unrenewable candidate.
+        List<Accounting_Subscription__c> failingSubscriptions = new List<Accounting_Subscription__c>();
+        for (Integer i = 0; i < 5; i++) {
+            Accounting_BillingAccount__c failingAccount = new Accounting_BillingAccount__c(Server_Name__c = 'CommCareHQ', account_type__c = 'Failing', is_active__c = true, created_by__c = 'test@dimagi.com', created_by_domain__c = 'domain_bulk_fail_' + i, dimagi_contact__c = 'contact_7@dimagi.com');
+            insert failingAccount;
+            Domain__c failingDomain = new Domain__c(Server_Name__c = 'CommCareHQ', Name = 'domain_bulk_fail_' + i, cpAllWebUsers__c = 1);
+            insert failingDomain;
+            failingSubscriptions.add(new Accounting_Subscription__c(Server_Name__c = 'CommCareHQ', is_trial__c = false, date_start__c = Date.newInstance(2023, 1, 1), date_end__c = Date.newInstance(2023, 7, 1), service_type__c = 'UNRECOGNIZED_TYPE', is_active__c = true,
+                                                                     account__c = failingAccount.Id, Accounting_subscriber_domain__c = failingDomain.Id, plan_version__c = planVersionAdvanced.Id, do_not_invoice__c = false));
+        }
+        insert failingSubscriptions;
+
+        // One separate, fully valid group that must still succeed.
+        Account validAccount = new Account(Name = 'Valid Alongside Failures Account');
+        insert validAccount;
+        Domain__c validDomain = new Domain__c(Server_Name__c = 'CommCareHQ', Name = 'domain_bulk_valid', cpAllWebUsers__c = 1, Account__c = validAccount.Id);
+        insert validDomain;
+        Accounting_Subscription__c validSubscription = new Accounting_Subscription__c(Server_Name__c = 'CommCareHQ', is_trial__c = false, date_start__c = Date.newInstance(2023, 1, 1), date_end__c = Date.newInstance(2023, 7, 1), service_type__c = 'Product', is_active__c = true,
+                                                                                       Accounting_subscriber_domain__c = validDomain.Id, plan_version__c = planVersionAdvanced.Id, do_not_invoice__c = false);
+        insert validSubscription;
+
+        Test.startTest();
+        RenewalSubscriptionsBatch batchJob = new RenewalSubscriptionsBatch(Date.newInstance(2023, 6, 11));
+        Database.executeBatch(batchJob, 50);
+        Test.stopTest();
+
+        List<Opportunity> validOpps = [SELECT Id FROM Opportunity WHERE AccountId =: validAccount.Id];
+        System.assertEquals(1, validOpps.size(), 'The valid group must still get its Opportunity - start() must not abort due to error-log DML from the failing groups');
+
+        List<Status_Log__c> errorLogs = [SELECT Id FROM Status_Log__c WHERE Name =: StatusLoggerUtils.RENEWAL_LOGGER AND Status__c =: StatusLoggerUtils.ERROR_LOG];
+        System.assertEquals(5, errorLogs.size(), 'Every failing group should still be logged, just bundled into one bulk insert');
+    }
+
+    /**
      * When a domain has more than one otherwise-valid candidate subscription, the one
      * ending LATEST should win ("we must create Opp only for the latest subscription which
      * will end") - not the one ending soonest. Both candidates here are equally billed
