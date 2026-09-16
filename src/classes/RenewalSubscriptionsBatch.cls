@@ -138,13 +138,27 @@ public without sharing class RenewalSubscriptionsBatch implements Database.Batch
                 }
             }
             if (representative == null) {
+                // Title__c is a 255-char field. A missing/deactivated Pricebook entry for a
+                // shared edition can fail every member of a large group at once (this is
+                // exactly the scenario this log exists to surface), so the candidate list
+                // has to be bounded here - an uncaught STRING_TOO_LONG on this insert would
+                // fail start() itself and abort the whole run, not just this group.
                 List<String> attemptedNames = new List<String>();
-                for (Accounting_Subscription__c s : eligibleSubs) {
+                Integer maxNamesShown = 5;
+                for (Integer i = 0; i < eligibleSubs.size() && i < maxNamesShown; i++) {
+                    Accounting_Subscription__c s = eligibleSubs.get(i);
                     attemptedNames.add(s.Name + ' (' + s.service_type__c + '/' + s.Software_Plan_Edition__c + ')');
+                }
+                String title = String.join(attemptedNames, ', ');
+                if (eligibleSubs.size() > maxNamesShown) {
+                    title += ' (+' + (eligibleSubs.size() - maxNamesShown) + ' more)';
+                }
+                if (title.length() > 255) {
+                    title = title.subString(0, 255);
                 }
                 StatusLoggerUtils.logError(
                     StatusLoggerUtils.RENEWAL_LOGGER,
-                    String.join(attemptedNames, ', '),
+                    title,
                     0,
                     'No candidate subscription in this group could be turned into a renewal Opportunity - unrecognized service type or missing Pricebook entry/price for every candidate tried'
                 );

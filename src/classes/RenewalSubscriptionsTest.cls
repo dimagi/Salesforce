@@ -514,6 +514,49 @@ public class RenewalSubscriptionsTest {
     }
 
     /**
+     * A missing/deactivated Pricebook entry for a shared edition can fail every domain in a
+     * large group at once - Status_Log__c.Title__c is a 255-char field, so a group large
+     * enough that every candidate's name wouldn't fit must not throw STRING_TOO_LONG out of
+     * start() (which would abort the whole run) when logging the failure.
+     */
+    public static testMethod void shouldLogBoundedTitleWhenManyCandidatesInGroupFail() {
+        addTestData();
+        addTestPricebooks();
+
+        Accounting_BillingAccount__c groupBillingAccount = new Accounting_BillingAccount__c(Server_Name__c = 'CommCareHQ', account_type__c = 'Grouped', is_active__c = true, created_by__c = 'test@dimagi.com', created_by_domain__c = 'domain_manyfail_0', dimagi_contact__c = 'contact_5@dimagi.com');
+        insert groupBillingAccount;
+
+        Account groupAccount = new Account(Name = 'Many Failing Candidates Account');
+        insert groupAccount;
+
+        Accounting_Softwareplan__c softwarePlanAdvanced = new Accounting_Softwareplan__c(Server_Name__c = 'CommCareHQ', edition__c = 'Advanced');
+        insert softwarePlanAdvanced;
+        Accounting_SoftwarePlanVersion__c planVersionAdvanced = new Accounting_SoftwarePlanVersion__c(Server_Name__c = 'CommCareHQ', Accounting_SoftwarePlan__c = softwarePlanAdvanced.Id);
+        insert planVersionAdvanced;
+
+        List<Accounting_Subscription__c> subscriptions = new List<Accounting_Subscription__c>();
+        for (Integer i = 0; i < 12; i++) {
+            Domain__c domain = new Domain__c(Server_Name__c = 'CommCareHQ', Name = 'domain_manyfail_' + i, cpAllWebUsers__c = 1, Account__c = groupAccount.Id);
+            insert domain;
+            subscriptions.add(new Accounting_Subscription__c(Server_Name__c = 'CommCareHQ', is_trial__c = false, date_start__c = Date.newInstance(2023, 1, 1), date_end__c = Date.newInstance(2023, 7, 1), service_type__c = 'UNRECOGNIZED_TYPE', is_active__c = true,
+                                                              account__c = groupBillingAccount.Id, Accounting_subscriber_domain__c = domain.Id, plan_version__c = planVersionAdvanced.Id, do_not_invoice__c = false));
+        }
+        insert subscriptions;
+
+        Test.startTest();
+        RenewalSubscriptionsBatch batchJob = new RenewalSubscriptionsBatch(Date.newInstance(2023, 6, 11));
+        Database.executeBatch(batchJob, 50);
+        Test.stopTest();
+
+        List<Opportunity> opps = [SELECT Id FROM Opportunity WHERE AccountId =: groupAccount.Id];
+        System.assertEquals(0, opps.size(), 'No Opportunity should be created when nothing in the 12-candidate group resolves');
+        List<Status_Log__c> errorLogs = [SELECT Title__c FROM Status_Log__c WHERE Name =: StatusLoggerUtils.RENEWAL_LOGGER AND Status__c =: StatusLoggerUtils.ERROR_LOG];
+        System.assertEquals(1, errorLogs.size(), 'The 12-candidate group should show up exactly once in the error log');
+        System.assert(errorLogs.get(0).Title__c.length() <= 255, 'Title__c must stay within its field limit: ' + errorLogs.get(0).Title__c.length() + ' chars');
+        System.assert(errorLogs.get(0).Title__c.contains('more'), 'Title should indicate there were more candidates than shown: ' + errorLogs.get(0).Title__c);
+    }
+
+    /**
      * When a domain has more than one otherwise-valid candidate subscription, the one
      * ending LATEST should win ("we must create Opp only for the latest subscription which
      * will end") - not the one ending soonest. Both candidates here are equally billed
