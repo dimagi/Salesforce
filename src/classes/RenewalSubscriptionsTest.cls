@@ -617,6 +617,50 @@ public class RenewalSubscriptionsTest {
     }
 
     /**
+     * A domain spanning two billing accounts, where the higher-priority candidate (later
+     * date_end__c) isn't actually renewable, must still fall back to the lower-priority but
+     * renewable candidate under the OTHER billing account - not lose its Opportunity entirely
+     * just because the priority winner turned out unrenewable.
+     */
+    public static testMethod void shouldFallBackAcrossBillingAccountsWhenPreferredCandidateIsUnrenewable() {
+        addTestData();
+        addTestPricebooks();
+
+        Accounting_BillingAccount__c billingAccountA = new Accounting_BillingAccount__c(Server_Name__c = 'CommCareHQ', account_type__c = 'A', is_active__c = true, created_by__c = 'test@dimagi.com', created_by_domain__c = 'domain_split_fallback', dimagi_contact__c = 'contact_8@dimagi.com');
+        insert billingAccountA;
+        Accounting_BillingAccount__c billingAccountB = new Accounting_BillingAccount__c(Server_Name__c = 'CommCareHQ', account_type__c = 'B', is_active__c = true, created_by__c = 'test@dimagi.com', created_by_domain__c = 'domain_split_fallback', dimagi_contact__c = 'contact_8@dimagi.com');
+        insert billingAccountB;
+
+        Account testAccount = new Account(Name = 'Split Domain Fallback Test Account');
+        insert testAccount;
+        Domain__c domainSplitFallback = new Domain__c(Server_Name__c = 'CommCareHQ', Name = 'domain_split_fallback', cpAllWebUsers__c = 2, Account__c = testAccount.Id);
+        insert domainSplitFallback;
+
+        Accounting_Softwareplan__c softwarePlanAdvanced = new Accounting_Softwareplan__c(Server_Name__c = 'CommCareHQ', edition__c = 'Advanced');
+        insert softwarePlanAdvanced;
+        Accounting_SoftwarePlanVersion__c planVersionAdvanced = new Accounting_SoftwarePlanVersion__c(Server_Name__c = 'CommCareHQ', Accounting_SoftwarePlan__c = softwarePlanAdvanced.Id);
+        insert planVersionAdvanced;
+
+        // Higher priority (later end date) but NOT renewable, under billingAccountA.
+        Accounting_Subscription__c subscriptionViaA = new Accounting_Subscription__c(Server_Name__c = 'CommCareHQ', is_trial__c = false, date_start__c = Date.newInstance(2023, 1, 1), date_end__c = Date.newInstance(2023, 8, 1), service_type__c = 'UNRECOGNIZED_TYPE', is_active__c = true,
+                                                                                      account__c = billingAccountA.Id, Accounting_subscriber_domain__c = domainSplitFallback.Id, plan_version__c = planVersionAdvanced.Id, do_not_invoice__c = false);
+        insert subscriptionViaA;
+        // Lower priority (earlier end date) but fully renewable, under billingAccountB.
+        Accounting_Subscription__c subscriptionViaB = new Accounting_Subscription__c(Server_Name__c = 'CommCareHQ', is_trial__c = false, date_start__c = Date.newInstance(2023, 1, 1), date_end__c = Date.newInstance(2023, 6, 15), service_type__c = 'Product', is_active__c = true,
+                                                                                      account__c = billingAccountB.Id, Accounting_subscriber_domain__c = domainSplitFallback.Id, plan_version__c = planVersionAdvanced.Id, do_not_invoice__c = false);
+        insert subscriptionViaB;
+
+        Test.startTest();
+        RenewalSubscriptionsBatch batchJob = new RenewalSubscriptionsBatch(Date.newInstance(2023, 6, 11));
+        Database.executeBatch(batchJob, 50);
+        Test.stopTest();
+
+        List<Opportunity> opps = [SELECT Id, CloseDate FROM Opportunity WHERE Domain_Name__c =: domainSplitFallback.Id];
+        System.assertEquals(1, opps.size(), 'The domain should still get an Opportunity from the renewable candidate under the other billing account, even though the higher-priority one is unrenewable');
+        System.assertEquals(Date.newInstance(2023, 6, 15), opps.get(0).CloseDate, 'The Opportunity should reflect the valid (lower-priority) subscription, not the invalid (higher-priority) one');
+    }
+
+    /**
      * A missing/deactivated Pricebook entry can make many groups unresolvable in the same
      * run. Error logs for those groups must not be inserted one DML statement at a time
      * inside start()'s single transaction - that would share the 150-DML-statement budget

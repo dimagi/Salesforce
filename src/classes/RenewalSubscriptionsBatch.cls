@@ -127,9 +127,13 @@ public without sharing class RenewalSubscriptionsBatch implements Database.Batch
         // For domains that DO span more than one group, resolve which group wins by
         // subscription PRIORITY (the same do_not_invoice__c / date_end__c / Id ordering used
         // for representative selection below) - not by which group happens to sort first,
-        // which would silently pick the wrong CloseDate/edition/price. This is membership
-        // only: the winning candidate doesn't need to be renewable itself, since a group's
-        // actual representative is still chosen with validation fallback in the loop below.
+        // which would silently pick the wrong CloseDate/edition/price. The winning group is
+        // the one holding the highest-priority RENEWABLE candidate - a higher-priority
+        // candidate that isn't renewable shouldn't cost the domain its Opportunity entirely
+        // when a lower-priority, renewable one exists under a different billing account.
+        // Every candidate belonging to the winning group is kept (not just the one that broke
+        // the tie), so that group's own validation-fallback walk below still has all of them
+        // to try, exactly as it would for a domain with no cross-group conflict at all.
         RepresentativeCandidateComparator priorityComparator = new RepresentativeCandidateComparator();
         Set<Id> subscriptionIdsExcludedByConflict = new Set<Id>();
         for (List<Accounting_Subscription__c> domainCandidates : candidatesByDomain.values()) {
@@ -140,14 +144,29 @@ public without sharing class RenewalSubscriptionsBatch implements Database.Batch
             if (groupKeysForDomain.size() <= 1) {
                 continue; // no cross-group conflict for this domain - leave every candidate in play
             }
+
+            List<Accounting_Subscription__c> sortedDomainCandidates = new List<Accounting_Subscription__c>(domainCandidates);
+            sortedDomainCandidates.sort(priorityComparator);
             Accounting_Subscription__c winner = null;
-            for (Accounting_Subscription__c s : domainCandidates) {
-                if (winner == null || priorityComparator.compare(s, winner) < 0) {
-                    winner = s;
+            for (Accounting_Subscription__c candidate : sortedDomainCandidates) {
+                if (resolveRenewalDetails(candidate) != null) {
+                    winner = candidate;
+                    break;
                 }
             }
+            if (winner == null) {
+                // Nothing for this domain is renewable in any group right now. Fall back to
+                // sheer priority just to pick a consistent, deterministic home group - the
+                // group's own representative-selection walk will still fail to find a
+                // representative unless something else in that group is renewable, same as if
+                // this domain had never had a cross-group conflict.
+                winner = sortedDomainCandidates.get(0);
+            }
+            Id winningGroupKey = winner.Account__c != null ? winner.Account__c : winner.Accounting_subscriber_domain__c;
+
             for (Accounting_Subscription__c s : domainCandidates) {
-                if (s.Id != winner.Id) {
+                Id sGroupKey = s.Account__c != null ? s.Account__c : s.Accounting_subscriber_domain__c;
+                if (sGroupKey != winningGroupKey) {
                     subscriptionIdsExcludedByConflict.add(s.Id);
                 }
             }
