@@ -1,0 +1,51 @@
+<template>
+    <lightning-card title="Archive Lead">
+        <template lwc:if={isLoading}>
+            <lightning-spinner alternative-text="Archiving..." size="small"></lightning-spinner>
+        </template>
+
+        <div class="slds-p-around_medium">
+
+            <lightning-combobox
+                name="archiveReason"
+                label="Archive Reason"
+                required
+                value={archiveReason}
+                placeholder="Select a reason"
+                options={archiveReasonOptions}
+                onchange={handleReasonChange}>
+            </lightning-combobox>
+
+            <div class="slds-m-top_small">
+                <lightning-textarea
+                    name="dispositionNotes"
+                    label="Disposition Notes"
+                    value={dispositionNotes}
+                    onchange={handleDispositionNotesChange}>
+                </lightning-textarea>
+            </div>
+
+            <template lwc:if={errorMessage}>
+                <div class="slds-notify slds-notify_alert slds-alert_error slds-m-top_small" role="alert">
+                    <span class="slds-assistive-text">Error</span>
+                    {errorMessage}
+                </div>
+            </template>
+
+        </div>
+
+        <div slot="footer">
+            <lightning-button
+                label="Cancel"
+                onclick={handleCancel}>
+            </lightning-button>
+            <lightning-button
+                variant="destructive"
+                label="Archive"
+                onclick={handleArchive}
+                disabled={isLoading}
+                class="slds-m-left_x-small">
+            </lightning-button>
+        </div>
+    </lightning-card>
+</template>
