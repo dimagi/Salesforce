@@ -58,7 +58,7 @@ public class EmployeeInsertUpdateTriggerHelper{
                 Contact cntct = contactsById.get(emp.Contact__c);
                 Account acnt = accountsByID.get(cntct.AccountId);
 
-                if(acnt.Name.toLowerCase().contains('dimagi')){
+                if(acnt != null && acnt.Name.toLowerCase().contains('dimagi')){
                     if(emp.Name == null)
                         emp.Name = cntct.Name;
 
@@ -152,7 +152,7 @@ public class EmployeeInsertUpdateTriggerHelper{
                 Contact cntct = contactsById.get(emp.Contact__c);
                 Account acnt = accountsByID.get(cntct.AccountId);
  
-                if (acnt.Name.toLowerCase().contains('dimagi')) {
+                if (acnt != null && acnt.Name.toLowerCase().contains('dimagi')) {
                     if (cntct.ReportsToId != null) {
                         SFDC_Employee__c  relatedEmp = relatedEmpList.get(cntct.ReportsToId);
 
